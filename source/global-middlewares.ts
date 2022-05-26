@@ -12,14 +12,14 @@ export interface GlobalMiddlewaresOptions {
 
 export interface BaseMiddlewareLocals {
   loggingStartTime: bigint;
-  localCSS: ReturnType<typeof localCSS>;
+  css: ReturnType<typeof localCSS>;
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
   liveUpdatesNonce: string | undefined;
 }
 
 export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
-    res.locals.localCSS = localCSS();
+    res.locals.css = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
     next();
   });

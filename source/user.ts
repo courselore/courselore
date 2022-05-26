@@ -118,7 +118,7 @@ export default (app: Courselore): void => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
                   @media (prefers-color-scheme: dark) {
@@ -146,7 +146,7 @@ export default (app: Courselore): void => {
               >
                 <foreignObject x="2" y="-2" width="24" height="24">
                   <span
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       font-size: var(--font-size--xl);
                       line-height: var(--line-height--xl);
                     `)}"
@@ -160,7 +160,7 @@ export default (app: Courselore): void => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   ${{
                     xs: css`
                       width: var(--space--4);
@@ -185,7 +185,7 @@ export default (app: Courselore): void => {
               />`
             : html`<svg
                 viewBox="0 0 24 24"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   color: var(--color--${user.avatarlessBackgroundColor}--700);
                   background-color: var(
                     --color--${user.avatarlessBackgroundColor}--200
@@ -219,7 +219,7 @@ export default (app: Courselore): void => {
                   x="12"
                   y="16"
                   text-anchor="middle"
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     font-size: var(--font-size--2xs);
                     line-height: var(--line-height--2xs);
                     font-weight: var(--font-weight--black);
@@ -239,7 +239,7 @@ export default (app: Courselore): void => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
@@ -259,7 +259,7 @@ export default (app: Courselore): void => {
             $${userAvatar}
             <span
               hidden
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
@@ -305,7 +305,7 @@ export default (app: Courselore): void => {
 
       if (name !== false)
         userName = html`<span
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             font-weight: var(--font-weight--bold);
           `)}"
           >$${name === true
@@ -348,7 +348,7 @@ export default (app: Courselore): void => {
             content: ${res.locals.HTMLForJavaScript(
               html`
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     max-height: var(--space--56);
                     padding: var(--space--1) var(--space--2);
                     overflow: auto;
@@ -358,7 +358,7 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <div
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       display: flex;
                       gap: var(--space--4);
                       align-items: center;
@@ -375,7 +375,7 @@ export default (app: Courselore): void => {
                       })}
                     </div>
                     <div
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         padding-top: var(--space--0-5);
                         display: flex;
                         flex-direction: column;
@@ -394,7 +394,7 @@ export default (app: Courselore): void => {
                           ? html`
                               <div class="secondary">
                                 <span
-                                  css="${res.locals.localCSS(
+                                  css="${res.locals.css(
                                     css`
                                       margin-right: var(--space--2);
                                     `
@@ -404,7 +404,7 @@ export default (app: Courselore): void => {
                                 </span>
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
-                                  css="${res.locals.localCSS(
+                                  css="${res.locals.css(
                                     css`
                                       font-size: var(--font-size--xs);
                                       line-height: var(--line-height--xs);
@@ -446,7 +446,7 @@ export default (app: Courselore): void => {
                           : html`
                               <div
                                 class="secondary"
-                                css="${res.locals.localCSS(css`
+                                css="${res.locals.css(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                 `)}"
@@ -470,7 +470,7 @@ export default (app: Courselore): void => {
                           ? html`
                               <div
                                 class="text--sky"
-                                css="${res.locals.localCSS(css`
+                                css="${res.locals.css(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                   display: flex;
@@ -509,7 +509,7 @@ export default (app: Courselore): void => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
@@ -537,7 +537,7 @@ export default (app: Courselore): void => {
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 font-size: var(--font-size--xl);
                 line-height: var(--line-height--xl);
               `)}"
@@ -549,7 +549,7 @@ export default (app: Courselore): void => {
 
       if (name !== false)
         anonymousName = html`<span
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             font-weight: var(--font-weight--bold);
           `)}"
           >Anonymous</span
@@ -671,7 +671,7 @@ export default (app: Courselore): void => {
               method="PATCH"
               action="${app.locals.options.baseURL}/settings/profile"
               novalidate
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -679,7 +679,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   display: flex;
                   gap: var(--space--4);
                   @media (max-width: 400px) {
@@ -689,7 +689,7 @@ export default (app: Courselore): void => {
               >
                 <div
                   class="avatar-chooser"
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -716,7 +716,7 @@ export default (app: Courselore): void => {
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         transform: scale(8)
                           translate(
                             calc(var(--space---px) + 50% + var(--space---px)),
@@ -750,7 +750,7 @@ export default (app: Courselore): void => {
                   <div
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
                     class="avatar-chooser--filled"
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -761,7 +761,7 @@ export default (app: Courselore): void => {
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         padding: var(--space--2);
                         margin: var(--space---2);
                         border-radius: var(--border-radius--circle);
@@ -781,7 +781,7 @@ export default (app: Courselore): void => {
                         src="${res.locals.user.avatar ?? ""}"
                         alt="Avatar"
                         loading="lazy"
-                        css="${res.locals.localCSS(css`
+                        css="${res.locals.css(css`
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
@@ -791,7 +791,7 @@ export default (app: Courselore): void => {
                     <button
                       type="button"
                       class="button button--rose"
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         place-self: end;
@@ -840,7 +840,7 @@ export default (app: Courselore): void => {
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              css="${res.locals.localCSS(css`
+                              css="${res.locals.css(css`
                                 display: flex;
                                 gap: var(--space--2);
                               `)}"
@@ -899,7 +899,7 @@ export default (app: Courselore): void => {
                 </div>
 
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     flex: 1;
                     display: flex;
                     flex-direction: column;
@@ -1077,7 +1077,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options
                 .baseURL}/settings/update-email-and-password"
               novalidate
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1122,7 +1122,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options
                 .baseURL}/settings/update-email-and-password"
               novalidate
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1317,7 +1317,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options
                 .baseURL}/settings/notifications-preferences"
               novalidate
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1327,7 +1327,7 @@ export default (app: Courselore): void => {
               <div class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1346,7 +1346,7 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1366,7 +1366,7 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     display: flex;
                   `)}"
                 >

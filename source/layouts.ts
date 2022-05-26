@@ -178,7 +178,7 @@ export default async (app: Courselore): Promise<void> => {
   }) => {
     const baseLayoutBody = html`
       <body
-        css="${res.locals.localCSS(css`
+        css="${res.locals.css(css`
           font-family: "Public Sans", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
@@ -192,7 +192,7 @@ export default async (app: Courselore): Promise<void> => {
       >
         <div
           key="viewport"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             position: absolute;
             top: 0;
             right: 0;
@@ -269,7 +269,7 @@ export default async (app: Courselore): Promise<void> => {
                               }
                               return html`
                                 <p
-                                  css="${res.locals.localCSS(css`
+                                  css="${res.locals.css(css`
                                     font-weight: var(--font-weight--bold);
                                   `)}"
                                 >
@@ -314,7 +314,7 @@ export default async (app: Courselore): Promise<void> => {
                       content: ${res.locals.HTMLForJavaScript(
                         html`
                           <div
-                            css="${res.locals.localCSS(css`
+                            css="${res.locals.css(css`
                               padding: var(--space--1) var(--space--2);
                               display: flex;
                               gap: var(--space--2);
@@ -367,14 +367,14 @@ export default async (app: Courselore): Promise<void> => {
             : html`
                 <div
                   key="header--accent-color"
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     height: var(--border-width--8);
                     display: flex;
                   `)}"
                 >
                   <button
                     class="button"
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       background-color: var(
                         --color--${res.locals.enrollment.accentColor}--500
                       );
@@ -398,7 +398,7 @@ export default async (app: Courselore): Promise<void> => {
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              css="${res.locals.localCSS(css`
+                              css="${res.locals.css(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -415,7 +415,7 @@ export default async (app: Courselore): Promise<void> => {
                                   .baseURL}/courses/${res.locals.course!
                                   .reference}/settings/your-enrollment"
                                 class="button button--blue"
-                                css="${res.locals.localCSS(css`
+                                css="${res.locals.css(css`
                                   width: 100%;
                                 `)}"
                               >
@@ -432,7 +432,7 @@ export default async (app: Courselore): Promise<void> => {
               `}
           <div
             key="header"
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -456,7 +456,7 @@ export default async (app: Courselore): Promise<void> => {
               ? html`
                   <div
                     key="header--demonstration"
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       justify-content: center;
                       flex-wrap: wrap;
                     `)}"
@@ -471,7 +471,7 @@ export default async (app: Courselore): Promise<void> => {
                             content: ${res.locals.HTMLForJavaScript(
                               html`
                                 <div
-                                  css="${res.locals.localCSS(css`
+                                  css="${res.locals.css(css`
                                     padding: var(--space--2);
                                     display: flex;
                                     flex-direction: column;
@@ -500,7 +500,7 @@ export default async (app: Courselore): Promise<void> => {
                                     />
                                     <button
                                       class="button button--blue"
-                                      css="${res.locals.localCSS(css`
+                                      css="${res.locals.css(css`
                                         width: 100%;
                                       `)}"
                                     >
@@ -544,7 +544,7 @@ export default async (app: Courselore): Promise<void> => {
 
           <div
             key="main"
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               flex: 1;
               overflow: auto;
             `)}"
@@ -557,7 +557,7 @@ export default async (app: Courselore): Promise<void> => {
 
           <div
             key="footer"
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -578,7 +578,7 @@ export default async (app: Courselore): Promise<void> => {
             <div>
               <button
                 class="button button--transparent"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   align-items: center;
                 `)}"
                 onload="${javascript`
@@ -596,7 +596,7 @@ export default async (app: Courselore): Promise<void> => {
                             Communication Platform for Education <br />
                             <small
                               class="secondary"
-                              css="${res.locals.localCSS(css`
+                              css="${res.locals.css(css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
                               `)}"
@@ -651,7 +651,7 @@ export default async (app: Courselore): Promise<void> => {
                               .metaCourseloreInvitation}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
-                            css="${res.locals.localCSS(css`
+                            css="${res.locals.css(css`
                               align-items: center;
                             `)}"
                           >
@@ -719,7 +719,7 @@ export default async (app: Courselore): Promise<void> => {
         <div
           key="progress-bar"
           hidden
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             position: fixed;
             top: 0;
             right: 0;
@@ -751,7 +751,7 @@ export default async (app: Courselore): Promise<void> => {
           `}"
         >
           <div
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               height: var(--border-width--4);
               background-color: var(--color--blue--500);
               @media (prefers-color-scheme: dark) {
@@ -990,7 +990,7 @@ export default async (app: Courselore): Promise<void> => {
             rel="stylesheet"
             href="${app.locals.options.baseURL}/global.css"
           />
-          $${res.locals.localCSS.toString()}
+          $${res.locals.css.toString()}
 
           <script src="${app.locals.options
               .baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
@@ -2137,7 +2137,7 @@ export default async (app: Courselore): Promise<void> => {
       body: html`
         <div
           key="layout--box"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             min-width: 100%;
             min-height: 100%;
             display: flex;
@@ -2146,7 +2146,7 @@ export default async (app: Courselore): Promise<void> => {
           `)}"
         >
           <div
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
@@ -2157,7 +2157,7 @@ export default async (app: Courselore): Promise<void> => {
           >
             <div
               key="main--logo"
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 display: flex;
                 justify-content: center;
               `)}"
@@ -2165,7 +2165,7 @@ export default async (app: Courselore): Promise<void> => {
               <a
                 href="${app.locals.options.baseURL}/"
                 class="heading--display button button--transparent"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   align-items: center;
                 `)}"
               >
@@ -2174,7 +2174,7 @@ export default async (app: Courselore): Promise<void> => {
             </div>
             <div
               key="main--${req.path}"
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -2193,7 +2193,7 @@ export default async (app: Courselore): Promise<void> => {
               ? html`
                   <div
                     key="main--try"
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -2207,7 +2207,7 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -2215,7 +2215,7 @@ export default async (app: Courselore): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -2241,7 +2241,7 @@ export default async (app: Courselore): Promise<void> => {
                         />
                         <button
                           class="button button--amber"
-                          css="${res.locals.localCSS(css`
+                          css="${res.locals.css(css`
                             width: 100%;
                           `)}"
                         >
@@ -2256,7 +2256,7 @@ export default async (app: Courselore): Promise<void> => {
               ? html`
                   <div
                     key="main--demonstration"
-                    css="${res.locals.localCSS(css`
+                    css="${res.locals.css(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -2270,7 +2270,7 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -2278,7 +2278,7 @@ export default async (app: Courselore): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -2304,7 +2304,7 @@ export default async (app: Courselore): Promise<void> => {
                         />
                         <button
                           class="button button--amber"
-                          css="${res.locals.localCSS(css`
+                          css="${res.locals.css(css`
                             width: 100%;
                           `)}"
                         >
@@ -2336,7 +2336,7 @@ export default async (app: Courselore): Promise<void> => {
       extraHeaders: html`
         <div
           key="header--menu--primary"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
             gap: var(--space--4);
@@ -2357,7 +2357,7 @@ export default async (app: Courselore): Promise<void> => {
           </a>
 
           <div
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               font-size: var(--font-size--sm);
               line-height: var(--line-height--sm);
               flex: 1;
@@ -2395,7 +2395,7 @@ export default async (app: Courselore): Promise<void> => {
                 ? html`
                     <button
                       class="button button--tight button--tight--inline button--transparent strong"
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
@@ -2405,7 +2405,7 @@ export default async (app: Courselore): Promise<void> => {
                           content: ${res.locals.HTMLForJavaScript(
                             html`
                               <div
-                                css="${res.locals.localCSS(css`
+                                css="${res.locals.css(css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                   display: flex;
@@ -2472,7 +2472,7 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
-                        css="${res.locals.localCSS(css`
+                        css="${res.locals.css(css`
                           white-space: nowrap;
                           overflow: hidden;
                           text-overflow: ellipsis;
@@ -2487,7 +2487,7 @@ export default async (app: Courselore): Promise<void> => {
                 ? html`
                     <button
                       class="button button--tight button--tight--inline button--transparent"
-                      css="${res.locals.localCSS(css`
+                      css="${res.locals.css(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
@@ -2497,7 +2497,7 @@ export default async (app: Courselore): Promise<void> => {
                           content: ${res.locals.HTMLForJavaScript(
                             html`
                               <div
-                                css="${res.locals.localCSS(css`
+                                css="${res.locals.css(css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                 `)}"
@@ -2538,7 +2538,7 @@ export default async (app: Courselore): Promise<void> => {
                   content: ${res.locals.HTMLForJavaScript(
                     html`
                       <div
-                        css="${res.locals.localCSS(css`
+                        css="${res.locals.css(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
@@ -2603,7 +2603,7 @@ export default async (app: Courselore): Promise<void> => {
               `}"
             >
               <div
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
@@ -2611,7 +2611,7 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
@@ -2627,7 +2627,7 @@ export default async (app: Courselore): Promise<void> => {
                   ? html``
                   : html`
                       <div
-                        css="${res.locals.localCSS(css`
+                        css="${res.locals.css(css`
                           background-color: var(--color--rose--500);
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
@@ -2647,7 +2647,7 @@ export default async (app: Courselore): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              css="${res.locals.localCSS(css`
+              css="${res.locals.css(css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"
@@ -2663,14 +2663,14 @@ export default async (app: Courselore): Promise<void> => {
                   content: ${res.locals.HTMLForJavaScript(
                     html`
                       <div
-                        css="${res.locals.localCSS(css`
+                        css="${res.locals.css(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
                         `)}"
                       >
                         <div
-                          css="${res.locals.localCSS(css`
+                          css="${res.locals.css(css`
                             padding: var(--space--0) var(--space--2);
                           `)}"
                         >
@@ -2747,13 +2747,13 @@ export default async (app: Courselore): Promise<void> => {
       body: html`
         <div
           key="layout--main--${req.path}"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             display: flex;
             justify-content: center;
           `)}"
         >
           <div
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -2780,7 +2780,7 @@ export default async (app: Courselore): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary--${req.path}"
-                css="${res.locals.localCSS(css`
+                css="${res.locals.css(css`
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
@@ -2788,7 +2788,7 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     padding: var(--space--1) var(--space--0);
                   `)}"
                 >
@@ -2813,7 +2813,7 @@ export default async (app: Courselore): Promise<void> => {
       body: html`
         <div
           key="layout--settings--${req.path}"
-          css="${res.locals.localCSS(css`
+          css="${res.locals.css(css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
@@ -2825,7 +2825,7 @@ export default async (app: Courselore): Promise<void> => {
             : html`
                 <div
                   key="layout--settings--menu"
-                  css="${res.locals.localCSS(css`
+                  css="${res.locals.css(css`
                     @media (max-width: 699px) {
                       display: none;
                     }
@@ -2836,7 +2836,7 @@ export default async (app: Courselore): Promise<void> => {
               `}
           <div
             key="layout--settings--main"
-            css="${res.locals.localCSS(css`
+            css="${res.locals.css(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -2905,7 +2905,7 @@ export default async (app: Courselore): Promise<void> => {
     <!DOCTYPE html>
     <html>
       <head>
-        $${res.locals.localCSS.toString()}
+        $${res.locals.css.toString()}
       </head>
       <body>
         $${body}$${res.locals.HTMLForJavaScript.toString()}
@@ -2921,19 +2921,19 @@ export default async (app: Courselore): Promise<void> => {
       fill="none"
       stroke="currentColor"
       stroke-width="4"
-      css="${res.locals.localCSS(css`
+      css="${res.locals.css(css`
         animation: var(--animation--spin);
       `)}"
     >
       <path
         d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
-        css="${res.locals.localCSS(css`
+        css="${res.locals.css(css`
           opacity: var(--opacity--25);
         `)}"
       />
       <path
         d="M 2 10 A 8 8 0 0 0 15.5 15.5"
-        css="${res.locals.localCSS(css`
+        css="${res.locals.css(css`
           opacity: var(--opacity--75);
         `)}"
       />
