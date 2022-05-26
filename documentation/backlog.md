@@ -2,15 +2,6 @@
 
 ### User Interface Improvements
 
-- Sidebar:
-  - Filters
-    - Unhide “Unread” quick filter.
-    - Add “Unread” to the list of regular (non-quick filters)
-    - Review new sidebar code.
-    - Add backend support for filter of conversations with unread messages.
-
----
-
 - Drafts:
   - Mix drafts with other conversations on sidebar.
     - `TODO`
@@ -42,13 +33,22 @@
 
 ---
 
-- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
-
----
-
 - Deployment checklist:
   - Backup
   - Check message permanent link migration.
+
+---
+
+- Sidebar:
+  - Filters
+    - Unhide “Unread” quick filter.
+    - Add “Unread” to the list of regular (non-quick filters)
+    - Review new sidebar code.
+    - Add backend support for filter of conversations with unread messages.
+
+---
+
+- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
 
 ---
 
