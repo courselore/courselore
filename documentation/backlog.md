@@ -3,8 +3,8 @@
 ### User Interface Improvements
 
 - Course archival.
-  - Add form at `/settings/course-information`.
   - Add backend action.
+  - Add form at `/settings/course-information`.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
   - If you’re enrolled in multiple courses, the course switcher lists archived courses last under a disclosure element.
   - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
