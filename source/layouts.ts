@@ -2369,34 +2369,14 @@ export default async (app: Courselore): Promise<void> => {
             $${(() => {
               const courseSwitcher = html`
                 <div class="dropdown--menu">
-                  $${res.locals.enrollments.map(
-                    (enrollment) => html`
-                      <a
-                        key="enrollment--${enrollment.reference}"
-                        href="${app.locals.options.baseURL}/courses/${enrollment
-                          .course.reference}"
-                        class="dropdown--menu--item button ${enrollment.id ===
-                        res.locals.enrollment?.id
-                          ? "button--blue"
-                          : "button--transparent"}"
-                      >
-                        $${app.locals.partials.course({
-                          req,
-                          res,
-                          course: enrollment.course,
-                          enrollment,
-                          tight: true,
-                        })}
-                      </a>
-                    `
-                  )}
+                  $${app.locals.partials.courses({ req, res, tight: true })}
                 </div>
               `;
 
               return res.locals.course !== undefined
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent strong"
+                      class="button button--tight button--tight--inline button--transparent"
                       css="${res.locals.css(css`
                         max-width: 100%;
                       `)}"
@@ -2419,6 +2399,23 @@ export default async (app: Courselore): Promise<void> => {
                                   <h3 class="heading">
                                     <i class="bi bi-journal-text"></i>
                                     ${res.locals.course.name}
+                                    $${res.locals.course.archivedAt !== null
+                                      ? html`
+                                          ·
+                                          <span
+                                            class="text--rose"
+                                            onload="${javascript`
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: "false",
+                                                content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-archive-fill"></i>
+                                            Archived
+                                          </span>
+                                        `
+                                      : html``}
                                   </h3>
                                   <div class="dropdown--menu">
                                     <a
@@ -2474,6 +2471,7 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
+                        class="strong"
                         css="${res.locals.css(css`
                           white-space: nowrap;
                           overflow: hidden;
@@ -2482,6 +2480,26 @@ export default async (app: Courselore): Promise<void> => {
                       >
                         ${res.locals.course.name}
                       </span>
+                      $${res.locals.course.archivedAt !== null
+                        ? html`
+                            <span
+                              class="text--rose"
+                              css="${res.locals.css(css`
+                                font-size: var(--font-size--2xs);
+                                line-height: var(--line-height--2xs);
+                              `)}"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: "false",
+                                  content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-archive-fill"></i>
+                              Archived
+                            </span>
+                          `
+                        : html``}
                       <i class="bi bi-chevron-down"></i>
                     </button>
                   `

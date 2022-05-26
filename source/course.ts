@@ -47,6 +47,25 @@ export type CoursePartial = ({
   tight?: boolean;
 }) => HTML;
 
+export type CoursesPartial = ({
+  req,
+  res,
+  tight,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+  >;
+  tight?: boolean;
+}) => HTML;
+
 export type EnrollmentRoleIconPartial = {
   [role in EnrollmentRole]: {
     regular: HTML;
@@ -279,6 +298,95 @@ export default (app: Courselore): void => {
     </div>
   `;
 
+  app.locals.partials.courses = ({ req, res, tight = false }) => {
+    const [unarchived, archived] = lodash.partition(
+      res.locals.enrollments,
+      (enrollment) => enrollment.course.archivedAt === null
+    );
+    return html`
+      $${unarchived.map(
+        (enrollment) =>
+          html`
+            <a
+              key="enrollment--${enrollment.reference}"
+              href="${app.locals.options.baseURL}/courses/${enrollment.course
+                .reference}"
+              class="dropdown--menu--item menu-box--item button ${tight
+                ? ""
+                : "button--tight"} ${enrollment.id === res.locals.enrollment?.id
+                ? "button--blue"
+                : "button--transparent"}"
+            >
+              $${app.locals.partials.course({
+                req,
+                res,
+                course: enrollment.course,
+                enrollment,
+                tight,
+              })}
+            </a>
+          `
+      )}
+      $${archived.length > 0
+        ? html`
+            <hr class="separator" />
+
+            <button
+              key="enrollment--archived"
+              class="dropdown--menu--item menu-box--item button ${tight
+                ? ""
+                : "button--tight"} button--transparent secondary"
+              css="${res.locals.css(css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                justify-content: center;
+              `)}"
+              onload="${javascript`
+                (this.tooltip ??= tippy(this)).setProps({
+                  touch: "false",
+                  content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+                });
+
+                this.onclick = () => {
+                  for (const element of leafac.nextSiblings(this).slice(1))
+                    element.hidden = !element.hidden;
+                };
+              `}"
+            >
+              <i class="bi bi-archive-fill"></i>
+              Archived Courses
+            </button>
+
+            $${archived.map(
+              (enrollment) =>
+                html`
+                  <a
+                    key="enrollment--${enrollment.reference}"
+                    href="${app.locals.options.baseURL}/courses/${enrollment
+                      .course.reference}"
+                    hidden
+                    class="dropdown--menu--item menu-box--item button ${tight
+                      ? ""
+                      : "button--tight"} ${enrollment.id ===
+                    res.locals.enrollment?.id
+                      ? "button--blue"
+                      : "button--transparent"}"
+                  >
+                    $${app.locals.partials.course({
+                      req,
+                      res,
+                      course: enrollment.course,
+                      enrollment,
+                      tight,
+                    })}
+                  </a>
+                `
+            )}
+          `
+        : html``}
+    `;
+  };
+
   app.locals.partials.enrollmentRoleIcon = {
     student: {
       regular: html`<i class="bi bi-person"></i>`,
@@ -387,84 +495,7 @@ export default (app: Courselore): void => {
                       max-width: var(--space--80);
                     `)}"
                   >
-                    $${res.locals.enrollments
-                      .filter(
-                        (enrollment) => enrollment.course.archivedAt === null
-                      )
-                      .map(
-                        (enrollment) =>
-                          html`
-                            <a
-                              key="enrollment--${enrollment.reference}"
-                              href="${app.locals.options
-                                .baseURL}/courses/${enrollment.course
-                                .reference}"
-                              class="menu-box--item button button--tight button--transparent"
-                            >
-                              $${app.locals.partials.course({
-                                req,
-                                res,
-                                course: enrollment.course,
-                                enrollment,
-                              })}
-                            </a>
-                          `
-                      )}
-                    $${(() => {
-                      const archivedEnrollments = res.locals.enrollments.filter(
-                        (enrollment) => enrollment.course.archivedAt !== null
-                      );
-                      return archivedEnrollments.length > 0
-                        ? html`
-                            <hr class="separator" />
-
-                            <button
-                              key="enrollment--archived"
-                              class="menu-box--item button button--tight button--transparent secondary"
-                              css="${res.locals.css(css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                                justify-content: center;
-                              `)}"
-                              onload="${javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: "false",
-                                  content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-                                });
-
-                                this.onclick = () => {
-                                  for (const element of leafac.nextSiblings(this).slice(1))
-                                    element.hidden = !element.hidden;
-                                };
-                              `}"
-                            >
-                              <i class="bi bi-archive-fill"></i>
-                              Archived Courses
-                            </button>
-
-                            $${archivedEnrollments.map(
-                              (enrollment) =>
-                                html`
-                                  <a
-                                    key="enrollment--${enrollment.reference}"
-                                    href="${app.locals.options
-                                      .baseURL}/courses/${enrollment.course
-                                      .reference}"
-                                    hidden
-                                    class="menu-box--item button button--tight button--transparent"
-                                  >
-                                    $${app.locals.partials.course({
-                                      req,
-                                      res,
-                                      course: enrollment.course,
-                                      enrollment,
-                                    })}
-                                  </a>
-                                `
-                            )}
-                          `
-                        : html``;
-                    })()}
+                    $${app.locals.partials.courses({ req, res })}
                   </div>
                 </div>
               `,
