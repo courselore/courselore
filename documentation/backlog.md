@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Course archival.
-  - Add backend action.
   - Add form at `/settings/course-information`.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
   - If you’re enrolled in multiple courses, the course switcher lists archived courses last under a disclosure element.

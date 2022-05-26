@@ -1264,11 +1264,11 @@ export default (app: Courselore): void => {
                                 )}"
                               >
                                 <p>
-                                  An archived course becomes read-only.
-                                  People, including students, who are enrolled
-                                  in the course may read existing conversations,
-                                  but may no longer ask questions, send
-                                  messages, and so forth.
+                                  An archived course becomes read-only. People,
+                                  including students, who are enrolled in the
+                                  course may read existing conversations, but
+                                  may no longer ask questions, send messages,
+                                  and so forth.
                                 </p>
                                 <p>You may unarchive a course at any time.</p>
                               </div>
@@ -1351,6 +1351,7 @@ export default (app: Courselore): void => {
       term?: string;
       institution?: string;
       code?: string;
+      isArchived?: "true" | "false";
     },
     {},
     IsCourseStaffMiddlewareLocals
@@ -1359,50 +1360,80 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
-        typeof req.body.name !== "string" ||
-        req.body.name.trim() === "" ||
-        !["string", "undefined"].includes(typeof req.body.year) ||
-        !["string", "undefined"].includes(typeof req.body.term) ||
-        !["string", "undefined"].includes(typeof req.body.institution) ||
-        !["string", "undefined"].includes(typeof req.body.code)
+        (typeof req.body.isArchived !== "string" &&
+          (typeof req.body.name !== "string" ||
+            req.body.name.trim() === "" ||
+            !["string", "undefined"].includes(typeof req.body.year) ||
+            !["string", "undefined"].includes(typeof req.body.term) ||
+            !["string", "undefined"].includes(typeof req.body.institution) ||
+            !["string", "undefined"].includes(typeof req.body.code))) ||
+        (typeof req.body.isArchived === "string" &&
+          (!["true", "false"].includes(req.body.isArchived) ||
+            (req.body.isArchived === "true" &&
+              res.locals.course.archivedAt !== null) ||
+            (req.body.isArchived === "false" &&
+              res.locals.course.archivedAt === null)))
       )
         return next("validation");
 
-      app.locals.database.run(
-        sql`
-          UPDATE "courses"
-          SET "name" = ${req.body.name},
-              "year" = ${
-                typeof req.body.year === "string" && req.body.year.trim() !== ""
-                  ? req.body.year
-                  : null
-              },
-              "term" = ${
-                typeof req.body.term === "string" && req.body.term.trim() !== ""
-                  ? req.body.term
-                  : null
-              },
-              "institution" = ${
-                typeof req.body.institution === "string" &&
-                req.body.institution.trim() !== ""
-                  ? req.body.institution
-                  : null
-              },
-              "code" = ${
-                typeof req.body.code === "string" && req.body.code.trim() !== ""
-                  ? req.body.code
-                  : null
-              }
-          WHERE "id" = ${res.locals.course.id}
-        `
-      );
-
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        theme: "green",
-        content: html`Course information updated successfully.`,
-      });
+      if (typeof req.body.isArchived !== "string") {
+        app.locals.database.run(
+          sql`
+            UPDATE "courses"
+            SET "name" = ${req.body.name},
+                "year" = ${
+                  typeof req.body.year === "string" &&
+                  req.body.year.trim() !== ""
+                    ? req.body.year
+                    : null
+                },
+                "term" = ${
+                  typeof req.body.term === "string" &&
+                  req.body.term.trim() !== ""
+                    ? req.body.term
+                    : null
+                },
+                "institution" = ${
+                  typeof req.body.institution === "string" &&
+                  req.body.institution.trim() !== ""
+                    ? req.body.institution
+                    : null
+                },
+                "code" = ${
+                  typeof req.body.code === "string" &&
+                  req.body.code.trim() !== ""
+                    ? req.body.code
+                    : null
+                }
+            WHERE "id" = ${res.locals.course.id}
+          `
+        );
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html`Course information updated successfully.`,
+        });
+      } else {
+        app.locals.database.run(
+          sql`
+            UPDATE "courses"
+            SET "archivedAt" = ${
+              req.body.isArchived === "true" ? new Date().toISOString() : null
+            }
+            WHERE "id" = ${res.locals.course.id}
+          `
+        );
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html`
+            Course ${req.body.isArchived === "true" ? "archived" : "unarchived"}
+            successfully.
+          `,
+        });
+      }
 
       res.redirect(
         303,
