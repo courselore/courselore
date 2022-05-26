@@ -258,6 +258,22 @@ export default (app: Courselore): void => {
                     .regular} ${lodash.capitalize(enrollment.role)}
                 </div>
               `}
+          $${course.archivedAt !== null
+            ? html`
+                <div class="text--rose">
+                  <span
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: "false",
+                        content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-archive-fill"></i> Archived
+                  </span>
+                </div>
+              `
+            : html``}
         </div>
       </div>
     </div>
@@ -798,7 +814,9 @@ export default (app: Courselore): void => {
                       ? "button--transparent"
                       : "button--blue"}"
                   >
-                    <i class="bi bi-chat-left-text-fill"></i>
+                    $${res.locals.enrollment.role === "staff"
+                      ? html`<i class="bi bi-chat-left-text"></i>`
+                      : html`<i class="bi bi-chat-left-text-fill"></i>`}
                     Start the First Conversation
                   </a>
                 </div>
@@ -1236,7 +1254,7 @@ export default (app: Courselore): void => {
                       <button
                         class="button button--tight button--tight--inline button--transparent text--rose"
                       >
-                        <i class="bi bi-archive"></i>
+                        <i class="bi bi-archive-fill"></i>
                         Archive Course
                       </button>
                       <button
@@ -1294,7 +1312,7 @@ export default (app: Courselore): void => {
                       <button
                         class="button button--tight button--tight--inline button--transparent text--rose"
                       >
-                        <i class="bi bi-archive"></i>
+                        <i class="bi bi-archive-fill"></i>
                         Unarchive Course
                       </button>
                       <button
@@ -1315,19 +1333,14 @@ export default (app: Courselore): void => {
                                 css="${res.locals.css(
                                   css`
                                     padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
                                   `
                                 )}"
                               >
-                                <p>
-                                  This course is archived, which means it’s
-                                  read-only. People, including students, who are
-                                  enrolled in the course may continue to read
-                                  existing conversations, but may no longer ask
-                                  questions, send messages, and so forth.
-                                </p>
+                                This course is archived, which means it’s
+                                read-only. People, including students, who are
+                                enrolled in the course may continue to read
+                                existing conversations, but may no longer ask
+                                questions, send messages, and so forth.
                               </div>
                             `)},
                           });
