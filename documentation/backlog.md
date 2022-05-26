@@ -2,6 +2,25 @@
 
 ### User Interface Improvements
 
+- Sidebar:
+  - Filters
+    - Review new sidebar code.
+    - Add backend support for filter of conversations with unread messages.
+
+---
+
+- Drafts:
+  - Mix drafts with other conversations on sidebar.
+    - `TODO`
+    - Group them together
+    - Visually distinct (grayed out).
+    - Search.
+    - Filters.
+  - Adapt `partials.conversation` to support drafts (many fields become optional).
+  - Add a button to delete a draft directly from the sidebar.
+
+---
+
 - Course archival.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
   - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
@@ -22,25 +41,6 @@
 ---
 
 - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
-
----
-
-- Sidebar:
-  - Filters
-    - Review new sidebar code.
-    - Add backend support for filter of conversations with unread messages.
-
----
-
-- Drafts:
-  - Mix drafts with other conversations on sidebar.
-    - `TODO`
-    - Group them together
-    - Visually distinct (grayed out).
-    - Search.
-    - Filters.
-  - Adapt `partials.conversation` to support drafts (many fields become optional).
-  - Add a button to delete a draft directly from the sidebar.
 
 ---
 
