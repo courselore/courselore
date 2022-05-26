@@ -2409,8 +2409,8 @@ export default async (app: Courselore): Promise<void> => {
                                             line-height: var(
                                               --line-height--2xs
                                             );
-                                            padding: var(--space--0-5)
-                                              var(--space--2);
+                                            padding: var(--space--0)
+                                              var(--space--2) var(--space--1);
                                           `)}"
                                         >
                                           <span
