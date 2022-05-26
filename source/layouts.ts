@@ -2399,11 +2399,21 @@ export default async (app: Courselore): Promise<void> => {
                                   <h3 class="heading">
                                     <i class="bi bi-journal-text"></i>
                                     ${res.locals.course.name}
-                                    $${res.locals.course.archivedAt !== null
-                                      ? html`
-                                          ·
+                                  </h3>
+                                  $${res.locals.course.archivedAt !== null
+                                    ? html`
+                                        <div
+                                          class="text--rose"
+                                          css="${res.locals.css(css`
+                                            font-size: var(--font-size--2xs);
+                                            line-height: var(
+                                              --line-height--2xs
+                                            );
+                                            padding: var(--space--0-5)
+                                              var(--space--2);
+                                          `)}"
+                                        >
                                           <span
-                                            class="text--rose"
                                             onload="${javascript`
                                               (this.tooltip ??= tippy(this)).setProps({
                                                 touch: "false",
@@ -2414,9 +2424,9 @@ export default async (app: Courselore): Promise<void> => {
                                             <i class="bi bi-archive-fill"></i>
                                             Archived
                                           </span>
-                                        `
-                                      : html``}
-                                  </h3>
+                                        </div>
+                                      `
+                                    : html``}
                                   <div class="dropdown--menu">
                                     <a
                                       href="${app.locals.options
