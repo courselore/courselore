@@ -1613,6 +1613,8 @@ export default async (app: Courselore): Promise<void> => {
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--800);
           }
+          width: 100%;
+          max-width: var(--space--64);
           padding: var(--space--2);
           border-radius: var(--border-radius--lg);
           display: flex;
@@ -2826,6 +2828,8 @@ export default async (app: Courselore): Promise<void> => {
                 <div
                   key="layout--settings--menu"
                   css="${res.locals.css(css`
+                    flex: 1;
+                    max-width: var(--space--64);
                     @media (max-width: 699px) {
                       display: none;
                     }

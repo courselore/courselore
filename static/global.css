@@ -974,6 +974,8 @@
           }
 
         .menu-box {
+          width: 100%;
+          max-width: var(--space--64);
           padding: var(--space--2);
           border-radius: var(--border-radius--lg);
           display: flex;

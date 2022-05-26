@@ -381,7 +381,12 @@ export default (app: Courselore): void => {
 
                   <p class="secondary">Go to one of your courses.</p>
 
-                  <div class="menu-box">
+                  <div
+                    class="menu-box"
+                    css="${res.locals.css(css`
+                      max-width: var(--space--80);
+                    `)}"
+                  >
                     $${res.locals.enrollments
                       .filter(
                         (enrollment) => enrollment.course.archivedAt === null
