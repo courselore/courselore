@@ -220,7 +220,7 @@ export default async (app: Courselore): Promise<void> => {
                     theme: "amber",
                     arrow: false,
                     interactive: true,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <form
                           method="POST"
@@ -311,7 +311,7 @@ export default async (app: Courselore): Promise<void> => {
                       theme: ${JSON.stringify(flash.theme)},
                       arrow: false,
                       interactive: true,
-                      content: ${res.locals.HTMLForJavaScript(
+                      content: ${res.locals.html(
                         html`
                           <div
                             css="${res.locals.css(css`
@@ -395,7 +395,7 @@ export default async (app: Courselore): Promise<void> => {
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${res.locals.HTMLForJavaScript(
+                        content: ${res.locals.html(
                           html`
                             <div
                               css="${res.locals.css(css`
@@ -468,7 +468,7 @@ export default async (app: Courselore): Promise<void> => {
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
-                            content: ${res.locals.HTMLForJavaScript(
+                            content: ${res.locals.html(
                               html`
                                 <div
                                   css="${res.locals.css(css`
@@ -585,7 +585,7 @@ export default async (app: Courselore): Promise<void> => {
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <h3 class="heading">
                           $${app.locals.partials.logo({
@@ -639,7 +639,7 @@ export default async (app: Courselore): Promise<void> => {
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <h3 class="heading">
                           <i class="bi bi-bug"></i>
@@ -772,7 +772,7 @@ export default async (app: Courselore): Promise<void> => {
           ></div>
         </div>
 
-        $${res.locals.HTMLForJavaScript.toString()}
+        $${res.locals.html.toString()}
       </body>
     `;
     return html`
@@ -2402,7 +2402,7 @@ export default async (app: Courselore): Promise<void> => {
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               <div
                                 css="${res.locals.css(css`
@@ -2494,7 +2494,7 @@ export default async (app: Courselore): Promise<void> => {
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               <div
                                 css="${res.locals.css(css`
@@ -2535,7 +2535,7 @@ export default async (app: Courselore): Promise<void> => {
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${res.locals.HTMLForJavaScript(
+                  content: ${res.locals.html(
                     html`
                       <div
                         css="${res.locals.css(css`
@@ -2660,7 +2660,7 @@ export default async (app: Courselore): Promise<void> => {
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${res.locals.HTMLForJavaScript(
+                  content: ${res.locals.html(
                     html`
                       <div
                         css="${res.locals.css(css`
@@ -2798,7 +2798,7 @@ export default async (app: Courselore): Promise<void> => {
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${res.locals.HTMLForJavaScript(
+                        content: ${res.locals.html(
                           html`<div class="dropdown--menu">$${menu}</div>`
                         )},
                       });
@@ -2908,7 +2908,7 @@ export default async (app: Courselore): Promise<void> => {
         $${res.locals.css.toString()}
       </head>
       <body>
-        $${body}$${res.locals.HTMLForJavaScript.toString()}
+        $${body}$${res.locals.html.toString()}
       </body>
     </html>
   `;

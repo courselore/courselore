@@ -345,7 +345,7 @@ export default (app: Courselore): void => {
             interactive: true,
             appendTo: document.querySelector("body"),
             delay: [1000, null],
-            content: ${res.locals.HTMLForJavaScript(
+            content: ${res.locals.html(
               html`
                 <div
                   css="${res.locals.css(css`
@@ -837,7 +837,7 @@ export default (app: Courselore): void => {
                       (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${res.locals.HTMLForJavaScript(
+                        content: ${res.locals.html(
                           html`
                             <div
                               css="${res.locals.css(css`

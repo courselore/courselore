@@ -3160,7 +3160,7 @@ export default (app: Courselore): void => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
+                      content: ${res.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -3213,7 +3213,7 @@ export default (app: Courselore): void => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
+                      content: ${res.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -3982,7 +3982,7 @@ export default (app: Courselore): void => {
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${res.locals.HTMLForJavaScript(
+                                      content: ${res.locals.html(
                                         html`
                                           <div class="dropdown--menu">
                                             $${res.locals.conversationTypes.map(
@@ -4269,7 +4269,7 @@ export default (app: Courselore): void => {
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${res.locals.HTMLForJavaScript(
+                                    content: ${res.locals.html(
                                       html`
                                         <form
                                           method="PATCH"
@@ -4417,7 +4417,7 @@ export default (app: Courselore): void => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${res.locals.HTMLForJavaScript(
+                              content: ${res.locals.html(
                                 html`
                                   <h3 class="heading">
                                     <i class="bi bi-chat-left-text"></i>
@@ -4475,7 +4475,7 @@ export default (app: Courselore): void => {
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${res.locals.HTMLForJavaScript(
+                                                  content: ${res.locals.html(
                                                     html`
                                                       <form
                                                         method="DELETE"
@@ -4635,7 +4635,7 @@ export default (app: Courselore): void => {
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
-                                  content: ${res.locals.HTMLForJavaScript(
+                                  content: ${res.locals.html(
                                     html`
                                       Cancel
                                       <span class="keyboard-shortcut">
@@ -4812,7 +4812,7 @@ export default (app: Courselore): void => {
                                               (this.dropdown ??= tippy(this)).setProps({
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${res.locals.HTMLForJavaScript(
+                                                content: ${res.locals.html(
                                                   html`
                                                     <div
                                                       class="dropdown--menu"
@@ -5370,7 +5370,7 @@ export default (app: Courselore): void => {
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
-                                                    content: ${res.locals.HTMLForJavaScript(
+                                                    content: ${res.locals.html(
                                                       html`
                                                         <h3 class="heading">
                                                           <i
@@ -5446,7 +5446,7 @@ export default (app: Courselore): void => {
                                                                   onload="${javascript`
                                                                     const loading = ${res
                                                                       .locals
-                                                                      .HTMLForJavaScript(html`
+                                                                      .html(html`
                                                                       <div
                                                                         css="${res
                                                                           .locals
@@ -5469,7 +5469,7 @@ export default (app: Courselore): void => {
                                                                     `)};
                                                                     loading.remove();
                 
-                                                                    const content = ${res.locals.HTMLForJavaScript(
+                                                                    const content = ${res.locals.html(
                                                                       html``
                                                                     )};
                                                                     content.remove();
@@ -5771,7 +5771,7 @@ export default (app: Courselore): void => {
                                                                         theme: "rose",
                                                                         trigger: "click",
                                                                         interactive: true,
-                                                                        content: ${res.locals.HTMLForJavaScript(
+                                                                        content: ${res.locals.html(
                                                                           html`
                                                                             <form
                                                                               method="DELETE"
@@ -6402,7 +6402,7 @@ export default (app: Courselore): void => {
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
                                                   interactive: true,
-                                                  content: ${res.locals.HTMLForJavaScript(
+                                                  content: ${res.locals.html(
                                                     html`
                                                       <div
                                                         class="dropdown--menu"
@@ -6614,7 +6614,7 @@ export default (app: Courselore): void => {
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
                                                     const loading = ${res.locals
-                                                      .HTMLForJavaScript(html`
+                                                      .html(html`
                                                       <div
                                                         css="${res.locals
                                                           .css(css`
@@ -6634,7 +6634,7 @@ export default (app: Courselore): void => {
                                                     `)};
                                                     loading.remove();
 
-                                                    const content = ${res.locals.HTMLForJavaScript(
+                                                    const content = ${res.locals.html(
                                                       html``
                                                     )};
                                                     content.remove();
@@ -6757,7 +6757,7 @@ export default (app: Courselore): void => {
                                                     onload="${javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
-                                                        content: ${res.locals.HTMLForJavaScript(
+                                                        content: ${res.locals.html(
                                                           html`
                                                             <span
                                                               class="keyboard-shortcut"
@@ -7175,7 +7175,7 @@ export default (app: Courselore): void => {
                             onload="${javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
-                                content: ${res.locals.HTMLForJavaScript(
+                                content: ${res.locals.html(
                                   html`
                                     Send Message
                                     <span class="keyboard-shortcut">
@@ -7304,7 +7304,7 @@ export default (app: Courselore): void => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               <span class="keyboard-shortcut">
                                 <span

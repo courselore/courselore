@@ -244,7 +244,7 @@ export default async (app: Courselore): Promise<void> => {
                   : javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
-                        content: ${res.locals.HTMLForJavaScript(
+                        content: ${res.locals.html(
                           html`External link to
                             <code class="code">${href}</code>`
                         )},
@@ -531,7 +531,7 @@ export default async (app: Courselore): Promise<void> => {
                 javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <div
                           css="${res.locals.css(css`
@@ -563,7 +563,7 @@ export default async (app: Courselore): Promise<void> => {
               javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
-                  content: ${res.locals.HTMLForJavaScript(
+                  content: ${res.locals.html(
                     html`
                       <div
                         css="${res.locals.css(css`
@@ -747,7 +747,7 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
+                      content: ${res.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -823,7 +823,7 @@ export default async (app: Courselore): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <p>
                           You may style text with
@@ -856,7 +856,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Heading 1
                         <span class="keyboard-shortcut">
@@ -896,7 +896,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Heading 2
                         <span class="keyboard-shortcut">
@@ -936,7 +936,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Heading 3
                         <span class="keyboard-shortcut">
@@ -978,7 +978,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Bold
                         <span class="keyboard-shortcut">
@@ -1017,7 +1017,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Italic
                         <span class="keyboard-shortcut">
@@ -1056,7 +1056,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Link
                         <span class="keyboard-shortcut">
@@ -1097,7 +1097,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Bulleted List
                         <span class="keyboard-shortcut">
@@ -1137,7 +1137,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Numbered List
                         <span class="keyboard-shortcut">
@@ -1177,7 +1177,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Checklist
                         <span class="keyboard-shortcut">
@@ -1219,7 +1219,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Quote
                         <span class="keyboard-shortcut">
@@ -1258,7 +1258,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Table
                         <span class="keyboard-shortcut">
@@ -1299,7 +1299,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Disclosure
                         <span class="keyboard-shortcut">
@@ -1339,7 +1339,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Footnote
                         <span class="keyboard-shortcut">
@@ -1381,7 +1381,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Inline Code
                         <span class="keyboard-shortcut">
@@ -1420,7 +1420,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Code Block
                         <span class="keyboard-shortcut">
@@ -1462,7 +1462,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Inline Equation
                         <span class="keyboard-shortcut">
@@ -1502,7 +1502,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Equation Block
                         <span class="keyboard-shortcut">
@@ -1546,7 +1546,7 @@ export default async (app: Courselore): Promise<void> => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               Mention User
                               <span class="keyboard-shortcut">(@)</span>
@@ -1570,7 +1570,7 @@ export default async (app: Courselore): Promise<void> => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               Refer to Conversation or Message
                               <span class="keyboard-shortcut">(#)</span>
@@ -1598,7 +1598,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Image
                         <span class="keyboard-shortcut">
@@ -1638,7 +1638,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Attachment
                         <span class="keyboard-shortcut">
@@ -1726,7 +1726,7 @@ export default async (app: Courselore): Promise<void> => {
                   (textarea.uploadingIndicator ??= tippy(textarea)).setProps({
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         <div
                           css="${res.locals.css(css`
@@ -1757,7 +1757,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                    content: ${res.locals.html(
                       html`
                         Programmer Mode
                         <span class="secondary">(Monospaced Font)</span>
@@ -1881,7 +1881,7 @@ export default async (app: Courselore): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               <div
                                 css="${res.locals.css(css`
@@ -1939,7 +1939,7 @@ export default async (app: Courselore): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${res.locals.HTMLForJavaScript(
+                          content: ${res.locals.html(
                             html`
                               <div
                                 css="${res.locals.css(css`

@@ -1476,7 +1476,7 @@ export default (app: Courselore): void => {
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${res.locals.HTMLForJavaScript(
+                                    content: ${res.locals.html(
                                       html`
                                         <div
                                           css="${res.locals.css(css`
@@ -1619,7 +1619,7 @@ export default (app: Courselore): void => {
                     type="button"
                     class="button button--transparent button--full-width-on-small-screen"
                     onload="${javascript`
-                      const newTagPartial = ${res.locals.HTMLForJavaScript(
+                      const newTagPartial = ${res.locals.html(
                         html`
                           <div
                             class="tag"
@@ -1987,7 +1987,7 @@ export default (app: Courselore): void => {
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
-                        content: ${res.locals.HTMLForJavaScript(
+                        content: ${res.locals.html(
                           html`
                             <div
                               css="${res.locals.css(css`
@@ -2268,7 +2268,7 @@ export default (app: Courselore): void => {
                                         maxWidth: "none",
                                         content: ${(() => {
                                           const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return res.locals.HTMLForJavaScript(
+                                          return res.locals.html(
                                             html`
                                               <div
                                                 css="${res.locals.css(css`
@@ -2397,7 +2397,7 @@ export default (app: Courselore): void => {
                                       (this.tooltip ??= tippy(this)).setProps({
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${res.locals.HTMLForJavaScript(
+                                        content: ${res.locals.html(
                                           html`
                                             <div class="dropdown--menu">
                                               <form
@@ -2500,7 +2500,7 @@ export default (app: Courselore): void => {
                                   (this.dropdown ??= tippy(this)).setProps({
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${res.locals.HTMLForJavaScript(
+                                    content: ${res.locals.html(
                                       html`
                                         <div class="dropdown--menu">
                                           $${enrollmentRoles.map((role) =>
@@ -2683,7 +2683,7 @@ export default (app: Courselore): void => {
                                           onload="${javascript`
                                             (this.tooltip ??= tippy(this)).setProps({
                                               interactive: true,
-                                              content: ${res.locals.HTMLForJavaScript(
+                                              content: ${res.locals.html(
                                                 html`
                                                   <div>
                                                     Used
@@ -2720,7 +2720,7 @@ export default (app: Courselore): void => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${res.locals.HTMLForJavaScript(
+                                              content: ${res.locals.html(
                                                 html`
                                                   <div
                                                     css="${res.locals
@@ -2777,7 +2777,7 @@ export default (app: Courselore): void => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${res.locals.HTMLForJavaScript(
+                                              content: ${res.locals.html(
                                                 html`
                                                   <div
                                                     css="${res.locals
@@ -2822,7 +2822,7 @@ export default (app: Courselore): void => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${res.locals.HTMLForJavaScript(
+                                              content: ${res.locals.html(
                                                 html`
                                                   <div
                                                     css="${res.locals
@@ -3450,7 +3450,7 @@ export default (app: Courselore): void => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${res.locals.HTMLForJavaScript(
+                              content: ${res.locals.html(
                                 html`
                                   <div class="dropdown--menu">
                                     $${enrollmentRoles.map((role) =>
@@ -3495,7 +3495,7 @@ export default (app: Courselore): void => {
                                                             trigger: "click",
                                                             interactive: true,
                                                             appendTo: document.querySelector("body"),
-                                                            content: ${res.locals.HTMLForJavaScript(
+                                                            content: ${res.locals.html(
                                                               html`
                                                                 <form
                                                                   key="role--${role}"
@@ -3620,7 +3620,7 @@ export default (app: Courselore): void => {
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${res.locals.HTMLForJavaScript(
+                                      content: ${res.locals.html(
                                         html`
                                           <form
                                             method="DELETE"
