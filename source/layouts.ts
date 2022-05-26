@@ -2376,7 +2376,7 @@ export default async (app: Courselore): Promise<void> => {
               return res.locals.course !== undefined
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent"
+                      class="button button--tight button--tight--inline button--transparent strong"
                       css="${res.locals.css(css`
                         max-width: 100%;
                       `)}"
@@ -2403,7 +2403,7 @@ export default async (app: Courselore): Promise<void> => {
                                   $${res.locals.course.archivedAt !== null
                                     ? html`
                                         <div
-                                          class="text--rose"
+                                          class="strong text--rose"
                                           css="${res.locals.css(css`
                                             font-size: var(--font-size--2xs);
                                             line-height: var(
@@ -2481,7 +2481,6 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
-                        class="strong"
                         css="${res.locals.css(css`
                           white-space: nowrap;
                           overflow: hidden;
