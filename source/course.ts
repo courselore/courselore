@@ -1266,9 +1266,9 @@ export default (app: Courselore): void => {
                                 <p>
                                   An archived course becomes read-only. People,
                                   including students, who are enrolled in the
-                                  course may read existing conversations, but
-                                  may no longer ask questions, send messages,
-                                  and so forth.
+                                  course may continue to read existing
+                                  conversations, but may no longer ask
+                                  questions, send messages, and so forth.
                                 </p>
                                 <p>You may unarchive a course at any time.</p>
                               </div>
@@ -1309,7 +1309,27 @@ export default (app: Courselore): void => {
                         onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
-                            content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
+                            interactive: true,
+                            content: ${res.locals.html(html`
+                              <div
+                                css="${res.locals.css(
+                                  css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `
+                                )}"
+                              >
+                                <p>
+                                  This course is archived, which means it’s
+                                  read-only. People, including students, who are
+                                  enrolled in the course may continue to read
+                                  existing conversations, but may no longer ask
+                                  questions, send messages, and so forth.
+                                </p>
+                              </div>
+                            `)},
                           });
                         `}"
                       >
@@ -1325,14 +1345,18 @@ export default (app: Courselore): void => {
                         `
                       )}"
                     >
-                      This course has been archived
-                      <time
-                        datetime="${new Date(Date.now()).toISOString()}"
-                        onload="${javascript`
-                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                        `}"
-                      ></time
-                      >.
+                      <span>
+                        Archived
+                        <time
+                          datetime="${new Date(
+                            res.locals.course.archivedAt
+                          ).toISOString()}"
+                          onload="${javascript`
+                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                          `}"
+                        ></time
+                        >.
+                      </span>
                     </div>
                   `}
             </form>
