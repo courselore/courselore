@@ -3193,6 +3193,7 @@ export default (app: Courselore): void => {
               </div>
 
               <div
+                hidden
                 class="secondary"
                 css="${res.locals.css(css`
                   font-size: var(--font-size--xs);

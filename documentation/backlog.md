@@ -3,6 +3,8 @@
 ### User Interface Improvements
 
 - Drafts:
+  - Unhide buttons
+    - Perhaps don’t have them styled as links…
   - Mix drafts with other conversations on sidebar.
     - `TODO`
     - Group them together
