@@ -1301,6 +1301,15 @@ export default (app: Courselore): void => {
                                       ? html`checked`
                                       : html``}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    onload="${javascript`
+                                      ${conversationType === "question" ? javascript`
+                                        this.onchange = () => {
+                                          if (this.checked) return;
+                                          for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
+                                            element.checked = false;
+                                        };
+                                      ` : javascript``}
+                                    `}"
                                   />
                                   <span>
                                     $${app.locals.partials.conversationTypeIcon[

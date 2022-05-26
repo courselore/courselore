@@ -3,8 +3,8 @@
 ### User Interface Improvements
 
 - Things I noticed we need to fix while I was showing the application:
-  - On filters on sidebar, when you unselect “Question” it should unselect “Resolved”/“Unresolved” as well.
   - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
+- `css=""`
 - Course archival.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
   - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
