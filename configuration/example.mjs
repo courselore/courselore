@@ -29,24 +29,22 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
           }
 
           (common) {
-            header {
-              Cache-Control no-cache
-              Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
-              Cross-Origin-Embedder-Policy require-corp
-              Cross-Origin-Opener-Policy same-origin
-              Cross-Origin-Resource-Policy same-origin
-              Referrer-Policy no-referrer
-              Strict-Transport-Security "max-age=31536000; includeSubDomains"
-              X-Content-Type-Options nosniff
-              Origin-Agent-Cluster "?1"
-              X-DNS-Prefetch-Control off
-              X-Frame-Options DENY
-              X-Permitted-Cross-Domain-Policies none
-              -Server
-              -X-Powered-By
-              X-XSS-Protection 0
-              Permissions-Policy "interest-cohort=()"
-            }
+            header Cache-Control no-cache
+            header Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+            header Cross-Origin-Embedder-Policy require-corp
+            header Cross-Origin-Opener-Policy same-origin
+            header Cross-Origin-Resource-Policy same-origin
+            header Referrer-Policy no-referrer
+            header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+            header X-Content-Type-Options nosniff
+            header Origin-Agent-Cluster "?1"
+            header X-DNS-Prefetch-Control off
+            header X-Frame-Options DENY
+            header X-Permitted-Cross-Domain-Policies none
+            header -Server
+            header -X-Powered-By
+            header X-XSS-Protection 0
+            header Permissions-Policy "interest-cohort=()"
             encode zstd gzip
           }
 
@@ -83,7 +81,9 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
                 @file_exists file
                 route @file_exists {
                   @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-                  header @must_be_downloaded Content-Disposition attachment 
+                  header @must_be_downloaded Content-Disposition attachment
+                  @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
+                  header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
                   file_server
                 }
               }
