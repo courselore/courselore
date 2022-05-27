@@ -283,11 +283,7 @@ new Notification('Example');
 
 ### Courses
 
-- Different course states, for example, archived.
-  - Add an **Archive Course** button under **Course Settings > Course Information**.
-  - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
-  - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
-  - If you’re enrolled in multiple courses, the course switcher lists archived courses last.
+- Course archival: Currently, when a course is archived, we continue to show all the forms and return an error message after submission. It’d be more elegant to disable the forms and inform the user before they try to submit. But this requires revisiting almost every form, input, and button in the application.
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Control who’s able to create courses, which makes sense for people who self-host.
