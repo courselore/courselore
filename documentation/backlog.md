@@ -3,12 +3,14 @@
 ### User Interface Improvements
 
 - Answer Ali’s email.
+- Mention archival.
+- Document minor release.
+- Check message permanent link migration (https://courselore.org/courses/9024690659/conversations/3).
 
 ---
 
 - Deployment checklist:
   - Backup
-  - Check message permanent link migration.
 
 ---
 
