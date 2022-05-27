@@ -4,8 +4,18 @@
 
 - Course archival.
   - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
-  - Touch false on archive tooltips
-  - Ask about invitations for archived courses
+  - Test on phone
+  - Accept invitation for archived course
+
+---
+
+- Answer Ali’s email.
+
+---
+
+- Deployment checklist:
+  - Backup
+  - Check message permanent link migration.
 
 ---
 
@@ -21,12 +31,6 @@
   - Have complete access to course information.
   - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
 - Caddy could silence logs **after** a successful startup.
-
----
-
-- Deployment checklist:
-  - Backup
-  - Check message permanent link migration.
 
 ---
 
