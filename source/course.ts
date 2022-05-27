@@ -287,18 +287,7 @@ export default (app: Courselore): void => {
               `}
           $${course.archivedAt !== null
             ? html`
-                <div class="text--rose">
-                  <span
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: "false",
-                        content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-archive-fill"></i> Archived
-                  </span>
-                </div>
+                <div>$${app.locals.partials.courseArchived({ req, res })}</div>
               `
             : html``}
         </div>
@@ -355,7 +344,7 @@ export default (app: Courselore): void => {
           `)}"
           onload="${javascript`
             (this.tooltip ??= tippy(this)).setProps({
-              touch: "false",
+              touch: false,
               content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
             });
 
@@ -416,12 +405,12 @@ export default (app: Courselore): void => {
       css="${res.locals.css(css`
         font-size: var(--font-size--2xs);
         line-height: var(--line-height--2xs);
-        display: flex;
+        display: inline-flex;
         gap: var(--space--1);
       `)}"
       onload="${javascript`
         (this.tooltip ??= tippy(this)).setProps({
-          touch: "false",
+          touch: false,
           content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
         });
       `}"

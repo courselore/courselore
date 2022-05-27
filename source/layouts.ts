@@ -2416,7 +2416,7 @@ export default async (app: Courselore): Promise<void> => {
                                           <span
                                             onload="${javascript`
                                               (this.tooltip ??= tippy(this)).setProps({
-                                                touch: "false",
+                                                touch: false,
                                                 content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
                                               });
                                             `}"
@@ -2499,7 +2499,7 @@ export default async (app: Courselore): Promise<void> => {
                               `)}"
                               onload="${javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
-                                  touch: "false",
+                                  touch: false,
                                   content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
                                 });
                               `}"
