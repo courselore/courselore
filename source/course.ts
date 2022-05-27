@@ -877,7 +877,7 @@ export default (app: Courselore): void => {
           theme: "rose",
           content: html`
             This action isn’t allowed because the course is archived, which
-            means it’s in read-only mode.
+            means it’s read-only.
           `,
         });
         return res.redirect(

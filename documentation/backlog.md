@@ -2,12 +2,6 @@
 
 ### User Interface Improvements
 
-- Course archival.
-  - Test on phone
-  - Accept invitation for archived course
-
----
-
 - Answer Ali’s email.
 
 ---
