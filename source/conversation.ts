@@ -2560,6 +2560,10 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
+    (req, res, next) => {
+      res.locals.actionAllowedOnArchivedCourse = true;
+      next();
+    },
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       const messages = app.locals.database.all<{ id: number }>(

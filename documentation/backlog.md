@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Course archival.
-  - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
   - Test on phone
   - Accept invitation for archived course
 

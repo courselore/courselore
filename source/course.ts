@@ -108,6 +108,7 @@ export interface IsEnrolledInCourseMiddlewareLocals
     name: string;
     staffOnlyAt: string | null;
   }[];
+  actionAllowedOnArchivedCourse?: boolean;
 }
 
 export type IsCourseStaffMiddleware = express.RequestHandler<
@@ -865,6 +866,26 @@ export default (app: Courselore): void => {
         `
       );
 
+      if (
+        res.locals.course.archivedAt !== null &&
+        !["GET", "HEAD"].includes(req.method) &&
+        res.locals.actionAllowedOnArchivedCourse !== true
+      ) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s in read-only mode.
+          `,
+        });
+        return res.redirect(
+          303,
+          `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+        );
+      }
+
       next();
     },
   ];
@@ -1499,6 +1520,11 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
+    (req, res, next) => {
+      res.locals.actionAllowedOnArchivedCourse =
+        typeof req.body.isArchived === "string";
+      next();
+    },
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
