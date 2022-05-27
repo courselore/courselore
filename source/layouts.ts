@@ -2403,27 +2403,15 @@ export default async (app: Courselore): Promise<void> => {
                                   $${res.locals.course.archivedAt !== null
                                     ? html`
                                         <div
-                                          class="strong text--rose"
                                           css="${res.locals.css(css`
-                                            font-size: var(--font-size--2xs);
-                                            line-height: var(
-                                              --line-height--2xs
-                                            );
                                             padding: var(--space--0)
                                               var(--space--2) var(--space--1);
+                                            margin-top: var(--space---2);
                                           `)}"
                                         >
-                                          <span
-                                            onload="${javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-archive-fill"></i>
-                                            Archived
-                                          </span>
+                                          $${app.locals.partials.courseArchived(
+                                            { req, res }
+                                          )}
                                         </div>
                                       `
                                     : html``}
@@ -2491,22 +2479,7 @@ export default async (app: Courselore): Promise<void> => {
                       </span>
                       $${res.locals.course.archivedAt !== null
                         ? html`
-                            <span
-                              class="text--rose"
-                              css="${res.locals.css(css`
-                                font-size: var(--font-size--2xs);
-                                line-height: var(--line-height--2xs);
-                              `)}"
-                              onload="${javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-archive-fill"></i>
-                              Archived
-                            </span>
+                            $${app.locals.partials.courseArchived({ req, res })}
                           `
                         : html``}
                       <i class="bi bi-chevron-down"></i>
