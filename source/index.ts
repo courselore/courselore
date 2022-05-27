@@ -58,6 +58,7 @@ export {
 import course, {
   CoursePartial,
   CoursesPartial,
+  CourseArchivedPartial,
   EnrollmentRoleIconPartial,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
@@ -186,6 +187,7 @@ export interface Courselore extends express.Express {
       user: UserPartial;
       course: CoursePartial;
       courses: CoursesPartial;
+      courseArchived: CourseArchivedPartial;
       enrollmentRoleIcon: EnrollmentRoleIconPartial;
       conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;

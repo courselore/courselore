@@ -66,6 +66,14 @@ export type CoursesPartial = ({
   tight?: boolean;
 }) => HTML;
 
+export type CourseArchivedPartial = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+}) => HTML;
+
 export type EnrollmentRoleIconPartial = {
   [role in EnrollmentRole]: {
     regular: HTML;
@@ -401,6 +409,27 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
   };
+
+  app.locals.partials.courseArchived = ({ req, res }) => html`
+    <div
+      class="strong text--rose"
+      css="${res.locals.css(css`
+        font-size: var(--font-size--2xs);
+        line-height: var(--line-height--2xs);
+        display: flex;
+        gap: var(--space--1);
+      `)}"
+      onload="${javascript`
+        (this.tooltip ??= tippy(this)).setProps({
+          touch: "false",
+          content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+        });
+      `}"
+    >
+      <i class="bi bi-archive-fill"></i>
+      Archived
+    </div>
+  `;
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/",
