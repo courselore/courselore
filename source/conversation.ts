@@ -63,6 +63,7 @@ export type ConversationLayout = ({
         search?: string;
         filters?: {
           quick?: "true";
+          isUnread?: "true" | "false";
           types?: ConversationType[];
           isResolved?: "true" | "false";
           isPinned?: "true" | "false";
@@ -235,6 +236,7 @@ export default (app: Courselore): void => {
         : undefined;
 
     const filters: {
+      isUnread?: "true" | "false";
       types?: ConversationType[];
       isResolved?: "true" | "false";
       isPinned?: "true" | "false";
@@ -242,6 +244,11 @@ export default (app: Courselore): void => {
       tagsReferences?: string[];
     } = {};
     if (typeof req.query.conversations?.filters === "object") {
+      if (
+        typeof req.query.conversations.filters.isUnread === "string" &&
+        ["true", "false"].includes(req.query.conversations.filters.isUnread)
+      )
+        filters.isUnread = req.query.conversations.filters.isUnread;
       if (Array.isArray(req.query.conversations.filters.types)) {
         const types = [
           ...new Set(
@@ -385,6 +392,21 @@ export default (app: Courselore): void => {
                     "conversationTitleSearchResult"."rank" IS NOT NULL OR
                     "messageAuthorUserNameSearchResult"."rank" IS NOT NULL OR
                     "messageContentSearchResult"."rank" IS NOT NULL
+                  )
+                `
+          }
+          $${
+            filters.isUnread === undefined
+              ? sql``
+              : sql`
+                  AND $${filters.isUnread === "true" ? sql`NOT` : sql``} EXISTS(
+                    SELECT TRUE
+                    FROM "readings"
+                    JOIN "messages" ON "readings"."message" = "messages"."id" AND
+                                       "readings"."enrollment" = ${
+                                         res.locals.enrollment.id
+                                       } AND
+                                       "messages"."conversation" = "conversations"."id"
                   )
                 `
           }
@@ -778,6 +800,55 @@ export default (app: Courselore): void => {
                       flex-wrap: wrap;
                     `)}"
                   >
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        quick: "true",
+                        isUnread: "true",
+                      }
+                    )
+                      ? html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    quick: "true",
+                                    isUnread: "true",
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--blue"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
+                          </a>
+                        `}
                     $${res.locals.enrollment.role === "staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
@@ -985,57 +1056,6 @@ export default (app: Courselore): void => {
                             Chats
                           </a>
                         `}
-                    <div hidden>
-                      $${!util.isDeepStrictEqual(
-                        req.query.conversations?.filters,
-                        {
-                          quick: "true",
-                          unread: "true",
-                        }
-                      )
-                        ? html`
-                            <a
-                              href="${app.locals.options
-                                .baseURL}${req.path}${qs.stringify(
-                                {
-                                  conversations: {
-                                    filters: {
-                                      quick: "true",
-                                      unread: "true",
-                                    },
-                                  },
-                                  messages: req.query.messages,
-                                  newConversation: req.query.newConversation,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <i class="bi bi-eyeglasses"></i>
-                              Unread
-                            </a>
-                          `
-                        : html`
-                            <a
-                              href="${app.locals.options
-                                .baseURL}${req.path}${qs.stringify(
-                                {
-                                  messages: req.query.messages,
-                                  newConversation: req.query.newConversation,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
-                              class="button button--tight button--tight--inline button--transparent text--blue"
-                            >
-                              <i class="bi bi-eyeglasses"></i>
-                              Unread
-                            </a>
-                          `}
-                    </div>
                   </div>
 
                   <hr class="separator" />
