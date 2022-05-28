@@ -8,6 +8,10 @@
 
 ### User Interface Improvements
 
+- Turn “announcements” into “notes,” and give an option for a note to generate notifications.
+
+---
+
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
@@ -61,10 +65,6 @@
   - Uses of `classList` may pose problems when they deal with showing/hiding, or other kinds of state that we’d like to preserve
   - Avatar image on avatar tooltip flickers
   - Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
-
----
-
-- Turn “announcements” into “notes,” and give an option for a note to generate notifications.
 
 ---
 
