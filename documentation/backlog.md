@@ -512,6 +512,13 @@ const { app, BrowserWindow } = require("electron");
 - On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
 - Images may break the scrolling to the bottom on chats.
 
+---
+
+- Scrollbars:
+  - https://css-tricks.com/almanac/properties/s/scrollbar/
+  - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
+  - https://www.digitalocean.com/community/tutorials/css-scrollbars
+
 ### Design & Accessibility
 
 - Translate to other languages.
@@ -720,6 +727,20 @@ const { app, BrowserWindow } = require("electron");
 - Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 - Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
 - Caddy could silence logs **after** a successful startup.
+
+---
+
+- Tools to visualize SQLite database:
+  - https://www.schemacrawler.com/downloads.html
+  - https://dbeaver.io
+  - https://www.mysql.com/products/workbench/
+  - https://schemaspy.org
+  - https://dbschema.com/database-designer/Sqlite.html
+  - https://pypi.org/project/ERAlchemy/
+  - https://www.beekeeperstudio.io (No diagrams, but worth keeping an eye on)
+
+---
+
 - Automated tests:
 
 <details>
