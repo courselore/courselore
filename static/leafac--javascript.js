@@ -101,7 +101,8 @@ const leafac = {
         body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
-      if (typeof event.submitter === "object") event.submitter.disabled = true;
+      if (typeof event.submitter === "object" && event.submitter !== null)
+        event.submitter.disabled = true;
       const request = ["GET", "HEAD"].includes(method)
         ? (() => {
             const actionURL = new URL(action);
