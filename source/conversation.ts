@@ -399,14 +399,15 @@ export default (app: Courselore): void => {
             filters.isUnread === undefined
               ? sql``
               : sql`
-                  AND $${filters.isUnread === "true" ? sql`NOT` : sql``} EXISTS(
+                  AND $${filters.isUnread === "true" ? sql`` : sql`NOT`} EXISTS(
                     SELECT TRUE
-                    FROM "readings"
-                    JOIN "messages" ON "readings"."message" = "messages"."id" AND
-                                       "readings"."enrollment" = ${
-                                         res.locals.enrollment.id
-                                       } AND
-                                       "messages"."conversation" = "conversations"."id"
+                    FROM "messages"
+                    LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
+                                            "readings"."enrollment" = ${
+                                              res.locals.enrollment.id
+                                            }
+                    WHERE "conversations"."id" = "messages"."conversation" AND
+                          "readings"."id" IS NULL
                   )
                 `
           }
