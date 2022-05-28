@@ -8,10 +8,6 @@
 
 ### User Interface Improvements
 
-- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
----
-
 - Sidebar:
   - Filters
     - Unhide “Unread” quick filter.
@@ -186,6 +182,11 @@
 
 - Usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
   - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
+
+---
+
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
 
 ### Notifications
 
