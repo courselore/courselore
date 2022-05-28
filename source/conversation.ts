@@ -1292,6 +1292,73 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <div class="label">
+                          <div class="label--text">Unread</div>
+                          <div
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isUnread]"
+                                value="true"
+                                $${req.query.conversations?.filters
+                                  ?.isUnread === "true"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-eyeglasses"></i>
+                                Unread
+                              </span>
+                              <span class="text--blue">
+                                <i class="bi bi-eyeglasses"></i>
+                                Unread
+                              </span>
+                            </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isUnread]"
+                                value="false"
+                                $${req.query.conversations?.filters
+                                  ?.isUnread === "false"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-check-lg"></i>
+                                Read
+                              </span>
+                              <span class="text--blue">
+                                <i class="bi bi-check-lg"></i>
+                                Read
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="label">
                           <p class="label--text">Type</p>
                           <div
                             css="${res.locals.css(css`
