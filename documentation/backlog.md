@@ -8,6 +8,12 @@
 
 ### User Interface Improvements
 
+- Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
+  - Perhaps even have them go away when no entry matches?
+  - See what Discourse does…
+
+---
+
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
@@ -23,12 +29,6 @@
 ---
 
 - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
-
----
-
-- Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
-  - Perhaps even have them go away when no entry matches?
-  - See what Discourse does…
 
 ---
 
