@@ -19,12 +19,7 @@ import {
 } from "./index.js";
 
 export type ConversationType = typeof conversationTypes[number];
-export const conversationTypes = [
-  "announcement",
-  "question",
-  "note",
-  "chat",
-] as const;
+export const conversationTypes = ["question", "note", "chat"] as const;
 
 export type AuthorEnrollment =
   | {
@@ -2401,10 +2396,6 @@ export default (app: Courselore): void => {
   `;
 
   app.locals.partials.conversationTypeIcon = {
-    announcement: {
-      regular: html`<i class="bi bi-megaphone"></i>`,
-      fill: html`<i class="bi bi-megaphone-fill"></i>`,
-    },
     question: {
       regular: html`<i class="bi bi-patch-question"></i>`,
       fill: html`<i class="bi bi-patch-question-fill"></i>`,
@@ -2420,17 +2411,13 @@ export default (app: Courselore): void => {
   };
 
   app.locals.partials.conversationTypeTextColor = {
-    announcement: {
-      display: "text--fuchsia",
-      select: "text--fuchsia",
-    },
     question: {
       display: "text--rose",
       select: "text--rose",
     },
     note: {
-      display: "",
-      select: "text--blue",
+      display: "text--fuchsia",
+      select: "text--fuchsia",
     },
     chat: {
       display: "text--cyan",
@@ -2863,7 +2850,7 @@ export default (app: Courselore): void => {
                     row-gap: var(--space--2);
                   `)}"
                 >
-                  $${res.locals.conversationTypes.map(
+                  $${conversationTypes.map(
                     (conversationType) => html`
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -3603,7 +3590,7 @@ export default (app: Courselore): void => {
       req.body.tagsReferences ??= [];
       if (
         typeof req.body.type !== "string" ||
-        !res.locals.conversationTypes.includes(req.body.type) ||
+        !conversationTypes.includes(req.body.type) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
@@ -4126,7 +4113,7 @@ export default (app: Courselore): void => {
                                       content: ${res.locals.html(
                                         html`
                                           <div class="dropdown--menu">
-                                            $${res.locals.conversationTypes.map(
+                                            $${conversationTypes.map(
                                               (conversationType) => html`
                                                 <form
                                                   key="conversation-type--${conversationType}"
@@ -7496,7 +7483,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
       if (typeof req.body.type === "string")
-        if (!res.locals.conversationTypes.includes(req.body.type))
+        if (!conversationTypes.includes(req.body.type))
           return next("validation");
         else
           app.locals.database.run(

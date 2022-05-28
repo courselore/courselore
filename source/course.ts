@@ -16,8 +16,6 @@ import {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
-  ConversationType,
-  conversationTypes,
 } from "./index.js";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
@@ -101,7 +99,6 @@ export interface IsEnrolledInCourseMiddlewareLocals
   enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
   course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
   conversationsCount: number;
-  conversationTypes: ConversationType[];
   tags: {
     id: number;
     reference: string;
@@ -838,14 +835,6 @@ export default (app: Courselore): void => {
           }
         `
       )!.count;
-
-      res.locals.conversationTypes = conversationTypes.filter(
-        (conversationType) =>
-          !(
-            conversationType === "announcement" &&
-            res.locals.enrollment.role !== "staff"
-          )
-      );
 
       res.locals.tags = app.locals.database.all<{
         id: number;

@@ -513,6 +513,15 @@ export default async (app: Courselore): Promise<void> => {
     },
     sql`
       ALTER TABLE "courses" ADD COLUMN "archivedAt" TEXT NULL;
+    `,
+    sql`
+      UPDATE "users"
+      SET "emailNotifications" = 'mentions'
+      WHERE "emailNotifications" = 'staff-announcements-and-mentions';
+
+      UPDATE "conversations"
+      SET "type" = 'note'
+      WHERE "type" = 'announcement';
     `
   );
   app.once("close", () => {

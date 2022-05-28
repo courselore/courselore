@@ -1241,12 +1241,7 @@ export default (app: Courselore): void => {
           GROUP BY "enrollments"."id"
         `
       );
-      if (
-        !(
-          (conversation.type === "announcement" && message.reference === "1") ||
-          mentions.has("everyone")
-        )
-      )
+      if (!mentions.has("everyone"))
         enrollments = enrollments.filter(
           (enrollment) =>
             enrollment.userEmailNotifications === "all-messages" ||

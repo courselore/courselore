@@ -1337,7 +1337,7 @@ export default (app: Courselore): void => {
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
-            ${"staff-announcements-and-mentions"}
+            ${"mentions"}
           )
           RETURNING *
         `

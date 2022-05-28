@@ -289,7 +289,7 @@ export default (app: Courselore): void => {
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
               <p class="secondary">
-                Question & answer. Announcements. Comprehensive search.
+                Question & Answer. Comprehensive search.<br />
                 Notifications.
               </p>
             </div>

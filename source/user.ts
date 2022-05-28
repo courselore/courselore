@@ -43,7 +43,7 @@ export const userAvatarlessBackgroundColors = [
 export type UserEmailNotifications = typeof userEmailNotificationses[number];
 export const userEmailNotificationses = [
   "all-messages",
-  "staff-announcements-and-mentions",
+  "mentions",
   "none",
 ] as const;
 
@@ -1350,15 +1350,14 @@ export default (app: Courselore): void => {
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="staff-announcements-and-mentions"
+                      value="mentions"
                       required
-                      $${res.locals.user.emailNotifications ===
-                      "staff-announcements-and-mentions"
+                      $${res.locals.user.emailNotifications === "mentions"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    Staff announcements and @mentions
+                    @mentions
                   </label>
                 </div>
                 <div

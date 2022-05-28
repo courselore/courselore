@@ -393,13 +393,7 @@ export default (app: Courselore): void => {
               conversationCreatedAts[conversationReference - 1];
             const type =
               conversationTypes[
-                Math.random() < 0.5
-                  ? 1
-                  : Math.random() < 0.5
-                  ? 0
-                  : Math.random() < 0.7
-                  ? 3
-                  : 2
+                Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
               ];
             const nextMessageReference =
               type === "chat" ? lodash.random(50, 100) : lodash.random(2, 30);
