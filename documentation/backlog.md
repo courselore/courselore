@@ -10,7 +10,6 @@
 
 - Sidebar:
   - Filters
-    - Add backend support for filter of conversations with unread messages.
     - Review new sidebar code.
 
 ---
