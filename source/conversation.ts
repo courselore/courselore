@@ -1234,6 +1234,9 @@ export default (app: Courselore): void => {
                             ? req.query.conversations.search
                             : ""}"
                           placeholder="Search…"
+                          $${typeof req.query.conversations?.search === "string"
+                            ? html``
+                            : html`disabled`}
                           class="input--text"
                         />
                         <button
@@ -1313,6 +1316,11 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "true"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1340,6 +1348,11 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "false"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1383,6 +1396,12 @@ export default (app: Courselore): void => {
                                     )
                                       ? html`checked`
                                       : html``}
+                                    $${typeof req.query.conversations
+                                      ?.filters === "object" &&
+                                    req.query.conversations.filters.quick !==
+                                      "true"
+                                      ? html``
+                                      : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
                                     onload="${javascript`
                                       ${
@@ -1442,6 +1461,11 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "false"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1472,6 +1496,11 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "true"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1529,6 +1558,11 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "true"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1556,6 +1590,11 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "false"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1596,6 +1635,11 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "false"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1623,6 +1667,11 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "true"
                                   ? html`checked`
                                   : html``}
+                                $${typeof req.query.conversations?.filters ===
+                                  "object" &&
+                                req.query.conversations.filters.quick !== "true"
+                                  ? html``
+                                  : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
@@ -1690,6 +1739,12 @@ export default (app: Courselore): void => {
                                             )
                                               ? html`checked`
                                               : html``}
+                                            $${typeof req.query.conversations
+                                              ?.filters === "object" &&
+                                            req.query.conversations.filters
+                                              .quick !== "true"
+                                              ? html``
+                                              : html`disabled`}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
                                           />
                                           <span>
