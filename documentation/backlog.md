@@ -10,10 +10,10 @@
 
 - Sidebar:
   - Filters
+    - Add backend support for filter of conversations with unread messages.
     - Unhide “Unread” quick filter.
     - Add “Unread” to the list of regular (non-quick filters)
     - Review new sidebar code.
-    - Add backend support for filter of conversations with unread messages.
 
 ---
 
