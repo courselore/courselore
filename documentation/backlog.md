@@ -8,12 +8,6 @@
 
 ### User Interface Improvements
 
-- Sidebar:
-  - Filters
-    - Review new sidebar code.
-
----
-
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
