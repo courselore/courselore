@@ -2005,7 +2005,7 @@ export default async (app: Courselore): Promise<void> => {
                                 tippy.hideAll();
                                 dropdownMenu.show();
                               }
-                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
+                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
                                 dropdownMenu.hide();
                                 continue;
                               }
