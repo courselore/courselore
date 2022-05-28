@@ -8,6 +8,16 @@
 
 ### User Interface Improvements
 
+- In programmer mode, change the behavior of @mentions
+- Get Android phone
+- Performance
+
+---
+
+- Perhaps reorder conversation types for staff such that “note” comes first.
+
+---
+
 - Turn “announcements” into “notes,” and give an option for a note to generate notifications.
   - On new message, help staff `@everyone`
   - On deploy check database for `"users"."emailNotifications"`
