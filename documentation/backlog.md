@@ -1,32 +1,15 @@
 # Backlog
 
+### Must-Have Features for Fall
+
+- Better story on notifications: Email notification digests; use the notifications & push APIs; mobile & desktop applications.
+- Advanced Access Control to conversations.
+- SAML.
+
 ### User Interface Improvements
 
-- Answer Ali’s email.
-- Mention archival.
-- Document minor release.
-- Check message permanent link migration (https://courselore.org/courses/9024690659/conversations/3).
-
----
-
-- Deployment checklist:
-  - Backup
-
----
-
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- Our API should enable us to connect with other applications, for example, assignment management, and course material.
-  - Though we won’t necessarily be going to those areas right away.
-  - It’s part of our short-term strategy.
 - Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
-- SAML is a must-have feature for next semester (along with API)
-- Administrative interface is for system administrators, not for department administrators(!)
-  - It’s like a root user on Linux.
-  - Allowlist people who can create a course.
-  - Have complete access to course information.
-  - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
-- Caddy could silence logs **after** a successful startup.
-
 ---
 
 - Sidebar:
@@ -403,12 +386,14 @@ new Notification('Example');
 
 ### Administrative Interface
 
+- Administrative interface is for system administrators, not for department administrators(!)
+- It’s like a root user on Linux.
+- Allowlist people who can create a course.
+- Have complete access to course information.
+- Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
 - Perhaps don’t do this now: prioritize other features that are more pertinent to staff & students, given that we’ll follow a “bottom-up” approach to increasing the Courselore user base.
 - For department-wide installations.
 - Add a role of “administrator” that’s installation-wide, not course-wide.
-- Administrators may have access to all courses on the installation, or perhaps a subset of them.
-- The access that administrators have to the courses will be different than staff & students. For example, we may let them create invitations for courses, but not see particular conversations.
-- Control who’s able to create courses on the installation.
 
 ### Statistics
 
@@ -482,10 +467,13 @@ const { app, BrowserWindow } = require("electron");
 
 ### API
 
+- Enable us to connect with other applications, for example, assignment management, and course material.
+  - Though we won’t necessarily be going to those areas right away.
+  - Integration is part of our short-term strategy.
+- To build extensions, for example, ask a question from within the text editor.
 - Integrate with other platforms, for example, LMSs.
   - Learning Tools Interoperability (LTI).
     - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
-- To build extensions, for example, ask a question from within the text editor.
 
 ### User Interface
 
@@ -521,6 +509,7 @@ const { app, BrowserWindow } = require("electron");
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
 - On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
+- Images may break the scrolling to the bottom on chats.
 
 ### Design & Accessibility
 
@@ -728,6 +717,8 @@ const { app, BrowserWindow } = require("electron");
     - Rewrite URLs in messages.
 - In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
 - Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
+- Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
+- Caddy could silence logs **after** a successful startup.
 - Automated tests:
 
 <details>
