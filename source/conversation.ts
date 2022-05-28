@@ -1165,10 +1165,6 @@ export default (app: Courselore): void => {
                                 { redirect: req.originalUrl },
                                 { addQueryPrefix: true }
                               )}"
-                              css="${res.locals.css(css`
-                                display: flex;
-                                justify-content: flex-end;
-                              `)}"
                             >
                               <input
                                 type="hidden"
