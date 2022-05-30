@@ -17,8 +17,6 @@
 
 ### User Interface Improvements
 
-- Investigate the `event.submitter` situation
-  - Why is `event.submitter` null? Can we work around it?
 - Other places where `typeof null === "object"` may be an issue.
 
 ---
