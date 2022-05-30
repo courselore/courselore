@@ -9,34 +9,13 @@
 - Granular access control to conversations.
 - SAML.
 - Minimal integration with Learning Management Systems (identity, not grades).
+- Performance:
+  - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
 - Smaller things:
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
 ### User Interface Improvements
-
-- When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
-
----
-
-- On home, add a “us vs Piazza, Campuswire, edstem, and so forth” chart.
-  - Make sure to mention that we’re open-source.
-  - Piazza has LTI support (for identity & ).
-
----
-
-- Windows:
-  - `fileURLToPath` & `pathToFileURL` may be problematic.
-  - It installed `courselore` as a dependency on `static/package.json`(!)
-  - `global.css` is regenerated (probably because of line endings)
-
----
-
-- In programmer mode, change the behavior of @mentions
-- Get Android phone
-- Performance
-
----
 
 - Investigate the `event.submitter` situation
   - Why is `event.submitter` null? Can we work around it?
@@ -211,6 +190,17 @@
 
 ---
 
+- Windows:
+  - `fileURLToPath` & `pathToFileURL` may be problematic.
+  - Installed `courselore` as a dependency on `static/package.json`(!)
+  - `global.css` is regenerated (probably because of line endings)
+
+---
+
+- Investigate browser crashes on Android Chrome
+
+---
+
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
 - Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
@@ -344,6 +334,7 @@ new Notification('Example');
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 - Dragging an image from another website and dropping it in the content editor results in a 422.
+- In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
 ### Content Processor
 
@@ -690,6 +681,7 @@ const { app, BrowserWindow } = require("electron");
 
 ### Infrastructure
 
+- When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
@@ -2270,7 +2262,10 @@ $$
 - Homepage:
   - Better printscreens without `lorem ipsum`.
   - Example of design that we like: https://capacitorjs.com
-  - At some point hire a designer to make it more shiny
+  - At some point hire a designer to make it shinier
+  - Courselore vs Piazza, Campuswire, edstem, and so forth, comparison chart.
+    - Make sure to mention that we’re open-source.
+    - Piazza has LTI support (for identity only?).
 - User groups.
 - Newsletter.
 - Create Courselore Gravatar.
