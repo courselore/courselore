@@ -1,9 +1,12 @@
 # Backlog
 
-### Must-Have Features for Fall
+### Fall
 
-- Better story on notifications: Email notification digests; use the notifications & push APIs; mobile & desktop applications.
-- Advanced Access Control to conversations.
+- Notifications:
+  - Email notification digests
+  - Notifications API & Push API
+  - Mobile & desktop applications
+- Granular access control to conversations.
 - SAML.
 - Minimal integration with Learning Management Systems (identity, not grades).
 - Smaller things:
@@ -255,7 +258,7 @@ new Notification('Example');
 </button>
 ```
 
-### Advanced Access Control
+### Granular Access Control
 
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
