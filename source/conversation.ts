@@ -729,39 +729,33 @@ export default (app: Courselore): void => {
                     }
                   `)}"
                 >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <div
-                          css="${res.locals.css(css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                            display: flex;
-                            justify-content: center;
-                          `)}"
-                        >
+                  <div
+                    css="${res.locals.css(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      display: flex;
+                      gap: var(--space--1-5);
+                    `)}"
+                  >
+                    $${res.locals.enrollment.role === "staff"
+                      ? html`
                           <a
                             href="${app.locals.options.baseURL}/courses/${res
                               .locals.course
                               .reference}/conversations/new${qs.stringify(
-                              { conversations: req.query.conversations },
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "note" },
+                              },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--blue"
                           >
-                            <i class="bi bi-chat-left-text-fill"></i>
-                            Start a New Conversation
+                            <i class="bi bi-sticky-fill"></i>
+                            Post a Note
                           </a>
-                        </div>
-                      `
-                    : html`
-                        <div
-                          css="${res.locals.css(css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                            display: flex;
-                            gap: var(--space--1-5);
-                          `)}"
-                        >
+                        `
+                      : html`
                           <a
                             href="${app.locals.options.baseURL}/courses/${res
                               .locals.course
@@ -778,20 +772,19 @@ export default (app: Courselore): void => {
                               .fill}
                             Ask a Question
                           </a>
-                          <a
-                            href="${app.locals.options.baseURL}/courses/${res
-                              .locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              { conversations: req.query.conversations },
-                              { addQueryPrefix: true }
-                            )}"
-                            class="button button--transparent"
-                          >
-                            <i class="bi bi-chat-left-text"></i>
-                            Start a New Conversation
-                          </a>
-                        </div>
-                      `}
+                        `}
+                    <a
+                      href="${app.locals.options.baseURL}/courses/${res.locals
+                        .course.reference}/conversations/new${qs.stringify(
+                        { conversations: req.query.conversations },
+                        { addQueryPrefix: true }
+                      )}"
+                      class="button button--transparent"
+                    >
+                      <i class="bi bi-chat-left-text"></i>
+                      Start a New Conversation
+                    </a>
+                  </div>
 
                   <hr class="separator" />
 
