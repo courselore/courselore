@@ -231,6 +231,7 @@ export default (app: Courselore): void => {
         : undefined;
 
     const filters: {
+      quick?: "true";
       isUnread?: "true" | "false";
       types?: ConversationType[];
       isResolved?: "true" | "false";
@@ -238,7 +239,12 @@ export default (app: Courselore): void => {
       isStaffOnly?: "true" | "false";
       tagsReferences?: string[];
     } = {};
-    if (typeof req.query.conversations?.filters === "object") {
+    if (
+      typeof req.query.conversations?.filters === "object" &&
+      req.query.conversations.filters !== null
+    ) {
+      if (req.query.conversations.filters.quick === "true")
+        filters.quick = req.query.conversations.filters.quick;
       if (
         typeof req.query.conversations.filters.isUnread === "string" &&
         ["true", "false"].includes(req.query.conversations.filters.isUnread)
@@ -1081,9 +1087,7 @@ export default (app: Courselore): void => {
                           key="search-and-filters--show-hide--search"
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          $${typeof req.query.conversations?.search === "string"
-                            ? html`checked`
-                            : html``}
+                          $${search !== undefined ? html`checked` : html``}
                           onload="${javascript`
                             this.isModified = false;
 
@@ -1115,9 +1119,8 @@ export default (app: Courselore): void => {
                           key="search-and-filters--show-hide--filters"
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          $${typeof req.query.conversations?.filters ===
-                            "object" &&
-                          req.query.conversations.filters.quick !== "true"
+                          $${Object.keys(filters).length > 1 &&
+                          filters.quick !== "true"
                             ? html`checked`
                             : html``}
                           onload="${javascript`
@@ -1191,9 +1194,9 @@ export default (app: Courselore): void => {
                         }
                       )}"
                       novalidate
-                      $${typeof req.query.conversations?.search === "string" ||
-                      (typeof req.query.conversations?.filters === "object" &&
-                        req.query.conversations.filters.quick !== "true")
+                      $${search !== undefined ||
+                      (Object.keys(filters).length > 1 &&
+                        filters.quick !== "true")
                         ? html``
                         : html`hidden`}
                       css="${res.locals.css(css`
@@ -1207,9 +1210,7 @@ export default (app: Courselore): void => {
                     >
                       <div
                         key="search"
-                        $${typeof req.query.conversations?.search === "string"
-                          ? html``
-                          : html`hidden`}
+                        $${search !== undefined ? html`` : html`hidden`}
                         css="${res.locals.css(css`
                           display: flex;
                           gap: var(--space--2);
@@ -1219,15 +1220,11 @@ export default (app: Courselore): void => {
                         <input
                           type="text"
                           name="conversations[search]"
-                          value="${typeof req.query.conversations?.search ===
-                            "string" &&
-                          req.query.conversations.search.trim() !== ""
-                            ? req.query.conversations.search
+                          value="${search !== undefined
+                            ? req.query.conversations!.search!
                             : ""}"
                           placeholder="Search…"
-                          $${typeof req.query.conversations?.search === "string"
-                            ? html``
-                            : html`disabled`}
+                          $${search !== undefined ? html`` : html`disabled`}
                           class="input--text"
                         />
                         <button
@@ -1241,16 +1238,14 @@ export default (app: Courselore): void => {
                         >
                           <i class="bi bi-search"></i>
                         </button>
-                        $${typeof req.query.conversations?.search ===
-                          "string" &&
-                        req.query.conversations.search.trim() !== ""
+                        $${search !== undefined
                           ? html`
                               <a
                                 href="${app.locals.options
                                   .baseURL}${req.path}${qs.stringify(
                                   {
                                     conversations: {
-                                      filters: req.query.conversations.filters,
+                                      filters: req.query.conversations?.filters,
                                     },
                                     messages: req.query.messages,
                                     newConversation: req.query.newConversation,
@@ -1275,9 +1270,8 @@ export default (app: Courselore): void => {
 
                       <div
                         key="filters"
-                        $${typeof req.query.conversations?.filters ===
-                          "object" &&
-                        req.query.conversations.filters.quick !== "true"
+                        $${Object.keys(filters).length > 1 &&
+                        filters.quick !== "true"
                           ? html``
                           : html`hidden`}
                         css="${res.locals.css(css`
@@ -1307,9 +1301,8 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "true"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1339,9 +1332,8 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "false"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1387,10 +1379,8 @@ export default (app: Courselore): void => {
                                     )
                                       ? html`checked`
                                       : html``}
-                                    $${typeof req.query.conversations
-                                      ?.filters === "object" &&
-                                    req.query.conversations.filters.quick !==
-                                      "true"
+                                    $${Object.keys(filters).length > 1 &&
+                                    filters.quick !== "true"
                                       ? html``
                                       : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1452,9 +1442,8 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "false"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1487,9 +1476,8 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "true"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1549,9 +1537,8 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "true"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1581,9 +1568,8 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "false"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1626,9 +1612,8 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "false"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1658,9 +1643,8 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "true"
                                   ? html`checked`
                                   : html``}
-                                $${typeof req.query.conversations?.filters ===
-                                  "object" &&
-                                req.query.conversations.filters.quick !== "true"
+                                $${Object.keys(filters).length > 1 &&
+                                filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1730,10 +1714,8 @@ export default (app: Courselore): void => {
                                             )
                                               ? html`checked`
                                               : html``}
-                                            $${typeof req.query.conversations
-                                              ?.filters === "object" &&
-                                            req.query.conversations.filters
-                                              .quick !== "true"
+                                            $${Object.keys(filters).length >
+                                              1 && filters.quick !== "true"
                                               ? html``
                                               : html`disabled`}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1786,16 +1768,13 @@ export default (app: Courselore): void => {
                             <i class="bi bi-funnel"></i>
                             Apply Filters
                           </button>
-                          $${typeof req.query.conversations?.filters ===
-                          "object"
+                          $${Object.keys(filters).length > 1
                             ? html`
                                 <a
                                   href="${app.locals.options
                                     .baseURL}${req.path}${qs.stringify(
                                     {
-                                      conversations: {
-                                        search: req.query.conversations.search,
-                                      },
+                                      conversations: { search },
                                       messages: req.query.messages,
                                       newConversation:
                                         req.query.newConversation,
