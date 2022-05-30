@@ -1,6 +1,18 @@
 # Meeting Notes
 
 <details>
+<summary>2021-05-28</summary>
+
+- Had a meeting with Zach: how the first semester with Courselore went; what to do for next semester; and a brief technical overview.
+- Implemented the course archival feature.
+- A couple more tweaks to the layout of the sidebar.
+- Fixed issues: Images in email notifications not showing up on some email clients; close the `@mentions` and `#references` widget on `@␣`; and so forth.
+- Minimal integration with Learning Management Systems is a high priority. (Identity only; don’t do grades and other things right now.)
+
+</details>
+
+
+<details>
 <summary>2021-05-24 (Zach)</summary>
 
 - Liked Courselore this first semester and plan on using again next semester (starting things off in August), with a co-instructor who used to use <https://edstem.org>.

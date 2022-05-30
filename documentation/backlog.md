@@ -5,8 +5,22 @@
 - Better story on notifications: Email notification digests; use the notifications & push APIs; mobile & desktop applications.
 - Advanced Access Control to conversations.
 - SAML.
+- Minimal integration with Learning Management Systems (identity, not grades).
+- Smaller things:
+  - Lock a course for a period, for example, when a take-home exam is out.
+  - Polls.
 
 ### User Interface Improvements
+
+- When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
+
+---
+
+- On home, add a “us vs Piazza, Campuswire, edstem, and so forth” chart.
+  - Make sure to mention that we’re open-source.
+  - Piazza has LTI support (for identity & ).
+
+---
 
 - Windows:
   - `fileURLToPath` & `pathToFileURL` may be problematic.
@@ -18,6 +32,12 @@
 - In programmer mode, change the behavior of @mentions
 - Get Android phone
 - Performance
+
+---
+
+- Investigate the `event.submitter` situation
+  - Why is `event.submitter` null? Can we work around it?
+- Other places where `typeof null === "object"` may be an issue.
 
 ---
 
@@ -189,7 +209,7 @@
 ---
 
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
+- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
 ### Notifications
 
@@ -401,6 +421,7 @@ new Notification('Example');
 
 ### Statistics
 
+- A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification: A reputation system with badges.
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
@@ -478,6 +499,9 @@ const { app, BrowserWindow } = require("electron");
 - Integrate with other platforms, for example, LMSs.
   - Learning Tools Interoperability (LTI).
     - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
+    - Purposes of LTI:
+      - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
+      - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
 
 ### User Interface
 
