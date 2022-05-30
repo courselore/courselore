@@ -57,7 +57,7 @@ export type ConversationLayout = ({
         conversationsPage?: string;
         search?: string;
         filters?: {
-          quick?: "true";
+          isQuick?: "true";
           isUnread?: "true" | "false";
           types?: ConversationType[];
           isResolved?: "true" | "false";
@@ -231,7 +231,7 @@ export default (app: Courselore): void => {
         : undefined;
 
     const filters: {
-      quick?: "true";
+      isQuick?: "true";
       isUnread?: "true" | "false";
       types?: ConversationType[];
       isResolved?: "true" | "false";
@@ -289,9 +289,9 @@ export default (app: Courselore): void => {
       }
       if (
         Object.keys(filters).length > 0 &&
-        req.query.conversations.filters.quick === "true"
+        req.query.conversations.filters.isQuick === "true"
       )
-        filters.quick = req.query.conversations.filters.quick;
+        filters.isQuick = req.query.conversations.filters.isQuick;
     }
 
     const conversationsPageSize = 999999; // TODO: 15
@@ -808,7 +808,7 @@ export default (app: Courselore): void => {
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
-                        quick: "true",
+                        isQuick: "true",
                         isUnread: "true",
                       }
                     )
@@ -819,7 +819,7 @@ export default (app: Courselore): void => {
                               {
                                 conversations: {
                                   filters: {
-                                    quick: "true",
+                                    isQuick: "true",
                                     isUnread: "true",
                                   },
                                 },
@@ -859,7 +859,7 @@ export default (app: Courselore): void => {
                           $${!util.isDeepStrictEqual(
                             req.query.conversations?.filters,
                             {
-                              quick: "true",
+                              isQuick: "true",
                               types: ["question"],
                               isResolved: "false",
                             }
@@ -871,7 +871,7 @@ export default (app: Courselore): void => {
                                     {
                                       conversations: {
                                         filters: {
-                                          quick: "true",
+                                          isQuick: "true",
                                           types: ["question"],
                                           isResolved: "false",
                                         },
@@ -914,7 +914,7 @@ export default (app: Courselore): void => {
                           $${!util.isDeepStrictEqual(
                             req.query.conversations?.filters,
                             {
-                              quick: "true",
+                              isQuick: "true",
                               types: ["question"],
                             }
                           )
@@ -925,7 +925,7 @@ export default (app: Courselore): void => {
                                     {
                                       conversations: {
                                         filters: {
-                                          quick: "true",
+                                          isQuick: "true",
                                           types: ["question"],
                                         },
                                       },
@@ -966,7 +966,7 @@ export default (app: Courselore): void => {
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
-                        quick: "true",
+                        isQuick: "true",
                         types: ["note"],
                       }
                     )
@@ -977,7 +977,7 @@ export default (app: Courselore): void => {
                               {
                                 conversations: {
                                   filters: {
-                                    quick: "true",
+                                    isQuick: "true",
                                     types: ["note"],
                                   },
                                 },
@@ -1015,7 +1015,7 @@ export default (app: Courselore): void => {
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
-                        quick: "true",
+                        isQuick: "true",
                         types: ["chat"],
                       }
                     )
@@ -1026,7 +1026,7 @@ export default (app: Courselore): void => {
                               {
                                 conversations: {
                                   filters: {
-                                    quick: "true",
+                                    isQuick: "true",
                                     types: ["chat"],
                                   },
                                 },
@@ -1123,7 +1123,7 @@ export default (app: Courselore): void => {
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${Object.keys(filters).length > 0 &&
-                          filters.quick !== "true"
+                          filters.isQuick !== "true"
                             ? html`checked`
                             : html``}
                           onload="${javascript`
@@ -1199,7 +1199,7 @@ export default (app: Courselore): void => {
                       novalidate
                       $${search !== undefined ||
                       (Object.keys(filters).length > 0 &&
-                        filters.quick !== "true")
+                        filters.isQuick !== "true")
                         ? html``
                         : html`hidden`}
                       css="${res.locals.css(css`
@@ -1274,7 +1274,7 @@ export default (app: Courselore): void => {
                       <div
                         key="filters"
                         $${Object.keys(filters).length > 0 &&
-                        filters.quick !== "true"
+                        filters.isQuick !== "true"
                           ? html``
                           : html`hidden`}
                         css="${res.locals.css(css`
@@ -1305,7 +1305,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1336,7 +1336,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1383,7 +1383,7 @@ export default (app: Courselore): void => {
                                       ? html`checked`
                                       : html``}
                                     $${Object.keys(filters).length > 0 &&
-                                    filters.quick !== "true"
+                                    filters.isQuick !== "true"
                                       ? html``
                                       : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1446,7 +1446,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1480,7 +1480,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1541,7 +1541,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1572,7 +1572,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1616,7 +1616,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1647,7 +1647,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 $${Object.keys(filters).length > 0 &&
-                                filters.quick !== "true"
+                                filters.isQuick !== "true"
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1718,7 +1718,7 @@ export default (app: Courselore): void => {
                                               ? html`checked`
                                               : html``}
                                             $${Object.keys(filters).length >
-                                              0 && filters.quick !== "true"
+                                              0 && filters.isQuick !== "true"
                                               ? html``
                                               : html`disabled`}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
