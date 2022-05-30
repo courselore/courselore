@@ -17,10 +17,6 @@
 
 ### User Interface Improvements
 
-- Other places where `typeof null === "object"` may be an issue.
-
----
-
 - Perhaps reorder conversation types for staff such that “note” comes first.
 
 ---
