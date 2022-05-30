@@ -8,6 +8,13 @@
 
 ### User Interface Improvements
 
+- Windows:
+  - `fileURLToPath` & `pathToFileURL` may be problematic.
+  - It installed `courselore` as a dependency on `static/package.json`(!)
+  - `global.css` is regenerated (probably because of line endings)
+
+---
+
 - In programmer mode, change the behavior of @mentions
 - Get Android phone
 - Performance

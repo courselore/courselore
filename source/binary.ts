@@ -6,10 +6,8 @@ import url from "node:url";
 await (
   await import(
     process.argv[2] === undefined
-      ? url.fileURLToPath(
-          new URL("../configuration/development.mjs", import.meta.url)
-        )
-      : path.resolve(process.argv[2])
+      ? new URL("../configuration/development.mjs", import.meta.url).href
+      : url.pathToFileURL(path.resolve(process.argv[2])).href
   )
 ).default({
   courseloreImport: async (modulePath: string) => await import(modulePath),
