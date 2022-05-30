@@ -243,8 +243,6 @@ export default (app: Courselore): void => {
       typeof req.query.conversations?.filters === "object" &&
       req.query.conversations.filters !== null
     ) {
-      if (req.query.conversations.filters.quick === "true")
-        filters.quick = req.query.conversations.filters.quick;
       if (
         typeof req.query.conversations.filters.isUnread === "string" &&
         ["true", "false"].includes(req.query.conversations.filters.isUnread)
@@ -289,6 +287,11 @@ export default (app: Courselore): void => {
         ];
         if (tagsReferences.length > 0) filters.tagsReferences = tagsReferences;
       }
+      if (
+        Object.keys(filters).length > 0 &&
+        req.query.conversations.filters.quick === "true"
+      )
+        filters.quick = req.query.conversations.filters.quick;
     }
 
     const conversationsPageSize = 999999; // TODO: 15
@@ -1119,7 +1122,7 @@ export default (app: Courselore): void => {
                           key="search-and-filters--show-hide--filters"
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          $${Object.keys(filters).length > 1 &&
+                          $${Object.keys(filters).length > 0 &&
                           filters.quick !== "true"
                             ? html`checked`
                             : html``}
@@ -1195,7 +1198,7 @@ export default (app: Courselore): void => {
                       )}"
                       novalidate
                       $${search !== undefined ||
-                      (Object.keys(filters).length > 1 &&
+                      (Object.keys(filters).length > 0 &&
                         filters.quick !== "true")
                         ? html``
                         : html`hidden`}
@@ -1270,7 +1273,7 @@ export default (app: Courselore): void => {
 
                       <div
                         key="filters"
-                        $${Object.keys(filters).length > 1 &&
+                        $${Object.keys(filters).length > 0 &&
                         filters.quick !== "true"
                           ? html``
                           : html`hidden`}
@@ -1301,7 +1304,7 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "true"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1332,7 +1335,7 @@ export default (app: Courselore): void => {
                                   ?.isUnread === "false"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1379,7 +1382,7 @@ export default (app: Courselore): void => {
                                     )
                                       ? html`checked`
                                       : html``}
-                                    $${Object.keys(filters).length > 1 &&
+                                    $${Object.keys(filters).length > 0 &&
                                     filters.quick !== "true"
                                       ? html``
                                       : html`disabled`}
@@ -1442,7 +1445,7 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "false"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1476,7 +1479,7 @@ export default (app: Courselore): void => {
                                   ?.isResolved === "true"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1537,7 +1540,7 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "true"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1568,7 +1571,7 @@ export default (app: Courselore): void => {
                                   ?.isPinned === "false"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1612,7 +1615,7 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "false"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1643,7 +1646,7 @@ export default (app: Courselore): void => {
                                   ?.isStaffOnly === "true"
                                   ? html`checked`
                                   : html``}
-                                $${Object.keys(filters).length > 1 &&
+                                $${Object.keys(filters).length > 0 &&
                                 filters.quick !== "true"
                                   ? html``
                                   : html`disabled`}
@@ -1715,7 +1718,7 @@ export default (app: Courselore): void => {
                                               ? html`checked`
                                               : html``}
                                             $${Object.keys(filters).length >
-                                              1 && filters.quick !== "true"
+                                              0 && filters.quick !== "true"
                                               ? html``
                                               : html`disabled`}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1768,7 +1771,7 @@ export default (app: Courselore): void => {
                             <i class="bi bi-funnel"></i>
                             Apply Filters
                           </button>
-                          $${Object.keys(filters).length > 1
+                          $${Object.keys(filters).length > 0
                             ? html`
                                 <a
                                   href="${app.locals.options
