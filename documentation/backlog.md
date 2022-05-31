@@ -17,6 +17,11 @@
 
 ### User Interface Improvements
 
+- Rename, reword, and refactor:
+  - “Confirm” email → “Verify” email.
+
+---
+
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
@@ -112,11 +117,6 @@
 
 ---
 
-- Rename, reword, and refactor:
-  - “Confirm” email → “Verify” email.
-
----
-
 - “New Conversation” page:
   - Keep all the material that is there, but present it differently to try and make the page cleaner.
   - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
@@ -171,11 +171,6 @@
 ---
 
 - The anonymity button isn’t as clear as it should be.
-
----
-
-- Usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
-  - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
 
 ---
 
@@ -738,6 +733,8 @@ const { app, BrowserWindow } = require("electron");
 - Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 - Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
 - Caddy could silence logs **after** a successful startup.
+- Live-navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
+  - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
 
 ---
 
