@@ -17,11 +17,6 @@
 
 ### User Interface Improvements
 
-- Turn “announcements” into “notes,” and give an option for a note to generate notifications.
-  - On new message, help staff `@everyone`
-
----
-
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
