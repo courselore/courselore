@@ -3651,6 +3651,9 @@ export default (app: Courselore): void => {
       if (
         typeof req.body.type !== "string" ||
         !conversationTypes.includes(req.body.type) ||
+        (req.body.shouldNotify &&
+          (res.locals.enrollment.role !== "staff" ||
+            req.body.type !== "note")) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
@@ -3750,6 +3753,7 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
+        if (req.body.shouldNotify) processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
           reference: string;
