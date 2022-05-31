@@ -603,36 +603,34 @@ export default (app: Courselore): void => {
           Profile
         </a>
         <a
-          href="${app.locals.options
-            .baseURL}/settings/update-email-and-password"
+          href="${app.locals.options.baseURL}/settings/email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings/update-email-and-password"
+            "/settings/email-and-password"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/settings/update-email-and-password")
+            class="bi ${req.path.endsWith("/settings/email-and-password")
               ? "bi-key-fill"
               : "bi-key"}"
           ></i>
-          Update Email & Password
+          Email & Password
         </a>
         <a
-          href="${app.locals.options
-            .baseURL}/settings/notifications-preferences"
+          href="${app.locals.options.baseURL}/settings/notifications"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings/notifications-preferences"
+            "/settings/notifications"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/settings/notifications-preferences")
+            class="bi ${req.path.endsWith("/settings/notifications")
               ? "bi-bell-fill"
               : "bi-bell"}"
           ></i>
-          Notifications Preferences
+          Notifications
         </a>
       `,
       body,
@@ -1050,7 +1048,7 @@ export default (app: Courselore): void => {
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/update-email-and-password",
+    "/settings/email-and-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
@@ -1058,20 +1056,19 @@ export default (app: Courselore): void => {
           req,
           res,
           head: html`<title>
-            Update Email & Password · User Settings · Courselore
+            Email & Password · User Settings · Courselore
           </title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
               <i class="bi bi-key"></i>
-              Update Email & Password
+              Email & Password
             </h2>
 
             <form
               method="PATCH"
-              action="${app.locals.options
-                .baseURL}/settings/update-email-and-password"
+              action="${app.locals.options.baseURL}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1115,8 +1112,7 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options
-                .baseURL}/settings/update-email-and-password"
+              action="${app.locals.options.baseURL}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1181,7 +1177,7 @@ export default (app: Courselore): void => {
     {},
     IsSignedInMiddlewareLocals
   >(
-    "/settings/update-email-and-password",
+    "/settings/email-and-password",
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (
@@ -1204,7 +1200,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/settings/update-email-and-password`
+          `${app.locals.options.baseURL}/settings/email-and-password`
         );
       }
 
@@ -1226,7 +1222,7 @@ export default (app: Courselore): void => {
           });
           return res.redirect(
             303,
-            `${app.locals.options.baseURL}/settings/update-email-and-password`
+            `${app.locals.options.baseURL}/settings/email-and-password`
           );
         }
 
@@ -1284,34 +1280,31 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/settings/update-email-and-password`
+        `${app.locals.options.baseURL}/settings/email-and-password`
       );
     })
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/notifications-preferences",
+    "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         app.locals.layouts.userSettings({
           req,
           res,
-          head: html`<title>
-            Notifications Preferences · User Settings · Courselore
-          </title>`,
+          head: html`<title>Notifications · User Settings · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
               <i class="bi bi-bell"></i>
-              Notifications Preferences
+              Notifications
             </h2>
 
             <form
               method="PATCH"
-              action="${app.locals.options
-                .baseURL}/settings/notifications-preferences"
+              action="${app.locals.options.baseURL}/settings/notifications"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1386,7 +1379,7 @@ export default (app: Courselore): void => {
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Notifications Preferences
+                  Update Notifications
                 </button>
               </div>
             </form>
@@ -1403,7 +1396,7 @@ export default (app: Courselore): void => {
     {},
     IsSignedInMiddlewareLocals
   >(
-    "/settings/notifications-preferences",
+    "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
@@ -1424,13 +1417,10 @@ export default (app: Courselore): void => {
         req,
         res,
         theme: "green",
-        content: html`Notifications preferences updated successfully.`,
+        content: html`Notifications updated successfully.`,
       });
 
-      res.redirect(
-        303,
-        `${app.locals.options.baseURL}/settings/notifications-preferences`
-      );
+      res.redirect(303, `${app.locals.options.baseURL}/settings/notifications`);
     }
   );
 };
