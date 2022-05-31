@@ -2728,6 +2728,7 @@ export default (app: Courselore): void => {
       newConversation?: {
         conversationDraftReference?: string;
         type?: string;
+        shouldNotify?: "true";
         isPinned?: "true";
         isStaffOnly?: "true";
         title?: string;
@@ -2918,11 +2919,13 @@ export default (app: Courselore): void => {
                                 req.query.newConversation?.type === "note")
                                 ? html``
                                 : html`disabled`}
-                              $${
-                                /* TODO: Drafts */ false
-                                  ? html`checked`
-                                  : html``
-                              }
+                              $${(conversationDraft as any) /* TODO */
+                                ?.shouldNotify === "true" ||
+                              (conversationDraft === undefined &&
+                                req.query.newConversation?.shouldNotify ===
+                                  "true")
+                                ? html`checked`
+                                : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
@@ -3500,6 +3503,7 @@ export default (app: Courselore): void => {
     HTML,
     {
       type?: ConversationType;
+      shouldNotify?: boolean;
       isPinned?: boolean;
       isStaffOnly?: boolean;
       title?: string;
