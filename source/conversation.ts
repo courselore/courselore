@@ -2849,6 +2849,22 @@ export default (app: Courselore): void => {
                                 element.required = ${JSON.stringify(
                                   conversationType !== "chat"
                                 )};
+
+                              ${
+                                res.locals.enrollment.role === "staff"
+                                  ? javascript`
+                                      const notification = form.querySelector('[key="new-conversation--notification"]');
+                                      notification.hidden = ${JSON.stringify(
+                                        conversationType !== "note"
+                                      )};
+                                      for (const element of leafac.descendants(notification))
+                                        if (element.disabled !== undefined)
+                                          element.disabled = ${JSON.stringify(
+                                            conversationType !== "note"
+                                          )};
+                                    `
+                                  : javascript``
+                              }
                             };
                           `}"
                         />
@@ -2873,6 +2889,71 @@ export default (app: Courselore): void => {
                   )}
                 </div>
               </div>
+
+              $${res.locals.enrollment.role === "staff"
+                ? html`
+                    <div
+                      key="new-conversation--notification"
+                      $${conversationDraft?.type === "note" ||
+                      (conversationDraft === undefined &&
+                        req.query.newConversation?.type === "note")
+                        ? html``
+                        : html`hidden`}
+                    >
+                      <div class="label">
+                        <div class="label--text">Notification</div>
+                        <div
+                          css="${res.locals.css(css`
+                            display: flex;
+                          `)}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="shouldNotify"
+                              $${conversationDraft?.type === "note" ||
+                              (conversationDraft === undefined &&
+                                req.query.newConversation?.type === "note")
+                                ? html``
+                                : html`disabled`}
+                              $${
+                                /* TODO: Drafts */ false
+                                  ? html`checked`
+                                  : html``
+                              }
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Notify Everyone in Conversation",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-bell-slash"></i>
+                              Don’t Notify
+                            </span>
+                            <span
+                              class="text--blue"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Don’t Notify",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-bell-fill"></i>
+                              Notify Everyone in Conversation
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  `
+                : html``}
 
               <div
                 css="${res.locals.css(css`
