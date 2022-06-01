@@ -22,6 +22,10 @@
 
 ---
 
+- Add the course name to the “From” field of emails.
+
+---
+
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
