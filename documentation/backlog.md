@@ -17,7 +17,7 @@
 
 ### Administrative Interface
 
-**High-Level View**
+**Overview**
 
 - For system administrators.
 - For department-wide installations.
