@@ -15,6 +15,27 @@
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
+### Administrative Interface
+
+**High-Level View**
+
+- For system administrators.
+- For department-wide installations.
+- Introduce the notion of an “administrator”, which is installation-wide, not course-wide.
+  - The “administrator” has complete access on the system: They can grant privileges to other people, see all course information, and so forth. (This is exactly the kind of data that’s already available to them by inspecting the database, we’re just providing a nicer interface).
+  - An administrator may also be staff or students on courses using the same account.
+
+**Goals**
+
+- Administrators manage the role of other administrators.
+- Allowlist of people who can create a course.
+
+**Good to Have in the Future**
+
+- Introduce the notion of “institution”
+  - An institution may be a department, an university, and so forth.
+  - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
+
 ### User Interface Improvements
 
 - Rename, reword, and refactor:
@@ -389,17 +410,6 @@ new Notification('Example');
 - Let people configure other storage engines (for example, S3).
 - Create a garbage collection routine for attachments.
 - Clean geolocation & other metadata from images.
-
-### Administrative Interface
-
-- Administrative interface is for system administrators, not for department administrators(!)
-- It’s like a root user on Linux.
-- Allowlist people who can create a course.
-- Have complete access to course information.
-- Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
-- Perhaps don’t do this now: prioritize other features that are more pertinent to staff & students, given that we’ll follow a “bottom-up” approach to increasing the Courselore user base.
-- For department-wide installations.
-- Add a role of “administrator” that’s installation-wide, not course-wide.
 
 ### Statistics
 
