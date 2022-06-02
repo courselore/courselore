@@ -522,6 +522,16 @@ export default async (app: Courselore): Promise<void> => {
       UPDATE "conversations"
       SET "type" = 'note'
       WHERE "type" = 'announcement';
+    `,
+    sql`
+      ALTER TABLE "users" ADD COLUMN "administratorAt" TEXT NULL;
+    `,
+    sql`
+      CREATE TABLE "configurations" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "key" TEXT UNIQUE NOT NULL,
+        "value" TEXT NOT NULL
+      );
     `
   );
   app.once("close", () => {
