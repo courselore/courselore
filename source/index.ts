@@ -38,7 +38,7 @@ import authentication, {
   SignInHandler,
   PasswordResetHelper,
   AuthenticationOptions,
-  EmailConfirmationMailer,
+  EmailVerificationMailer,
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
@@ -215,7 +215,7 @@ export interface Courselore extends express.Express {
       splitFilterablePhrases: SplitFilterablePhrasesHelper;
     };
     mailers: {
-      emailConfirmation: EmailConfirmationMailer;
+      emailVerification: EmailVerificationMailer;
       invitation: InvitationMailer;
       notifications: NotificationsMailer;
     };

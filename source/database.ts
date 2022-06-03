@@ -522,6 +522,12 @@ export default async (app: Courselore): Promise<void> => {
       UPDATE "conversations"
       SET "type" = 'note'
       WHERE "type" = 'announcement';
+    `,
+    sql`
+      DROP INDEX "emailConfirmationsCreatedAtIndex";
+      ALTER TABLE "emailConfirmations" RENAME TO "emailVerifications";
+      CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
+      ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
     `
   );
   app.once("close", () => {

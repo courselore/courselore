@@ -75,11 +75,6 @@
 
 ### User Interface Improvements
 
-- Rename, reword, and refactor:
-  - “Confirm” email → “Verify” email.
-
----
-
 - Add the course name to the “From” field of emails.
 
 ---
@@ -309,8 +304,8 @@ new Notification('Example');
 ### Users
 
 - Improvements to the workflow for when you change your email:
-  - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
-  - Don’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
+  - The verification email has a subject of “Welcome to Courselore!”. It should be “Please verify your email”.
+  - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Online indicators.
   - Turn them on when someone who was offline becomes online.
   - Don’t turn them off if person continues to be online.

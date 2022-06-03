@@ -1212,7 +1212,7 @@ export default (app: Courselore): void => {
                  "enrollments"."role"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                          "users"."emailConfirmedAt" IS NOT NULL AND
+                          "users"."emailVerifiedAt" IS NOT NULL AND
                           "users"."emailNotifications" != 'none'
           LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
                                                 "notificationDeliveries"."message" = ${

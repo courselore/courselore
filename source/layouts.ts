@@ -211,9 +211,9 @@ export default async (app: Courselore): Promise<void> => {
 
             ${
               res.locals.user !== undefined &&
-              res.locals.user.emailConfirmedAt === null
+              res.locals.user.emailVerifiedAt === null
                 ? javascript`
-                  (body.emailConfirmationTooltip ??= tippy(body)).setProps({
+                  (body.emailVerificationTooltip ??= tippy(body)).setProps({
                     appendTo: body,
                     trigger: "manual",
                     hideOnClick: false,
@@ -225,7 +225,7 @@ export default async (app: Courselore): Promise<void> => {
                         <form
                           method="POST"
                           action="${app.locals.options
-                            .baseURL}/resend-confirmation-email${qs.stringify(
+                            .baseURL}/resend-verification-email${qs.stringify(
                             {
                               redirect: req.originalUrl,
                             },
@@ -237,33 +237,33 @@ export default async (app: Courselore): Promise<void> => {
                             name="_csrf"
                             value="${req.csrfToken()}"
                           />
-                          Please confirm your email by following the link sent
-                          to ${res.locals.user.email}.<br />
+                          Please verify your email by following the link sent to
+                          ${res.locals.user.email}.<br />
                           Didn’t receive the email? Already checked your spam
                           folder?
                           <button class="link">Resend</button>.
                         </form>
                         $${app.locals.options.demonstration
                           ? (() => {
-                              let emailConfirmation = app.locals.database.get<{
+                              let emailVerification = app.locals.database.get<{
                                 nonce: string;
                               }>(
                                 sql`
-                                  SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                  SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
                                 `
                               );
-                              if (emailConfirmation === undefined) {
-                                app.locals.mailers.emailConfirmation({
+                              if (emailVerification === undefined) {
+                                app.locals.mailers.emailVerification({
                                   req,
                                   res,
                                   userId: res.locals.user.id,
                                   userEmail: res.locals.user.email,
                                 });
-                                emailConfirmation = app.locals.database.get<{
+                                emailVerification = app.locals.database.get<{
                                   nonce: string;
                                 }>(
                                   sql`
-                                    SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                    SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
                                   `
                                 )!;
                               }
@@ -275,10 +275,10 @@ export default async (app: Courselore): Promise<void> => {
                                 >
                                   This Courselore installation is running in
                                   demonstration mode and doesn’t send emails.
-                                  Confirm your email by
+                                  Verify your email by
                                   <a
                                     href="${app.locals.options
-                                      .baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
+                                      .baseURL}/email-verification/${emailVerification.nonce}${qs.stringify(
                                       {
                                         redirect: req.originalUrl,
                                       },
@@ -294,7 +294,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  body.emailConfirmationTooltip.show();
+                  body.emailVerificationTooltip.show();
                 `
                 : javascript``
             }

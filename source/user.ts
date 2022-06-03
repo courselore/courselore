@@ -1230,11 +1230,11 @@ export default (app: Courselore): void => {
           sql`
             UPDATE "users"
             SET "email" = ${req.body.email},
-                "emailConfirmedAt" = ${null}
+                "emailVerifiedAt" = ${null}
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        app.locals.mailers.emailConfirmation({
+        app.locals.mailers.emailVerification({
           req,
           res,
           userId: res.locals.user.id,

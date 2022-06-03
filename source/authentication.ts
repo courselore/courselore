@@ -76,7 +76,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     lastSeenOnlineAt: string;
     email: string;
     password: string;
-    emailConfirmedAt: string | null;
+    emailVerifiedAt: string | null;
     name: string;
     avatar: string | null;
     avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
@@ -137,7 +137,7 @@ export interface AuthenticationOptions {
   argon2: argon2.Options & { raw?: false };
 }
 
-export type EmailConfirmationMailer = ({
+export type EmailVerificationMailer = ({
   req,
   res,
   userId,
@@ -256,7 +256,7 @@ export default (app: Courselore): void => {
         lastSeenOnlineAt: string;
         email: string;
         password: string;
-        emailConfirmedAt: string | null;
+        emailVerifiedAt: string | null;
         name: string;
         avatar: string | null;
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
@@ -269,7 +269,7 @@ export default (app: Courselore): void => {
                  "lastSeenOnlineAt",
                  "email",
                  "password",
-                 "emailConfirmedAt",
+                 "emailVerifiedAt",
                  "name",
                  "avatar",
                  "avatarlessBackgroundColor",
@@ -1201,18 +1201,18 @@ export default (app: Courselore): void => {
     parallelism: 1,
   };
 
-  app.locals.mailers.emailConfirmation = ({ req, res, userId, userEmail }) => {
-    const emailConfirmation = app.locals.database.executeTransaction(() => {
+  app.locals.mailers.emailVerification = ({ req, res, userId, userEmail }) => {
+    const emailVerification = app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
-          DELETE FROM "emailConfirmations" WHERE "user" = ${userId}
+          DELETE FROM "emailVerifications" WHERE "user" = ${userId}
         `
       );
       return app.locals.database.get<{
         nonce: string;
       }>(
         sql`
-          INSERT INTO "emailConfirmations" ("createdAt", "user", "nonce")
+          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
           VALUES (
             ${new Date().toISOString()},
             ${userId},
@@ -1223,8 +1223,8 @@ export default (app: Courselore): void => {
       )!;
     });
 
-    const link = `${app.locals.options.baseURL}/email-confirmation/${
-      emailConfirmation.nonce
+    const link = `${app.locals.options.baseURL}/email-verification/${
+      emailVerification.nonce
     }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
     app.locals.database.run(
       sql`
@@ -1243,7 +1243,7 @@ export default (app: Courselore): void => {
             subject: "Welcome to Courselore!",
             html: html`
               <p>
-                Please confirm your email:<br />
+                Please verify your email:<br />
                 <a href="${link}" target="_blank">${link}</a>
               </p>
             `,
@@ -1257,7 +1257,7 @@ export default (app: Courselore): void => {
     while (true) {
       app.locals.database.run(
         sql`
-          DELETE FROM "emailConfirmations"
+          DELETE FROM "emailVerifications"
           WHERE "createdAt" < ${new Date(
             Date.now() - 24 * 60 * 60 * 1000
           ).toISOString()}
@@ -1322,7 +1322,7 @@ export default (app: Courselore): void => {
             "lastSeenOnlineAt",
             "email",
             "password",
-            "emailConfirmedAt",
+            "emailVerifiedAt",
             "name",
             "nameSearch",
             "avatarlessBackgroundColor",
@@ -1343,7 +1343,7 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      app.locals.mailers.emailConfirmation({
+      app.locals.mailers.emailVerification({
         req,
         res,
         userId: user.id,
@@ -1363,15 +1363,15 @@ export default (app: Courselore): void => {
   );
 
   app.post<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
-    "/resend-confirmation-email",
+    "/resend-verification-email",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      if (res.locals.user.emailConfirmedAt !== null) {
+      if (res.locals.user.emailVerifiedAt !== null) {
         app.locals.helpers.Flash.set({
           req,
           res,
           theme: "rose",
-          content: html`Email already confirmed.`,
+          content: html`Email already verified.`,
         });
         return res.redirect(
           303,
@@ -1383,7 +1383,7 @@ export default (app: Courselore): void => {
           }`
         );
       }
-      app.locals.mailers.emailConfirmation({
+      app.locals.mailers.emailVerification({
         req,
         res,
         userId: res.locals.user.id,
@@ -1393,7 +1393,7 @@ export default (app: Courselore): void => {
         req,
         res,
         theme: "green",
-        content: html`Confirmation email resent.`,
+        content: html`Verification email resent.`,
       });
       res.redirect(
         303,
@@ -1408,35 +1408,35 @@ export default (app: Courselore): void => {
   );
 
   app.get<
-    { emailConfirmationNonce: string },
+    { emailVerificationNonce: string },
     HTML,
     {},
     { redirect?: string },
     IsSignedInMiddlewareLocals
   >(
-    "/email-confirmation/:emailConfirmationNonce",
+    "/email-verification/:emailVerificationNonce",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      const emailConfirmation = app.locals.database.get<{ user: number }>(
+      const emailVerification = app.locals.database.get<{ user: number }>(
         sql`
-          SELECT "user" FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
+          SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
         `
       );
       app.locals.database.run(
         sql`
-          DELETE FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
+          DELETE FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
         `
       );
       if (
-        emailConfirmation === undefined ||
-        emailConfirmation.user !== res.locals.user.id
+        emailVerification === undefined ||
+        emailVerification.user !== res.locals.user.id
       ) {
         app.locals.helpers.Flash.set({
           req,
           res,
           theme: "rose",
           content: html`
-            This email confirmation link is invalid or belongs to a different
+            This email verification link is invalid or belongs to a different
             account.
           `,
         });
@@ -1453,7 +1453,7 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`
           UPDATE "users"
-          SET "emailConfirmedAt" = ${new Date().toISOString()}
+          SET "emailVerifiedAt" = ${new Date().toISOString()}
           WHERE "id" = ${res.locals.user.id}
         `
       );
@@ -1461,7 +1461,7 @@ export default (app: Courselore): void => {
         req,
         res,
         theme: "green",
-        content: html`Email confirmed successfully.`,
+        content: html`Email verified successfully.`,
       });
       res.redirect(
         303,
