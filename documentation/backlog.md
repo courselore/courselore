@@ -236,6 +236,8 @@
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
 - Add option to receive email notifications for your own messages.
+- Allow replying to a message by replying to the email notification
+  - Obfuscate email addresses in the message (like GitHub does).
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 
 ```javascript
