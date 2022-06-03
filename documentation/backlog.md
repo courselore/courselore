@@ -23,18 +23,54 @@
 - For department-wide installations.
 - Introduce the notion of an “administrator”, which is installation-wide, not course-wide.
   - The “administrator” has complete access on the system: They can grant privileges to other people, see all course information, and so forth. (This is exactly the kind of data that’s already available to them by inspecting the database, we’re just providing a nicer interface).
-  - An administrator may also be staff or students on courses using the same account.
+  - An administrator may also be staff or student on courses using the same account.
 
 **Goals**
 
-- Administrators manage the role of other administrators.
-- Allowlist of people who can create a course.
+- Introduce the notion of system-wide roles:
+  - Administrators
+  - Staff
+  - `NULL`
+- List of people in the system
+  - Manage roles
+  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
+- List of courses in the system
+  - Access the course
+  - Have a quick way to archive a course directly from this list
+- Control who can create a course:
+  - Anyone.
+  - An allowlist.
+  - Only administrators.
+- When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
+- The only way to become an administrator is to have another administrator assign you that role. We won’t have anything like “invitation links” or “invitation emails,” like we have for courses.
+- How to get the first administrator in the system:
+  - New installation: The first user that’s created is an administrator.
+  - Existing installations: Have a script people can use in the update to grant themselves the administrator role.
+- What happens when you’re the administrator and also the staff on a course?
+  - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
+  - Or do you see the course as a regular staff member would?
+  - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
+- Substitute the notion of `administratorEmail` to use the email an administrator?
 
 **Good to Have in the Future**
 
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
+- Graph of use over time:
+  - Number of users
+  - Number of active courses
+  - Activity on conversations
+    - It’d be nice for the course staff to also have access to that
+- Low-level information:
+  - Machine statistics, for example, disk space
+  - Notifications: Disk running out of space, load average above normal, and so forth
+  - Run an update
+  - Run a backup
+  - Email server configuration & other things that currently live in configuration file
+  - Have a wizard to set things up the first time
+  - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
+- Take a look at other nice features from Discourse’s administrative interface
 
 ### User Interface Improvements
 
