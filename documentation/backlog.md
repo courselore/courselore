@@ -75,7 +75,10 @@
 
 ### User Interface Improvements
 
-- Add the course name to the “From” field of emails.
+---
+
+- On deployment:
+  - Test “From” field with actual emails. See how email clients react. If necessary, revert.
 
 ---
 

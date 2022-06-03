@@ -136,7 +136,9 @@ export default (app: Courselore): void => {
           `${new Date().toISOString()}\tworker.sendEmail\t${result.status}\t\t${
             result?.response ?? ""
           }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-            process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
+            process.env.NODE_ENV !== "production"
+              ? `\n${JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)}`
+              : ``
           }`
         );
       }
