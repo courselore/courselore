@@ -83,8 +83,6 @@
 
 ### User Interface Improvements
 
----
-
 - On deployment:
   - Test “From” field with actual emails. See how email clients react. If necessary, revert.
 
