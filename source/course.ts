@@ -4238,13 +4238,18 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.isInvitationUsable,
     asyncHandler(async (req, res) => {
+      if (
+        typeof req.query.redirect === "string" &&
+        req.query.redirect.trim() !== ""
+      )
+        res.redirect(303, `${app.locals.options.baseURL}${req.query.redirect}`);
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.locals.layouts.box({
