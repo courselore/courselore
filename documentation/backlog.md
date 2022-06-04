@@ -32,29 +32,37 @@
   - Administrators
   - Staff
   - `NULL`
+- How to get the first administrator in the system:
+  - New installation: The first user that’s created is an administrator.
+  - Existing installations: Have a script that people can use in the update to grant themselves the administrator role.
+- **Question:** How do we get other administrators & staff on the system?
+  - Option 1: The only way is to ask people to create their accounts, then as an administrator go into the list of users and grant them the role
+  - Option 2: Invitations for installation-wide roles
+    - These would be similar to the invitations for a course.
+    - For staff?
+    - For administrators?
+  - Option 3: Administrators can create users.
 - List of people in the system
   - Manage roles
-  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
 - List of courses in the system
   - Access the course
   - Have a quick way to archive a course directly from this list
 - Control who can create a course:
   - Anyone.
-  - An allowlist.
+  - Only staff & administrators.
   - Only administrators.
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-- The only way to become an administrator is to have another administrator assign you that role. We won’t have anything like “invitation links” or “invitation emails,” like we have for courses.
-- How to get the first administrator in the system:
-  - New installation: The first user that’s created is an administrator.
-  - Existing installations: Have a script people can use in the update to grant themselves the administrator role.
-- What happens when you’re the administrator and also the staff on a course?
-  - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
-  - Or do you see the course as a regular staff member would?
-  - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
+  - **Question:** What happens when you’re the administrator and also the staff on a course?
+    - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
+    - Or do you see the course as a regular staff member would?
+    - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
 - Substitute the notion of `administratorEmail` to use the email an administrator?
 
 **Good to Have in the Future**
 
+- Administrators can have further control over user accounts:
+  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
+  - Enroll people in courses
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.

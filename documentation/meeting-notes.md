@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-06-04</summary>
+
+- Started work on the administrative interface.
+
+</details>
+
+<details>
 <summary>2021-05-28</summary>
 
 - Had a meeting with Zach: how the first semester with Courselore went; what to do for next semester; and a brief technical overview.
@@ -10,7 +17,6 @@
 - Minimal integration with Learning Management Systems is a high priority. (Identity only; don’t do grades and other things right now.)
 
 </details>
-
 
 <details>
 <summary>2021-05-24 (Zach)</summary>
