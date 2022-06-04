@@ -4362,7 +4362,7 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -4392,7 +4392,14 @@ export default (app: Courselore): void => {
               method="POST"
               action="${app.locals.options.baseURL}/courses/${res.locals
                 .invitation.course.reference}/invitations/${res.locals
-                .invitation.reference}"
+                .invitation.reference}${qs.stringify(
+                {
+                  redirect: req.query.redirect,
+                },
+                {
+                  addQueryPrefix: true,
+                }
+              )}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
@@ -4415,7 +4422,7 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -4446,7 +4453,15 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.invitation.course.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.invitation.course.reference
+        }${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== "" &&
+          req.query.redirect.startsWith("/")
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );

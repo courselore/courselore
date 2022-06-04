@@ -83,12 +83,11 @@
 
 ### User Interface Improvements
 
-- When reporting an issue via Meta Courselore from the footer call-to-action:
-  - Thread the `redirect` parameter across forms, links, and redirects.
-  - Test:
-    - Enroll & follow redirect from invitation
-    - In production: already enrolled in Meta Courselore, click on report an issue on the footer.
 - Settings layout is jumping around between, for example, `/settings/your-enrollment` and `/settings/tags`.
+
+**On Deployment**
+
+- Test reporting an issue via Meta Courselore from the footer.
 
 **Top Menus**
 
