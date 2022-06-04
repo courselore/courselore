@@ -83,6 +83,91 @@
 
 ### User Interface Improvements
 
+- When reporting an issue via Meta Courselore from the footer call-to-action:
+  - Have a way for the invitation to redirect.
+  - Redirect to a pre-filled “New Conversation,” similar to what we do on GitHub & email.
+
+**Top Menus**
+
+- Use hamburger menu instead of a couple separate menus
+  - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
+
+**Conversations List on Sidebar**
+
+- Group conversations by date & pinned (similar to Piazza & Campuswire).
+- Separate the conversations in sections: One section for conversations with unread messages.
+- Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
+  - Wait for a little while, 10~30 minutes, before sorting.
+- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
+  - Change the visualization of “types” a little more, for example, make announcements pop up.
+  - Improve display of endorsements & answers (on the sidebar, include number of answers).
+  - Manage answer badges more intelligently (answered at all, answered by staff).
+
+**Messages**
+
+- Higher contrast between background and text?
+- Blockquotes (replies) should have a faint background color to help differentiate them.
+- Collapse long blockquotes
+- Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
+- Bigger font (15pt).
+- Wider columns
+- Include a “set as answer and endorse” button.
+- Show a widget similar to the Views (with person & time) to likes & endorsements.
+- Don’t show show endorsements for non-answers. (They show up at least for staff.)
+
+**Chat**
+
+- More space between messages and less space between paragraphs
+- Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
+- “Truncate” long messages.
+- Scroll to the bottom when sending chat message regardless of your scroll position?
+- Add a button to “Return to Bottom” when chat is scrolled up.
+
+**Content Editor**
+
+- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+- When editing, and trying to send empty message, propose to delete (like Discord does).
+- When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
+
+**New Conversation**
+
+- Keep all the material that is there, but present it differently to try and make the page cleaner.
+- Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
+  - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
+- Use different background colors, similar to Piazza.
+
+**Live-Navigation**
+
+- On form submissions, for example, when you create an invitation, highlight the part of the page that changed (use the same yellow we use for permanent links to messages).
+
+**Live-Updates**
+
+- Uses of `classList` may pose problems when they deal with showing/hiding, or other kinds of state that we’d like to preserve
+- Avatar image on avatar tooltip flickers
+- Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
+
+**Other**
+
+- When an SVG is uploaded & resized (either as an avatar or as attachment on a message) its type changes to PNG, but we’re producing the wrong filename, ending in `.svg`.
+- Add the number of unread messages to the `<title>`.
+  - Or change the favicon.
+- Detect old or otherwise unsupported browsers and alert, asking the user to update.
+- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
+- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
+- The anonymity button isn’t as clear as it should be.
+
+**Windows**
+
+- `fileURLToPath` & `pathToFileURL` may be problematic.
+- `global.css` is regenerated (probably because of line endings)
+
+**Roadmap**
+
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
+
+### Quality-of-Life Features
+
 - Drafts:
   - Unhide buttons
     - Perhaps don’t have them styled as links…
@@ -108,146 +193,20 @@
 - Do `localStorage` on the server:
   - It’ll work across devices, which is a “pleasant surprise.”
   - It allows for features such as “currently typing.”
-  - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-
----
-
-- Top menus:
-  - Use hamburger menu instead of couple separate menus
-    - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
-
----
-
-- Chat:
-  - More space between messages and less space between paragraphs
-  - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
-  - “Truncate” long messages.
-  - Scroll to the bottom when sending chat message regardless of your scroll position?
-
----
-
-- Messages:
-  - Higher contrast between background and text?
-  - Blockquotes (replies) should have a faint background color to help differentiate them.
-  - Collapse long blockquotes
-  - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
-  - Bigger font (15pt).
-  - Wider columns
-
----
-
-- Live-updates side-effects:
-  - Uses of `classList` may pose problems when they deal with showing/hiding, or other kinds of state that we’d like to preserve
-  - Avatar image on avatar tooltip flickers
-  - Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
-
----
-
-- Conversations list:
-  - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
-    - Wait for a little while, 10~30 minutes, before sorting.
-  - Separate the conversations in sections: One section for conversations with unread messages.
-  - Group conversations by date & pinned (similar to Piazza & Campuswire).
-  - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-    - Change the visualization of “types” a little more, for example, make announcements pop up.
-    - Improve display of endorsements & answers (on the sidebar, include number of answers).
-    - Manage answer badges more intelligently (answered at all, answered by staff).
-    - Let original question asker approve an answer.
-
----
-
-- Add the number of unread messages to the `<title>`.
-  - Or change the favicon.
-
----
-
-- Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
 
 ---
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
-
----
-
-- When editing, and trying to send empty message, propose to delete (like Discord does).
-- When pressing up on an empty chat box, start editing the most recent message (like Discord does).
-
----
-
-- SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
-
----
-
-- “New Conversation” page:
-  - Keep all the material that is there, but present it differently to try and make the page cleaner.
-  - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
-    - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
-  - Use different background colors, similar to Piazza.
-
----
-
-- Include a “set as answer and endorse” button.
 - Let staff endorse other staff answers.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
-
----
-
-- Add a button to “Return to Bottom” in chat.
-
----
-
-- Show a widget similar to the Views (with person & time) to likes & endorsements.
-
----
-
-- We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
-
----
-
-- Detect old or otherwise unsupported browsers and alert, asking the user to update.
-
----
-
-- Community engagement:
-  - Make a public page listing known issues.
-  - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-  - In Meta Courselore, make a pinned announcement of how to report bugs.
-    - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-
----
-
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
 ---
 
-- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
-
----
-
-- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
-
----
-
-- The anonymity button isn’t as clear as it should be.
-
----
-
-- Windows:
-  - `fileURLToPath` & `pathToFileURL` may be problematic.
-  - Installed `courselore` as a dependency on `static/package.json`(!)
-  - `global.css` is regenerated (probably because of line endings)
-
----
-
 - Investigate browser crashes on Android Chrome
-
----
-
-- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
 ### Notifications
 
@@ -350,6 +309,7 @@ new Notification('Example');
 - Different states: Open vs archived.
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Conversation templates, for example, for bug reports on Meta Courselore.
+- Let original question asker approve an answer.
 
 ### Chat
 
@@ -2314,6 +2274,10 @@ $$
   - Reddit.
 - Don’t deploy big design changes until around 2022-05-11, because we’re approaching the end of the semester and big design changes could confuse people.
 - Over the summer, start thinking more strategically.
+- Make a public page listing known issues.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+- In Meta Courselore, make a pinned announcement of how to report bugs.
+  - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
 
 ### References
 
