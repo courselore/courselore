@@ -83,8 +83,6 @@
 
 ### User Interface Improvements
 
-- Settings layout is jumping around between, for example, `/settings/your-enrollment` and `/settings/tags`.
-
 **On Deployment**
 
 - Test reporting an issue via Meta Courselore from the footer.
