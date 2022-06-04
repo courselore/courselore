@@ -1,6 +1,6 @@
 {
   "name": "courselore",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Communication Platform for Education",
   "exports": "./distribution/index.js",
   "types": "./distribution/index.d.ts",
