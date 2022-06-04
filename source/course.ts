@@ -4249,7 +4249,10 @@ export default (app: Courselore): void => {
         typeof req.query.redirect === "string" &&
         req.query.redirect.trim() !== ""
       )
-        res.redirect(303, `${app.locals.options.baseURL}${req.query.redirect}`);
+        res.redirect(
+          303,
+          `${app.locals.options.baseURL}/courses/${res.locals.course.reference}${req.query.redirect}`
+        );
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.locals.layouts.box({
