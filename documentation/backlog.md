@@ -84,8 +84,8 @@
 ### User Interface Improvements
 
 - When reporting an issue via Meta Courselore from the footer call-to-action:
-  - Thread the `redirect` parameter across forms, links, and redirects.
   - Redirect to a pre-filled “New Conversation,” similar to what we do on GitHub & email.
+  - Thread the `redirect` parameter across forms, links, and redirects.
   - Test:
     - Enroll & follow redirect from invitation
     - In production: already enrolled in Meta Courselore, click on report an issue on the footer.
