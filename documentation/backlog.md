@@ -88,6 +88,7 @@
   - Test:
     - Enroll & follow redirect from invitation
     - In production: already enrolled in Meta Courselore, click on report an issue on the footer.
+- Settings layout is jumping around between, for example, `/settings/your-enrollment` and `/settings/tags`.
 
 **Top Menus**
 
