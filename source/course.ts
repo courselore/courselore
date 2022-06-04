@@ -4247,7 +4247,8 @@ export default (app: Courselore): void => {
     asyncHandler(async (req, res) => {
       if (
         typeof req.query.redirect === "string" &&
-        req.query.redirect.trim() !== ""
+        req.query.redirect.trim() !== "" &&
+        req.query.redirect.startsWith("/")
       )
         res.redirect(
           303,
