@@ -20,7 +20,7 @@
   "homepage": "https://github.com/courselore/courselore#readme",
   "type": "module",
   "scripts": {
-    "postinstall": "npm --prefix ./static/ install",
+    "postinstall": "cd ./static/ && npm install",
     "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/binary.js\"",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
