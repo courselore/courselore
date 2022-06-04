@@ -648,7 +648,40 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             href="${app.locals.options
-                              .metaCourseloreInvitation}"
+                              .metaCourseloreInvitation}${qs.stringify(
+                              {
+                                redirect: `/courses/8537410611/conversations/new${qs.stringify(
+                                  {
+                                    newConversation: {
+                                      type: "question",
+                                      content: dedent`
+                                        **What did you try to do?**
+
+
+
+                                        **What did you expect to happen?**
+
+
+
+                                        **What really happened?**
+
+
+
+                                        **What error messages (if any) did you run into?**
+
+
+
+                                        Please provide as much relevant context as possible (operating system, browser, and so forth):
+
+                                        - Courselore Version: ${app.locals.options.version}
+                                      `,
+                                    },
+                                  },
+                                  { addQueryPrefix: true }
+                                )}`,
+                              },
+                              { addQueryPrefix: true }
+                            )}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                             css="${res.locals.css(css`
