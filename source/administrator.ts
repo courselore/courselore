@@ -1,7 +1,20 @@
+import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 
 import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
+
+export type AdministratorLayout = ({
+  req,
+  res,
+  head,
+  body,
+}: {
+  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
+  res: express.Response<any, IsSignedInMiddlewareLocals>;
+  head: HTML;
+  body: HTML;
+}) => HTML;
 
 export default (app: Courselore): void => {
   app.locals.layouts.administratorPanel = ({ req, res, head, body }) =>

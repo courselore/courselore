@@ -47,7 +47,7 @@ export {
 
 import about, { AboutHandler } from "./about.js";
 
-import administrator from "./administrator.js";
+import administrator, {AdministratorLayout} from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
@@ -180,7 +180,7 @@ export interface Courselore extends express.Express {
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
       courseSettings: CourseSettingsLayout;
-      administratorPanel: UserSettingsLayout;
+      administratorPanel: AdministratorLayout;
       conversation: ConversationLayout;
     };
     partials: {
