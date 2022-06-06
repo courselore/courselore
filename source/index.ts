@@ -47,7 +47,11 @@ export {
 
 import about, { AboutHandler } from "./about.js";
 
-import administrator, {AdministratorLayout} from "./administrator.js";
+import administrator, {
+  IsAdministratorMiddleware,
+  AdministratorLayout,
+} from "./administrator.js";
+export { IsAdministratorMiddlewareLocals } from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
@@ -159,6 +163,7 @@ export interface Courselore extends express.Express {
       liveUpdates: LiveUpdatesMiddleware;
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
+      isAdministrator: IsAdministratorMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;

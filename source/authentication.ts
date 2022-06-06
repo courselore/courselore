@@ -83,6 +83,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
     emailNotifications: UserEmailNotifications;
+    administratorAt: string | null;
   };
   invitations: {
     id: number;
@@ -263,6 +264,7 @@ export default (app: Courselore): void => {
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
         emailNotifications: UserEmailNotifications;
+        administratorAt: string | null;
       }>(
         sql`
           SELECT "id",
@@ -275,7 +277,8 @@ export default (app: Courselore): void => {
                  "avatarlessBackgroundColor",
                  "biographySource",
                  "biographyPreprocessed",
-                 "emailNotifications"
+                 "emailNotifications",
+                 "administratorAt"
           FROM "users"
           WHERE "id" = ${userId}
         `

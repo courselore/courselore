@@ -4,6 +4,16 @@ import { css } from "@leafac/css";
 
 import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
 
+export type IsAdministratorMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsAdministratorMiddlewareLocals
+>[];
+export interface IsAdministratorMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {}
+
 export type AdministratorLayout = ({
   req,
   res,
@@ -17,6 +27,14 @@ export type AdministratorLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
+  app.locals.middlewares.isAdministrator = [
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (res.locals.user.administratorAt !== null) return next();
+      next("route");
+    },
+  ];
+
   app.locals.layouts.administratorPanel = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
@@ -61,9 +79,9 @@ export default (app: Courselore): void => {
       body,
     });
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administrator-panel",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.locals.middlewares.isAdministrator,
     (res, req) => {
       req.redirect(
         303,
@@ -72,9 +90,9 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administrator-panel/configuration",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       res.send(
         app.locals.layouts.administratorPanel({
@@ -175,9 +193,9 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administrator-panel/statistics",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       res.send(
         app.locals.layouts.administratorPanel({
