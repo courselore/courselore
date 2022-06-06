@@ -1,9 +1,5 @@
 # Backlog
 
-- Make localtunnel work
-
----
-
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
   Include HMAC
   Max size 5242880
