@@ -87,7 +87,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
                   file_server
                 }
               }
-              reverse_proxy 127.0.0.1:4001
+              reverse_proxy 127.0.0.1:4000
             }
             handle_errors {
               import common
@@ -121,7 +121,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
     });
-    const server = app.listen(4001, "127.0.0.1");
+    const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");
     for (const signal of [
       "exit",
