@@ -1,5 +1,17 @@
 # Backlog
 
+- Make localtunnel work
+
+---
+
+- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
+Include HMAC
+Max size 5242880
+Max number of redirects 4
+Timeout 10s
+Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+Test http://www.pudim.com.br/pudim.jpg
+
 ### Fall
 
 - Notifications:
@@ -353,7 +365,6 @@ new Notification('Example');
 - Add support for underline in Markdown.
 - The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
-- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal:
