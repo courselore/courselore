@@ -11,16 +11,161 @@
 - Minimal integration with Learning Management Systems (identity, not grades).
 - Performance:
   - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
+- Administrative interface.
 - Smaller things:
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
+### Administrative Interface
+
+**Overview**
+
+- For system administrators.
+- For department-wide installations.
+- Introduce the notion of an “administrator”, which is installation-wide, not course-wide.
+  - The “administrator” has complete access on the system: They can grant privileges to other people, see all course information, and so forth. (This is exactly the kind of data that’s already available to them by inspecting the database, we’re just providing a nicer interface).
+  - An administrator may also be staff or student on courses using the same account.
+
+**Goals**
+
+- Introduce the notion of system-wide roles:
+  - Administrators
+  - Staff
+  - `NULL`
+- How to get the first administrator in the system:
+  - New installation: The first user that’s created is an administrator.
+  - Existing installations: Have a script that people can use in the update to grant themselves the administrator role.
+- **Question:** How do we get other administrators & staff on the system?
+  - Option 1: The only way is to ask people to create their accounts, then as an administrator go into the list of users and grant them the role
+  - Option 2: Invitations for installation-wide roles
+    - These would be similar to the invitations for a course.
+    - For staff?
+    - For administrators?
+  - Option 3: Administrators can create users.
+- List of people in the system
+  - Manage roles
+- List of courses in the system
+  - Access the course
+  - Have a quick way to archive a course directly from this list
+- Control who can create a course:
+  - Anyone.
+  - Only staff & administrators.
+  - Only administrators.
+- When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
+  - **Question:** What happens when you’re the administrator and also the staff on a course?
+    - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
+    - Or do you see the course as a regular staff member would?
+    - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
+- Substitute the notion of `administratorEmail` to use the email an administrator?
+
+**Good to Have in the Future**
+
+- Administrators can have further control over user accounts:
+  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
+  - Enroll people in courses
+- Introduce the notion of “institution”
+  - An institution may be a department, an university, and so forth.
+  - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
+- Graph of use over time:
+  - Number of users
+  - Number of active courses
+  - Activity on conversations
+    - It’d be nice for the course staff to also have access to that
+- Low-level information:
+  - Machine statistics, for example, disk space
+  - Notifications: Disk running out of space, load average above normal, and so forth
+  - Run an update
+  - Run a backup
+  - Email server configuration & other things that currently live in configuration file
+  - Have a wizard to set things up the first time
+  - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
+- Take a look at other nice features from Discourse’s administrative interface
+
 ### User Interface Improvements
 
-- Rename, reword, and refactor:
-  - “Confirm” email → “Verify” email.
+**On Deployment**
 
----
+- Test reporting an issue via Meta Courselore from the footer.
+
+**Top Menus**
+
+- Use hamburger menu instead of a couple separate menus
+  - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
+
+**Conversations List on Sidebar**
+
+- Group conversations by date & pinned (similar to Piazza & Campuswire).
+- Separate the conversations in sections: One section for conversations with unread messages.
+- Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
+  - Wait for a little while, 10~30 minutes, before sorting.
+- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
+  - Change the visualization of “types” a little more, for example, make announcements pop up.
+  - Improve display of endorsements & answers (on the sidebar, include number of answers).
+  - Manage answer badges more intelligently (answered at all, answered by staff).
+
+**Messages**
+
+- Higher contrast between background and text?
+- Blockquotes (replies) should have a faint background color to help differentiate them.
+- Collapse long blockquotes
+- Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
+- Bigger font (15pt).
+- Wider columns
+- Include a “set as answer and endorse” button.
+- Show a widget similar to the Views (with person & time) to likes & endorsements.
+- Don’t show show endorsements for non-answers. (They show up at least for staff.)
+
+**Chat**
+
+- More space between messages and less space between paragraphs
+- Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
+- “Truncate” long messages.
+- Scroll to the bottom when sending chat message regardless of your scroll position?
+- Add a button to “Return to Bottom” when chat is scrolled up.
+
+**Content Editor**
+
+- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+- When editing, and trying to send empty message, propose to delete (like Discord does).
+- When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
+
+**New Conversation**
+
+- Keep all the material that is there, but present it differently to try and make the page cleaner.
+- Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
+  - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
+- Use different background colors, similar to Piazza.
+
+**Live-Navigation**
+
+- On form submissions, for example, when you create an invitation, highlight the part of the page that changed (use the same yellow we use for permanent links to messages).
+
+**Live-Updates**
+
+- Avatar image on avatar tooltip flickers
+- Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
+
+**Other**
+
+- When an SVG is uploaded & resized (either as an avatar or as attachment on a message) its type changes to PNG, but we’re producing the wrong filename, ending in `.svg`.
+- Add the number of unread messages to the `<title>`.
+  - Or change the favicon.
+- Detect old or otherwise unsupported browsers and alert, asking the user to update.
+- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
+- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
+- The anonymity button isn’t as clear as it should be.
+
+**Windows**
+
+- `fileURLToPath` & `pathToFileURL` may be problematic.
+- `global.css` is regenerated (probably because of line endings)
+
+**Roadmap**
+
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
+
+### Quality-of-Life Features
 
 - Drafts:
   - Unhide buttons
@@ -47,146 +192,20 @@
 - Do `localStorage` on the server:
   - It’ll work across devices, which is a “pleasant surprise.”
   - It allows for features such as “currently typing.”
-  - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-
----
-
-- Top menus:
-  - Use hamburger menu instead of couple separate menus
-    - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
-
----
-
-- Chat:
-  - More space between messages and less space between paragraphs
-  - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
-  - “Truncate” long messages.
-  - Scroll to the bottom when sending chat message regardless of your scroll position?
-
----
-
-- Messages:
-  - Higher contrast between background and text?
-  - Blockquotes (replies) should have a faint background color to help differentiate them.
-  - Collapse long blockquotes
-  - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
-  - Bigger font (15pt).
-  - Wider columns
-
----
-
-- Live-updates side-effects:
-  - Uses of `classList` may pose problems when they deal with showing/hiding, or other kinds of state that we’d like to preserve
-  - Avatar image on avatar tooltip flickers
-  - Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
-
----
-
-- Conversations list:
-  - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
-    - Wait for a little while, 10~30 minutes, before sorting.
-  - Separate the conversations in sections: One section for conversations with unread messages.
-  - Group conversations by date & pinned (similar to Piazza & Campuswire).
-  - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-    - Change the visualization of “types” a little more, for example, make announcements pop up.
-    - Improve display of endorsements & answers (on the sidebar, include number of answers).
-    - Manage answer badges more intelligently (answered at all, answered by staff).
-    - Let original question asker approve an answer.
-
----
-
-- Add the number of unread messages to the `<title>`.
-  - Or change the favicon.
-
----
-
-- Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
 
 ---
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
-
----
-
-- When editing, and trying to send empty message, propose to delete (like Discord does).
-- When pressing up on an empty chat box, start editing the most recent message (like Discord does).
-
----
-
-- SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
-
----
-
-- “New Conversation” page:
-  - Keep all the material that is there, but present it differently to try and make the page cleaner.
-  - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
-    - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
-  - Use different background colors, similar to Piazza.
-
----
-
-- Include a “set as answer and endorse” button.
 - Let staff endorse other staff answers.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
-
----
-
-- Add a button to “Return to Bottom” in chat.
-
----
-
-- Show a widget similar to the Views (with person & time) to likes & endorsements.
-
----
-
-- We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
-
----
-
-- Detect old or otherwise unsupported browsers and alert, asking the user to update.
-
----
-
-- Community engagement:
-  - Make a public page listing known issues.
-  - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-  - In Meta Courselore, make a pinned announcement of how to report bugs.
-    - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-
----
-
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
 ---
 
-- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
-
----
-
-- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
-
----
-
-- The anonymity button isn’t as clear as it should be.
-
----
-
-- Windows:
-  - `fileURLToPath` & `pathToFileURL` may be problematic.
-  - Installed `courselore` as a dependency on `static/package.json`(!)
-  - `global.css` is regenerated (probably because of line endings)
-
----
-
 - Investigate browser crashes on Android Chrome
-
----
-
-- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
 ### Notifications
 
@@ -211,6 +230,8 @@
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
 - Add option to receive email notifications for your own messages.
+- Allow replying to a message by replying to the email notification
+  - Obfuscate email addresses in the message (like GitHub does).
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 
 ```javascript
@@ -245,8 +266,8 @@ new Notification('Example');
 ### Users
 
 - Improvements to the workflow for when you change your email:
-  - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
-  - Don’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
+  - The verification email has a subject of “Welcome to Courselore!”. It should be “Please verify your email”.
+  - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Online indicators.
   - Turn them on when someone who was offline becomes online.
   - Don’t turn them off if person continues to be online.
@@ -287,6 +308,7 @@ new Notification('Example');
 - Different states: Open vs archived.
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Conversation templates, for example, for bug reports on Meta Courselore.
+- Let original question asker approve an answer.
 
 ### Chat
 
@@ -385,17 +407,6 @@ new Notification('Example');
 - Let people configure other storage engines (for example, S3).
 - Create a garbage collection routine for attachments.
 - Clean geolocation & other metadata from images.
-
-### Administrative Interface
-
-- Administrative interface is for system administrators, not for department administrators(!)
-- It’s like a root user on Linux.
-- Allowlist people who can create a course.
-- Have complete access to course information.
-- Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
-- Perhaps don’t do this now: prioritize other features that are more pertinent to staff & students, given that we’ll follow a “bottom-up” approach to increasing the Courselore user base.
-- For department-wide installations.
-- Add a role of “administrator” that’s installation-wide, not course-wide.
 
 ### Statistics
 
@@ -2262,6 +2273,10 @@ $$
   - Reddit.
 - Don’t deploy big design changes until around 2022-05-11, because we’re approaching the end of the semester and big design changes could confuse people.
 - Over the summer, start thinking more strategically.
+- Make a public page listing known issues.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+- In Meta Courselore, make a pinned announcement of how to report bugs.
+  - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
 
 ### References
 

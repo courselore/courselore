@@ -1069,6 +1069,10 @@ export default (app: Courselore): void => {
           ${new Date().toISOString()},
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
+            from: `"Courselore · ${invitation.course.name.replace(
+              /[^\w ]/g,
+              "•"
+            )}" <${app.locals.options.administratorEmail}>`,
             to: invitation.email!,
             subject: `Enroll in ${invitation.course.name}`,
             html: html`
@@ -4234,13 +4238,22 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.isInvitationUsable,
     asyncHandler(async (req, res) => {
+      if (
+        typeof req.query.redirect === "string" &&
+        req.query.redirect.trim() !== "" &&
+        req.query.redirect.startsWith("/")
+      )
+        res.redirect(
+          303,
+          `${app.locals.options.baseURL}/courses/${res.locals.course.reference}${req.query.redirect}`
+        );
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.locals.layouts.box({
@@ -4349,7 +4362,7 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -4379,7 +4392,14 @@ export default (app: Courselore): void => {
               method="POST"
               action="${app.locals.options.baseURL}/courses/${res.locals
                 .invitation.course.reference}/invitations/${res.locals
-                .invitation.reference}"
+                .invitation.reference}${qs.stringify(
+                {
+                  redirect: req.query.redirect,
+                },
+                {
+                  addQueryPrefix: true,
+                }
+              )}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
@@ -4402,7 +4422,7 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -4433,7 +4453,15 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.invitation.course.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.invitation.course.reference
+        }${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== "" &&
+          req.query.redirect.startsWith("/")
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );

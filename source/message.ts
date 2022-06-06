@@ -1212,7 +1212,7 @@ export default (app: Courselore): void => {
                  "enrollments"."role"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                          "users"."emailConfirmedAt" IS NOT NULL AND
+                          "users"."emailVerifiedAt" IS NOT NULL AND
                           "users"."emailNotifications" != 'none'
           LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
                                                 "notificationDeliveries"."message" = ${
@@ -1264,6 +1264,10 @@ export default (app: Courselore): void => {
               ${new Date().toISOString()},
               ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
               ${JSON.stringify({
+                from: `"Courselore · ${res.locals.course.name.replace(
+                  /[^\w ]/g,
+                  "•"
+                )}" <${app.locals.options.administratorEmail}>`,
                 to: enrollment.userEmail,
                 subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
                 html: html`

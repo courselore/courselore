@@ -524,9 +524,13 @@ export default async (app: Courselore): Promise<void> => {
       WHERE "type" = 'announcement';
     `,
     sql`
-      ALTER TABLE "users" ADD COLUMN "administratorAt" TEXT NULL;
+      DROP INDEX "emailConfirmationsCreatedAtIndex";
+      ALTER TABLE "emailConfirmations" RENAME TO "emailVerifications";
+      CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
+      ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
     `,
     sql`
+      ALTER TABLE "users" ADD COLUMN "administratorAt" TEXT NULL;
       CREATE TABLE "configurations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "key" TEXT UNIQUE NOT NULL,
