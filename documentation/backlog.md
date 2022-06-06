@@ -5,12 +5,12 @@
 ---
 
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
-Include HMAC
-Max size 5242880
-Max number of redirects 4
-Timeout 10s
-Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
-Test http://www.pudim.com.br/pudim.jpg
+  Include HMAC
+  Max size 5242880
+  Max number of redirects 4
+  Timeout 10s
+  Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+  Test http://www.pudim.com.br/pudim.jpg
 
 ### Fall
 
@@ -769,6 +769,32 @@ const { app, BrowserWindow } = require("electron");
   - https://dbschema.com/database-designer/Sqlite.html
   - https://pypi.org/project/ERAlchemy/
   - https://www.beekeeperstudio.io (No diagrams, but worth keeping an eye on)
+
+---
+
+- Have a way for Localtunnel to work again.
+- Right now it doesn’t work because we serve via HTTPS, and `--local-https true` requires `--local-cert` and `--local-key`, but those are only created by Caddy after we have the URL. It’s a chicken and egg situation.
+
+````markdown
+<details>
+
+<summary>Option 3: Using <a href="https://localtunnel.me">Localtunnel</a></summary>
+
+1. Install & run Localtunnel following the instructions on the website.
+
+2. Run Courselore with the Localtunnel address, for example:
+
+   ```console
+   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   ```
+````
+
+> **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+
+3. Visit the Localtunnel address on the phone.
+
+</details>
+```
 
 ---
 

@@ -255,21 +255,3 @@ You may run Courselore on your machine and access it from a phone, which is esse
 5. Visit the server’s address on the phone.
 
 </details>
-
-<details>
-
-<summary>Option 3: Using <a href="https://localtunnel.me">Localtunnel</a></summary>
-
-1. Install & run Localtunnel following the instructions on the website.
-
-2. Run Courselore with the Localtunnel address, for example:
-
-   ```console
-   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
-   ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
-
-3. Visit the Localtunnel address on the phone.
-
-</details>
