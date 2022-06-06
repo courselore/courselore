@@ -122,6 +122,8 @@
 - “Truncate” long messages.
 - Scroll to the bottom when sending chat message regardless of your scroll position?
 - Add a button to “Return to Bottom” when chat is scrolled up.
+- Images may break the scrolling to the bottom on chats.
+- If the textarea is autosizing, then the main messages pane scrolls up.
 
 **Content Editor**
 
@@ -526,7 +528,6 @@ const { app, BrowserWindow } = require("electron");
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
 - On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
-- Images may break the scrolling to the bottom on chats.
 
 ---
 
