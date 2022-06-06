@@ -47,6 +47,8 @@ export {
 
 import about, { AboutHandler } from "./about.js";
 
+import administrator from "./administrator.js";
+
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
@@ -269,6 +271,7 @@ export default async (options: Options): Promise<Courselore> => {
   authentication(app);
   about(app);
   user(app);
+  administrator(app);
   course(app);
   conversation(app);
   message(app);
