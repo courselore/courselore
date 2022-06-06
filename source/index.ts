@@ -178,6 +178,7 @@ export interface Courselore extends express.Express {
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
       courseSettings: CourseSettingsLayout;
+      administratorPanel: UserSettingsLayout;
       conversation: ConversationLayout;
     };
     partials: {
