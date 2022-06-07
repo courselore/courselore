@@ -5,6 +5,7 @@
   Max size 5242880
   Max number of redirects 4
   Timeout 10s
+  Resizing on-the-fly?
   Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
   Test http://www.pudim.com.br/pudim.jpg
 
