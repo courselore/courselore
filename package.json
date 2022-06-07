@@ -69,7 +69,7 @@
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.0"
   },
-  "caddy": "2.5.0",
+  "caddy": "2.5.1",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.0",
     "@types/cookie-parser": "^1.4.3",
