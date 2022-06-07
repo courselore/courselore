@@ -1,13 +1,24 @@
 # Backlog
 
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
-  Include HMAC
-  Max size 5242880
-  Max number of redirects 4
-  Timeout 10s
-  Resizing on-the-fly?
-  Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
-  Test http://www.pudim.com.br/pudim.jpg
+  - Include HMAC
+  - Max size 5242880
+  - Max number of redirects 4
+  - Timeout 10s
+  - Resizing on-the-fly?
+  - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+  - Test http://www.pudim.com.br/pudim.jpg
+  - References:
+    - Original: https://github.com/atmos/camo
+    - Commercial: https://github.com/imgproxy/imgproxy
+    - Open-Source in Go: https://github.com/willnorris/imageproxy
+    - Node.js basic functionality: https://github.com/http-party/node-http-proxy
+    - Node.js middleware (depends on `node-http-proxy`): https://github.com/chimurai/http-proxy-middleware
+    - https://github.com/cookpad/ecamo
+    - https://github.com/weserv/images
+    - https://github.com/jpmckinney/image-proxy
+    - https://github.com/sdepold/node-imageable
+    - https://github.com/marcjacobs1021/node-image-proxy
 
 ### Fall
 
