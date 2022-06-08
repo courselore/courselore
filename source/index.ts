@@ -150,6 +150,7 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
+      demonstration?: boolean;
       canCreateCourses: boolean;
       administratorEmail: string;
     } & Required<Options> &
@@ -242,7 +243,6 @@ export interface Options {
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
-  demonstration?: boolean;
   liveReload?: boolean;
 }
 
@@ -258,7 +258,6 @@ export default async (options: Options): Promise<Courselore> => {
     canonicalBaseURL: "https://courselore.org",
     metaCourseloreInvitation:
       "https://courselore.org/courses/8537410611/invitations/3667859788",
-    demonstration: process.env.NODE_ENV !== "production",
     liveReload: false,
     ...options,
   } as any;

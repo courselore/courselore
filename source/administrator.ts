@@ -4,8 +4,6 @@ import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 
 import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
-import { asyncHandler } from "@leafac/express-async-handler";
-import demonstration from "./demonstration.js";
 
 export type IsAdministratorMiddleware = express.RequestHandler<
   {},

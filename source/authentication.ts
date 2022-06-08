@@ -151,6 +151,42 @@ export type EmailVerificationMailer = ({
 }) => void;
 
 export default (app: Courselore): void => {
+  app.locals.options.canCreateCourses =
+  JSON.parse(
+    app.locals.database.get<{
+      value: string 
+    }>(
+      sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'canCreateCoursesAt'
+      `
+    )!.value) !== null;
+
+  app.locals.options.demonstration =
+  JSON.parse(
+    app.locals.database.get<{
+      value: string 
+    }>(
+      sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'demonstrationAt'
+      `
+    )!.value) !== null;
+
+  app.locals.options.administratorEmail =
+  JSON.parse(
+    app.locals.database.get<{
+      value: string 
+    }>(
+      sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'administratorEmail'
+      `
+    )!.value);
+
   app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
