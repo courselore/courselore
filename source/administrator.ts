@@ -1,8 +1,11 @@
 import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
+import { sql } from "@leafac/sqlite";
 
 import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
+import { asyncHandler } from "@leafac/express-async-handler";
+import demonstration from "./demonstration.js";
 
 export type IsAdministratorMiddleware = express.RequestHandler<
   {},
@@ -30,7 +33,9 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isAdministrator = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.user.administratorAt !== null) return next();
+      if (res.locals.user.administratorAt !== null) {
+        return next();
+      }
       next("route");
     },
   ];
@@ -129,8 +134,10 @@ export default (app: Courselore): void => {
                 <label class="button button--tight button--tight--inline">
                   <input
                     type="checkbox"
-                    name="allow-users-to-create-new-courses"
-                    value=""
+                    name="canCreateCourses"
+                    $${app.locals.options.canCreateCourses
+                      ? html`checked`
+                      : html``}
                     class="input--checkbox"
                   />
                   Allow users to create new courses
@@ -144,51 +151,107 @@ export default (app: Courselore): void => {
                 <label class="button button--tight button--tight--inline">
                   <input
                     type="checkbox"
-                    name="demonstration-mode"
-                    value=""
+                    name="demonstration"
+                    $${app.locals.options.demonstration
+                      ? html`checked`
+                      : html``}
                     class="input--checkbox"
                   />
                   Run in demonstration mode
                 </label>
               </div>
-            </form>
-
-            <hr class="separator" />
-
-            <form
-              method="PATCH"
-              action="${app.locals.options
-                .baseURL}/administrator-panel/configuration"
-              novalidate
-              css="${res.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Administrator Email</p>
                 <input
                   type="email"
                   name="administratorEmail"
                   placeholder="you@educational-institution.edu"
-                  value=""
+                  value="${app.locals.options.administratorEmail}"
                   required
                   class="input--text"
                 />
               </label>
+
+              <hr class="separator" />
+
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Administrator Email
+                  Update Configuration
                 </button>
               </div>
             </form>
           `,
         })
+      );
+    }
+  );
+
+  app.patch<
+    {},
+    any,
+    {
+      canCreateCourses: string;
+      demonstration: string;
+      administratorEmail?: string;
+    },
+    {},
+    IsAdministratorMiddlewareLocals
+  >(
+    "/administrator-panel/configuration",
+    ...app.locals.middlewares.isAdministrator,
+    (req, res, next) => {
+      if (
+        typeof req.body.administratorEmail !== "string" ||
+        req.body.administratorEmail.match(app.locals.helpers.emailRegExp) === null
+      )
+        return next("validation");
+
+      app.locals.options.canCreateCourses = (req.body.canCreateCourses === "on");
+      app.locals.database.run(
+        sql`
+          UPDATE "configurations"
+          SET "value" = ${
+            JSON.stringify(app.locals.options.canCreateCourses ? new Date().toISOString() : null)
+          }
+          WHERE "key" = 'canCreateCoursesAt'
+        `
+      );
+      
+      app.locals.options.demonstration = (req.body.demonstration === "on");
+      app.locals.database.run(
+        sql`
+          UPDATE "configurations"
+          SET "value" = ${
+            JSON.stringify(app.locals.options.demonstration ? new Date().toISOString() : null)
+          }
+          WHERE "key" = 'demonstrationAt'
+        `
+      );
+      
+      app.locals.options.administratorEmail = req.body.administratorEmail;
+      app.locals.database.run(
+        sql`
+          UPDATE "configurations"
+          SET "value" = ${
+            JSON.stringify(app.locals.options.administratorEmail)
+          }
+          WHERE "key" = 'administratorEmail'
+        `
+      );
+
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "green",
+        content: html`Configuration updated successfully.`,
+      });
+
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}/administrator-panel/configuration`
       );
     }
   );

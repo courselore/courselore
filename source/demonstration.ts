@@ -18,10 +18,11 @@ import {
 } from "./index.js";
 
 export default (app: Courselore): void => {
-  if (app.locals.options.demonstration)
+  
     app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
-      asyncHandler(async (req, res) => {
+      asyncHandler(async (req, res, next) => {
+        if (!app.locals.options.demonstration) return next();
         const password = await argon2.hash(
           "courselore",
           app.locals.options.argon2
@@ -639,6 +640,7 @@ export default (app: Courselore): void => {
       })
     );
 
+    //TODO
   if (app.locals.options.demonstration && process.env.NODE_ENV !== "production")
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/turn-off",

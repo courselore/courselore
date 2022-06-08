@@ -150,6 +150,8 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
+      canCreateCourses: boolean;
+      administratorEmail: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
@@ -237,7 +239,6 @@ export interface Courselore extends express.Express {
 export interface Options {
   dataDirectory: string;
   baseURL: string;
-  administratorEmail: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;

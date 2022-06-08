@@ -536,6 +536,12 @@ export default async (app: Courselore): Promise<void> => {
         "key" TEXT UNIQUE NOT NULL,
         "value" TEXT NOT NULL
       );
+      INSERT INTO "configurations" ("key", "value") 
+      VALUES ('canCreateCoursesAt', json_quote(strftime('%Y-%m-%dT%H:%M:%fZ', 'now')));
+      INSERT INTO "configurations" ("key", "value")
+      VALUES ('demonstrationAt', json_quote(NULL));
+      INSERT INTO "configurations" ("key", "value") 
+      VALUES ('administratorEmail', json_quote('administrator@courselore.org'));
     `
   );
   app.once("close", () => {

@@ -52,9 +52,9 @@
   - Only staff & administrators.
   - Only administrators.
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-  - **Question:** What happens when you’re the administrator and also the staff on a course?
+  - **Question:** What happens when you’re the administrator and also the staff/student on a course?
     - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
-    - Or do you see the course as a regular staff member would?
+    - Or do you see the course as a regular as staff/student would?
     - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
 - Substitute the notion of `administratorEmail` to use the email an administrator?
 
