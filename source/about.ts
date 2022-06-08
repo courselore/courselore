@@ -755,6 +755,22 @@ export default (app: Courselore): void => {
                   </span>
                 </p>
               </a>
+
+              <a href="" class="button button--transparent">
+                <img
+                  src="/team/eliot-smith.png"
+                  alt="Eliot Smith"
+                  loading="lazy"
+                  class="img"
+                />
+                <p>
+                  <strong class="strong"> Eliot Smith </strong>
+                  <br />
+                  <span class="secondary">
+                    Intern. Student at The University of Rochester.
+                  </span>
+                </p>
+              </a>
             </div>
           </div>
 
