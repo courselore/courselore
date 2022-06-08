@@ -640,8 +640,7 @@ export default (app: Courselore): void => {
       })
     );
 
-    //TODO
-  if (app.locals.options.demonstration && process.env.NODE_ENV !== "production")
+  if (process.env.NODE_ENV !== "production")
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/turn-off",
       (req, res, next) => {
