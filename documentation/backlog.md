@@ -1,19 +1,20 @@
 # Backlog
 
-- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
+- Image proxy
   - In content processor, rewrite hotlinked images paths to use proxy.
   - Allowlist of response headers
     - At Node.js level.
     - At Caddy level
-  - Max size 5242880
-  - Max number of redirects 4
-  - Timeout 10s
-  - Resizing on-the-fly?
-  - Include HMAC?
-    - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
-  - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
-  - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+    - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
   - Test http://www.pudim.com.br/pudim.jpg
+  - Good-to-have
+    - Max size 5242880
+    - Max number of redirects 4
+    - Timeout 10s
+    - Resizing on-the-fly?
+    - Include HMAC?
+      - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
+    - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
   - References:
     - Original: https://github.com/atmos/camo
     - Commercial: https://github.com/imgproxy/imgproxy
