@@ -83,6 +83,7 @@
     - Or do you see the course as a regular staff member would?
     - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
 - Substitute the notion of `administratorEmail` to use the email an administrator?
+- **Question:** Should administrators not be able to see **some** things, for example, the upcoming private conversations between groups of people?
 
 **Good to Have in the Future**
 
