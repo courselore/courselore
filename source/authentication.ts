@@ -159,9 +159,9 @@ export default (app: Courselore): void => {
       sql`
         SELECT "value"
         FROM "configurations"
-        WHERE "key" = 'canCreateCoursesAt'
+        WHERE "key" = 'canCreateCourses'
       `
-    )!.value) !== null;
+    )!.value);
 
   app.locals.options.demonstration =
   JSON.parse(

@@ -151,7 +151,7 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
       demonstration?: boolean;
-      canCreateCourses: boolean;
+      canCreateCourses: string;
       administratorEmail: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &

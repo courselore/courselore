@@ -124,6 +124,67 @@ export default (app: Courselore): void => {
               `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <div class="label">
+                <p class="label--text">Who Can Create Courses</p>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="canCreateCourses"
+                      value="anyone"
+                      required
+                      $${app.locals.options.canCreateCourses === "anyone"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Anyone
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="canCreateCourses"
+                      value="staff-and-administrators"
+                      required
+                      $${app.locals.options.canCreateCourses === "staff-and-administrators"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Staff & administrators
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="canCreateCourses"
+                      value="administrators"
+                      required
+                      $${app.locals.options.canCreateCourses === "administrators"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Administrators
+                  </label>
+                </div>
+              </div>
+              <!--
               <div
                 css="${res.locals.css(css`
                   display: flex;
@@ -141,6 +202,7 @@ export default (app: Courselore): void => {
                   Allow users to create new courses
                 </label>
               </div>
+              -->
               <div
                 css="${res.locals.css(css`
                   display: flex;
@@ -207,14 +269,14 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      app.locals.options.canCreateCourses = (req.body.canCreateCourses === "on");
+      app.locals.options.canCreateCourses = req.body.canCreateCourses;
       app.locals.database.run(
         sql`
           UPDATE "configurations"
           SET "value" = ${
-            JSON.stringify(app.locals.options.canCreateCourses ? new Date().toISOString() : null)
+            JSON.stringify(app.locals.options.canCreateCourses)
           }
-          WHERE "key" = 'canCreateCoursesAt'
+          WHERE "key" = 'canCreateCourses'
         `
       );
       
