@@ -647,7 +647,12 @@ export default async (app: Courselore): Promise<void> => {
       )
         return res.status(422).end();
       await stream.pipeline(
-        got.stream(req.query.image, { throwHttpErrors: false }),
+        got.stream(req.query.image, {
+          throwHttpErrors: false,
+          retry: { limit: 0 },
+          http2: true,
+          timeout: { request: 10000 },
+        }),
         res
       );
     })
