@@ -125,7 +125,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
-                <p class="label--text">Who Can Create Courses</p>
+                <p class="label--text">Allow to Create Courses</p>
                 <div
                   css="${res.locals.css(css`
                     display: flex;
