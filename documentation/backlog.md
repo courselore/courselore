@@ -1,11 +1,9 @@
 # Backlog
 
 - Image proxy
+  - Network errors
   - Allowlist of response headers
-    - At Node.js level.
-    - At Caddy level
     - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
-  - Test http://www.pudim.com.br/pudim.jpg
   - Good-to-have
     - Max size 5242880
     - Max number of redirects 4
