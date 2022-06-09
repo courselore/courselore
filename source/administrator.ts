@@ -44,7 +44,7 @@ export default (app: Courselore): void => {
       res,
       head,
       menuButton: html`
-        <i class="bi bi-tools"></i>
+        <i class="bi bi-pc-display-horizontal"></i>
         Administrator Panel
       `,
       menu: html`
@@ -106,7 +106,7 @@ export default (app: Courselore): void => {
           </title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
+              <i class="bi bi-pc-display-horizontal"></i>
               Administrator Panel ·
               <i class="bi bi-gear"></i>
               Configuration
@@ -184,25 +184,6 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
               </div>
-              <!--
-              <div
-                css="${res.locals.css(css`
-                  display: flex;
-                `)}"
-              >
-                <label class="button button--tight button--tight--inline">
-                  <input
-                    type="checkbox"
-                    name="canCreateCourses"
-                    $${app.locals.options.canCreateCourses
-                      ? html`checked`
-                      : html``}
-                    class="input--checkbox"
-                  />
-                  Allow users to create new courses
-                </label>
-              </div>
-              -->
               <div
                 css="${res.locals.css(css`
                   display: flex;
@@ -263,6 +244,11 @@ export default (app: Courselore): void => {
     "/administrator-panel/configuration",
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
+      if (
+        typeof req.body.canCreateCourses !== "string"
+      )
+        return next("validation");
+
       if (
         typeof req.body.administratorEmail !== "string" ||
         req.body.administratorEmail.match(app.locals.helpers.emailRegExp) === null
@@ -329,7 +315,7 @@ export default (app: Courselore): void => {
           </title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
+              <i class="bi bi-pc-display-horizontal"></i>
               Administrator Panel ·
               <i class="bi bi-bar-chart"></i>
               Statistics

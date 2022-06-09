@@ -2733,7 +2733,7 @@ export default async (app: Courselore): Promise<void> => {
                                   class="dropdown--menu--item button button--transparent"
                                   href="${app.locals.options.baseURL}/administrator-panel"
                                 >
-                                  <i class="bi bi-tools"></i>
+                                  <i class="bi bi-pc-display-horizontal"></i>
                                   Administrator Panel
                                 </a>
                               `
