@@ -1,7 +1,6 @@
 # Backlog
 
 - Image proxy
-  - Read Got documentation
   - Allowlist of response headers
     - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
     - Using Got hook
