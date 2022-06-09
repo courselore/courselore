@@ -1,7 +1,6 @@
 # Backlog
 
 - Image proxy
-  - In content processor, rewrite hotlinked images paths to use proxy.
   - Allowlist of response headers
     - At Node.js level.
     - At Caddy level

@@ -28,6 +28,7 @@ import slugify from "@sindresorhus/slugify";
 import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
+import got from "got";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -186,8 +187,19 @@ export default async (app: Courselore): Promise<void> => {
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
 
-      for (const element of contentElement.querySelectorAll("img"))
+      for (const element of contentElement.querySelectorAll("img")) {
         element.setAttribute("loading", "lazy");
+        if (
+          !element.getAttribute("src")?.startsWith(app.locals.options.baseURL)
+        )
+          element.setAttribute(
+            "src",
+            `${app.locals.options.baseURL}/content/image-proxy${qs.stringify(
+              { image: element.getAttribute("src") },
+              { addQueryPrefix: true }
+            )}`
+          );
+      }
 
       for (const element of contentElement.querySelectorAll("details")) {
         const summaries: Node[] = [];
@@ -622,6 +634,20 @@ export default async (app: Courselore): Promise<void> => {
       };
     };
   })();
+
+  app.get<{}, any, {}, { image?: string }, {}>(
+    "/content/image-proxy",
+    (req, res) => {
+      if (
+        typeof req.query.image !== "string" ||
+        !["http:", "https:"].some((prefix) =>
+          req.query.image!.toLowerCase().startsWith(prefix)
+        )
+      )
+        return res.status(422).end();
+      got.stream(req.query.image).pipe(res);
+    }
+  );
 
   app.locals.partials.contentEditor = ({
     req,
