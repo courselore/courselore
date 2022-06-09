@@ -1,4 +1,5 @@
 import path from "node:path";
+import stream from "node:stream/promises";
 import express from "express";
 import qs from "qs";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -637,7 +638,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.get<{}, any, {}, { image?: string }, {}>(
     "/content/image-proxy",
-    (req, res) => {
+    asyncHandler(async (req, res) => {
       if (
         typeof req.query.image !== "string" ||
         !["http:", "https:"].some((prefix) =>
@@ -645,8 +646,11 @@ export default async (app: Courselore): Promise<void> => {
         )
       )
         return res.status(422).end();
-      got.stream(req.query.image).pipe(res);
-    }
+      await stream.pipeline(
+        got.stream(req.query.image, { throwHttpErrors: false }),
+        res
+      );
+    })
   );
 
   app.locals.partials.contentEditor = ({

@@ -1,7 +1,6 @@
 # Backlog
 
 - Image proxy
-  - Network errors
   - Allowlist of response headers
     - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
   - Good-to-have
