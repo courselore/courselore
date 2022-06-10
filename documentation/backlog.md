@@ -766,6 +766,7 @@ const { app, BrowserWindow } = require("electron");
       - Maybe just call `next()` and then look at the `res.statusCode`?
       - Or maybe overwrite `res.send()` and `res.redirect()`, like we do for logging.
   - Manual: Probably the only sensible approach, given the constraint above related to asynchronous handlers
+- Look into using `db.pragma("synchronous = NORMAL");` to improve performance.
 - Auto-updater.
 - Backups.
   - For us, as system administrators.
