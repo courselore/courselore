@@ -108,6 +108,21 @@ export default (app: Courselore): void => {
           Configuration
         </a>
         <a
+          href="${app.locals.options.baseURL}/administrator-panel/roles"
+          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
+            "/administrator-panel/roles"
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i
+            class="bi ${req.path.endsWith("/administrator-panel/roles")
+              ? "bi-people-fill"
+              : "bi-people"}"
+          ></i>
+          Roles
+        </a>
+        <a
           href="${app.locals.options.baseURL}/administrator-panel/statistics"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/administrator-panel/statistics"
@@ -338,6 +353,30 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         `${app.locals.options.baseURL}/administrator-panel/configuration`
+      );
+    }
+  );
+
+  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
+    "/administrator-panel/roles",
+    ...app.locals.middlewares.isAdministrator,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.administratorPanel({
+          req,
+          res,
+          head: html`<title>
+            Roles · Administrator Panel · Courselore
+          </title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-pc-display-horizontal"></i>
+              Administrator Panel ·
+              <i class="bi bi-people"></i>
+              Roles
+            </h2>
+          `,
+        })
       );
     }
   );
