@@ -559,6 +559,50 @@ export default (app: Courselore): void => {
                       </div>
                     </div>
 
+                    <div
+                      css="${res.locals.css(css`
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: var(--space--2);
+                      `)}"
+                    >
+                      <div
+                        css="${res.locals.css(css`
+                          width: var(--space--28);
+                          display: flex;
+                          justify-content: flex-start;
+                        `)}"
+                      >
+                        <button
+                          class="button button--tight button--tight--inline button--transparent ${user.administratorAt !==
+                          null
+                            ? "text--rose"
+                            : "text--sky"}"
+                          onload="${javascript`
+                            (this.tooltip ??= tippy(this)).setProps({
+                              touch: false,
+                              content: "Update System Role",
+                            });
+                            
+                            (this.dropdown ??= tippy(this)).setProps({
+                              trigger: "click",
+                              interactive: true,
+                              content: ${res.locals.html(
+                                html`
+                                  <div class="dropdown--menu">
+                                    
+                                  </div>
+                                `
+                              )},
+                            });
+                          `}"
+                        >
+                        
+                          <i class="bi bi-chevron-down"></i>
+                        </button>
+                      </div>
+                    </div>
+
                     $${user.biographyPreprocessed !== null
                       ? html`
                           <details class="details">
