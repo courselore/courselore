@@ -106,7 +106,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     const app = await courselore({
       dataDirectory,
       baseURL,
-      administratorEmail,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
