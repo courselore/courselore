@@ -5,6 +5,13 @@ import { sql } from "@leafac/sqlite";
 
 import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
 
+export type CanCreateCourses = typeof canCreateCourseses[number];
+export const canCreateCourseses = [
+  "anyone",
+  "staff-and-administrators",
+  "administrators",
+] as const;
+
 export type IsAdministratorMiddleware = express.RequestHandler<
   {},
   any,
@@ -28,6 +35,43 @@ export type AdministratorLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
+  app.locals.options.canCreateCourses = JSON.parse(
+    app.locals.database.get<{
+      value: string;
+    }>(
+      sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'canCreateCourses'
+      `
+    )!.value
+  );
+
+  app.locals.options.demonstration =
+    JSON.parse(
+      app.locals.database.get<{
+        value: string;
+      }>(
+        sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'demonstrationAt'
+      `
+      )!.value
+    ) !== null;
+
+  app.locals.options.administratorEmail = JSON.parse(
+    app.locals.database.get<{
+      value: string;
+    }>(
+      sql`
+        SELECT "value"
+        FROM "configurations"
+        WHERE "key" = 'administratorEmail'
+      `
+    )!.value
+  );
+
   app.locals.middlewares.isAdministrator = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
@@ -156,7 +200,8 @@ export default (app: Courselore): void => {
                       name="canCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${app.locals.options.canCreateCourses === "staff-and-administrators"
+                      $${app.locals.options.canCreateCourses ===
+                      "staff-and-administrators"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -175,7 +220,8 @@ export default (app: Courselore): void => {
                       name="canCreateCourses"
                       value="administrators"
                       required
-                      $${app.locals.options.canCreateCourses === "administrators"
+                      $${app.locals.options.canCreateCourses ===
+                      "administrators"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -234,9 +280,9 @@ export default (app: Courselore): void => {
     {},
     any,
     {
-      canCreateCourses: string;
+      canCreateCourses: CanCreateCourses;
       demonstration: string;
-      administratorEmail?: string;
+      administratorEmail: string;
     },
     {},
     IsAdministratorMiddlewareLocals
@@ -245,13 +291,11 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       if (
-        typeof req.body.canCreateCourses !== "string"
-      )
-        return next("validation");
-
-      if (
+        typeof req.body.canCreateCourses !== "string" ||
+        !canCreateCourseses.includes(req.body.canCreateCourses) ||
         typeof req.body.administratorEmail !== "string" ||
-        req.body.administratorEmail.match(app.locals.helpers.emailRegExp) === null
+        req.body.administratorEmail.match(app.locals.helpers.emailRegExp) ===
+          null
       )
         return next("validation");
 
@@ -259,31 +303,27 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`
           UPDATE "configurations"
-          SET "value" = ${
-            JSON.stringify(app.locals.options.canCreateCourses)
-          }
+          SET "value" = ${JSON.stringify(app.locals.options.canCreateCourses)}
           WHERE "key" = 'canCreateCourses'
         `
       );
-      
-      app.locals.options.demonstration = (req.body.demonstration === "on");
+
+      app.locals.options.demonstration = req.body.demonstration === "on";
       app.locals.database.run(
         sql`
           UPDATE "configurations"
-          SET "value" = ${
-            JSON.stringify(app.locals.options.demonstration ? new Date().toISOString() : null)
-          }
+          SET "value" = ${JSON.stringify(
+            app.locals.options.demonstration ? new Date().toISOString() : null
+          )}
           WHERE "key" = 'demonstrationAt'
         `
       );
-      
+
       app.locals.options.administratorEmail = req.body.administratorEmail;
       app.locals.database.run(
         sql`
           UPDATE "configurations"
-          SET "value" = ${
-            JSON.stringify(app.locals.options.administratorEmail)
-          }
+          SET "value" = ${JSON.stringify(app.locals.options.administratorEmail)}
           WHERE "key" = 'administratorEmail'
         `
       );
