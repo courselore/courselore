@@ -3,8 +3,8 @@
 - Image proxy
   - Allowlist of response headers
     - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
-    - Using Got hook
-    - Using stream transformer in pipeline
+    - Use Got hook
+    - Use Transform in pipeline
   - Good-to-have
     - Max size 5242880
     - Max number of redirects 4
@@ -54,6 +54,11 @@
 
 **Goals**
 
+- Configuration that’s currently on configuration files and should be moved into administrative interface:
+  - `administratorEmail`: By default it should be the email of the first administrator, but continue giving this as a separate option in case administrators have their personal accounts & want to receive notifications on a mailing list that reaches the whole team.
+  - `sendMail`: Have a default mailer using regular SMTP connection, and ask for URL, username, and password (which needs to be stored in plain text). But continue to give this as an option on the configuration file, in case people want to do something different, for example, what we do in development mode.
+  - `demonstration`
+  - `liveReload`: Perhaps this shouldn’t be given as an option, but just configured based on `process.env.NODE_ENV`.
 - Introduce the notion of system-wide roles:
   - Administrators
   - Staff
@@ -82,7 +87,6 @@
     - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
     - Or do you see the course as a regular staff member would?
     - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
-- Substitute the notion of `administratorEmail` to use the email an administrator?
 - **Question:** Should administrators not be able to see **some** things, for example, the upcoming private conversations between groups of people?
 
 **Good to Have in the Future**
