@@ -2,8 +2,13 @@ import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
+import { javascript } from "@leafac/javascript";
 
-import { Courselore, IsSignedInMiddlewareLocals } from "./index.js";
+import {
+  Courselore,
+  IsSignedInMiddlewareLocals,
+  UserAvatarlessBackgroundColor,
+} from "./index.js";
 
 export type CanCreateCourses = typeof canCreateCourseses[number];
 export const canCreateCourseses = [
@@ -108,19 +113,19 @@ export default (app: Courselore): void => {
           Configuration
         </a>
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/roles"
+          href="${app.locals.options.baseURL}/administrator-panel/system-roles"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/roles"
+            "/administrator-panel/system-roles"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administrator-panel/roles")
+            class="bi ${req.path.endsWith("/administrator-panel/system-roles")
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>
-          Roles
+          System Roles
         </a>
         <a
           href="${app.locals.options.baseURL}/administrator-panel/statistics"
@@ -358,23 +363,219 @@ export default (app: Courselore): void => {
   );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel/roles",
+    "/administrator-panel/system-roles",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
+      res.locals.enrollments;
+      const users = app.locals.database.all<{
+        id: number;
+        lastSeenOnlineAt: string;
+        email: string;
+        name: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        biographySource: string | null;
+        biographyPreprocessed: HTML | null;
+        administratorAt: string | null;
+      }>(
+        sql`
+            SELECT "id",
+                   "lastSeenOnlineAt",
+                   "email",
+                   "name",
+                   "avatar",
+                   "avatarlessBackgroundColor",
+                   "biographySource",
+                   "biographyPreprocessed",
+                   "administratorAt"
+            FROM "users"
+            ORDER BY "lastSeenOnlineAt" DESC, "name" ASC
+          `
+      );
+
+      // TODO: What to sort by?
+
       res.send(
         app.locals.layouts.administratorPanel({
           req,
           res,
-          head: html`<title>
-            Roles · Administrator Panel · Courselore
-          </title>`,
+          head: html`<title>Roles · Administrator Panel · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-pc-display-horizontal"></i>
               Administrator Panel ·
               <i class="bi bi-people"></i>
-              Roles
+              System Roles
             </h2>
+
+            <label
+              css="${res.locals.css(css`
+                display: flex;
+                gap: var(--space--2);
+                align-items: baseline;
+              `)}"
+            >
+              <i class="bi bi-funnel"></i>
+              <input
+                type="text"
+                class="input--text"
+                placeholder="Filter…"
+                onload="${javascript`
+                  this.isModified = false;
+
+                  this.oninput = () => {
+                    const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                    for (const user of document.querySelectorAll(".user")) {
+                      let userHidden = filterPhrases.length > 0;
+                      for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
+                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                        const filterablePhrasesElementChildren = [];
+                        for (const filterablePhrase of filterablePhrases) {
+                          let filterablePhraseElement;
+                          if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                            filterablePhraseElement = document.createElement("mark");
+                            filterablePhraseElement.classList.add("mark");
+                            userHidden = false;
+                          } else
+                            filterablePhraseElement = document.createElement("span");
+                          filterablePhraseElement.textContent = filterablePhrase;
+                          filterablePhrasesElementChildren.push(filterablePhraseElement);
+                        }
+                        filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                      }
+                      user.hidden = userHidden;
+                    }
+                  };
+                `}"
+              />
+            </label>
+
+            $${users.map((user) => {
+              //const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const isSelf = user.id === res.locals.user.id;
+              return html`
+                <div
+                  class="user"
+                  css="${res.locals.css(css`
+                    padding-top: var(--space--2);
+                    border-top: var(--border-width--1) solid
+                      var(--color--gray--medium--200);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--gray--medium--700);
+                    }
+                    display: flex;
+                    gap: var(--space--2);
+                  `)}"
+                >
+                  <div>
+                    $${app.locals.partials.user({
+                      req,
+                      res,
+                      user,
+                      name: false,
+                    })}
+                  </div>
+
+                  <div
+                    css="${res.locals.css(css`
+                      flex: 1;
+                      margin-top: var(--space--0-5);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      min-width: var(--space--0);
+                    `)}"
+                  >
+                    <div>
+                      <div
+                        data-filterable-phrases="${JSON.stringify(
+                          app.locals.helpers.splitFilterablePhrases(user.name)
+                        )}"
+                        class="strong"
+                      >
+                        ${user.name}
+                      </div>
+                      <div class="secondary">
+                        <span
+                          data-filterable-phrases="${JSON.stringify(
+                            app.locals.helpers.splitFilterablePhrases(
+                              user.email
+                            )
+                          )}"
+                          css="${res.locals.css(css`
+                            margin-right: var(--space--2);
+                          `)}"
+                        >
+                          ${user.email}
+                        </span>
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          css="${res.locals.css(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                            display: inline-flex;
+                          `)}"
+                          onload="${javascript`
+                            (this.tooltip ??= tippy(this)).setProps({
+                              touch: false,
+                              content: "Copy Email",
+                            });
+                            (this.copied ??= tippy(this)).setProps({
+                              theme: "green",
+                              trigger: "manual",
+                              content: "Copied",
+                            });
+
+                            this.onclick = async () => {
+                              await navigator.clipboard.writeText(${JSON.stringify(
+                                user.email
+                              )});
+                              this.copied.show();
+                              await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                              this.copied.hide();
+                            };
+                          `}"
+                        >
+                          <i class="bi bi-stickies"></i>
+                        </button>
+                      </div>
+                      <div
+                        class="secondary"
+                        css="${res.locals.css(css`
+                          font-size: var(--font-size--xs);
+                        `)}"
+                      >
+                        <span>
+                          Last seen online
+                          <time
+                            datetime="${new Date(
+                              user.lastSeenOnlineAt
+                            ).toISOString()}"
+                            onload="${javascript`
+                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                            `}"
+                          ></time>
+                        </span>
+                      </div>
+                    </div>
+
+                    $${user.biographyPreprocessed !== null
+                      ? html`
+                          <details class="details">
+                            <summary>Biography</summary>
+                            $${app.locals.partials.content({
+                              req,
+                              res,
+                              type: "preprocessed",
+                              content: user.biographyPreprocessed,
+                            }).processed}
+                          </details>
+                        `
+                      : html``}
+                  </div>
+                </div>
+              `;
+            })}
           `,
         })
       );
