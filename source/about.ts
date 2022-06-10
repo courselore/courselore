@@ -681,9 +681,7 @@ export default (app: Courselore): void => {
               css="${res.locals.css(css`
                 display: flex;
                 gap: var(--space--14);
-                @media (max-width: 1299px) {
-                  flex-direction: column;
-                }
+                flex-direction: column;
                 & > * {
                   display: flex;
                   gap: var(--space--4);
@@ -756,7 +754,10 @@ export default (app: Courselore): void => {
                 </p>
               </a>
 
-              <a href="" class="button button--transparent">
+              <a
+                href="https://github.com/ejasmith"
+                class="button button--transparent"
+              >
                 <img
                   src="/team/eliot-smith.png"
                   alt="Eliot Smith"
