@@ -808,6 +808,10 @@ const { app, BrowserWindow } = require("electron");
       - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
   - Tests:
     ```
+    http://127.0.0.1:8000 {
+      header REMOVE-ME PLEASE
+      file_server
+    }
     curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
     curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
     curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
