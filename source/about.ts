@@ -681,9 +681,7 @@ export default (app: Courselore): void => {
               css="${res.locals.css(css`
                 display: flex;
                 gap: var(--space--14);
-                @media (max-width: 1299px) {
-                  flex-direction: column;
-                }
+                flex-direction: column;
                 & > * {
                   display: flex;
                   gap: var(--space--4);
@@ -752,6 +750,25 @@ export default (app: Courselore): void => {
                   <br />
                   <span class="secondary">
                     Software Developer & Designer.
+                  </span>
+                </p>
+              </a>
+
+              <a
+                href="https://github.com/ejasmith"
+                class="button button--transparent"
+              >
+                <img
+                  src="/team/eliot-smith.png"
+                  alt="Eliot Smith"
+                  loading="lazy"
+                  class="img"
+                />
+                <p>
+                  <strong class="strong"> Eliot Smith </strong>
+                  <br />
+                  <span class="secondary">
+                    Intern. Student at The University of Rochester.
                   </span>
                 </p>
               </a>
