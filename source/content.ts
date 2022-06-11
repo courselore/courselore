@@ -647,70 +647,23 @@ export default async (app: Courselore): Promise<void> => {
       )
         return res.status(422).end();
       await stream.pipeline(
-        got.stream(req.query.url, {
-          throwHttpErrors: false,
-          retry: { limit: 0 },
-          timeout: { request: 10000 },
-        }),
+        got
+          .stream(req.query.url, {
+            throwHttpErrors: false,
+            retry: { limit: 0 },
+            timeout: { request: 10000 },
+          })
+          .on("response", (response) => {
+            for (const header of Object.keys(response.headers))
+              if (
+                !["content-type", "content-length"].includes(
+                  header.toLowerCase()
+                )
+              )
+                delete response.headers[header];
+          }),
         res
       );
-
-      /*
-ISSUE: I tested everything so far looking at the `Date` header, but we were sending that header all along
-*/
-
-      /*
-When piping to ServerResponse, the headers will be automatically copied.
-In order to prevent this behavior you need to override the request headers in a beforeRequest hook.
-*/
-
-      // IDEA: await on headers & only pipe the body
-
-      // res.set(msg.headers);
-
-      // https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
-
-      // await stream.pipeline(
-      //   got
-      //     .stream(req.query.image, {
-      //       throwHttpErrors: false,
-      //       retry: { limit: 0 },
-      //       http2: true,
-      //       timeout: { request: 10000 },
-      //       hooks: {
-      //         beforeRequest: [
-      //           (options) => {
-      //             options.headers = {};
-      //           },
-      //         ],
-      //       },
-      //     })
-      //     .on("response", (response) => {
-      //       console.log(response.headers);
-      //       response.headers = {};
-      //     }),
-      //   res
-      // );
-
-      // got
-      //   .stream(req.query.image, {
-      //     throwHttpErrors: false,
-      //     retry: { limit: 0 },
-      //     http2: true,
-      //     timeout: { request: 10000 },
-      //     hooks: {
-      //       beforeRequest: [
-      //         (options) => {
-      //           options.headers = {};
-      //         },
-      //       ],
-      //     },
-      //   })
-      //   .on("response", (response) => {
-      //     console.log(response.headers);
-      //     response.headers = {};
-      //   })
-      //   .pipe(res);
     })
   );
 

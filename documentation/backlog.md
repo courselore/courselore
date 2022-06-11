@@ -13,6 +13,7 @@
     - Include HMAC?
       - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
     - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
+       - This is necessary to 100% guarantee that people will be able to see images on Outlook
     - Don’t decompress-recompress, but just forward the compressed payload
   - References:
     - Original: https://github.com/atmos/camo
