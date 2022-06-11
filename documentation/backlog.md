@@ -1,48 +1,5 @@
 # Backlog
 
-- Image proxy
-  - Allowlist of response headers
-    - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
-    - Use Got hook
-    - Use Transform in pipeline
-  - Approaches
-    - Question about current approach: https://github.com/sindresorhus/got/issues/2060
-    - Alternative approach that doesn’t work: Using Caddy. That would be nice because it would reduce the load on the application. But it could be limiting moving forward because it’d be more difficult to do HMAC, and so forth. But none of this matters, Caddy doesn’t seem to support proxying to arbitrary upstreams.
-    - Alternative approach: Use a standalone image proxy & fire it up behind Caddy, alongside the main application.
-    - Alternative approach: `await` on headers & only pipe the body?
-      - `res.set(msg.headers);`
-      - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
-  - Tests:
-    ```
-    curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/image" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://httpbin.org/image" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
-    ```
-  - Good-to-have
-    - Max size 5242880
-    - Max number of redirects 4
-    - Timeout 10s
-    - Resizing on-the-fly?
-    - Include HMAC?
-      - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
-    - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
-      - This is necessary to 100% guarantee that people will be able to see images on Outlook
-    - Don’t decompress-recompress, but just forward the compressed payload
-  - References:
-    - Original: https://github.com/atmos/camo
-    - Commercial: https://github.com/imgproxy/imgproxy
-    - Open-Source in Go: https://github.com/willnorris/imageproxy
-    - Node.js basic functionality: https://github.com/http-party/node-http-proxy
-    - Node.js middleware (depends on `node-http-proxy`): https://github.com/chimurai/http-proxy-middleware
-    - https://github.com/cookpad/ecamo
-    - https://github.com/weserv/images
-    - https://github.com/jpmckinney/image-proxy
-    - https://github.com/sdepold/node-imageable
-    - https://github.com/marcjacobs1021/node-image-proxy
-
 ### Fall
 
 - Notifications:
@@ -834,6 +791,51 @@ const { app, BrowserWindow } = require("electron");
 
 </details>
 ```
+
+---
+
+- Image proxy
+  - Allowlist of response headers
+    - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+    - Use Got hook
+    - Use Transform in pipeline
+  - Approaches
+    - Question about current approach: https://github.com/sindresorhus/got/issues/2060
+    - Alternative approach that doesn’t work: Using Caddy. That would be nice because it would reduce the load on the application. But it could be limiting moving forward because it’d be more difficult to do HMAC, and so forth. But none of this matters, Caddy doesn’t seem to support proxying to arbitrary upstreams.
+    - Alternative approach: Use a standalone image proxy & fire it up behind Caddy, alongside the main application.
+    - Alternative approach: `await` on headers & only pipe the body?
+      - `res.set(msg.headers);`
+      - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
+  - Tests:
+    ```
+    curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
+    ```
+  - Good-to-have
+    - Max size 5242880
+    - Max number of redirects 4
+    - Timeout 10s
+    - Resizing on-the-fly?
+    - Include HMAC?
+      - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
+    - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
+      - This is necessary to 100% guarantee that people will be able to see images on Outlook
+    - Don’t decompress-recompress, but just forward the compressed payload
+  - References:
+    - Original: https://github.com/atmos/camo
+    - Commercial: https://github.com/imgproxy/imgproxy
+    - Open-Source in Go: https://github.com/willnorris/imageproxy
+    - Node.js basic functionality: https://github.com/http-party/node-http-proxy
+    - Node.js middleware (depends on `node-http-proxy`): https://github.com/chimurai/http-proxy-middleware
+    - https://github.com/cookpad/ecamo
+    - https://github.com/weserv/images
+    - https://github.com/jpmckinney/image-proxy
+    - https://github.com/sdepold/node-imageable
+    - https://github.com/marcjacobs1021/node-image-proxy
 
 ---
 
