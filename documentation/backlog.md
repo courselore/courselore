@@ -243,6 +243,7 @@
 ### Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
+  - Do we want notes that send notifications to give the option of sending notification immediately, even if the person is in digest mode?
 - Make emails be replies, so that they’re grouped in conversations on email readers.
 - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -406,6 +407,7 @@ new Notification('Example');
 ### Pagination
 
 - `TODO`
+- Pagination of non-chat conversations should behave like GitHub Issues: Show the first couple messages, and the last couple messages, and have a gap in the middle that you can click to load.
 - Smarter default page for when the page isn’t specified explicitly:
   - Messages
     - Deep links should go to the page containing the referred message
