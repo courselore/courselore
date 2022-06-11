@@ -12,6 +12,15 @@
     - Alternative approach: `await` on headers & only pipe the body?
       - `res.set(msg.headers);`
       - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
+  - Tests:
+    ```
+    curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
+    ```
   - Good-to-have
     - Max size 5242880
     - Max number of redirects 4
