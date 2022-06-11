@@ -196,7 +196,7 @@ export default async (app: Courselore): Promise<void> => {
           element.setAttribute(
             "src",
             `${app.locals.options.baseURL}/content/image-proxy${qs.stringify(
-              { image: element.getAttribute("src") },
+              { url: element.getAttribute("src") },
               { addQueryPrefix: true }
             )}`
           );
@@ -636,34 +636,40 @@ export default async (app: Courselore): Promise<void> => {
     };
   })();
 
-  app.get<{}, any, {}, { image?: string }, {}>(
+  app.get<{}, any, {}, { url?: string }, {}>(
     "/content/image-proxy",
     asyncHandler(async (req, res) => {
       if (
-        typeof req.query.image !== "string" ||
-        !["http:", "https:"].some((prefix) =>
-          req.query.image!.toLowerCase().startsWith(prefix)
+        typeof req.query.url !== "string" ||
+        !["http://", "https://"].some((urlPrefix) =>
+          req.query.url!.toLowerCase().startsWith(urlPrefix)
         )
       )
         return res.status(422).end();
-/*
+      await stream.pipeline(
+        got.stream(req.query.url, {
+          throwHttpErrors: false,
+          retry: { limit: 0 },
+          http2: true,
+          timeout: { request: 10000 },
+        }),
+        res
+      );
+
+      /*
 ISSUE: I tested everything so far looking at the `Date` header, but we were sending that header all along
 */
 
-// TEST AGAIN THE IDEA OF USING HOOK TO OVERWRITE REQUEST HEADERS, FOLLOWING THE DOCUMENTATION
-
-
-/*
+      /*
 When piping to ServerResponse, the headers will be automatically copied.
 In order to prevent this behavior you need to override the request headers in a beforeRequest hook.
 */
 
-// IDEA: await on headers & only pipe the body
+      // IDEA: await on headers & only pipe the body
 
+      // res.set(msg.headers);
 
-// res.set(msg.headers);
-
-// https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
+      // https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
 
       // await stream.pipeline(
       //   got
@@ -687,25 +693,25 @@ In order to prevent this behavior you need to override the request headers in a 
       //   res
       // );
 
-
-      got
-          .stream(req.query.image, {
-            throwHttpErrors: false,
-            retry: { limit: 0 },
-            http2: true,
-            timeout: { request: 10000 },
-            hooks: {
-              beforeRequest: [
-                (options) => {
-                  options.headers = {};
-                },
-              ],
-            },
-          })
-          .on("response", (response) => {
-            console.log(response.headers);
-            response.headers = {};
-          }).pipe(res)
+      // got
+      //   .stream(req.query.image, {
+      //     throwHttpErrors: false,
+      //     retry: { limit: 0 },
+      //     http2: true,
+      //     timeout: { request: 10000 },
+      //     hooks: {
+      //       beforeRequest: [
+      //         (options) => {
+      //           options.headers = {};
+      //         },
+      //       ],
+      //     },
+      //   })
+      //   .on("response", (response) => {
+      //     console.log(response.headers);
+      //     response.headers = {};
+      //   })
+      //   .pipe(res);
     })
   );
 
