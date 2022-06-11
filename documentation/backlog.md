@@ -5,6 +5,13 @@
     - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
     - Use Got hook
     - Use Transform in pipeline
+  - Approaches
+    - Question about current approach: https://github.com/sindresorhus/got/issues/2060
+    - Alternative approach that doesn’t work: Using Caddy. That would be nice because it would reduce the load on the application. But it could be limiting moving forward because it’d be more difficult to do HMAC, and so forth. But none of this matters, Caddy doesn’t seem to support proxying to arbitrary upstreams.
+    - Alternative approach: Use a standalone image proxy & fire it up behind Caddy, alongside the main application.
+    - Alternative approach: `await` on headers & only pipe the body?
+      - `res.set(msg.headers);`
+      - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
   - Good-to-have
     - Max size 5242880
     - Max number of redirects 4
@@ -13,7 +20,7 @@
     - Include HMAC?
       - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
     - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
-       - This is necessary to 100% guarantee that people will be able to see images on Outlook
+      - This is necessary to 100% guarantee that people will be able to see images on Outlook
     - Don’t decompress-recompress, but just forward the compressed payload
   - References:
     - Original: https://github.com/atmos/camo
