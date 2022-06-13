@@ -434,7 +434,11 @@ export default (app: Courselore): void => {
                    "biographyPreprocessed",
                    "systemRole"
             FROM "users"
-            ORDER BY "systemRole" ASC, "name" ASC
+            ORDER BY CASE "systemRole"
+                      WHEN 'administrator' THEN 0
+                      WHEN 'staff' THEN 1
+                      WHEN 'none' THEN 2
+                    END
           `
       );
 
@@ -805,6 +809,8 @@ export default (app: Courselore): void => {
   //   HTML,
   //   {
   //     role: SystemRole;
+  //     isSelf: boolean;
+  //     userId: number;
   //   },
   //   {},
   //   IsAdministratorMiddlewareLocals
@@ -814,9 +820,8 @@ export default (app: Courselore): void => {
   //   (req, res, next) => {
   //     if (typeof req.body.role === "string") {
   //       if (!systemRoles.includes(req.body.role)) return next("validation");
-
   //       app.locals.database.run(
-  //         sql`UPDATE "user" SET "systemRole" = ${req.body.role} WHERE "id" = ${id}`
+  //         sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${req.body.userId}`
   //       );
 
   //       app.locals.helpers.Flash.set({
@@ -829,7 +834,7 @@ export default (app: Courselore): void => {
 
   //     res.redirect(
   //       303,
-  //       isSelf
+  //       req.body.isSelf
   //         ? `${app.locals.options.baseURL}`
   //         : `${app.locals.options.baseURL}/administrator-panel/system-roles`
   //     );
