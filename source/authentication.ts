@@ -16,6 +16,7 @@ import {
   UserEmailNotifications,
   EnrollmentRole,
   EnrollmentAccentColor,
+  SystemRole,
 } from "./index.js";
 
 export interface SessionHelper {
@@ -83,7 +84,8 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
     emailNotifications: UserEmailNotifications;
-    administratorAt: string | null;
+    systemRole: SystemRole;
+    canCreateCourses: boolean;
   };
   invitations: {
     id: number;
@@ -264,7 +266,8 @@ export default (app: Courselore): void => {
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
         emailNotifications: UserEmailNotifications;
-        administratorAt: string | null;
+        systemRole: SystemRole;
+        canCreateCourses: boolean;
       }>(
         sql`
           SELECT "id",
@@ -278,11 +281,18 @@ export default (app: Courselore): void => {
                  "biographySource",
                  "biographyPreprocessed",
                  "emailNotifications",
-                 "administratorAt"
+                 "systemRole"
           FROM "users"
           WHERE "id" = ${userId}
         `
       )!;
+
+      res.locals.user.canCreateCourses =
+        app.locals.options.canCreateCourses === "anyone"
+          ? true
+          : app.locals.options.canCreateCourses === "staff-and-administrators"
+          ? res.locals.user.systemRole !== "none"
+          : res.locals.user.systemRole === "administrator";
 
       res.locals.invitations = app.locals.database
         .all<{

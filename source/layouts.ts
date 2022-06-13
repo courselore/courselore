@@ -452,7 +452,8 @@ export default async (app: Courselore): Promise<void> => {
               }
             `)}"
           >
-            $${(app.locals.options.demonstration || process.env.NODE_ENV !== "production")
+            $${app.locals.options.demonstration ||
+            process.env.NODE_ENV !== "production"
               ? html`
                   <div
                     key="header--demonstration"
@@ -481,14 +482,15 @@ export default async (app: Courselore): Promise<void> => {
                                         `)}"
                                       >
                                         <p>
-                                          This Courselore installation is running in
-                                          demonstration mode and must not be used for
-                                          real courses. Any data may be lost,
-                                          including users, courses, invitations,
-                                          conversations, messages, and so forth.
-                                          Emails aren’t delivered. You may create
-                                          demonstration data to give you a better idea
-                                          of what Courselore looks like in use.
+                                          This Courselore installation is
+                                          running in demonstration mode and must
+                                          not be used for real courses. Any data
+                                          may be lost, including users, courses,
+                                          invitations, conversations, messages,
+                                          and so forth. Emails aren’t delivered.
+                                          You may create demonstration data to
+                                          give you a better idea of what
+                                          Courselore looks like in use.
                                         </p>
                                         <form
                                           method="POST"
@@ -2627,13 +2629,18 @@ export default async (app: Courselore): Promise<void> => {
                             <i class="bi bi-journal-arrow-down"></i>
                             Enroll in an Existing Course
                           </button>
-                          <a
-                            href="${app.locals.options.baseURL}/courses/new"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-journal-plus"></i>
-                            Create a New Course
-                          </a>
+                          $${res.locals.user.canCreateCourses
+                            ? html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}/courses/new"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-journal-plus"></i>
+                                  Create a New Course
+                                </a>
+                              `
+                            : html``}
                         </div>
                       </div>
                     `
@@ -2727,18 +2734,18 @@ export default async (app: Courselore): Promise<void> => {
                             <i class="bi bi-sliders"></i>
                             User Settings
                           </a>
-                          $${res.locals.user.administratorAt !== null
+                          $${res.locals.user.systemRole === "administrator"
                             ? html`
                                 <a
                                   class="dropdown--menu--item button button--transparent"
-                                  href="${app.locals.options.baseURL}/administrator-panel"
+                                  href="${app.locals.options
+                                    .baseURL}/administrator-panel"
                                 >
                                   <i class="bi bi-pc-display-horizontal"></i>
                                   Administrator Panel
                                 </a>
                               `
-                            : html ``
-                          }
+                            : html``}
                           <form
                             method="DELETE"
                             action="${app.locals.options.baseURL}/sign-out"

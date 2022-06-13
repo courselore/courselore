@@ -542,6 +542,9 @@ export default async (app: Courselore): Promise<void> => {
       VALUES ('demonstrationAt', json_quote(strftime('%Y-%m-%dT%H:%M:%fZ', 'now')));
       INSERT INTO "configurations" ("key", "value") 
       VALUES ('administratorEmail', json_quote('please-change-me@courselore.org'));
+    `,
+    sql`
+      ALTER TABLE "users" ADD COLUMN "systemRole" DEFAULT 'none';
     `
   );
   app.once("close", () => {

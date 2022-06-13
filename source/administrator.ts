@@ -3,6 +3,7 @@ import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
+import lodash from "lodash";
 
 import {
   Courselore,
@@ -17,6 +18,16 @@ export const canCreateCourseses = [
   "administrators",
 ] as const;
 
+export type SystemRole = typeof systemRoles[number];
+export const systemRoles = ["administrator", "staff", "none"] as const;
+
+export type SystemRoleIconPartial = {
+  [role in SystemRole]: {
+    regular: HTML;
+    fill: HTML;
+  };
+};
+
 export type IsAdministratorMiddleware = express.RequestHandler<
   {},
   any,
@@ -25,6 +36,16 @@ export type IsAdministratorMiddleware = express.RequestHandler<
   IsAdministratorMiddlewareLocals
 >[];
 export interface IsAdministratorMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {}
+
+export type CanCreateCoursesMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  CanCreateCoursesMiddlewareLocals
+>[];
+export interface CanCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
 export type AdministratorLayout = ({
@@ -40,6 +61,21 @@ export type AdministratorLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
+  app.locals.partials.systemRoleIcon = {
+    administrator: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+    none: {
+      regular: html`<i class="bi bi-dash-circle"></i>`,
+      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
+    },
+  };
+
   app.locals.options.canCreateCourses = JSON.parse(
     app.locals.database.get<{
       value: string;
@@ -80,7 +116,17 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isAdministrator = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.user.administratorAt !== null) {
+      if (res.locals.user.systemRole === "administrator") {
+        return next();
+      }
+      next("route");
+    },
+  ];
+
+  app.locals.middlewares.canCreateCourses = [
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (res.locals.user.canCreateCourses) {
         return next();
       }
       next("route");
@@ -366,7 +412,6 @@ export default (app: Courselore): void => {
     "/administrator-panel/system-roles",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
-      res.locals.enrollments;
       const users = app.locals.database.all<{
         id: number;
         lastSeenOnlineAt: string;
@@ -376,7 +421,7 @@ export default (app: Courselore): void => {
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        administratorAt: string | null;
+        systemRole: SystemRole;
       }>(
         sql`
             SELECT "id",
@@ -387,13 +432,11 @@ export default (app: Courselore): void => {
                    "avatarlessBackgroundColor",
                    "biographySource",
                    "biographyPreprocessed",
-                   "administratorAt"
+                   "systemRole"
             FROM "users"
-            ORDER BY "lastSeenOnlineAt" DESC, "name" ASC
+            ORDER BY "systemRole" ASC, "name" ASC
           `
       );
-
-      // TODO: What to sort by?
 
       res.send(
         app.locals.layouts.administratorPanel({
@@ -451,8 +494,13 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              //const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const action = `${app.locals.options.baseURL}/administrator-panel/system-roles`;
               const isSelf = user.id === res.locals.user.id;
+              const isOnlyAdministrator =
+                isSelf &&
+                users.filter((user) => user.systemRole === "administrator")
+                  .length === 1;
+
               return html`
                 <div
                   class="user"
@@ -574,10 +622,12 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <button
-                          class="button button--tight button--tight--inline button--transparent ${user.administratorAt !==
-                          null
+                          class="button button--tight button--tight--inline button--transparent ${user.systemRole ===
+                          "administrator"
                             ? "text--rose"
-                            : "text--sky"}"
+                            : user.systemRole === "staff"
+                            ? "text--teal"
+                            : ""}"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
@@ -590,14 +640,138 @@ export default (app: Courselore): void => {
                               content: ${res.locals.html(
                                 html`
                                   <div class="dropdown--menu">
-                                    
+                                    $${systemRoles.map((role) =>
+                                      role === user.systemRole
+                                        ? html``
+                                        : html`
+                                            <form
+                                              key="role--${role}"
+                                              method="PATCH"
+                                              action="${action}"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <div>
+                                                <button
+                                                  class="dropdown--menu--item button button--transparent"
+                                                  $${isOnlyAdministrator
+                                                    ? html`
+                                                        type="button"
+                                                        onload="${javascript`
+                                                          (this.tooltip ??= tippy(this)).setProps({
+                                                            theme: "rose",
+                                                            trigger: "click",
+                                                            content: "You may not update your own role because you’re the only administrator.",
+                                                          });
+                                                        `}"
+                                                      `
+                                                    : isSelf
+                                                    ? html`
+                                                        type="button"
+                                                        onload="${javascript`
+                                                          (this.dropdown ??= tippy(this)).setProps({
+                                                            theme: "rose",
+                                                            trigger: "click",
+                                                            interactive: true,
+                                                            appendTo: document.querySelector("body"),
+                                                            content: ${res.locals.html(
+                                                              html`
+                                                                <form
+                                                                  key="role--${role}"
+                                                                  method="PATCH"
+                                                                  action="${action}"
+                                                                  css="${res
+                                                                    .locals
+                                                                    .css(css`
+                                                                    padding: var(
+                                                                      --space--2
+                                                                    );
+                                                                    display: flex;
+                                                                    flex-direction: column;
+                                                                    gap: var(
+                                                                      --space--4
+                                                                    );
+                                                                  `)}"
+                                                                >
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="_csrf"
+                                                                    value="${req.csrfToken()}"
+                                                                  />
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="role"
+                                                                    value="${role}"
+                                                                  />
+                                                                  <p>
+                                                                    Are you sure
+                                                                    you want to
+                                                                    update your
+                                                                    own role to
+                                                                    ${role}?
+                                                                  </p>
+                                                                  <p>
+                                                                    <strong
+                                                                      css="${res
+                                                                        .locals
+                                                                        .css(css`
+                                                                        font-weight: var(
+                                                                          --font-weight--bold
+                                                                        );
+                                                                      `)}"
+                                                                    >
+                                                                      You may
+                                                                      not undo
+                                                                      this
+                                                                      action!
+                                                                    </strong>
+                                                                  </p>
+                                                                  <button
+                                                                    class="button button--rose"
+                                                                  >
+                                                                    <i
+                                                                      class="bi bi-pencil-fill"
+                                                                    ></i>
+                                                                    Update My
+                                                                    Own Role to
+                                                                    ${lodash.capitalize(
+                                                                      role
+                                                                    )}
+                                                                  </button>
+                                                                </form>
+                                                              `
+                                                            )},
+                                                          });
+                                                        `}"
+                                                      `
+                                                    : html``}
+                                                >
+                                                  $${app.locals.partials
+                                                    .systemRoleIcon[role]
+                                                    .regular}
+                                                  ${lodash.capitalize(role)}
+                                                </button>
+                                              </div>
+                                            </form>
+                                          `
+                                    )}
                                   </div>
                                 `
                               )},
                             });
                           `}"
                         >
-                        
+                          $${app.locals.partials.systemRoleIcon[user.systemRole]
+                            .regular}
+                          ${lodash.capitalize(user.systemRole)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
                       </div>
@@ -625,6 +799,42 @@ export default (app: Courselore): void => {
       );
     }
   );
+
+  // app.patch<
+  //   {},
+  //   HTML,
+  //   {
+  //     role: SystemRole;
+  //   },
+  //   {},
+  //   IsAdministratorMiddlewareLocals
+  // >(
+  //   "/administrator-panel/system-roles",
+  //   ...app.locals.middlewares.isAdministrator,
+  //   (req, res, next) => {
+  //     if (typeof req.body.role === "string") {
+  //       if (!systemRoles.includes(req.body.role)) return next("validation");
+
+  //       app.locals.database.run(
+  //         sql`UPDATE "user" SET "systemRole" = ${req.body.role} WHERE "id" = ${id}`
+  //       );
+
+  //       app.locals.helpers.Flash.set({
+  //         req,
+  //         res,
+  //         theme: "green",
+  //         content: html`System role updated successfully.`,
+  //       });
+  //     }
+
+  //     res.redirect(
+  //       303,
+  //       isSelf
+  //         ? `${app.locals.options.baseURL}`
+  //         : `${app.locals.options.baseURL}/administrator-panel/system-roles`
+  //     );
+  //   }
+  // );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administrator-panel/statistics",

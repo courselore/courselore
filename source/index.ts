@@ -48,13 +48,18 @@ export {
 import about, { AboutHandler } from "./about.js";
 
 import administrator, {
+  SystemRoleIconPartial,
   IsAdministratorMiddleware,
+  CanCreateCoursesMiddleware,
   AdministratorLayout,
 } from "./administrator.js";
 export {
   IsAdministratorMiddlewareLocals,
+  CanCreateCoursesMiddlewareLocals,
   CanCreateCourses,
   canCreateCourseses,
+  SystemRole,
+  systemRoles,
 } from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
@@ -171,6 +176,7 @@ export interface Courselore extends express.Express {
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isAdministrator: IsAdministratorMiddleware;
+      canCreateCourses: CanCreateCoursesMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;
@@ -204,6 +210,7 @@ export interface Courselore extends express.Express {
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
       enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      systemRoleIcon: SystemRoleIconPartial;
       conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;
