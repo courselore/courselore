@@ -1,4 +1,5 @@
 import path from "node:path";
+import stream from "node:stream/promises";
 import express from "express";
 import qs from "qs";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -28,6 +29,7 @@ import slugify from "@sindresorhus/slugify";
 import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
+import got from "got";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -186,8 +188,19 @@ export default async (app: Courselore): Promise<void> => {
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
 
-      for (const element of contentElement.querySelectorAll("img"))
+      for (const element of contentElement.querySelectorAll("img")) {
         element.setAttribute("loading", "lazy");
+        if (
+          !element.getAttribute("src")?.startsWith(app.locals.options.baseURL)
+        )
+          element.setAttribute(
+            "src",
+            `${app.locals.options.baseURL}/content/image-proxy${qs.stringify(
+              { url: element.getAttribute("src") },
+              { addQueryPrefix: true }
+            )}`
+          );
+      }
 
       for (const element of contentElement.querySelectorAll("details")) {
         const summaries: Node[] = [];
@@ -622,6 +635,37 @@ export default async (app: Courselore): Promise<void> => {
       };
     };
   })();
+
+  app.get<{}, any, {}, { url?: string }, {}>(
+    "/content/image-proxy",
+    asyncHandler(async (req, res) => {
+      if (
+        typeof req.query.url !== "string" ||
+        !["http://", "https://"].some((urlPrefix) =>
+          req.query.url!.toLowerCase().startsWith(urlPrefix)
+        )
+      )
+        return res.status(422).end();
+      await stream.pipeline(
+        got
+          .stream(req.query.url, {
+            throwHttpErrors: false,
+            retry: { limit: 0 },
+            timeout: { request: 10000 },
+          })
+          .on("response", (response) => {
+            for (const header of Object.keys(response.headers))
+              if (
+                !["content-type", "content-length"].includes(
+                  header.toLowerCase()
+                )
+              )
+                delete response.headers[header];
+          }),
+        res
+      );
+    })
+  );
 
   app.locals.partials.contentEditor = ({
     req,

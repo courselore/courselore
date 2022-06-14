@@ -28,6 +28,11 @@
 
 **Goals**
 
+- Configuration that’s currently on configuration files and should be moved into administrative interface:
+  - `administratorEmail`: By default it should be the email of the first administrator, but continue giving this as a separate option in case administrators have their personal accounts & want to receive notifications on a mailing list that reaches the whole team.
+  - `sendMail`: Have a default mailer using regular SMTP connection, and ask for URL, username, and password (which needs to be stored in plain text). But continue to give this as an option on the configuration file, in case people want to do something different, for example, what we do in development mode.
+  - `demonstration`
+  - `liveReload`: Perhaps this shouldn’t be given as an option, but just configured based on `process.env.NODE_ENV`.
 - Introduce the notion of system-wide roles:
   - Administrators
   - Staff
@@ -56,7 +61,7 @@
     - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
     - Or do you see the course as a regular as staff/student would?
     - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
-- Substitute the notion of `administratorEmail` to use the email an administrator?
+- **Question:** Should administrators not be able to see **some** things, for example, the upcoming private conversations between groups of people?
 
 **Good to Have in the Future**
 
@@ -122,6 +127,8 @@
 - “Truncate” long messages.
 - Scroll to the bottom when sending chat message regardless of your scroll position?
 - Add a button to “Return to Bottom” when chat is scrolled up.
+- Images may break the scrolling to the bottom on chats.
+- If the textarea is autosizing, then the main messages pane scrolls up.
 
 **Content Editor**
 
@@ -210,6 +217,7 @@
 ### Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
+  - Do we want notes that send notifications to give the option of sending notification immediately, even if the person is in digest mode?
 - Make emails be replies, so that they’re grouped in conversations on email readers.
 - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -351,7 +359,6 @@ new Notification('Example');
 - Add support for underline in Markdown.
 - The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
-- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal:
@@ -374,6 +381,7 @@ new Notification('Example');
 ### Pagination
 
 - `TODO`
+- Pagination of non-chat conversations should behave like GitHub Issues: Show the first couple messages, and the last couple messages, and have a gap in the middle that you can click to load.
 - Smarter default page for when the page isn’t specified explicitly:
   - Messages
     - Deep links should go to the page containing the referred message
@@ -526,7 +534,6 @@ const { app, BrowserWindow } = require("electron");
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
 - On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
-- Images may break the scrolling to the bottom on chats.
 
 ---
 
@@ -735,6 +742,7 @@ const { app, BrowserWindow } = require("electron");
       - Maybe just call `next()` and then look at the `res.statusCode`?
       - Or maybe overwrite `res.send()` and `res.redirect()`, like we do for logging.
   - Manual: Probably the only sensible approach, given the constraint above related to asynchronous handlers
+- Look into using `db.pragma("synchronous = NORMAL");` to improve performance. (<https://github.com/WiseLibs/better-sqlite3/issues/334>)
 - Auto-updater.
 - Backups.
   - For us, as system administrators.
@@ -757,6 +765,82 @@ const { app, BrowserWindow } = require("electron");
   - https://dbschema.com/database-designer/Sqlite.html
   - https://pypi.org/project/ERAlchemy/
   - https://www.beekeeperstudio.io (No diagrams, but worth keeping an eye on)
+
+---
+
+- Have a way for Localtunnel to work again.
+- Right now it doesn’t work because we serve via HTTPS, and `--local-https true` requires `--local-cert` and `--local-key`, but those are only created by Caddy after we have the URL. It’s a chicken and egg situation.
+
+````markdown
+<details>
+
+<summary>Option 3: Using <a href="https://localtunnel.me">Localtunnel</a></summary>
+
+1. Install & run Localtunnel following the instructions on the website.
+
+2. Run Courselore with the Localtunnel address, for example:
+
+   ```console
+   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   ```
+````
+
+> **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+
+3. Visit the Localtunnel address on the phone.
+
+</details>
+```
+
+---
+
+- Image proxy
+  - Allowlist of response headers
+    - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
+    - Use Got hook
+    - Use Transform in pipeline
+  - Approaches
+    - Question about current approach: https://github.com/sindresorhus/got/issues/2060
+    - Alternative approach that doesn’t work: Using Caddy. That would be nice because it would reduce the load on the application. But it could be limiting moving forward because it’d be more difficult to do HMAC, and so forth. But none of this matters, Caddy doesn’t seem to support proxying to arbitrary upstreams.
+    - Alternative approach: Use a standalone image proxy & fire it up behind Caddy, alongside the main application.
+    - Alternative approach: `await` on headers & only pipe the body?
+      - `res.set(msg.headers);`
+      - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
+  - Tests:
+    ```
+    http://127.0.0.1:8000 {
+      header REMOVE-ME PLEASE
+      file_server
+    }
+    curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/image-proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
+    ```
+  - Good-to-have
+    - Max size 5242880
+    - Max number of redirects 4
+    - Timeout 10s
+    - Resizing
+    - Caching: Not only for performance, but also because third-party images may go away
+    - Include HMAC
+      - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
+    - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
+      - This is necessary to 100% guarantee that people will be able to see images on Outlook
+    - Don’t decompress-recompress, but just forward the compressed payload
+  - References:
+    - Original: https://github.com/atmos/camo
+    - Commercial: https://github.com/imgproxy/imgproxy
+    - Open-Source in Go: https://github.com/willnorris/imageproxy
+    - Node.js basic functionality: https://github.com/http-party/node-http-proxy
+    - Node.js middleware (depends on `node-http-proxy`): https://github.com/chimurai/http-proxy-middleware
+    - https://github.com/cookpad/ecamo
+    - https://github.com/weserv/images
+    - https://github.com/jpmckinney/image-proxy
+    - https://github.com/sdepold/node-imageable
+    - https://github.com/marcjacobs1021/node-image-proxy
 
 ---
 

@@ -10,7 +10,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
 > **Note:** You must be signed in to GitHub to download GitHub Actions Artifacts.
 
-> **Note:** Courselore needs some network ports to be available: 80, 443, 4000, and 4001. Stop other applications you may have running on those ports. In macOS and Linux, for example, you may find which application is running on a network port by using `lsof -i:80`.
+> **Note:** Courselore needs some network ports to be available: 80, 443, and 4000. Stop other applications you may have running on those ports. In macOS and Linux, for example, you may find which application is running on a network port by using `lsof -i:80`.
 
 > **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that [you should disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
@@ -253,23 +253,5 @@ You may run Courselore on your machine and access it from a phone, which is esse
    ```
 
 5. Visit the server’s address on the phone.
-
-</details>
-
-<details>
-
-<summary>Option 3: Using <a href="https://localtunnel.me">Localtunnel</a></summary>
-
-1. Install & run Localtunnel following the instructions on the website.
-
-2. Run Courselore with the Localtunnel address, for example:
-
-   ```console
-   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
-   ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
-
-3. Visit the Localtunnel address on the phone.
 
 </details>
