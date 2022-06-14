@@ -663,6 +663,11 @@ export default (app: Courselore): void => {
                                                 name="role"
                                                 value="${role}"
                                               />
+                                              <input
+                                                type="hidden"
+                                                name="userId"
+                                                value="${String(user.id)}"
+                                              />
                                               <div>
                                                 <button
                                                   class="dropdown--menu--item button button--transparent"
@@ -804,42 +809,43 @@ export default (app: Courselore): void => {
     }
   );
 
-  // app.patch<
-  //   {},
-  //   HTML,
-  //   {
-  //     role: SystemRole;
-  //     isSelf: boolean;
-  //     userId: number;
-  //   },
-  //   {},
-  //   IsAdministratorMiddlewareLocals
-  // >(
-  //   "/administrator-panel/system-roles",
-  //   ...app.locals.middlewares.isAdministrator,
-  //   (req, res, next) => {
-  //     if (typeof req.body.role === "string") {
-  //       if (!systemRoles.includes(req.body.role)) return next("validation");
-  //       app.locals.database.run(
-  //         sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${req.body.userId}`
-  //       );
+  app.patch<
+    {},
+    HTML,
+    {
+      role: SystemRole;
+      userId: number;
+    },
+    {},
+    IsAdministratorMiddlewareLocals
+  >(
+    "/administrator-panel/system-roles",
+    ...app.locals.middlewares.isAdministrator,
+    (req, res, next) => {
+      if (typeof req.body.role === "string") {
+        if (!systemRoles.includes(req.body.role)) return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${req.body.userId}`
+        );
 
-  //       app.locals.helpers.Flash.set({
-  //         req,
-  //         res,
-  //         theme: "green",
-  //         content: html`System role updated successfully.`,
-  //       });
-  //     }
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html`System role updated successfully.`,
+        });
+      }
+      
+      const isSelf = req.body.userId === res.locals.user.id;
 
-  //     res.redirect(
-  //       303,
-  //       req.body.isSelf
-  //         ? `${app.locals.options.baseURL}`
-  //         : `${app.locals.options.baseURL}/administrator-panel/system-roles`
-  //     );
-  //   }
-  // );
+      res.redirect(
+        303,
+        isSelf 
+          ? `${app.locals.options.baseURL}`
+          : `${app.locals.options.baseURL}/administrator-panel/system-roles`
+      );
+    }
+  );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administrator-panel/statistics",
