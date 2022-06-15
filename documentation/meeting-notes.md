@@ -1,9 +1,11 @@
 # Meeting Notes
 
 <details>
-<summary>2021-06-04</summary>
+<summary>2021-06-11</summary>
 
 - Started work on the administrative interface.
+- Added an image reverse proxy to serve hotlinked images in message content. This fixes mixed content errors and improves on privacy.
+- Several small quality-of-life improvements, for example, including the course name on the “From” field in emails, making it easier for staff to make a note generate a notification, and so forth.
 
 </details>
 
