@@ -70,6 +70,7 @@
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
   - Enroll people in courses
   - Impersonate users & see the system just like the user sees it.
+  - Remove a person from the system entirely
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
