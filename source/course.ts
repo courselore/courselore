@@ -467,7 +467,7 @@ export default (app: Courselore): void => {
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
-                    $${res.locals.user.canCreateCourses
+                    $${res.locals.canCreateCourses
                       ? html` <a
                           href="${app.locals.options.baseURL}/courses/new"
                           class="menu-box--item button button--transparent"

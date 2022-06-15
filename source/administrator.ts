@@ -48,6 +48,16 @@ export type CanCreateCoursesMiddleware = express.RequestHandler<
 export interface CanCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
+export type MayManageSystemRolesMiddleware = express.RequestHandler<
+  {},
+  any,
+  { userId: string },
+  {},
+  MayManageSystemRolesMiddlewareLocals
+>[];
+export interface MayManageSystemRolesMiddlewareLocals
+  extends IsAdministratorMiddlewareLocals {}
+
 export type AdministratorLayout = ({
   req,
   res,
@@ -126,10 +136,38 @@ export default (app: Courselore): void => {
   app.locals.middlewares.canCreateCourses = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.user.canCreateCourses) {
+      if (res.locals.canCreateCourses) {
         return next();
       }
       next("route");
+    },
+  ];
+
+  app.locals.middlewares.mayManageSystemRoles = [
+    ...app.locals.middlewares.isAdministrator,
+    (req, res, next) => {
+      if (
+        (req.body.userId === String(res.locals.user.id) &&
+          app.locals.database.get<{ count: number }>(
+            sql`
+            SELECT COUNT(*) AS "count"
+            FROM "users"
+            WHERE "systemRole" = 'administrator'
+          `
+          )!.count === 1) ||
+        !req.body.userId.match(/\d+/) ||
+        app.locals.database.get<{
+          value: string;
+        }>(
+          sql`
+          SELECT "id"
+          FROM "users"
+          WHERE "id" = ${req.body.userId}
+        `
+        )!.value === null
+      )
+        return next("validation");
+      next();
     },
   ];
 
@@ -438,7 +476,8 @@ export default (app: Courselore): void => {
                       WHEN 'administrator' THEN 0
                       WHEN 'staff' THEN 1
                       WHEN 'none' THEN 2
-                    END
+                    END, 
+                    "users"."name" ASC
           `
       );
 
@@ -670,7 +709,12 @@ export default (app: Courselore): void => {
                                               />
                                               <div>
                                                 <button
-                                                  class="dropdown--menu--item button button--transparent"
+                                                  class="dropdown--menu--item button button--transparent $${role ===
+                                                  "administrator"
+                                                    ? "text--rose"
+                                                    : role === "staff"
+                                                    ? "text--teal"
+                                                    : ""}"
                                                   $${isOnlyAdministrator
                                                     ? html`
                                                         type="button"
@@ -720,6 +764,13 @@ export default (app: Courselore): void => {
                                                                     name="role"
                                                                     value="${role}"
                                                                   />
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="userId"
+                                                                    value="${String(
+                                                                      user.id
+                                                                    )}"
+                                                                  />
                                                                   <p>
                                                                     Are you sure
                                                                     you want to
@@ -764,8 +815,7 @@ export default (app: Courselore): void => {
                                                     : html``}
                                                 >
                                                   $${app.locals.partials
-                                                    .systemRoleIcon[role]
-                                                    .regular}
+                                                    .systemRoleIcon[role].fill}
                                                   ${lodash.capitalize(role)}
                                                 </button>
                                               </div>
@@ -779,7 +829,7 @@ export default (app: Courselore): void => {
                           `}"
                         >
                           $${app.locals.partials.systemRoleIcon[user.systemRole]
-                            .regular}
+                            .fill}
                           ${lodash.capitalize(user.systemRole)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
@@ -814,16 +864,17 @@ export default (app: Courselore): void => {
     HTML,
     {
       role: SystemRole;
-      userId: number;
+      userId: string;
     },
     {},
-    IsAdministratorMiddlewareLocals
+    MayManageSystemRolesMiddlewareLocals
   >(
     "/administrator-panel/system-roles",
-    ...app.locals.middlewares.isAdministrator,
+    ...app.locals.middlewares.mayManageSystemRoles,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!systemRoles.includes(req.body.role)) return next("validation");
+
         app.locals.database.run(
           sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${req.body.userId}`
         );
@@ -835,12 +886,10 @@ export default (app: Courselore): void => {
           content: html`System role updated successfully.`,
         });
       }
-      
-      const isSelf = req.body.userId === res.locals.user.id;
 
       res.redirect(
         303,
-        isSelf 
+        req.body.userId === String(res.locals.user.id)
           ? `${app.locals.options.baseURL}`
           : `${app.locals.options.baseURL}/administrator-panel/system-roles`
       );

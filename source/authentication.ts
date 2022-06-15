@@ -85,7 +85,6 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographyPreprocessed: HTML | null;
     emailNotifications: UserEmailNotifications;
     systemRole: SystemRole;
-    canCreateCourses: boolean;
   };
   invitations: {
     id: number;
@@ -120,6 +119,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     role: EnrollmentRole;
     accentColor: EnrollmentAccentColor;
   }[];
+  canCreateCourses: boolean;
 }
 
 export type SignInHandler = express.RequestHandler<
@@ -267,7 +267,6 @@ export default (app: Courselore): void => {
         biographyPreprocessed: HTML | null;
         emailNotifications: UserEmailNotifications;
         systemRole: SystemRole;
-        canCreateCourses: boolean;
       }>(
         sql`
           SELECT "id",
@@ -287,7 +286,7 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      res.locals.user.canCreateCourses =
+      res.locals.canCreateCourses =
         app.locals.options.canCreateCourses === "anyone"
           ? true
           : app.locals.options.canCreateCourses === "staff-and-administrators"
