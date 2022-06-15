@@ -177,7 +177,7 @@ export default (app: Courselore): void => {
       res,
       head,
       menuButton: html`
-        <i class="bi bi-pc-display-horizontal"></i>
+        <i class="bi bi-tools"></i>
         Administrator Panel
       `,
       menu: html`
@@ -254,7 +254,7 @@ export default (app: Courselore): void => {
           </title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-pc-display-horizontal"></i>
+              <i class="bi bi-tools"></i>
               Administrator Panel ·
               <i class="bi bi-gear"></i>
               Configuration
@@ -488,7 +488,7 @@ export default (app: Courselore): void => {
           head: html`<title>Roles · Administrator Panel · Courselore</title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-pc-display-horizontal"></i>
+              <i class="bi bi-tools"></i>
               Administrator Panel ·
               <i class="bi bi-people"></i>
               System Roles
@@ -909,7 +909,7 @@ export default (app: Courselore): void => {
           </title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-pc-display-horizontal"></i>
+              <i class="bi bi-tools"></i>
               Administrator Panel ·
               <i class="bi bi-bar-chart"></i>
               Statistics
