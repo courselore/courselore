@@ -1,5 +1,10 @@
 # Backlog
 
+- Add `reference` to `"users"` query
+  - `reference: string;`
+  - `lastSeenOnlineAt`
+- Add missing `key` in `partials.user()`.
+
 ### Fall
 
 - Notifications:
@@ -708,7 +713,6 @@ const { app, BrowserWindow } = require("electron");
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
   - Look into using `fit-textarea@2.0.0` instead.
 - Add missing `key`s:
-  - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
   - `querySelector`
   - `map(`
