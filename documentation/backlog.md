@@ -1,8 +1,5 @@
 # Backlog
 
-- Add `reference` to `"users"` query
-  - `reference: string;`
-  - `lastSeenOnlineAt`
 - Add missing `key` in `partials.user()`.
 
 ### Fall

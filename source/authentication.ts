@@ -74,6 +74,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   user: {
     id: number;
     lastSeenOnlineAt: string;
+    reference: string;
     email: string;
     password: string;
     emailVerifiedAt: string | null;
@@ -254,6 +255,7 @@ export default (app: Courselore): void => {
       res.locals.user = app.locals.database.get<{
         id: number;
         lastSeenOnlineAt: string;
+        reference: string;
         email: string;
         password: string;
         emailVerifiedAt: string | null;
@@ -267,6 +269,7 @@ export default (app: Courselore): void => {
         sql`
           SELECT "id",
                  "lastSeenOnlineAt",
+                 "reference",
                  "email",
                  "password",
                  "emailVerifiedAt",

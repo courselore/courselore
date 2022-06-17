@@ -3514,6 +3514,7 @@ export default (app: Courselore): void => {
           id: number;
           userId: number;
           userLastSeenOnlineAt: string;
+          userReference: string;
           userEmail: string;
           userName: string;
           userAvatar: string | null;
@@ -3527,6 +3528,7 @@ export default (app: Courselore): void => {
             SELECT "enrollments"."id",
                    "users"."id" AS "userId",
                    "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                   "users"."reference" AS "userReference",
                    "users"."email" AS "userEmail",
                    "users"."name" AS "userName",
                    "users"."avatar" AS "userAvatar",
@@ -3546,6 +3548,7 @@ export default (app: Courselore): void => {
           user: {
             id: enrollment.userId,
             lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+            reference: enrollment.userReference,
             email: enrollment.userEmail,
             name: enrollment.userName,
             avatar: enrollment.userAvatar,
