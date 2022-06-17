@@ -2,10 +2,10 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost`;
   const administratorEmail = "development@courselore.org";
   const path = await courseloreImport("node:path");
+  const url = await courseloreImport("node:url");
   const dataDirectory = path.join(process.cwd(), "data");
   const { default: courselore } = await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
-    const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
     const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
@@ -59,8 +59,10 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             route ${new URL(`${baseURL}/*`).pathname} {
               import common
               route {
-                root * ${url.fileURLToPath(
-                  new URL("../static/", courseloreImportMetaURL)
+                root * ${path.resolve(
+                  url.fileURLToPath(
+                    new URL("../static/", courseloreImportMetaURL)
+                  )
                 )}
                 @file_exists file
                 file_server @file_exists

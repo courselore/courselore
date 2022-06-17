@@ -162,7 +162,6 @@
 
 **Windows**
 
-- `fileURLToPath` & `pathToFileURL` may be problematic.
 - `global.css` is regenerated (probably because of line endings)
 
 **Roadmap**
