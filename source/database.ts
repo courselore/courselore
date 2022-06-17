@@ -533,7 +533,7 @@ export default async (app: Courselore): Promise<void> => {
     () => {
       app.locals.database.execute(
         sql`
-          CREATE TABLE "migration_users" (
+          CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "lastSeenOnlineAt" TEXT NOT NULL,
@@ -585,7 +585,7 @@ export default async (app: Courselore): Promise<void> => {
       ))
         app.locals.database.run(
           sql`
-            INSERT INTO "migration_users" (
+            INSERT INTO "new_users" (
               "id",
               "createdAt",
               "lastSeenOnlineAt",
@@ -622,7 +622,7 @@ export default async (app: Courselore): Promise<void> => {
       app.locals.database.execute(
         sql`
           DROP TABLE "users";
-          ALTER TABLE "migration_users" RENAME TO "users";
+          ALTER TABLE "new_users" RENAME TO "users";
           CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
           END;
