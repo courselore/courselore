@@ -1,7 +1,5 @@
 # Backlog
 
-- Add missing `key` in `partials.user()`.
-
 ### Fall
 
 - Notifications:
