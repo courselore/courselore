@@ -573,11 +573,21 @@ export default (app: Courselore): void => {
       >`;
 
     return userHTML !== undefined && anonymousHTML !== undefined
-      ? html`<span>$${anonymousHTML} ($${userHTML})</span>`
+      ? html`<span
+          key="partial--user--${user === "no-longer-enrolled"
+            ? "no-longer-enrolled"
+            : user!.reference}"
+          >$${anonymousHTML} ($${userHTML})</span
+        >`
       : userHTML !== undefined
-      ? userHTML
+      ? html`<span
+          key="partial--user--${user === "no-longer-enrolled"
+            ? "no-longer-enrolled"
+            : user!.reference}"
+          >$${userHTML}</span
+        >`
       : anonymousHTML !== undefined
-      ? anonymousHTML
+      ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
       : html``;
   };
 
