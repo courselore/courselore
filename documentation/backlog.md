@@ -91,10 +91,6 @@
 
 ### User Interface Improvements
 
-**On Deployment**
-
-- Test reporting an issue via Meta Courselore from the footer.
-
 **Top Menus**
 
 - Use hamburger menu instead of a couple separate menus
