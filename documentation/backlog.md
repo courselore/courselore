@@ -157,7 +157,6 @@
 - Add the number of unread messages to the `<title>`.
   - Or change the favicon.
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
-- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
 

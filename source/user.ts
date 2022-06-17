@@ -345,6 +345,7 @@ export default (app: Courselore): void => {
             interactive: true,
             appendTo: document.querySelector("body"),
             delay: [1000, null],
+            touch: ["hold", 1000],
             content: ${res.locals.html(
               html`
                 <div
