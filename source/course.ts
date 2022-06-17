@@ -2842,7 +2842,10 @@ export default (app: Courselore): void => {
                                                       value="${role}"
                                                     />
                                                     <button
-                                                      class="dropdown--menu--item button button--transparent"
+                                                      class="dropdown--menu--item button button--transparent ${role ===
+                                                      "staff"
+                                                        ? "text--sky"
+                                                        : ""}"
                                                       $${isUsed
                                                         ? html`
                                                             type="button"
@@ -2870,7 +2873,11 @@ export default (app: Courselore): void => {
                                                       $${app.locals.partials
                                                         .enrollmentRoleIcon[
                                                         role
-                                                      ].regular}
+                                                      ][
+                                                        role === "staff"
+                                                          ? "fill"
+                                                          : "regular"
+                                                      ]}
                                                       ${lodash.capitalize(role)}
                                                     </button>
                                                   </form>
@@ -3793,7 +3800,10 @@ export default (app: Courselore): void => {
                                               />
                                               <div>
                                                 <button
-                                                  class="dropdown--menu--item button button--transparent"
+                                                  class="dropdown--menu--item button button--transparent ${role ===
+                                                  "staff"
+                                                    ? "text--sky"
+                                                    : ""}"
                                                   $${isOnlyStaff
                                                     ? html`
                                                         type="button"
@@ -3887,8 +3897,11 @@ export default (app: Courselore): void => {
                                                     : html``}
                                                 >
                                                   $${app.locals.partials
-                                                    .enrollmentRoleIcon[role]
-                                                    .regular}
+                                                    .enrollmentRoleIcon[role][
+                                                    role === "staff"
+                                                      ? "fill"
+                                                      : "regular"
+                                                  ]}
                                                   ${lodash.capitalize(role)}
                                                 </button>
                                               </div>
