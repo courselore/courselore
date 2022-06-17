@@ -958,27 +958,27 @@ export default (app: Courselore): void => {
         return next("validation");
       app.locals.database.run(
         sql`
-        UPDATE "users"
-        SET "name" = ${req.body.name},
-            "nameSearch" = ${html`${req.body.name}`},
-            "avatar" = ${
-              req.body.avatar.trim() === "" ? null : req.body.avatar
-            },
-            "biographySource" = ${
-              req.body.biography.trim() === "" ? null : req.body.biography
-            },
-            "biographyPreprocessed" = ${
-              req.body.biography.trim() === ""
-                ? null
-                : app.locals.partials.content({
-                    req,
-                    res,
-                    type: "source",
-                    content: req.body.biography,
-                  }).preprocessed
-            }
-        WHERE "id" = ${res.locals.user.id}
-      `
+          UPDATE "users"
+          SET "name" = ${req.body.name},
+              "nameSearch" = ${html`${req.body.name}`},
+              "avatar" = ${
+                req.body.avatar.trim() === "" ? null : req.body.avatar
+              },
+              "biographySource" = ${
+                req.body.biography.trim() === "" ? null : req.body.biography
+              },
+              "biographyPreprocessed" = ${
+                req.body.biography.trim() === ""
+                  ? null
+                  : app.locals.partials.content({
+                      req,
+                      res,
+                      type: "source",
+                      content: req.body.biography,
+                    }).preprocessed
+              }
+          WHERE "id" = ${res.locals.user.id}
+        `
       );
       app.locals.helpers.Flash.set({
         req,

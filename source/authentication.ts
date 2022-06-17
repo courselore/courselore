@@ -1320,6 +1320,7 @@ export default (app: Courselore): void => {
           INSERT INTO "users" (
             "createdAt",
             "lastSeenOnlineAt",
+            "reference",
             "email",
             "password",
             "emailVerifiedAt",
@@ -1331,6 +1332,7 @@ export default (app: Courselore): void => {
           VALUES (
             ${new Date().toISOString()},
             ${new Date().toISOString()},
+            ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${null},
