@@ -49,6 +49,7 @@
   - Option 3: Administrators can create users.
 - List of people in the system
   - Manage roles
+  - See what courses people are on
 - List of courses in the system
   - Access the course
   - Have a quick way to archive a course directly from this list
@@ -68,6 +69,8 @@
 - Administrators can have further control over user accounts:
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
   - Enroll people in courses
+  - Impersonate users & see the system just like the user sees it.
+  - Remove a person from the system entirely
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -87,10 +90,6 @@
 - Take a look at other nice features from Discourse’s administrative interface
 
 ### User Interface Improvements
-
-**On Deployment**
-
-- Test reporting an issue via Meta Courselore from the footer.
 
 **Top Menus**
 
@@ -158,7 +157,6 @@
 - Add the number of unread messages to the `<title>`.
   - Or change the favicon.
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
-- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
 
@@ -217,7 +215,7 @@
 ### Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Do we want notes that send notifications to give the option of sending notification immediately, even if the person is in digest mode?
+  - Staff notes may send notifications immediately, even if the person is in digest mode
 - Make emails be replies, so that they’re grouped in conversations on email readers.
 - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -270,6 +268,7 @@ new Notification('Example');
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
+- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
 
 ### Users
 
@@ -285,6 +284,7 @@ new Notification('Example');
 - Authentication:
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
+  - Look into SIS to get a list of courses
 - Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 - Extra fields:
   - Pronoun.
@@ -703,7 +703,6 @@ const { app, BrowserWindow } = require("electron");
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
   - Look into using `fit-textarea@2.0.0` instead.
 - Add missing `key`s:
-  - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
   - `querySelector`
   - `map(`

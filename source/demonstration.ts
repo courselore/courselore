@@ -37,6 +37,7 @@ export default (app: Courselore): void => {
             INSERT INTO "users" (
               "createdAt",
               "lastSeenOnlineAt",
+              "reference",
               "email",
               "password",
               "emailVerifiedAt",
@@ -53,6 +54,7 @@ export default (app: Courselore): void => {
               ${new Date(
                 Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
               ).toISOString()},
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
               ${`${slugify(name)}--${cryptoRandomString({
                 length: 5,
                 type: "numeric",
@@ -92,6 +94,7 @@ export default (app: Courselore): void => {
               INSERT INTO "users" (
                 "createdAt",
                 "lastSeenOnlineAt",
+                "reference",
                 "email",
                 "password",
                 "emailVerifiedAt",
@@ -111,6 +114,7 @@ export default (app: Courselore): void => {
                       ? 0
                       : lodash.random(0, 5 * 60 * 60 * 1000))
                 ).toISOString()},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
                 ${`${slugify(name)}--${cryptoRandomString({
                   length: 5,
                   type: "numeric",

@@ -178,6 +178,7 @@ export default (app: Courselore): void => {
       authorEnrollmentId: number | null;
       authorUserId: number | null;
       authorUserLastSeenOnlineAt: string | null;
+      authorUserReference: string;
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
@@ -201,6 +202,7 @@ export default (app: Courselore): void => {
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
                "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
+               "authorUser"."reference" AS "authorUserReference",
                "authorUser"."email" AS "authorUserEmail",
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
@@ -235,6 +237,7 @@ export default (app: Courselore): void => {
         messageRow.authorEnrollmentId !== null &&
         messageRow.authorUserId !== null &&
         messageRow.authorUserLastSeenOnlineAt !== null &&
+        messageRow.authorUserReference !== null &&
         messageRow.authorUserEmail !== null &&
         messageRow.authorUserName !== null &&
         messageRow.authorUserAvatarlessBackgroundColor !== null &&
@@ -245,6 +248,7 @@ export default (app: Courselore): void => {
               user: {
                 id: messageRow.authorUserId,
                 lastSeenOnlineAt: messageRow.authorUserLastSeenOnlineAt,
+                reference: messageRow.authorUserReference,
                 email: messageRow.authorUserEmail,
                 name: messageRow.authorUserName,
                 avatar: messageRow.authorUserAvatar,
@@ -274,6 +278,7 @@ export default (app: Courselore): void => {
         enrollmentId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
+        userReference: string;
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
@@ -289,6 +294,7 @@ export default (app: Courselore): void => {
                  "enrollments"."id" AS "enrollmentId",
                  "users"."id" AS "userId",
                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."reference" AS "userReference",
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
@@ -311,6 +317,7 @@ export default (app: Courselore): void => {
           reading.enrollmentId !== null &&
           reading.userId !== null &&
           reading.userLastSeenOnlineAt !== null &&
+          reading.userReference !== null &&
           reading.userEmail !== null &&
           reading.userName !== null &&
           reading.userAvatarlessBackgroundColor !== null &&
@@ -321,6 +328,7 @@ export default (app: Courselore): void => {
                 user: {
                   id: reading.userId,
                   lastSeenOnlineAt: reading.userLastSeenOnlineAt,
+                  reference: reading.userReference,
                   email: reading.userEmail,
                   name: reading.userName,
                   avatar: reading.userAvatar,
@@ -341,6 +349,7 @@ export default (app: Courselore): void => {
         enrollmentId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
+        userReference: string;
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
@@ -355,6 +364,7 @@ export default (app: Courselore): void => {
                  "enrollments"."id" AS "enrollmentId",
                  "users"."id" AS "userId",
                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."reference" AS "userReference",
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
@@ -376,6 +386,7 @@ export default (app: Courselore): void => {
           endorsement.enrollmentId !== null &&
           endorsement.userId !== null &&
           endorsement.userLastSeenOnlineAt !== null &&
+          endorsement.userReference !== null &&
           endorsement.userEmail !== null &&
           endorsement.userName !== null &&
           endorsement.userAvatarlessBackgroundColor !== null &&
@@ -386,6 +397,7 @@ export default (app: Courselore): void => {
                 user: {
                   id: endorsement.userId,
                   lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
+                  reference: endorsement.userReference,
                   email: endorsement.userEmail,
                   name: endorsement.userName,
                   avatar: endorsement.userAvatar,
@@ -406,6 +418,7 @@ export default (app: Courselore): void => {
         enrollmentId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
+        userReference: string;
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
@@ -420,6 +433,7 @@ export default (app: Courselore): void => {
                 "enrollments"."id" AS "enrollmentId",
                 "users"."id" AS "userId",
                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                "users"."reference" AS "userReference",
                 "users"."email" AS "userEmail",
                 "users"."name" AS "userName",
                 "users"."avatar" AS "userAvatar",
@@ -441,6 +455,7 @@ export default (app: Courselore): void => {
           like.enrollmentId !== null &&
           like.userId !== null &&
           like.userLastSeenOnlineAt !== null &&
+          like.userReference !== null &&
           like.userEmail !== null &&
           like.userName !== null &&
           like.userAvatarlessBackgroundColor !== null &&
@@ -451,6 +466,7 @@ export default (app: Courselore): void => {
                 user: {
                   id: like.userId,
                   lastSeenOnlineAt: like.userLastSeenOnlineAt,
+                  reference: like.userReference,
                   email: like.userEmail,
                   name: like.userName,
                   avatar: like.userAvatar,
