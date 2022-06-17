@@ -1,13 +1,15 @@
 export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const baseURL = "https://courselore.org";
-  const administratorEmail = "administrator@courselore.org";
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
+  const fs = (await courseloreImport("fs-extra")).default;
+  const execa = (await courseloreImport("execa")).execa;
+  const nodemailer = (await courseloreImport("nodemailer")).default;
+  const caddyfile = (await courseloreImport("dedent")).default;
+  const courselore = (await courseloreImport("./index.js")).default;
+  const baseURL = "https://courselore.org";
+  const administratorEmail = "administrator@courselore.org";
   const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
-  const { default: courselore } = await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
-    const execa = (await courseloreImport("execa")).execa;
-    const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
       execa(
         process.argv[0],
@@ -104,8 +106,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const fs = (await courseloreImport("fs-extra")).default;
-    const nodemailer = (await courseloreImport("nodemailer")).default;
     const secrets = JSON.parse(
       await fs.readFile(
         url.fileURLToPath(new URL("./secrets.json", import.meta.url)),
