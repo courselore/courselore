@@ -2884,7 +2884,11 @@ export default (app: Courselore): void => {
                               >
                                 $${app.locals.partials.enrollmentRoleIcon[
                                   invitation.role
-                                ].regular}
+                                ][
+                                  invitation.role === "staff"
+                                    ? "fill"
+                                    : "regular"
+                                ]}
                                 ${lodash.capitalize(invitation.role)}
                                 <i class="bi bi-chevron-down"></i>
                               </button>
@@ -3899,7 +3903,7 @@ export default (app: Courselore): void => {
                         >
                           $${app.locals.partials.enrollmentRoleIcon[
                             enrollment.role
-                          ].regular}
+                          ][enrollment.role === "staff" ? "fill" : "regular"]}
                           ${lodash.capitalize(enrollment.role)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
