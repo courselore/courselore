@@ -1420,7 +1420,7 @@ export default (app: Courselore): void => {
                     <input
                       type="checkbox"
                       name="emailNotificationsForAllMessages"
-                      $${"TODO" ? html`checked` : html``}
+                      $${"TODO" && false ? html`checked` : html``}
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
@@ -1526,7 +1526,7 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
-              <div class="label">
+              <div key="emailNotificationsDigests" class="label">
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -1535,12 +1535,10 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
+                      name="emailNotificationsDigests"
+                      value="false"
                       required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
+                      $${"TODO" ? html`checked` : html``}
                       class="input--radio"
                     />
                     One email notification per message
@@ -1554,54 +1552,55 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
+                      name="emailNotificationsDigests"
+                      value="true"
                       required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
+                      $${"TODO" && false ? html`checked` : html``}
                       class="input--radio"
                     />
-                    Digests of multiple messages:
+                    Digests of multiple messages
                   </label>
                 </div>
                 <div
+                  class="label"
                   css="${res.locals.css(css`
-                    display: flex;
+                    margin-left: var(--space--6);
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
-                      required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Hourly
-                  </label>
-                </div>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
-                      required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Daily
-                  </label>
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                    `)}"
+                  >
+                    <label class="button button--tight button--tight--inline">
+                      <input
+                        type="radio"
+                        name="emailNotificationsDigestsFrequency"
+                        value="hourly"
+                        required
+                        $${"TODO" ? html`checked` : html``}
+                        class="input--radio"
+                      />
+                      Hourly
+                    </label>
+                  </div>
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                    `)}"
+                  >
+                    <label class="button button--tight button--tight--inline">
+                      <input
+                        type="radio"
+                        name="emailNotificationsDigestsFrequency"
+                        value="daily"
+                        required
+                        $${"TODO" && false ? html`checked` : html``}
+                        class="input--radio"
+                      />
+                      Daily
+                    </label>
+                  </div>
                 </div>
               </div>
 
