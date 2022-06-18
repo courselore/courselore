@@ -1419,13 +1419,20 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
-                      name="emailNotifications"
-                      value="all-messages"
-                      required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
+                      name="emailNotificationsForAllMessages"
+                      $${"TODO" ? html`checked` : html``}
                       class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (this.checked)
+                            for (const name of [
+                              "emailNotificationsForMentions",
+                              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                              "emailNotificationsForMessagesInConversationsYouStarted",
+                            ])
+                              this.closest("form").querySelector('[name="' + name + '"]').checked = true;
+                        };
+                      `}"
                     />
                     All messages
                   </label>
@@ -1438,13 +1445,14 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
-                      name="emailNotifications"
-                      value="mentions"
-                      required
-                      $${res.locals.user.emailNotifications === "mentions"
-                        ? html`checked`
-                        : html``}
+                      name="emailNotificationsForMentions"
+                      $${"TODO" ? html`checked` : html``}
                       class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                        };
+                      `}"
                     />
                     @mentions
                   </label>
@@ -1457,13 +1465,14 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
-                      name="emailNotifications"
-                      value="mentions"
-                      required
-                      $${res.locals.user.emailNotifications === "mentions"
-                        ? html`checked`
-                        : html``}
+                      name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
+                      $${"TODO" ? html`checked` : html``}
                       class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                        };
+                      `}"
                     />
                     Messages in conversations in which you participated
                   </label>
@@ -1476,13 +1485,14 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
-                      name="emailNotifications"
-                      value="mentions"
-                      required
-                      $${res.locals.user.emailNotifications === "mentions"
-                        ? html`checked`
-                        : html``}
+                      name="emailNotificationsForMessagesInConversationsYouStarted"
+                      $${"TODO" ? html`checked` : html``}
                       class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                        };
+                      `}"
                     />
                     Messages in conversations you started
                   </label>
