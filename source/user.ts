@@ -1408,6 +1408,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
               <div class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
@@ -1464,7 +1465,7 @@ export default (app: Courselore): void => {
                         : html``}
                       class="input--checkbox"
                     />
-                    Conversations you’re part of
+                    Messages in conversations in which you participated
                   </label>
                 </div>
                 <div
@@ -1483,7 +1484,7 @@ export default (app: Courselore): void => {
                         : html``}
                       class="input--checkbox"
                     />
-                    Conversations you started
+                    Messages in conversations you started
                   </label>
                 </div>
                 <div
@@ -1507,6 +1508,85 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                     />
                     Important staff announcements
+                  </label>
+                </div>
+              </div>
+
+              <div class="label">
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="emailNotifications"
+                      value="all-messages"
+                      required
+                      $${res.locals.user.emailNotifications === "all-messages"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    One email notification per message
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="emailNotifications"
+                      value="all-messages"
+                      required
+                      $${res.locals.user.emailNotifications === "all-messages"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Digests of multiple messages:
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="emailNotifications"
+                      value="all-messages"
+                      required
+                      $${res.locals.user.emailNotifications === "all-messages"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Hourly
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="radio"
+                      name="emailNotifications"
+                      value="all-messages"
+                      required
+                      $${res.locals.user.emailNotifications === "all-messages"
+                        ? html`checked`
+                        : html``}
+                      class="input--radio"
+                    />
+                    Daily
                   </label>
                 </div>
               </div>
