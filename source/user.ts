@@ -318,11 +318,11 @@ export default (app: Courselore): void => {
             ? html`<span
                 class="text--sky"
                 onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: "Staff",
-                    });
-                  `}"
+                  (this.tooltip ??= tippy(this)).setProps({
+                    touch: false,
+                    content: "Staff",
+                  });
+                `}"
                 >  <i class="bi bi-mortarboard-fill"></i
               ></span>`
             : html``}</span
@@ -1314,6 +1314,8 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
+              hidden
+              TODO
               method="PATCH"
               action="${app.locals.options.baseURL}/settings/notifications"
               novalidate
@@ -1381,6 +1383,130 @@ export default (app: Courselore): void => {
                       class="input--radio"
                     />
                     None
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                  Update Notifications
+                </button>
+              </div>
+            </form>
+
+            <form
+              method="PATCH"
+              action="${app.locals.options.baseURL}/settings/notifications"
+              novalidate
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <div class="label">
+                <p class="label--text">Email Notifications</p>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="checkbox"
+                      name="emailNotifications"
+                      value="all-messages"
+                      required
+                      $${res.locals.user.emailNotifications === "all-messages"
+                        ? html`checked`
+                        : html``}
+                      class="input--checkbox"
+                    />
+                    All messages
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="checkbox"
+                      name="emailNotifications"
+                      value="mentions"
+                      required
+                      $${res.locals.user.emailNotifications === "mentions"
+                        ? html`checked`
+                        : html``}
+                      class="input--checkbox"
+                    />
+                    @mentions
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="checkbox"
+                      name="emailNotifications"
+                      value="mentions"
+                      required
+                      $${res.locals.user.emailNotifications === "mentions"
+                        ? html`checked`
+                        : html``}
+                      class="input--checkbox"
+                    />
+                    Conversations you’re part of
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="checkbox"
+                      name="emailNotifications"
+                      value="mentions"
+                      required
+                      $${res.locals.user.emailNotifications === "mentions"
+                        ? html`checked`
+                        : html``}
+                      class="input--checkbox"
+                    />
+                    Conversations you started
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: "You always receive email notifications for important staff announcements.",
+                      });
+                    `}"
+                  >
+                    <input
+                      type="checkbox"
+                      disabled
+                      checked
+                      class="input--checkbox"
+                    />
+                    Important staff announcements
                   </label>
                 </div>
               </div>

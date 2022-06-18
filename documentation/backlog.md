@@ -94,6 +94,7 @@
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Staff notes may send notifications immediately, even if the person is in digest mode
+- `TODO`
 - Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
   - Don’t send notifications when the person is online and/or has seen the message.
