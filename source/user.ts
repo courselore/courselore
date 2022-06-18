@@ -1470,7 +1470,9 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                          const form = this.closest("form");
+                          if (!this.checked) form.querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                          if (this.checked) form.querySelector('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                         };
                       `}"
                     />
@@ -1490,7 +1492,9 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                          const form = this.closest("form");
+                          if (!this.checked) form.querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                          if (!this.checked) form.querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                         };
                       `}"
                     />
