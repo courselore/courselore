@@ -71,6 +71,7 @@
   - Enroll people in courses
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
+  - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -756,17 +757,6 @@ const { app, BrowserWindow } = require("electron");
 - Caddy could silence logs **after** a successful startup.
 - Live-navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
   - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
-
----
-
-- Tools to visualize SQLite database:
-  - https://www.schemacrawler.com/downloads.html
-  - https://dbeaver.io
-  - https://www.mysql.com/products/workbench/
-  - https://schemaspy.org
-  - https://dbschema.com/database-designer/Sqlite.html
-  - https://pypi.org/project/ERAlchemy/
-  - https://www.beekeeperstudio.io (No diagrams, but worth keeping an eye on)
 
 ---
 
