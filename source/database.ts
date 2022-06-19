@@ -2,6 +2,7 @@ import path from "node:path";
 import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
+import cryptoRandomString from "crypto-random-string";
 import { Courselore } from "./index.js";
 
 export interface DatabaseLocals {
@@ -542,7 +543,113 @@ export default async (app: Courselore): Promise<void> => {
       VALUES ('demonstrationAt', json_quote(${new Date().toISOString()}));
       INSERT INTO "configurations" ("key", "value") 
       VALUES ('administratorEmail', json_quote('please-change-me@courselore.org'));
-    `
+    `,
+    () => {
+      app.locals.database.execute(
+        sql`
+          CREATE TABLE "new_users" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "lastSeenOnlineAt" TEXT NOT NULL,
+            "reference" TEXT NOT NULL UNIQUE,
+            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+            "password" TEXT NOT NULL,
+            "emailVerifiedAt" TEXT NULL,
+            "name" TEXT NOT NULL,
+            "nameSearch" TEXT NOT NULL,
+            "avatar" TEXT NULL,
+            "avatarlessBackgroundColor" TEXT NOT NULL,
+            "biographySource" TEXT NULL,
+            "biographyPreprocessed" TEXT NULL,
+            "emailNotifications" TEXT NOT NULL
+          );
+        `
+      );
+      for (const user of app.locals.database.all<{
+        id: number;
+        createdAt: string;
+        lastSeenOnlineAt: string;
+        email: string;
+        password: string;
+        emailVerifiedAt: string | null;
+        name: string;
+        nameSearch: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: string;
+        biographySource: string | null;
+        biographyPreprocessed: string | null;
+        emailNotifications: string;
+      }>(
+        sql`
+          SELECT "id",
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "emailNotifications"
+          FROM "users"
+        `
+      ))
+        app.locals.database.run(
+          sql`
+            INSERT INTO "new_users" (
+              "id",
+              "createdAt",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "emailNotifications"
+            )
+            VALUES (
+              ${user.id},
+              ${user.createdAt},
+              ${user.lastSeenOnlineAt},
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${user.email},
+              ${user.password},
+              ${user.emailVerifiedAt},
+              ${user.name},
+              ${user.nameSearch},
+              ${user.avatar},
+              ${user.avatarlessBackgroundColor},
+              ${user.biographySource},
+              ${user.biographyPreprocessed},
+              ${user.emailNotifications}
+            )
+          `
+        );
+      app.locals.database.execute(
+        sql`
+          DROP TABLE "users";
+          ALTER TABLE "new_users" RENAME TO "users";
+          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+          END;
+          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+          END;
+          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+          END;
+        `
+      );
+    }
   );
   app.once("close", () => {
     app.locals.database.close();

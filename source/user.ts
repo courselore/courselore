@@ -345,6 +345,7 @@ export default (app: Courselore): void => {
             interactive: true,
             appendTo: document.querySelector("body"),
             delay: [1000, null],
+            touch: ["hold", 1000],
             content: ${res.locals.html(
               html`
                 <div
@@ -573,11 +574,21 @@ export default (app: Courselore): void => {
       >`;
 
     return userHTML !== undefined && anonymousHTML !== undefined
-      ? html`<span>$${anonymousHTML} ($${userHTML})</span>`
+      ? html`<span
+          key="partial--user--${user === "no-longer-enrolled"
+            ? "no-longer-enrolled"
+            : user!.reference}"
+          >$${anonymousHTML} ($${userHTML})</span
+        >`
       : userHTML !== undefined
-      ? userHTML
+      ? html`<span
+          key="partial--user--${user === "no-longer-enrolled"
+            ? "no-longer-enrolled"
+            : user!.reference}"
+          >$${userHTML}</span
+        >`
       : anonymousHTML !== undefined
-      ? anonymousHTML
+      ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
       : html``;
   };
 
@@ -958,27 +969,27 @@ export default (app: Courselore): void => {
         return next("validation");
       app.locals.database.run(
         sql`
-        UPDATE "users"
-        SET "name" = ${req.body.name},
-            "nameSearch" = ${html`${req.body.name}`},
-            "avatar" = ${
-              req.body.avatar.trim() === "" ? null : req.body.avatar
-            },
-            "biographySource" = ${
-              req.body.biography.trim() === "" ? null : req.body.biography
-            },
-            "biographyPreprocessed" = ${
-              req.body.biography.trim() === ""
-                ? null
-                : app.locals.partials.content({
-                    req,
-                    res,
-                    type: "source",
-                    content: req.body.biography,
-                  }).preprocessed
-            }
-        WHERE "id" = ${res.locals.user.id}
-      `
+          UPDATE "users"
+          SET "name" = ${req.body.name},
+              "nameSearch" = ${html`${req.body.name}`},
+              "avatar" = ${
+                req.body.avatar.trim() === "" ? null : req.body.avatar
+              },
+              "biographySource" = ${
+                req.body.biography.trim() === "" ? null : req.body.biography
+              },
+              "biographyPreprocessed" = ${
+                req.body.biography.trim() === ""
+                  ? null
+                  : app.locals.partials.content({
+                      req,
+                      res,
+                      type: "source",
+                      content: req.body.biography,
+                    }).preprocessed
+              }
+          WHERE "id" = ${res.locals.user.id}
+        `
       );
       app.locals.helpers.Flash.set({
         req,

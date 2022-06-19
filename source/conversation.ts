@@ -32,6 +32,7 @@ export type AuthorEnrollment =
 export type AuthorEnrollmentUser = {
   id: number;
   lastSeenOnlineAt: string;
+  reference: string;
   email: string;
   name: string;
   avatar: string | null;
@@ -2413,6 +2414,7 @@ export default (app: Courselore): void => {
       authorEnrollmentId: number | null;
       authorUserId: number | null;
       authorUserLastSeenOnlineAt: string | null;
+      authorUserReference: string;
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
@@ -2438,6 +2440,7 @@ export default (app: Courselore): void => {
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
                "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
+               "authorUser"."reference" AS "authorUserReference",
                "authorUser"."email" AS "authorUserEmail",
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
@@ -2490,6 +2493,7 @@ export default (app: Courselore): void => {
         conversationRow.authorEnrollmentId !== null &&
         conversationRow.authorUserId !== null &&
         conversationRow.authorUserLastSeenOnlineAt !== null &&
+        conversationRow.authorUserReference !== null &&
         conversationRow.authorUserEmail !== null &&
         conversationRow.authorUserName !== null &&
         conversationRow.authorUserAvatarlessBackgroundColor !== null &&
@@ -2500,6 +2504,7 @@ export default (app: Courselore): void => {
               user: {
                 id: conversationRow.authorUserId,
                 lastSeenOnlineAt: conversationRow.authorUserLastSeenOnlineAt,
+                reference: conversationRow.authorUserReference,
                 email: conversationRow.authorUserEmail,
                 name: conversationRow.authorUserName,
                 avatar: conversationRow.authorUserAvatar,
@@ -2582,6 +2587,7 @@ export default (app: Courselore): void => {
               enrollmentId: number | null;
               userId: number | null;
               userLastSeenOnlineAt: string | null;
+              userReference: string;
               userEmail: string | null;
               userName: string | null;
               userAvatar: string | null;
@@ -2596,6 +2602,7 @@ export default (app: Courselore): void => {
                        "enrollments"."id" AS "enrollmentId",
                        "users"."id" AS "userId",
                        "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                       "users"."reference" AS "userReference",
                        "users"."email" AS "userEmail",
                        "users"."name" AS "userName",
                        "users"."avatar" AS "userAvatar",
@@ -2618,6 +2625,7 @@ export default (app: Courselore): void => {
                 endorsement.enrollmentId !== null &&
                 endorsement.userId !== null &&
                 endorsement.userLastSeenOnlineAt !== null &&
+                endorsement.userReference !== null &&
                 endorsement.userEmail !== null &&
                 endorsement.userName !== null &&
                 endorsement.userAvatarlessBackgroundColor !== null &&
@@ -2628,6 +2636,7 @@ export default (app: Courselore): void => {
                       user: {
                         id: endorsement.userId,
                         lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
+                        reference: endorsement.userReference,
                         email: endorsement.userEmail,
                         name: endorsement.userName,
                         avatar: endorsement.userAvatar,

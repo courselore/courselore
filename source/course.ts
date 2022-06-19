@@ -2845,7 +2845,10 @@ export default (app: Courselore): void => {
                                                       value="${role}"
                                                     />
                                                     <button
-                                                      class="dropdown--menu--item button button--transparent"
+                                                      class="dropdown--menu--item button button--transparent ${role ===
+                                                      "staff"
+                                                        ? "text--sky"
+                                                        : ""}"
                                                       $${isUsed
                                                         ? html`
                                                             type="button"
@@ -2873,7 +2876,11 @@ export default (app: Courselore): void => {
                                                       $${app.locals.partials
                                                         .enrollmentRoleIcon[
                                                         role
-                                                      ].regular}
+                                                      ][
+                                                        role === "staff"
+                                                          ? "fill"
+                                                          : "regular"
+                                                      ]}
                                                       ${lodash.capitalize(role)}
                                                     </button>
                                                   </form>
@@ -2887,7 +2894,11 @@ export default (app: Courselore): void => {
                               >
                                 $${app.locals.partials.enrollmentRoleIcon[
                                   invitation.role
-                                ].regular}
+                                ][
+                                  invitation.role === "staff"
+                                    ? "fill"
+                                    : "regular"
+                                ]}
                                 ${lodash.capitalize(invitation.role)}
                                 <i class="bi bi-chevron-down"></i>
                               </button>
@@ -3517,6 +3528,7 @@ export default (app: Courselore): void => {
           id: number;
           userId: number;
           userLastSeenOnlineAt: string;
+          userReference: string;
           userEmail: string;
           userName: string;
           userAvatar: string | null;
@@ -3530,6 +3542,7 @@ export default (app: Courselore): void => {
             SELECT "enrollments"."id",
                    "users"."id" AS "userId",
                    "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                   "users"."reference" AS "userReference",
                    "users"."email" AS "userEmail",
                    "users"."name" AS "userName",
                    "users"."avatar" AS "userAvatar",
@@ -3549,6 +3562,7 @@ export default (app: Courselore): void => {
           user: {
             id: enrollment.userId,
             lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+            reference: enrollment.userReference,
             email: enrollment.userEmail,
             name: enrollment.userName,
             avatar: enrollment.userAvatar,
@@ -3789,7 +3803,10 @@ export default (app: Courselore): void => {
                                               />
                                               <div>
                                                 <button
-                                                  class="dropdown--menu--item button button--transparent"
+                                                  class="dropdown--menu--item button button--transparent ${role ===
+                                                  "staff"
+                                                    ? "text--sky"
+                                                    : ""}"
                                                   $${isOnlyStaff
                                                     ? html`
                                                         type="button"
@@ -3883,8 +3900,11 @@ export default (app: Courselore): void => {
                                                     : html``}
                                                 >
                                                   $${app.locals.partials
-                                                    .enrollmentRoleIcon[role]
-                                                    .regular}
+                                                    .enrollmentRoleIcon[role][
+                                                    role === "staff"
+                                                      ? "fill"
+                                                      : "regular"
+                                                  ]}
                                                   ${lodash.capitalize(role)}
                                                 </button>
                                               </div>
@@ -3899,7 +3919,7 @@ export default (app: Courselore): void => {
                         >
                           $${app.locals.partials.enrollmentRoleIcon[
                             enrollment.role
-                          ].regular}
+                          ][enrollment.role === "staff" ? "fill" : "regular"]}
                           ${lodash.capitalize(enrollment.role)}
                           <i class="bi bi-chevron-down"></i>
                         </button>

@@ -377,6 +377,7 @@ export default async (app: Courselore): Promise<void> => {
                             id: number;
                             userId: number;
                             userLastSeenOnlineAt: string;
+                            userReference: string;
                             userEmail: string;
                             userName: string;
                             userAvatar: string | null;
@@ -390,6 +391,7 @@ export default async (app: Courselore): Promise<void> => {
                               SELECT "enrollments"."id",
                                       "users"."id" AS "userId",
                                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                      "users"."reference" AS "userReference",
                                       "users"."email" AS "userEmail",
                                       "users"."name" AS "userName",
                                       "users"."avatar" AS "userAvatar",
@@ -413,6 +415,7 @@ export default async (app: Courselore): Promise<void> => {
                               id: enrollmentRow.userId,
                               lastSeenOnlineAt:
                                 enrollmentRow.userLastSeenOnlineAt,
+                              reference: enrollmentRow.userReference,
                               email: enrollmentRow.userEmail,
                               name: enrollmentRow.userName,
                               avatar: enrollmentRow.userAvatar,
@@ -2173,6 +2176,7 @@ ${contentSource}</textarea
         id: number;
         userId: number;
         userLastSeenOnlineAt: string;
+        userReference: string;
         userEmail: string;
         userName: string;
         userAvatar: string | null;
@@ -2187,6 +2191,7 @@ ${contentSource}</textarea
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."reference" AS "userReference",
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
@@ -2231,6 +2236,7 @@ ${contentSource}</textarea
         user: {
           id: enrollment.userId,
           lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+          reference: enrollment.userReference,
           email: enrollment.userEmail,
           name: enrollment.userName,
           avatar: enrollment.userAvatar,
