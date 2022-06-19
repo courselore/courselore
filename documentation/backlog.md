@@ -162,8 +162,8 @@
 
 **Windows**
 
-- `fileURLToPath` & `pathToFileURL` may be problematic.
 - `global.css` is regenerated (probably because of line endings)
+- `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
 
 **Roadmap**
 
