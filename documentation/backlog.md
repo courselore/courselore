@@ -93,7 +93,7 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Staff notes may send notifications immediately, even if the person is in digest mode
+  - Test migrations
   - `UserEmailNotifications`
     - `authentication.ts`
     - `message.ts`
@@ -115,6 +115,15 @@
   - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
   - Add support for Dark Mode in emails.
     - This should fix the duplication of code blocks.
+
+---
+
+**BACKUP BEFORE DEPLOYMENT**
+
+---
+
+**Good to Have**
+
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
