@@ -94,6 +94,14 @@
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Staff notes may send notifications immediately, even if the person is in digest mode
+- “Important staff announcements”
+  - They have two consequences:
+    - They send emails to everyone, because it isn’t possible to opt out of receiving them.
+    - They send emails immediately, even to people who otherwise would receive digests.
+  - Change New Conversation page.
+    - When you select this option, check “Pin” in the form
+  - Store this into conversation
+  - Show these conversations differently on sidebar
 - `TODO`
 - Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
@@ -305,6 +313,7 @@ new Notification('Example');
 
 ### Invitations
 
+- Simplify the system by having a single invitation link per role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
