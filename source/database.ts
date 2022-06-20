@@ -754,11 +754,11 @@ export default async (app: Courselore): Promise<void> => {
                   : null
               },
               ${
-                user.emailNotifications !== "all-messages"
+                user.emailNotifications === "mentions"
                   ? new Date().toISOString()
                   : null
               },
-              ${user.emailNotifications !== "all-messages" ? "daily" : null}
+              ${user.emailNotifications === "mentions" ? "daily" : null}
             )
           `
         );
