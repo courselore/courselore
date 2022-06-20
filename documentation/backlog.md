@@ -93,9 +93,10 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - `UserEmailNotifications`
+  - `UserEmailNotifications` & `userEmailNotificationses`
     - `authentication.ts`
     - `message.ts`
+    - `"users"`
   - `TODO`
 - “Important staff announcements”
   - They have two consequences:
