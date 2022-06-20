@@ -1,6 +1,20 @@
 # Meeting Notes
 
 <details>
+<summary>2021-06-18</summary>
+
+- Administrative interface:
+  - Course creation is restricted to only certain users, respecting option set by administrator.
+  - List of all users in the system.
+- Better email notifications:
+  - See interface.
+- Smaller things:
+  - Fixed configuration issues that made development on Windows not work.
+  - Fixed small annoyance in which a tap on user partial would open the tooltip right away on mobile, not respecting the delay.
+
+</details>
+
+<details>
 <summary>2021-06-11</summary>
 
 - Started work on the administrative interface.
