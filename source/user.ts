@@ -1436,6 +1436,8 @@ export default (app: Courselore): void => {
                           const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
                             element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] .button'))
+                            element.classList[emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled) ? "add" : "remove"]("disabled");
                         };
                       `}"
                     />
@@ -1465,6 +1467,8 @@ export default (app: Courselore): void => {
                           const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
                             element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] .button'))
+                            element.classList[emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled) ? "add" : "remove"]("disabled");
                         };
                       `}"
                     />
@@ -1496,6 +1500,8 @@ export default (app: Courselore): void => {
                           const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
                             element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] .button'))
+                            element.classList[emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled) ? "add" : "remove"]("disabled");
                         };
                       `}"
                     />
@@ -1527,6 +1533,8 @@ export default (app: Courselore): void => {
                           const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
                             element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] .button'))
+                            element.classList[emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled) ? "add" : "remove"]("disabled");
                         };
                       `}"
                     />
@@ -1581,6 +1589,8 @@ export default (app: Courselore): void => {
                         this.onchange = () => {
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input'))
                             element.disabled = true;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] .button'))
+                            element.classList.add("disabled");
                         };
                       `}"
                     />
@@ -1609,6 +1619,8 @@ export default (app: Courselore): void => {
                         this.onchange = () => {
                           for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input'))
                             element.disabled = false;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] .button'))
+                            element.classList.remove("disabled");
                         };
                       `}"
                     />
