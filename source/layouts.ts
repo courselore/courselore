@@ -1343,6 +1343,14 @@ export default async (app: Courselore): Promise<void> => {
           transition-timing-function: var(--transition-timing-function--in-out);
           cursor: pointer;
 
+          &:disabled,
+          &.disabled {
+            color: var(--color--gray--medium--500);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--gray--medium--400);
+            }
+          }
+
           &.button--tight {
             padding: var(--space--0-5) var(--space--1);
 
@@ -1388,13 +1396,6 @@ export default async (app: Courselore): Promise<void> => {
                 &:active {
                   background-color: var(--color--gray--medium--600);
                 }
-              }
-            }
-            &:disabled,
-            &.disabled {
-              color: var(--color--gray--medium--500);
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--gray--medium--400);
               }
             }
           }

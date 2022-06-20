@@ -330,6 +330,19 @@
             
         }
 
+        .button:disabled,
+          .button.disabled {
+            color: var(--color--gray--medium--500);
+          }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button:disabled,
+          .button.disabled {
+              color: var(--color--gray--medium--400)
+          }
+            }
+
         .button.button--tight {
             padding: var(--space--0-5) var(--space--1);
           }
@@ -376,19 +389,6 @@
                 .button.button--transparent:not(:disabled):not(.disabled):active {
                   background-color: var(--color--gray--medium--600);
                 }
-              }
-
-        .button.button--transparent:disabled,
-            .button.button--transparent.disabled {
-              color: var(--color--gray--medium--500);
-            }
-
-        @media (prefers-color-scheme: dark) {
-
-        .button.button--transparent:disabled,
-            .button.button--transparent.disabled {
-                color: var(--color--gray--medium--400)
-            }
               }
 
         .button.button--blue {
