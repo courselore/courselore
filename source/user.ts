@@ -1550,7 +1550,6 @@ export default (app: Courselore): void => {
                     class="button button--tight button--tight--inline disabled"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
                         content: "You always receive email notifications for important staff announcements.",
                       });
                     `}"
