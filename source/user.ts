@@ -1416,7 +1416,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="checkbox"
                       name="emailNotificationsForAllMessages"
@@ -1442,7 +1447,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="checkbox"
                       name="emailNotificationsForMentions"
@@ -1466,7 +1476,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="checkbox"
                       name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
@@ -1492,7 +1507,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="checkbox"
                       name="emailNotificationsForMessagesInConversationsYouStarted"
@@ -1519,7 +1539,7 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <label
-                    class="button button--tight button--tight--inline"
+                    class="button button--tight button--tight--inline disabled"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
@@ -1544,7 +1564,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="radio"
                       name="emailNotificationsDigests"
@@ -1567,7 +1592,12 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline ${"TODO" &&
+                    false
+                      ? html`disabled`
+                      : html``}"
+                  >
                     <input
                       type="radio"
                       name="emailNotificationsDigests"
@@ -1597,7 +1627,11 @@ export default (app: Courselore): void => {
                       display: flex;
                     `)}"
                   >
-                    <label class="button button--tight button--tight--inline">
+                    <label
+                      class="button button--tight button--tight--inline ${"TODO"
+                        ? html`disabled`
+                        : html``}"
+                    >
                       <input
                         type="radio"
                         name="emailNotificationsDigestsFrequency"
@@ -1615,7 +1649,11 @@ export default (app: Courselore): void => {
                       display: flex;
                     `)}"
                   >
-                    <label class="button button--tight button--tight--inline">
+                    <label
+                      class="button button--tight button--tight--inline ${"TODO"
+                        ? html`disabled`
+                        : html``}"
+                    >
                       <input
                         type="radio"
                         name="emailNotificationsDigestsFrequency"
