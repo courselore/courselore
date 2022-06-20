@@ -1629,18 +1629,44 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
-        typeof req.body.emailNotifications !== "string" ||
-        !userEmailNotificationses.includes(req.body.emailNotifications)
+        (req.body.emailNotificationsForAllMessages &&
+          (!req.body.emailNotificationsForMentions ||
+            !req.body
+              .emailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+            !req.body
+              .emailNotificationsForMessagesInConversationsYouStarted)) ||
+        (req.body
+          .emailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+          !req.body.emailNotificationsForMessagesInConversationsYouStarted) ||
+        (!req.body.emailNotificationsForAllMessages &&
+          !req.body.emailNotificationsForMentions &&
+          !req.body
+            .emailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+          !req.body.emailNotificationsForMessagesInConversationsYouStarted &&
+          (req.body.emailNotificationsDigests !== undefined ||
+            req.body.emailNotificationsDigestsFrequency !== undefined)) ||
+        ((req.body.emailNotificationsForAllMessages ||
+          req.body.emailNotificationsForMentions ||
+          req.body
+            .emailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+          req.body.emailNotificationsForMessagesInConversationsYouStarted) &&
+          (typeof req.body.emailNotificationsDigests !== "string" ||
+            !["true", "false"].includes(req.body.emailNotificationsDigests) ||
+            typeof req.body.emailNotificationsDigestsFrequency !== "string" ||
+            !userEmailNotificationsDigestsFrequencies.includes(
+              req.body.emailNotificationsDigestsFrequency
+            )))
       )
         return next("validation");
 
-      app.locals.database.run(
-        sql`
-          UPDATE "users"
-          SET "emailNotifications" = ${req.body.emailNotifications}
-          WHERE "id" = ${res.locals.user.id}
-        `
-      );
+      // TODO
+      //app.locals.database.run(
+      //  sql`
+      //    UPDATE "users"
+      //    SET "emailNotifications" = ${req.body.emailNotifications}
+      //    WHERE "id" = ${res.locals.user.id}
+      //  `
+      //);
 
       app.locals.helpers.Flash.set({
         req,
