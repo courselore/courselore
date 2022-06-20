@@ -531,7 +531,6 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
     `,
     sql`
-      ALTER TABLE "users" ADD COLUMN "systemRole" DEFAULT 'none';
       CREATE TABLE "configurations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "key" TEXT UNIQUE NOT NULL,
@@ -540,7 +539,7 @@ export default async (app: Courselore): Promise<void> => {
       INSERT INTO "configurations" ("key", "value") 
       VALUES ('canCreateCourses', json_quote('anyone'));
       INSERT INTO "configurations" ("key", "value")
-      VALUES ('demonstrationAt', json_quote(${new Date().toISOString()}));
+      VALUES ('demonstrationAt', json_quote(strftime('%Y-%m-%dT%H:%M:%fZ')));
       INSERT INTO "configurations" ("key", "value") 
       VALUES ('administratorEmail', json_quote('please-change-me@courselore.org'));
     `,
@@ -649,7 +648,10 @@ export default async (app: Courselore): Promise<void> => {
           END;
         `
       );
-    }
+    },
+    sql`
+      ALTER TABLE "users" ADD COLUMN "systemRole" DEFAULT 'none';
+    `
   );
   app.once("close", () => {
     app.locals.database.close();

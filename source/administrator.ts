@@ -49,14 +49,21 @@ export interface CanCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
 export type MayManageSystemRolesMiddleware = express.RequestHandler<
-  {},
+  { userReference: string },
   any,
   { userId: string },
   {},
   MayManageSystemRolesMiddlewareLocals
 >[];
 export interface MayManageSystemRolesMiddlewareLocals
-  extends IsAdministratorMiddlewareLocals {}
+  extends IsAdministratorMiddlewareLocals {
+  managedUser: {
+    id: number;
+    reference: string;
+    role: SystemRole;
+    isSelf: boolean;
+  };
+}
 
 export type AdministratorLayout = ({
   req,
@@ -446,13 +453,20 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
+  app.get<
+    { userReference: string },
+    HTML,
+    {},
+    {},
+    IsAdministratorMiddlewareLocals
+  >(
     "/administrator-panel/system-roles",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       const users = app.locals.database.all<{
         id: number;
         lastSeenOnlineAt: string;
+        reference: string;
         email: string;
         name: string;
         avatar: string | null;
@@ -464,6 +478,7 @@ export default (app: Courselore): void => {
         sql`
             SELECT "id",
                    "lastSeenOnlineAt",
+                   "reference",
                    "email",
                    "name",
                    "avatar",
@@ -860,7 +875,7 @@ export default (app: Courselore): void => {
   );
 
   app.patch<
-    {},
+    { userReference: string },
     HTML,
     {
       role: SystemRole;
