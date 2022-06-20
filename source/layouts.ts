@@ -1294,6 +1294,11 @@ export default async (app: Courselore): Promise<void> => {
           border-radius: var(--border-radius--full);
           position: relative;
           top: calc(var(--space--0-5) * 1.5);
+          cursor: pointer;
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(--transition-timing-function--in-out);
+
           &::after {
             content: "";
             background-color: var(--color--gray--medium--50);
@@ -1313,9 +1318,6 @@ export default async (app: Courselore): Promise<void> => {
           &:checked::after {
             margin-left: var(--space--4);
           }
-          transition-property: var(--transition-property--colors);
-          transition-duration: var(--transition-duration--150);
-          transition-timing-function: var(--transition-timing-function--in-out);
         }
 
         .input--radio-or-checkbox--multilabel {

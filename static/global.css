@@ -237,7 +237,7 @@
         @media (prefers-color-scheme: dark) {
 
         .input--checkbox {
-            background-color: var(--color--gray--medium--700);
+            background-color: var(--color--gray--medium--700)
         }
             .input--checkbox:hover,
             .input--checkbox:focus-within {
@@ -272,6 +272,10 @@
           border-radius: var(--border-radius--full);
           position: relative;
           top: calc(var(--space--0-5) * 1.5);
+          cursor: pointer;
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(--transition-timing-function--in-out);
 }
 
         .input--checkbox::after {
@@ -301,12 +305,6 @@
         .input--checkbox:checked::after {
             margin-left: var(--space--4);
           }
-
-        .input--checkbox {
-          transition-property: var(--transition-property--colors);
-          transition-duration: var(--transition-duration--150);
-          transition-timing-function: var(--transition-timing-function--in-out);
-}
 
         .input--radio-or-checkbox--multilabel ~ * {
             display: flex;
