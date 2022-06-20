@@ -1200,7 +1200,9 @@ export default async (app: Courselore): Promise<void> => {
               }
             }
           }
+          min-width: var(--space--3-5);
           width: var(--space--3-5);
+          min-height: var(--space--3-5);
           height: var(--space--3-5);
           border-radius: var(--border-radius--circle);
           position: relative;
@@ -1289,6 +1291,7 @@ export default async (app: Courselore): Promise<void> => {
               }
             }
           }
+          min-width: var(--space--8);
           width: var(--space--8);
           padding: var(--space--0-5);
           border-radius: var(--border-radius--full);
