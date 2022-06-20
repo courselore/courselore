@@ -40,11 +40,11 @@ export const userAvatarlessBackgroundColors = [
   "rose",
 ] as const;
 
-export type UserEmailNotifications = typeof userEmailNotificationses[number];
-export const userEmailNotificationses = [
-  "all-messages",
-  "mentions",
-  "none",
+export type UserEmailNotificationsDigestsFrequency =
+  typeof userEmailNotificationsDigestsFrequencies[number];
+export const userEmailNotificationsDigestsFrequencies = [
+  "hourly",
+  "daily",
 ] as const;
 
 export type UserPartial = ({
@@ -1314,90 +1314,6 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
-              hidden
-              TODO
-              method="PATCH"
-              action="${app.locals.options.baseURL}/settings/notifications"
-              novalidate
-              css="${res.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <div class="label">
-                <p class="label--text">Email Notifications</p>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
-                      required
-                      $${res.locals.user.emailNotifications === "all-messages"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    All messages
-                  </label>
-                </div>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="mentions"
-                      required
-                      $${res.locals.user.emailNotifications === "mentions"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    @mentions
-                  </label>
-                </div>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="none"
-                      required
-                      $${res.locals.user.emailNotifications === "none"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    None
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update Notifications
-                </button>
-              </div>
-            </form>
-
-            <form
               method="PATCH"
               action="${app.locals.options.baseURL}/settings/notifications"
               novalidate
@@ -1698,7 +1614,14 @@ export default (app: Courselore): void => {
   app.patch<
     {},
     any,
-    { emailNotifications?: UserEmailNotifications },
+    {
+      emailNotificationsForAllMessages?: boolean;
+      emailNotificationsForMentions?: boolean;
+      emailNotificationsForMessagesInConversationsInWhichYouParticipated?: boolean;
+      emailNotificationsForMessagesInConversationsYouStarted?: boolean;
+      emailNotificationsDigests?: "true" | "false";
+      emailNotificationsDigestsFrequency?: UserEmailNotificationsDigestsFrequency;
+    },
     {},
     IsSignedInMiddlewareLocals
   >(
