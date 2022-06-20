@@ -100,6 +100,11 @@
             background-color: var(--color--gray--medium--400);
           }
 
+        .input--radio:disabled,
+          .input--radio.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
+
         .input--radio:checked {
             background-color: var(--color--blue--600);
           }
@@ -111,6 +116,11 @@
 
         .input--radio:checked:active {
               background-color: var(--color--blue--700);
+            }
+
+        .input--radio:checked:disabled,
+            .input--radio:checked.disabled {
+              background-color: var(--color--blue--300);
             }
 
         @media (prefers-color-scheme: dark) {
@@ -125,6 +135,10 @@
             .input--radio:active {
               background-color: var(--color--gray--medium--500);
             }
+            .input--radio:disabled,
+            .input--radio.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             .input--radio:checked {
               background-color: var(--color--blue--700);
             }
@@ -134,6 +148,10 @@
               }
               .input--radio:checked:active {
                 background-color: var(--color--blue--800);
+              }
+              .input--radio:checked:disabled,
+              .input--radio:checked.disabled {
+                background-color: var(--color--blue--500);
               }
           }
 
@@ -193,6 +211,11 @@
             background-color: var(--color--gray--medium--400);
           }
 
+        .input--checkbox:disabled,
+          .input--checkbox.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
+
         .input--checkbox:checked {
             background-color: var(--color--blue--600);
           }
@@ -204,6 +227,11 @@
 
         .input--checkbox:checked:active {
               background-color: var(--color--blue--700);
+            }
+
+        .input--checkbox:checked:disabled,
+            .input--checkbox:checked.disabled {
+              background-color: var(--color--blue--300);
             }
 
         @media (prefers-color-scheme: dark) {
@@ -218,6 +246,10 @@
             .input--checkbox:active {
               background-color: var(--color--gray--medium--500);
             }
+            .input--checkbox:disabled,
+            .input--checkbox.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             .input--checkbox:checked {
               background-color: var(--color--blue--700);
             }
@@ -227,6 +259,10 @@
               }
               .input--checkbox:checked:active {
                 background-color: var(--color--blue--800);
+              }
+              .input--checkbox:checked:disabled,
+              .input--checkbox:checked.disabled {
+                background-color: var(--color--blue--500);
               }
           }
 

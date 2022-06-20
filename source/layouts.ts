@@ -1154,6 +1154,10 @@ export default async (app: Courselore): Promise<void> => {
           &:active {
             background-color: var(--color--gray--medium--400);
           }
+          &:disabled,
+          &.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
           &:checked {
             background-color: var(--color--blue--600);
             &:hover,
@@ -1162,6 +1166,10 @@ export default async (app: Courselore): Promise<void> => {
             }
             &:active {
               background-color: var(--color--blue--700);
+            }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--blue--300);
             }
           }
           @media (prefers-color-scheme: dark) {
@@ -1173,6 +1181,10 @@ export default async (app: Courselore): Promise<void> => {
             &:active {
               background-color: var(--color--gray--medium--500);
             }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             &:checked {
               background-color: var(--color--blue--700);
               &:hover,
@@ -1181,6 +1193,10 @@ export default async (app: Courselore): Promise<void> => {
               }
               &:active {
                 background-color: var(--color--blue--800);
+              }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--blue--500);
               }
             }
           }
@@ -1227,6 +1243,10 @@ export default async (app: Courselore): Promise<void> => {
           &:active {
             background-color: var(--color--gray--medium--400);
           }
+          &:disabled,
+          &.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
           &:checked {
             background-color: var(--color--blue--600);
             &:hover,
@@ -1235,6 +1255,10 @@ export default async (app: Courselore): Promise<void> => {
             }
             &:active {
               background-color: var(--color--blue--700);
+            }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--blue--300);
             }
           }
           @media (prefers-color-scheme: dark) {
@@ -1246,6 +1270,10 @@ export default async (app: Courselore): Promise<void> => {
             &:active {
               background-color: var(--color--gray--medium--500);
             }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             &:checked {
               background-color: var(--color--blue--700);
               &:hover,
@@ -1254,6 +1282,10 @@ export default async (app: Courselore): Promise<void> => {
               }
               &:active {
                 background-color: var(--color--blue--800);
+              }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--blue--500);
               }
             }
           }
