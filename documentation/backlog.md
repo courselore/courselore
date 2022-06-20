@@ -93,7 +93,6 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Test migrations
   - `UserEmailNotifications`
     - `authentication.ts`
     - `message.ts`
