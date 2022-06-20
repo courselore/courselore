@@ -1409,7 +1409,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
-              <div class="label">
+              <div key="emailNotificationsFor" class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
                   css="${res.locals.css(css`
@@ -1425,12 +1425,12 @@ export default (app: Courselore): void => {
                       onload="${javascript`
                         this.onchange = () => {
                           if (this.checked)
-                            for (const name of [
-                              "emailNotificationsForMentions",
-                              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                              "emailNotificationsForMessagesInConversationsYouStarted",
-                            ])
-                              this.closest("form").querySelector('[name="' + name + '"]').checked = true;
+                            for (const element of this.closest('[key="emailNotificationsFor"]').querySelectorAll("input"))
+                              element.checked = true;
+                          const emailNotificationsDigestsDisabled = [...this.closest('[key="emailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
+                            element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
                         };
                       `}"
                     />
@@ -1451,6 +1451,10 @@ export default (app: Courselore): void => {
                       onload="${javascript`
                         this.onchange = () => {
                           if (!this.checked) this.closest("form").querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                          const emailNotificationsDigestsDisabled = [...this.closest('[key="emailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
+                            element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
                         };
                       `}"
                     />
@@ -1473,6 +1477,10 @@ export default (app: Courselore): void => {
                           const form = this.closest("form");
                           if (!this.checked) form.querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                           if (this.checked) form.querySelector('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                          const emailNotificationsDigestsDisabled = [...this.closest('[key="emailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
+                            element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
                         };
                       `}"
                     />
@@ -1495,6 +1503,10 @@ export default (app: Courselore): void => {
                           const form = this.closest("form");
                           if (!this.checked) form.querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                           if (!this.checked) form.querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                          const emailNotificationsDigestsDisabled = [...this.closest('[key="emailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          const emailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="emailNotificationsDigests"][value="true"]').checked;
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigests"] input'))
+                            element.disabled = emailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && emailNotificationsDigestsFrequencyDisabled);
                         };
                       `}"
                     />
@@ -1540,6 +1552,12 @@ export default (app: Courselore): void => {
                       required
                       $${"TODO" ? html`checked` : html``}
                       class="input--radio"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input'))
+                            element.disabled = true;
+                        };
+                      `}"
                     />
                     One email notification per message
                   </label>
@@ -1557,11 +1575,18 @@ export default (app: Courselore): void => {
                       required
                       $${"TODO" && false ? html`checked` : html``}
                       class="input--radio"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input'))
+                            element.disabled = false;
+                        };
+                      `}"
                     />
                     Digests of multiple messages
                   </label>
                 </div>
                 <div
+                  key="emailNotificationsDigestsFrequency"
                   class="label"
                   css="${res.locals.css(css`
                     margin-left: var(--space--6);
@@ -1578,6 +1603,7 @@ export default (app: Courselore): void => {
                         name="emailNotificationsDigestsFrequency"
                         value="hourly"
                         required
+                        $${"TODO" ? html`disabled` : html``}
                         $${"TODO" ? html`checked` : html``}
                         class="input--radio"
                       />
@@ -1595,6 +1621,7 @@ export default (app: Courselore): void => {
                         name="emailNotificationsDigestsFrequency"
                         value="daily"
                         required
+                        $${"TODO" ? html`disabled` : html``}
                         $${"TODO" && false ? html`checked` : html``}
                         class="input--radio"
                       />
