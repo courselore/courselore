@@ -1492,6 +1492,7 @@ export default (app: Courselore): void => {
                       name="emailNotificationsDigests"
                       value="false"
                       required
+                      $${"TODO" && false ? html`disabled` : html``}
                       $${"TODO" ? html`checked` : html``}
                       class="input--radio"
                       onload="${javascript`
@@ -1522,6 +1523,7 @@ export default (app: Courselore): void => {
                       name="emailNotificationsDigests"
                       value="true"
                       required
+                      $${"TODO" && false ? html`disabled` : html``}
                       $${"TODO" && false ? html`checked` : html``}
                       class="input--radio"
                       onload="${javascript`
