@@ -83,7 +83,14 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
-    emailNotifications: UserEmailNotificationsDigestsFrequency;
+    emailNotificationsForAllMessagesAt: string | null;
+    emailNotificationsForMentionsAt: string | null;
+    emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+      | string
+      | null;
+    emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+    emailNotificationsDigestsAt: string | null;
+    emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
   };
   invitations: {
     id: number;
@@ -264,7 +271,14 @@ export default (app: Courselore): void => {
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        emailNotifications: UserEmailNotificationsDigestsFrequency;
+        emailNotificationsForAllMessagesAt: string | null;
+        emailNotificationsForMentionsAt: string | null;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+          | string
+          | null;
+        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+        emailNotificationsDigestsAt: string | null;
+        emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
       }>(
         sql`
           SELECT "id",
@@ -278,7 +292,12 @@ export default (app: Courselore): void => {
                  "avatarlessBackgroundColor",
                  "biographySource",
                  "biographyPreprocessed",
-                 "emailNotifications"
+                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt",
+                 "emailNotificationsDigestsAt",
+                 "emailNotificationsDigestsFrequency"
           FROM "users"
           WHERE "id" = ${userId}
         `
