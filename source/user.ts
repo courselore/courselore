@@ -1749,14 +1749,41 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      // TODO
-      //app.locals.database.run(
-      //  sql`
-      //    UPDATE "users"
-      //    SET "emailNotifications" = ${req.body.emailNotifications}
-      //    WHERE "id" = ${res.locals.user.id}
-      //  `
-      //);
+      app.locals.database.run(
+        sql`
+         UPDATE "users"
+         SET "emailNotificationsForAllMessagesAt" = ${
+           req.body.isEmailNotificationsForAllMessages
+             ? new Date().toISOString()
+             : null
+         },
+             "emailNotificationsForMentionsAt" = ${
+               req.body.isEmailNotificationsForMentions
+                 ? new Date().toISOString()
+                 : null
+             },
+             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+               req.body
+                 .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                 ? new Date().toISOString()
+                 : null
+             },
+             "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+               req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+                 ? new Date().toISOString()
+                 : null
+             },
+             "emailNotificationsDigestsAt" = ${
+               req.body.isEmailNotificationsDigests
+                 ? new Date().toISOString()
+                 : null
+             },
+             "emailNotificationsDigestsFrequency" = ${
+               req.body.emailNotificationsDigestsFrequency
+             }
+         WHERE "id" = ${res.locals.user.id}
+       `
+      );
 
       app.locals.helpers.Flash.set({
         req,
