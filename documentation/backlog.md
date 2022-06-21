@@ -94,9 +94,8 @@
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Get the code to compile again
-    - `UserEmailNotifications` & `userEmailNotificationses`
-      - `"emailNotifications"`
-      - `"users"`
+    - `"emailNotifications"`
+    - `"users"`
   - Get the form submission to change settings
     - `TODO`
   - Respect the new settings on email delivery
