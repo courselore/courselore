@@ -92,10 +92,10 @@
 
 ### Better Email Notifications
 
+- Tangent: Don’t fudge on checkboxes being booleans on form submission. Check for `"on"`.
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Respect the new settings on email delivery
     - `TODO`
-- Tangent: Don’t fudge on checkboxes being booleans on form submission. Check for `"on"`.
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
