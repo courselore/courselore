@@ -96,6 +96,9 @@
   - Get the code to compile again
     - `"emailNotifications"`
     - `"users"`
+  - Test:
+    - Creating a user
+    - Demonstration data
   - Get the form submission to change settings
     - `TODO`
   - Respect the new settings on email delivery
