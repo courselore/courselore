@@ -51,7 +51,7 @@ export interface CanCreateCoursesMiddlewareLocals
 export type MayManageSystemRolesMiddleware = express.RequestHandler<
   { userReference: string },
   any,
-  { userId: string },
+  {},
   {},
   MayManageSystemRolesMiddlewareLocals
 >[];
@@ -60,7 +60,7 @@ export interface MayManageSystemRolesMiddlewareLocals
   managedUser: {
     id: number;
     reference: string;
-    role: SystemRole;
+    //role: SystemRole;
     isSelf: boolean;
   };
 }
@@ -153,25 +153,31 @@ export default (app: Courselore): void => {
   app.locals.middlewares.mayManageSystemRoles = [
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
+      const managedUser = app.locals.database.get<{
+        id: number;
+        reference: string;
+        //role: SystemRole;
+      }>(
+        sql`
+          SELECT "id", "reference", "systemRole"
+          FROM "users"
+          WHERE "reference" = ${req.params.userReference}
+        `
+      );
+      if (managedUser === undefined) return next("route");
+      res.locals.managedUser = {
+        ...managedUser,
+        isSelf: managedUser.id === res.locals.user.id,
+      };
       if (
-        (req.body.userId === String(res.locals.user.id) &&
+        (managedUser.id === res.locals.user.id &&
           app.locals.database.get<{ count: number }>(
             sql`
             SELECT COUNT(*) AS "count"
             FROM "users"
             WHERE "systemRole" = 'administrator'
           `
-          )!.count === 1) ||
-        !req.body.userId.match(/\d+/) ||
-        app.locals.database.get<{
-          value: string;
-        }>(
-          sql`
-          SELECT "id"
-          FROM "users"
-          WHERE "id" = ${req.body.userId}
-        `
-        )!.value === null
+          )!.count === 1)
       )
         return next("validation");
       next();
@@ -552,7 +558,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/administrator-panel/system-roles`;
+              const action = `${app.locals.options.baseURL}/administrator-panel/system-roles/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -561,6 +567,7 @@ export default (app: Courselore): void => {
 
               return html`
                 <div
+                  key="user--${user.reference}"
                   class="user"
                   css="${res.locals.css(css`
                     padding-top: var(--space--2);
@@ -717,11 +724,6 @@ export default (app: Courselore): void => {
                                                 name="role"
                                                 value="${role}"
                                               />
-                                              <input
-                                                type="hidden"
-                                                name="userId"
-                                                value="${String(user.id)}"
-                                              />
                                               <div>
                                                 <button
                                                   class="dropdown--menu--item button button--transparent $${role ===
@@ -778,13 +780,6 @@ export default (app: Courselore): void => {
                                                                     type="hidden"
                                                                     name="role"
                                                                     value="${role}"
-                                                                  />
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="userId"
-                                                                    value="${String(
-                                                                      user.id
-                                                                    )}"
                                                                   />
                                                                   <p>
                                                                     Are you sure
@@ -879,19 +874,18 @@ export default (app: Courselore): void => {
     HTML,
     {
       role: SystemRole;
-      userId: string;
     },
     {},
     MayManageSystemRolesMiddlewareLocals
   >(
-    "/administrator-panel/system-roles",
+    "/administrator-panel/system-roles/:userReference",
     ...app.locals.middlewares.mayManageSystemRoles,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!systemRoles.includes(req.body.role)) return next("validation");
 
         app.locals.database.run(
-          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${req.body.userId}`
+          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
         );
 
         app.locals.helpers.Flash.set({
@@ -904,7 +898,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        req.body.userId === String(res.locals.user.id)
+        res.locals.managedUser.isSelf
           ? `${app.locals.options.baseURL}`
           : `${app.locals.options.baseURL}/administrator-panel/system-roles`
       );
