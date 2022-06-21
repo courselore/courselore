@@ -93,8 +93,6 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Get the code to compile again
-    - `"users"`
   - Test:
     - Creating a user
     - Demonstration data
