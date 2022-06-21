@@ -7,7 +7,7 @@ import { javascript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
-  UserEmailNotifications,
+  UserEmailNotificationsDigestsFrequency,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -1215,7 +1215,7 @@ export default (app: Courselore): void => {
         id: number;
         userId: number;
         userEmail: string;
-        userEmailNotifications: UserEmailNotifications;
+        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency;
         reference: string;
         role: EnrollmentRole;
       }>(
@@ -1223,7 +1223,7 @@ export default (app: Courselore): void => {
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
-                 "users"."emailNotifications" AS "userEmailNotifications",
+                 "users"."emailNotifications" AS "userEmailNotificationsDigestsFrequency",
                  "enrollments"."reference",
                  "enrollments"."role"
           FROM "enrollments"
@@ -1260,7 +1260,8 @@ export default (app: Courselore): void => {
       if (!mentions.has("everyone"))
         enrollments = enrollments.filter(
           (enrollment) =>
-            enrollment.userEmailNotifications === "all-messages" ||
+            enrollment.userEmailNotificationsDigestsFrequency ===
+              "all-messages" ||
             (enrollment.role === "staff" && mentions.has("staff")) ||
             (enrollment.role === "student" && mentions.has("students")) ||
             mentions.has(enrollment.reference)
