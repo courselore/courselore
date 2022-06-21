@@ -96,6 +96,9 @@
   - Get the code to compile again
     - `"emailNotifications"`
     - `"users"`
+    - `all-messages`
+    - `mentions`
+    - `none`
   - Test:
     - Creating a user
     - Demonstration data

@@ -1211,24 +1211,25 @@ export default (app: Courselore): void => {
       );
 
     app.locals.database.executeTransaction(() => {
-      let enrollments = app.locals.database.all<{
-        id: number;
-        userId: number;
-        userEmail: string;
-        userEmailNotificationsForAllMessagesAt: string | null;
-        userEmailNotificationsForMentionsAt: string | null;
-        userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
-        userEmailNotificationsForMessagesInConversationsYouStartedAt:
-          | string
-          | null;
-        userEmailNotificationsDigestsAt: string | null;
-        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
-        reference: string;
-        role: EnrollmentRole;
-      }>(
-        sql`
+      const enrollments = app.locals.database
+        .all<{
+          id: number;
+          userId: number;
+          userEmail: string;
+          userEmailNotificationsForAllMessagesAt: string | null;
+          userEmailNotificationsForMentionsAt: string | null;
+          userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+            | string
+            | null;
+          userEmailNotificationsForMessagesInConversationsYouStartedAt:
+            | string
+            | null;
+          userEmailNotificationsDigestsAt: string | null;
+          userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
+          reference: string;
+          role: EnrollmentRole;
+        }>(
+          sql`
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
@@ -1242,8 +1243,7 @@ export default (app: Courselore): void => {
                  "enrollments"."role"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                          "users"."emailVerifiedAt" IS NOT NULL AND
-                          "users"."emailNotifications" != 'none'
+                          "users"."emailVerifiedAt" IS NOT NULL
           LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
                                                 "notificationDeliveries"."message" = ${
                                                   message.id
@@ -1270,17 +1270,18 @@ export default (app: Courselore): void => {
                 }
           GROUP BY "enrollments"."id"
         `
-      );
-      enrollments = enrollments.filter(
-        (enrollment) =>
-          enrollment.userEmailNotificationsForAllMessagesAt !== null ||
-          (enrollment.userEmailNotificationsForMentionsAt !== null &&
-            (mentions.has("everyone") ||
-              (enrollment.role === "staff" && mentions.has("staff")) ||
-              (enrollment.role === "student" && mentions.has("students")) ||
-              mentions.has(enrollment.reference)))
-        // TODO: ‘userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt’ ‘userEmailNotificationsForMessagesInConversationsYouStartedAt’ ‘userEmailNotificationsDigestsAt’ ‘userEmailNotificationsDigestsFrequency’
-      );
+        )
+        .filter(
+          (enrollment) =>
+            enrollment.userEmailNotificationsForAllMessagesAt !== null ||
+            (enrollment.userEmailNotificationsForMentionsAt !== null &&
+              (mentions.has("everyone") ||
+                (enrollment.role === "staff" && mentions.has("staff")) ||
+                (enrollment.role === "student" && mentions.has("students")) ||
+                mentions.has(enrollment.reference)))
+          // TODO: ‘userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt’ ‘userEmailNotificationsForMessagesInConversationsYouStartedAt’ ‘userEmailNotificationsDigestsAt’ ‘userEmailNotificationsDigestsFrequency’
+          // TODO: Try to roll these rules into the query.
+        );
 
       for (const enrollment of enrollments) {
         app.locals.database.run(
