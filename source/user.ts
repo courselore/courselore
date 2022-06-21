@@ -1763,10 +1763,14 @@ export default (app: Courselore): void => {
           req.body.isEmailNotificationsForMessagesInConversationsYouStarted) &&
           (typeof req.body.isEmailNotificationsDigests !== "string" ||
             !["true", "false"].includes(req.body.isEmailNotificationsDigests) ||
-            typeof req.body.emailNotificationsDigestsFrequency !== "string" ||
-            !userEmailNotificationsDigestsFrequencies.includes(
-              req.body.emailNotificationsDigestsFrequency
-            )))
+            (req.body.isEmailNotificationsDigests === "false" &&
+              req.body.emailNotificationsDigestsFrequency !== undefined) ||
+            (req.body.isEmailNotificationsDigests === "true" &&
+              (typeof req.body.emailNotificationsDigestsFrequency !==
+                "string" ||
+                !userEmailNotificationsDigestsFrequencies.includes(
+                  req.body.emailNotificationsDigestsFrequency
+                )))))
       )
         return next("validation");
 
@@ -1795,7 +1799,7 @@ export default (app: Courselore): void => {
                  : null
              },
              "emailNotificationsDigestsAt" = ${
-               req.body.isEmailNotificationsDigests
+               req.body.isEmailNotificationsDigests === "true"
                  ? new Date().toISOString()
                  : null
              },
