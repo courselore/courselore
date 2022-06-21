@@ -101,6 +101,7 @@
   - Get the form submission to change settings
     - `TODO`
   - Respect the new settings on email delivery
+    - `TODO`
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.

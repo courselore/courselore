@@ -1215,7 +1215,16 @@ export default (app: Courselore): void => {
         id: number;
         userId: number;
         userEmail: string;
-        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency;
+        userEmailNotificationsForAllMessagesAt: string | null;
+        userEmailNotificationsForMentionsAt: string | null;
+        userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+          | string
+          | null;
+        userEmailNotificationsForMessagesInConversationsYouStartedAt:
+          | string
+          | null;
+        userEmailNotificationsDigestsAt: string | null;
+        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
         reference: string;
         role: EnrollmentRole;
       }>(
@@ -1223,7 +1232,12 @@ export default (app: Courselore): void => {
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
-                 "users"."emailNotifications" AS "userEmailNotificationsDigestsFrequency",
+                 "users"."emailNotificationsForAllMessagesAt" AS "userEmailNotificationsForAllMessagesAt",
+                 "users"."emailNotificationsForMentionsAt" AS "userEmailNotificationsForMentionsAt",
+                 "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" AS "userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "users"."emailNotificationsForMessagesInConversationsYouStartedAt" AS "userEmailNotificationsForMessagesInConversationsYouStartedAt",
+                 "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
+                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
                  "enrollments"."reference",
                  "enrollments"."role"
           FROM "enrollments"
@@ -1257,15 +1271,16 @@ export default (app: Courselore): void => {
           GROUP BY "enrollments"."id"
         `
       );
-      if (!mentions.has("everyone"))
-        enrollments = enrollments.filter(
-          (enrollment) =>
-            enrollment.userEmailNotificationsDigestsFrequency ===
-              "all-messages" ||
-            (enrollment.role === "staff" && mentions.has("staff")) ||
-            (enrollment.role === "student" && mentions.has("students")) ||
-            mentions.has(enrollment.reference)
-        );
+      enrollments = enrollments.filter(
+        (enrollment) =>
+          enrollment.userEmailNotificationsForAllMessagesAt !== null ||
+          (enrollment.userEmailNotificationsForMentionsAt !== null &&
+            (mentions.has("everyone") ||
+              (enrollment.role === "staff" && mentions.has("staff")) ||
+              (enrollment.role === "student" && mentions.has("students")) ||
+              mentions.has(enrollment.reference)))
+        // TODO: ‘userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt’ ‘userEmailNotificationsForMessagesInConversationsYouStartedAt’ ‘userEmailNotificationsDigestsAt’ ‘userEmailNotificationsDigestsFrequency’
+      );
 
       for (const enrollment of enrollments) {
         app.locals.database.run(
