@@ -93,11 +93,14 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - `UserEmailNotifications` & `userEmailNotificationses`
-    - `message.ts`
-    - `"emailNotifications"`
-    - `"users"`
-  - `TODO`
+  - Get the code to compile again
+    - `UserEmailNotifications` & `userEmailNotificationses`
+      - `message.ts`
+      - `"emailNotifications"`
+      - `"users"`
+  - Get the form submission to change settings
+    - `TODO`
+  - Respect the new settings on email delivery
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
