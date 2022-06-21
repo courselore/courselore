@@ -1510,7 +1510,18 @@ export default (app: Courselore): void => {
                         null
                         ? html`disabled`
                         : html``}
-                      $${res.locals.user.emailNotificationsDigestsAt === null
+                      $${!(
+                        res.locals.user.emailNotificationsForAllMessagesAt ===
+                          null &&
+                        res.locals.user.emailNotificationsForMentionsAt ===
+                          null &&
+                        res.locals.user
+                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                          null &&
+                        res.locals.user
+                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                          null
+                      ) && res.locals.user.emailNotificationsDigestsAt === null
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -1562,7 +1573,17 @@ export default (app: Courselore): void => {
                         null
                         ? html`disabled`
                         : html``}
-                      $${res.locals.user.emailNotificationsDigestsAt !== null
+                      $${(res.locals.user.emailNotificationsForAllMessagesAt ===
+                        null &&
+                        res.locals.user.emailNotificationsForMentionsAt ===
+                          null &&
+                        res.locals.user
+                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                          null &&
+                        res.locals.user
+                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                          null) ||
+                      res.locals.user.emailNotificationsDigestsAt !== null
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -1625,9 +1646,7 @@ export default (app: Courselore): void => {
                           ? html`disabled`
                           : html``}
                         $${res.locals.user
-                          .emailNotificationsDigestsFrequency === null ||
-                        res.locals.user.emailNotificationsDigestsFrequency ===
-                          "hourly"
+                          .emailNotificationsDigestsFrequency === "hourly"
                           ? html`checked`
                           : html``}
                         class="input--radio"
@@ -1675,7 +1694,9 @@ export default (app: Courselore): void => {
                           ? html`disabled`
                           : html``}
                         $${res.locals.user
-                          .emailNotificationsDigestsFrequency === "daily"
+                          .emailNotificationsDigestsFrequency === null ||
+                        res.locals.user.emailNotificationsDigestsFrequency ===
+                          "daily"
                           ? html`checked`
                           : html``}
                         class="input--radio"
