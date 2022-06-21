@@ -13,7 +13,7 @@ import {
   BaseMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
-  UserEmailNotifications,
+  UserEmailNotificationsDigestsFrequency,
   EnrollmentRole,
   EnrollmentAccentColor,
 } from "./index.js";
@@ -83,7 +83,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
-    emailNotifications: UserEmailNotifications;
+    emailNotifications: UserEmailNotificationsDigestsFrequency;
   };
   invitations: {
     id: number;
@@ -264,7 +264,7 @@ export default (app: Courselore): void => {
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        emailNotifications: UserEmailNotifications;
+        emailNotifications: UserEmailNotificationsDigestsFrequency;
       }>(
         sql`
           SELECT "id",
