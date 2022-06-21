@@ -94,9 +94,9 @@
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - `UserEmailNotifications` & `userEmailNotificationses`
-    - `authentication.ts`
     - `demonstration.ts`
     - `message.ts`
+    - `"emailNotifications"`
     - `"users"`
   - `TODO`
 - “Important staff announcements”
