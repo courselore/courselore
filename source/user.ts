@@ -1332,16 +1332,14 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline ${"TODO" &&
-                    false
-                      ? html`disabled`
-                      : html``}"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       name="emailNotificationsForAllMessages"
-                      $${"TODO" && false ? html`checked` : html``}
+                      $${res.locals.user.emailNotificationsForAllMessagesAt !==
+                      null
+                        ? html`checked`
+                        : html``}
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
@@ -1365,16 +1363,14 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline ${"TODO" &&
-                    false
-                      ? html`disabled`
-                      : html``}"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       name="emailNotificationsForMentions"
-                      $${"TODO" ? html`checked` : html``}
+                      $${res.locals.user.emailNotificationsForMentionsAt !==
+                      null
+                        ? html`checked`
+                        : html``}
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
@@ -1396,16 +1392,15 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline ${"TODO" &&
-                    false
-                      ? html`disabled`
-                      : html``}"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
-                      $${"TODO" ? html`checked` : html``}
+                      $${res.locals.user
+                        .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt !==
+                      null
+                        ? html`checked`
+                        : html``}
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
@@ -1429,16 +1424,15 @@ export default (app: Courselore): void => {
                     display: flex;
                   `)}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline ${"TODO" &&
-                    false
-                      ? html`disabled`
-                      : html``}"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       name="emailNotificationsForMessagesInConversationsYouStarted"
-                      $${"TODO" ? html`checked` : html``}
+                      $${res.locals.user
+                        .emailNotificationsForMessagesInConversationsYouStartedAt !==
+                      null
+                        ? html`checked`
+                        : html``}
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
