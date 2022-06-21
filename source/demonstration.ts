@@ -26,63 +26,8 @@ export default (app: Courselore): void => {
           "courselore",
           app.locals.options.argon2
         );
-        const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
-        const biographySource = casual.sentences(lodash.random(5, 7));
-        const demonstrationUser = app.locals.database.get<{
-          id: number;
-          name: string;
-        }>(
-          sql`
-            INSERT INTO "users" (
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "emailNotifications"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${new Date(
-                Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
-              ).toISOString()},
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${`${slugify(name)}--${cryptoRandomString({
-                length: 5,
-                type: "numeric",
-              })}@courselore.org`},
-              ${password},
-              ${new Date().toISOString()},
-              ${name},
-              ${html`${name}`},
-              ${`${
-                app.locals.options.baseURL
-              }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
-              ${lodash.sample(userAvatarlessBackgroundColors)},
-              ${biographySource},
-              ${
-                app.locals.partials.content({
-                  req,
-                  res,
-                  type: "source",
-                  content: biographySource,
-                }).preprocessed
-              },
-              ${"none"}
-            )
-            RETURNING *
-          `
-        )!;
-
-        const users = lodash.times(150, () => {
+        const [demonstrationUser, ...users] = lodash.times(151, () => {
           const name = casual.full_name;
           const biographySource = casual.sentences(lodash.random(5, 7));
           return app.locals.database.get<{
@@ -104,7 +49,12 @@ export default (app: Courselore): void => {
                 "avatarlessBackgroundColor",
                 "biographySource",
                 "biographyPreprocessed",
-                "emailNotifications"
+                "emailNotificationsForAllMessagesAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "emailNotificationsDigestsAt",
+                "emailNotificationsDigestsFrequency"
               )
               VALUES (
                 ${new Date().toISOString()},
@@ -140,7 +90,12 @@ export default (app: Courselore): void => {
                     content: biographySource,
                   }).preprocessed
                 },
-                ${"none"}
+                ${null},
+                ${new Date().toISOString()},
+                ${new Date().toISOString()},
+                ${new Date().toISOString()},
+                ${new Date().toISOString()},
+                ${"daily"}
               )
               RETURNING *
             `
@@ -164,7 +119,7 @@ export default (app: Courselore): void => {
             code: "CS 601.426",
             role: enrollmentRoles[1],
             accentColor: enrollmentAccentColors[0],
-            enrollmentsUsers: users.slice(0, 100),
+            enrollmentsUsers: users.slice(1, 101),
           },
           {
             name: "Pharmacology",
@@ -178,7 +133,7 @@ export default (app: Courselore): void => {
             code: "EN 601.421",
             role: enrollmentRoles[1],
             accentColor: enrollmentAccentColors[2],
-            enrollmentsUsers: users.slice(50, 150),
+            enrollmentsUsers: users.slice(51, 151),
             isArchived: true,
           },
         ].reverse()) {
@@ -308,46 +263,16 @@ export default (app: Courselore): void => {
           );
 
           const tags: { id: number }[] = [
-            {
-              name: "Assignment 1",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 2",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 3",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 4",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 5",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 6",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 7",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 8",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 9",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 10",
-              staffOnlyAt: null,
-            },
+            { name: "Assignment 1", staffOnlyAt: null },
+            { name: "Assignment 2", staffOnlyAt: null },
+            { name: "Assignment 3", staffOnlyAt: null },
+            { name: "Assignment 4", staffOnlyAt: null },
+            { name: "Assignment 5", staffOnlyAt: null },
+            { name: "Assignment 6", staffOnlyAt: null },
+            { name: "Assignment 7", staffOnlyAt: null },
+            { name: "Assignment 8", staffOnlyAt: null },
+            { name: "Assignment 9", staffOnlyAt: null },
+            { name: "Assignment 10", staffOnlyAt: null },
             {
               name: "Change for Next Year",
               staffOnlyAt: new Date().toISOString(),
@@ -360,16 +285,16 @@ export default (app: Courselore): void => {
             ({ name, staffOnlyAt }) =>
               app.locals.database.get<{ id: number }>(
                 sql`
-                    INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${course.id},
-                      ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${name},
-                      ${staffOnlyAt}
-                    )
-                    RETURNING *
-                  `
+                  INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${name},
+                    ${staffOnlyAt}
+                  )
+                  RETURNING *
+                `
               )!
           );
 
