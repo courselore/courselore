@@ -93,9 +93,6 @@
 ### Better Email Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Test:
-    - Creating a user
-    - Demonstration data
   - Get the form submission to change settings
     - `TODO`
   - Respect the new settings on email delivery
