@@ -1349,7 +1349,12 @@ export default (app: Courselore): void => {
             "name",
             "nameSearch",
             "avatarlessBackgroundColor",
-            "emailNotifications"
+            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt",
+            "emailNotificationsDigestsAt",
+            "emailNotificationsDigestsFrequency"
           )
           VALUES (
             ${new Date().toISOString()},
@@ -1361,7 +1366,12 @@ export default (app: Courselore): void => {
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
-            ${"mentions"}
+            ${null},
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${"daily"}
           )
           RETURNING *
         `
