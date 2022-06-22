@@ -168,6 +168,7 @@ export default (app: Courselore): void => {
         isSelf: managedUser.id === res.locals.user.id,
       };
       if (
+        res.locals.managedUser.isSelf &&
         app.locals.database.get<{ count: number }>(
           sql`
               SELECT COUNT(*) AS "count"
@@ -220,21 +221,6 @@ export default (app: Courselore): void => {
               : "bi-people"}"
           ></i>
           System Roles
-        </a>
-        <a
-          href="${app.locals.options.baseURL}/administrator-panel/statistics"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/statistics"
-          )
-            ? "button--blue"
-            : "button--transparent"}"
-        >
-          <i
-            class="bi ${req.path.endsWith("/administrator-panel/statistics")
-              ? "bi-bar-chart-fill"
-              : "bi-bar-chart"}"
-          ></i>
-          Statistics
         </a>
       `,
       body,
@@ -905,30 +891,6 @@ export default (app: Courselore): void => {
         res.locals.managedUser.isSelf
           ? `${app.locals.options.baseURL}`
           : `${app.locals.options.baseURL}/administrator-panel/system-roles`
-      );
-    }
-  );
-
-  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel/statistics",
-    ...app.locals.middlewares.isAdministrator,
-    (req, res) => {
-      res.send(
-        app.locals.layouts.administratorPanel({
-          req,
-          res,
-          head: html`<title>
-            Statistics · Administrator Panel · Courselore
-          </title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-tools"></i>
-              Administrator Panel ·
-              <i class="bi bi-bar-chart"></i>
-              Statistics
-            </h2>
-          `,
-        })
       );
     }
   );
