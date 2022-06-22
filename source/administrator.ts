@@ -48,19 +48,18 @@ export type CanCreateCoursesMiddleware = express.RequestHandler<
 export interface CanCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
-export type MayManageSystemRolesMiddleware = express.RequestHandler<
+export type MayManageUserSystemRolesMiddleware = express.RequestHandler<
   { userReference: string },
   any,
   {},
   {},
-  MayManageSystemRolesMiddlewareLocals
+  MayManageUserSystemRolesMiddlewareLocals
 >[];
-export interface MayManageSystemRolesMiddlewareLocals
+export interface MayManageUserSystemRolesMiddlewareLocals
   extends IsAdministratorMiddlewareLocals {
   managedUser: {
     id: number;
     reference: string;
-    //role: SystemRole;
     isSelf: boolean;
   };
 }
@@ -150,13 +149,12 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.mayManageSystemRoles = [
+  app.locals.middlewares.mayManageUserSystemRoles = [
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       const managedUser = app.locals.database.get<{
         id: number;
         reference: string;
-        //role: SystemRole;
       }>(
         sql`
           SELECT "id", "reference", "systemRole"
@@ -170,14 +168,13 @@ export default (app: Courselore): void => {
         isSelf: managedUser.id === res.locals.user.id,
       };
       if (
-        (managedUser.id === res.locals.user.id &&
-          app.locals.database.get<{ count: number }>(
-            sql`
-            SELECT COUNT(*) AS "count"
-            FROM "users"
-            WHERE "systemRole" = 'administrator'
-          `
-          )!.count === 1)
+        app.locals.database.get<{ count: number }>(
+          sql`
+              SELECT COUNT(*) AS "count"
+              FROM "users"
+              WHERE "systemRole" = 'administrator'
+            `
+        )!.count === 1
       )
         return next("validation");
       next();
@@ -558,7 +555,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/administrator-panel/system-roles/${user.reference}`;
+              const action = `${app.locals.options.baseURL}/users/${user.reference}/system-roles`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -825,7 +822,11 @@ export default (app: Courselore): void => {
                                                     : html``}
                                                 >
                                                   $${app.locals.partials
-                                                    .systemRoleIcon[role].fill}
+                                                    .systemRoleIcon[role][
+                                                    role !== "none"
+                                                      ? "fill"
+                                                      : "regular"
+                                                  ]}
                                                   ${lodash.capitalize(role)}
                                                 </button>
                                               </div>
@@ -838,8 +839,9 @@ export default (app: Courselore): void => {
                             });
                           `}"
                         >
-                          $${app.locals.partials.systemRoleIcon[user.systemRole]
-                            .fill}
+                          $${app.locals.partials.systemRoleIcon[
+                            user.systemRole
+                          ][user.systemRole !== "none" ? "fill" : "regular"]}
                           ${lodash.capitalize(user.systemRole)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
@@ -873,28 +875,30 @@ export default (app: Courselore): void => {
     { userReference: string },
     HTML,
     {
-      role: SystemRole;
+      role?: SystemRole;
     },
     {},
-    MayManageSystemRolesMiddlewareLocals
+    MayManageUserSystemRolesMiddlewareLocals
   >(
-    "/administrator-panel/system-roles/:userReference",
-    ...app.locals.middlewares.mayManageSystemRoles,
+    "/users/:userReference/system-roles",
+    ...app.locals.middlewares.mayManageUserSystemRoles,
     (req, res, next) => {
-      if (typeof req.body.role === "string") {
-        if (!systemRoles.includes(req.body.role)) return next("validation");
+      if (
+        typeof req.body.role !== "string" ||
+        !systemRoles.includes(req.body.role)
+      )
+        return next("validation");
 
-        app.locals.database.run(
-          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
-        );
+      app.locals.database.run(
+        sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
+      );
 
-        app.locals.helpers.Flash.set({
-          req,
-          res,
-          theme: "green",
-          content: html`System role updated successfully.`,
-        });
-      }
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "green",
+        content: html`System role updated successfully.`,
+      });
 
       res.redirect(
         303,

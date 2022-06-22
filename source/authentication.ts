@@ -1338,6 +1338,7 @@ export default (app: Courselore): void => {
             "reference",
             "email",
             "password",
+            "systemRole",
             "emailVerifiedAt",
             "name",
             "nameSearch",
@@ -1350,6 +1351,16 @@ export default (app: Courselore): void => {
             ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
+            ${
+              app.locals.database.get<{ count: number }>(
+                sql`
+                  SELECT COUNT(*) AS "count"
+                  FROM "users"
+                `
+              )!.count === 0
+                ? "administrator"
+                : "none"
+            },
             ${null},
             ${req.body.name},
             ${html`${req.body.name}`},

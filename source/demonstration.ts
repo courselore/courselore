@@ -41,6 +41,7 @@ export default (app: Courselore): void => {
               "reference",
               "email",
               "password",
+              "systemRole",
               "emailVerifiedAt",
               "name",
               "nameSearch",
@@ -61,6 +62,7 @@ export default (app: Courselore): void => {
                 type: "numeric",
               })}@courselore.org`},
               ${password},
+              ${"administrator"},
               ${new Date().toISOString()},
               ${name},
               ${html`${name}`},
@@ -82,7 +84,7 @@ export default (app: Courselore): void => {
             RETURNING *
           `
         )!;
-
+        
         const users = lodash.times(150, () => {
           const name = casual.full_name;
           const biographySource = casual.sentences(lodash.random(5, 7));
@@ -98,6 +100,7 @@ export default (app: Courselore): void => {
                 "reference",
                 "email",
                 "password",
+                "systemRole",
                 "emailVerifiedAt",
                 "name",
                 "nameSearch",
@@ -121,6 +124,13 @@ export default (app: Courselore): void => {
                   type: "numeric",
                 })}@courselore.org`},
                 ${password},
+                ${
+                  Math.random() < 0.3
+                    ? Math.random() < 0.3
+                      ? "administrator"
+                      : "staff"
+                    : "none"
+                },
                 ${new Date().toISOString()},
                 ${name},
                 ${html`${name}`},

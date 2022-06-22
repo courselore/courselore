@@ -1122,7 +1122,6 @@ export default (app: Courselore): void => {
         isSelf: managedEnrollment.id === res.locals.enrollment.id,
       };
       if (
-        managedEnrollment.id === res.locals.enrollment.id &&
         app.locals.database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
