@@ -92,10 +92,6 @@
 
 ### Better Email Notifications
 
-- Tangent: Don’t fudge on checkboxes being booleans on form submission. Check for `"on"`.
-  - `boolean`
-  - `checkbox`
-  - `isEmailNotificationsDigests`
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Respect the new settings on email delivery
     - `TODO`

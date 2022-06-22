@@ -3512,13 +3512,13 @@ export default (app: Courselore): void => {
     HTML,
     {
       type?: ConversationType;
-      shouldNotify?: boolean;
-      isPinned?: boolean;
-      isStaffOnly?: boolean;
+      shouldNotify?: "on";
+      isPinned?: "on";
+      isStaffOnly?: "on";
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      isAnonymous?: boolean;
+      isAnonymous?: "on";
       isDraft?: "true";
       conversationDraftReference?: string;
     },
@@ -3529,6 +3529,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (req.body.isDraft === "true") {
+        // TODO: Validate inputs
         let conversationDraft =
           typeof req.body.conversationDraftReference === "string" &&
           req.body.conversationDraftReference.match(/^[0-9]+$/)
@@ -3572,8 +3573,8 @@ export default (app: Courselore): void => {
                     ? req.body.type
                     : null
                 },
-                ${req.body.isPinned ? "true" : null},
-                ${req.body.isStaffOnly ? "true" : null},
+                ${req.body.isPinned === "on" ? "true" : null},
+                ${req.body.isStaffOnly === "on" ? "true" : null},
                 ${
                   typeof req.body.title === "string" &&
                   req.body.title.trim() !== ""
@@ -3611,8 +3612,10 @@ export default (app: Courselore): void => {
                       ? req.body.type
                       : null
                   },
-                  "isPinned" = ${req.body.isPinned ? "true" : null},
-                  "isStaffOnly" = ${req.body.isStaffOnly ? "true" : null},
+                  "isPinned" = ${req.body.isPinned === "on" ? "true" : null},
+                  "isStaffOnly" = ${
+                    req.body.isStaffOnly === "on" ? "true" : null
+                  },
                   "title" = ${
                     typeof req.body.title === "string" &&
                     req.body.title.trim() !== ""
@@ -3660,10 +3663,14 @@ export default (app: Courselore): void => {
       if (
         typeof req.body.type !== "string" ||
         !conversationTypes.includes(req.body.type) ||
-        (req.body.shouldNotify &&
+        ![undefined, "on"].includes(req.body.shouldNotify) ||
+        (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.role !== "staff" ||
             req.body.type !== "note")) ||
-        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
+        ![undefined, "on"].includes(req.body.isPinned) ||
+        (req.body.isPinned === "on" &&
+          res.locals.enrollment.role !== "staff") ||
+        ![undefined, "on"].includes(req.body.isStaffOnly) ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
         (req.body.type !== "chat" &&
@@ -3684,8 +3691,10 @@ export default (app: Courselore): void => {
                   (existingTag) => tagReference === existingTag.reference
                 )
             ))) ||
-        ((res.locals.enrollment.role === "staff" || req.body.isStaffOnly) &&
-          req.body.isAnonymous)
+        ![undefined, "on"].includes(req.body.isAnonymous) ||
+        (req.body.isAnonymous === "on" &&
+          (res.locals.enrollment.role === "staff" ||
+            req.body.isStaffOnly === "on"))
       )
         return next("validation");
 
@@ -3724,10 +3733,10 @@ export default (app: Courselore): void => {
             ${res.locals.course.id},
             ${String(res.locals.course.nextConversationReference)},
             ${res.locals.enrollment.id},
-            ${req.body.isAnonymous ? new Date().toISOString() : null},
+            ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
             ${req.body.type},
-            ${req.body.isPinned ? new Date().toISOString() : null},
-            ${req.body.isStaffOnly ? new Date().toISOString() : null},
+            ${req.body.isPinned === "on" ? new Date().toISOString() : null},
+            ${req.body.isStaffOnly === "on" ? new Date().toISOString() : null},
             ${req.body.title},
             ${html`${req.body.title}`},
             ${2}
@@ -3762,7 +3771,8 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
-        if (req.body.shouldNotify) processedContent.mentions!.add("everyone");
+        if (req.body.shouldNotify === "on")
+          processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
           reference: string;
@@ -3783,7 +3793,9 @@ export default (app: Courselore): void => {
               ${conversationRow.id},
               ${"1"},
               ${res.locals.enrollment.id},
-              ${req.body.isAnonymous ? new Date().toISOString() : null},
+              ${
+                req.body.isAnonymous === "on" ? new Date().toISOString() : null
+              },
               ${req.body.content},
               ${processedContent.preprocessed},
               ${processedContent.search}

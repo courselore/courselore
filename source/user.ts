@@ -1726,11 +1726,11 @@ export default (app: Courselore): void => {
     {},
     any,
     {
-      isEmailNotificationsForAllMessages?: boolean;
-      isEmailNotificationsForMentions?: boolean;
-      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: boolean;
-      isEmailNotificationsForMessagesInConversationsYouStarted?: boolean;
-      isEmailNotificationsDigests?: "true" | "false";
+      isEmailNotificationsForAllMessages?: "on";
+      isEmailNotificationsForMentions?: "on";
+      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
+      isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
+      isEmailNotificationsDigests?: "false" | "true";
       emailNotificationsDigestsFrequency?: UserEmailNotificationsDigestsFrequency;
     },
     {},
@@ -1740,29 +1740,48 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
-        (req.body.isEmailNotificationsForAllMessages &&
-          (!req.body.isEmailNotificationsForMentions ||
-            !req.body
-              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-            !req.body
-              .isEmailNotificationsForMessagesInConversationsYouStarted)) ||
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForAllMessages
+        ) ||
+        ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
+        ![undefined, "on"].includes(
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+        ) ||
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+        ) ||
+        (req.body.isEmailNotificationsForAllMessages === "on" &&
+          (req.body.isEmailNotificationsForMentions !== "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+              "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsYouStarted !==
+              "on")) ||
         (req.body
-          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-          !req.body.isEmailNotificationsForMessagesInConversationsYouStarted) ||
-        (!req.body.isEmailNotificationsForAllMessages &&
-          !req.body.isEmailNotificationsForMentions &&
-          !req.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-          !req.body.isEmailNotificationsForMessagesInConversationsYouStarted &&
+          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+          "on" &&
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on") ||
+        (req.body.isEmailNotificationsForAllMessages !== "on" &&
+          req.body.isEmailNotificationsForMentions !== "on" &&
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+            "on" &&
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on" &&
           (req.body.isEmailNotificationsDigests !== undefined ||
             req.body.emailNotificationsDigestsFrequency !== undefined)) ||
-        ((req.body.isEmailNotificationsForAllMessages ||
-          req.body.isEmailNotificationsForMentions ||
+        ((req.body.isEmailNotificationsForAllMessages === "on" ||
+          req.body.isEmailNotificationsForMentions === "on" ||
           req.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted) &&
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+            "on" ||
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted ===
+            "on") &&
           (typeof req.body.isEmailNotificationsDigests !== "string" ||
-            !["true", "false"].includes(req.body.isEmailNotificationsDigests) ||
+            !["false", "true"].includes(req.body.isEmailNotificationsDigests) ||
             (req.body.isEmailNotificationsDigests === "false" &&
               req.body.emailNotificationsDigestsFrequency !== undefined) ||
             (req.body.isEmailNotificationsDigests === "true" &&
@@ -1778,23 +1797,26 @@ export default (app: Courselore): void => {
         sql`
          UPDATE "users"
          SET "emailNotificationsForAllMessagesAt" = ${
-           req.body.isEmailNotificationsForAllMessages
+           req.body.isEmailNotificationsForAllMessages === "on"
              ? new Date().toISOString()
              : null
          },
              "emailNotificationsForMentionsAt" = ${
-               req.body.isEmailNotificationsForMentions
+               req.body.isEmailNotificationsForMentions === "on"
                  ? new Date().toISOString()
                  : null
              },
              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
                req.body
-                 .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                 .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+               "on"
                  ? new Date().toISOString()
                  : null
              },
              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-               req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+               req.body
+                 .isEmailNotificationsForMessagesInConversationsYouStarted ===
+               "on"
                  ? new Date().toISOString()
                  : null
              },

@@ -2097,7 +2097,7 @@ export default (app: Courselore): void => {
         reference?: string;
         delete?: "true";
         name?: string;
-        isStaffOnly?: boolean;
+        isStaffOnly?: "on";
       }[];
     },
     {},
@@ -2112,13 +2112,17 @@ export default (app: Courselore): void => {
         req.body.tags.some(
           (tag) =>
             (tag.reference === undefined &&
-              (typeof tag.name !== "string" || tag.name.trim() === "")) ||
+              (typeof tag.name !== "string" ||
+                tag.name.trim() === "" ||
+                ![undefined, "on"].includes(tag.isStaffOnly))) ||
             (tag.reference !== undefined &&
               (!res.locals.tags.some(
                 (existingTag) => tag.reference === existingTag.reference
               ) ||
                 (tag.delete !== "true" &&
-                  (typeof tag.name !== "string" || tag.name.trim() === ""))))
+                  (typeof tag.name !== "string" ||
+                    tag.name.trim() === "" ||
+                    ![undefined, "on"].includes(tag.isStaffOnly)))))
         )
       )
         return next("validation");
@@ -2133,7 +2137,7 @@ export default (app: Courselore): void => {
                 ${res.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${tag.name},
-                ${tag.isStaffOnly ? new Date().toISOString() : null}
+                ${tag.isStaffOnly === "on" ? new Date().toISOString() : null}
               )
             `
           );
@@ -2149,7 +2153,7 @@ export default (app: Courselore): void => {
               UPDATE "tags"
               SET "name" = ${tag.name},
                   "staffOnlyAt" = ${
-                    tag.isStaffOnly ? new Date().toISOString() : null
+                    tag.isStaffOnly === "on" ? new Date().toISOString() : null
                   }
               WHERE "reference" = ${tag.reference}
             `

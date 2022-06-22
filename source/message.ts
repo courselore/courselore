@@ -588,7 +588,7 @@ export default (app: Courselore): void => {
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { isAnswer?: boolean; content?: string; isAnonymous?: boolean },
+    { isAnswer?: "on"; content?: string; isAnonymous?: "on" },
     {
       conversations?: object;
       messages?: object;
@@ -599,12 +599,15 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
-        (req.body.isAnswer && res.locals.conversation.type !== "question") ||
+        ![undefined, "on"].includes(req.body.isAnswer) ||
+        (req.body.isAnswer === "on" &&
+          res.locals.conversation.type !== "question") ||
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        ((res.locals.enrollment.role === "staff" ||
-          res.locals.conversation.staffOnlyAt !== null) &&
-          req.body.isAnonymous)
+        ![undefined, "on"].includes(req.body.isAnonymous) ||
+        (req.body.isAnonymous === "on" &&
+          (res.locals.enrollment.role === "staff" ||
+            res.locals.conversation.staffOnlyAt !== null))
       )
         return next("validation");
 
@@ -624,7 +627,7 @@ export default (app: Courselore): void => {
         mostRecentMessage.authorEnrollment !== "no-longer-enrolled" &&
         res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
         mostRecentMessage.anonymousAt === null &&
-        !req.body.isAnonymous &&
+        req.body.isAnonymous !== "on" &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
           5 * 60 * 1000
       ) {
@@ -678,14 +681,14 @@ export default (app: Courselore): void => {
                 $${
                   res.locals.conversation.type === "question" &&
                   res.locals.enrollment.role === "staff" &&
-                  req.body.isAnswer &&
+                  req.body.isAnswer === "on" &&
                   res.locals.conversation.resolvedAt === null
                     ? sql`,
-                      "resolvedAt" = ${new Date().toISOString()}
-                    `
+                        "resolvedAt" = ${new Date().toISOString()}
+                      `
                     : res.locals.conversation.type === "question" &&
                       res.locals.enrollment.role === "student" &&
-                      !req.body.isAnswer
+                      req.body.isAnswer !== "on"
                     ? sql`,
                         "resolvedAt" = ${null}
                       `
@@ -715,8 +718,10 @@ export default (app: Courselore): void => {
               ${res.locals.conversation.id},
               ${String(res.locals.conversation.nextMessageReference)},
               ${res.locals.enrollment.id},
-              ${req.body.isAnonymous ? new Date().toISOString() : null},
-              ${req.body.isAnswer ? new Date().toISOString() : null},
+              ${
+                req.body.isAnonymous === "on" ? new Date().toISOString() : null
+              },
+              ${req.body.isAnswer === "on" ? new Date().toISOString() : null},
               ${req.body.content},
               ${processedContent.preprocessed},
               ${processedContent.search}
