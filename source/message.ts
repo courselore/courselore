@@ -8,7 +8,7 @@ import {
   Courselore,
   UserAvatarlessBackgroundColor,
   UserEmailNotificationsDigestsFrequency,
-  EnrollmentRole,
+  CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
   AuthorEnrollment,
@@ -185,8 +185,8 @@ export default (app: Courselore): void => {
       authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
-      authorEnrollmentReference: EnrollmentRole | null;
-      authorEnrollmentRole: EnrollmentRole | null;
+      authorEnrollmentReference: string | null;
+      authorEnrollmentCourseRole: CourseRole | null;
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
@@ -210,7 +210,7 @@ export default (app: Courselore): void => {
                "authorUser"."biographySource" AS "authorUserBiographySource",
                "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
                "messages"."anonymousAt",
                "messages"."answerAt",
                "messages"."contentSource",
@@ -242,7 +242,7 @@ export default (app: Courselore): void => {
         messageRow.authorUserName !== null &&
         messageRow.authorUserAvatarlessBackgroundColor !== null &&
         messageRow.authorEnrollmentReference !== null &&
-        messageRow.authorEnrollmentRole !== null
+        messageRow.authorEnrollmentCourseRole !== null
           ? {
               id: messageRow.authorEnrollmentId,
               user: {
@@ -259,7 +259,7 @@ export default (app: Courselore): void => {
                   messageRow.authorUserBiographyPreprocessed,
               },
               reference: messageRow.authorEnrollmentReference,
-              role: messageRow.authorEnrollmentRole,
+              courseRole: messageRow.authorEnrollmentCourseRole,
             }
           : ("no-longer-enrolled" as const),
       anonymousAt: messageRow.anonymousAt,
@@ -286,7 +286,7 @@ export default (app: Courselore): void => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentRole: EnrollmentRole | null;
+        enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
           SELECT "readings"."id",
@@ -302,7 +302,7 @@ export default (app: Courselore): void => {
                  "users"."biographySource" AS "userBiographySource",
                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                  "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."role" AS "enrollmentRole"
+                 "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "readings"
           JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -322,7 +322,7 @@ export default (app: Courselore): void => {
           reading.userName !== null &&
           reading.userAvatarlessBackgroundColor !== null &&
           reading.enrollmentReference !== null &&
-          reading.enrollmentRole !== null
+          reading.enrollmentCourseRole !== null
             ? {
                 id: reading.enrollmentId,
                 user: {
@@ -338,7 +338,7 @@ export default (app: Courselore): void => {
                   biographyPreprocessed: reading.userBiographyPreprocessed,
                 },
                 reference: reading.enrollmentReference,
-                role: reading.enrollmentRole,
+                courseRole: reading.enrollmentCourseRole,
               }
             : ("no-longer-enrolled" as const),
       }));
@@ -357,7 +357,7 @@ export default (app: Courselore): void => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentRole: EnrollmentRole | null;
+        enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
           SELECT "endorsements"."id",
@@ -372,7 +372,7 @@ export default (app: Courselore): void => {
                  "users"."biographySource" AS "userBiographySource",
                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                  "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."role" AS "enrollmentRole"
+                 "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "endorsements"
           JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -391,7 +391,7 @@ export default (app: Courselore): void => {
           endorsement.userName !== null &&
           endorsement.userAvatarlessBackgroundColor !== null &&
           endorsement.enrollmentReference !== null &&
-          endorsement.enrollmentRole !== null
+          endorsement.enrollmentCourseRole !== null
             ? {
                 id: endorsement.enrollmentId,
                 user: {
@@ -407,7 +407,7 @@ export default (app: Courselore): void => {
                   biographyPreprocessed: endorsement.userBiographyPreprocessed,
                 },
                 reference: endorsement.enrollmentReference,
-                role: endorsement.enrollmentRole,
+                courseRole: endorsement.enrollmentCourseRole,
               }
             : ("no-longer-enrolled" as const),
       }));
@@ -426,7 +426,7 @@ export default (app: Courselore): void => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentRole: EnrollmentRole | null;
+        enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
           SELECT "likes"."id",
@@ -441,7 +441,7 @@ export default (app: Courselore): void => {
                 "users"."biographySource" AS "userBiographySource",
                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                 "enrollments"."reference" AS "enrollmentReference",
-                "enrollments"."role" AS "enrollmentRole"
+                "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "likes"
           LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
           LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -460,7 +460,7 @@ export default (app: Courselore): void => {
           like.userName !== null &&
           like.userAvatarlessBackgroundColor !== null &&
           like.enrollmentReference !== null &&
-          like.enrollmentRole !== null
+          like.enrollmentCourseRole !== null
             ? {
                 id: like.enrollmentId,
                 user: {
@@ -475,7 +475,7 @@ export default (app: Courselore): void => {
                   biographyPreprocessed: like.userBiographyPreprocessed,
                 },
                 reference: like.enrollmentReference,
-                role: like.enrollmentRole,
+                courseRole: like.enrollmentCourseRole,
               }
             : ("no-longer-enrolled" as const),
       }));
@@ -504,7 +504,7 @@ export default (app: Courselore): void => {
   ];
 
   app.locals.helpers.mayEditMessage = ({ req, res, message }) =>
-    res.locals.enrollment.role === "staff" ||
+    res.locals.enrollment.courseRole === "staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === res.locals.enrollment.id);
 
@@ -606,7 +606,7 @@ export default (app: Courselore): void => {
         req.body.content.trim() === "" ||
         ![undefined, "on"].includes(req.body.isAnonymous) ||
         (req.body.isAnonymous === "on" &&
-          (res.locals.enrollment.role === "staff" ||
+          (res.locals.enrollment.courseRole === "staff" ||
             res.locals.conversation.staffOnlyAt !== null))
       )
         return next("validation");
@@ -680,14 +680,14 @@ export default (app: Courselore): void => {
                 }
                 $${
                   res.locals.conversation.type === "question" &&
-                  res.locals.enrollment.role === "staff" &&
+                  res.locals.enrollment.courseRole === "staff" &&
                   req.body.isAnswer === "on" &&
                   res.locals.conversation.resolvedAt === null
                     ? sql`,
                         "resolvedAt" = ${new Date().toISOString()}
                       `
                     : res.locals.conversation.type === "question" &&
-                      res.locals.enrollment.role === "student" &&
+                      res.locals.enrollment.courseRole === "student" &&
                       req.body.isAnswer !== "on"
                     ? sql`,
                         "resolvedAt" = ${null}
@@ -820,7 +820,7 @@ export default (app: Courselore): void => {
         if (
           !["true", "false"].includes(req.body.isAnonymous) ||
           res.locals.message.authorEnrollment === "no-longer-enrolled" ||
-          res.locals.message.authorEnrollment.role === "staff" ||
+          res.locals.message.authorEnrollment.courseRole === "staff" ||
           res.locals.conversation.staffOnlyAt !== null ||
           (req.body.isAnonymous === "true" &&
             res.locals.message.anonymousAt !== null) ||
@@ -1053,12 +1053,12 @@ export default (app: Courselore): void => {
   );
 
   app.locals.helpers.mayEndorseMessage = ({ req, res, message }) =>
-    res.locals.enrollment.role === "staff" &&
+    res.locals.enrollment.courseRole === "staff" &&
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.answerAt !== null &&
     (message.authorEnrollment === "no-longer-enrolled" ||
-      message.authorEnrollment.role !== "staff");
+      message.authorEnrollment.courseRole !== "staff");
 
   app.locals.middlewares.mayEndorseMessage = [
     ...app.locals.middlewares.messageExists,
@@ -1232,7 +1232,7 @@ export default (app: Courselore): void => {
           userEmailNotificationsDigestsAt: string | null;
           userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
         }>(
           sql`
           SELECT "enrollments"."id",
@@ -1245,7 +1245,7 @@ export default (app: Courselore): void => {
                  "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
                  "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
                  "enrollments"."reference",
-                 "enrollments"."role"
+                 "enrollments"."courseRole"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
                           "users"."emailVerifiedAt" IS NOT NULL
@@ -1267,7 +1267,7 @@ export default (app: Courselore): void => {
                   conversation.staffOnlyAt !== null
                     ? sql`
                       AND (
-                        "enrollments"."role" = 'staff' OR
+                        "enrollments"."courseRole" = 'staff' OR
                         "messages"."id" IS NOT NULL
                       )
                     `
@@ -1281,8 +1281,9 @@ export default (app: Courselore): void => {
             enrollment.userEmailNotificationsForAllMessagesAt !== null ||
             (enrollment.userEmailNotificationsForMentionsAt !== null &&
               (mentions.has("everyone") ||
-                (enrollment.role === "staff" && mentions.has("staff")) ||
-                (enrollment.role === "student" && mentions.has("students")) ||
+                (enrollment.courseRole === "staff" && mentions.has("staff")) ||
+                (enrollment.courseRole === "student" &&
+                  mentions.has("students")) ||
                 mentions.has(enrollment.reference)))
           // TODO: ‘userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt’ ‘userEmailNotificationsForMessagesInConversationsYouStartedAt’ ‘userEmailNotificationsDigestsAt’ ‘userEmailNotificationsDigestsFrequency’
           // TODO: Try to roll these rules into the query.
@@ -1323,7 +1324,7 @@ export default (app: Courselore): void => {
                         ? "Someone who is no longer enrolled"
                         : message.anonymousAt !== null
                         ? `Anonymous ${
-                            enrollment.role === "staff"
+                            enrollment.courseRole === "staff"
                               ? `(${message.authorEnrollment.user.name})`
                               : ""
                           }`

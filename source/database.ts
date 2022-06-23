@@ -780,6 +780,7 @@ export default async (app: Courselore): Promise<void> => {
       );
     },
     sql`
+      ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `
   );

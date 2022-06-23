@@ -13,7 +13,7 @@ import {
   Courselore,
   LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
-  EnrollmentRole,
+  CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
 } from "./index.js";
@@ -26,7 +26,7 @@ export type AuthorEnrollment =
       id: number;
       user: AuthorEnrollmentUser;
       reference: string;
-      role: EnrollmentRole;
+      courseRole: CourseRole;
     }
   | "no-longer-enrolled";
 export type AuthorEnrollmentUser = {
@@ -348,7 +348,8 @@ export default (app: Courselore): void => {
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
                   JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
                                      $${
-                                       res.locals.enrollment.role === "staff"
+                                       res.locals.enrollment.courseRole ===
+                                       "staff"
                                          ? sql``
                                          : sql`
                                              AND (
@@ -381,7 +382,7 @@ export default (app: Courselore): void => {
                 `
           }
           $${
-            res.locals.enrollment.role !== "staff"
+            res.locals.enrollment.courseRole !== "staff"
               ? sql`
                   LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
                                           "messages"."authorEnrollment" = ${res.locals.enrollment.id}
@@ -451,7 +452,7 @@ export default (app: Courselore): void => {
                 `
           }
           $${
-            res.locals.enrollment.role !== "staff"
+            res.locals.enrollment.courseRole !== "staff"
               ? sql`
                   AND (
                     "conversations"."staffOnlyAt" IS NULL OR
@@ -535,6 +536,7 @@ export default (app: Courselore): void => {
       conversationsWithSearchResults.length === conversationsPageSize + 1;
     if (moreConversationsExist) conversationsWithSearchResults.pop();
 
+    // TODO: Conversation drafts
     // conversationsWithSearchResults.unshift(
     //   ...app.locals.database
     //     .all<{
@@ -582,7 +584,7 @@ export default (app: Courselore): void => {
     //             FROM "tags"
     //             WHERE "course" = ${res.locals.course.id}
     //                   $${
-    //                     res.locals.enrollment.role === "student"
+    //                     res.locals.enrollment.courseRole === "student"
     //                       ? sql`AND "tags"."staffOnlyAt" IS NULL`
     //                       : sql``
     //                   }
@@ -738,7 +740,7 @@ export default (app: Courselore): void => {
                       gap: var(--space--1-5);
                     `)}"
                   >
-                    $${res.locals.enrollment.role === "staff"
+                    $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
                             href="${app.locals.options.baseURL}/courses/${res
@@ -848,7 +850,7 @@ export default (app: Courselore): void => {
                             Unread
                           </a>
                         `}
-                    $${res.locals.enrollment.role === "staff"
+                    $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
                             req.query.conversations?.filters,
@@ -2202,7 +2204,7 @@ export default (app: Courselore): void => {
           anonymous:
             conversation.anonymousAt === null
               ? false
-              : res.locals.enrollment.role === "staff" ||
+              : res.locals.enrollment.courseRole === "staff" ||
                 (conversation.authorEnrollment !== "no-longer-enrolled" &&
                   conversation.authorEnrollment.id === res.locals.enrollment.id)
               ? "reveal"
@@ -2328,7 +2330,7 @@ export default (app: Courselore): void => {
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
-                      : res.locals.enrollment.role === "staff" ||
+                      : res.locals.enrollment.courseRole === "staff" ||
                         (searchResult.message.authorEnrollment !==
                           "no-longer-enrolled" &&
                           searchResult.message.authorEnrollment.id ===
@@ -2351,7 +2353,7 @@ export default (app: Courselore): void => {
                   anonymous:
                     message.anonymousAt === null
                       ? false
-                      : res.locals.enrollment.role === "staff" ||
+                      : res.locals.enrollment.courseRole === "staff" ||
                         (message.authorEnrollment !== "no-longer-enrolled" &&
                           message.authorEnrollment.id ===
                             res.locals.enrollment.id)
@@ -2422,7 +2424,7 @@ export default (app: Courselore): void => {
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentRole: EnrollmentRole | null;
+      authorEnrollmentCourseRole: CourseRole | null;
       anonymousAt: string | null;
       type: ConversationType;
       resolvedAt: string | null;
@@ -2448,7 +2450,7 @@ export default (app: Courselore): void => {
                "authorUser"."biographySource" AS "authorUserBiographySource",
                "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
                "conversations"."anonymousAt",
                "conversations"."type",
                "conversations"."resolvedAt",
@@ -2461,7 +2463,7 @@ export default (app: Courselore): void => {
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         $${
-          res.locals.enrollment.role !== "staff"
+          res.locals.enrollment.courseRole !== "staff"
             ? sql`
                 LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
                                         "messages"."authorEnrollment" = ${res.locals.enrollment.id}
@@ -2471,7 +2473,7 @@ export default (app: Courselore): void => {
         WHERE "conversations"."course" = ${res.locals.course.id} AND
               "conversations"."reference" = ${conversationReference}
               $${
-                res.locals.enrollment.role !== "staff"
+                res.locals.enrollment.courseRole !== "staff"
                   ? sql`
                       AND (
                         "conversations"."staffOnlyAt" IS NULL OR
@@ -2498,7 +2500,7 @@ export default (app: Courselore): void => {
         conversationRow.authorUserName !== null &&
         conversationRow.authorUserAvatarlessBackgroundColor !== null &&
         conversationRow.authorEnrollmentReference !== null &&
-        conversationRow.authorEnrollmentRole !== null
+        conversationRow.authorEnrollmentCourseRole !== null
           ? {
               id: conversationRow.authorEnrollmentId,
               user: {
@@ -2515,7 +2517,7 @@ export default (app: Courselore): void => {
                   conversationRow.authorUserBiographyPreprocessed,
               },
               reference: conversationRow.authorEnrollmentReference,
-              role: conversationRow.authorEnrollmentRole,
+              courseRole: conversationRow.authorEnrollmentCourseRole,
             }
           : ("no-longer-enrolled" as const),
       anonymousAt: conversationRow.anonymousAt,
@@ -2545,7 +2547,7 @@ export default (app: Courselore): void => {
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           $${
-            res.locals.enrollment.role === "student"
+            res.locals.enrollment.courseRole === "student"
               ? sql`AND "tags"."staffOnlyAt" IS NULL`
               : sql``
           }
@@ -2595,7 +2597,7 @@ export default (app: Courselore): void => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
-              enrollmentRole: EnrollmentRole | null;
+              enrollmentCourseRole: CourseRole | null;
             }>(
               sql`
                 SELECT "endorsements"."id",
@@ -2610,7 +2612,7 @@ export default (app: Courselore): void => {
                        "users"."biographySource" AS "userBiographySource",
                        "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                        "enrollments"."reference" AS "enrollmentReference",
-                       "enrollments"."role" AS "enrollmentRole"
+                       "enrollments"."courseRole" AS "enrollmentCourseRole"
                 FROM "endorsements"
                 JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
                 JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -2630,7 +2632,7 @@ export default (app: Courselore): void => {
                 endorsement.userName !== null &&
                 endorsement.userAvatarlessBackgroundColor !== null &&
                 endorsement.enrollmentReference !== null &&
-                endorsement.enrollmentRole !== null
+                endorsement.enrollmentCourseRole !== null
                   ? {
                       id: endorsement.enrollmentId,
                       user: {
@@ -2647,7 +2649,7 @@ export default (app: Courselore): void => {
                           endorsement.userBiographyPreprocessed,
                       },
                       reference: endorsement.enrollmentReference,
-                      role: endorsement.enrollmentRole,
+                      courseRole: endorsement.enrollmentCourseRole,
                     }
                   : ("no-longer-enrolled" as const),
             }))
@@ -2690,7 +2692,7 @@ export default (app: Courselore): void => {
                                   }
           WHERE "readings"."id" IS NULL
                 $${
-                  res.locals.enrollment.role === "staff"
+                  res.locals.enrollment.courseRole === "staff"
                     ? sql``
                     : sql`
                         AND "conversations"."staffOnlyAt" IS NULL OR
@@ -2861,7 +2863,7 @@ export default (app: Courselore): void => {
                                 )};
 
                               ${
-                                res.locals.enrollment.role === "staff"
+                                res.locals.enrollment.courseRole === "staff"
                                   ? javascript`
                                       const notification = form.querySelector('[key="new-conversation--notification"]');
                                       notification.hidden = ${JSON.stringify(
@@ -2900,7 +2902,7 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
-              $${res.locals.enrollment.role === "staff"
+              $${res.locals.enrollment.courseRole === "staff"
                 ? html`
                     <div
                       key="new-conversation--notification"
@@ -2975,7 +2977,7 @@ export default (app: Courselore): void => {
                   row-gap: var(--space--4);
                 `)}"
               >
-                $${res.locals.enrollment.role === "staff"
+                $${res.locals.enrollment.courseRole === "staff"
                   ? html`
                       <div
                         class="label"
@@ -3141,7 +3143,7 @@ export default (app: Courselore): void => {
                     : undefined,
               })}
               $${res.locals.tags.length === 0 &&
-              res.locals.enrollment.role !== "staff"
+              res.locals.enrollment.courseRole !== "staff"
                 ? html``
                 : html`
                     <div class="label">
@@ -3160,7 +3162,7 @@ export default (app: Courselore): void => {
                           <i class="bi bi-info-circle"></i>
                         </button>
                         $${res.locals.tags.length > 0 &&
-                        res.locals.enrollment.role === "staff"
+                        res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <div
                                 css="${res.locals.css(css`
@@ -3192,7 +3194,7 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         $${res.locals.tags.length === 0 &&
-                        res.locals.enrollment.role === "staff"
+                        res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <a
                                 href="${app.locals.options
@@ -3269,7 +3271,7 @@ export default (app: Courselore): void => {
                       </div>
                     </div>
                   `}
-              $${res.locals.enrollment.role === "staff"
+              $${res.locals.enrollment.courseRole === "staff"
                 ? html``
                 : html`
                     <div class="anonymity label">
@@ -3665,11 +3667,11 @@ export default (app: Courselore): void => {
         !conversationTypes.includes(req.body.type) ||
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
-          (res.locals.enrollment.role !== "staff" ||
+          (res.locals.enrollment.courseRole !== "staff" ||
             req.body.type !== "note")) ||
         ![undefined, "on"].includes(req.body.isPinned) ||
         (req.body.isPinned === "on" &&
-          res.locals.enrollment.role !== "staff") ||
+          res.locals.enrollment.courseRole !== "staff") ||
         ![undefined, "on"].includes(req.body.isStaffOnly) ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
@@ -3693,7 +3695,7 @@ export default (app: Courselore): void => {
             ))) ||
         ![undefined, "on"].includes(req.body.isAnonymous) ||
         (req.body.isAnonymous === "on" &&
-          (res.locals.enrollment.role === "staff" ||
+          (res.locals.enrollment.courseRole === "staff" ||
             req.body.isStaffOnly === "on"))
       )
         return next("validation");
@@ -3926,7 +3928,7 @@ export default (app: Courselore): void => {
   ];
 
   app.locals.helpers.mayEditConversation = ({ req, res }) =>
-    res.locals.enrollment.role === "staff" ||
+    res.locals.enrollment.courseRole === "staff" ||
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
 
@@ -4287,7 +4289,7 @@ export default (app: Courselore): void => {
                             `}
                         $${res.locals.conversation.type === "question"
                           ? html`
-                              $${res.locals.enrollment.role === "staff"
+                              $${res.locals.enrollment.courseRole === "staff"
                                 ? html`
                                     <form
                                       method="PATCH"
@@ -4387,7 +4389,7 @@ export default (app: Courselore): void => {
                                   `}
                             `
                           : html``}
-                        $${res.locals.enrollment.role === "staff"
+                        $${res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <form
                                 method="PATCH"
@@ -4460,7 +4462,7 @@ export default (app: Courselore): void => {
                               </div>
                             `
                           : html``}
-                        $${res.locals.enrollment.role === "staff"
+                        $${res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <button
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
@@ -4676,7 +4678,8 @@ export default (app: Courselore): void => {
                                           </button>
                                         `
                                       : html``}
-                                    $${res.locals.enrollment.role === "staff"
+                                    $${res.locals.enrollment.courseRole ===
+                                    "staff"
                                       ? html`
                                           <div>
                                             <button
@@ -5110,7 +5113,7 @@ export default (app: Courselore): void => {
                                                           `
                                                         )}
                                                       $${res.locals.enrollment
-                                                        .role === "staff"
+                                                        .courseRole === "staff"
                                                         ? html`
                                                             <a
                                                               href="${app.locals
@@ -5645,7 +5648,8 @@ export default (app: Courselore): void => {
                                                               `
                                                             : html``}
                                                           $${res.locals
-                                                            .enrollment.role ===
+                                                            .enrollment
+                                                            .courseRole ===
                                                             "staff" &&
                                                           res.locals
                                                             .conversation
@@ -5824,7 +5828,7 @@ export default (app: Courselore): void => {
                                                             res.locals
                                                               .enrollment.id &&
                                                           res.locals.enrollment
-                                                            .role ===
+                                                            .courseRole ===
                                                             "student" &&
                                                           res.locals
                                                             .conversation
@@ -5970,7 +5974,8 @@ export default (app: Courselore): void => {
                                                               `
                                                             : html``}
                                                           $${res.locals
-                                                            .enrollment.role ===
+                                                            .enrollment
+                                                            .courseRole ===
                                                           "staff"
                                                             ? html`
                                                                 <div>
@@ -6375,8 +6380,8 @@ export default (app: Courselore): void => {
                                               "question" &&
                                             (message.authorEnrollment ===
                                               "no-longer-enrolled" ||
-                                              message.authorEnrollment.role !==
-                                                "staff") &&
+                                              message.authorEnrollment
+                                                .courseRole !== "staff") &&
                                             message.endorsements.length > 0
                                           )
                                             headers.push(html`
@@ -6515,7 +6520,8 @@ export default (app: Courselore): void => {
                                                       null
                                                         ? false
                                                         : res.locals.enrollment
-                                                            .role === "staff" ||
+                                                            .courseRole ===
+                                                            "staff" ||
                                                           (message.authorEnrollment !==
                                                             "no-longer-enrolled" &&
                                                             message
@@ -6811,8 +6817,8 @@ export default (app: Courselore): void => {
                                               );
 
                                             if (
-                                              res.locals.enrollment.role ===
-                                                "staff" &&
+                                              res.locals.enrollment
+                                                .courseRole === "staff" &&
                                               res.locals.conversation.type !==
                                                 "chat"
                                             )
@@ -7163,7 +7169,8 @@ export default (app: Courselore): void => {
                                           },
                                         })}
                                       </div>
-                                      $${res.locals.enrollment.role === "staff"
+                                      $${res.locals.enrollment.courseRole ===
+                                      "staff"
                                         ? html``
                                         : html`
                                             <div
@@ -7248,7 +7255,7 @@ export default (app: Courselore): void => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
                       ${
-                        res.locals.enrollment.role === "staff"
+                        res.locals.enrollment.courseRole === "staff"
                           ? javascript``
                           : javascript`
                               const isAnonymous = this.querySelector('[name="isAnonymous"]');
@@ -7301,7 +7308,7 @@ export default (app: Courselore): void => {
                               <input
                                 type="checkbox"
                                 name="isAnswer"
-                                $${res.locals.enrollment.role === "staff"
+                                $${res.locals.enrollment.courseRole === "staff"
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -7416,7 +7423,7 @@ export default (app: Courselore): void => {
                       : html``}
                   </div>
 
-                  $${res.locals.enrollment.role === "staff" ||
+                  $${res.locals.enrollment.courseRole === "staff" ||
                   res.locals.conversation.staffOnlyAt !== null
                     ? html``
                     : html`
@@ -7583,7 +7590,7 @@ export default (app: Courselore): void => {
         if (
           res.locals.conversation.type !== "question" ||
           !["true", "false"].includes(req.body.isResolved) ||
-          res.locals.enrollment.role !== "staff" ||
+          res.locals.enrollment.courseRole !== "staff" ||
           (req.body.isResolved === "true" &&
             res.locals.conversation.resolvedAt !== null) ||
           (req.body.isResolved === "false" &&
@@ -7604,7 +7611,7 @@ export default (app: Courselore): void => {
       if (typeof req.body.isPinned === "string")
         if (
           !["true", "false"].includes(req.body.isPinned) ||
-          res.locals.enrollment.role !== "staff" ||
+          res.locals.enrollment.courseRole !== "staff" ||
           (req.body.isPinned === "true" &&
             res.locals.conversation.pinnedAt !== null) ||
           (req.body.isPinned === "false" &&
@@ -7625,7 +7632,7 @@ export default (app: Courselore): void => {
       if (typeof req.body.isStaffOnly === "string")
         if (
           !["true", "false"].includes(req.body.isStaffOnly) ||
-          res.locals.enrollment.role !== "staff" ||
+          res.locals.enrollment.courseRole !== "staff" ||
           (req.body.isStaffOnly === "true" &&
             res.locals.conversation.staffOnlyAt !== null) ||
           (req.body.isStaffOnly === "false" &&

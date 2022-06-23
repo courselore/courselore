@@ -18,8 +18,8 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export type EnrollmentRole = typeof enrollmentRoles[number];
-export const enrollmentRoles = ["student", "staff"] as const;
+export type CourseRole = typeof courseRoles[number];
+export const courseRoles = ["student", "staff"] as const;
 
 export type EnrollmentAccentColor = typeof enrollmentAccentColors[number];
 export const enrollmentAccentColors = [
@@ -72,8 +72,8 @@ export type CourseArchivedPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type EnrollmentRoleIconPartial = {
-  [role in EnrollmentRole]: {
+export type CourseRoleIconPartial = {
+  [courseRole in CourseRole]: {
     regular: HTML;
     fill: HTML;
   };
@@ -144,7 +144,7 @@ export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
     reference: string;
     email: string | null;
     name: string | null;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
   };
 }
 
@@ -192,7 +192,7 @@ export interface MayManageEnrollmentMiddlewareLocals
   managedEnrollment: {
     id: number;
     reference: string;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
     isSelf: boolean;
   };
 }
@@ -279,8 +279,8 @@ export default (app: Courselore): void => {
             ? html``
             : html`
                 <div>
-                  $${app.locals.partials.enrollmentRoleIcon[enrollment.role]
-                    .regular} ${lodash.capitalize(enrollment.role)}
+                  $${app.locals.partials.courseRoleIcon[enrollment.courseRole]
+                    .regular} ${lodash.capitalize(enrollment.courseRole)}
                 </div>
               `}
           $${course.archivedAt !== null
@@ -386,7 +386,7 @@ export default (app: Courselore): void => {
     return content.join(html`<hr class="separator" />`);
   };
 
-  app.locals.partials.enrollmentRoleIcon = {
+  app.locals.partials.courseRoleIcon = {
     student: {
       regular: html`<i class="bi bi-person"></i>`,
       fill: html`<i class="bi bi-person-fill"></i>`,
@@ -771,7 +771,7 @@ export default (app: Courselore): void => {
     )!;
     app.locals.database.run(
       sql`
-        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
         VALUES (
           ${new Date().toISOString()},
           ${res.locals.user.id},
@@ -827,7 +827,7 @@ export default (app: Courselore): void => {
           FROM "conversations"
           WHERE "course" = ${res.locals.course.id}
           $${
-            res.locals.enrollment.role !== "staff"
+            res.locals.enrollment.courseRole !== "staff"
               ? sql`
                   AND "conversations"."staffOnlyAt" IS NULL
                 `
@@ -847,7 +847,7 @@ export default (app: Courselore): void => {
           FROM "tags"
           WHERE "course" = ${res.locals.course.id}
                 $${
-                  res.locals.enrollment.role === "student"
+                  res.locals.enrollment.courseRole === "student"
                     ? sql`AND "staffOnlyAt" IS NULL`
                     : sql``
                 }
@@ -882,7 +882,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isCourseStaff = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      if (res.locals.enrollment.role === "staff") return next();
+      if (res.locals.enrollment.courseRole === "staff") return next();
       next("route");
     },
   ];
@@ -922,7 +922,7 @@ export default (app: Courselore): void => {
                 </div>
 
                 <div class="menu-box">
-                  $${res.locals.enrollment.role === "staff"
+                  $${res.locals.enrollment.courseRole === "staff"
                     ? html`
                         <a
                           href="${app.locals.options.baseURL}/courses/${res
@@ -938,11 +938,11 @@ export default (app: Courselore): void => {
                     href="${app.locals.options.baseURL}/courses/${res.locals
                       .course.reference}/conversations/new"
                     class="menu-box--item button ${res.locals.enrollment
-                      .role === "staff"
+                      .courseRole === "staff"
                       ? "button--transparent"
                       : "button--blue"}"
                   >
-                    $${res.locals.enrollment.role === "staff"
+                    $${res.locals.enrollment.courseRole === "staff"
                       ? html`<i class="bi bi-chat-left-text"></i>`
                       : html`<i class="bi bi-chat-left-text-fill"></i>`}
                     Start the First Conversation
@@ -983,7 +983,7 @@ export default (app: Courselore): void => {
         reference: string;
         email: string | null;
         name: string | null;
-        role: EnrollmentRole;
+        courseRole: CourseRole;
       }>(
         sql`
           SELECT "invitations"."id",
@@ -1001,7 +1001,7 @@ export default (app: Courselore): void => {
                  "invitations"."reference",
                  "invitations"."email",
                  "invitations"."name",
-                 "invitations"."role"
+                 "invitations"."courseRole"
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id" AND
                             "courses"."reference" = ${req.params.courseReference}
@@ -1027,7 +1027,7 @@ export default (app: Courselore): void => {
         reference: invitation.reference,
         email: invitation.email,
         name: invitation.name,
-        role: invitation.role,
+        courseRole: invitation.courseRole,
       };
       next();
     },
@@ -1104,10 +1104,10 @@ export default (app: Courselore): void => {
       const managedEnrollment = app.locals.database.get<{
         id: number;
         reference: string;
-        role: EnrollmentRole;
+        courseRole: CourseRole;
       }>(
         sql`
-          SELECT "id", "reference", "role"
+          SELECT "id", "reference", "courseRole"
           FROM "enrollments"
           WHERE "course" = ${res.locals.course.id} AND
                 "reference" = ${req.params.enrollmentReference}
@@ -1125,7 +1125,7 @@ export default (app: Courselore): void => {
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
             WHERE "course" = ${res.locals.course.id} AND
-                  "role" = ${"staff"}
+                  "courseRole" = ${"staff"}
           `
         )!.count === 1
       )
@@ -1144,7 +1144,7 @@ export default (app: Courselore): void => {
         Course Settings
       `,
       menu:
-        res.locals.enrollment.role === "staff"
+        res.locals.enrollment.courseRole === "staff"
           ? html`
               <a
                 href="${app.locals.options.baseURL}/courses/${res.locals.course
@@ -1242,7 +1242,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/settings/${
-          res.locals.enrollment.role === "staff"
+          res.locals.enrollment.courseRole === "staff"
             ? "course-information"
             : "your-enrollment"
         }`
@@ -2192,10 +2192,10 @@ export default (app: Courselore): void => {
         reference: string;
         email: string | null;
         name: string | null;
-        role: EnrollmentRole;
+        courseRole: CourseRole;
       }>(
         sql`
-          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "courseRole"
           FROM "invitations"
           WHERE "course" = ${res.locals.course.id}
           ORDER BY "id" DESC
@@ -2379,35 +2379,35 @@ export default (app: Courselore): void => {
               </div>
 
               <div class="label">
-                <p class="label--text">Role</p>
+                <p class="label--text">Course Role</p>
                 <div
                   css="${res.locals.css(css`
                     display: flex;
                     gap: var(--space--8);
                   `)}"
                 >
-                  $${enrollmentRoles.map(
-                    (role) =>
+                  $${courseRoles.map(
+                    (courseRole) =>
                       html`
                         <label
                           class="button button--tight button--tight--inline button--transparent"
                         >
                           <input
                             type="radio"
-                            name="role"
-                            value="${role}"
+                            name="courseRole"
+                            value="${courseRole}"
                             required
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span>
-                            $${app.locals.partials.enrollmentRoleIcon[role]
+                            $${app.locals.partials.courseRoleIcon[courseRole]
                               .regular}
-                            ${lodash.capitalize(role)}
+                            ${lodash.capitalize(courseRole)}
                           </span>
                           <span class="text--blue">
-                            $${app.locals.partials.enrollmentRoleIcon[role]
+                            $${app.locals.partials.courseRoleIcon[courseRole]
                               .fill}
-                            ${lodash.capitalize(role)}
+                            ${lodash.capitalize(courseRole)}
                           </span>
                         </label>
                       `
@@ -2810,14 +2810,14 @@ export default (app: Courselore): void => {
                               `)}"
                             >
                               <button
-                                class="button button--tight button--tight--inline button--transparent ${invitation.role ===
+                                class="button button--tight button--tight--inline button--transparent ${invitation.courseRole ===
                                 "staff"
                                   ? "text--sky"
                                   : ""}"
                                 onload="${javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
-                                    content: "Update Role",
+                                    content: "Update Course Role",
                                   });
 
                                   (this.dropdown ??= tippy(this)).setProps({
@@ -2826,12 +2826,12 @@ export default (app: Courselore): void => {
                                     content: ${res.locals.html(
                                       html`
                                         <div class="dropdown--menu">
-                                          $${enrollmentRoles.map((role) =>
-                                            role === invitation.role
+                                          $${courseRoles.map((courseRole) =>
+                                            courseRole === invitation.courseRole
                                               ? html``
                                               : html`
                                                   <form
-                                                    key="role--${role}"
+                                                    key="course-role--${courseRole}"
                                                     method="PATCH"
                                                     action="${action}"
                                                   >
@@ -2842,11 +2842,11 @@ export default (app: Courselore): void => {
                                                     />
                                                     <input
                                                       type="hidden"
-                                                      name="role"
-                                                      value="${role}"
+                                                      name="courseRole"
+                                                      value="${courseRole}"
                                                     />
                                                     <button
-                                                      class="dropdown--menu--item button button--transparent ${role ===
+                                                      class="dropdown--menu--item button button--transparent ${courseRole ===
                                                       "staff"
                                                         ? "text--sky"
                                                         : ""}"
@@ -2857,7 +2857,7 @@ export default (app: Courselore): void => {
                                                               (this.tooltip ??= tippy(this)).setProps({
                                                                 theme: "rose",
                                                                 trigger: "click",
-                                                                content: "You may not update the role of this invitation because it’s used.",
+                                                                content: "You may not update the course role of this invitation because it’s used.",
                                                               });
                                                             `}"
                                                           `
@@ -2868,21 +2868,23 @@ export default (app: Courselore): void => {
                                                               (this.tooltip ??= tippy(this)).setProps({
                                                                 theme: "rose",
                                                                 trigger: "click",
-                                                                content: "You may not update the role of this invitation because it’s expired.",
+                                                                content: "You may not update the course role of this invitation because it’s expired.",
                                                               });
                                                             `}"
                                                           `
                                                         : html``}
                                                     >
                                                       $${app.locals.partials
-                                                        .enrollmentRoleIcon[
-                                                        role
+                                                        .courseRoleIcon[
+                                                        courseRole
                                                       ][
-                                                        role === "staff"
+                                                        courseRole === "staff"
                                                           ? "fill"
                                                           : "regular"
                                                       ]}
-                                                      ${lodash.capitalize(role)}
+                                                      ${lodash.capitalize(
+                                                        courseRole
+                                                      )}
                                                     </button>
                                                   </form>
                                                 `
@@ -2893,14 +2895,14 @@ export default (app: Courselore): void => {
                                   });
                                 `}"
                               >
-                                $${app.locals.partials.enrollmentRoleIcon[
-                                  invitation.role
+                                $${app.locals.partials.courseRoleIcon[
+                                  invitation.courseRole
                                 ][
-                                  invitation.role === "staff"
+                                  invitation.courseRole === "staff"
                                     ? "fill"
                                     : "regular"
                                 ]}
-                                ${lodash.capitalize(invitation.role)}
+                                ${lodash.capitalize(invitation.courseRole)}
                                 <i class="bi bi-chevron-down"></i>
                               </button>
                             </div>
@@ -3221,7 +3223,7 @@ export default (app: Courselore): void => {
     HTML,
     {
       type?: "link" | "email";
-      role?: EnrollmentRole;
+      courseRole?: CourseRole;
       expiresAt?: string;
       emails?: string;
     },
@@ -3232,8 +3234,8 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
-        typeof req.body.role !== "string" ||
-        !enrollmentRoles.includes(req.body.role) ||
+        typeof req.body.courseRole !== "string" ||
+        !courseRoles.includes(req.body.courseRole) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !app.locals.helpers.isDate(req.body.expiresAt) ||
@@ -3247,13 +3249,13 @@ export default (app: Courselore): void => {
         case "link":
           const invitation = app.locals.database.get<{ reference: string }>(
             sql`
-              INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "role")
+              INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "courseRole")
               VALUES (
                 ${new Date().toISOString()},
                 ${req.body.expiresAt},
                 ${res.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${req.body.role}
+                ${req.body.courseRole}
               )
               RETURNING *
           `
@@ -3340,7 +3342,7 @@ export default (app: Courselore): void => {
                   UPDATE "invitations"
                   SET "expiresAt" = ${req.body.expiresAt},
                       "name" = ${name ?? existingUnusedInvitation.name},
-                      "role" = ${req.body.role}
+                      "courseRole" = ${req.body.courseRole}
                   WHERE "id" = ${existingUnusedInvitation.id}
                 `
               );
@@ -3354,10 +3356,10 @@ export default (app: Courselore): void => {
               reference: string;
               email: string;
               name: string | null;
-              role: EnrollmentRole;
+              courseRole: CourseRole;
             }>(
               sql`
-                INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "role")
+                INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "courseRole")
                 VALUES (
                   ${new Date().toISOString()},
                   ${req.body.expiresAt ?? null},
@@ -3365,7 +3367,7 @@ export default (app: Courselore): void => {
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
                   ${email},
                   ${name},
-                  ${req.body.role}
+                  ${req.body.courseRole}
                 )
                 RETURNING *
               `
@@ -3402,7 +3404,7 @@ export default (app: Courselore): void => {
     HTML,
     {
       resend?: "true";
-      role?: EnrollmentRole;
+      courseRole?: CourseRole;
       expiresAt?: string;
       removeExpiration?: "true";
       expire?: "true";
@@ -3434,22 +3436,22 @@ export default (app: Courselore): void => {
         });
       }
 
-      if (req.body.role !== undefined) {
+      if (req.body.courseRole !== undefined) {
         if (
           app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
-          !enrollmentRoles.includes(req.body.role)
+          !courseRoles.includes(req.body.courseRole)
         )
           return next("validation");
 
         app.locals.database.run(
-          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
+          sql`UPDATE "invitations" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.invitation.id}`
         );
 
         app.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
-          content: html`Invitation role updated successfully.`,
+          content: html`Invitation course role updated successfully.`,
         });
       }
 
@@ -3537,7 +3539,7 @@ export default (app: Courselore): void => {
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
         }>(
           sql`
             SELECT "enrollments"."id",
@@ -3551,11 +3553,11 @@ export default (app: Courselore): void => {
                    "users"."biographySource" AS "userBiographySource",
                    "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                    "enrollments"."reference",
-                   "enrollments"."role"
+                   "enrollments"."courseRole"
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
             WHERE "enrollments"."course" = ${res.locals.course.id}
-            ORDER BY "enrollments"."role" ASC, "users"."name" ASC
+            ORDER BY "enrollments"."courseRole" ASC, "users"."name" ASC
           `
         )
         .map((enrollment) => ({
@@ -3572,7 +3574,7 @@ export default (app: Courselore): void => {
             biographyPreprocessed: enrollment.userBiographyPreprocessed,
           },
           reference: enrollment.reference,
-          role: enrollment.role,
+          courseRole: enrollment.courseRole,
         }));
 
       res.send(
@@ -3640,8 +3642,9 @@ export default (app: Courselore): void => {
               const isSelf = enrollment.id === res.locals.enrollment.id;
               const isOnlyStaff =
                 isSelf &&
-                enrollments.filter((enrollment) => enrollment.role === "staff")
-                  .length === 1;
+                enrollments.filter(
+                  (enrollment) => enrollment.courseRole === "staff"
+                ).length === 1;
 
               return html`
                 <div
@@ -3767,14 +3770,14 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <button
-                          class="button button--tight button--tight--inline button--transparent ${enrollment.role ===
+                          class="button button--tight button--tight--inline button--transparent ${enrollment.courseRole ===
                           "staff"
                             ? "text--sky"
                             : ""}"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
-                              content: "Update Role",
+                              content: "Update Course Role",
                             });
                             
                             (this.dropdown ??= tippy(this)).setProps({
@@ -3783,12 +3786,12 @@ export default (app: Courselore): void => {
                               content: ${res.locals.html(
                                 html`
                                   <div class="dropdown--menu">
-                                    $${enrollmentRoles.map((role) =>
-                                      role === enrollment.role
+                                    $${courseRoles.map((courseRole) =>
+                                      courseRole === enrollment.courseRole
                                         ? html``
                                         : html`
                                             <form
-                                              key="role--${role}"
+                                              key="course-role--${courseRole}"
                                               method="PATCH"
                                               action="${action}"
                                             >
@@ -3799,12 +3802,12 @@ export default (app: Courselore): void => {
                                               />
                                               <input
                                                 type="hidden"
-                                                name="role"
-                                                value="${role}"
+                                                name="courseRole"
+                                                value="${courseRole}"
                                               />
                                               <div>
                                                 <button
-                                                  class="dropdown--menu--item button button--transparent ${role ===
+                                                  class="dropdown--menu--item button button--transparent ${courseRole ===
                                                   "staff"
                                                     ? "text--sky"
                                                     : ""}"
@@ -3815,7 +3818,7 @@ export default (app: Courselore): void => {
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             theme: "rose",
                                                             trigger: "click",
-                                                            content: "You may not update your own role because you’re the only staff member.",
+                                                            content: "You may not update your own course role because you’re the only staff member.",
                                                           });
                                                         `}"
                                                       `
@@ -3831,7 +3834,7 @@ export default (app: Courselore): void => {
                                                             content: ${res.locals.html(
                                                               html`
                                                                 <form
-                                                                  key="role--${role}"
+                                                                  key="course-role--${courseRole}"
                                                                   method="PATCH"
                                                                   action="${action}"
                                                                   css="${res
@@ -3854,15 +3857,16 @@ export default (app: Courselore): void => {
                                                                   />
                                                                   <input
                                                                     type="hidden"
-                                                                    name="role"
-                                                                    value="${role}"
+                                                                    name="courseRole"
+                                                                    value="${courseRole}"
                                                                   />
                                                                   <p>
                                                                     Are you sure
                                                                     you want to
                                                                     update your
-                                                                    own role to
-                                                                    ${role}?
+                                                                    own course
+                                                                    role to
+                                                                    ${courseRole}?
                                                                   </p>
                                                                   <p>
                                                                     <strong
@@ -3887,9 +3891,10 @@ export default (app: Courselore): void => {
                                                                       class="bi bi-pencil-fill"
                                                                     ></i>
                                                                     Update My
-                                                                    Own Role to
+                                                                    Own Course
+                                                                    Role to
                                                                     ${lodash.capitalize(
-                                                                      role
+                                                                      courseRole
                                                                     )}
                                                                   </button>
                                                                 </form>
@@ -3901,12 +3906,14 @@ export default (app: Courselore): void => {
                                                     : html``}
                                                 >
                                                   $${app.locals.partials
-                                                    .enrollmentRoleIcon[role][
-                                                    role === "staff"
+                                                    .courseRoleIcon[courseRole][
+                                                    courseRole === "staff"
                                                       ? "fill"
                                                       : "regular"
                                                   ]}
-                                                  ${lodash.capitalize(role)}
+                                                  ${lodash.capitalize(
+                                                    courseRole
+                                                  )}
                                                 </button>
                                               </div>
                                             </form>
@@ -3918,10 +3925,14 @@ export default (app: Courselore): void => {
                             });
                           `}"
                         >
-                          $${app.locals.partials.enrollmentRoleIcon[
-                            enrollment.role
-                          ][enrollment.role === "staff" ? "fill" : "regular"]}
-                          ${lodash.capitalize(enrollment.role)}
+                          $${app.locals.partials.courseRoleIcon[
+                            enrollment.courseRole
+                          ][
+                            enrollment.courseRole === "staff"
+                              ? "fill"
+                              : "regular"
+                          ]}
+                          ${lodash.capitalize(enrollment.courseRole)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
                       </div>
@@ -4037,17 +4048,18 @@ export default (app: Courselore): void => {
   app.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
-    { role?: EnrollmentRole },
+    { courseRole?: CourseRole },
     {},
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
-      if (typeof req.body.role === "string") {
-        if (!enrollmentRoles.includes(req.body.role)) return next("validation");
+      if (typeof req.body.courseRole === "string") {
+        if (!courseRoles.includes(req.body.courseRole))
+          return next("validation");
         app.locals.database.run(
-          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
+          sql`UPDATE "enrollments" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
         app.locals.helpers.Flash.set({
@@ -4433,7 +4445,7 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <i class="bi bi-journal-arrow-down"></i>
-                Enroll as ${lodash.capitalize(res.locals.invitation.role)}
+                Enroll as ${lodash.capitalize(res.locals.invitation.courseRole)}
               </button>
             </form>
           `,
@@ -4455,13 +4467,13 @@ export default (app: Courselore): void => {
     (req, res) => {
       app.locals.database.run(
         sql`
-          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
           VALUES (
             ${new Date().toISOString()},
             ${res.locals.user.id},
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${res.locals.invitation.role},
+            ${res.locals.invitation.courseRole},
             ${app.locals.helpers.defaultAccentColor({ req, res })}
           )
         `

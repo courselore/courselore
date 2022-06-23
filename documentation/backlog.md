@@ -322,7 +322,7 @@ new Notification('Example');
 
 ### Invitations
 
-- Simplify the system by having a single invitation link per role that you can enable/disable/reset.
+- Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.

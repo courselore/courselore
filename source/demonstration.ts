@@ -10,8 +10,8 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   userAvatarlessBackgroundColors,
-  EnrollmentRole,
-  enrollmentRoles,
+  CourseRole,
+  courseRoles,
   enrollmentAccentColors,
   ConversationType,
   conversationTypes,
@@ -109,7 +109,7 @@ export default (app: Courselore): void => {
         for (const {
           name,
           code,
-          role,
+          courseRole: courseRole,
           accentColor,
           enrollmentsUsers,
           isArchived,
@@ -117,21 +117,21 @@ export default (app: Courselore): void => {
           {
             name: "Principles of Programming Languages",
             code: "CS 601.426",
-            role: enrollmentRoles[1],
+            courseRole: courseRoles[1],
             accentColor: enrollmentAccentColors[0],
             enrollmentsUsers: users.slice(1, 101),
           },
           {
             name: "Pharmacology",
             code: "MD 401.324",
-            role: enrollmentRoles[0],
+            courseRole: courseRoles[0],
             accentColor: enrollmentAccentColors[1],
             enrollmentsUsers: users.slice(25, 125),
           },
           {
             name: "Object-Oriented Software Engineering",
             code: "EN 601.421",
-            role: enrollmentRoles[1],
+            courseRole: courseRoles[1],
             accentColor: enrollmentAccentColors[2],
             enrollmentsUsers: users.slice(51, 151),
             isArchived: true,
@@ -170,16 +170,16 @@ export default (app: Courselore): void => {
 
           const enrollment = app.locals.database.get<{
             id: number;
-            role: EnrollmentRole;
+            courseRole: CourseRole;
           }>(
             sql`
-              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
               VALUES (
                 ${new Date().toISOString()},
                 ${demonstrationUser.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${role},
+                ${courseRole},
                 ${accentColor}
               )
               RETURNING *
@@ -208,7 +208,7 @@ export default (app: Courselore): void => {
                   "reference",
                   "email",
                   "name",
-                  "role"
+                  "courseRole"
                 )
                 VALUES (
                   ${new Date().toISOString()},
@@ -229,28 +229,28 @@ export default (app: Courselore): void => {
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
                   ${user?.email},
                   ${Math.random() < 0.5 ? user?.name : null},
-                  ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]}
+                  ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
                 )
               `
             );
           }
 
-          const enrollments: { id: number; role: EnrollmentRole }[] = [
+          const enrollments: { id: number; courseRole: CourseRole }[] = [
             enrollment,
             ...enrollmentsUsers.map(
               (enrollmentUser) =>
                 app.locals.database.get<{
                   id: number;
-                  role: EnrollmentRole;
+                  courseRole: CourseRole;
                 }>(
                   sql`
-                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
                     VALUES (
                       ${new Date().toISOString()},
                       ${enrollmentUser.id},
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]},
+                      ${courseRoles[Math.random() < 0.1 ? 1 : 0]},
                       ${lodash.sample(enrollmentAccentColors)!}
                     )
                     RETURNING *
@@ -259,7 +259,7 @@ export default (app: Courselore): void => {
             ),
           ];
           const staff = enrollments.filter(
-            (enrollment) => enrollment.role === "staff"
+            (enrollment) => enrollment.courseRole === "staff"
           );
 
           const tags: { id: number }[] = [
@@ -377,7 +377,7 @@ export default (app: Courselore): void => {
                   ${String(conversationReference)},
                   ${conversationAuthorEnrollment.id},
                   ${
-                    conversationAuthorEnrollment.role !== "staff" &&
+                    conversationAuthorEnrollment.courseRole !== "staff" &&
                     Math.random() < 0.5
                       ? new Date().toISOString()
                       : null
@@ -472,7 +472,7 @@ export default (app: Courselore): void => {
                     ${
                       messageReference === 1
                         ? conversation.anonymousAt
-                        : messageAuthorEnrollment?.role !== "staff" &&
+                        : messageAuthorEnrollment?.courseRole !== "staff" &&
                           Math.random() < 0.5
                         ? new Date().toISOString()
                         : null

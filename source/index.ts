@@ -59,7 +59,7 @@ import course, {
   CoursePartial,
   CoursesPartial,
   CourseArchivedPartial,
-  EnrollmentRoleIconPartial,
+  CourseRoleIconPartial,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
@@ -71,8 +71,8 @@ import course, {
   CourseSettingsLayout,
 } from "./course.js";
 export {
-  EnrollmentRole,
-  enrollmentRoles,
+  CourseRole,
+  courseRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
   IsEnrolledInCourseMiddlewareLocals,
@@ -188,7 +188,7 @@ export interface Courselore extends express.Express {
       course: CoursePartial;
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
-      enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      courseRoleIcon: CourseRoleIconPartial;
       conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;

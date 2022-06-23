@@ -314,7 +314,7 @@ export default (app: Courselore): void => {
                 : user.name}`
             : name}$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
-          enrollment.role === "staff"
+          enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
                 onload="${javascript`
@@ -390,7 +390,7 @@ export default (app: Courselore): void => {
                             : user!.name}
                         </div>
                         $${user !== "no-longer-enrolled" &&
-                        (res.locals.enrollment?.role === "staff" ||
+                        (res.locals.enrollment?.courseRole === "staff" ||
                           res.locals.user?.id === user!.id)
                           ? html`
                               <div class="secondary">
@@ -463,7 +463,7 @@ export default (app: Courselore): void => {
                             `}
                         $${enrollment !== undefined &&
                         enrollment !== "no-longer-enrolled" &&
-                        enrollment.role === "staff"
+                        enrollment.courseRole === "staff"
                           ? html`
                               <div
                                 class="text--sky"

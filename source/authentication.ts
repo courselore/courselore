@@ -14,7 +14,7 @@ import {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotificationsDigestsFrequency,
-  EnrollmentRole,
+  CourseRole,
   EnrollmentAccentColor,
 } from "./index.js";
 
@@ -106,7 +106,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
   }[];
   enrollments: {
     id: number;
@@ -122,7 +122,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
     accentColor: EnrollmentAccentColor;
   }[];
 }
@@ -316,7 +316,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
         }>(
           sql`
             SELECT "invitations"."id",
@@ -330,7 +330,7 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "invitations"."reference",
-                   "invitations"."role"
+                   "invitations"."courseRole"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
@@ -356,7 +356,7 @@ export default (app: Courselore): void => {
               invitation.courseNextConversationReference,
           },
           reference: invitation.reference,
-          role: invitation.role,
+          courseRole: invitation.courseRole,
         }));
 
       res.locals.enrollments = app.locals.database
@@ -372,7 +372,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
           accentColor: EnrollmentAccentColor;
         }>(
           sql`
@@ -387,7 +387,7 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "enrollments"."reference",
-                   "enrollments"."role",
+                   "enrollments"."courseRole",
                    "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
@@ -410,7 +410,7 @@ export default (app: Courselore): void => {
               enrollment.courseNextConversationReference,
           },
           reference: enrollment.reference,
-          role: enrollment.role,
+          courseRole: enrollment.courseRole,
           accentColor: enrollment.accentColor,
         }));
 
