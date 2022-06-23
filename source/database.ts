@@ -778,7 +778,10 @@ export default async (app: Courselore): Promise<void> => {
           END;
         `
       );
-    }
+    },
+    sql`
+      ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
+    `
   );
   app.once("close", () => {
     app.locals.database.close();
