@@ -802,18 +802,20 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/terkelg/prompts
         https://github.com/enquirer/enquirer
       */
-      const answer = await inquirer.prompt([
-        {
-          type: "list",
-          name: "answer",
-          message:
-            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
-          choices: users.map((user) => ({
-            name: `${user.email}\t${user.name}`,
-            value: user.id,
-          })),
-        },
-      ]);
+      const answer = (
+        await inquirer.prompt([
+          {
+            type: "list",
+            name: "answer",
+            message:
+              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
+            choices: users.map((user) => ({
+              name: `${user.name} <${user.email}>`,
+              value: user.id,
+            })),
+          },
+        ])
+      ).answer;
       console.log(answer);
       throw new Error("TODO");
     }
