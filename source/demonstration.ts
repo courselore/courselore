@@ -18,23 +18,22 @@ import {
 } from "./index.js";
 
 export default (app: Courselore): void => {
-  
-    app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/demonstration-data",
-      asyncHandler(async (req, res, next) => {
-        if (!app.locals.options.demonstration) return next();
-        const password = await argon2.hash(
-          "courselore",
-          app.locals.options.argon2
-        );
-        const name = casual.full_name;
-        const avatarIndices = lodash.shuffle(lodash.range(250));
-        const biographySource = casual.sentences(lodash.random(5, 7));
-        const demonstrationUser = app.locals.database.get<{
-          id: number;
-          name: string;
-        }>(
-          sql`
+  app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/demonstration-data",
+    asyncHandler(async (req, res, next) => {
+      if (!app.locals.options.demonstration) return next();
+      const password = await argon2.hash(
+        "courselore",
+        app.locals.options.argon2
+      );
+      const name = casual.full_name;
+      const avatarIndices = lodash.shuffle(lodash.range(250));
+      const biographySource = casual.sentences(lodash.random(5, 7));
+      const demonstrationUser = app.locals.database.get<{
+        id: number;
+        name: string;
+      }>(
+        sql`
             INSERT INTO "users" (
               "createdAt",
               "lastSeenOnlineAt",
@@ -83,17 +82,17 @@ export default (app: Courselore): void => {
             )
             RETURNING *
           `
-        )!;
-        
-        const users = lodash.times(150, () => {
-          const name = casual.full_name;
-          const biographySource = casual.sentences(lodash.random(5, 7));
-          return app.locals.database.get<{
-            id: number;
-            email: string;
-            name: string;
-          }>(
-            sql`
+      )!;
+
+      const users = lodash.times(150, () => {
+        const name = casual.full_name;
+        const biographySource = casual.sentences(lodash.random(5, 7));
+        return app.locals.database.get<{
+          id: number;
+          email: string;
+          name: string;
+        }>(
+          sql`
               INSERT INTO "users" (
                 "createdAt",
                 "lastSeenOnlineAt",
@@ -155,49 +154,49 @@ export default (app: Courselore): void => {
               )
               RETURNING *
             `
-          )!;
-        });
+        )!;
+      });
 
-        const year = new Date().getFullYear().toString();
-        const month = new Date().getMonth() + 1;
-        const term = month < 4 || month > 9 ? "Spring" : "Fall";
-        const institution = "Johns Hopkins University";
-        for (const {
-          name,
-          code,
-          role,
-          accentColor,
-          enrollmentsUsers,
-          isArchived,
-        } of [
-          {
-            name: "Principles of Programming Languages",
-            code: "CS 601.426",
-            role: enrollmentRoles[1],
-            accentColor: enrollmentAccentColors[0],
-            enrollmentsUsers: users.slice(0, 100),
-          },
-          {
-            name: "Pharmacology",
-            code: "MD 401.324",
-            role: enrollmentRoles[0],
-            accentColor: enrollmentAccentColors[1],
-            enrollmentsUsers: users.slice(25, 125),
-          },
-          {
-            name: "Object-Oriented Software Engineering",
-            code: "EN 601.421",
-            role: enrollmentRoles[1],
-            accentColor: enrollmentAccentColors[2],
-            enrollmentsUsers: users.slice(50, 150),
-            isArchived: true,
-          },
-        ].reverse()) {
-          const course = app.locals.database.get<{
-            id: number;
-            nextConversationReference: number;
-          }>(
-            sql`
+      const year = new Date().getFullYear().toString();
+      const month = new Date().getMonth() + 1;
+      const term = month < 4 || month > 9 ? "Spring" : "Fall";
+      const institution = "Johns Hopkins University";
+      for (const {
+        name,
+        code,
+        role,
+        accentColor,
+        enrollmentsUsers,
+        isArchived,
+      } of [
+        {
+          name: "Principles of Programming Languages",
+          code: "CS 601.426",
+          role: enrollmentRoles[1],
+          accentColor: enrollmentAccentColors[0],
+          enrollmentsUsers: users.slice(0, 100),
+        },
+        {
+          name: "Pharmacology",
+          code: "MD 401.324",
+          role: enrollmentRoles[0],
+          accentColor: enrollmentAccentColors[1],
+          enrollmentsUsers: users.slice(25, 125),
+        },
+        {
+          name: "Object-Oriented Software Engineering",
+          code: "EN 601.421",
+          role: enrollmentRoles[1],
+          accentColor: enrollmentAccentColors[2],
+          enrollmentsUsers: users.slice(50, 150),
+          isArchived: true,
+        },
+      ].reverse()) {
+        const course = app.locals.database.get<{
+          id: number;
+          nextConversationReference: number;
+        }>(
+          sql`
               INSERT INTO "courses" (
                 "createdAt",
                 "reference",
@@ -222,13 +221,13 @@ export default (app: Courselore): void => {
               )
               RETURNING *
             `
-          )!;
+        )!;
 
-          const enrollment = app.locals.database.get<{
-            id: number;
-            role: EnrollmentRole;
-          }>(
-            sql`
+        const enrollment = app.locals.database.get<{
+          id: number;
+          role: EnrollmentRole;
+        }>(
+          sql`
               INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
               VALUES (
                 ${new Date().toISOString()},
@@ -240,22 +239,22 @@ export default (app: Courselore): void => {
               )
               RETURNING *
             `
-          )!;
+        )!;
 
-          for (const _ of lodash.times(20)) {
-            const expiresAt =
-              Math.random() < 0.3
-                ? new Date(
-                    Date.now() +
-                      lodash.random(
-                        -30 * 24 * 60 * 60 * 1000,
-                        30 * 24 * 60 * 60 * 1000
-                      )
-                  ).toISOString()
-                : null;
-            const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
-            app.locals.database.run(
-              sql`
+        for (const _ of lodash.times(20)) {
+          const expiresAt =
+            Math.random() < 0.3
+              ? new Date(
+                  Date.now() +
+                    lodash.random(
+                      -30 * 24 * 60 * 60 * 1000,
+                      30 * 24 * 60 * 60 * 1000
+                    )
+                ).toISOString()
+              : null;
+          const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
+          app.locals.database.run(
+            sql`
                 INSERT INTO "invitations" (
                   "createdAt",
                   "expiresAt",
@@ -288,18 +287,18 @@ export default (app: Courselore): void => {
                   ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]}
                 )
               `
-            );
-          }
+          );
+        }
 
-          const enrollments: { id: number; role: EnrollmentRole }[] = [
-            enrollment,
-            ...enrollmentsUsers.map(
-              (enrollmentUser) =>
-                app.locals.database.get<{
-                  id: number;
-                  role: EnrollmentRole;
-                }>(
-                  sql`
+        const enrollments: { id: number; role: EnrollmentRole }[] = [
+          enrollment,
+          ...enrollmentsUsers.map(
+            (enrollmentUser) =>
+              app.locals.database.get<{
+                id: number;
+                role: EnrollmentRole;
+              }>(
+                sql`
                     INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
                     VALUES (
                       ${new Date().toISOString()},
@@ -311,66 +310,66 @@ export default (app: Courselore): void => {
                     )
                     RETURNING *
                   `
-                )!
-            ),
-          ];
-          const staff = enrollments.filter(
-            (enrollment) => enrollment.role === "staff"
-          );
+              )!
+          ),
+        ];
+        const staff = enrollments.filter(
+          (enrollment) => enrollment.role === "staff"
+        );
 
-          const tags: { id: number }[] = [
-            {
-              name: "Assignment 1",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 2",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 3",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 4",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 5",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 6",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 7",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 8",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 9",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Assignment 10",
-              staffOnlyAt: null,
-            },
-            {
-              name: "Change for Next Year",
-              staffOnlyAt: new Date().toISOString(),
-            },
-            {
-              name: "Duplicate Question",
-              staffOnlyAt: new Date().toISOString(),
-            },
-          ].map(
-            ({ name, staffOnlyAt }) =>
-              app.locals.database.get<{ id: number }>(
-                sql`
+        const tags: { id: number }[] = [
+          {
+            name: "Assignment 1",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 2",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 3",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 4",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 5",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 6",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 7",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 8",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 9",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Assignment 10",
+            staffOnlyAt: null,
+          },
+          {
+            name: "Change for Next Year",
+            staffOnlyAt: new Date().toISOString(),
+          },
+          {
+            name: "Duplicate Question",
+            staffOnlyAt: new Date().toISOString(),
+          },
+        ].map(
+          ({ name, staffOnlyAt }) =>
+            app.locals.database.get<{ id: number }>(
+              sql`
                     INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
                     VALUES (
                       ${new Date().toISOString()},
@@ -381,66 +380,66 @@ export default (app: Courselore): void => {
                     )
                     RETURNING *
                   `
-              )!
+            )!
+        );
+
+        const conversationCreatedAts = [
+          new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        ];
+        for (
+          let conversationReference = 2;
+          conversationReference < course.nextConversationReference;
+          conversationReference++
+        )
+          conversationCreatedAts.unshift(
+            new Date(
+              new Date(conversationCreatedAts[0]).getTime() -
+                lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
+            ).toISOString()
           );
 
-          const conversationCreatedAts = [
-            new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          ];
+        for (
+          let conversationReference = 1;
+          conversationReference < course.nextConversationReference;
+          conversationReference++
+        ) {
+          const conversationCreatedAt =
+            conversationCreatedAts[conversationReference - 1];
+          const type =
+            conversationTypes[
+              Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
+            ];
+          const nextMessageReference =
+            type === "chat" ? lodash.random(50, 100) : lodash.random(2, 30);
+          const messageCreatedAts = [conversationCreatedAt];
           for (
-            let conversationReference = 2;
-            conversationReference < course.nextConversationReference;
-            conversationReference++
+            let messageReference = 1;
+            messageReference < nextMessageReference;
+            messageReference++
           )
-            conversationCreatedAts.unshift(
+            messageCreatedAts.push(
               new Date(
-                new Date(conversationCreatedAts[0]).getTime() -
-                  lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
+                Math.min(
+                  Date.now(),
+                  new Date(
+                    messageCreatedAts[messageCreatedAts.length - 1]
+                  ).getTime() + lodash.random(12 * 60 * 60 * 1000)
+                )
               ).toISOString()
             );
-
-          for (
-            let conversationReference = 1;
-            conversationReference < course.nextConversationReference;
-            conversationReference++
-          ) {
-            const conversationCreatedAt =
-              conversationCreatedAts[conversationReference - 1];
-            const type =
-              conversationTypes[
-                Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
-              ];
-            const nextMessageReference =
-              type === "chat" ? lodash.random(50, 100) : lodash.random(2, 30);
-            const messageCreatedAts = [conversationCreatedAt];
-            for (
-              let messageReference = 1;
-              messageReference < nextMessageReference;
-              messageReference++
-            )
-              messageCreatedAts.push(
-                new Date(
-                  Math.min(
-                    Date.now(),
-                    new Date(
-                      messageCreatedAts[messageCreatedAts.length - 1]
-                    ).getTime() + lodash.random(12 * 60 * 60 * 1000)
-                  )
-                ).toISOString()
-              );
-            const title = `${lodash.capitalize(
-              casual.words(lodash.random(3, 9))
-            )}${type === "question" ? "?" : ""}`;
-            const conversationAuthorEnrollment = lodash.sample(enrollments)!;
-            const conversation = app.locals.database.get<{
-              id: number;
-              authorEnrollment: number | null;
-              anonymousAt: string | null;
-              type: ConversationType;
-              staffOnlyAt: string | null;
-              title: string;
-            }>(
-              sql`
+          const title = `${lodash.capitalize(
+            casual.words(lodash.random(3, 9))
+          )}${type === "question" ? "?" : ""}`;
+          const conversationAuthorEnrollment = lodash.sample(enrollments)!;
+          const conversation = app.locals.database.get<{
+            id: number;
+            authorEnrollment: number | null;
+            anonymousAt: string | null;
+            type: ConversationType;
+            staffOnlyAt: string | null;
+            title: string;
+          }>(
+            sql`
                 INSERT INTO "conversations" (
                   "createdAt",
                   "updatedAt",
@@ -482,10 +481,10 @@ export default (app: Courselore): void => {
                 )
                 RETURNING *
               `
-            )!;
+          )!;
 
-            app.locals.database.run(
-              sql`
+          app.locals.database.run(
+            sql`
                 INSERT INTO "taggings" ("createdAt", "conversation", "tag")
                 VALUES (
                   ${new Date().toISOString()},
@@ -493,37 +492,37 @@ export default (app: Courselore): void => {
                   ${lodash.sample(tags)!.id}
                 )
               `
-            );
+          );
 
-            for (
-              let messageReference = 1;
-              messageReference < nextMessageReference;
-              messageReference++
-            ) {
-              const messageCreatedAt = messageCreatedAts[messageReference - 1];
-              const contentSource =
-                type === "chat" && Math.random() < 0.9
-                  ? casual.sentences(lodash.random(1, 2))
-                  : lodash
-                      .times(lodash.random(1, 6), () =>
-                        casual.sentences(lodash.random(1, 6))
-                      )
-                      .join("\n\n");
-              const processedContent = app.locals.partials.content({
-                req,
-                res,
-                type: "source",
-                content: contentSource,
-                decorate: true,
-              });
-              const messageAuthorEnrollment =
-                messageReference === 1
-                  ? conversationAuthorEnrollment
-                  : Math.random() < 0.05
-                  ? null
-                  : lodash.sample(enrollments)!;
-              const message = app.locals.database.get<{ id: number }>(
-                sql`
+          for (
+            let messageReference = 1;
+            messageReference < nextMessageReference;
+            messageReference++
+          ) {
+            const messageCreatedAt = messageCreatedAts[messageReference - 1];
+            const contentSource =
+              type === "chat" && Math.random() < 0.9
+                ? casual.sentences(lodash.random(1, 2))
+                : lodash
+                    .times(lodash.random(1, 6), () =>
+                      casual.sentences(lodash.random(1, 6))
+                    )
+                    .join("\n\n");
+            const processedContent = app.locals.partials.content({
+              req,
+              res,
+              type: "source",
+              content: contentSource,
+              decorate: true,
+            });
+            const messageAuthorEnrollment =
+              messageReference === 1
+                ? conversationAuthorEnrollment
+                : Math.random() < 0.05
+                ? null
+                : lodash.sample(enrollments)!;
+            const message = app.locals.database.get<{ id: number }>(
+              sql`
                   INSERT INTO "messages" (
                     "createdAt",
                     "updatedAt",
@@ -570,24 +569,24 @@ export default (app: Courselore): void => {
                   )
                   RETURNING *
                 `
-              )!;
+            )!;
 
-              const readers =
-                conversation.staffOnlyAt === null ? enrollments : staff;
-              let readingCreatedAt = messageCreatedAt;
-              for (const enrollment of lodash.sampleSize(
-                readers,
-                lodash.random(1, readers.length)
-              )) {
-                readingCreatedAt = new Date(
-                  Math.min(
-                    Date.now(),
-                    new Date(readingCreatedAt).getTime() +
-                      lodash.random(12 * 60 * 60 * 1000)
-                  )
-                ).toISOString();
-                app.locals.database.run(
-                  sql`
+            const readers =
+              conversation.staffOnlyAt === null ? enrollments : staff;
+            let readingCreatedAt = messageCreatedAt;
+            for (const enrollment of lodash.sampleSize(
+              readers,
+              lodash.random(1, readers.length)
+            )) {
+              readingCreatedAt = new Date(
+                Math.min(
+                  Date.now(),
+                  new Date(readingCreatedAt).getTime() +
+                    lodash.random(12 * 60 * 60 * 1000)
+                )
+              ).toISOString();
+              app.locals.database.run(
+                sql`
                     INSERT INTO "readings" ("createdAt", "message", "enrollment")
                     VALUES (
                       ${readingCreatedAt},
@@ -595,15 +594,15 @@ export default (app: Courselore): void => {
                       ${enrollment.id}
                     )
                   `
-                );
-              }
+              );
+            }
 
-              for (const enrollment of lodash.sampleSize(
-                staff,
-                Math.random() < 0.8 ? 0 : lodash.random(2)
-              ))
-                app.locals.database.run(
-                  sql`
+            for (const enrollment of lodash.sampleSize(
+              staff,
+              Math.random() < 0.8 ? 0 : lodash.random(2)
+            ))
+              app.locals.database.run(
+                sql`
                     INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
                     VALUES (
                       ${new Date().toISOString()},
@@ -611,16 +610,16 @@ export default (app: Courselore): void => {
                       ${enrollment.id}
                     )
                   `
-                );
+              );
 
-              for (const enrollment of lodash.sampleSize(
-                enrollments,
-                Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
-                  ? 0
-                  : lodash.random(5)
-              ))
-                app.locals.database.run(
-                  sql`
+            for (const enrollment of lodash.sampleSize(
+              enrollments,
+              Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
+                ? 0
+                : lodash.random(5)
+            ))
+              app.locals.database.run(
+                sql`
                     INSERT INTO "likes" ("createdAt", "message", "enrollment")
                     VALUES (
                       ${new Date().toISOString()},
@@ -628,31 +627,31 @@ export default (app: Courselore): void => {
                       ${enrollment.id}
                     )
                   `
-                );
-            }
+              );
           }
         }
+      }
 
-        app.locals.helpers.Session.open({
-          req,
-          res,
-          userId: demonstrationUser.id,
-        });
-        app.locals.helpers.Flash.set({
-          req,
-          res,
-          theme: "green",
-          content: html`
-            Demonstration data including users, courses, conversations, and so
-            forth, have been created and you’ve been signed in as a
-            demonstration user to give you a better idea of what Courselore
-            looks like in use. If you wish to sign in as another one of the
-            demonstration users, their password is “courselore”.
-          `,
-        });
-        res.redirect(303, app.locals.options.baseURL);
-      })
-    );
+      app.locals.helpers.Session.open({
+        req,
+        res,
+        userId: demonstrationUser.id,
+      });
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "green",
+        content: html`
+          Demonstration data including users, courses, conversations, and so
+          forth, have been created and you’ve been signed in as a demonstration
+          user to give you a better idea of what Courselore looks like in use.
+          If you wish to sign in as another one of the demonstration users,
+          their password is “courselore”.
+        `,
+      });
+      res.redirect(303, app.locals.options.baseURL);
+    })
+  );
 
   if (process.env.NODE_ENV !== "production")
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
