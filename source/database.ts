@@ -3,7 +3,7 @@ import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import inquirer from "inquirer";
+import prompts from "prompts";
 import { Courselore } from "./index.js";
 
 export interface DatabaseLocals {
@@ -785,7 +785,6 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
     async () => {
-      // TODO
       const users = app.locals.database.all<{
         id: number;
         email: string;
@@ -798,23 +797,21 @@ export default async (app: Courselore): Promise<void> => {
       );
       if (users.length === 0) return;
       /*
-        If for whatever reason inquirer reveals to not be a good fit, ‘npm rm inquirer @types/inquirer’ and try one of the following libraries:
-        https://github.com/terkelg/prompts
+        Other prompt libraries to consider if necessary:
+        https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
       const answer = (
-        await inquirer.prompt([
-          {
-            type: "list",
-            name: "answer",
-            message:
-              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
-            choices: users.map((user) => ({
-              name: `${user.name} <${user.email}>`,
-              value: user.id,
-            })),
-          },
-        ])
+        await prompts({
+          type: "autocomplete",
+          name: "answer",
+          message:
+            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
+          choices: users.map((user) => ({
+            title: `${user.name} <${user.email}>`,
+            value: user.id,
+          })),
+        })
       ).answer;
       console.log(answer);
       throw new Error("TODO");
