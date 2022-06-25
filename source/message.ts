@@ -1235,46 +1235,46 @@ export default (app: Courselore): void => {
           courseRole: CourseRole;
         }>(
           sql`
-          SELECT "enrollments"."id",
-                 "users"."id" AS "userId",
-                 "users"."email" AS "userEmail",
-                 "users"."emailNotificationsForAllMessagesAt" AS "userEmailNotificationsForAllMessagesAt",
-                 "users"."emailNotificationsForMentionsAt" AS "userEmailNotificationsForMentionsAt",
-                 "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" AS "userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "users"."emailNotificationsForMessagesInConversationsYouStartedAt" AS "userEmailNotificationsForMessagesInConversationsYouStartedAt",
-                 "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
-                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
-                 "enrollments"."reference",
-                 "enrollments"."courseRole"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                          "users"."emailVerifiedAt" IS NOT NULL
-          LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-                                                "notificationDeliveries"."message" = ${
-                                                  message.id
-                                                }
-          $${
-            conversation.staffOnlyAt !== null
-              ? sql`
-                  LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                          "messages"."conversation" = ${conversation.id}
-                `
-              : sql``
-          }
-          WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                "notificationDeliveries"."id" IS NULL
-                $${
-                  conversation.staffOnlyAt !== null
-                    ? sql`
-                      AND (
-                        "enrollments"."courseRole" = 'staff' OR
-                        "messages"."id" IS NOT NULL
-                      )
-                    `
-                    : sql``
-                }
-          GROUP BY "enrollments"."id"
-        `
+            SELECT "enrollments"."id",
+                  "users"."id" AS "userId",
+                  "users"."email" AS "userEmail",
+                  "users"."emailNotificationsForAllMessagesAt" AS "userEmailNotificationsForAllMessagesAt",
+                  "users"."emailNotificationsForMentionsAt" AS "userEmailNotificationsForMentionsAt",
+                  "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" AS "userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                  "users"."emailNotificationsForMessagesInConversationsYouStartedAt" AS "userEmailNotificationsForMessagesInConversationsYouStartedAt",
+                  "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
+                  "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
+                  "enrollments"."reference",
+                  "enrollments"."courseRole"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                            "users"."emailVerifiedAt" IS NOT NULL
+            LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+                                                  "notificationDeliveries"."message" = ${
+                                                    message.id
+                                                  }
+            $${
+              conversation.staffOnlyAt !== null
+                ? sql`
+                    LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                            "messages"."conversation" = ${conversation.id}
+                  `
+                : sql``
+            }
+            WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                  "notificationDeliveries"."id" IS NULL
+                  $${
+                    conversation.staffOnlyAt !== null
+                      ? sql`
+                        AND (
+                          "enrollments"."courseRole" = 'staff' OR
+                          "messages"."id" IS NOT NULL
+                        )
+                      `
+                      : sql``
+                  }
+            GROUP BY "enrollments"."id"
+          `
         )
         .filter(
           (enrollment) =>
