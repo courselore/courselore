@@ -1216,32 +1216,19 @@ export default (app: Courselore): void => {
       );
 
     app.locals.database.executeTransaction(() => {
-      const enrollments = app.locals.database
-        .all<{
-          id: number;
-          userId: number;
-          userEmail: string;
-          userEmailNotificationsForAllMessagesAt: string | null;
-          userEmailNotificationsForMentionsAt: string | null;
-          userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-            | string
-            | null;
-          userEmailNotificationsForMessagesInConversationsYouStartedAt:
-            | string
-            | null;
-          userEmailNotificationsDigestsAt: string | null;
-          userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
-          reference: string;
-          courseRole: CourseRole;
-        }>(
-          sql`
+      const enrollments = app.locals.database.all<{
+        id: number;
+        userId: number;
+        userEmail: string;
+        userEmailNotificationsDigestsAt: string | null;
+        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
+        reference: string;
+        courseRole: CourseRole;
+      }>(
+        sql`
             SELECT "enrollments"."id",
                    "users"."id" AS "userId",
                    "users"."email" AS "userEmail",
-                   "users"."emailNotificationsForAllMessagesAt" AS "userEmailNotificationsForAllMessagesAt",
-                   "users"."emailNotificationsForMentionsAt" AS "userEmailNotificationsForMentionsAt",
-                   "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" AS "userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                   "users"."emailNotificationsForMessagesInConversationsYouStartedAt" AS "userEmailNotificationsForMessagesInConversationsYouStartedAt",
                    "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
                    "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
                    "enrollments"."reference",
@@ -1275,20 +1262,7 @@ export default (app: Courselore): void => {
                   }
             GROUP BY "enrollments"."id"
           `
-        )
-        .filter(
-          (enrollment) =>
-            enrollment.userEmailNotificationsForAllMessagesAt !== null ||
-            (enrollment.userEmailNotificationsForMentionsAt !== null &&
-              (mentions.has("everyone") ||
-                (enrollment.courseRole === "staff" && mentions.has("staff")) ||
-                (enrollment.courseRole === "student" &&
-                  mentions.has("students")) ||
-                mentions.has(enrollment.reference)))
-          // TODO: ‘userEmailNotificationsForMessagesInConversationsInWhichYouParticipatedAt’ ‘userEmailNotificationsForMessagesInConversationsYouStartedAt’ ‘userEmailNotificationsDigestsAt’ ‘userEmailNotificationsDigestsFrequency’
-          // TODO: Try to roll these rules into the query.
-        );
-
+      );
       for (const enrollment of enrollments) {
         app.locals.database.run(
           sql`
