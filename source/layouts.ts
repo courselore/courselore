@@ -3000,9 +3000,7 @@ export default async (app: Courselore): Promise<void> => {
     </svg>
   `;
 
-  app.locals.partials.reportIssueHref = `mailto:${
-    app.locals.options.administratorEmail
-  }${qs.stringify(
+  app.locals.partials.reportIssueHrefBody = `${qs.stringify(
     {
       subject: "Report an Issue",
       body: dedent`
@@ -3031,6 +3029,11 @@ export default async (app: Courselore): Promise<void> => {
       addQueryPrefix: true,
     }
   )}`;
+
+  app.locals.partials.reportIssueHref =
+    `mailto:${app.locals.options.administratorEmail}`.concat(
+      app.locals.partials.reportIssueHrefBody
+    );
 
   app.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,

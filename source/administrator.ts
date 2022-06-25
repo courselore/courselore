@@ -92,43 +92,6 @@ export default (app: Courselore): void => {
     },
   };
 
-  // app.locals.options.canCreateCourses = JSON.parse(
-  //   app.locals.database.get<{
-  //     value: string;
-  //   }>(
-  //     sql`
-  //       SELECT "value"
-  //       FROM "configurations"
-  //       WHERE "key" = 'canCreateCourses'
-  //     `
-  //   )!.value
-  // );
-
-  // app.locals.options.demonstration =
-  //   JSON.parse(
-  //     app.locals.database.get<{
-  //       value: string;
-  //     }>(
-  //       sql`
-  //       SELECT "value"
-  //       FROM "configurations"
-  //       WHERE "key" = 'demonstrationAt'
-  //     `
-  //     )!.value
-  //   ) !== null;
-
-  // app.locals.options.administratorEmail = JSON.parse(
-  //   app.locals.database.get<{
-  //     value: string;
-  //   }>(
-  //     sql`
-  //       SELECT "value"
-  //       FROM "configurations"
-  //       WHERE "key" = 'administratorEmail'
-  //     `
-  //   )!.value
-  // );
-
   app.locals.middlewares.isAdministrator = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
@@ -427,6 +390,11 @@ export default (app: Courselore): void => {
           WHERE "key" = 'administratorEmail'
         `
       );
+
+      app.locals.partials.reportIssueHref =
+        `mailto:${app.locals.options.administratorEmail}`.concat(
+          app.locals.partials.reportIssueHrefBody
+        );
 
       app.locals.helpers.Flash.set({
         req,
