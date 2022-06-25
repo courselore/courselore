@@ -701,6 +701,16 @@ export default (app: Courselore): void => {
                     & > * {
                       width: var(--space--32);
                       height: var(--space--32);
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                        position: relative;
+                        &:first-child {
+                          padding: var(--space--2);
+                          margin: var(--space---2);
+                          border-radius: var(--border-radius--circle);
+                        }
+                      }
                     }
                   `)}"
                   onload="${javascript`
@@ -717,22 +727,10 @@ export default (app: Courselore): void => {
                   <div
                     class="avatar-chooser--empty"
                     $${res.locals.user.avatar === null ? html`` : html`hidden`}
-                    css="${res.locals.css(css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                        position: relative;
-                      }
-                    `)}"
                   >
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.css(css`
-                        padding: var(--space--2);
-                        margin: var(--space---2);
-                        border-radius: var(--border-radius--circle);
-                      `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
@@ -778,22 +776,10 @@ export default (app: Courselore): void => {
                   <div
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
                     class="avatar-chooser--filled"
-                    css="${res.locals.css(css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                        position: relative;
-                      }
-                    `)}"
                   >
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.css(css`
-                        padding: var(--space--2);
-                        margin: var(--space---2);
-                        border-radius: var(--border-radius--circle);
-                      `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
