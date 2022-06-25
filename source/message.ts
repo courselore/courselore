@@ -1259,7 +1259,24 @@ export default (app: Courselore): void => {
                         )
                       `
                       : sql``
-                  }
+                  } AND (
+                    "users"."mailNotificationsForAllMessagesAt" IS NOT NULL OR (
+                      "users"."mailNotificationsForMentionsAt" IS NOT NULL AND (
+                        $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
+                        $${
+                          mentions.has("staff")
+                            ? sql`"enrollments"."courseRole" = 'staff'`
+                            : sql`FALSE`
+                        } OR
+                        $${
+                          mentions.has("students")
+                            ? sql`"enrollments"."courseRole" = 'student'`
+                            : sql`FALSE`
+                        } OR
+                        "enrollments"."reference" IN ${mentions}
+                      )
+                    )
+                  )
             GROUP BY "enrollments"."id"
           `
       );
