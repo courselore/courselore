@@ -693,7 +693,7 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <div
-                  class="avatar-chooser"
+                  key="avatar-chooser"
                   css="${res.locals.css(css`
                     display: flex;
                     justify-content: center;
@@ -721,12 +721,12 @@ export default (app: Courselore): void => {
 
                     this.ondrop = (event) => {
                       event.preventDefault();
-                      this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
+                      this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
                     };
                   `}"
                 >
                   <div
-                    class="avatar-chooser--empty"
+                    key="avatar-chooser--empty"
                     $${res.locals.user.avatar === null ? html`` : html`hidden`}
                   >
                     <button
@@ -739,7 +739,7 @@ export default (app: Courselore): void => {
                         });
                         
                         this.onclick = () => {
-                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                         };
                       `}"
                     >
@@ -765,8 +765,8 @@ export default (app: Courselore): void => {
                     </button>
                   </div>
                   <div
+                    key="avatar-chooser--filled"
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
-                    class="avatar-chooser--filled"
                   >
                     <button
                       type="button"
@@ -778,7 +778,7 @@ export default (app: Courselore): void => {
                         });
                         
                         this.onclick = () => {
-                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                         };
                       `}"
                     >
@@ -818,8 +818,8 @@ export default (app: Courselore): void => {
                           const form = this.closest("form");
                           const avatar = form.querySelector('[name="avatar"]')
                           avatar.value = "";
-                          form.querySelector(".avatar-chooser--empty").hidden = false;
-                          form.querySelector(".avatar-chooser--filled").hidden = true;
+                          form.querySelector('[key="avatar-chooser--empty"]').hidden = false;
+                          form.querySelector('[key="avatar-chooser--filled"]').hidden = true;
                         };
                       `}"
                     >
@@ -827,17 +827,17 @@ export default (app: Courselore): void => {
                     </button>
                   </div>
                   <input
+                    key="avatar-chooser--upload"
                     type="file"
-                    class="avatar-chooser--upload"
                     accept="image/*"
                     hidden
                     onload="${javascript`
                       this.isModified = false;
 
-                      const avatarChooser = this.closest(".avatar-chooser");
+                      const avatarChooser = this.closest('[key="avatar-chooser"]');
                       const avatar = avatarChooser.querySelector('[name="avatar"]');
-                      const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
-                      const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
+                      const avatarEmpty = avatarChooser.querySelector('[key="avatar-chooser--empty"]');
+                      const avatarFilled = avatarChooser.querySelector('[key="avatar-chooser--filled"]');
 
                       (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                         trigger: "manual",
