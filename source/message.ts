@@ -1260,8 +1260,8 @@ export default (app: Courselore): void => {
                       `
                       : sql``
                   } AND (
-                    "users"."mailNotificationsForAllMessagesAt" IS NOT NULL OR (
-                      "users"."mailNotificationsForMentionsAt" IS NOT NULL AND (
+                    "users"."emailNotificationsForAllMessagesAt" IS NOT NULL OR (
+                      "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
                         $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
                         $${
                           mentions.has("staff")
