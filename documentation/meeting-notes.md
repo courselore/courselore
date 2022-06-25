@@ -1,6 +1,24 @@
 # Meeting Notes
 
 <details>
+<summary>2021-06-25</summary>
+
+- Better email notifications:
+  - Completed the settings page.
+  - Implemented the filtering rules.
+  - Not actually creating digests yet.
+- Administrative interface:
+  - Preparing for deployment of initial features:
+    - Users with system role management
+    - Settings for restricting who can create courses
+    - General settings like administrative email
+  - Migration process: Setup some tricky database migrations requiring user input for migration of existing installations.
+- Other minor things:
+  - Fixed layout glitch on user settings profile page when the person doesn’t have an avatar yet.
+
+</details>
+
+<details>
 <summary>2021-06-18</summary>
 
 - Administrative interface:
