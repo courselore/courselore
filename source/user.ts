@@ -717,18 +717,20 @@ export default (app: Courselore): void => {
                   <div
                     class="avatar-chooser--empty"
                     $${res.locals.user.avatar === null ? html`` : html`hidden`}
+                    css="${res.locals.css(css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                        position: relative;
+                      }
+                    `)}"
                   >
                     <button
                       type="button"
                       class="button button--transparent"
                       css="${res.locals.css(css`
-                        transform: scale(8)
-                          translate(
-                            calc(var(--space---px) + 50% + var(--space---px)),
-                            calc(var(--space---px) + 50% + var(--space---px))
-                          );
-                        padding: var(--space--px);
-                        margin: var(--space---px);
+                        padding: var(--space--2);
+                        margin: var(--space---2);
                         border-radius: var(--border-radius--circle);
                       `)}"
                       onload="${javascript`
@@ -742,14 +744,35 @@ export default (app: Courselore): void => {
                         };
                       `}"
                     >
-                      $${app.locals.partials.user({
-                        req,
-                        res,
-                        user: { ...res.locals.user, avatar: null },
-                        decorate: false,
-                        name: false,
-                        size: "xs",
-                      })}
+                      <div
+                        css="${res.locals.css(css`
+                          width: 100%;
+                          height: 100%;
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                        `)}"
+                      >
+                        <div
+                          css="${res.locals.css(css`
+                            width: var(--space--4);
+                            height: var(--space--4);
+                            transform: scale(8);
+                            svg {
+                              vertical-align: var(--space--0);
+                            }
+                          `)}"
+                        >
+                          $${app.locals.partials.user({
+                            req,
+                            res,
+                            user: { ...res.locals.user, avatar: null },
+                            decorate: false,
+                            name: false,
+                            size: "xs",
+                          })}
+                        </div>
+                      </div>
                     </button>
                   </div>
                   <div
