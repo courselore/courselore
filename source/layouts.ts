@@ -144,7 +144,7 @@ export type SpinnerPartial = ({
   size?: number;
 }) => HTML;
 
-export type ReportIssueHrefPartial = string;
+export type ReportIssueHrefPartial = () => string;
 
 export interface FlashHelper {
   maxAge: number;
@@ -700,7 +700,7 @@ export default async (app: Courselore): Promise<void> => {
                             Meta Courselore
                           </a>
                           <a
-                            href="${app.locals.partials.reportIssueHref}"
+                            href="${app.locals.partials.reportIssueHref()}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -3000,40 +3000,36 @@ export default async (app: Courselore): Promise<void> => {
     </svg>
   `;
 
-  app.locals.partials.reportIssueHrefBody = `${qs.stringify(
-    {
-      subject: "Report an Issue",
-      body: dedent`
-        What did you try to do?
-
-
-
-        What did you expect to happen?
-
-
-
-        What really happened?
-
-
-
-        What error messages (if any) did you run into?
-
-
-
-        Please provide as much relevant context as possible (operating system, browser, and so forth):
-
-        Courselore Version: ${app.locals.options.version}
-      `,
-    },
-    {
-      addQueryPrefix: true,
-    }
-  )}`;
-
-  app.locals.partials.reportIssueHref =
-    `mailto:${app.locals.options.administratorEmail}`.concat(
-      app.locals.partials.reportIssueHrefBody
-    );
+  app.locals.partials.reportIssueHref = () =>
+    `mailto:${app.locals.options.administratorEmail}${qs.stringify(
+      {
+        subject: "Report an Issue",
+        body: dedent`
+          What did you try to do?
+  
+  
+  
+          What did you expect to happen?
+  
+  
+  
+          What really happened?
+  
+  
+  
+          What error messages (if any) did you run into?
+  
+  
+  
+          Please provide as much relevant context as possible (operating system, browser, and so forth):
+  
+          Courselore Version: ${app.locals.options.version}
+        `,
+      },
+      {
+        addQueryPrefix: true,
+      }
+    )}`;
 
   app.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,

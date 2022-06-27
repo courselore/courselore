@@ -208,7 +208,6 @@ export interface Courselore extends express.Express {
       logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
-      reportIssueHrefBody: ReportIssueHrefPartial;
       user: UserPartial;
       course: CoursePartial;
       courses: CoursesPartial;

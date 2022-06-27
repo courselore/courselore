@@ -766,41 +766,4 @@ export default async (app: Courselore): Promise<void> => {
   app.once("close", () => {
     app.locals.database.close();
   });
-
-  app.locals.options.canCreateCourses = JSON.parse(
-    app.locals.database.get<{
-      value: string;
-    }>(
-      sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'canCreateCourses'
-      `
-    )!.value
-  );
-
-  app.locals.options.demonstration =
-    JSON.parse(
-      app.locals.database.get<{
-        value: string;
-      }>(
-        sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'demonstrationAt'
-      `
-      )!.value
-    ) !== null;
-
-  app.locals.options.administratorEmail = JSON.parse(
-    app.locals.database.get<{
-      value: string;
-    }>(
-      sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'administratorEmail'
-      `
-    )!.value
-  );
 };
