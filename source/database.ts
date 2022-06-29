@@ -780,7 +780,6 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
-
       repl();
       async function repl() {
         const answer = (
@@ -795,21 +794,18 @@ export default async (app: Courselore): Promise<void> => {
             })),
           })
         ).answer;
-
         // TODO: Prompt for confirmation, loop (recursion) if not confirmed.
         const confirmation = (
           await prompts({
             type: "confirm",
             name: "confirmation",
-            message: `${answer.name} <${answer.email}> will be the first administrator. Confirm?`,
+            message: `${answer.name} <${answer.email}> will be the first administrator. Is this correct?`,
           })
         ).confirmation;
-
         if (!confirmation) {
           repl();
           return;
         }
-
         app.locals.database.run(
           sql`
             UPDATE "users"
@@ -817,7 +813,6 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${answer.id}
           `
         );
-
         // TODO: Prompt to finish migration.
         await prompts({
           type: "text",
