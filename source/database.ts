@@ -776,39 +776,7 @@ export default async (app: Courselore): Promise<void> => {
     sql`
       ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
-    `,
-    async () => {
-      const users = app.locals.database.all<{
-        id: number;
-        email: string;
-        name: string;
-        systemRole: "administrator" | "staff" | "none";
-      }>(
-        sql`
-          SELECT "id", "email", "name" FROM "users" ORDER BY "id" ASC
-        `
-      );
-      if (users.length === 0) return;
-      /*
-        Other prompt libraries to consider if necessary:
-        https://github.com/SBoudrias/Inquirer.js
-        https://github.com/enquirer/enquirer
-      */
-      const answer = (
-        await prompts({
-          type: "autocomplete",
-          name: "answer",
-          message:
-            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
-          choices: users.map((user) => ({
-            title: `${user.name} <${user.email}>`,
-            value: user.id,
-          })),
-        })
-      ).answer;
-      console.log(answer);
-      throw new Error("TODO: Administrator panel");
-    }
+    `
   );
   app.once("close", () => {
     app.locals.database.close();
