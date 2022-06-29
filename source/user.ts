@@ -1474,7 +1474,7 @@ export default (app: Courselore): void => {
               </div>
 
               $${(() => {
-                const disabled =
+                const isEveryEmailNotificationsForNull =
                   res.locals.user.emailNotificationsForAllMessagesAt === null &&
                   res.locals.user.emailNotificationsForMentionsAt === null &&
                   res.locals.user
@@ -1482,9 +1482,7 @@ export default (app: Courselore): void => {
                     null &&
                   res.locals.user
                     .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                    null
-                    ? html`disabled`
-                    : html``;
+                    null;
                 return html`
                   <div key="isEmailNotificationsDigests" class="label">
                     <div
@@ -1493,26 +1491,19 @@ export default (app: Courselore): void => {
                       `)}"
                     >
                       <label
-                        class="button button--tight button--tight--inline ${disabled}"
+                        class="button button--tight button--tight--inline ${isEveryEmailNotificationsForNull
+                          ? "disabled"
+                          : ""}"
                       >
                         <input
                           type="radio"
                           name="isEmailNotificationsDigests"
                           value="false"
                           required
-                          $${disabled}
-                          $${!(
-                            res.locals.user
-                              .emailNotificationsForAllMessagesAt === null &&
-                            res.locals.user.emailNotificationsForMentionsAt ===
-                              null &&
-                            res.locals.user
-                              .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                              null &&
-                            res.locals.user
-                              .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                              null
-                          ) &&
+                          $${isEveryEmailNotificationsForNull
+                            ? html`disabled`
+                            : html``}
+                          $${!isEveryEmailNotificationsForNull &&
                           res.locals.user.emailNotificationsDigestsFrequency ===
                             null
                             ? html`checked`
@@ -1520,10 +1511,8 @@ export default (app: Courselore): void => {
                           class="input--radio"
                           onload="${javascript`
                             this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
-                                element.disabled = true;
-                                element.closest(".button").classList.add("disabled");
-                              }
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                element.checked = false;
                             };
                           `}"
                         />
@@ -1536,24 +1525,19 @@ export default (app: Courselore): void => {
                       `)}"
                     >
                       <label
-                        class="button button--tight button--tight--inline ${disabled}"
+                        class="button button--tight button--tight--inline ${isEveryEmailNotificationsForNull
+                          ? "disabled"
+                          : ""}"
                       >
                         <input
                           type="radio"
                           name="isEmailNotificationsDigests"
                           value="true"
                           required
-                          $${disabled}
-                          $${(res.locals.user
-                            .emailNotificationsForAllMessagesAt === null &&
-                            res.locals.user.emailNotificationsForMentionsAt ===
-                              null &&
-                            res.locals.user
-                              .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                              null &&
-                            res.locals.user
-                              .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                              null) ||
+                          $${isEveryEmailNotificationsForNull
+                            ? html`disabled`
+                            : html``}
+                          $${isEveryEmailNotificationsForNull ||
                           res.locals.user.emailNotificationsDigestsFrequency !==
                             null
                             ? html`checked`
@@ -1561,10 +1545,7 @@ export default (app: Courselore): void => {
                           class="input--radio"
                           onload="${javascript`
                             this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
-                                element.disabled = false;
-                                element.closest(".button").classList.remove("disabled");
-                              }
+                              this.closest("form").querySelector('[name="emailNotificationsDigestsFrequency"][value="daily"]').checked = true;
                             };
                           `}"
                         />
@@ -1584,19 +1565,28 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <label
-                          class="button button--tight button--tight--inline ${disabled}"
+                          class="button button--tight button--tight--inline ${isEveryEmailNotificationsForNull
+                            ? "disabled"
+                            : ""}"
                         >
                           <input
                             type="radio"
                             name="emailNotificationsDigestsFrequency"
                             value="hourly"
                             required
-                            $${disabled}
+                            $${isEveryEmailNotificationsForNull
+                              ? html`disabled`
+                              : html``}
                             $${res.locals.user
                               .emailNotificationsDigestsFrequency === "hourly"
                               ? html`checked`
                               : html``}
                             class="input--radio"
+                            onload="${javascript`
+                              this.onchange = () => {
+                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
+                              };
+                            `}"
                           />
                           Hourly
                         </label>
@@ -1607,21 +1597,29 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <label
-                          class="button button--tight button--tight--inline ${disabled}"
+                          class="button button--tight button--tight--inline ${isEveryEmailNotificationsForNull
+                            ? "disabled"
+                            : ""}"
                         >
                           <input
                             type="radio"
                             name="emailNotificationsDigestsFrequency"
                             value="daily"
                             required
-                            $${disabled}
-                            $${res.locals.user
-                              .emailNotificationsDigestsFrequency === null ||
+                            $${isEveryEmailNotificationsForNull
+                              ? html`disabled`
+                              : html``}
+                            $${isEveryEmailNotificationsForNull ||
                             res.locals.user
                               .emailNotificationsDigestsFrequency === "daily"
                               ? html`checked`
                               : html``}
                             class="input--radio"
+                            onload="${javascript`
+                              this.onchange = () => {
+                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
+                              };
+                            `}"
                           />
                           Daily
                         </label>
