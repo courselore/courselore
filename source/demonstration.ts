@@ -53,7 +53,6 @@ export default (app: Courselore): void => {
                 "emailNotificationsForMentionsAt",
                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
                 "emailNotificationsForMessagesInConversationsYouStartedAt",
-                "emailNotificationsDigestsAt",
                 "emailNotificationsDigestsFrequency"
               )
               VALUES (
@@ -91,7 +90,6 @@ export default (app: Courselore): void => {
                   }).preprocessed
                 },
                 ${null},
-                ${new Date().toISOString()},
                 ${new Date().toISOString()},
                 ${new Date().toISOString()},
                 ${new Date().toISOString()},

@@ -1220,7 +1220,6 @@ export default (app: Courselore): void => {
         id: number;
         userId: number;
         userEmail: string;
-        userEmailNotificationsDigestsAt: string | null;
         userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
         reference: string;
         courseRole: CourseRole;
@@ -1229,7 +1228,6 @@ export default (app: Courselore): void => {
             SELECT "enrollments"."id",
                    "users"."id" AS "userId",
                    "users"."email" AS "userEmail",
-                   "users"."emailNotificationsDigestsAt" AS "userEmailNotificationsDigestsAt",
                    "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
                    "enrollments"."reference",
                    "enrollments"."courseRole"

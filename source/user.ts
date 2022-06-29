@@ -1513,7 +1513,8 @@ export default (app: Courselore): void => {
                               .emailNotificationsForMessagesInConversationsYouStartedAt ===
                               null
                           ) &&
-                          res.locals.user.emailNotificationsDigestsAt === null
+                          res.locals.user.emailNotificationsDigestsFrequency ===
+                            null
                             ? html`checked`
                             : html``}
                           class="input--radio"
@@ -1553,7 +1554,8 @@ export default (app: Courselore): void => {
                             res.locals.user
                               .emailNotificationsForMessagesInConversationsYouStartedAt ===
                               null) ||
-                          res.locals.user.emailNotificationsDigestsAt !== null
+                          res.locals.user.emailNotificationsDigestsFrequency !==
+                            null
                             ? html`checked`
                             : html``}
                           class="input--radio"
@@ -1739,11 +1741,6 @@ export default (app: Courselore): void => {
                 req.body
                   .isEmailNotificationsForMessagesInConversationsYouStarted ===
                 "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsDigestsAt" = ${
-                req.body.isEmailNotificationsDigests === "true"
                   ? new Date().toISOString()
                   : null
               },

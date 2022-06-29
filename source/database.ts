@@ -658,7 +658,6 @@ export default async (app: Courselore): Promise<void> => {
             "emailNotificationsForMentionsAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "emailNotificationsDigestsAt" TEXT NULL,
             "emailNotificationsDigestsFrequency" TEXT NULL
           );
         `
@@ -717,7 +716,6 @@ export default async (app: Courselore): Promise<void> => {
               "emailNotificationsForMentionsAt",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
               "emailNotificationsForMessagesInConversationsYouStartedAt",
-              "emailNotificationsDigestsAt",
               "emailNotificationsDigestsFrequency"
             )
             VALUES (
@@ -751,11 +749,6 @@ export default async (app: Courselore): Promise<void> => {
               },
               ${
                 user.emailNotifications !== "none"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                user.emailNotifications === "mentions"
                   ? new Date().toISOString()
                   : null
               },

@@ -89,7 +89,6 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       | string
       | null;
     emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-    emailNotificationsDigestsAt: string | null;
     emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
   };
   invitations: {
@@ -277,7 +276,6 @@ export default (app: Courselore): void => {
           | string
           | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        emailNotificationsDigestsAt: string | null;
         emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
       }>(
         sql`
@@ -296,7 +294,6 @@ export default (app: Courselore): void => {
                  "emailNotificationsForMentionsAt",
                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
                  "emailNotificationsForMessagesInConversationsYouStartedAt",
-                 "emailNotificationsDigestsAt",
                  "emailNotificationsDigestsFrequency"
           FROM "users"
           WHERE "id" = ${userId}
@@ -1353,7 +1350,6 @@ export default (app: Courselore): void => {
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
             "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "emailNotificationsDigestsAt",
             "emailNotificationsDigestsFrequency"
           )
           VALUES (
@@ -1367,7 +1363,6 @@ export default (app: Courselore): void => {
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${null},
-            ${new Date().toISOString()},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
