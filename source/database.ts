@@ -780,33 +780,42 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
-      const answer = (
-        await prompts({
-          type: "autocomplete",
-          name: "answer",
-          message:
-            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
-          choices: 
-            users.map((user) => ({
-              title: `${user.name} <${user.email}>`,
-              value: user,
-            })),
-        })
-      ).answer;
+      
+      repl();
+      async function repl () {
+        const answer = (
+          await prompts({
+            type: "autocomplete",
+            name: "answer",
+            message:
+              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
+            choices: 
+              users.map((user) => ({
+                title: `${user.name} <${user.email}>`,
+                value: user,
+              })),
+          })
+        ).answer;
+        
+        // TODO: Prompt for confirmation, loop if not confirmed
+        console.log(`${answer.name} <${answer.email}> will be the first administrator. Confirm?`);
+        
+        if (!confirmation) {
+          repl();
+          return;
+        }
 
-      // TODO: confirm selection
-      console.log(`${answer.name} <${answer.email}> will be the first administrator. Confirm? (y/n):`);
+        app.locals.database.run(
+          sql`
+            UPDATE "users"
+            SET "systemRole" = 'administrator'
+            WHERE "id" = ${answer.id}
+          `
+        );
 
-      app.locals.database.run(
-        sql`
-          UPDATE "users"
-          SET "systemRole" = 'administrator'
-          WHERE "id" = ${answer.id}
-        `
-      );
-
-      // TODO: prompt to finish migration
-      console.log("The first administrator was set successfully. Press enter to finish the migration.");
+        // TODO: Prompt to finish migration
+        console.log("The first administrator was set successfully. Press enter to finish the migration.");
+      }
     }
   );
   app.once("close", () => {
