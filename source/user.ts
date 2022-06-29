@@ -40,11 +40,11 @@ export const userAvatarlessBackgroundColors = [
   "rose",
 ] as const;
 
-export type UserEmailNotifications = typeof userEmailNotificationses[number];
-export const userEmailNotificationses = [
-  "all-messages",
-  "mentions",
-  "none",
+export type UserEmailNotificationsDigestsFrequency =
+  typeof userEmailNotificationsDigestsFrequencies[number];
+export const userEmailNotificationsDigestsFrequencies = [
+  "hourly",
+  "daily",
 ] as const;
 
 export type UserPartial = ({
@@ -314,15 +314,15 @@ export default (app: Courselore): void => {
                 : user.name}`
             : name}$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
-          enrollment.role === "staff"
+          enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
                 onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: "Staff",
-                    });
-                  `}"
+                  (this.tooltip ??= tippy(this)).setProps({
+                    touch: false,
+                    content: "Staff",
+                  });
+                `}"
                 >  <i class="bi bi-mortarboard-fill"></i
               ></span>`
             : html``}</span
@@ -390,7 +390,7 @@ export default (app: Courselore): void => {
                             : user!.name}
                         </div>
                         $${user !== "no-longer-enrolled" &&
-                        (res.locals.enrollment?.role === "staff" ||
+                        (res.locals.enrollment?.courseRole === "staff" ||
                           res.locals.user?.id === user!.id)
                           ? html`
                               <div class="secondary">
@@ -463,7 +463,7 @@ export default (app: Courselore): void => {
                             `}
                         $${enrollment !== undefined &&
                         enrollment !== "no-longer-enrolled" &&
-                        enrollment.role === "staff"
+                        enrollment.courseRole === "staff"
                           ? html`
                               <div
                                 class="text--sky"
@@ -693,7 +693,7 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <div
-                  class="avatar-chooser"
+                  key="avatar-chooser"
                   css="${res.locals.css(css`
                     display: flex;
                     justify-content: center;
@@ -701,6 +701,17 @@ export default (app: Courselore): void => {
                     & > * {
                       width: var(--space--32);
                       height: var(--space--32);
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                        position: relative;
+                        &:first-child {
+                          padding: var(--space--2);
+                          margin: var(--space---2);
+                          border-radius: var(--border-radius--circle);
+                          align-items: center;
+                        }
+                      }
                     }
                   `)}"
                   onload="${javascript`
@@ -710,27 +721,17 @@ export default (app: Courselore): void => {
 
                     this.ondrop = (event) => {
                       event.preventDefault();
-                      this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
+                      this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
                     };
                   `}"
                 >
                   <div
-                    class="avatar-chooser--empty"
+                    key="avatar-chooser--empty"
                     $${res.locals.user.avatar === null ? html`` : html`hidden`}
                   >
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.css(css`
-                        transform: scale(8)
-                          translate(
-                            calc(var(--space---px) + 50% + var(--space---px)),
-                            calc(var(--space---px) + 50% + var(--space---px))
-                          );
-                        padding: var(--space--px);
-                        margin: var(--space---px);
-                        border-radius: var(--border-radius--circle);
-                      `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
@@ -738,39 +739,38 @@ export default (app: Courselore): void => {
                         });
                         
                         this.onclick = () => {
-                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                         };
                       `}"
                     >
-                      $${app.locals.partials.user({
-                        req,
-                        res,
-                        user: { ...res.locals.user, avatar: null },
-                        decorate: false,
-                        name: false,
-                        size: "xs",
-                      })}
+                      <div
+                        css="${res.locals.css(css`
+                          width: var(--space--4);
+                          height: var(--space--4);
+                          transform: scale(8);
+                          svg {
+                            vertical-align: var(--space--0);
+                          }
+                        `)}"
+                      >
+                        $${app.locals.partials.user({
+                          req,
+                          res,
+                          user: { ...res.locals.user, avatar: null },
+                          decorate: false,
+                          name: false,
+                          size: "xs",
+                        })}
+                      </div>
                     </button>
                   </div>
                   <div
+                    key="avatar-chooser--filled"
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
-                    class="avatar-chooser--filled"
-                    css="${res.locals.css(css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                        position: relative;
-                      }
-                    `)}"
                   >
                     <button
                       type="button"
                       class="button button--transparent"
-                      css="${res.locals.css(css`
-                        padding: var(--space--2);
-                        margin: var(--space---2);
-                        border-radius: var(--border-radius--circle);
-                      `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
@@ -778,7 +778,7 @@ export default (app: Courselore): void => {
                         });
                         
                         this.onclick = () => {
-                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                         };
                       `}"
                     >
@@ -818,8 +818,8 @@ export default (app: Courselore): void => {
                           const form = this.closest("form");
                           const avatar = form.querySelector('[name="avatar"]')
                           avatar.value = "";
-                          form.querySelector(".avatar-chooser--empty").hidden = false;
-                          form.querySelector(".avatar-chooser--filled").hidden = true;
+                          form.querySelector('[key="avatar-chooser--empty"]').hidden = false;
+                          form.querySelector('[key="avatar-chooser--filled"]').hidden = true;
                         };
                       `}"
                     >
@@ -827,17 +827,17 @@ export default (app: Courselore): void => {
                     </button>
                   </div>
                   <input
+                    key="avatar-chooser--upload"
                     type="file"
-                    class="avatar-chooser--upload"
                     accept="image/*"
                     hidden
                     onload="${javascript`
                       this.isModified = false;
 
-                      const avatarChooser = this.closest(".avatar-chooser");
+                      const avatarChooser = this.closest('[key="avatar-chooser"]');
                       const avatar = avatarChooser.querySelector('[name="avatar"]');
-                      const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
-                      const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
+                      const avatarEmpty = avatarChooser.querySelector('[key="avatar-chooser--empty"]');
+                      const avatarFilled = avatarChooser.querySelector('[key="avatar-chooser--filled"]');
 
                       (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                         trigger: "manual",
@@ -1324,7 +1324,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <div class="label">
+
+              <div key="isEmailNotificationsFor" class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
                   css="${res.locals.css(css`
@@ -1333,14 +1334,25 @@ export default (app: Courselore): void => {
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="all-messages"
-                      required
-                      $${res.locals.user.emailNotifications === "all-messages"
+                      type="checkbox"
+                      name="isEmailNotificationsForAllMessages"
+                      $${res.locals.user.emailNotificationsForAllMessagesAt !==
+                      null
                         ? html`checked`
                         : html``}
-                      class="input--radio"
+                      class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (this.checked)
+                            for (const element of this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input"))
+                              element.checked = true;
+                          const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
+                            element.disabled = isEmailNotificationsDigestsDisabled;
+                            element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
+                          }
+                        };
+                      `}"
                     />
                     All messages
                   </label>
@@ -1352,14 +1364,23 @@ export default (app: Courselore): void => {
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="mentions"
-                      required
-                      $${res.locals.user.emailNotifications === "mentions"
+                      type="checkbox"
+                      name="isEmailNotificationsForMentions"
+                      $${res.locals.user.emailNotificationsForMentionsAt !==
+                      null
                         ? html`checked`
                         : html``}
-                      class="input--radio"
+                      class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
+                            element.disabled = isEmailNotificationsDigestsDisabled;
+                            element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
+                          }
+                        };
+                      `}"
                     />
                     @mentions
                   </label>
@@ -1371,19 +1392,235 @@ export default (app: Courselore): void => {
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
-                      type="radio"
-                      name="emailNotifications"
-                      value="none"
-                      required
-                      $${res.locals.user.emailNotifications === "none"
+                      type="checkbox"
+                      name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"
+                      $${res.locals.user
+                        .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt !==
+                      null
                         ? html`checked`
                         : html``}
-                      class="input--radio"
+                      class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                          const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
+                            element.disabled = isEmailNotificationsDigestsDisabled;
+                            element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
+                          }
+                        };
+                      `}"
                     />
-                    None
+                    Messages in conversations in which you participated
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label class="button button--tight button--tight--inline">
+                    <input
+                      type="checkbox"
+                      name="isEmailNotificationsForMessagesInConversationsYouStarted"
+                      $${res.locals.user
+                        .emailNotificationsForMessagesInConversationsYouStartedAt !==
+                      null
+                        ? html`checked`
+                        : html``}
+                      class="input--checkbox"
+                      onload="${javascript`
+                        this.onchange = () => {
+                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                          const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
+                          for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
+                            element.disabled = isEmailNotificationsDigestsDisabled;
+                            element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
+                          }
+                        };
+                      `}"
+                    />
+                    Messages in conversations you started
+                  </label>
+                </div>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline disabled"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        content: "You always receive email notifications for important staff announcements.",
+                      });
+                    `}"
+                  >
+                    <input
+                      type="checkbox"
+                      disabled
+                      checked
+                      class="input--checkbox"
+                    />
+                    Important staff announcements
                   </label>
                 </div>
               </div>
+
+              $${(() => {
+                const disabled =
+                  res.locals.user.emailNotificationsForAllMessagesAt === null &&
+                  res.locals.user.emailNotificationsForMentionsAt === null &&
+                  res.locals.user
+                    .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                    null &&
+                  res.locals.user
+                    .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                    null;
+                const isEmailNotificationsDigests =
+                  res.locals.user.emailNotificationsDigestsFrequency !== null ||
+                  disabled;
+                return html`
+                  <div key="isEmailNotificationsDigests" class="label">
+                    <div
+                      css="${res.locals.css(css`
+                        display: flex;
+                      `)}"
+                    >
+                      <label
+                        class="button button--tight button--tight--inline ${disabled
+                          ? "disabled"
+                          : ""}"
+                      >
+                        <input
+                          type="radio"
+                          name="isEmailNotificationsDigests"
+                          value="false"
+                          required
+                          $${disabled ? html`disabled` : html``}
+                          $${!isEmailNotificationsDigests
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                          onload="${javascript`
+                            this.onchange = () => {
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                element.required = element.checked = false;
+                            };
+                          `}"
+                        />
+                        One email notification per message
+                      </label>
+                    </div>
+                    <div
+                      css="${res.locals.css(css`
+                        display: flex;
+                      `)}"
+                    >
+                      <label
+                        class="button button--tight button--tight--inline ${disabled
+                          ? "disabled"
+                          : ""}"
+                      >
+                        <input
+                          type="radio"
+                          name="isEmailNotificationsDigests"
+                          value="true"
+                          required
+                          $${disabled ? html`disabled` : html``}
+                          $${isEmailNotificationsDigests
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                          onload="${javascript`
+                            this.onchange = () => {
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                element.required = true;
+                              this.closest("form").querySelector('[name="emailNotificationsDigestsFrequency"][value="daily"]').checked = true;
+                            };
+                          `}"
+                        />
+                        Digests of multiple messages
+                      </label>
+                    </div>
+                    <div
+                      key="emailNotificationsDigestsFrequency"
+                      class="label"
+                      css="${res.locals.css(css`
+                        margin-left: var(--space--6);
+                      `)}"
+                    >
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline ${disabled
+                            ? "disabled"
+                            : ""}"
+                        >
+                          <input
+                            type="radio"
+                            name="emailNotificationsDigestsFrequency"
+                            value="hourly"
+                            $${isEmailNotificationsDigests ? "required" : ""}
+                            $${disabled ? html`disabled` : html``}
+                            $${res.locals.user
+                              .emailNotificationsDigestsFrequency === "hourly"
+                              ? html`checked`
+                              : html``}
+                            class="input--radio"
+                            onload="${javascript`
+                              this.onchange = () => {
+                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                  element.required = true;
+                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
+                              };
+                            `}"
+                          />
+                          Hourly
+                        </label>
+                      </div>
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline ${disabled
+                            ? "disabled"
+                            : ""}"
+                        >
+                          <input
+                            type="radio"
+                            name="emailNotificationsDigestsFrequency"
+                            value="daily"
+                            $${isEmailNotificationsDigests ? "required" : ""}
+                            $${disabled ? html`disabled` : html``}
+                            $${res.locals.user
+                              .emailNotificationsDigestsFrequency === "daily" ||
+                            disabled
+                              ? html`checked`
+                              : html``}
+                            class="input--radio"
+                            onload="${javascript`
+                              this.onchange = () => {
+                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
+                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                  element.required = true;
+                              };
+                            `}"
+                          />
+                          Daily
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              })()}
 
               <div>
                 <button
@@ -1403,7 +1640,14 @@ export default (app: Courselore): void => {
   app.patch<
     {},
     any,
-    { emailNotifications?: UserEmailNotifications },
+    {
+      isEmailNotificationsForAllMessages?: "on";
+      isEmailNotificationsForMentions?: "on";
+      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
+      isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
+      isEmailNotificationsDigests?: "false" | "true";
+      emailNotificationsDigestsFrequency?: UserEmailNotificationsDigestsFrequency;
+    },
     {},
     IsSignedInMiddlewareLocals
   >(
@@ -1411,17 +1655,93 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
-        typeof req.body.emailNotifications !== "string" ||
-        !userEmailNotificationses.includes(req.body.emailNotifications)
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForAllMessages
+        ) ||
+        ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
+        ![undefined, "on"].includes(
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+        ) ||
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+        ) ||
+        (req.body.isEmailNotificationsForAllMessages === "on" &&
+          (req.body.isEmailNotificationsForMentions !== "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+              "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsYouStarted !==
+              "on")) ||
+        (req.body
+          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+          "on" &&
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on") ||
+        (req.body.isEmailNotificationsForAllMessages !== "on" &&
+          req.body.isEmailNotificationsForMentions !== "on" &&
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+            "on" &&
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on" &&
+          (req.body.isEmailNotificationsDigests !== undefined ||
+            req.body.emailNotificationsDigestsFrequency !== undefined)) ||
+        ((req.body.isEmailNotificationsForAllMessages === "on" ||
+          req.body.isEmailNotificationsForMentions === "on" ||
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+            "on" ||
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted ===
+            "on") &&
+          (typeof req.body.isEmailNotificationsDigests !== "string" ||
+            !["false", "true"].includes(req.body.isEmailNotificationsDigests) ||
+            (req.body.isEmailNotificationsDigests === "false" &&
+              req.body.emailNotificationsDigestsFrequency !== undefined) ||
+            (req.body.isEmailNotificationsDigests === "true" &&
+              (typeof req.body.emailNotificationsDigestsFrequency !==
+                "string" ||
+                !userEmailNotificationsDigestsFrequencies.includes(
+                  req.body.emailNotificationsDigestsFrequency
+                )))))
       )
         return next("validation");
 
       app.locals.database.run(
         sql`
           UPDATE "users"
-          SET "emailNotifications" = ${req.body.emailNotifications}
+          SET "emailNotificationsForAllMessagesAt" = ${
+            req.body.isEmailNotificationsForAllMessages === "on"
+              ? new Date().toISOString()
+              : null
+          },
+              "emailNotificationsForMentionsAt" = ${
+                req.body.isEmailNotificationsForMentions === "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsYouStarted ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsDigestsFrequency" = ${
+                req.body.isEmailNotificationsDigests === "true"
+                  ? req.body.emailNotificationsDigestsFrequency
+                  : null
+              }
           WHERE "id" = ${res.locals.user.id}
-        `
+       `
       );
 
       app.locals.helpers.Flash.set({

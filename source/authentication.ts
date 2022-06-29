@@ -13,8 +13,8 @@ import {
   BaseMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
-  UserEmailNotifications,
-  EnrollmentRole,
+  UserEmailNotificationsDigestsFrequency,
+  CourseRole,
   EnrollmentAccentColor,
   SystemRole,
 } from "./index.js";
@@ -84,8 +84,14 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
-    emailNotifications: UserEmailNotifications;
     systemRole: SystemRole;
+    emailNotificationsForAllMessagesAt: string | null;
+    emailNotificationsForMentionsAt: string | null;
+    emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+      | string
+      | null;
+    emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+    emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
   };
   invitations: {
     id: number;
@@ -101,7 +107,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
   }[];
   enrollments: {
     id: number;
@@ -117,7 +123,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
+    courseRole: CourseRole;
     accentColor: EnrollmentAccentColor;
   }[];
   canCreateCourses: boolean;
@@ -267,8 +273,14 @@ export default (app: Courselore): void => {
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        emailNotifications: UserEmailNotifications;
         systemRole: SystemRole;
+        emailNotificationsForAllMessagesAt: string | null;
+        emailNotificationsForMentionsAt: string | null;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+          | string
+          | null;
+        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+        emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
       }>(
         sql`
           SELECT "id",
@@ -282,8 +294,12 @@ export default (app: Courselore): void => {
                  "avatarlessBackgroundColor",
                  "biographySource",
                  "biographyPreprocessed",
-                 "emailNotifications",
-                 "systemRole"
+                 "systemRole",
+                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt",
+                 "emailNotificationsDigestsFrequency"
           FROM "users"
           WHERE "id" = ${userId}
         `
@@ -309,7 +325,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
         }>(
           sql`
             SELECT "invitations"."id",
@@ -323,7 +339,7 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "invitations"."reference",
-                   "invitations"."role"
+                   "invitations"."courseRole"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
@@ -349,7 +365,7 @@ export default (app: Courselore): void => {
               invitation.courseNextConversationReference,
           },
           reference: invitation.reference,
-          role: invitation.role,
+          courseRole: invitation.courseRole,
         }));
 
       res.locals.enrollments = app.locals.database
@@ -365,7 +381,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
           accentColor: EnrollmentAccentColor;
         }>(
           sql`
@@ -380,7 +396,7 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "enrollments"."reference",
-                   "enrollments"."role",
+                   "enrollments"."courseRole",
                    "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
@@ -403,7 +419,7 @@ export default (app: Courselore): void => {
               enrollment.courseNextConversationReference,
           },
           reference: enrollment.reference,
-          role: enrollment.role,
+          courseRole: enrollment.courseRole,
           accentColor: enrollment.accentColor,
         }));
 
@@ -1343,7 +1359,11 @@ export default (app: Courselore): void => {
             "name",
             "nameSearch",
             "avatarlessBackgroundColor",
-            "emailNotifications"
+            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt",
+            "emailNotificationsDigestsFrequency"
           )
           VALUES (
             ${new Date().toISOString()},
@@ -1365,7 +1385,11 @@ export default (app: Courselore): void => {
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
-            ${"mentions"}
+            ${null},
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${"daily"}
           )
           RETURNING *
         `

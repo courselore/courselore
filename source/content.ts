@@ -36,7 +36,7 @@ import {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
-  EnrollmentRole,
+  CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
@@ -385,7 +385,7 @@ export default async (app: Courselore): Promise<void> => {
                             userBiographySource: string | null;
                             userBiographyPreprocessed: HTML | null;
                             reference: string;
-                            role: EnrollmentRole;
+                            courseRole: CourseRole;
                           }>(
                             sql`
                               SELECT "enrollments"."id",
@@ -399,7 +399,7 @@ export default async (app: Courselore): Promise<void> => {
                                       "users"."biographySource" AS "userBiographySource",
                                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                                       "enrollments"."reference",
-                                      "enrollments"."role"
+                                      "enrollments"."courseRole"
                               FROM "enrollments"
                               JOIN "users" ON "enrollments"."user" = "users"."id"
                               WHERE "enrollments"."course" = ${
@@ -427,7 +427,7 @@ export default async (app: Courselore): Promise<void> => {
                                 enrollmentRow.userBiographyPreprocessed,
                             },
                             reference: enrollmentRow.reference,
-                            role: enrollmentRow.role,
+                            courseRole: enrollmentRow.courseRole,
                           };
                           mentions!.add(enrollment.reference);
                           mentionHTML = html`@$${app.locals.partials.user({
@@ -2185,7 +2185,7 @@ ${contentSource}</textarea
         userBiographyPreprocessed: HTML | null;
         userNameSearchResultHighlight: string;
         reference: string;
-        role: EnrollmentRole;
+        courseRole: CourseRole;
       }>(
         sql`
           SELECT "enrollments"."id",
@@ -2200,7 +2200,7 @@ ${contentSource}</textarea
                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
                  "enrollments"."reference",
-                 "enrollments"."role"
+                 "enrollments"."courseRole"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
                           "enrollments"."course" = ${res.locals.course.id} AND
@@ -2214,7 +2214,7 @@ ${contentSource}</textarea
             res.locals.conversation !== undefined &&
             res.locals.conversation.staffOnlyAt !== null
               ? sql`
-                  WHERE "enrollments"."role" = ${"staff"} OR
+                  WHERE "enrollments"."courseRole" = ${"staff"} OR
                         EXISTS(
                           SELECT TRUE
                           FROM "messages"
@@ -2246,7 +2246,7 @@ ${contentSource}</textarea
           nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
         },
         reference: enrollment.reference,
-        role: enrollment.role,
+        courseRole: enrollment.courseRole,
       }));
 
     res.send(
@@ -2576,7 +2576,7 @@ ${contentSource}</textarea
                                         res.locals.course.id
                                       }
               $${
-                res.locals.enrollment.role === "staff"
+                res.locals.enrollment.courseRole === "staff"
                   ? sql``
                   : sql`
                       WHERE (

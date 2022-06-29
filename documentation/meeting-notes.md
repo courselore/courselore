@@ -1,6 +1,43 @@
 # Meeting Notes
 
 <details>
+<summary>2021-06-25</summary>
+
+- Better email notifications:
+  - Completed the settings page.
+  - Implemented the filtering rules.
+  - Not actually creating digests yet.
+- Administrative interface:
+  - Preparing for deployment of initial features:
+    - Users with system role management
+    - Settings for restricting who can create courses
+    - General settings like administrative email
+  - Migration process: Setup some tricky database migrations requiring user input for migration of existing installations.
+- Other minor things:
+  - Fixed layout glitch on user settings profile page when the person doesn’t have an avatar yet.
+- When we get to 1-to-1 conversations, do whispers, similar to Discourse.
+- API
+- Gamification
+  - Badges (for example, first to answer a question)
+  - Karma points for whole class and unlock achievements for everyone
+
+</details>
+
+<details>
+<summary>2021-06-18</summary>
+
+- Administrative interface:
+  - Course creation is restricted to only certain users, respecting option set by administrator.
+  - List of all users in the system.
+- Better email notifications:
+  - See interface.
+- Smaller things:
+  - Fixed configuration issues that made development on Windows not work.
+  - Fixed small annoyance in which a tap on user partial would open the tooltip right away on mobile, not respecting the delay.
+
+</details>
+
+<details>
 <summary>2021-06-11</summary>
 
 - Started work on the administrative interface.

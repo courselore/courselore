@@ -3,6 +3,7 @@ import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
+import prompts from "prompts";
 import { Courselore } from "./index.js";
 
 export interface DatabaseLocals {
@@ -16,7 +17,7 @@ export default async (app: Courselore): Promise<void> => {
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
   app.locals.database.pragma("journal_mode = WAL");
-  app.locals.database.migrate(
+  await app.locals.database.migrate(
     sql`
       CREATE TABLE "flashes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -636,24 +637,9 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
     },
-    sql`
-      CREATE TABLE "configurations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "key" TEXT UNIQUE NOT NULL,
-        "value" TEXT NOT NULL
-      );
-      INSERT INTO "configurations" ("key", "value") 
-        VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
-      INSERT INTO "configurations" ("key", "value")
-        VALUES ('demonstrationAt', ${JSON.stringify(null)});
-      INSERT INTO "configurations" ("key", "value")
-        VALUES ('administratorEmail', ${JSON.stringify(
-          "please-change-me@courselore.org"
-        )});
-    `,
     () => {
       app.locals.database.execute(
-        sql`      
+        sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
@@ -661,7 +647,6 @@ export default async (app: Courselore): Promise<void> => {
             "reference" TEXT NOT NULL UNIQUE,
             "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
             "password" TEXT NOT NULL,
-            "systemRole" TEXT NOT NULL,
             "emailVerifiedAt" TEXT NULL,
             "name" TEXT NOT NULL,
             "nameSearch" TEXT NOT NULL,
@@ -669,7 +654,11 @@ export default async (app: Courselore): Promise<void> => {
             "avatarlessBackgroundColor" TEXT NOT NULL,
             "biographySource" TEXT NULL,
             "biographyPreprocessed" TEXT NULL,
-            "emailNotifications" TEXT NOT NULL
+            "emailNotificationsForAllMessagesAt" TEXT NULL,
+            "emailNotificationsForMentionsAt" TEXT NULL,
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
+            "emailNotificationsDigestsFrequency" TEXT NULL
           );
         `
       );
@@ -687,7 +676,7 @@ export default async (app: Courselore): Promise<void> => {
         avatarlessBackgroundColor: string;
         biographySource: string | null;
         biographyPreprocessed: string | null;
-        emailNotifications: string;
+        emailNotifications: "all-messages" | "mentions" | "none";
       }>(
         sql`
           SELECT "id",
@@ -716,7 +705,6 @@ export default async (app: Courselore): Promise<void> => {
               "reference",
               "email",
               "password",
-              "systemRole",
               "emailVerifiedAt",
               "name",
               "nameSearch",
@@ -724,7 +712,11 @@ export default async (app: Courselore): Promise<void> => {
               "avatarlessBackgroundColor",
               "biographySource",
               "biographyPreprocessed",
-              "emailNotifications"
+              "emailNotificationsForAllMessagesAt",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt",
+              "emailNotificationsDigestsFrequency"
             )
             VALUES (
               ${user.id},
@@ -733,7 +725,6 @@ export default async (app: Courselore): Promise<void> => {
               ${user.reference},
               ${user.email},
               ${user.password},
-              ${"none"},
               ${user.emailVerifiedAt},
               ${user.name},
               ${user.nameSearch},
@@ -741,7 +732,27 @@ export default async (app: Courselore): Promise<void> => {
               ${user.avatarlessBackgroundColor},
               ${user.biographySource},
               ${user.biographyPreprocessed},
-              ${user.emailNotifications}
+              ${
+                user.emailNotifications === "all-messages"
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                user.emailNotifications !== "none"
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                user.emailNotifications !== "none"
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                user.emailNotifications !== "none"
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${user.emailNotifications === "mentions" ? "daily" : null}
             )
           `
         );
@@ -761,6 +772,59 @@ export default async (app: Courselore): Promise<void> => {
           END;
         `
       );
+    },
+    sql`
+      ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
+      ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
+    `,
+    async () => {
+      app.locals.database.execute(
+        sql`
+          CREATE TABLE "configurations" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "key" TEXT UNIQUE NOT NULL,
+            "value" TEXT NOT NULL
+          );
+          INSERT INTO "configurations" ("key", "value") 
+            VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
+          INSERT INTO "configurations" ("key", "value")
+            VALUES ('demonstrationAt', ${JSON.stringify(null)});
+          INSERT INTO "configurations" ("key", "value")
+            VALUES ('administratorEmail', ${JSON.stringify(
+              "please-change-me@courselore.org"
+            )});        
+        `
+      )
+      const users = app.locals.database.all<{
+        id: number;
+        email: string;
+        name: string;
+        systemRole: "administrator" | "staff" | "none";
+      }>(
+        sql`
+          SELECT "id", "email", "name" FROM "users" ORDER BY "id" ASC
+        `
+      );
+      if (users.length === 0) return;
+      /*
+        Other prompt libraries to consider if necessary:
+        https://github.com/SBoudrias/Inquirer.js
+        https://github.com/enquirer/enquirer
+      */
+      const answer = (
+        await prompts({
+          type: "autocomplete",
+          name: "answer",
+          message:
+            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
+          choices: users.map((user) => ({
+            title: `${user.name} <${user.email}>`,
+            value: user.id,
+          })),
+        })
+      ).answer;
+      console.log(answer);
+      throw new Error("TODO: Administrator panel");
     }
   );
   app.once("close", () => {

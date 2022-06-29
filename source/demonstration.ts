@@ -10,8 +10,9 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   userAvatarlessBackgroundColors,
-  EnrollmentRole,
-  enrollmentRoles,
+  userEmailNotificationsDigestsFrequencies,
+  CourseRole,
+  courseRoles,
   enrollmentAccentColors,
   ConversationType,
   conversationTypes,
@@ -22,6 +23,7 @@ export default (app: Courselore): void => {
     "/demonstration-data",
     asyncHandler(async (req, res, next) => {
       if (!app.locals.options.demonstration) return next();
+      // TODO: Administrator Panel: Congratulations on the clever solution to the issue of having the route accessible by signed-out & signed-in users at once 👍 But I suggest you try avoiding the extra work of fetching user information by having the handler accessible by two routes, one with the ‘isSignedOut’ middleware and another with the ‘isSignedIn’ middleware. See, for example, how we handle this on the home page.
       const userId = app.locals.helpers.Session.get({ req, res });
       const userSystemRole = app.locals.database.get<{ role: string }>(sql`
         SELECT "systemRole"
@@ -39,67 +41,18 @@ export default (app: Courselore): void => {
         "courselore",
         app.locals.options.argon2
       );
-      const name = casual.full_name;
       const avatarIndices = lodash.shuffle(lodash.range(250));
-      const biographySource = casual.sentences(lodash.random(5, 7));
-      const demonstrationUser = app.locals.database.get<{
-        id: number;
-        name: string;
-      }>(
-        sql`
-            INSERT INTO "users" (
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "systemRole",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "emailNotifications"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${new Date(
-                Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
-              ).toISOString()},
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${`${slugify(name)}--${cryptoRandomString({
-                length: 5,
-                type: "numeric",
-              })}@courselore.org`},
-              ${password},
-              ${includeAdmins ? "administrator" : "none"},
-              ${new Date().toISOString()},
-              ${name},
-              ${html`${name}`},
-              ${`${
-                app.locals.options.baseURL
-              }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
-              ${lodash.sample(userAvatarlessBackgroundColors)},
-              ${biographySource},
-              ${
-                app.locals.partials.content({
-                  req,
-                  res,
-                  type: "source",
-                  content: biographySource,
-                }).preprocessed
-              },
-              ${"none"}
-            )
-            RETURNING *
-          `
-      )!;
-
-      const users = lodash.times(150, () => {
+      const users = lodash.times(151, (userIndex) => {
         const name = casual.full_name;
         const biographySource = casual.sentences(lodash.random(5, 7));
+        const isEmailNotificationsForNone = Math.random() < 0.1;
+        const isEmailNotificationsForMentions =
+          !isEmailNotificationsForNone && Math.random() < 0.8;
+        const isEmailNotificationsForMessagesInConversationsInWhichYouParticipated =
+          !isEmailNotificationsForNone && Math.random() < 0.8;
+        const isEmailNotificationsForMessagesInConversationsYouStarted =
+          isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+          (!isEmailNotificationsForNone && Math.random() < 0.8);
         return app.locals.database.get<{
           id: number;
           email: string;
@@ -120,7 +73,11 @@ export default (app: Courselore): void => {
                 "avatarlessBackgroundColor",
                 "biographySource",
                 "biographyPreprocessed",
-                "emailNotifications"
+                "emailNotificationsForAllMessagesAt",
+                "emailNotificationsForMentionsAt",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                "emailNotificationsForMessagesInConversationsYouStartedAt",
+                "emailNotificationsDigestsFrequency"
               )
               VALUES (
                 ${new Date().toISOString()},
@@ -137,12 +94,12 @@ export default (app: Courselore): void => {
                 })}@courselore.org`},
                 ${password},
                 ${
-                  includeAdmins
-                    ? Math.random() < 0.3
-                      ? Math.random() < 0.3
-                        ? "administrator"
-                        : "staff"
-                      : "none"
+                  !includeAdmins
+                    ? "none"
+                    : userIndex === 0 || Math.random() < 0.3
+                    ? "staff"
+                    : Math.random() < 0.3
+                    ? "administrator"
                     : "none"
                 },
                 ${new Date().toISOString()},
@@ -165,12 +122,44 @@ export default (app: Courselore): void => {
                     content: biographySource,
                   }).preprocessed
                 },
-                ${"none"}
+                ${
+                  isEmailNotificationsForMentions &&
+                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+                  isEmailNotificationsForMessagesInConversationsYouStarted &&
+                  Math.random() < 0.3
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMentions
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMessagesInConversationsYouStarted
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  (isEmailNotificationsForMentions ||
+                    isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+                    isEmailNotificationsForMessagesInConversationsYouStarted) &&
+                  Math.random() < 0.9
+                    ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                    : null
+                }
               )
               RETURNING *
             `
         )!;
       });
+      // TODO: Administrator Panel: Check if the user is signed in and use them instead of the freshly created ‘demonstrationUser’
+      const demonstrationUser = users.shift()!;
 
       const year = new Date().getFullYear().toString();
       const month = new Date().getMonth() + 1;
@@ -179,7 +168,7 @@ export default (app: Courselore): void => {
       for (const {
         name,
         code,
-        role,
+        courseRole: courseRole,
         accentColor,
         enrollmentsUsers,
         isArchived,
@@ -187,21 +176,21 @@ export default (app: Courselore): void => {
         {
           name: "Principles of Programming Languages",
           code: "CS 601.426",
-          role: enrollmentRoles[1],
+          courseRole: courseRoles[1],
           accentColor: enrollmentAccentColors[0],
           enrollmentsUsers: users.slice(0, 100),
         },
         {
           name: "Pharmacology",
           code: "MD 401.324",
-          role: enrollmentRoles[0],
+          courseRole: courseRoles[0],
           accentColor: enrollmentAccentColors[1],
           enrollmentsUsers: users.slice(25, 125),
         },
         {
           name: "Object-Oriented Software Engineering",
           code: "EN 601.421",
-          role: enrollmentRoles[1],
+          courseRole: courseRoles[1],
           accentColor: enrollmentAccentColors[2],
           enrollmentsUsers: users.slice(50, 150),
           isArchived: true,
@@ -240,16 +229,16 @@ export default (app: Courselore): void => {
 
         const enrollment = app.locals.database.get<{
           id: number;
-          role: EnrollmentRole;
+          courseRole: CourseRole;
         }>(
           sql`
-              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
               VALUES (
                 ${new Date().toISOString()},
                 ${demonstrationUser.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${role},
+                ${courseRole},
                 ${accentColor}
               )
               RETURNING *
@@ -278,7 +267,7 @@ export default (app: Courselore): void => {
                   "reference",
                   "email",
                   "name",
-                  "role"
+                  "courseRole"
                 )
                 VALUES (
                   ${new Date().toISOString()},
@@ -299,28 +288,28 @@ export default (app: Courselore): void => {
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
                   ${user?.email},
                   ${Math.random() < 0.5 ? user?.name : null},
-                  ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]}
+                  ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
                 )
               `
           );
         }
 
-        const enrollments: { id: number; role: EnrollmentRole }[] = [
+        const enrollments: { id: number; courseRole: CourseRole }[] = [
           enrollment,
           ...enrollmentsUsers.map(
             (enrollmentUser) =>
               app.locals.database.get<{
                 id: number;
-                role: EnrollmentRole;
+                courseRole: CourseRole;
               }>(
                 sql`
-                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
                     VALUES (
                       ${new Date().toISOString()},
                       ${enrollmentUser.id},
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]},
+                      ${courseRoles[Math.random() < 0.1 ? 1 : 0]},
                       ${lodash.sample(enrollmentAccentColors)!}
                     )
                     RETURNING *
@@ -329,50 +318,20 @@ export default (app: Courselore): void => {
           ),
         ];
         const staff = enrollments.filter(
-          (enrollment) => enrollment.role === "staff"
+          (enrollment) => enrollment.courseRole === "staff"
         );
 
         const tags: { id: number }[] = [
-          {
-            name: "Assignment 1",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 2",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 3",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 4",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 5",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 6",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 7",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 8",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 9",
-            staffOnlyAt: null,
-          },
-          {
-            name: "Assignment 10",
-            staffOnlyAt: null,
-          },
+          { name: "Assignment 1", staffOnlyAt: null },
+          { name: "Assignment 2", staffOnlyAt: null },
+          { name: "Assignment 3", staffOnlyAt: null },
+          { name: "Assignment 4", staffOnlyAt: null },
+          { name: "Assignment 5", staffOnlyAt: null },
+          { name: "Assignment 6", staffOnlyAt: null },
+          { name: "Assignment 7", staffOnlyAt: null },
+          { name: "Assignment 8", staffOnlyAt: null },
+          { name: "Assignment 9", staffOnlyAt: null },
+          { name: "Assignment 10", staffOnlyAt: null },
           {
             name: "Change for Next Year",
             staffOnlyAt: new Date().toISOString(),
@@ -385,16 +344,16 @@ export default (app: Courselore): void => {
           ({ name, staffOnlyAt }) =>
             app.locals.database.get<{ id: number }>(
               sql`
-                    INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${course.id},
-                      ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${name},
-                      ${staffOnlyAt}
-                    )
-                    RETURNING *
-                  `
+                  INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${name},
+                    ${staffOnlyAt}
+                  )
+                  RETURNING *
+                `
             )!
         );
 
@@ -455,47 +414,47 @@ export default (app: Courselore): void => {
             title: string;
           }>(
             sql`
-                INSERT INTO "conversations" (
-                  "createdAt",
-                  "updatedAt",
-                  "course",
-                  "reference",
-                  "authorEnrollment",
-                  "anonymousAt",      
-                  "type",
-                  "resolvedAt",
-                  "pinnedAt",
-                  "staffOnlyAt",
-                  "title",
-                  "titleSearch",
-                  "nextMessageReference"
-                )
-                VALUES (
-                  ${conversationCreatedAt},
-                  ${messageCreatedAts[messageCreatedAts.length - 1]},
-                  ${course.id},
-                  ${String(conversationReference)},
-                  ${conversationAuthorEnrollment.id},
-                  ${
-                    conversationAuthorEnrollment.role !== "staff" &&
-                    Math.random() < 0.5
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${type},
-                  ${
-                    type === "question" && Math.random() < 0.75
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${Math.random() < 0.15 ? new Date().toISOString() : null},
-                  ${Math.random() < 0.25 ? new Date().toISOString() : null},
-                  ${title},
-                  ${html`${title}`},
-                  ${nextMessageReference}
-                )
-                RETURNING *
-              `
+              INSERT INTO "conversations" (
+                "createdAt",
+                "updatedAt",
+                "course",
+                "reference",
+                "authorEnrollment",
+                "anonymousAt",      
+                "type",
+                "resolvedAt",
+                "pinnedAt",
+                "staffOnlyAt",
+                "title",
+                "titleSearch",
+                "nextMessageReference"
+              )
+              VALUES (
+                ${conversationCreatedAt},
+                ${messageCreatedAts[messageCreatedAts.length - 1]},
+                ${course.id},
+                ${String(conversationReference)},
+                ${conversationAuthorEnrollment.id},
+                ${
+                  conversationAuthorEnrollment.courseRole !== "staff" &&
+                  Math.random() < 0.5
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${type},
+                ${
+                  type === "question" && Math.random() < 0.75
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${Math.random() < 0.15 ? new Date().toISOString() : null},
+                ${Math.random() < 0.25 ? new Date().toISOString() : null},
+                ${title},
+                ${html`${title}`},
+                ${nextMessageReference}
+              )
+              RETURNING *
+            `
           )!;
 
           app.locals.database.run(
@@ -572,7 +531,7 @@ export default (app: Courselore): void => {
                     ${
                       messageReference === 1
                         ? conversation.anonymousAt
-                        : messageAuthorEnrollment?.role !== "staff" &&
+                        : messageAuthorEnrollment?.courseRole !== "staff" &&
                           Math.random() < 0.5
                         ? new Date().toISOString()
                         : null

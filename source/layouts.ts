@@ -1160,6 +1160,10 @@ export default async (app: Courselore): Promise<void> => {
           &:active {
             background-color: var(--color--gray--medium--400);
           }
+          &:disabled,
+          &.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
           &:checked {
             background-color: var(--color--blue--600);
             &:hover,
@@ -1168,6 +1172,10 @@ export default async (app: Courselore): Promise<void> => {
             }
             &:active {
               background-color: var(--color--blue--700);
+            }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--blue--300);
             }
           }
           @media (prefers-color-scheme: dark) {
@@ -1179,6 +1187,10 @@ export default async (app: Courselore): Promise<void> => {
             &:active {
               background-color: var(--color--gray--medium--500);
             }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             &:checked {
               background-color: var(--color--blue--700);
               &:hover,
@@ -1188,9 +1200,15 @@ export default async (app: Courselore): Promise<void> => {
               &:active {
                 background-color: var(--color--blue--800);
               }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--blue--500);
+              }
             }
           }
+          min-width: var(--space--3-5);
           width: var(--space--3-5);
+          min-height: var(--space--3-5);
           height: var(--space--3-5);
           border-radius: var(--border-radius--circle);
           position: relative;
@@ -1233,6 +1251,10 @@ export default async (app: Courselore): Promise<void> => {
           &:active {
             background-color: var(--color--gray--medium--400);
           }
+          &:disabled,
+          &.disabled {
+            background-color: var(--color--gray--medium--300);
+          }
           &:checked {
             background-color: var(--color--blue--600);
             &:hover,
@@ -1241,6 +1263,10 @@ export default async (app: Courselore): Promise<void> => {
             }
             &:active {
               background-color: var(--color--blue--700);
+            }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--blue--300);
             }
           }
           @media (prefers-color-scheme: dark) {
@@ -1252,6 +1278,10 @@ export default async (app: Courselore): Promise<void> => {
             &:active {
               background-color: var(--color--gray--medium--500);
             }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--gray--medium--600);
+            }
             &:checked {
               background-color: var(--color--blue--700);
               &:hover,
@@ -1261,13 +1291,23 @@ export default async (app: Courselore): Promise<void> => {
               &:active {
                 background-color: var(--color--blue--800);
               }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--blue--500);
+              }
             }
           }
+          min-width: var(--space--8);
           width: var(--space--8);
           padding: var(--space--0-5);
           border-radius: var(--border-radius--full);
           position: relative;
           top: calc(var(--space--0-5) * 1.5);
+          cursor: pointer;
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(--transition-timing-function--in-out);
+
           &::after {
             content: "";
             background-color: var(--color--gray--medium--50);
@@ -1287,9 +1327,6 @@ export default async (app: Courselore): Promise<void> => {
           &:checked::after {
             margin-left: var(--space--4);
           }
-          transition-property: var(--transition-property--colors);
-          transition-duration: var(--transition-duration--150);
-          transition-timing-function: var(--transition-timing-function--in-out);
         }
 
         .input--radio-or-checkbox--multilabel {
@@ -1314,6 +1351,14 @@ export default async (app: Courselore): Promise<void> => {
           transition-duration: var(--transition-duration--150);
           transition-timing-function: var(--transition-timing-function--in-out);
           cursor: pointer;
+
+          &:disabled,
+          &.disabled {
+            color: var(--color--gray--medium--500);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--gray--medium--400);
+            }
+          }
 
           &.button--tight {
             padding: var(--space--0-5) var(--space--1);
@@ -1360,13 +1405,6 @@ export default async (app: Courselore): Promise<void> => {
                 &:active {
                   background-color: var(--color--gray--medium--600);
                 }
-              }
-            }
-            &:disabled,
-            &.disabled {
-              color: var(--color--gray--medium--500);
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--gray--medium--400);
               }
             }
           }

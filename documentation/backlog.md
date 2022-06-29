@@ -66,11 +66,13 @@
 
 **Good to Have in the Future**
 
+- Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
 - Administrators can have further control over user accounts:
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
   - Enroll people in courses
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
+  - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -88,6 +90,42 @@
   - Have a wizard to set things up the first time
   - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
 - Take a look at other nice features from Discourse’s administrative interface
+
+### Better Email Notifications
+
+- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
+  - Respect the new settings on email delivery
+    - `TODO`
+- Database index for notification settings, since they’re used in the query to decide who to notify?
+- “Important staff announcements”
+  - They have two consequences:
+    - They send emails to everyone, because it isn’t possible to opt out of receiving them.
+    - They send emails immediately, even to people who otherwise would receive digests.
+  - Change New Conversation page.
+    - When you select this option, check “Pin” in the form
+  - Store this into conversation
+  - Show these conversations differently on sidebar
+- Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online and/or has seen the message.
+- Details on the emails:
+  - Make emails be replies, so that they’re grouped in conversations on email readers.
+  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+  - Add support for Dark Mode in emails.
+    - This should fix the duplication of code blocks.
+
+---
+
+**BACKUP BEFORE DEPLOYMENT**
+
+---
+
+**Good to Have**
+
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 
 ### User Interface Improvements
 
@@ -214,25 +252,11 @@
 
 ### Notifications
 
-- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Staff notes may send notifications immediately, even if the person is in digest mode
-- Make emails be replies, so that they’re grouped in conversations on email readers.
-- Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-- Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
-  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
-- Add support for Dark Mode in emails.
-  - This should fix the duplication of code blocks.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
   - On badges on sidebar indicating that a conversation includes unread messages
   - On badges on course list
 - A timeline-like list of unread messages and other things that require your attention.
-- More granular control over what to be notified about.
-  - Course-level configuration.
-  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
-  - Receive notifications from conversations you’ve participated in.
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
 - Add option to receive email notifications for your own messages.
@@ -264,11 +288,20 @@ new Notification('Example');
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Chats with only a few people.
+- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
+- Whispers:
+  - Similar to Discourse
+  - Staff-only messages
+  - Disclosure button to show/hide all whispers
+    - On load, it’s showing
+    - On new whisper, show again
+    - The point is: Don’t let people miss whispers
+  - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
+  - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
-- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
 
 ### Users
 
@@ -300,6 +333,7 @@ new Notification('Example');
 
 ### Invitations
 
+- Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
@@ -419,7 +453,9 @@ new Notification('Example');
 ### Statistics
 
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
-- Gamification: A reputation system with badges.
+- Gamification
+  - Badges (for example, first to answer a question)
+  - Karma points for whole class and unlock achievements for everyone
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
 
@@ -753,17 +789,6 @@ const { app, BrowserWindow } = require("electron");
 - Caddy could silence logs **after** a successful startup.
 - Live-navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
   - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
-
----
-
-- Tools to visualize SQLite database:
-  - https://www.schemacrawler.com/downloads.html
-  - https://dbeaver.io
-  - https://www.mysql.com/products/workbench/
-  - https://schemaspy.org
-  - https://dbschema.com/database-designer/Sqlite.html
-  - https://pypi.org/project/ERAlchemy/
-  - https://www.beekeeperstudio.io (No diagrams, but worth keeping an eye on)
 
 ---
 

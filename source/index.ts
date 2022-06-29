@@ -68,15 +68,15 @@ import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
-  UserEmailNotifications,
-  userEmailNotificationses,
+  UserEmailNotificationsDigestsFrequency,
+  userEmailNotificationsDigestsFrequencies,
 } from "./user.js";
 
 import course, {
   CoursePartial,
   CoursesPartial,
   CourseArchivedPartial,
-  EnrollmentRoleIconPartial,
+  CourseRoleIconPartial,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
@@ -88,8 +88,8 @@ import course, {
   CourseSettingsLayout,
 } from "./course.js";
 export {
-  EnrollmentRole,
-  enrollmentRoles,
+  CourseRole,
+  courseRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
   IsEnrolledInCourseMiddlewareLocals,
@@ -209,11 +209,11 @@ export interface Courselore extends express.Express {
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
       user: UserPartial;
+      systemRoleIcon: SystemRoleIconPartial;
       course: CoursePartial;
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
-      enrollmentRoleIcon: EnrollmentRoleIconPartial;
-      systemRoleIcon: SystemRoleIconPartial;
+      courseRoleIcon: CourseRoleIconPartial;
       conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;
