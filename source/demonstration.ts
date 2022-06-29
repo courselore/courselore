@@ -24,7 +24,7 @@ export default (app: Courselore): void => {
       if (!app.locals.options.demonstration) return next();
       const userId = app.locals.helpers.Session.get({ req, res });
       var userSystemRole =
-        (userId !== undefined)
+        userId !== undefined
           ? app.locals.database.get<{ systemRole: string }>(sql`
               SELECT "systemRole"
               FROM "users"
@@ -37,8 +37,7 @@ export default (app: Courselore): void => {
             SELECT COUNT(*) AS "count"
             FROM "users"
           `
-        )!.count === 0 ||
-        userSystemRole === "administrator";
+        )!.count === 0 || userSystemRole === "administrator";
       const password = await argon2.hash(
         "courselore",
         app.locals.options.argon2
