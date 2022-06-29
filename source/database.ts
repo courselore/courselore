@@ -796,7 +796,7 @@ export default async (app: Courselore): Promise<void> => {
           })
         ).answer;
 
-        // TODO: Prompt for confirmation, loop if not confirmed
+        // TODO: Prompt for confirmation, loop (recursion) if not confirmed.
         const confirmation = (
           await prompts({
             type: "confirm",
@@ -818,7 +818,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
 
-        // TODO: Prompt to finish migration
+        // TODO: Prompt to finish migration.
         await prompts({
           type: "text",
           message:
