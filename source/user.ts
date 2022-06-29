@@ -1795,40 +1795,40 @@ export default (app: Courselore): void => {
 
       app.locals.database.run(
         sql`
-         UPDATE "users"
-         SET "emailNotificationsForAllMessagesAt" = ${
-           req.body.isEmailNotificationsForAllMessages === "on"
-             ? new Date().toISOString()
-             : null
-         },
-             "emailNotificationsForMentionsAt" = ${
-               req.body.isEmailNotificationsForMentions === "on"
-                 ? new Date().toISOString()
-                 : null
-             },
-             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
-               req.body
-                 .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-               "on"
-                 ? new Date().toISOString()
-                 : null
-             },
-             "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-               req.body
-                 .isEmailNotificationsForMessagesInConversationsYouStarted ===
-               "on"
-                 ? new Date().toISOString()
-                 : null
-             },
-             "emailNotificationsDigestsAt" = ${
-               req.body.isEmailNotificationsDigests === "true"
-                 ? new Date().toISOString()
-                 : null
-             },
-             "emailNotificationsDigestsFrequency" = ${
-               req.body.emailNotificationsDigestsFrequency
-             }
-         WHERE "id" = ${res.locals.user.id}
+          UPDATE "users"
+          SET "emailNotificationsForAllMessagesAt" = ${
+            req.body.isEmailNotificationsForAllMessages === "on"
+              ? new Date().toISOString()
+              : null
+          },
+              "emailNotificationsForMentionsAt" = ${
+                req.body.isEmailNotificationsForMentions === "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsYouStarted ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsDigestsAt" = ${
+                req.body.isEmailNotificationsDigests === "true"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsDigestsFrequency" = ${
+                req.body.emailNotificationsDigestsFrequency
+              }
+          WHERE "id" = ${res.locals.user.id}
        `
       );
 
