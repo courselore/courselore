@@ -780,26 +780,31 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
-      
+
       repl();
-      async function repl () {
+      async function repl() {
         const answer = (
           await prompts({
             type: "autocomplete",
             name: "answer",
             message:
               "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
-            choices: 
-              users.map((user) => ({
-                title: `${user.name} <${user.email}>`,
-                value: user,
-              })),
+            choices: users.map((user) => ({
+              title: `${user.name} <${user.email}>`,
+              value: user,
+            })),
           })
         ).answer;
-        
+
         // TODO: Prompt for confirmation, loop if not confirmed
-        console.log(`${answer.name} <${answer.email}> will be the first administrator. Confirm?`);
-        
+        const confirmation = (
+          await prompts({
+            type: "confirm",
+            name: "confirmation",
+            message: `${answer.name} <${answer.email}> will be the first administrator. Confirm?`,
+          })
+        ).confirmation;
+
         if (!confirmation) {
           repl();
           return;
@@ -814,7 +819,11 @@ export default async (app: Courselore): Promise<void> => {
         );
 
         // TODO: Prompt to finish migration
-        console.log("The first administrator was set successfully. Press enter to finish the migration.");
+        await prompts({
+          type: "text",
+          message:
+            "The first administrator was set successfully. Press enter to finish the migration.",
+        });
       }
     }
   );
