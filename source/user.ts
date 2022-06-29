@@ -1347,9 +1347,8 @@ export default (app: Courselore): void => {
                             for (const element of this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input"))
                               element.checked = true;
                           const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
-                          const isEmailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
-                            element.disabled = isEmailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && isEmailNotificationsDigestsFrequencyDisabled);
+                            element.disabled = isEmailNotificationsDigestsDisabled;
                             element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
                           }
                         };
@@ -1376,9 +1375,8 @@ export default (app: Courselore): void => {
                         this.onchange = () => {
                           if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
                           const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
-                          const isEmailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
-                            element.disabled = isEmailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && isEmailNotificationsDigestsFrequencyDisabled);
+                            element.disabled = isEmailNotificationsDigestsDisabled;
                             element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
                           }
                         };
@@ -1407,9 +1405,8 @@ export default (app: Courselore): void => {
                           if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
                           if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                           const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
-                          const isEmailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
-                            element.disabled = isEmailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && isEmailNotificationsDigestsFrequencyDisabled);
+                            element.disabled = isEmailNotificationsDigestsDisabled;
                             element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
                           }
                         };
@@ -1438,9 +1435,8 @@ export default (app: Courselore): void => {
                           if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
                           if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                           const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
-                          const isEmailNotificationsDigestsFrequencyDisabled = !this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked;
                           for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
-                            element.disabled = isEmailNotificationsDigestsDisabled || (element.closest('[key="emailNotificationsDigestsFrequency"]') !== null && isEmailNotificationsDigestsFrequencyDisabled);
+                            element.disabled = isEmailNotificationsDigestsDisabled;
                             element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
                           }
                         };
