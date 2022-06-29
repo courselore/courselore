@@ -157,7 +157,7 @@ export default (app: Courselore): void => {
         reference: string;
       }>(
         sql`
-          SELECT "id", "reference", "systemRole"
+          SELECT "id", "reference"
           FROM "users"
           WHERE "reference" = ${req.params.userReference}
         `
