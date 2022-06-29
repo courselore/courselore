@@ -794,7 +794,7 @@ export default async (app: Courselore): Promise<void> => {
               "please-change-me@courselore.org"
             )});        
         `
-      )
+      );
       const users = app.locals.database.all<{
         id: number;
         email: string;
@@ -811,20 +811,46 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
-      const answer = (
-        await prompts({
-          type: "autocomplete",
-          name: "answer",
-          message:
-            "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Choose the first administrator:",
-          choices: users.map((user) => ({
-            title: `${user.name} <${user.email}>`,
-            value: user.id,
-          })),
-        })
-      ).answer;
-      console.log(answer);
-      throw new Error("TODO: Administrator panel");
+      repl();
+      async function repl() {
+        const answer = (
+          await prompts({
+            type: "autocomplete",
+            name: "answer",
+            message:
+              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
+            choices: users.map((user) => ({
+              title: `${user.name} <${user.email}>`,
+              value: user,
+            })),
+          })
+        ).answer;
+        // TODO: Prompt for confirmation, loop (recursion) if not confirmed.
+        const confirmation = (
+          await prompts({
+            type: "confirm",
+            name: "confirmation",
+            message: `${answer.name} <${answer.email}> will be the first administrator. Is this correct?`,
+          })
+        ).confirmation;
+        if (!confirmation) {
+          repl();
+          return;
+        }
+        app.locals.database.run(
+          sql`
+            UPDATE "users"
+            SET "systemRole" = 'administrator'
+            WHERE "id" = ${answer.id}
+          `
+        );
+        // TODO: Prompt to finish migration.
+        // await prompts({
+        //   type: "text",
+        //   message:
+        //     "The first administrator was set successfully. Press enter to finish the migration.",
+        // });
+      }
     }
   );
   app.once("close", () => {

@@ -25,11 +25,14 @@ export default (app: Courselore): void => {
       if (!app.locals.options.demonstration) return next();
       // TODO: Administrator Panel: Congratulations on the clever solution to the issue of having the route accessible by signed-out & signed-in users at once 👍 But I suggest you try avoiding the extra work of fetching user information by having the handler accessible by two routes, one with the ‘isSignedOut’ middleware and another with the ‘isSignedIn’ middleware. See, for example, how we handle this on the home page.
       const userId = app.locals.helpers.Session.get({ req, res });
-      const userSystemRole = app.locals.database.get<{ role: string }>(sql`
-        SELECT "systemRole"
-        FROM "users"
-        WHERE "id" = ${userId === undefined ? "" : userId.toString()}
-      `)!.role;
+      var userSystemRole =
+        userId !== undefined
+          ? app.locals.database.get<{ systemRole: string }>(sql`
+              SELECT "systemRole"
+              FROM "users"
+              WHERE "id" = ${userId}
+            `)!.systemRole
+          : undefined;
       const includeAdmins =
         app.locals.database.get<{ count: number }>(
           sql`
