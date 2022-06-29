@@ -1473,239 +1473,161 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
-              <div key="isEmailNotificationsDigests" class="label">
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline ${res
-                      .locals.user.emailNotificationsForAllMessagesAt ===
-                      null &&
-                    res.locals.user.emailNotificationsForMentionsAt === null &&
-                    res.locals.user
-                      .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                      null &&
-                    res.locals.user
-                      .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                      null
-                      ? html`disabled`
-                      : html``}"
-                  >
-                    <input
-                      type="radio"
-                      name="isEmailNotificationsDigests"
-                      value="false"
-                      required
-                      $${res.locals.user.emailNotificationsForAllMessagesAt ===
-                        null &&
-                      res.locals.user.emailNotificationsForMentionsAt ===
-                        null &&
-                      res.locals.user
-                        .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                        null &&
-                      res.locals.user
-                        .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                        null
-                        ? html`disabled`
-                        : html``}
-                      $${!(
-                        res.locals.user.emailNotificationsForAllMessagesAt ===
-                          null &&
-                        res.locals.user.emailNotificationsForMentionsAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                          null
-                      ) && res.locals.user.emailNotificationsDigestsAt === null
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
-                            element.disabled = true;
-                            element.closest(".button").classList.add("disabled");
-                          }
-                        };
-                      `}"
-                    />
-                    One email notification per message
-                  </label>
-                </div>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline ${res
-                      .locals.user.emailNotificationsForAllMessagesAt ===
-                      null &&
-                    res.locals.user.emailNotificationsForMentionsAt === null &&
-                    res.locals.user
-                      .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                      null &&
-                    res.locals.user
-                      .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                      null
-                      ? html`disabled`
-                      : html``}"
-                  >
-                    <input
-                      type="radio"
-                      name="isEmailNotificationsDigests"
-                      value="true"
-                      required
-                      $${res.locals.user.emailNotificationsForAllMessagesAt ===
-                        null &&
-                      res.locals.user.emailNotificationsForMentionsAt ===
-                        null &&
-                      res.locals.user
-                        .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                        null &&
-                      res.locals.user
-                        .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                        null
-                        ? html`disabled`
-                        : html``}
-                      $${(res.locals.user.emailNotificationsForAllMessagesAt ===
-                        null &&
-                        res.locals.user.emailNotificationsForMentionsAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                          null) ||
-                      res.locals.user.emailNotificationsDigestsAt !== null
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
-                            element.disabled = false;
-                            element.closest(".button").classList.remove("disabled");
-                          }
-                        };
-                      `}"
-                    />
-                    Digests of multiple messages
-                  </label>
-                </div>
-                <div
-                  key="emailNotificationsDigestsFrequency"
-                  class="label"
-                  css="${res.locals.css(css`
-                    margin-left: var(--space--6);
-                  `)}"
-                >
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                    `)}"
-                  >
-                    <label
-                      class="button button--tight button--tight--inline ${(res
-                        .locals.user.emailNotificationsForAllMessagesAt ===
-                        null &&
-                        res.locals.user.emailNotificationsForMentionsAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                          null) ||
-                      res.locals.user.emailNotificationsDigestsAt === null
-                        ? html`disabled`
-                        : html``}"
+              $${(() => {
+                const disabled =
+                  res.locals.user.emailNotificationsForAllMessagesAt === null &&
+                  res.locals.user.emailNotificationsForMentionsAt === null &&
+                  res.locals.user
+                    .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                    null &&
+                  res.locals.user
+                    .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                    null
+                    ? html`disabled`
+                    : html``;
+                return html`
+                  <div key="isEmailNotificationsDigests" class="label">
+                    <div
+                      css="${res.locals.css(css`
+                        display: flex;
+                      `)}"
                     >
-                      <input
-                        type="radio"
-                        name="emailNotificationsDigestsFrequency"
-                        value="hourly"
-                        required
-                        $${(res.locals.user
-                          .emailNotificationsForAllMessagesAt === null &&
-                          res.locals.user.emailNotificationsForMentionsAt ===
-                            null &&
-                          res.locals.user
-                            .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                            null &&
-                          res.locals.user
-                            .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                            null) ||
-                        res.locals.user.emailNotificationsDigestsAt === null
-                          ? html`disabled`
-                          : html``}
-                        $${res.locals.user
-                          .emailNotificationsDigestsFrequency === "hourly"
-                          ? html`checked`
-                          : html``}
-                        class="input--radio"
-                      />
-                      Hourly
-                    </label>
-                  </div>
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                    `)}"
-                  >
-                    <label
-                      class="button button--tight button--tight--inline ${(res
-                        .locals.user.emailNotificationsForAllMessagesAt ===
-                        null &&
-                        res.locals.user.emailNotificationsForMentionsAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                          null &&
-                        res.locals.user
-                          .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                          null) ||
-                      res.locals.user.emailNotificationsDigestsAt === null
-                        ? html`disabled`
-                        : html``}"
+                      <label
+                        class="button button--tight button--tight--inline ${disabled}"
+                      >
+                        <input
+                          type="radio"
+                          name="isEmailNotificationsDigests"
+                          value="false"
+                          required
+                          $${disabled}
+                          $${!(
+                            res.locals.user
+                              .emailNotificationsForAllMessagesAt === null &&
+                            res.locals.user.emailNotificationsForMentionsAt ===
+                              null &&
+                            res.locals.user
+                              .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                              null &&
+                            res.locals.user
+                              .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                              null
+                          ) &&
+                          res.locals.user.emailNotificationsDigestsAt === null
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                          onload="${javascript`
+                            this.onchange = () => {
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
+                                element.disabled = true;
+                                element.closest(".button").classList.add("disabled");
+                              }
+                            };
+                          `}"
+                        />
+                        One email notification per message
+                      </label>
+                    </div>
+                    <div
+                      css="${res.locals.css(css`
+                        display: flex;
+                      `)}"
                     >
-                      <input
-                        type="radio"
-                        name="emailNotificationsDigestsFrequency"
-                        value="daily"
-                        required
-                        $${(res.locals.user
-                          .emailNotificationsForAllMessagesAt === null &&
-                          res.locals.user.emailNotificationsForMentionsAt ===
-                            null &&
-                          res.locals.user
-                            .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                            null &&
-                          res.locals.user
-                            .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                            null) ||
-                        res.locals.user.emailNotificationsDigestsAt === null
-                          ? html`disabled`
-                          : html``}
-                        $${res.locals.user
-                          .emailNotificationsDigestsFrequency === null ||
-                        res.locals.user.emailNotificationsDigestsFrequency ===
-                          "daily"
-                          ? html`checked`
-                          : html``}
-                        class="input--radio"
-                      />
-                      Daily
-                    </label>
+                      <label
+                        class="button button--tight button--tight--inline ${disabled}"
+                      >
+                        <input
+                          type="radio"
+                          name="isEmailNotificationsDigests"
+                          value="true"
+                          required
+                          $${disabled}
+                          $${(res.locals.user
+                            .emailNotificationsForAllMessagesAt === null &&
+                            res.locals.user.emailNotificationsForMentionsAt ===
+                              null &&
+                            res.locals.user
+                              .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
+                              null &&
+                            res.locals.user
+                              .emailNotificationsForMessagesInConversationsYouStartedAt ===
+                              null) ||
+                          res.locals.user.emailNotificationsDigestsAt !== null
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                          onload="${javascript`
+                            this.onchange = () => {
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) {
+                                element.disabled = false;
+                                element.closest(".button").classList.remove("disabled");
+                              }
+                            };
+                          `}"
+                        />
+                        Digests of multiple messages
+                      </label>
+                    </div>
+                    <div
+                      key="emailNotificationsDigestsFrequency"
+                      class="label"
+                      css="${res.locals.css(css`
+                        margin-left: var(--space--6);
+                      `)}"
+                    >
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline ${disabled}"
+                        >
+                          <input
+                            type="radio"
+                            name="emailNotificationsDigestsFrequency"
+                            value="hourly"
+                            required
+                            $${disabled}
+                            $${res.locals.user
+                              .emailNotificationsDigestsFrequency === "hourly"
+                              ? html`checked`
+                              : html``}
+                            class="input--radio"
+                          />
+                          Hourly
+                        </label>
+                      </div>
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline ${disabled}"
+                        >
+                          <input
+                            type="radio"
+                            name="emailNotificationsDigestsFrequency"
+                            value="daily"
+                            required
+                            $${disabled}
+                            $${res.locals.user
+                              .emailNotificationsDigestsFrequency === null ||
+                            res.locals.user
+                              .emailNotificationsDigestsFrequency === "daily"
+                              ? html`checked`
+                              : html``}
+                            class="input--radio"
+                          />
+                          Daily
+                        </label>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                `;
+              })()}
 
               <div>
                 <button
