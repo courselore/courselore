@@ -15,6 +15,11 @@
   - Migration process: Setup some tricky database migrations requiring user input for migration of existing installations.
 - Other minor things:
   - Fixed layout glitch on user settings profile page when the person doesn’t have an avatar yet.
+- When we get to 1-to-1 conversations, do whispers, similar to Discourse.
+- API
+- Gamification
+  - Badges (for example, first to answer a question)
+  - Karma points for whole class and unlock achievements for everyone
 
 </details>
 

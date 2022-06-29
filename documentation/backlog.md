@@ -66,6 +66,7 @@
 
 **Good to Have in the Future**
 
+- Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
 - Administrators can have further control over user accounts:
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
   - Enroll people in courses
@@ -95,6 +96,7 @@
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
   - Respect the new settings on email delivery
     - `TODO`
+- Database index for notification settings, since they’re used in the query to decide who to notify?
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
@@ -286,11 +288,20 @@ new Notification('Example');
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Chats with only a few people.
+- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
+- Whispers:
+  - Similar to Discourse
+  - Staff-only messages
+  - Disclosure button to show/hide all whispers
+    - On load, it’s showing
+    - On new whisper, show again
+    - The point is: Don’t let people miss whispers
+  - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
+  - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
-- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
 
 ### Users
 
@@ -442,7 +453,9 @@ new Notification('Example');
 ### Statistics
 
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
-- Gamification: A reputation system with badges.
+- Gamification
+  - Badges (for example, first to answer a question)
+  - Karma points for whole class and unlock achievements for everyone
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
 
