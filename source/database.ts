@@ -807,7 +807,7 @@ export default async (app: Courselore): Promise<void> => {
         })
       ).answer;
       console.log(answer);
-      throw new Error("TODO");
+      throw new Error("TODO: Administrator panel");
     }
   );
   app.once("close", () => {

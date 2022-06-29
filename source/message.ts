@@ -1274,8 +1274,8 @@ export default (app: Courselore): void => {
                         "enrollments"."reference" IN ${mentions}
                       )
                     )
-                    -- TODO: "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt"
-                    -- TODO: "users"."emailNotificationsForMessagesInConversationsYouStartedAt"
+                    -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt"
+                    -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsYouStartedAt"
                   )
             GROUP BY "enrollments"."id"
           `

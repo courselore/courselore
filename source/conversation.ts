@@ -295,7 +295,7 @@ export default (app: Courselore): void => {
         filters.isQuick = req.query.conversations.filters.isQuick;
     }
 
-    const conversationsPageSize = 999999; // TODO: 15
+    const conversationsPageSize = 999999; // TODO: Pagination: 15
     const conversationsPage =
       typeof req.query.conversations?.conversationsPage === "string" &&
       req.query.conversations.conversationsPage.match(/^[1-9][0-9]*$/)
@@ -626,7 +626,7 @@ export default (app: Courselore): void => {
     //           endorsements: [],
     //         },
     //         searchResult: undefined,
-    //       } as any /* TODO */;
+    //       };
     //     })
     // );
 
@@ -2930,7 +2930,7 @@ export default (app: Courselore): void => {
                                 req.query.newConversation?.type === "note")
                                 ? html``
                                 : html`disabled`}
-                              $${(conversationDraft as any) /* TODO */
+                              $${(conversationDraft as any) /* TODO: Conversation drafts */
                                 ?.shouldNotify === "true" ||
                               (conversationDraft === undefined &&
                                 req.query.newConversation?.shouldNotify ===
@@ -3531,7 +3531,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (req.body.isDraft === "true") {
-        // TODO: Validate inputs
+        // TODO: Conversation drafts: Validate inputs
         let conversationDraft =
           typeof req.body.conversationDraftReference === "string" &&
           req.body.conversationDraftReference.match(/^[0-9]+$/)
@@ -3995,7 +3995,7 @@ export default (app: Courselore): void => {
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
-      const messagesPageSize = 999999; // TODO: 25
+      const messagesPageSize = 999999; // TODO: Pagination: 25
 
       const messagesRows = app.locals.database.all<{ reference: string }>(
         sql`
