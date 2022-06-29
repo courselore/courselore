@@ -978,11 +978,12 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
         // TODO: Prompt to finish migration.
-        // await prompts({
-        //   type: "text",
-        //   message:
-        //     "The first administrator was set successfully. Press enter to finish the migration.",
-        // });
+        await prompts({
+          type: "text",
+          name: "finish",
+          message:
+            "The first administrator was set successfully. Press enter to finish the migration.",
+        });
       }
     }
   );
