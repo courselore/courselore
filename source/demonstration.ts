@@ -20,8 +20,21 @@ import {
 export default (app: Courselore): void => {
   app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/demonstration-data",
-    asyncHandler(async (req, res, next) => {
+    asyncHandler( async (req, res, next) => {
       if (!app.locals.options.demonstration) return next();
+      const userId = app.locals.helpers.Session.get({ req, res });
+      const userSystemRole = app.locals.database.get<{ role: string }>(sql`
+        SELECT "systemRole"
+        FROM "users"
+        WHERE "id" = ${userId === undefined ? '' : userId.toString()}
+      `)!.role;
+      const includeAdmins =
+        app.locals.database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count"
+            FROM "users"
+          `
+        )!.count === 0 || userSystemRole === "administrator";
       const password = await argon2.hash(
         "courselore",
         app.locals.options.argon2
@@ -61,7 +74,7 @@ export default (app: Courselore): void => {
                 type: "numeric",
               })}@courselore.org`},
               ${password},
-              ${"administrator"},
+              ${includeAdmins ? "administrator" : "none"},
               ${new Date().toISOString()},
               ${name},
               ${html`${name}`},
@@ -124,10 +137,12 @@ export default (app: Courselore): void => {
                 })}@courselore.org`},
                 ${password},
                 ${
-                  Math.random() < 0.3
+                  includeAdmins
                     ? Math.random() < 0.3
-                      ? "administrator"
-                      : "staff"
+                      ? Math.random() < 0.3
+                        ? "administrator"
+                        : "staff"
+                      : "none"
                     : "none"
                 },
                 ${new Date().toISOString()},
@@ -631,12 +646,13 @@ export default (app: Courselore): void => {
           }
         }
       }
-
-      app.locals.helpers.Session.open({
-        req,
-        res,
-        userId: demonstrationUser.id,
-      });
+      if (userId === undefined) {
+        app.locals.helpers.Session.open({
+          req,
+          res,
+          userId: demonstrationUser.id,
+        });
+      }
       app.locals.helpers.Flash.set({
         req,
         res,
