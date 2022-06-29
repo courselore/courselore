@@ -20,13 +20,13 @@ import {
 export default (app: Courselore): void => {
   app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/demonstration-data",
-    asyncHandler( async (req, res, next) => {
+    asyncHandler(async (req, res, next) => {
       if (!app.locals.options.demonstration) return next();
       const userId = app.locals.helpers.Session.get({ req, res });
       const userSystemRole = app.locals.database.get<{ role: string }>(sql`
         SELECT "systemRole"
         FROM "users"
-        WHERE "id" = ${userId === undefined ? '' : userId.toString()}
+        WHERE "id" = ${userId === undefined ? "" : userId.toString()}
       `)!.role;
       const includeAdmins =
         app.locals.database.get<{ count: number }>(
