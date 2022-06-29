@@ -10,6 +10,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   userAvatarlessBackgroundColors,
+  userEmailNotificationsDigestsFrequencies,
   CourseRole,
   courseRoles,
   enrollmentAccentColors,
@@ -30,6 +31,14 @@ export default (app: Courselore): void => {
         const [demonstrationUser, ...users] = lodash.times(151, () => {
           const name = casual.full_name;
           const biographySource = casual.sentences(lodash.random(5, 7));
+          const isEmailNotificationsForNone = Math.random() < 0.1;
+          const isEmailNotificationsForMentions =
+            !isEmailNotificationsForNone && Math.random() < 0.8;
+          const isEmailNotificationsForMessagesInConversationsInWhichYouParticipated =
+            !isEmailNotificationsForNone && Math.random() < 0.8;
+          const isEmailNotificationsForMessagesInConversationsYouStarted =
+            isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+            (!isEmailNotificationsForNone && Math.random() < 0.8);
           return app.locals.database.get<{
             id: number;
             email: string;
@@ -89,11 +98,37 @@ export default (app: Courselore): void => {
                     content: biographySource,
                   }).preprocessed
                 },
-                ${null},
-                ${new Date().toISOString()},
-                ${new Date().toISOString()},
-                ${new Date().toISOString()},
-                ${"daily"}
+                ${
+                  isEmailNotificationsForMentions &&
+                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+                  isEmailNotificationsForMessagesInConversationsYouStarted &&
+                  Math.random() < 0.3
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMentions
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isEmailNotificationsForMessagesInConversationsYouStarted
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  (isEmailNotificationsForMentions ||
+                    isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+                    isEmailNotificationsForMessagesInConversationsYouStarted) &&
+                  Math.random() < 0.9
+                    ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                    : null
+                }
               )
               RETURNING *
             `
