@@ -142,7 +142,7 @@ import content, {
 } from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
-import demonstration from "./demonstration.js";
+import demonstration, { DemonstrationHandler } from "./demonstration.js";
 import error from "./error.js";
 
 import helpers, {
@@ -172,6 +172,7 @@ export interface Courselore extends express.Express {
       signIn: SignInHandler;
       mentionUserSearch: MentionUserSearchHandler;
       contentPreview: ContentPreviewHandler;
+      demonstration: DemonstrationHandler;
     };
     middlewares: {
       liveUpdates: LiveUpdatesMiddleware;
