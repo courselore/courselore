@@ -944,7 +944,7 @@ export default async (app: Courselore): Promise<void> => {
         https://github.com/SBoudrias/Inquirer.js
         https://github.com/enquirer/enquirer
       */
-      repl();
+      await repl();
       async function repl() {
         const answer = (
           await prompts({
@@ -958,16 +958,16 @@ export default async (app: Courselore): Promise<void> => {
             })),
           })
         ).answer;
-        // TODO: Prompt for confirmation, loop (recursion) if not confirmed.
         const confirmation = (
           await prompts({
             type: "confirm",
             name: "confirmation",
             message: `${answer.name} <${answer.email}> will be the first administrator. Is this correct?`,
+            initial: true,
           })
         ).confirmation;
         if (!confirmation) {
-          repl();
+          await repl();
           return;
         }
         app.locals.database.run(
@@ -977,12 +977,11 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${answer.id}
           `
         );
-        // TODO: Prompt to finish migration.
         await prompts({
           type: "text",
           name: "finish",
           message:
-            "The first administrator was set successfully. Press enter to finish the migration.",
+            "The first administrator was set successfully. Press enter to finish the migration and start Courselore.",
         });
       }
     }
