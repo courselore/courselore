@@ -935,7 +935,6 @@ export default async (app: Courselore): Promise<void> => {
         id: number;
         email: string;
         name: string;
-        systemRole: "administrator" | "staff" | "none";
       }>(
         sql`
           SELECT "id", "email", "name" FROM "users" ORDER BY "id" ASC

@@ -70,8 +70,8 @@ export type AdministratorLayout = ({
   head,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-  res: express.Response<any, IsSignedInMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsAdministratorMiddlewareLocals>;
+  res: express.Response<any, IsAdministratorMiddlewareLocals>;
   head: HTML;
   body: HTML;
 }) => HTML;
@@ -132,9 +132,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isAdministrator = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.user.systemRole === "administrator") {
-        return next();
-      }
+      if (res.locals.user.systemRole === "administrator") return next();
       next("route");
     },
   ];
@@ -142,9 +140,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.canCreateCourses = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.canCreateCourses) {
-        return next();
-      }
+      if (res.locals.canCreateCourses) return next();
       next("route");
     },
   ];

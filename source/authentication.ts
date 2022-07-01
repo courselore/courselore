@@ -1372,6 +1372,7 @@ export default (app: Courselore): void => {
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${
+              // TODO: Administrator panel: ‘firstUserIsAdministrator’
               app.locals.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count"

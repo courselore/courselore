@@ -193,7 +193,6 @@ export interface MayManageEnrollmentMiddlewareLocals
   managedEnrollment: {
     id: number;
     reference: string;
-    courseRole: CourseRole;
     isSelf: boolean;
   };
 }
@@ -1111,10 +1110,9 @@ export default (app: Courselore): void => {
       const managedEnrollment = app.locals.database.get<{
         id: number;
         reference: string;
-        courseRole: CourseRole;
       }>(
         sql`
-          SELECT "id", "reference", "courseRole"
+          SELECT "id", "reference"
           FROM "enrollments"
           WHERE "course" = ${res.locals.course.id} AND
                 "reference" = ${req.params.enrollmentReference}
