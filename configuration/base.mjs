@@ -7,6 +7,7 @@ export default async ({
   production = false,
   liveReload = false,
   demonstration = !production,
+  hstsPreload = false,
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
@@ -46,7 +47,9 @@ export default async ({
             header Cross-Origin-Opener-Policy same-origin
             header Cross-Origin-Resource-Policy same-origin
             header Referrer-Policy no-referrer
-            header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+            header Strict-Transport-Security "max-age=31536000; includeSubDomains${
+              hstsPreload ? `; preload` : ``
+            }"
             header X-Content-Type-Options nosniff
             header Origin-Agent-Cluster "?1"
             header X-DNS-Prefetch-Control off
