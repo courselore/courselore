@@ -603,13 +603,14 @@ export default (app: Courselore): void => {
         }
       }
     }
-    if (res.locals.user === undefined) {
+
+    if (res.locals.user === undefined)
       app.locals.helpers.Session.open({
         req,
         res,
         userId: demonstrationUser.id,
       });
-    }
+
     app.locals.helpers.Flash.set({
       req,
       res,

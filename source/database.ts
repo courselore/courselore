@@ -783,14 +783,17 @@ export default async (app: Courselore): Promise<void> => {
         "key" TEXT UNIQUE NOT NULL,
         "value" TEXT NOT NULL
       );
+
       INSERT INTO "configurations" ("key", "value") 
-        VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
+      VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
+
       INSERT INTO "configurations" ("key", "value")
-        VALUES ('demonstrationAt', ${JSON.stringify(new Date().toISOString())});
+      VALUES ('demonstrationAt', ${JSON.stringify(new Date().toISOString())});
+
       INSERT INTO "configurations" ("key", "value")
-        VALUES ('administratorEmail', ${JSON.stringify(
-          "please-change-me@courselore.org"
-        )});        
+      VALUES ('administratorEmail', ${JSON.stringify(
+        "please-change-me@courselore.org"
+      )});        
     `,
     () => {
       app.locals.database.execute(
@@ -939,11 +942,6 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (users.length === 0) return;
-      /*
-        Other prompt libraries to consider if necessary:
-        https://github.com/SBoudrias/Inquirer.js
-        https://github.com/enquirer/enquirer
-      */
       await repl();
       async function repl() {
         const answer = (
@@ -981,7 +979,7 @@ export default async (app: Courselore): Promise<void> => {
           type: "text",
           name: "finish",
           message:
-            "The first administrator was set successfully. Press enter to finish the migration and start Courselore.",
+            "The first administrator was set successfully. Press enter to continue...",
         });
       }
     }
