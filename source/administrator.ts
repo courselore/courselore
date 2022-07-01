@@ -48,14 +48,14 @@ export type CanCreateCoursesMiddleware = express.RequestHandler<
 export interface CanCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
-export type MayManageUserSystemRolesMiddleware = express.RequestHandler<
+export type MayManageUserMiddleware = express.RequestHandler<
   { userReference: string },
   any,
   {},
   {},
-  MayManageUserSystemRolesMiddlewareLocals
+  MayManageUserMiddlewareLocals
 >[];
-export interface MayManageUserSystemRolesMiddlewareLocals
+export interface MayManageUserMiddlewareLocals
   extends IsAdministratorMiddlewareLocals {
   managedUser: {
     id: number;
@@ -144,7 +144,7 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.mayManageUserSystemRoles = [
+  app.locals.middlewares.mayManageUser = [
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       const managedUser = app.locals.database.get<{
@@ -544,7 +544,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/users/${user.reference}/users`;
+              const action = `${app.locals.options.baseURL}/users/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -867,26 +867,28 @@ export default (app: Courselore): void => {
       role?: SystemRole;
     },
     {},
-    MayManageUserSystemRolesMiddlewareLocals
+    MayManageUserMiddlewareLocals
   >(
-    "/users/:userReference/users",
-    ...app.locals.middlewares.mayManageUserSystemRoles,
+    "/users/:userReference",
+    ...app.locals.middlewares.mayManageUser,
     (req, res, next) => {
-      if (
-        typeof req.body.role !== "string" ||
-        !systemRoles.includes(req.body.role)
-      )
-        return next("validation");
+      if (typeof req.body.role === "string") {
+        if (
+          typeof req.body.role !== "string" ||
+          !systemRoles.includes(req.body.role)
+        )
+          return next("validation");
 
-      app.locals.database.run(
-        sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
-      );
+        app.locals.database.run(
+          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
+        );
+      }
 
       app.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
-        content: html`System role updated successfully.`,
+        content: html`User updated successfully.`,
       });
 
       res.redirect(

@@ -52,7 +52,7 @@ import administrator, {
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
   CanCreateCoursesMiddleware,
-  MayManageUserSystemRolesMiddleware,
+  MayManageUserMiddleware,
   AdministratorLayout,
 } from "./administrator.js";
 export {
@@ -62,7 +62,7 @@ export {
   systemRoles,
   IsAdministratorMiddlewareLocals,
   CanCreateCoursesMiddlewareLocals,
-  MayManageUserSystemRolesMiddlewareLocals,
+  MayManageUserMiddlewareLocals as MayManageUserSystemRolesMiddlewareLocals,
 } from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
@@ -181,7 +181,7 @@ export interface Courselore extends express.Express {
       isSignedIn: IsSignedInMiddleware;
       isAdministrator: IsAdministratorMiddleware;
       canCreateCourses: CanCreateCoursesMiddleware;
-      mayManageUserSystemRoles: MayManageUserSystemRolesMiddleware;
+      mayManageUser: MayManageUserMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;
