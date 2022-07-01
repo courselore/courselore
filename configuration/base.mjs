@@ -8,6 +8,7 @@ export default async ({
   liveReload = false,
   demonstration = !production,
   hstsPreload = false,
+  alternativeHosts = [],
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
@@ -62,12 +63,30 @@ export default async ({
             encode zstd gzip
           }
 
-          http://${new URL(baseURL).host} {
+          ${[new URL(baseURL).host, ...alternativeHosts]
+            .map((host) => `http://${host}`)
+            .join(", ")} {
             import common
             redir https://{host}{uri} 308
             handle_errors {
               import common
             }
+          }
+
+          ${
+            alternativeHosts.length > 0
+              ? caddyfile`
+                  ${alternativeHosts
+                    .map((host) => `https://${host}`)
+                    .join(", ")} {
+                    import common
+                    redir ${baseURL}{uri} 307
+                    handle_errors {
+                      import common
+                    }
+                  }
+                `
+              : ``
           }
           
           ${new URL(baseURL).origin} {
