@@ -116,7 +116,7 @@ export default (app: Courselore): void => {
           );
           console.log(
             `${new Date().toISOString()}\tworker.sendEmail\tSUCCEEDED\t\t${
-              sentMessageInfo.response
+              sentMessageInfo.response ?? ""
             }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
               process.env.NODE_ENV !== "production"
                 ? `\n${JSON.stringify(sentMessageInfo, undefined, 2)}`
