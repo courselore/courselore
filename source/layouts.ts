@@ -452,99 +452,101 @@ export default async (app: Courselore): Promise<void> => {
               }
             `)}"
           >
-            $${app.locals.options.demonstration ||
-            process.env.NODE_ENV !== "production"
-              ? html`
-                  <div
-                    key="header--demonstration"
-                    css="${res.locals.css(css`
-                      justify-content: center;
-                      flex-wrap: wrap;
-                    `)}"
-                  >
-                    $${app.locals.options.demonstration
-                      ? html`
-                          <div>
-                            <button
-                              class="button button--transparent"
-                              onload="${javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  trigger: "click",
-                                  interactive: true,
-                                  content: ${res.locals.html(
-                                    html`
-                                      <div
-                                        css="${res.locals.css(css`
-                                          padding: var(--space--2);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `)}"
-                                      >
-                                        <p>
-                                          This Courselore installation is
-                                          running in demonstration mode and must
-                                          not be used for real courses. Any data
-                                          may be lost, including users, courses,
-                                          invitations, conversations, messages,
-                                          and so forth. Emails aren’t delivered.
-                                          You may create demonstration data to
-                                          give you a better idea of what
-                                          Courselore looks like in use.
-                                        </p>
-                                        <form
-                                          method="POST"
-                                          action="${app.locals.options
-                                            .baseURL}/demonstration-data"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          <button
-                                            class="button button--blue"
-                                            css="${res.locals.css(css`
-                                              width: 100%;
-                                            `)}"
-                                          >
-                                            <i class="bi bi-easel-fill"></i>
-                                            Create Demonstration Data
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `
-                                  )},
-                                });
-                              `}"
+            $${(() => {
+              const content: HTML[] = [];
+
+              if (app.locals.options.demonstration)
+                content.push(html`
+                  <div>
+                    <button
+                      class="button button--transparent"
+                      onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        interactive: true,
+                        content: ${res.locals.html(
+                          html`
+                            <div
+                              css="${res.locals.css(css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `)}"
                             >
-                              <i class="bi bi-easel"></i>
-                              Demonstration Mode
-                            </button>
-                          </div>
-                        `
-                      : html``}
-                    $${process.env.NODE_ENV !== "production"
-                      ? html`
-                          <form
-                            method="DELETE"
-                            action="${app.locals.options.baseURL}/turn-off"
-                          >
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="${req.csrfToken()}"
-                            />
-                            <button class="button button--transparent">
-                              <i class="bi bi-power"></i>
-                              Turn off
-                            </button>
-                          </form>
-                        `
-                      : html``}
+                              <p>
+                                This Courselore installation is running in
+                                demonstration mode and must not be used for real
+                                courses. Any data may be lost, including users,
+                                courses, invitations, conversations, messages,
+                                and so forth. Emails aren’t delivered. You may
+                                create demonstration data to give you a better
+                                idea of what Courselore looks like in use.
+                              </p>
+                              <form
+                                method="POST"
+                                action="${app.locals.options
+                                  .baseURL}/demonstration-data"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="_csrf"
+                                  value="${req.csrfToken()}"
+                                />
+                                <button
+                                  class="button button--blue"
+                                  css="${res.locals.css(css`
+                                    width: 100%;
+                                  `)}"
+                                >
+                                  <i class="bi bi-easel-fill"></i>
+                                  Create Demonstration Data
+                                </button>
+                              </form>
+                            </div>
+                          `
+                        )},
+                      });
+                    `}"
+                    >
+                      <i class="bi bi-easel"></i>
+                      Demonstration Mode
+                    </button>
                   </div>
-                `
-              : html``}
+                `);
+
+              if (process.env.NODE_ENV !== "production")
+                content.push(html`
+                  <form
+                    method="DELETE"
+                    action="${app.locals.options.baseURL}/turn-off"
+                  >
+                    <input
+                      type="hidden"
+                      name="_csrf"
+                      value="${req.csrfToken()}"
+                    />
+                    <button class="button button--transparent">
+                      <i class="bi bi-power"></i>
+                      Turn off
+                    </button>
+                  </form>
+                `);
+
+              return content.length > 0
+                ? html`
+                    <div
+                      key="header--demonstration"
+                      css="${res.locals.css(css`
+                        justify-content: center;
+                        flex-wrap: wrap;
+                      `)}"
+                    >
+                      $${content}
+                    </div>
+                  `
+                : html``;
+            })()}
             $${extraHeaders}
           </div>
 
