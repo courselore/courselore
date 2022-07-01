@@ -10,13 +10,12 @@ export default (app: Courselore): void => {
     return schedule;
 
     async function schedule() {
-      clean();
       await work();
       clearTimeout(timeout);
       timeout = setTimeout(schedule, 2 * 60 * 1000);
     }
 
-    function clean(): void {
+    async function work(): Promise<void> {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
@@ -72,9 +71,7 @@ export default (app: Courselore): void => {
           );
         }
       });
-    }
 
-    async function work(): Promise<void> {
       while (true) {
         const job = app.locals.database.executeTransaction(() => {
           const job = app.locals.database.get<{
