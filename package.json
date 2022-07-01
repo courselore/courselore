@@ -21,7 +21,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "cd ./static/ && npm install",
-    "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/binary.js\"",
+    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./distribution/binary.js\"",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
     "clean": "shx rm -rf ./distribution/"
