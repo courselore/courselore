@@ -157,8 +157,7 @@ export default (app: Courselore): void => {
             `
       )!;
     });
-    // TODO: Administrator Panel: Check if the user is signed in and use them instead of the freshly created ‘demonstrationUser’
-    const demonstrationUser = users.shift()!;
+    const demonstrationUser = res.locals.user ?? users.shift()!;
 
     const year = new Date().getFullYear().toString();
     const month = new Date().getMonth() + 1;
