@@ -99,45 +99,45 @@ export default (app: Courselore): void => {
         });
         if (job === undefined) return;
         const mailOptions = JSON.parse(job.mailOptions);
-        let result: { status: "SUCCEEDED" | "FAILED"; response: string };
         try {
           const sentMessageInfo = await app.locals.options.sendMail(
             mailOptions
           );
-          result = { status: "SUCCEEDED", ...sentMessageInfo };
+          app.locals.database.run(
+            sql`
+              DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tworker.sendEmail\tSUCCEEDED\t\t${
+              sentMessageInfo.response
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+              process.env.NODE_ENV !== "production"
+                ? `\n${JSON.stringify(mailOptions, undefined, 2)}`
+                : ``
+            }`
+          );
         } catch (error: any) {
-          result = { status: "FAILED", ...error };
+          app.locals.database.run(
+            sql`
+              UPDATE "sendEmailJobs"
+              SET "startAt" = ${new Date(
+                Date.now() + 5 * 60 * 1000
+              ).toISOString()},
+                  "startedAt" = NULL
+              WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tworker.sendEmail\tFAILED\t\t${
+              error.response ?? ""
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+              process.env.NODE_ENV !== "production"
+                ? `\n${JSON.stringify(mailOptions, undefined, 2)}`
+                : ``
+            }`
+          );
         }
-        switch (result.status) {
-          case "SUCCEEDED":
-            app.locals.database.run(
-              sql`
-                DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-              `
-            );
-            break;
-          case "FAILED":
-            app.locals.database.run(
-              sql`
-                UPDATE "sendEmailJobs"
-                SET "startAt" = ${new Date(
-                  Date.now() + 5 * 60 * 1000
-                ).toISOString()},
-                    "startedAt" = NULL
-                WHERE "id" = ${job.id}
-              `
-            );
-            break;
-        }
-        console.log(
-          `${new Date().toISOString()}\tworker.sendEmail\t${result.status}\t\t${
-            result?.response ?? ""
-          }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-            process.env.NODE_ENV !== "production"
-              ? `\n${JSON.stringify(mailOptions, undefined, 2)}`
-              : ``
-          }`
-        );
       }
     }
   })();
