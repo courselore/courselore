@@ -468,31 +468,31 @@ export default (app: Courselore): void => {
         systemRole: SystemRole;
       }>(
         sql`
-            SELECT "id",
-                   "lastSeenOnlineAt",
-                   "reference",
-                   "email",
-                   "name",
-                   "avatar",
-                   "avatarlessBackgroundColor",
-                   "biographySource",
-                   "biographyPreprocessed",
-                   "systemRole"
-            FROM "users"
-            ORDER BY CASE "systemRole"
-                      WHEN 'administrator' THEN 0
-                      WHEN 'staff' THEN 1
-                      WHEN 'none' THEN 2
-                    END, 
-                    "users"."name" ASC
-          `
+          SELECT "id",
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "name",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "systemRole"
+          FROM "users"
+          ORDER BY CASE "systemRole"
+                     WHEN 'administrator' THEN 0
+                     WHEN 'staff' THEN 1
+                     WHEN 'none' THEN 2
+                   END,
+                  "users"."name" ASC
+        `
       );
 
       res.send(
         app.locals.layouts.administratorPanel({
           req,
           res,
-          head: html`<title>Roles · Administrator Panel · Courselore</title>`,
+          head: html`<title>System Roles · Administrator Panel · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-tools"></i>
