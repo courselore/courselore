@@ -4,6 +4,9 @@ export default async ({
   baseURL,
   administratorEmail,
   dataDirectory,
+  production = false,
+  liveReload = false,
+  demonstration = !production,
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
@@ -23,6 +26,7 @@ export default async ({
         {
           preferLocal: true,
           stdio: "inherit",
+          ...(production ? { env: { NODE_ENV: "production" } } : {}),
         }
       ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
@@ -32,7 +36,7 @@ export default async ({
         input: caddyfile`
           {
             admin off
-            local_certs
+            ${production ? `email ${administratorEmail}` : `local_certs`}
           }
 
           (common) {
@@ -105,7 +109,8 @@ export default async ({
       dataDirectory,
       baseURL,
       administratorEmail,
-      liveReload: true,
+      liveReload,
+      demonstration,
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");

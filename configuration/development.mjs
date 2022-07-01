@@ -6,5 +6,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     baseURL: process.env.BASE_URL ?? `https://localhost`,
     administratorEmail: "development@courselore.org",
     dataDirectory: path.join(process.cwd(), "data"),
+    liveReload: true,
   });
 };
