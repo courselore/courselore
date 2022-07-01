@@ -715,81 +715,85 @@ export default (app: Courselore): void => {
       code?: string;
     },
     {},
-    IsSignedInMiddlewareLocals
-  >("/courses", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
-    if (
-      typeof req.body.name !== "string" ||
-      req.body.name.trim() === "" ||
-      !["string", "undefined"].includes(typeof req.body.year) ||
-      !["string", "undefined"].includes(typeof req.body.term) ||
-      !["string", "undefined"].includes(typeof req.body.institution) ||
-      !["string", "undefined"].includes(typeof req.body.code)
-    )
-      return next("validation");
+    CanCreateCoursesMiddlewareLocals
+  >(
+    "/courses",
+    ...app.locals.middlewares.canCreateCourses,
+    (req, res, next) => {
+      if (
+        typeof req.body.name !== "string" ||
+        req.body.name.trim() === "" ||
+        !["string", "undefined"].includes(typeof req.body.year) ||
+        !["string", "undefined"].includes(typeof req.body.term) ||
+        !["string", "undefined"].includes(typeof req.body.institution) ||
+        !["string", "undefined"].includes(typeof req.body.code)
+      )
+        return next("validation");
 
-    const course = app.locals.database.get<{
-      id: number;
-      reference: string;
-    }>(
-      sql`
-        INSERT INTO "courses" (
-          "createdAt",
-          "reference",
-          "name",
-          "year",
-          "term",
-          "institution",
-          "code",
-          "nextConversationReference"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${req.body.name},
-          ${
-            typeof req.body.year === "string" && req.body.year.trim() !== ""
-              ? req.body.year
-              : null
-          },
-          ${
-            typeof req.body.term === "string" && req.body.term.trim() !== ""
-              ? req.body.term
-              : null
-          },
-          ${
-            typeof req.body.institution === "string" &&
-            req.body.institution.trim() !== ""
-              ? req.body.institution
-              : null
-          },
-          ${
-            typeof req.body.code === "string" && req.body.code.trim() !== ""
-              ? req.body.code
-              : null
-          },
-          ${1}
-        )
-        RETURNING *
-      `
-    )!;
-    app.locals.database.run(
-      sql`
-        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-        VALUES (
-          ${new Date().toISOString()},
-          ${res.locals.user.id},
-          ${course.id},
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${"staff"},
-          ${app.locals.helpers.defaultAccentColor({ req, res })}
-        )
-      `
-    );
-    res.redirect(
-      303,
-      `${app.locals.options.baseURL}/courses/${course.reference}`
-    );
-  });
+      const course = app.locals.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
+          INSERT INTO "courses" (
+            "createdAt",
+            "reference",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",
+            "nextConversationReference"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${req.body.name},
+            ${
+              typeof req.body.year === "string" && req.body.year.trim() !== ""
+                ? req.body.year
+                : null
+            },
+            ${
+              typeof req.body.term === "string" && req.body.term.trim() !== ""
+                ? req.body.term
+                : null
+            },
+            ${
+              typeof req.body.institution === "string" &&
+              req.body.institution.trim() !== ""
+                ? req.body.institution
+                : null
+            },
+            ${
+              typeof req.body.code === "string" && req.body.code.trim() !== ""
+                ? req.body.code
+                : null
+            },
+            ${1}
+          )
+          RETURNING *
+        `
+      )!;
+      app.locals.database.run(
+        sql`
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+          VALUES (
+            ${new Date().toISOString()},
+            ${res.locals.user.id},
+            ${course.id},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${"staff"},
+            ${app.locals.helpers.defaultAccentColor({ req, res })}
+          )
+        `
+      );
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}/courses/${course.reference}`
+      );
+    }
+  );
 
   app.locals.helpers.defaultAccentColor = ({
     req,
