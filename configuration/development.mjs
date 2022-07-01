@@ -2,7 +2,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
   const execa = (await courseloreImport("execa")).execa;
-  const nodemailer = (await courseloreImport("nodemailer")).default;
   const caddyfile = (await courseloreImport("dedent")).default;
   const courselore = (await courseloreImport("./index.js")).default;
   const baseURL = process.env.BASE_URL ?? `https://localhost`;
@@ -98,15 +97,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       dataDirectory,
       baseURL,
       administratorEmail,
-      sendMail: (() => {
-        const transporter = nodemailer.createTransport(
-          {
-            jsonTransport: true,
-          },
-          { from: `"Courselore" <${administratorEmail}>` }
-        );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
-      })(),
       liveReload: true,
     });
     const server = app.listen(4000, "127.0.0.1");
