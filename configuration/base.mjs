@@ -2,13 +2,13 @@ export default async ({
   courseloreImport,
   courseloreImportMetaURL,
   baseURL,
+  administratorEmail,
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
   const execa = (await courseloreImport("execa")).execa;
   const caddyfile = (await courseloreImport("dedent")).default;
   const courselore = (await courseloreImport("./index.js")).default;
-  const administratorEmail = "development@courselore.org";
   const dataDirectory = path.join(process.cwd(), "data");
   if (process.argv[3] === undefined) {
     const subprocesses = [
