@@ -9,6 +9,9 @@ export default async ({
   demonstration = !production,
   hstsPreload = false,
   alternativeHosts = [],
+  sendMail = (() => {
+    if (!demonstration) throw new Error("Set ‘sendMail’ in the configuration");
+  })(),
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
@@ -133,6 +136,7 @@ export default async ({
       administratorEmail,
       liveReload,
       demonstration,
+      sendMail,
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");
