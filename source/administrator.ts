@@ -394,33 +394,41 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      app.locals.options.canCreateCourses = req.body.canCreateCourses;
-      app.locals.database.run(
-        sql`
-          UPDATE "configurations"
-          SET "value" = ${JSON.stringify(app.locals.options.canCreateCourses)}
-          WHERE "key" = 'canCreateCourses'
-        `
+      app.locals.options.canCreateCourses = JSON.parse(
+        app.locals.database.get<{
+          value: string;
+        }>(
+          sql`
+            UPDATE "configurations"
+            SET "value" = ${JSON.stringify(req.body.canCreateCourses)}
+            WHERE "key" = 'canCreateCourses'
+            RETURNING *
+          `
+        )!.value
       );
 
-      app.locals.options.demonstration = req.body.demonstration === "on";
-      app.locals.database.run(
-        sql`
-          UPDATE "configurations"
-          SET "value" = ${JSON.stringify(
-            app.locals.options.demonstration ? new Date().toISOString() : null
-          )}
-          WHERE "key" = 'demonstrationAt'
-        `
+      app.locals.options.demonstration = JSON.parse(
+        app.locals.database.get<{ value: string }>(
+          sql`
+            UPDATE "configurations"
+            SET "value" = ${JSON.stringify(
+              req.body.demonstration === "on" ? new Date().toISOString() : null
+            )}
+            WHERE "key" = 'demonstrationAt'
+            RETURNING *
+          `
+        )!.value
       );
 
-      app.locals.options.administratorEmail = req.body.administratorEmail;
-      app.locals.database.run(
-        sql`
-          UPDATE "configurations"
-          SET "value" = ${JSON.stringify(app.locals.options.administratorEmail)}
-          WHERE "key" = 'administratorEmail'
-        `
+      app.locals.options.administratorEmail = JSON.parse(
+        app.locals.database.get<{ value: string }>(
+          sql`
+            UPDATE "configurations"
+            SET "value" = ${JSON.stringify(req.body.administratorEmail)}
+            WHERE "key" = 'administratorEmail'
+            RETURNING *
+          `
+        )!.value
       );
 
       app.locals.helpers.Flash.set({
