@@ -11,7 +11,12 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     const subprocesses = [
       execa(
         process.argv[0],
-        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
+        [
+          process.argv[1],
+          process.argv[2] ??
+            url.fileURLToPath(new URL("./development.mjs", import.meta.url)),
+          "server",
+        ],
         {
           preferLocal: true,
           stdio: "inherit",
