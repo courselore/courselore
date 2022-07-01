@@ -10,9 +10,9 @@ export default (app: Courselore): void => {
     return schedule;
 
     async function schedule() {
-      clearTimeout(timeout);
       clean();
       await work();
+      clearTimeout(timeout);
       timeout = setTimeout(schedule, 2 * 60 * 1000);
     }
 
