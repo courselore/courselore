@@ -786,7 +786,7 @@ export default async (app: Courselore): Promise<void> => {
       INSERT INTO "configurations" ("key", "value") 
         VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
       INSERT INTO "configurations" ("key", "value")
-        VALUES ('demonstrationAt', ${JSON.stringify(null)});
+        VALUES ('demonstrationAt', ${JSON.stringify(new Date().toISOString())});
       INSERT INTO "configurations" ("key", "value")
         VALUES ('administratorEmail', ${JSON.stringify(
           "please-change-me@courselore.org"
