@@ -2,16 +2,19 @@ export default async ({
   courseloreImport,
   courseloreImportMetaURL,
   baseURL,
+  alternativeHosts = [],
   administratorEmail,
   dataDirectory,
-  production = false,
-  liveReload = false,
-  demonstration = !production,
-  hstsPreload = false,
-  alternativeHosts = [],
-  sendMail = (() => {
-    if (!demonstration) throw new Error("Set ‘sendMail’ in the configuration");
+  nodemailerTransport = { jsonTransport: true },
+  sendMail = await (async () => {
+    const nodemailer = await courseloreImport("nodemailer");
+    const transport = nodemailer.createTransport(nodemailerTransport);
+    return async (mailOptions) => await transport.sendMail(mailOptions);
   })(),
+  hstsPreload = false,
+  production = true,
+  demonstration = !production,
+  liveReload = false,
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
