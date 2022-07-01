@@ -48,6 +48,7 @@ export {
 import about, { AboutHandler } from "./about.js";
 
 import administrator, {
+  CanCreateCourses,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
   CanCreateCoursesMiddleware,
@@ -161,8 +162,8 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
-      demonstration?: boolean;
-      canCreateCourses: string;
+      demonstration: boolean;
+      canCreateCourses: CanCreateCourses;
       administratorEmail: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
