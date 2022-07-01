@@ -6,11 +6,6 @@ export type SendEmailWorker = () => Promise<void>;
 
 export default (app: Courselore): void => {
   app.locals.workers.sendEmail = (() => {
-    const demonstrationSendMail = (() => {
-      const transporter = nodemailer.createTransport({ jsonTransport: true });
-      return async (mailOptions: nodemailer.SendMailOptions) =>
-        await transporter.sendMail(mailOptions);
-    })();
     let timeout: NodeJS.Timeout;
     schedule();
     return schedule;
@@ -106,9 +101,9 @@ export default (app: Courselore): void => {
         if (job === undefined) return;
         const mailOptions = JSON.parse(job.mailOptions);
         try {
-          const sentMessageInfo = app.locals.options.demonstration
-            ? await demonstrationSendMail(mailOptions)
-            : await app.locals.options.sendMail(mailOptions);
+          const sentMessageInfo = await app.locals.options.sendMail(
+            mailOptions
+          );
           app.locals.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
