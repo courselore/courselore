@@ -202,19 +202,19 @@ export default (app: Courselore): void => {
           Configuration
         </a>
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/system-roles"
+          href="${app.locals.options.baseURL}/administrator-panel/users"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/system-roles"
+            "/administrator-panel/users"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administrator-panel/system-roles")
+            class="bi ${req.path.endsWith("/administrator-panel/users")
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>
-          System Roles
+          Users
         </a>
       `,
       body,
@@ -452,7 +452,7 @@ export default (app: Courselore): void => {
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administrator-panel/system-roles",
+    "/administrator-panel/users",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       const users = app.locals.database.all<{
@@ -492,13 +492,13 @@ export default (app: Courselore): void => {
         app.locals.layouts.administratorPanel({
           req,
           res,
-          head: html`<title>System Roles · Administrator Panel · Courselore</title>`,
+          head: html`<title>Users · Administrator Panel · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-tools"></i>
               Administrator Panel ·
               <i class="bi bi-people"></i>
-              System Roles
+              Users
             </h2>
 
             <label
@@ -544,7 +544,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/users/${user.reference}/system-roles`;
+              const action = `${app.locals.options.baseURL}/users/${user.reference}/users`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -869,7 +869,7 @@ export default (app: Courselore): void => {
     {},
     MayManageUserSystemRolesMiddlewareLocals
   >(
-    "/users/:userReference/system-roles",
+    "/users/:userReference/users",
     ...app.locals.middlewares.mayManageUserSystemRoles,
     (req, res, next) => {
       if (
@@ -893,7 +893,7 @@ export default (app: Courselore): void => {
         303,
         res.locals.managedUser.isSelf
           ? `${app.locals.options.baseURL}`
-          : `${app.locals.options.baseURL}/administrator-panel/system-roles`
+          : `${app.locals.options.baseURL}/administrator-panel/users`
       );
     }
   );
