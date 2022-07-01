@@ -134,7 +134,7 @@ export default (app: Courselore): void => {
             result?.response ?? ""
           }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
             process.env.NODE_ENV !== "production"
-              ? `\n${JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)}`
+              ? `\n${JSON.stringify(mailOptions, undefined, 2)}`
               : ``
           }`
         );
