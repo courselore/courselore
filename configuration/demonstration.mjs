@@ -1,11 +1,10 @@
 export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const url = await courseloreImport("node:url");
+  const path = await courseloreImport("node:path");
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
     baseURL: process.env.BASE_URL ?? `https://localhost`,
-    administratorEmail: "development@courselore.org",
-    dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
-    liveReload: true,
+    administratorEmail: "demonstration@courselore.org",
+    dataDirectory: path.join(process.cwd(), "data"),
   });
 };
