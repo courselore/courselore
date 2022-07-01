@@ -15,7 +15,7 @@ export type AboutHandler = express.RequestHandler<
   any,
   {},
   {},
-  BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
 >;
 
 export default (app: Courselore): void => {

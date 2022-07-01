@@ -10,8 +10,8 @@ import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   BaseMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
   userAvatarlessBackgroundColors,
   userEmailNotificationsDigestsFrequencies,
   CourseRole,
@@ -26,7 +26,7 @@ export type DemonstrationHandler = express.RequestHandler<
   any,
   {},
   {},
-  BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
 >;
 
 export default (app: Courselore): void => {
