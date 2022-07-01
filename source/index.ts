@@ -56,13 +56,13 @@ import administrator, {
   AdministratorLayout,
 } from "./administrator.js";
 export {
-  IsAdministratorMiddlewareLocals,
-  CanCreateCoursesMiddlewareLocals,
-  MayManageUserSystemRolesMiddlewareLocals,
   CanCreateCourses,
   canCreateCourseses,
   SystemRole,
   systemRoles,
+  IsAdministratorMiddlewareLocals,
+  CanCreateCoursesMiddlewareLocals,
+  MayManageUserSystemRolesMiddlewareLocals,
 } from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
