@@ -59,7 +59,6 @@ export interface MayManageUserSystemRolesMiddlewareLocals
   extends IsAdministratorMiddlewareLocals {
   managedUser: {
     id: number;
-    reference: string;
     isSelf: boolean;
   };
 }
@@ -150,10 +149,9 @@ export default (app: Courselore): void => {
     (req, res, next) => {
       const managedUser = app.locals.database.get<{
         id: number;
-        reference: string;
       }>(
         sql`
-          SELECT "id", "reference"
+          SELECT "id"
           FROM "users"
           WHERE "reference" = ${req.params.userReference}
         `
@@ -167,10 +165,10 @@ export default (app: Courselore): void => {
         res.locals.managedUser.isSelf &&
         app.locals.database.get<{ count: number }>(
           sql`
-              SELECT COUNT(*) AS "count"
-              FROM "users"
-              WHERE "systemRole" = 'administrator'
-            `
+            SELECT COUNT(*) AS "count"
+            FROM "users"
+            WHERE "systemRole" = 'administrator'
+          `
         )!.count === 1
       )
         return next("validation");
@@ -376,9 +374,9 @@ export default (app: Courselore): void => {
     {},
     any,
     {
-      canCreateCourses: CanCreateCourses;
-      demonstration: string;
-      administratorEmail: string;
+      canCreateCourses?: CanCreateCourses;
+      demonstration?: "on";
+      administratorEmail?: string;
     },
     {},
     IsAdministratorMiddlewareLocals
@@ -389,6 +387,7 @@ export default (app: Courselore): void => {
       if (
         typeof req.body.canCreateCourses !== "string" ||
         !canCreateCourseses.includes(req.body.canCreateCourses) ||
+        ![undefined, "on"].includes(req.body.demonstration) ||
         typeof req.body.administratorEmail !== "string" ||
         req.body.administratorEmail.match(app.locals.helpers.emailRegExp) ===
           null
