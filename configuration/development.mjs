@@ -7,5 +7,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     administratorEmail: "development@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
     liveReload: true,
+    sendMail: { jsonTransport: true }
   });
 };

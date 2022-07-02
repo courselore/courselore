@@ -5,12 +5,7 @@ export default async ({
   alternativeHosts = [],
   administratorEmail,
   dataDirectory,
-  nodemailerTransport = { jsonTransport: true },
-  sendMail = await (async () => {
-    const nodemailer = await courseloreImport("nodemailer");
-    const transport = nodemailer.createTransport(nodemailerTransport);
-    return async (mailOptions) => await transport.sendMail(mailOptions);
-  })(),
+  sendMail,
   hstsPreload = false,
   production = true,
   demonstration = !production,
@@ -19,6 +14,7 @@ export default async ({
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
   const execa = (await courseloreImport("execa")).execa;
+  const nodemailer = await courseloreImport("nodemailer");
   const caddyfile = (await courseloreImport("dedent")).default;
   const courselore = (await courseloreImport("./index.js")).default;
   if (process.argv[3] === undefined) {
@@ -133,6 +129,10 @@ export default async ({
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
+    if (typeof sendMail === "object") {
+      const transport = nodemailer.createTransport(sendMail);
+      sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
+    }
     const app = await courselore({
       dataDirectory,
       baseURL,
