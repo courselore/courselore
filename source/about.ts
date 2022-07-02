@@ -171,7 +171,7 @@ export default (app: Courselore): void => {
 
                 <div>
                   <a
-                    href="https://try.courselore.org/"
+                    href="https://${app.locals.options.tryHost}"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -860,7 +860,7 @@ export default (app: Courselore): void => {
               Source Code
             </a>
             <a
-              href="https://try.courselore.org/"
+              href="https://${app.locals.options.tryHost}"
               class="button button--transparent"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({

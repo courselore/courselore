@@ -2260,7 +2260,7 @@ export default async (app: Courselore): Promise<void> => {
               $${body}
             </div>
 
-            $${app.locals.options.host === "https://try.courselore.org"
+            $${app.locals.options.host === app.locals.options.tryHost
               ? html`
                   <div
                     key="main--try"
@@ -2293,7 +2293,7 @@ export default async (app: Courselore): Promise<void> => {
                       `)}"
                     >
                       <p>
-                        This is the demonstration installation of Courselore and
+                        This is a development installation of Courselore and
                         must not be used for real courses. Any data may be lost,
                         including users, courses, invitations, conversations,
                         messages, and so forth. Emails aren’t delivered. You may
