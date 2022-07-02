@@ -805,7 +805,7 @@ const { app, BrowserWindow } = require("electron");
 2. Run Courselore with the Localtunnel address, for example:
 
    ```console
-   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   $ env HOST=THE-LOCAL-TUNNEL-ADDRESS npm start
    ```
 ````
 

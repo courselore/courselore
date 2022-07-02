@@ -1,7 +1,7 @@
 export default async ({
   courseloreImport,
   courseloreImportMetaURL,
-  baseURL,
+  host,
   administratorEmail,
   dataDirectory,
   sendMail,
@@ -44,7 +44,7 @@ export default async ({
 
           (common) {
             header Cache-Control no-cache
-            header Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+            header Content-Security-Policy "default-src https://${host}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
             header Cross-Origin-Embedder-Policy require-corp
             header Cross-Origin-Opener-Policy same-origin
             header Cross-Origin-Resource-Policy same-origin
@@ -64,7 +64,7 @@ export default async ({
             encode zstd gzip
           }
 
-          ${[new URL(baseURL).host, ...alternativeHosts]
+          ${[host, ...alternativeHosts]
             .map((host) => `http://${host}`)
             .join(", ")} {
             import common
@@ -81,7 +81,7 @@ export default async ({
                     .map((host) => `https://${host}`)
                     .join(", ")} {
                     import common
-                    redir ${baseURL}{uri} 307
+                    redir https://${host}{uri} 307
                     handle_errors {
                       import common
                     }
@@ -90,8 +90,8 @@ export default async ({
               : ``
           }
           
-          ${new URL(baseURL).origin} {
-            route ${new URL(`${baseURL}/*`).pathname} {
+          https://${host} {
+            route {
               import common
               route {
                 root * ${path.resolve(
@@ -137,7 +137,7 @@ export default async ({
     }
     const app = await courselore({
       dataDirectory,
-      baseURL,
+      host,
       administratorEmail,
       liveReload,
       demonstration,

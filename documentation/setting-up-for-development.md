@@ -218,10 +218,8 @@ You may run Courselore on your machine and access it from a phone, which is esse
 4. Run Courselore with the Local Area Network address, for example:
 
    ```console
-   $ env BASE_URL=https://leafac.local npm start
+   $ env HOST=leafac.local npm start
    ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 5. Visit the address on the phone.
 
@@ -241,10 +239,8 @@ You may run Courselore on your machine and access it from a phone, which is esse
 3. Run Courselore with the server’s address, for example:
 
    ```console
-   $ env BASE_URL=https://YOUR-SERVER.COM:4000 npm start
+   $ env HOST=YOUR-SERVER.COM:4000 npm start
    ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 4. Connect to the tunnel from your machine, for example:
 
