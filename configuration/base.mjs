@@ -11,13 +11,11 @@ export default async ({
   demonstration = !production,
   liveReload = false,
 }) => {
-  const path = await courseloreImport("node:path");
-  const url = await courseloreImport("node:url");
-  const execa = (await courseloreImport("execa")).execa;
-  const nodemailer = await courseloreImport("nodemailer");
-  const caddyfile = (await courseloreImport("dedent")).default;
-  const courselore = (await courseloreImport("./index.js")).default;
   if (process.argv[3] === undefined) {
+    const path = await courseloreImport("node:path");
+    const url = await courseloreImport("node:url");
+    const execa = (await courseloreImport("execa")).execa;
+    const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
       execa(
         process.argv[0],
@@ -129,6 +127,9 @@ export default async ({
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
+    const nodemailer = await courseloreImport("nodemailer");
+    const courselore = (await courseloreImport("./index.js")).default;
+
     if (typeof sendMail === "object") {
       const transport = nodemailer.createTransport(sendMail);
       sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
