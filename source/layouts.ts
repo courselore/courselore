@@ -522,7 +522,7 @@ export default async (app: Courselore): Promise<void> => {
                       ? html`
                           <form
                             method="DELETE"
-                            action="${app.locals.options.baseURL}/turn-off"
+                            action="https://${app.locals.options.host}/turn-off"
                           >
                             <input
                               type="hidden"
@@ -607,7 +607,7 @@ export default async (app: Courselore): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${app.locals.options.baseURL}/about"
+                            href="https://${app.locals.options.host}/about"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -1021,7 +1021,7 @@ export default async (app: Courselore): Promise<void> => {
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options.baseURL}/global.css"
+            href="https://${app.locals.options.host}/global.css"
           />
           $${res.locals.css.toString()}
 
@@ -1053,7 +1053,7 @@ export default async (app: Courselore): Promise<void> => {
             $${app.locals.options.liveReload
               ? javascript`
                   leafac.liveReload(${JSON.stringify(
-                    `${app.locals.options.baseURL}/live-reload`
+                    `https://${app.locals.options.host}/live-reload`
                   )});
                 `
               : javascript``};
@@ -2234,7 +2234,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <a
-                href="${app.locals.options.baseURL}/"
+                href="https://${app.locals.options.host}/"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   align-items: center;
@@ -2415,7 +2415,7 @@ export default async (app: Courselore): Promise<void> => {
           `)}"
         >
           <a
-            href="${app.locals.options.baseURL}/"
+            href="https://${app.locals.options.host}/"
             class="button button--tight button--tight--inline button--transparent"
             onload="${javascript`
               (this.tooltip ??= tippy(this)).setProps({
@@ -2660,7 +2660,8 @@ export default async (app: Courselore): Promise<void> => {
                             Enroll in an Existing Course
                           </button>
                           <a
-                            href="${app.locals.options.baseURL}/courses/new"
+                            href="https://${app.locals.options
+                              .host}/courses/new"
                             class="dropdown--menu--item button button--transparent"
                           >
                             <i class="bi bi-journal-plus"></i>
@@ -2754,14 +2755,14 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             class="dropdown--menu--item button button--transparent"
-                            href="${app.locals.options.baseURL}/settings"
+                            href="https://${app.locals.options.host}/settings"
                           >
                             <i class="bi bi-sliders"></i>
                             User Settings
                           </a>
                           <form
                             method="DELETE"
-                            action="${app.locals.options.baseURL}/sign-out"
+                            action="https://${app.locals.options.host}/sign-out"
                           >
                             <input
                               type="hidden"

@@ -50,7 +50,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <a
-                href="${app.locals.options.baseURL}/about"
+                href="https://${app.locals.options.host}/about"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   font-size: var(--font-size--5xl);
@@ -126,7 +126,7 @@ export default (app: Courselore): void => {
                       `
                     : html`
                         <a
-                          href="${app.locals.options.baseURL}/"
+                          href="https://${app.locals.options.host}/"
                           class="button button--blue"
                         >
                           Return to Courselore
@@ -823,7 +823,7 @@ export default (app: Courselore): void => {
                 `
               : html`
                   <a
-                    href="${app.locals.options.baseURL}/"
+                    href="https://${app.locals.options.host}/"
                     class="button button--blue"
                   >
                     Return to Courselore

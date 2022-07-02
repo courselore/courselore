@@ -195,7 +195,9 @@ export default async (app: Courselore): Promise<void> => {
         )
           element.setAttribute(
             "src",
-            `${app.locals.options.baseURL}/content/image-proxy${qs.stringify(
+            `https://${
+              app.locals.options.host
+            }/content/image-proxy${qs.stringify(
               { url: element.getAttribute("src") },
               { addQueryPrefix: true }
             )}`
@@ -245,14 +247,14 @@ export default async (app: Courselore): Promise<void> => {
         if (
           (!href.startsWith("#") &&
             !href.startsWith(app.locals.options.baseURL)) ||
-          href.startsWith(`${app.locals.options.baseURL}/files/`)
+          href.startsWith(`https://${app.locals.options.host}/files/`)
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "onload",
             javascript`
               ${
-                href.startsWith(`${app.locals.options.baseURL}/files/`)
+                href.startsWith(`https://${app.locals.options.host}/files/`)
                   ? javascript``
                   : javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -460,7 +462,7 @@ export default async (app: Courselore): Promise<void> => {
                       if (messageReference === undefined)
                         return html`<a
                           class="reference"
-                          href="${app.locals.options.baseURL}/courses/${res
+                          href="https://${app.locals.options.host}/courses/${res
                             .locals.course!
                             .reference}/conversations/${conversation.reference}${qs.stringify(
                             {
@@ -481,8 +483,8 @@ export default async (app: Courselore): Promise<void> => {
                       if (message === undefined) return match;
                       return html`<a
                         class="reference"
-                        href="${app.locals.options.baseURL}/courses/${res.locals
-                          .course!
+                        href="https://${app.locals.options.host}/courses/${res
+                          .locals.course!
                           .reference}/conversations/${conversation.reference}${qs.stringify(
                           {
                             conversations: req.query.conversations,
@@ -769,7 +771,7 @@ export default async (app: Courselore): Promise<void> => {
                         preview,
                         await (
                           await fetch(${JSON.stringify(
-                            `${app.locals.options.baseURL}${
+                            `https://${app.locals.options.host}${
                               res.locals.course === undefined
                                 ? ""
                                 : `/courses/${res.locals.course.reference}`
@@ -1739,7 +1741,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
-                      `${app.locals.options.baseURL}/content-editor/attachments`
+                      `https://${app.locals.options.host}/content-editor/attachments`
                     )}, {
                       method: "POST",
                       body,
@@ -2011,7 +2013,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `${app.locals.options.baseURL}/courses/${
+                              `https://${app.locals.options.host}/courses/${
                                 res.locals.course.reference
                               }/${
                                 res.locals.conversation !== undefined
@@ -2024,7 +2026,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${app.locals.options.host}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
