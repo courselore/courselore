@@ -144,6 +144,7 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalHost: string;
       metaCourseloreInvitation: string;
+      tryHost: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
@@ -227,14 +228,14 @@ export interface Courselore extends express.Express {
 }
 
 export interface Options {
-  dataDirectory: string;
   host: string;
   administratorEmail: string;
+  dataDirectory: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
-  demonstration?: boolean;
-  liveReload?: boolean;
+  demonstration: boolean;
+  liveReload: boolean;
 }
 
 export default async (options: Options): Promise<Courselore> => {
@@ -249,8 +250,7 @@ export default async (options: Options): Promise<Courselore> => {
     canonicalHost: "courselore.org",
     metaCourseloreInvitation:
       "https://courselore.org/courses/8537410611/invitations/3667859788",
-    demonstration: process.env.NODE_ENV !== "production",
-    liveReload: false,
+    tryHost: "try.courselore.org",
     ...options,
   } as any;
   app.locals.handlers = {} as any;

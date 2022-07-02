@@ -136,12 +136,12 @@ export default async ({
       sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
     }
     const app = await courselore({
-      dataDirectory,
       host,
       administratorEmail,
-      liveReload,
-      demonstration,
+      dataDirectory,
       sendMail,
+      demonstration,
+      liveReload,
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");
