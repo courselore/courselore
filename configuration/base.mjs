@@ -2,10 +2,10 @@ export default async ({
   courseloreImport,
   courseloreImportMetaURL,
   baseURL,
-  alternativeHosts = [],
   administratorEmail,
   dataDirectory,
   sendMail,
+  alternativeHosts = [],
   hstsPreload = false,
   production = true,
   demonstration = !production,
@@ -16,6 +16,7 @@ export default async ({
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
     const caddyfile = (await courseloreImport("dedent")).default;
+
     const subprocesses = [
       execa(
         process.argv[0],
