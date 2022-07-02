@@ -16,7 +16,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       },
       { from: `"Courselore" <FROM@YOUR-DOMAIN.EDU>` },
     ],
-    alternativeHosts: ["WWW.YOUR-DOMAIN.EDU", "..."],
+    // alternativeHosts: ["WWW.YOUR-DOMAIN.EDU", "..."],
     // hstsPreload: true, // Recommended, see https://hstspreload.org/ to learn more
   });
 };

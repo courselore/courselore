@@ -7,9 +7,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       "utf8"
     )
   );
-  const administratorEmail = "administrator@courselore.org"(
-    await courseloreImport("../configuration/base.mjs")
-  ).default({
+  const administratorEmail = "administrator@courselore.org";
+  (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
     baseURL: "https://courselore.org",
