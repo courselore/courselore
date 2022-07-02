@@ -3,7 +3,7 @@
 <details>
 <summary>2021-07-02</summary>
 
-- Administrative interface: It’s ready to deploy.
+- Administrative interface: It’s almost ready to deploy: We want to revert some changes before we actually deploy.
 - Simplified configuration.
 - Better email notifications: Doing filtering on database. Everything but digests.
 
