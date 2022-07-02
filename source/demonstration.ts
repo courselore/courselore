@@ -83,8 +83,8 @@ export default (app: Courselore): void => {
                 ${html`${name}`},
                 ${
                   Math.random() < 0.6
-                    ? `${
-                        app.locals.options.baseURL
+                    ? `https://${
+                        app.locals.options.host
                       }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                     : null
                 },
@@ -597,7 +597,7 @@ export default (app: Courselore): void => {
             demonstration users, their password is “courselore”.
           `,
         });
-        res.redirect(303, app.locals.options.baseURL);
+        res.redirect(303, `https://${app.locals.options.host}`);
       })
     );
 

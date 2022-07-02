@@ -541,7 +541,7 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.baseURL === app.locals.options.canonicalHost
+            $${app.locals.options.host === app.locals.options.canonicalHost
               ? html`
                   <div
                     css="${res.locals.css(css`
@@ -1898,8 +1898,8 @@ export default (app: Courselore): void => {
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="${app.locals.options
-                                      .baseURL}/courses/${res.locals.course
+                                    href="https://${app.locals.options
+                                      .host}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
                                         conversations: {

@@ -1333,8 +1333,8 @@ export default (app: Courselore): void => {
                   <p>
                     <small>
                       <a
-                        href="${app.locals.options
-                          .baseURL}/settings/notifications-preferences"
+                        href="https://${app.locals.options
+                          .host}/settings/notifications-preferences"
                         >Change Notifications Preferences</a
                       >
                     </small>

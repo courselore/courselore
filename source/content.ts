@@ -191,7 +191,9 @@ export default async (app: Courselore): Promise<void> => {
       for (const element of contentElement.querySelectorAll("img")) {
         element.setAttribute("loading", "lazy");
         if (
-          !element.getAttribute("src")?.startsWith(app.locals.options.baseURL)
+          !element
+            .getAttribute("src")
+            ?.startsWith(`https://${app.locals.options.host}`)
         )
           element.setAttribute(
             "src",
@@ -246,7 +248,7 @@ export default async (app: Courselore): Promise<void> => {
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
         if (
           (!href.startsWith("#") &&
-            !href.startsWith(app.locals.options.baseURL)) ||
+            !href.startsWith(`https://${app.locals.options.host}`)) ||
           href.startsWith(`https://${app.locals.options.host}/files/`)
         ) {
           element.setAttribute("target", "_blank");
@@ -290,8 +292,8 @@ export default async (app: Courselore): Promise<void> => {
             if (href !== element.textContent!.trim()) continue;
             const match = href.match(
               new RegExp(
-                `^${escapeStringRegexp(
-                  app.locals.options.baseURL
+                `^https://${escapeStringRegexp(
+                  app.locals.options.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -512,8 +514,8 @@ export default async (app: Courselore): Promise<void> => {
             if (href === null) continue;
             const hrefMatch = href.match(
               new RegExp(
-                `^${escapeStringRegexp(
-                  app.locals.options.baseURL
+                `^https://${escapeStringRegexp(
+                  app.locals.options.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -2772,8 +2774,8 @@ ${contentSource}</textarea
             `files/${folder}/${attachment.name}`
           )
         );
-        const href = `${
-          app.locals.options.baseURL
+        const href = `https://${
+          app.locals.options.host
         }/files/${folder}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
@@ -2804,8 +2806,8 @@ ${contentSource}</textarea
                 )
               );
             attachmentsContentSources.push(
-              `[<img src="${
-                app.locals.options.baseURL
+              `[<img src="https://${
+                app.locals.options.host
               }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
                 attachment.name
               }" width="${maximumWidth / 2}" />](${href})`

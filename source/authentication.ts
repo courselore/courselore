@@ -506,8 +506,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(
+                href="https://${app.locals.options
+                  .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -528,7 +528,7 @@ export default (app: Courselore): void => {
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...app.locals.middlewares.isSignedOut,
-    app.locals.options.baseURL === app.locals.options.canonicalHost
+    app.locals.options.host === app.locals.options.canonicalHost
       ? (req, res, next) => app.locals.handlers.about(req, res, next)
       : app.locals.handlers.signIn
   );
@@ -806,8 +806,8 @@ export default (app: Courselore): void => {
       );
     }
 
-    const link = `${
-      app.locals.options.baseURL
+    const link = `https://${
+      app.locals.options.host
     }/reset-password/${app.locals.helpers.PasswordReset.create(
       user.id
     )}${qs.stringify(
@@ -939,8 +939,8 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${app.locals.options
-              .baseURL}/reset-password/${app.locals.helpers.PasswordReset.create(
+            action="https://${app.locals.options
+              .host}/reset-password/${app.locals.helpers.PasswordReset.create(
               userId
             )}${qs.stringify(
               {
@@ -1180,8 +1180,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(
+                href="https://${app.locals.options
+                  .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,

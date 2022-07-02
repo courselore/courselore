@@ -228,7 +228,7 @@ export interface Courselore extends express.Express {
 
 export interface Options {
   dataDirectory: string;
-  baseURL: string;
+  host: string;
   administratorEmail: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions

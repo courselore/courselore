@@ -871,8 +871,8 @@ export default (app: Courselore): void => {
                         this.value = "";
                         tippy.hideAll();
                         avatarChooser.uploadingIndicator.show();
-                        const response = await fetch("${
-                          app.locals.options.baseURL
+                        const response = await fetch("https://${
+                          app.locals.options.host
                         }/settings/profile/avatar", {
                           method: "POST",
                           body,
