@@ -142,7 +142,7 @@ export interface Courselore extends express.Express {
   locals: {
     options: {
       version: string;
-      canonicalBaseURL: string;
+      canonicalHost: string;
       metaCourseloreInvitation: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
@@ -246,7 +246,7 @@ export default async (options: Options): Promise<Courselore> => {
         "utf8"
       )
     ).version,
-    canonicalBaseURL: "https://courselore.org",
+    canonicalHost: "courselore.org",
     metaCourseloreInvitation:
       "https://courselore.org/courses/8537410611/invitations/3667859788",
     demonstration: process.env.NODE_ENV !== "production",

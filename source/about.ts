@@ -96,7 +96,8 @@ export default (app: Courselore): void => {
                   $${res.locals.user === undefined
                     ? html`
                         <a
-                          href="${app.locals.options.canonicalBaseURL}/sign-up"
+                          href="https://${app.locals.options
+                            .canonicalHost}/sign-up"
                           class="button button--blue"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
@@ -109,7 +110,8 @@ export default (app: Courselore): void => {
                           Sign up
                         </a>
                         <a
-                          href="${app.locals.options.canonicalBaseURL}/sign-in"
+                          href="https://${app.locals.options
+                            .canonicalHost}/sign-in"
                           class="button button--transparent"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
@@ -793,7 +795,7 @@ export default (app: Courselore): void => {
             $${res.locals.user === undefined
               ? html`
                   <a
-                    href="${app.locals.options.canonicalBaseURL}/sign-up"
+                    href="https://${app.locals.options.canonicalHost}/sign-up"
                     class="button button--blue"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -806,7 +808,7 @@ export default (app: Courselore): void => {
                     Sign up
                   </a>
                   <a
-                    href="${app.locals.options.canonicalBaseURL}/sign-in"
+                    href="https://${app.locals.options.canonicalHost}/sign-in"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -877,7 +879,7 @@ export default (app: Courselore): void => {
   };
 
   if (
-    app.locals.options.baseURL === app.locals.options.canonicalBaseURL ||
+    app.locals.options.baseURL === app.locals.options.canonicalHost ||
     process.env.NODE_ENV !== "production"
   ) {
     app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
@@ -892,6 +894,6 @@ export default (app: Courselore): void => {
     );
   } else
     app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
-      res.redirect(303, `${app.locals.options.canonicalBaseURL}/about`);
+      res.redirect(303, `https://${app.locals.options.canonicalHost}/about`);
     });
 };

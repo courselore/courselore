@@ -2930,7 +2930,9 @@ export default (app: Courselore): void => {
                                 req.query.newConversation?.type === "note")
                                 ? html``
                                 : html`disabled`}
-                              $${(conversationDraft as any) /* TODO: Conversation drafts */
+                              $${(
+                                conversationDraft as any
+                              ) /* TODO: Conversation drafts */
                                 ?.shouldNotify === "true" ||
                               (conversationDraft === undefined &&
                                 req.query.newConversation?.shouldNotify ===
