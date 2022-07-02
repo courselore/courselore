@@ -1,150 +1,35 @@
 export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
   const fs = (await courseloreImport("fs-extra")).default;
-  const execa = (await courseloreImport("execa")).execa;
-  const nodemailer = (await courseloreImport("nodemailer")).default;
-  const caddyfile = (await courseloreImport("dedent")).default;
-  const courselore = (await courseloreImport("./index.js")).default;
-  const baseURL = "https://courselore.org";
-  const administratorEmail = "administrator@courselore.org";
-  const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
-  if (process.argv[3] === undefined) {
-    const subprocesses = [
-      execa(
-        process.argv[0],
-        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
-        {
-          preferLocal: true,
-          stdio: "inherit",
-          env: { NODE_ENV: "production" },
-        }
-      ),
-      execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
-        preferLocal: true,
-        stdout: "ignore",
-        stderr: "ignore",
-        input: caddyfile`
-          {
-            admin off
-            email ${administratorEmail}
-          }
-
-          (common) {
-            header Cache-Control no-cache
-            header Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
-            header Cross-Origin-Embedder-Policy require-corp
-            header Cross-Origin-Opener-Policy same-origin
-            header Cross-Origin-Resource-Policy same-origin
-            header Referrer-Policy no-referrer
-            header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-            header X-Content-Type-Options nosniff
-            header Origin-Agent-Cluster "?1"
-            header X-DNS-Prefetch-Control off
-            header X-Frame-Options DENY
-            header X-Permitted-Cross-Domain-Policies none
-            header -Server
-            header -X-Powered-By
-            header X-XSS-Protection 0
-            header Permissions-Policy "interest-cohort=()"
-            encode zstd gzip
-          }
-
-          http://${
-            new URL(baseURL).host
-          }, http://www.courselore.org, http://courselore.com, http://www.courselore.com {
-            import common
-            redir https://{host}{uri} 308
-            handle_errors {
-              import common
-            }
-          }
-
-          https://www.courselore.org, https://courselore.com, https://www.courselore.com {
-            import common
-            redir ${baseURL}{uri} 307
-            handle_errors {
-              import common
-            }
-          }
-
-          ${new URL(baseURL).origin} {
-            route ${new URL(`${baseURL}/*`).pathname} {
-              import common
-              route {
-                root * ${path.resolve(
-                  url.fileURLToPath(
-                    new URL("../static/", courseloreImportMetaURL)
-                  )
-                )}
-                @file_exists file
-                file_server @file_exists
-              }
-              route /files/* {
-                root * ${dataDirectory}
-                @file_exists file
-                route @file_exists {
-                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-                  header @must_be_downloaded Content-Disposition attachment
-                  @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
-                  header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
-                  file_server
-                }
-              }
-              reverse_proxy 127.0.0.1:4000
-            }
-            handle_errors {
-              import common
-            }
-          }
-        `,
-      }),
-    ];
-    for (const subprocess of subprocesses)
-      subprocess.once("close", () => {
-        for (const otherSubprocess of subprocesses)
-          if (subprocess !== otherSubprocess) otherSubprocess.cancel();
-      });
-  } else {
-    const secrets = JSON.parse(
-      await fs.readFile(
-        url.fileURLToPath(new URL("./secrets.json", import.meta.url)),
-        "utf8"
-      )
-    );
-    const app = await courselore({
-      dataDirectory,
-      baseURL,
-      administratorEmail,
-      sendMail: (() => {
-        const transporter = nodemailer.createTransport(
-          {
-            host: "email-smtp.us-east-1.amazonaws.com",
-            auth: {
-              user: secrets.smtp.username,
-              pass: secrets.smtp.password,
-            },
-          },
-          { from: `"Courselore" <${administratorEmail}>` }
-        );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
-      })(),
-    });
-    const server = app.listen(4000, "127.0.0.1");
-    app.emit("listen");
-    for (const signal of [
-      "exit",
-      "SIGHUP",
-      "SIGINT",
-      "SIGQUIT",
-      "SIGUSR2",
-      "SIGTERM",
-      "SIGBREAK",
-    ])
-      process.once(signal, () => {
-        server.close();
-        app.emit("close");
-        if (signal.startsWith("SIG")) process.kill(process.pid, signal);
-      });
-  }
+  const secrets = JSON.parse(
+    await fs.readFile(
+      url.fileURLToPath(new URL("./secrets.json", import.meta.url)),
+      "utf8"
+    )
+  );
+  const administratorEmail = "administrator@courselore.org"(
+    await courseloreImport("../configuration/base.mjs")
+  ).default({
+    courseloreImport,
+    courseloreImportMetaURL,
+    baseURL: "https://courselore.org",
+    administratorEmail,
+    dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
+    sendMail: [
+      {
+        host: "email-smtp.us-east-1.amazonaws.com",
+        auth: {
+          user: secrets.smtp.username,
+          pass: secrets.smtp.password,
+        },
+      },
+      { from: `"Courselore" <${administratorEmail}>` },
+    ],
+    alternativeHosts: [
+      "www.courselore.org",
+      "courselore.com",
+      "www.courselore.com",
+    ],
+    hstsPreload: true,
+  });
 };

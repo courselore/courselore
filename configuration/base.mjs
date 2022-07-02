@@ -131,8 +131,8 @@ export default async ({
     const nodemailer = await courseloreImport("nodemailer");
     const courselore = (await courseloreImport("./index.js")).default;
 
-    if (typeof sendMail === "object") {
-      const transport = nodemailer.createTransport(sendMail);
+    if (Array.isArray(sendMail)) {
+      const transport = nodemailer.createTransport(...sendMail);
       sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
     }
     const app = await courselore({

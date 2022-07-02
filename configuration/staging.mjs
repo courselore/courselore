@@ -6,7 +6,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     baseURL: "https://try.courselore.org",
     administratorEmail: "administrator@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
-    production: true,
+    sendMail: [{ jsonTransport: true }],
     demonstration: true,
   });
 };
