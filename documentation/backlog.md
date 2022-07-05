@@ -726,6 +726,11 @@ const { app, BrowserWindow } = require("electron");
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
+- Do things break if you’re trying to run Courselore from a folder that includes spaces & weird characters?
+  - Note Caddy’s configuration and the serving of static files.
+  - Test development.
+  - Test binary.
+  - Test on Windows.
 - Cluster mode:
   - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
   - Approaches:
