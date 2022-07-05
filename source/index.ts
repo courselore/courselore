@@ -255,7 +255,7 @@ export interface Courselore extends express.Express {
       cupFill: IconPartial;
       staff: IconPartial;
       staffFill: IconPartial;
-    }
+    };
   } & DatabaseLocals &
     LiveUpdatesLocals;
 }
