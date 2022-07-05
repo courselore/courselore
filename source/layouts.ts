@@ -671,7 +671,7 @@ export default async (app: Courselore): Promise<void> => {
 
 
 
-                                        Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                        **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
                                         - Courselore Version: ${app.locals.options.version}
                                       `,
@@ -721,7 +721,7 @@ export default async (app: Courselore): Promise<void> => {
 
 
 
-                                  Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                  **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
                                   - Courselore Version: ${app.locals.options.version}
                                 `,

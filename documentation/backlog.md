@@ -819,6 +819,48 @@ const { app, BrowserWindow } = require("electron");
 </details>
 ```
 
+- Also SSH tunneling hasn’t been tested since the latest changes in Caddy infrastructure, so it probably doesn’t work either:
+
+````markdown
+<details>
+
+<summary>Option 2: Using an SSH Tunnel through a Server That You Have Access to</summary>
+
+1. Follow the instructions from Option 1 to transfer a certificate to the phone.
+
+2. On the server that you have access to, open an SSH tunnel, for example, on Ubuntu:
+
+   - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
+   - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
+
+3. Run Courselore with the server’s address, for example:
+
+   ```console
+   $ env HOST=YOUR-SERVER.COM:4000 npm start
+   ```
+````
+
+4. Connect to the tunnel from your machine, for example:
+
+   ```console
+   ssh -NR 4001:localhost:4000 root@YOUR-SERVER.COM
+   ```
+
+5. Visit the server’s address on the phone.
+
+</details>
+```
+
+- And here’s the disclosure element for the first option, for when we get other options back:
+
+```markdown
+<details>
+
+<summary>Option 1: Using the Local Area Network (Preferred)</summary>
+
+</details>
+```
+
 ---
 
 - Image proxy
