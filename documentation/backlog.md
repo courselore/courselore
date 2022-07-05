@@ -73,6 +73,8 @@
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
   - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
+  - Perhaps even some more personal settings, for example, preferences related to email notifications
+- Have some sort of visual indication of your own role in the system.
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -611,6 +613,7 @@ const { app, BrowserWindow } = require("electron");
     - Use the `/preview` route?
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
       - But we could pre-fetch…
+- Preserve more client-side state, for example, on the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
 
 ### Live-Updates
 
