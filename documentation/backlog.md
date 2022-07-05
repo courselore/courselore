@@ -95,10 +95,19 @@
 
 ### Better Email Notifications
 
-- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Respect the new settings on email delivery
-    - `TODO`
-- Database index for notification settings, since they’re used in the query to decide who to notify?
+- New filters for email notifications.
+  - Reenable on interface (`TODO`)
+  - Implement SQL
+  - Database index for notification settings, since they’re used in the query to decide who to notify?
+- Details on the emails:
+  - Make emails be replies, so that they’re grouped in conversations on email readers.
+  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+  - Add support for Dark Mode in emails.
+    - This should fix the duplication of code blocks.
+- Digests.
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online and/or has seen the message.
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
@@ -107,19 +116,6 @@
     - When you select this option, check “Pin” in the form
   - Store this into conversation
   - Show these conversations differently on sidebar
-- Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
-- Details on the emails:
-  - Make emails be replies, so that they’re grouped in conversations on email readers.
-  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-  - Add support for Dark Mode in emails.
-    - This should fix the duplication of code blocks.
-
----
-
-**BACKUP BEFORE DEPLOYMENT**
 
 ---
 
