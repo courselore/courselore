@@ -213,7 +213,7 @@ You may run Courselore on your machine and access it from a phone, which is esse
 
    > **Windows Tip:** If instead of a phone you’re trying to test Courselore on a secondary Windows machine, install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
 
-4. Run Courselore with the Local Area Network address, for example:
+4. Run Courselore with the Local Area Network address by setting the `HOST` environment variable, for example, in macOS and Linux:
 
    ```console
    $ env HOST=leafac.local npm start
