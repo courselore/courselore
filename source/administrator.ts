@@ -115,8 +115,8 @@ export default (app: Courselore): void => {
 
   app.locals.partials.systemRoleIcon = {
     administrator: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
+      regular: html`<i class="bi bi-tools"></i>`,
+      fill: html`<i class="bi bi-tools"></i>`,
     },
     staff: {
       regular: html`<i class="bi bi-mortarboard"></i>`,

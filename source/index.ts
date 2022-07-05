@@ -24,7 +24,8 @@ import layouts, {
   ApplicationLayout,
   MainLayout,
   SettingsLayout,
-  LogoPartial,
+  // LogoPartial,
+  IconPartial,
   PartialLayout,
   SpinnerPartial,
   ReportIssueHrefPartial,
@@ -207,7 +208,6 @@ export interface Courselore extends express.Express {
       conversation: ConversationLayout;
     };
     partials: {
-      logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
       user: UserPartial;
@@ -249,6 +249,11 @@ export interface Courselore extends express.Express {
     workers: {
       sendEmail: SendEmailWorker;
     };
+    icons: {
+      logo: IconPartial;
+      cup: IconPartial;
+      cupFill: IconPartial;
+    }
   } & DatabaseLocals &
     LiveUpdatesLocals;
 }
@@ -284,6 +289,7 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.helpers = {} as any;
   app.locals.mailers = {} as any;
   app.locals.workers = {} as any;
+  app.locals.icons = {} as any;
   await database(app);
   logging(app);
   globalMiddlewares(app);

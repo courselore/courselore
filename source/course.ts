@@ -441,7 +441,7 @@ export default (app: Courselore): void => {
                   <h2 class="heading--display">Welcome to Courselore!</h2>
 
                   <div class="decorative-icon">
-                    $${app.locals.partials.logo({
+                    $${app.locals.icons.logo({
                       size: 144 /* var(--space--36) */,
                     })}
                   </div>

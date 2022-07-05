@@ -59,7 +59,7 @@ export default (app: Courselore): void => {
                   align-items: center;
                 `)}"
               >
-                $${app.locals.partials.logo({
+                $${app.locals.icons.logo({
                   size: 48 /* var(--space--12) */,
                 })}
                 Courselore
@@ -147,7 +147,7 @@ export default (app: Courselore): void => {
                       });
                     `}"
                   >
-                    $${app.locals.partials.logo({
+                    $${app.locals.icons.logo({
                       size: 16 /* var(--space--4) */,
                     })}
                     Meta Courselore
@@ -841,7 +841,7 @@ export default (app: Courselore): void => {
                 });
               `}"
             >
-              $${app.locals.partials.logo({ size: 24 /* var(--space--6) */ })}
+              $${app.locals.icons.logo({ size: 24 /* var(--space--6) */ })}
               Meta Courselore
             </a>
             <a

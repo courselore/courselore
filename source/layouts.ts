@@ -122,7 +122,7 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type LogoPartial = (options?: { size?: number }) => HTML;
+export type IconPartial = (options?: { size?: number }) => HTML;
 
 export type PartialLayout = ({
   req,
@@ -596,7 +596,7 @@ export default async (app: Courselore): Promise<void> => {
                     content: ${res.locals.html(
                       html`
                         <h3 class="heading">
-                          $${app.locals.partials.logo({
+                          $${app.locals.icons.logo({
                             size: 12 /* var(--space--3) */,
                           })}
                           <span>
@@ -636,7 +636,7 @@ export default async (app: Courselore): Promise<void> => {
                   });
                 `}"
               >
-                $${app.locals.partials.logo({ size: 16 /* var(--space--4) */ })}
+                $${app.locals.icons.logo({ size: 16 /* var(--space--4) */ })}
                 Courselore
               </button>
             </div>
@@ -696,7 +696,7 @@ export default async (app: Courselore): Promise<void> => {
                               align-items: center;
                             `)}"
                           >
-                            $${app.locals.partials.logo({
+                            $${app.locals.icons.logo({
                               size: 14 /* var(--space--3-5) */,
                             })}
                             Meta Courselore
@@ -2250,7 +2250,7 @@ export default async (app: Courselore): Promise<void> => {
                   align-items: center;
                 `)}"
               >
-                $${app.locals.partials.logo()} Courselore
+                $${app.locals.icons.logo()} Courselore
               </a>
             </div>
             <div
@@ -2434,7 +2434,7 @@ export default async (app: Courselore): Promise<void> => {
               });
             `}"
           >
-            $${app.locals.partials.logo()}
+            $${app.locals.icons.logo()}
           </a>
 
           <div
@@ -2951,7 +2951,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
     });
 
-  app.locals.partials.logo = (() => {
+  app.locals.icons.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -2996,6 +2996,40 @@ export default async (app: Courselore): Promise<void> => {
           stroke="currentColor"
           stroke-linecap="round"
           stroke-linejoin="round"
+        />
+      </svg>
+    `;
+  })();
+
+  app.locals.icons.cup = (() => {
+    const viewBox = 32;
+    return ({ size = viewBox } = {}) => html`
+      <svg
+        width="${size.toString()}"
+        height="${size.toString()}"
+        viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          style="fill:currentColor;"
+          d="M6.8085938 2.0117188a1 1 0 0 0-.5507813.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.4140625 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.8632812-.28125zm7.0000002 0a1 1 0 0 0-.550782.28125c-2.828426 2.8284272 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zm7 0a1 1 0 0 0-.550782.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414215 1.414213 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.4142128 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zM3.9765625 14C3.7568359 14.007324 2 14.125 2 16v8c0 6 6 6 6 6h12s6 0 6-6h2s4 0 4-4-4-4-4-4h-2c0-2-2-2-2-2H4s-.00879-.000488-.0234375 0zM4 16h20v8s0 4-4 4H8c-4 0-4-4-4-4v-8zm22 2h2s2 0 2 2-2 2-2 2h-2v-4z"
+        />
+      </svg>
+    `;
+  })();
+
+  app.locals.icons.cupFill = (() => {
+    const viewBox = 32;
+    return ({ size = viewBox } = {}) => html`
+      <svg
+        width="${size.toString()}"
+        height="${size.toString()}"
+        viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          style="fill:currentColor;"
+          d="M6.8085938 2.0117188a1 1 0 0 0-.5507813.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.4140625 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.8632812-.28125zm7.0000002 0a1 1 0 0 0-.550782.28125c-2.828426 2.8284272 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zm7 0a1 1 0 0 0-.550782.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414215 1.414213 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.4142128 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zM3.9765625 14C3.7568359 14.007324 2 14.125 2 16v8c0 6 6 6 6 6h12s6 0 6-6h2s4 0 4-4-4-4-4-4h-2c0-2-2-2-2-2H4s-.00879-.000488-.0234375 0zM26 18h2s2 0 2 2-2 2-2 2h-2v-4z"
         />
       </svg>
     `;

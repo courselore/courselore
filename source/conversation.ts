@@ -1035,8 +1035,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
-                            <i class="bi bi-cup"></i>
-                            Chats
+                            $${app.locals.icons.cup({ size: 14 })} Chats
                           </a>
                         `
                       : html`
@@ -1053,7 +1052,18 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
-                            <i class="bi bi-cup-fill"></i>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 32 32"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                style="fill:currentColor;"
+                                d="M6.8085938 2.0117188a1 1 0 0 0-.5507813.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.4140625 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.8632812-.28125zm7.0000002 0a1 1 0 0 0-.550782.28125c-2.828426 2.8284272 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zm7 0a1 1 0 0 0-.550782.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414215 1.414213 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.4142128 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zM3.9765625 14C3.7568359 14.007324 2 14.125 2 16v8c0 6 6 6 6 6h12s6 0 6-6h2s4 0 4-4-4-4-4-4h-2c0-2-2-2-2-2H4s-.00879-.000488-.0234375 0zM26 18h2s2 0 2 2-2 2-2 2h-2v-4z"
+                              />
+                            </svg>
+                            <!-- <i class="bi bi-cup-fill"></i> -->
                             Chats
                           </a>
                         `}
@@ -2383,8 +2393,8 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
     chat: {
-      regular: html`<i class="bi bi-cup"></i>`,
-      fill: html`<i class="bi bi-cup-fill"></i>`,
+      regular: app.locals.icons.cup({ size: 14 }),
+      fill: app.locals.icons.cupFill({ size: 14 }),
     },
   };
 
@@ -2930,7 +2940,9 @@ export default (app: Courselore): void => {
                                 req.query.newConversation?.type === "note")
                                 ? html``
                                 : html`disabled`}
-                              $${(conversationDraft as any) /* TODO: Conversation drafts */
+                              $${(
+                                conversationDraft as any
+                              ) /* TODO: Conversation drafts */
                                 ?.shouldNotify === "true" ||
                               (conversationDraft === undefined &&
                                 req.query.newConversation?.shouldNotify ===
