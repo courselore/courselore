@@ -20,7 +20,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     // In most cases this is good enough, but you may want to change this to an absolute path, for example, ‘/home/courselore/data/’.
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
 
-    // Configuration to reach the email server who delivers email on Courselore’s behalf.
+    // Configuration to reach the email server which delivers email on Courselore’s behalf.
+    // Use the format of arguments accepted by Nodemailer’s ‘.createTransport()’. See https://nodemailer.com/smtp/.
     sendMail: [
       {
         host: "SMTP.YOUR-DOMAIN.EDU",
