@@ -103,7 +103,7 @@ export default async ({
                 file_server @file_exists
               }
               route /files/* {
-                root * ${dataDirectory}
+                root * ${path.resolve(dataDirectory)}
                 @file_exists file
                 route @file_exists {
                   @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
