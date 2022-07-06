@@ -119,8 +119,8 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-tools"></i>`,
     },
     staff: {
-      regular: app.locals.icons.staff({ size: 18 }),
-      fill: app.locals.icons.staffFill({ size: 18 }),
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
     none: {
       regular: html`<i class="bi bi-dash-circle"></i>`,

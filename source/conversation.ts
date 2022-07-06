@@ -1035,7 +1035,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
-                            $${app.locals.icons.cup({ size: 14 })} Chats
+                            $${app.locals.icons.chat({ size: 14 })} Chats
                           </a>
                         `
                       : html`
@@ -1052,19 +1052,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 32 32"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                style="fill:currentColor;"
-                                d="M6.8085938 2.0117188a1 1 0 0 0-.5507813.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.4140625 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.8632812-.28125zm7.0000002 0a1 1 0 0 0-.550782.28125c-2.828426 2.8284272 0 5.6562499 0 5.65625 1.414214 1.4142129 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.414213 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zm7 0a1 1 0 0 0-.550782.28125c-2.828427 2.8284269 0 5.6562499 0 5.65625 1.414215 1.414213 0 2.8281252 0 2.8281252a1 1 0 0 0 0 1.416015 1 1 0 0 0 1.414063 0c2.828427-2.8284272 0-5.6582026 0-5.6582028-1.414214-1.4142128 0-2.8281249 0-2.828125a1 1 0 0 0 0-1.4140624 1 1 0 0 0-.863281-.28125zM3.9765625 14C3.7568359 14.007324 2 14.125 2 16v8c0 6 6 6 6 6h12s6 0 6-6h2s4 0 4-4-4-4-4-4h-2c0-2-2-2-2-2H4s-.00879-.000488-.0234375 0zM26 18h2s2 0 2 2-2 2-2 2h-2v-4z"
-                              />
-                            </svg>
-                            <!-- <i class="bi bi-cup-fill"></i> -->
-                            Chats
+                            $${app.locals.icons.chatFill({ size: 14 })} Chats
                           </a>
                         `}
                   </div>
@@ -2393,8 +2381,8 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
     chat: {
-      regular: app.locals.icons.cup({ size: 14 }),
-      fill: app.locals.icons.cupFill({ size: 14 }),
+      regular: app.locals.icons.chat({ size: 14 }),
+      fill: app.locals.icons.chatFill({ size: 14 }),
     },
   };
 
@@ -3219,67 +3207,117 @@ export default (app: Courselore): void => {
                                 Create the First Tag
                               </a>
                             `
-                          : res.locals.tags.map(
-                              (tag) => html`
-                                <div
-                                  key="tag--${tag.reference}"
-                                  css="${res.locals.css(css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `)}"
+                          : html`
+                              <div>
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent secondary"
+                                  onload="${javascript`
+                                    (this.dropdown ??= tippy(this)).setProps({
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${res.locals.html(
+                                        html`
+                                          <div
+                                            css="${res.locals.css(css`
+                                              max-height: var(--space--80);
+                                              overflow: auto;
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `)}"
+                                          >
+                                            <div class="dropdown--menu">
+                                              $${res.locals.tags.map(
+                                                (tag) => html`
+                                                  <div
+                                                    key="tag--${tag.reference}"
+                                                    css="${res.locals.css(css`
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                    `)}"
+                                                  >
+                                                    <label
+                                                      class="dropdown--menu--item button button--transparent"
+                                                    >
+                                                      <input
+                                                        type="checkbox"
+                                                        name="tagsReferences[]"
+                                                        value="${tag.reference}"
+                                                        $${(typeof conversationDraft?.tagsReferences ===
+                                                          "string" &&
+                                                          JSON.parse(
+                                                            conversationDraft.tagsReferences
+                                                          ).includes(
+                                                            tag.reference
+                                                          )) ||
+                                                        (conversationDraft ===
+                                                          undefined &&
+                                                          Array.isArray(
+                                                            req.query
+                                                              .newConversation
+                                                              ?.tagsReferences
+                                                          ) &&
+                                                          req.query.newConversation!.tagsReferences.includes(
+                                                            tag.reference
+                                                          ))
+                                                          ? html`checked`
+                                                          : html``}
+                                                        required
+                                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                      />
+                                                      <span>
+                                                        <i
+                                                          class="bi bi-tag"
+                                                        ></i>
+                                                        ${tag.name}
+                                                      </span>
+                                                      <span class="text--teal">
+                                                        <i
+                                                          class="bi bi-tag-fill"
+                                                        ></i>
+                                                        ${tag.name}
+                                                      </span>
+                                                    </label>
+                                                    $${tag.staffOnlyAt !== null
+                                                      ? html`
+                                                          <span
+                                                            class="text--sky"
+                                                            onload="${javascript`
+                                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                                    touch: false,
+                                                                    content: "This tag is visible by staff only.",
+                                                                  });
+                                                                `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-mortarboard-fill"
+                                                            ></i>
+                                                          </span>
+                                                        `
+                                                      : html``}
+                                                  </div>
+                                                `
+                                              )}
+                                            </div>
+                                          </div>
+                                        `
+                                      )},
+                                    });
+                                  `}"
                                 >
-                                  <label
-                                    class="button button--tight button--tight--inline button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="tagsReferences[]"
-                                      value="${tag.reference}"
-                                      $${(typeof conversationDraft?.tagsReferences ===
-                                        "string" &&
-                                        JSON.parse(
-                                          conversationDraft.tagsReferences
-                                        ).includes(tag.reference)) ||
-                                      (conversationDraft === undefined &&
-                                        Array.isArray(
-                                          req.query.newConversation
-                                            ?.tagsReferences
-                                        ) &&
-                                        req.query.newConversation!.tagsReferences.includes(
-                                          tag.reference
-                                        ))
-                                        ? html`checked`
-                                        : html``}
-                                      required
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    />
-                                    <span>
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </span>
-                                    <span class="text--teal">
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tag.name}
-                                    </span>
-                                  </label>
-                                  $${tag.staffOnlyAt !== null
-                                    ? html`
-                                        <span
-                                          class="text--sky"
-                                          onload="${javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "This tag is visible by staff only.",
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-mortarboard-fill"></i>
-                                        </span>
-                                      `
-                                    : html``}
-                                </div>
-                              `
-                            )}
+                                  <div>
+                                    <i class="bi bi-plus"></i>
+                                    Add Tags
+                                  </div>
+                                </label>
+                              </div>
+                              <label
+                                class="button button--tight button--tight--inline button--transparent secondary"
+                              >
+                                <i class="bi bi-trash"></i>
+                                Clear Tags
+                              </label>
+                            `}
                       </div>
                     </div>
                   `}
