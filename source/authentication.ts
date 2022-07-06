@@ -305,13 +305,6 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      res.locals.canCreateCourses =
-        app.locals.options.canCreateCourses === "anyone"
-          ? true
-          : app.locals.options.canCreateCourses === "staff-and-administrators"
-          ? res.locals.user.systemRole !== "none"
-          : res.locals.user.systemRole === "administrator";
-
       res.locals.invitations = app.locals.database
         .all<{
           id: number;
@@ -422,6 +415,13 @@ export default (app: Courselore): void => {
           courseRole: enrollment.courseRole,
           accentColor: enrollment.accentColor,
         }));
+
+      res.locals.canCreateCourses =
+        app.locals.options.canCreateCourses === "anyone"
+          ? true
+          : app.locals.options.canCreateCourses === "staff-and-administrators"
+          ? res.locals.user.systemRole !== "none"
+          : res.locals.user.systemRole === "administrator";
 
       next();
     },
@@ -1372,7 +1372,7 @@ export default (app: Courselore): void => {
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${
-              // TODO: Administrator panel: ‘firstUserIsAdministrator’
+              // TODO: Administrator panel: In ‘try.courselore.org’ no one should be administrator
               app.locals.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count"
