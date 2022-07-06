@@ -98,6 +98,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     const app = await courselore({
       dataDirectory,
       baseURL,
+      administratorEmail,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
@@ -107,6 +108,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
+      demonstration: true,
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");
