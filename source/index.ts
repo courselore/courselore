@@ -160,8 +160,9 @@ export interface Courselore extends express.Express {
   locals: {
     options: {
       version: string;
-      canonicalBaseURL: string;
+      canonicalHost: string;
       metaCourseloreInvitation: string;
+      tryHost: string;
       canCreateCourses: CanCreateCourses;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
@@ -252,14 +253,14 @@ export interface Courselore extends express.Express {
 }
 
 export interface Options {
-  dataDirectory: string;
-  baseURL: string;
+  host: string;
   administratorEmail: string;
+  dataDirectory: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
-  demonstration?: boolean;
-  liveReload?: boolean;
+  demonstration: boolean;
+  liveReload: boolean;
 }
 
 export default async (options: Options): Promise<Courselore> => {
@@ -271,10 +272,10 @@ export default async (options: Options): Promise<Courselore> => {
         "utf8"
       )
     ).version,
-    canonicalBaseURL: "https://courselore.org",
+    canonicalHost: "courselore.org",
     metaCourseloreInvitation:
       "https://courselore.org/courses/8537410611/invitations/3667859788",
-    liveReload: false,
+    tryHost: "try.courselore.org",
     ...options,
   } as any;
   app.locals.handlers = {} as any;

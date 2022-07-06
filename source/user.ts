@@ -603,7 +603,7 @@ export default (app: Courselore): void => {
       `,
       menu: html`
         <a
-          href="${app.locals.options.baseURL}/settings/profile"
+          href="https://${app.locals.options.host}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/profile"
           )
@@ -614,7 +614,7 @@ export default (app: Courselore): void => {
           Profile
         </a>
         <a
-          href="${app.locals.options.baseURL}/settings/email-and-password"
+          href="https://${app.locals.options.host}/settings/email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/email-and-password"
           )
@@ -629,7 +629,7 @@ export default (app: Courselore): void => {
           Email & Password
         </a>
         <a
-          href="${app.locals.options.baseURL}/settings/notifications"
+          href="https://${app.locals.options.host}/settings/notifications"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/notifications"
           )
@@ -651,7 +651,7 @@ export default (app: Courselore): void => {
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(303, `${app.locals.options.baseURL}/settings/profile`);
+      res.redirect(303, `https://${app.locals.options.host}/settings/profile`);
     }
   );
 
@@ -674,7 +674,7 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/settings/profile"
+              action="https://${app.locals.options.host}/settings/profile"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -871,8 +871,8 @@ export default (app: Courselore): void => {
                         this.value = "";
                         tippy.hideAll();
                         avatarChooser.uploadingIndicator.show();
-                        const response = await fetch("${
-                          app.locals.options.baseURL
+                        const response = await fetch("https://${
+                          app.locals.options.host
                         }/settings/profile/avatar", {
                           method: "POST",
                           body,
@@ -997,7 +997,7 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Profile updated successfully.`,
       });
-      res.redirect(303, `${app.locals.options.baseURL}/settings/profile`);
+      res.redirect(303, `https://${app.locals.options.host}/settings/profile`);
     }
   );
 
@@ -1042,9 +1042,9 @@ export default (app: Courselore): void => {
         return next("validation");
       }
       res.send(
-        `${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
-          nameAvatar
-        )}`
+        `https://${
+          app.locals.options.host
+        }/files/${folder}/${encodeURIComponent(nameAvatar)}`
       );
     }),
     ((err, req, res, next) => {
@@ -1079,7 +1079,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/settings/email-and-password"
+              action="https://${app.locals.options
+                .host}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1123,7 +1124,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/settings/email-and-password"
+              action="https://${app.locals.options
+                .host}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1211,7 +1213,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/settings/email-and-password`
+          `https://${app.locals.options.host}/settings/email-and-password`
         );
       }
 
@@ -1233,7 +1235,7 @@ export default (app: Courselore): void => {
           });
           return res.redirect(
             303,
-            `${app.locals.options.baseURL}/settings/email-and-password`
+            `https://${app.locals.options.host}/settings/email-and-password`
           );
         }
 
@@ -1291,7 +1293,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/settings/email-and-password`
+        `https://${app.locals.options.host}/settings/email-and-password`
       );
     })
   );
@@ -1315,7 +1317,7 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/settings/notifications"
+              action="https://${app.locals.options.host}/settings/notifications"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1386,6 +1388,8 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
+                  hidden
+                  TODO
                   css="${res.locals.css(css`
                     display: flex;
                   `)}"
@@ -1416,6 +1420,8 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
+                  hidden
+                  TODO
                   css="${res.locals.css(css`
                     display: flex;
                   `)}"
@@ -1483,7 +1489,12 @@ export default (app: Courselore): void => {
                   res.locals.user.emailNotificationsDigestsFrequency !== null ||
                   disabled;
                 return html`
-                  <div key="isEmailNotificationsDigests" class="label">
+                  <div
+                    key="isEmailNotificationsDigests"
+                    class="label"
+                    hidden
+                    TODO
+                  >
                     <div
                       css="${res.locals.css(css`
                         display: flex;
@@ -1751,7 +1762,10 @@ export default (app: Courselore): void => {
         content: html`Notifications updated successfully.`,
       });
 
-      res.redirect(303, `${app.locals.options.baseURL}/settings/notifications`);
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/settings/notifications`
+      );
     }
   );
 };

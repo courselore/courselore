@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-02</summary>
+
+- Administrative interface: It’s almost ready to deploy: We want to revert some changes before we actually deploy.
+- Simplified configuration.
+- Better email notifications: Doing filtering on database. Everything but digests.
+
+</details>
+
+<details>
 <summary>2021-06-25</summary>
 
 - Better email notifications:

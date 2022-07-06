@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 import { sql } from "@leafac/sqlite";
 import { Courselore } from "./index.js";
 
@@ -10,13 +11,12 @@ export default (app: Courselore): void => {
     return schedule;
 
     async function schedule() {
-      clearTimeout(timeout);
-      clean();
       await work();
+      clearTimeout(timeout);
       timeout = setTimeout(schedule, 2 * 60 * 1000);
     }
 
-    function clean(): void {
+    async function work(): Promise<void> {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
@@ -72,9 +72,7 @@ export default (app: Courselore): void => {
           );
         }
       });
-    }
 
-    async function work(): Promise<void> {
       while (true) {
         const job = app.locals.database.executeTransaction(() => {
           const job = app.locals.database.get<{
@@ -102,45 +100,45 @@ export default (app: Courselore): void => {
         });
         if (job === undefined) return;
         const mailOptions = JSON.parse(job.mailOptions);
-        let result: { status: "SUCCEEDED" | "FAILED"; response: string };
         try {
           const sentMessageInfo = await app.locals.options.sendMail(
             mailOptions
           );
-          result = { status: "SUCCEEDED", ...sentMessageInfo };
-        } catch (error: any) {
-          result = { status: "FAILED", ...error };
+          app.locals.database.run(
+            sql`
+              DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tworker.sendEmail\tSUCCEEDED\t\t${
+              sentMessageInfo.response ?? ""
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+              process.env.NODE_ENV !== "production"
+                ? `\n${JSON.stringify(sentMessageInfo, undefined, 2)}`
+                : ``
+            }`
+          );
+        } catch (error: nodemailer.SentMessageInfo) {
+          app.locals.database.run(
+            sql`
+              UPDATE "sendEmailJobs"
+              SET "startAt" = ${new Date(
+                Date.now() + 5 * 60 * 1000
+              ).toISOString()},
+                  "startedAt" = NULL
+              WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tworker.sendEmail\tFAILED\t\t${
+              error.response ?? ""
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+              process.env.NODE_ENV !== "production"
+                ? `\n${JSON.stringify(error, undefined, 2)}`
+                : ``
+            }`
+          );
         }
-        switch (result.status) {
-          case "SUCCEEDED":
-            app.locals.database.run(
-              sql`
-                DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-              `
-            );
-            break;
-          case "FAILED":
-            app.locals.database.run(
-              sql`
-                UPDATE "sendEmailJobs"
-                SET "startAt" = ${new Date(
-                  Date.now() + 5 * 60 * 1000
-                ).toISOString()},
-                    "startedAt" = NULL
-                WHERE "id" = ${job.id}
-              `
-            );
-            break;
-        }
-        console.log(
-          `${new Date().toISOString()}\tworker.sendEmail\t${result.status}\t\t${
-            result?.response ?? ""
-          }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-            process.env.NODE_ENV !== "production"
-              ? `\n${JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)}`
-              : ``
-          }`
-        );
       }
     }
   })();

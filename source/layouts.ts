@@ -224,8 +224,8 @@ export default async (app: Courselore): Promise<void> => {
                       html`
                         <form
                           method="POST"
-                          action="${app.locals.options
-                            .baseURL}/resend-verification-email${qs.stringify(
+                          action="https://${app.locals.options
+                            .host}/resend-verification-email${qs.stringify(
                             {
                               redirect: req.originalUrl,
                             },
@@ -277,8 +277,8 @@ export default async (app: Courselore): Promise<void> => {
                                   demonstration mode and doesn’t send emails.
                                   Verify your email by
                                   <a
-                                    href="${app.locals.options
-                                      .baseURL}/email-verification/${emailVerification.nonce}${qs.stringify(
+                                    href="https://${app.locals.options
+                                      .host}/email-verification/${emailVerification.nonce}${qs.stringify(
                                       {
                                         redirect: req.originalUrl,
                                       },
@@ -411,8 +411,8 @@ export default async (app: Courselore): Promise<void> => {
                                 differentiate between courses.
                               </p>
                               <a
-                                href="${app.locals.options
-                                  .baseURL}/courses/${res.locals.course!
+                                href="https://${app.locals.options
+                                  .host}/courses/${res.locals.course!
                                   .reference}/settings/your-enrollment"
                                 class="button button--blue"
                                 css="${res.locals.css(css`
@@ -615,7 +615,7 @@ export default async (app: Courselore): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${app.locals.options.baseURL}/about"
+                            href="https://${app.locals.options.host}/about"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -679,7 +679,7 @@ export default async (app: Courselore): Promise<void> => {
 
 
 
-                                        Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                        **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
                                         - Courselore Version: ${app.locals.options.version}
                                       `,
@@ -729,7 +729,7 @@ export default async (app: Courselore): Promise<void> => {
 
 
 
-                                  Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                  **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
                                   - Courselore Version: ${app.locals.options.version}
                                 `,
@@ -832,238 +832,236 @@ export default async (app: Courselore): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/100-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/100-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/100.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/100.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/200-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/200-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/200.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/200.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/300-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/300-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/300.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/300.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/400-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/400-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/400.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/400.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/500-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/500-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/500.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/500.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/600-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/600-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/600.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/600.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/700-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/700-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/700.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/700.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/800-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/800-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/800.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/800.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/900-italic.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/900-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/public-sans/900.css"
-          />
-
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/100.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/200.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/300.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/400.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/500.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/600.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/700.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@fontsource/jetbrains-mono/800.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/public-sans/900.css"
           />
 
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/katex/dist/katex.min.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/100.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/tippy.js/dist/border.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/200.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options
-              .baseURL}/node_modules/@leafac/css/distribution/browser.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.options.baseURL}/global.css"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/300.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/400.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/500.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/600.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/700.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@fontsource/jetbrains-mono/800.css"
+          />
+
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/katex/dist/katex.min.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/tippy.js/dist/svg-arrow.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/tippy.js/dist/border.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
+              .host}/node_modules/@leafac/css/distribution/browser.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options.host}/global.css"
           />
           $${res.locals.css.toString()}
 
-          <script src="${app.locals.options
-              .baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/fast-myers-diff/index.umd.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/textarea-caret/index.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/text-field-edit/index.umd.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
-          <script src="${app.locals.options
-              .baseURL}/leafac--javascript.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/autosize/dist/autosize.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/fast-myers-diff/index.umd.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/textarea-caret/index.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/text-field-edit/index.umd.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/@leafac/javascript/distribution/browser.js"></script>
+          <script src="https://${app.locals.options
+              .host}/leafac--javascript.js"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
-            leafac.liveNavigation(
-              $${JSON.stringify(app.locals.options.baseURL)}
-            );
+            leafac.liveNavigation($${JSON.stringify(app.locals.options.host)});
             $${app.locals.options.liveReload
               ? javascript`
                   leafac.liveReload(${JSON.stringify(
-                    `${app.locals.options.baseURL}/live-reload`
+                    `https://${app.locals.options.host}/live-reload`
                   )});
                 `
               : javascript``};
@@ -2244,7 +2242,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <a
-                href="${app.locals.options.baseURL}/"
+                href="https://${app.locals.options.host}/"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   align-items: center;
@@ -2270,7 +2268,7 @@ export default async (app: Courselore): Promise<void> => {
               $${body}
             </div>
 
-            $${app.locals.options.baseURL === "https://try.courselore.org"
+            $${app.locals.options.host === app.locals.options.tryHost
               ? html`
                   <div
                     key="main--try"
@@ -2303,7 +2301,7 @@ export default async (app: Courselore): Promise<void> => {
                       `)}"
                     >
                       <p>
-                        This is the development installation of Courselore and
+                        This is a development installation of Courselore and
                         must not be used for real courses. Any data may be lost,
                         including users, courses, invitations, conversations,
                         messages, and so forth. Emails aren’t delivered. You may
@@ -2312,8 +2310,8 @@ export default async (app: Courselore): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="${app.locals.options
-                          .baseURL}/demonstration-data"
+                        action="https://${app.locals.options
+                          .host}/demonstration-data"
                       >
                         <input
                           type="hidden"
@@ -2375,8 +2373,8 @@ export default async (app: Courselore): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="${app.locals.options
-                          .baseURL}/demonstration-data"
+                        action="https://${app.locals.options
+                          .host}/demonstration-data"
                       >
                         <input
                           type="hidden"
@@ -2425,7 +2423,7 @@ export default async (app: Courselore): Promise<void> => {
           `)}"
         >
           <a
-            href="${app.locals.options.baseURL}/"
+            href="https://${app.locals.options.host}/"
             class="button button--tight button--tight--inline button--transparent"
             onload="${javascript`
               (this.tooltip ??= tippy(this)).setProps({
@@ -2496,8 +2494,8 @@ export default async (app: Courselore): Promise<void> => {
                                     : html``}
                                   <div class="dropdown--menu">
                                     <a
-                                      href="${app.locals.options
-                                        .baseURL}/courses/${res.locals.course
+                                      href="https://${app.locals.options
+                                        .host}/courses/${res.locals.course
                                         .reference}"
                                       class="dropdown--menu--item button ${req.path.includes(
                                         "/settings/"
@@ -2515,8 +2513,8 @@ export default async (app: Courselore): Promise<void> => {
                                       Conversations
                                     </a>
                                     <a
-                                      href="${app.locals.options
-                                        .baseURL}/courses/${res.locals.course
+                                      href="https://${app.locals.options
+                                        .host}/courses/${res.locals.course
                                         .reference}/settings"
                                       class="dropdown--menu--item button ${req.path.includes(
                                         "/settings/"
@@ -2638,8 +2636,8 @@ export default async (app: Courselore): Promise<void> => {
                                     (invitation) => html`
                                       <a
                                         key="invitation--${invitation.reference}"
-                                        href="${app.locals.options
-                                          .baseURL}/courses/${invitation.course
+                                        href="https://${app.locals.options
+                                          .host}/courses/${invitation.course
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
                                       >
@@ -2672,8 +2670,8 @@ export default async (app: Courselore): Promise<void> => {
                           $${res.locals.canCreateCourses
                             ? html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}/courses/new"
+                                  href="https://${app.locals.options
+                                    .host}/courses/new"
                                   class="dropdown--menu--item button button--transparent"
                                 >
                                   <i class="bi bi-journal-plus"></i>
@@ -2769,7 +2767,7 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             class="dropdown--menu--item button button--transparent"
-                            href="${app.locals.options.baseURL}/settings"
+                            href="https://${app.locals.options.host}/settings"
                           >
                             <i class="bi bi-sliders"></i>
                             User Settings
@@ -2788,7 +2786,7 @@ export default async (app: Courselore): Promise<void> => {
                             : html``}
                           <form
                             method="DELETE"
-                            action="${app.locals.options.baseURL}/sign-out"
+                            action="https://${app.locals.options.host}/sign-out"
                           >
                             <input
                               type="hidden"

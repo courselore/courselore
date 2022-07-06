@@ -440,7 +440,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${app.locals.options.baseURL}/sign-in${qs.stringify(
+            action="https://${app.locals.options.host}/sign-in${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -502,7 +502,7 @@ export default (app: Courselore): void => {
             <p>
               Don’t have an account?
               <a
-                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                href="https://${app.locals.options.host}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -518,8 +518,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(
+                href="https://${app.locals.options
+                  .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -540,7 +540,7 @@ export default (app: Courselore): void => {
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...app.locals.middlewares.isSignedOut,
-    app.locals.options.baseURL === app.locals.options.canonicalBaseURL
+    app.locals.options.host === app.locals.options.canonicalHost
       ? (req, res, next) => app.locals.handlers.about(req, res, next)
       : app.locals.handlers.signIn
   );
@@ -555,7 +555,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -597,7 +597,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/sign-in${qs.stringify(
+          `https://${app.locals.options.host}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -611,7 +611,7 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -695,7 +695,8 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${app.locals.options.baseURL}/reset-password${qs.stringify(
+            action="https://${app.locals.options
+              .host}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -745,7 +746,7 @@ export default (app: Courselore): void => {
             <p>
               Don’t have an account?
               <a
-                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                href="https://${app.locals.options.host}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -761,7 +762,7 @@ export default (app: Courselore): void => {
             <p>
               Remember your password?
               <a
-                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                href="https://${app.locals.options.host}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -805,7 +806,7 @@ export default (app: Courselore): void => {
       });
       return res.redirect(
         303,
-        `${app.locals.options.baseURL}/reset-password${qs.stringify(
+        `https://${app.locals.options.host}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
@@ -817,8 +818,8 @@ export default (app: Courselore): void => {
       );
     }
 
-    const link = `${
-      app.locals.options.baseURL
+    const link = `https://${
+      app.locals.options.host
     }/reset-password/${app.locals.helpers.PasswordReset.create(
       user.id
     )}${qs.stringify(
@@ -884,7 +885,8 @@ export default (app: Courselore): void => {
           </p>
           <form
             method="POST"
-            action="${app.locals.options.baseURL}/reset-password${qs.stringify(
+            action="https://${app.locals.options
+              .host}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -926,7 +928,7 @@ export default (app: Courselore): void => {
       });
       return res.redirect(
         303,
-        `${app.locals.options.baseURL}/reset-password${qs.stringify(
+        `https://${app.locals.options.host}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
@@ -949,8 +951,8 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${app.locals.options
-              .baseURL}/reset-password/${app.locals.helpers.PasswordReset.create(
+            action="https://${app.locals.options
+              .host}/reset-password/${app.locals.helpers.PasswordReset.create(
               userId
             )}${qs.stringify(
               {
@@ -1030,7 +1032,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/reset-password${qs.stringify(
+          `https://${app.locals.options.host}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1061,7 +1063,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1090,7 +1092,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${app.locals.options.baseURL}/sign-up${qs.stringify(
+            action="https://${app.locals.options.host}/sign-up${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -1174,7 +1176,7 @@ export default (app: Courselore): void => {
             <p>
               Already have an account account?
               <a
-                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                href="https://${app.locals.options.host}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -1190,8 +1192,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(
+                href="https://${app.locals.options
+                  .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -1215,7 +1217,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1254,7 +1256,7 @@ export default (app: Courselore): void => {
       )!;
     });
 
-    const link = `${app.locals.options.baseURL}/email-verification/${
+    const link = `https://${app.locals.options.host}/email-verification/${
       emailVerification.nonce
     }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
     app.locals.database.run(
@@ -1334,7 +1336,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/sign-in${qs.stringify(
+          `https://${app.locals.options.host}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1405,7 +1407,7 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1428,7 +1430,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${
+          `https://${app.locals.options.host}${
             typeof req.query.redirect === "string" &&
             req.query.redirect.trim() !== ""
               ? req.query.redirect
@@ -1450,7 +1452,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1495,7 +1497,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${
+          `https://${app.locals.options.host}${
             typeof req.query.redirect === "string" &&
             req.query.redirect.trim() !== ""
               ? req.query.redirect
@@ -1518,7 +1520,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1538,7 +1540,7 @@ export default (app: Courselore): void => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `${app.locals.options.baseURL}/`);
+        .redirect(303, `https://${app.locals.options.host}/`);
     }
   );
 };

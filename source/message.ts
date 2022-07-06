@@ -756,7 +756,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -891,7 +891,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -931,7 +931,7 @@ export default (app: Courselore): void => {
       );
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -986,7 +986,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1035,7 +1035,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1122,7 +1122,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1169,7 +1169,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1303,8 +1303,8 @@ export default (app: Courselore): void => {
                 html: html`
                   <p>
                     <a
-                      href="${app.locals.options.baseURL}/courses/${res.locals
-                        .course
+                      href="https://${app.locals.options.host}/courses/${res
+                        .locals.course
                         .reference}/conversations/${conversation.reference}${qs.stringify(
                         { messages: { messageReference: message.reference } },
                         {
@@ -1333,8 +1333,8 @@ export default (app: Courselore): void => {
                   <p>
                     <small>
                       <a
-                        href="${app.locals.options
-                          .baseURL}/settings/notifications-preferences"
+                        href="https://${app.locals.options
+                          .host}/settings/notifications-preferences"
                         >Change Notifications Preferences</a
                       >
                     </small>

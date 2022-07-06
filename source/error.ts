@@ -15,7 +15,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/sign-in${qs.stringify(
+        `https://${app.locals.options.host}/sign-in${qs.stringify(
           {
             redirect: req.originalUrl,
           },
@@ -35,7 +35,7 @@ export default (app: Courselore): void => {
       )
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${req.query.redirect}`
+          `https://${app.locals.options.host}${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({

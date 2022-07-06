@@ -62,103 +62,103 @@ export default (app: Courselore): void => {
           name: string;
         }>(
           sql`
-                INSERT INTO "users" (
-                  "createdAt",
-                  "lastSeenOnlineAt",
-                  "reference",
-                  "email",
-                  "password",
-                  "emailVerifiedAt",
-                  "name",
-                  "nameSearch",
-                  "avatar",
-                  "avatarlessBackgroundColor",
-                  "biographySource",
-                  "biographyPreprocessed",
-                  "systemRole",
-                  "emailNotificationsForAllMessagesAt",
-                  "emailNotificationsForMentionsAt",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                  "emailNotificationsForMessagesInConversationsYouStartedAt",
-                  "emailNotificationsDigestsFrequency"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${new Date(
-                    Date.now() -
-                      (Math.random() < 0.5
-                        ? 0
-                        : lodash.random(0, 5 * 60 * 60 * 1000))
-                  ).toISOString()},
-                  ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${`${slugify(name)}--${cryptoRandomString({
-                    length: 5,
-                    type: "numeric",
-                  })}@courselore.org`},
-                  ${password},
-                  ${new Date().toISOString()},
-                  ${name},
-                  ${html`${name}`},
-                  ${
-                    Math.random() < 0.6
-                      ? `${
-                          app.locals.options.baseURL
-                        }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
-                      : null
-                  },
-                  ${lodash.sample(userAvatarlessBackgroundColors)},
-                  ${biographySource},
-                  ${
-                    app.locals.partials.content({
-                      req,
-                      res,
-                      type: "source",
-                      content: biographySource,
-                    }).preprocessed
-                  },
-                  ${
-                    !includeAdmins
-                      ? "none"
-                      : userIndex === 0 || Math.random() < 0.1
-                      ? "administrator"
-                      : Math.random() < 0.3
-                      ? "staff"
-                      : "none"
-                  },
-                  ${
-                    isEmailNotificationsForMentions &&
-                    isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-                    isEmailNotificationsForMessagesInConversationsYouStarted &&
-                    Math.random() < 0.3
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${
-                    isEmailNotificationsForMentions
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${
-                    isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${
-                    isEmailNotificationsForMessagesInConversationsYouStarted
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${
-                    (isEmailNotificationsForMentions ||
-                      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-                      isEmailNotificationsForMessagesInConversationsYouStarted) &&
-                    Math.random() < 0.9
-                      ? lodash.sample(userEmailNotificationsDigestsFrequencies)
-                      : null
-                  }
-                )
-                RETURNING *
-              `
+            INSERT INTO "users" (
+              "createdAt",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "systemRole",
+              "emailNotificationsForAllMessagesAt",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt",
+              "emailNotificationsDigestsFrequency"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date(
+                Date.now() -
+                  (Math.random() < 0.5
+                    ? 0
+                    : lodash.random(0, 5 * 60 * 60 * 1000))
+              ).toISOString()},
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${`${slugify(name)}--${cryptoRandomString({
+                length: 5,
+                type: "numeric",
+              })}@courselore.org`},
+              ${password},
+              ${new Date().toISOString()},
+              ${name},
+              ${html`${name}`},
+              ${
+                Math.random() < 0.6
+                  ? `${
+                      app.locals.options.baseURL
+                    }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                  : null
+              },
+              ${lodash.sample(userAvatarlessBackgroundColors)},
+              ${biographySource},
+              ${
+                app.locals.partials.content({
+                  req,
+                  res,
+                  type: "source",
+                  content: biographySource,
+                }).preprocessed
+              },
+              ${
+                !includeAdmins
+                  ? "none"
+                  : userIndex === 0 || Math.random() < 0.1
+                  ? "administrator"
+                  : Math.random() < 0.3
+                  ? "staff"
+                  : "none"
+              },
+              ${
+                isEmailNotificationsForMentions &&
+                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+                isEmailNotificationsForMessagesInConversationsYouStarted &&
+                Math.random() < 0.3
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMentions
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMessagesInConversationsYouStarted
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                (isEmailNotificationsForMentions ||
+                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+                  isEmailNotificationsForMessagesInConversationsYouStarted) &&
+                Math.random() < 0.9
+                  ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                  : null
+              }
+            )
+            RETURNING *
+          `
         )!;
       });
       const demonstrationUser = res.locals.user ?? users.shift()!;
@@ -627,7 +627,7 @@ export default (app: Courselore): void => {
           their password is “courselore”.
         `,
       });
-      res.redirect(303, app.locals.options.baseURL);
+      res.redirect(303, `https://${app.locals.options.host}`);
     });
 
     app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(

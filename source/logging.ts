@@ -5,7 +5,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
-      } started at ${app.locals.options.baseURL}`
+      } started at https://${app.locals.options.host}`
     );
   });
   app.enable("trust proxy");
@@ -39,7 +39,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
-      } stopped at ${app.locals.options.baseURL}`
+      } stopped at https://${app.locals.options.host}`
     );
   });
 };

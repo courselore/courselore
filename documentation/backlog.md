@@ -73,6 +73,8 @@
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
   - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
+  - Perhaps even some more personal settings, for example, preferences related to email notifications
+- Have some sort of visual indication of your own role in the system.
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -93,10 +95,19 @@
 
 ### Better Email Notifications
 
-- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Respect the new settings on email delivery
-    - `TODO`
-- Database index for notification settings, since they’re used in the query to decide who to notify?
+- New filters for email notifications.
+  - Reenable on interface (`TODO`)
+  - Implement SQL
+  - Database index for notification settings, since they’re used in the query to decide who to notify?
+- Details on the emails:
+  - Make emails be replies, so that they’re grouped in conversations on email readers.
+  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+  - Add support for Dark Mode in emails.
+    - This should fix the duplication of code blocks.
+- Digests.
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online and/or has seen the message.
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
@@ -105,19 +116,6 @@
     - When you select this option, check “Pin” in the form
   - Store this into conversation
   - Show these conversations differently on sidebar
-- Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
-- Details on the emails:
-  - Make emails be replies, so that they’re grouped in conversations on email readers.
-  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-  - Add support for Dark Mode in emails.
-    - This should fix the duplication of code blocks.
-
----
-
-**BACKUP BEFORE DEPLOYMENT**
 
 ---
 
@@ -611,6 +609,7 @@ const { app, BrowserWindow } = require("electron");
     - Use the `/preview` route?
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
       - But we could pre-fetch…
+- Preserve more client-side state, for example, on the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
 
 ### Live-Updates
 
@@ -723,6 +722,11 @@ const { app, BrowserWindow } = require("electron");
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
+- Do things break if you’re trying to run Courselore from a folder that includes spaces & weird characters?
+  - Note Caddy’s configuration and the serving of static files.
+  - Test development.
+  - Test binary.
+  - Test on Windows.
 - Cluster mode:
   - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
   - Approaches:
@@ -805,13 +809,55 @@ const { app, BrowserWindow } = require("electron");
 2. Run Courselore with the Localtunnel address, for example:
 
    ```console
-   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   $ env HOST=THE-LOCAL-TUNNEL-ADDRESS npm start
    ```
 ````
 
 > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 3. Visit the Localtunnel address on the phone.
+
+</details>
+```
+
+- Also SSH tunneling hasn’t been tested since the latest changes in Caddy infrastructure, so it probably doesn’t work either:
+
+````markdown
+<details>
+
+<summary>Option 2: Using an SSH Tunnel through a Server That You Have Access to</summary>
+
+1. Follow the instructions from Option 1 to transfer a certificate to the phone.
+
+2. On the server that you have access to, open an SSH tunnel, for example, on Ubuntu:
+
+   - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
+   - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
+
+3. Run Courselore with the server’s address, for example:
+
+   ```console
+   $ env HOST=YOUR-SERVER.COM:4000 npm start
+   ```
+````
+
+4. Connect to the tunnel from your machine, for example:
+
+   ```console
+   ssh -NR 4001:localhost:4000 root@YOUR-SERVER.COM
+   ```
+
+5. Visit the server’s address on the phone.
+
+</details>
+```
+
+- And here’s the disclosure element for the first option, for when we get other options back:
+
+```markdown
+<details>
+
+<summary>Option 1: Using the Local Area Network (Preferred)</summary>
 
 </details>
 ```
