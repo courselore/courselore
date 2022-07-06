@@ -22,16 +22,21 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
 
     // Configuration to reach the email server which delivers email on Courselore’s behalf.
     // Use the format of arguments accepted by Nodemailer’s ‘.createTransport()’. See https://nodemailer.com/smtp/.
-    sendMail: [
-      {
+    sendMail: {
+      options: {
         host: "SMTP.YOUR-DOMAIN.EDU",
         auth: {
           user: "SMTP USERNAME",
           pass: "SMTP PASSWORD",
         },
       },
-      { from: `"Courselore" <FROM@YOUR-DOMAIN.EDU>` },
-    ],
+      defaults: {
+        from: {
+          name: "Courselore",
+          address: "FROM@YOUR-DOMAIN.EDU",
+        },
+      },
+    },
 
     // [OPTIONAL] Other hosts you’d like to redirect to this Courselore installation.
     // alternativeHosts: ["WWW.YOUR-DOMAIN.EDU", "..."],

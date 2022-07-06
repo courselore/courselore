@@ -1295,8 +1295,8 @@ export default (app: Courselore): void => {
               ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
               ${JSON.stringify({
                 from: {
-                  name: `Courselore · ${res.locals.course.name}`,
-                  address: app.locals.options.administratorEmail,
+                  name: `${app.locals.options.sendMail.defaults.from.name} · ${res.locals.course.name}`,
+                  address: app.locals.options.sendMail.defaults.from.address,
                 },
                 to: enrollment.userEmail,
                 subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
