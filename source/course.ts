@@ -15,7 +15,7 @@ import {
   LiveUpdatesMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-  CanCreateCoursesMiddlewareLocals,
+  MayCreateCoursesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
@@ -466,7 +466,7 @@ export default (app: Courselore): void => {
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
-                    $${res.locals.canCreateCourses
+                    $${res.locals.mayCreateCourses
                       ? html`
                           <a
                             href="https://${app.locals.options
@@ -531,9 +531,9 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, CanCreateCoursesMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, MayCreateCoursesMiddlewareLocals>(
     "/courses/new",
-    ...app.locals.middlewares.canCreateCourses,
+    ...app.locals.middlewares.mayCreateCourses,
     (req, res) => {
       res.send(
         app.locals.layouts.main({
@@ -716,10 +716,10 @@ export default (app: Courselore): void => {
       code?: string;
     },
     {},
-    CanCreateCoursesMiddlewareLocals
+    MayCreateCoursesMiddlewareLocals
   >(
     "/courses",
-    ...app.locals.middlewares.canCreateCourses,
+    ...app.locals.middlewares.mayCreateCourses,
     (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||

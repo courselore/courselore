@@ -126,7 +126,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     courseRole: CourseRole;
     accentColor: EnrollmentAccentColor;
   }[];
-  canCreateCourses: boolean;
+  mayCreateCourses: boolean;
 }
 
 export type SignInHandler = express.RequestHandler<
@@ -416,12 +416,14 @@ export default (app: Courselore): void => {
           accentColor: enrollment.accentColor,
         }));
 
-      res.locals.canCreateCourses =
-        app.locals.options.canCreateCourses === "anyone"
-          ? true
-          : app.locals.options.canCreateCourses === "staff-and-administrators"
-          ? res.locals.user.systemRole !== "none"
-          : res.locals.user.systemRole === "administrator";
+      res.locals.mayCreateCourses =
+        app.locals.options.userSystemRolesWhoMayCreateCourses === "anyone" ||
+        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
+          "staff-and-administrators" &&
+          ["staff", "administrator"].includes(res.locals.user.systemRole)) ||
+        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
+          "administrators" &&
+          res.locals.user.systemRole === "administrator");
 
       next();
     },

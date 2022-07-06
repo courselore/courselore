@@ -2667,7 +2667,7 @@ export default async (app: Courselore): Promise<void> => {
                             <i class="bi bi-journal-arrow-down"></i>
                             Enroll in an Existing Course
                           </button>
-                          $${res.locals.canCreateCourses
+                          $${res.locals.mayCreateCourses
                             ? html`
                                 <a
                                   href="https://${app.locals.options

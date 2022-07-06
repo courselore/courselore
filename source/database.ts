@@ -785,7 +785,9 @@ export default async (app: Courselore): Promise<void> => {
       );
 
       INSERT INTO "configurations" ("key", "value") 
-      VALUES ('canCreateCourses', ${JSON.stringify("anyone")});       
+      VALUES ('userSystemRolesWhoMayCreateCourses', ${JSON.stringify(
+        "anyone"
+      )});       
     `,
     () => {
       app.locals.database.execute(

@@ -11,15 +11,16 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export type CanCreateCourses = typeof canCreateCourseses[number];
-export const canCreateCourseses = [
+export type UserSystemRolesWhoMayCreateCourses =
+  typeof userSystemRolesWhoMayCreateCourseses[number];
+export const userSystemRolesWhoMayCreateCourseses = [
   "anyone",
   "staff-and-administrators",
   "administrators",
 ] as const;
 
 export type SystemRole = typeof systemRoles[number];
-export const systemRoles = ["administrator", "staff", "none"] as const;
+export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export type SystemRoleIconPartial = {
   [role in SystemRole]: {
@@ -38,14 +39,14 @@ export type IsAdministratorMiddleware = express.RequestHandler<
 export interface IsAdministratorMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
-export type CanCreateCoursesMiddleware = express.RequestHandler<
+export type mayCreateCoursesMiddleware = express.RequestHandler<
   {},
   any,
   {},
   {},
-  CanCreateCoursesMiddlewareLocals
+  MayCreateCoursesMiddlewareLocals
 >[];
-export interface CanCreateCoursesMiddlewareLocals
+export interface MayCreateCoursesMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
 export type MayManageUserMiddleware = express.RequestHandler<
@@ -76,14 +77,14 @@ export type AdministratorLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
-  app.locals.options.canCreateCourses = JSON.parse(
+  app.locals.options.userSystemRolesWhoMayCreateCourses = JSON.parse(
     app.locals.database.get<{
       value: string;
     }>(
       sql`
         SELECT "value"
         FROM "configurations"
-        WHERE "key" = 'canCreateCourses'
+        WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
       `
     )!.value
   );
@@ -111,10 +112,10 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.canCreateCourses = [
+  app.locals.middlewares.mayCreateCourses = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (res.locals.canCreateCourses) return next();
+      if (res.locals.mayCreateCourses) return next();
       next("route");
     },
   ];
@@ -248,10 +249,11 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
+                      name="userSystemRolesWhoMayCreateCourses"
                       value="anyone"
                       required
-                      $${app.locals.options.canCreateCourses === "anyone"
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses === "anyone"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -267,10 +269,11 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
+                      name="userSystemRolesWhoMayCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${app.locals.options.canCreateCourses ===
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses ===
                       "staff-and-administrators"
                         ? html`checked`
                         : html``}
@@ -287,11 +290,11 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
+                      name="userSystemRolesWhoMayCreateCourses"
                       value="administrators"
                       required
-                      $${app.locals.options.canCreateCourses ===
-                      "administrators"
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses === "administrators"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -322,7 +325,7 @@ export default (app: Courselore): void => {
     {},
     any,
     {
-      canCreateCourses?: CanCreateCourses;
+      userSystemRolesWhoMayCreateCourses?: UserSystemRolesWhoMayCreateCourses;
     },
     {},
     IsAdministratorMiddlewareLocals
@@ -331,19 +334,23 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       if (
-        typeof req.body.canCreateCourses !== "string" ||
-        !canCreateCourseses.includes(req.body.canCreateCourses)
+        typeof req.body.userSystemRolesWhoMayCreateCourses !== "string" ||
+        !userSystemRolesWhoMayCreateCourseses.includes(
+          req.body.userSystemRolesWhoMayCreateCourses
+        )
       )
         return next("validation");
 
-      app.locals.options.canCreateCourses = JSON.parse(
+      app.locals.options.userSystemRolesWhoMayCreateCourses = JSON.parse(
         app.locals.database.get<{
           value: string;
         }>(
           sql`
             UPDATE "configurations"
-            SET "value" = ${JSON.stringify(req.body.canCreateCourses)}
-            WHERE "key" = 'canCreateCourses'
+            SET "value" = ${JSON.stringify(
+              req.body.userSystemRolesWhoMayCreateCourses
+            )}
+            WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
             RETURNING *
           `
         )!.value
