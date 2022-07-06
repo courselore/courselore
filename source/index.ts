@@ -62,7 +62,7 @@ export {
   systemRoles,
   IsAdministratorMiddlewareLocals,
   CanCreateCoursesMiddlewareLocals,
-  MayManageUserMiddlewareLocals as MayManageUserSystemRolesMiddlewareLocals,
+  MayManageUserMiddlewareLocals,
 } from "./administrator.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
@@ -162,9 +162,7 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
-      demonstration: boolean;
       canCreateCourses: CanCreateCourses;
-      administratorEmail: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
@@ -202,8 +200,8 @@ export interface Courselore extends express.Express {
       settings: SettingsLayout;
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
-      courseSettings: CourseSettingsLayout;
       administratorPanel: AdministratorLayout;
+      courseSettings: CourseSettingsLayout;
       conversation: ConversationLayout;
     };
     partials: {
@@ -256,9 +254,11 @@ export interface Courselore extends express.Express {
 export interface Options {
   dataDirectory: string;
   baseURL: string;
+  administratorEmail: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
+  demonstration?: boolean;
   liveReload?: boolean;
 }
 
