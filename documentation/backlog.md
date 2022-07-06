@@ -18,51 +18,16 @@
 
 ### Administrative Interface
 
-**Overview**
-
-- For system administrators.
-- For department-wide installations.
-- Introduce the notion of an “administrator”, which is installation-wide, not course-wide.
-  - The “administrator” has complete access on the system: They can grant privileges to other people, see all course information, and so forth. (This is exactly the kind of data that’s already available to them by inspecting the database, we’re just providing a nicer interface).
-  - An administrator may also be staff or student on courses using the same account.
-
 **Goals**
 
-- Configuration that’s currently on configuration files and should be moved into administrative interface:
-  - `administratorEmail`: By default it should be the email of the first administrator, but continue giving this as a separate option in case administrators have their personal accounts & want to receive notifications on a mailing list that reaches the whole team.
-  - `sendMail`: Have a default mailer using regular SMTP connection, and ask for URL, username, and password (which needs to be stored in plain text). But continue to give this as an option on the configuration file, in case people want to do something different, for example, what we do in development mode.
-  - `demonstration`
-  - `liveReload`: Perhaps this shouldn’t be given as an option, but just configured based on `process.env.NODE_ENV`.
-- Introduce the notion of system-wide roles:
-  - Administrators
-  - Staff
-  - `NULL`
-- How to get the first administrator in the system:
-  - New installation: The first user that’s created is an administrator.
-  - Existing installations: Have a script that people can use in the update to grant themselves the administrator role.
-- **Question:** How do we get other administrators & staff on the system?
-  - Option 1: The only way is to ask people to create their accounts, then as an administrator go into the list of users and grant them the role
-  - Option 2: Invitations for installation-wide roles
-    - These would be similar to the invitations for a course.
-    - For staff?
-    - For administrators?
-  - Option 3: Administrators can create users.
 - List of people in the system
-  - Manage roles
   - See what courses people are on
 - List of courses in the system
   - Access the course
   - Have a quick way to archive a course directly from this list
-- Control who can create a course:
-  - Anyone.
-  - Only staff & administrators.
-  - Only administrators.
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-  - **Question:** What happens when you’re the administrator and also the staff/student on a course?
-    - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
-    - Or do you see the course as a regular as staff/student would?
-    - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
-- **Question:** Should administrators not be able to see **some** things, for example, the upcoming private conversations between groups of people?
+- Deal with the case in which you’re the administrator and also the staff/student on a course.
+  - Switch in out of administrator role and see the course differently.
 
 **Good to Have in the Future**
 
@@ -74,6 +39,10 @@
   - Remove a person from the system entirely
   - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
   - Perhaps even some more personal settings, for example, preferences related to email notifications
+- Other ways to get administrators into the system:
+  - Invitations for installation-wide roles
+    - These would be similar to the invitations for a course. But email only, no invitation link.
+  - Administrators may create users.
 - Have some sort of visual indication of your own role in the system.
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.

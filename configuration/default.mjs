@@ -4,14 +4,14 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     courseloreImport,
     courseloreImportMetaURL,
     host: process.env.HOST ?? "localhost",
-    administratorEmail: "demonstration@courselore.org",
+    administratorEmail: "feedback@courselore.org",
     dataDirectory: path.join(process.cwd(), "data"),
     sendMail: {
       options: { jsonTransport: true },
       defaults: {
         from: {
           name: "Courselore",
-          address: "demonstration@courselore.org",
+          address: "feedback@courselore.org",
         },
       },
     },
