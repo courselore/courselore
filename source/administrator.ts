@@ -162,7 +162,8 @@ export default (app: Courselore): void => {
       `,
       menu: html`
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/configuration"
+          href="https://${app.locals.options
+            .host}/administrator-panel/configuration"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/administrator-panel/configuration"
           )
@@ -177,7 +178,7 @@ export default (app: Courselore): void => {
           Configuration
         </a>
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/users"
+          href="https://${app.locals.options.host}/administrator-panel/users"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/administrator-panel/users"
           )
@@ -201,7 +202,7 @@ export default (app: Courselore): void => {
     (res, req) => {
       req.redirect(
         303,
-        `${app.locals.options.baseURL}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administrator-panel/configuration`
       );
     }
   );
@@ -227,8 +228,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options
-                .baseURL}/administrator-panel/configuration"
+              action="https://${app.locals.options
+                .host}/administrator-panel/configuration"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -357,7 +358,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administrator-panel/configuration`
       );
     }
   );
@@ -461,7 +462,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/users/${user.reference}`;
+              const action = `https://${app.locals.options.host}/users/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -811,8 +812,8 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         res.locals.managedUser.isSelf
-          ? `${app.locals.options.baseURL}`
-          : `${app.locals.options.baseURL}/administrator-panel/users`
+          ? `https://${app.locals.options.host}`
+          : `https://${app.locals.options.host}/administrator-panel/users`
       );
     }
   );

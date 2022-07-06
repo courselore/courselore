@@ -485,8 +485,8 @@ export default async (app: Courselore): Promise<void> => {
                               </p>
                               <form
                                 method="POST"
-                                action="${app.locals.options
-                                  .baseURL}/demonstration-data"
+                                action="https://${app.locals.options
+                                  .host}/demonstration-data"
                               >
                                 <input
                                   type="hidden"
@@ -519,7 +519,7 @@ export default async (app: Courselore): Promise<void> => {
                 content.push(html`
                   <form
                     method="DELETE"
-                    action="${app.locals.options.baseURL}/turn-off"
+                    action="https://${app.locals.options.host}/turn-off"
                   >
                     <input
                       type="hidden"
@@ -2776,8 +2776,8 @@ export default async (app: Courselore): Promise<void> => {
                             ? html`
                                 <a
                                   class="dropdown--menu--item button button--transparent"
-                                  href="${app.locals.options
-                                    .baseURL}/administrator-panel"
+                                  href="https://${app.locals.options
+                                    .host}/administrator-panel"
                                 >
                                   <i class="bi bi-tools"></i>
                                   Administrator Panel
