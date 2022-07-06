@@ -23,7 +23,7 @@ export default async ({
         [
           process.argv[1],
           process.argv[2] ??
-            url.fileURLToPath(new URL("./demonstration.mjs", import.meta.url)),
+            url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
           "server",
         ],
         {
@@ -131,9 +131,12 @@ export default async ({
     const nodemailer = await courseloreImport("nodemailer");
     const courselore = (await courseloreImport("./index.js")).default;
 
-    if (Array.isArray(sendMail)) {
-      const transport = nodemailer.createTransport(...sendMail);
+    if (typeof sendMail !== "function") {
+      const { options, defaults } = sendMail;
+      const transport = nodemailer.createTransport(options, defaults);
       sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
+      sendMail.options = options;
+      sendMail.defaults = defaults;
     }
     const app = await courselore({
       host,

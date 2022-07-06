@@ -256,9 +256,14 @@ export interface Options {
   host: string;
   administratorEmail: string;
   dataDirectory: string;
-  sendMail: (
+  sendMail: ((
     mailOptions: nodemailer.SendMailOptions
-  ) => Promise<nodemailer.SentMessageInfo>;
+  ) => Promise<nodemailer.SentMessageInfo>) & {
+    options: any;
+    defaults: nodemailer.SendMailOptions & {
+      from: { name: string; address: string };
+    };
+  };
   demonstration: boolean;
   liveReload: boolean;
 }

@@ -7,23 +7,27 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       "utf8"
     )
   );
-  const administratorEmail = "administrator@courselore.org";
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
     host: "courselore.org",
-    administratorEmail,
+    administratorEmail: "administrator@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
-    sendMail: [
-      {
+    sendMail: {
+      options: {
         host: "email-smtp.us-east-1.amazonaws.com",
         auth: {
           user: secrets.smtp.username,
           pass: secrets.smtp.password,
         },
       },
-      { from: `"Courselore" <${administratorEmail}>` },
-    ],
+      defaults: {
+        from: {
+          name: "Courselore",
+          address: "administrator@courselore.org",
+        },
+      },
+    },
     alternativeHosts: [
       "www.courselore.org",
       "courselore.com",

@@ -48,7 +48,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
    > **Note for Advanced Users:** The Courselore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
    >
-   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/production.mjs`](/configuration/production.mjs)).
+   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.org.mjs`](/configuration/courselore.org.mjs)).
    >
    > - Replace Caddy with a different reverse proxy, which may be necessary if you have other applications running on the same server. Note that the other reverse proxy must serve static files & manage HTTP headers in a similar way to [how we configure Caddy](https://github.com/courselore/courselore/blob/main/configuration/base.mjs) or Courselore will malfunction.
    >

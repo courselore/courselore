@@ -6,7 +6,15 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     host: process.env.HOST ?? "localhost",
     administratorEmail: "development@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
-    sendMail: [{ jsonTransport: true }],
+    sendMail: {
+      options: { jsonTransport: true },
+      defaults: {
+        from: {
+          name: "Courselore",
+          address: "development@courselore.org",
+        },
+      },
+    },
     production: false,
     liveReload: true,
   });

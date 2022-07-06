@@ -1077,10 +1077,10 @@ export default (app: Courselore): void => {
           ${new Date().toISOString()},
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
-            from: `"Courselore · ${invitation.course.name.replace(
-              /[^\w ]/g,
-              "•"
-            )}" <${app.locals.options.administratorEmail}>`,
+            from: {
+              name: `${app.locals.options.sendMail.defaults.from.name} · ${invitation.course.name}`,
+              address: app.locals.options.sendMail.defaults.from.address,
+            },
             to: invitation.email!,
             subject: `Enroll in ${invitation.course.name}`,
             html: html`

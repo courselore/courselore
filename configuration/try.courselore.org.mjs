@@ -4,9 +4,17 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     courseloreImport,
     courseloreImportMetaURL,
     host: "try.courselore.org",
-    administratorEmail: "administrator@courselore.org",
+    administratorEmail: "try@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
-    sendMail: [{ jsonTransport: true }],
+    sendMail: {
+      options: { jsonTransport: true },
+      defaults: {
+        from: {
+          name: "Courselore",
+          address: "try@courselore.org",
+        },
+      },
+    },
     demonstration: true,
   });
 };
