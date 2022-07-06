@@ -1356,11 +1356,11 @@ export default (app: Courselore): void => {
             "reference",
             "email",
             "password",
-            "systemRole",
             "emailVerifiedAt",
             "name",
             "nameSearch",
             "avatarlessBackgroundColor",
+            "systemRole",
             "emailNotificationsForAllMessagesAt",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
@@ -1373,6 +1373,10 @@ export default (app: Courselore): void => {
             ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
+            ${null},
+            ${req.body.name},
+            ${html`${req.body.name}`},
+            ${lodash.sample(userAvatarlessBackgroundColors)},
             ${
               app.locals.options.host !== app.locals.options.tryHost &&
               app.locals.database.get<{ count: number }>(
@@ -1383,10 +1387,6 @@ export default (app: Courselore): void => {
                 ? "administrator"
                 : "none"
             },
-            ${null},
-            ${req.body.name},
-            ${html`${req.body.name}`},
-            ${lodash.sample(userAvatarlessBackgroundColors)},
             ${null},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
