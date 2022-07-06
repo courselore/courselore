@@ -32,14 +32,14 @@ export type DemonstrationHandler = express.RequestHandler<
 export default (app: Courselore): void => {
   if (app.locals.options.demonstration) {
     app.locals.handlers.demonstration = asyncHandler(async (req, res) => {
-      // TODO: Administrative panel: In ‘try.courselore.org’ no one should be administrator
       const includeAdmins =
-        app.locals.database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count"
-            FROM "users"
-          `
-        )!.count === 0 || res.locals.user?.systemRole === "administrator";
+        (app.locals.options.host !== app.locals.options.tryHost &&
+          app.locals.database.get<{ count: number }>(
+            sql`
+              SELECT COUNT(*) AS "count" FROM "users"
+            `
+          )!.count === 0) ||
+        res.locals.user?.systemRole === "administrator";
       const password = await argon2.hash(
         "courselore",
         app.locals.options.argon2

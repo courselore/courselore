@@ -1374,11 +1374,10 @@ export default (app: Courselore): void => {
             ${req.body.email},
             ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${
-              // TODO: Administrator panel: In ‘try.courselore.org’ no one should be administrator
+              app.locals.options.host !== app.locals.options.tryHost &&
               app.locals.database.get<{ count: number }>(
                 sql`
-                  SELECT COUNT(*) AS "count"
-                  FROM "users"
+                  SELECT COUNT(*) AS "count" FROM "users"
                 `
               )!.count === 0
                 ? "administrator"
