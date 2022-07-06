@@ -144,7 +144,7 @@ export type SpinnerPartial = ({
   size?: number;
 }) => HTML;
 
-export type ReportIssueHrefPartial = () => string;
+export type ReportIssueHrefPartial = string;
 
 export interface FlashHelper {
   maxAge: number;
@@ -702,7 +702,7 @@ export default async (app: Courselore): Promise<void> => {
                             Meta Courselore
                           </a>
                           <a
-                            href="${app.locals.partials.reportIssueHref()}"
+                            href="${app.locals.partials.reportIssueHref}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -3040,11 +3040,12 @@ export default async (app: Courselore): Promise<void> => {
     </svg>
   `;
 
-  app.locals.partials.reportIssueHref = () =>
-    `mailto:${app.locals.options.administratorEmail}${qs.stringify(
-      {
-        subject: "Report an Issue",
-        body: dedent`
+  app.locals.partials.reportIssueHref = `mailto:${
+    app.locals.options.administratorEmail
+  }${qs.stringify(
+    {
+      subject: "Report an Issue",
+      body: dedent`
           What did you try to do?
   
   
@@ -3065,11 +3066,11 @@ export default async (app: Courselore): Promise<void> => {
   
           Courselore Version: ${app.locals.options.version}
         `,
-      },
-      {
-        addQueryPrefix: true,
-      }
-    )}`;
+    },
+    {
+      addQueryPrefix: true,
+    }
+  )}`;
 
   app.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
