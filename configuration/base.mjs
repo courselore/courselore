@@ -23,7 +23,7 @@ export default async ({
         [
           process.argv[1],
           process.argv[2] ??
-            url.fileURLToPath(new URL("./demonstration.mjs", import.meta.url)),
+            url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
           "server",
         ],
         {

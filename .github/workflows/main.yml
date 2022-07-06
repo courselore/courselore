@@ -44,7 +44,7 @@ jobs:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
 
-  deploy--staging:
+  deploy--try-courselore-org:
     if: github.ref == 'refs/heads/main'
     needs: [build, test]
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
 
           ssh root@try.courselore.org "mkdir -p courselore"
           rsync -a courselore root@try.courselore.org:courselore/courselore
-          rsync -a configuration/staging.mjs root@try.courselore.org:courselore/configuration.mjs
+          rsync -a configuration/try.courselore.org.mjs root@try.courselore.org:courselore/configuration.mjs
           rsync -a configuration/courselore.service root@try.courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@try.courselore.org << "EOF"
@@ -77,7 +77,7 @@ jobs:
           systemctl restart courselore
           EOF
 
-  deploy--production:
+  deploy--courselore-org:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [build, test]
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
 
           ssh root@courselore.org "mkdir -p courselore"
           rsync -a courselore root@courselore.org:courselore/courselore
-          rsync -a configuration/production.mjs root@courselore.org:courselore/configuration.mjs
+          rsync -a configuration/courselore.org.mjs root@courselore.org:courselore/configuration.mjs
           rsync -a configuration/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@courselore.org << "EOF"
