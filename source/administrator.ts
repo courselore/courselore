@@ -88,31 +88,6 @@ export default (app: Courselore): void => {
     )!.value
   );
 
-  app.locals.options.demonstration =
-    JSON.parse(
-      app.locals.database.get<{
-        value: string;
-      }>(
-        sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'demonstrationAt'
-      `
-      )!.value
-    ) !== null;
-
-  app.locals.options.administratorEmail = JSON.parse(
-    app.locals.database.get<{
-      value: string;
-    }>(
-      sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'administratorEmail'
-      `
-    )!.value
-  );
-
   app.locals.partials.systemRoleIcon = {
     administrator: {
       regular: html`<i class="bi bi-person"></i>`,
@@ -324,34 +299,6 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
               </div>
-              <div
-                css="${res.locals.css(css`
-                  display: flex;
-                `)}"
-              >
-                <label class="button button--tight button--tight--inline">
-                  <input
-                    type="checkbox"
-                    name="demonstration"
-                    $${app.locals.options.demonstration
-                      ? html`checked`
-                      : html``}
-                    class="input--checkbox"
-                  />
-                  Run in demonstration mode
-                </label>
-              </div>
-              <label class="label">
-                <p class="label--text">Administrator Email</p>
-                <input
-                  type="email"
-                  name="administratorEmail"
-                  placeholder="you@educational-institution.edu"
-                  value="${app.locals.options.administratorEmail}"
-                  required
-                  class="input--text"
-                />
-              </label>
 
               <hr class="separator" />
 
@@ -375,8 +322,6 @@ export default (app: Courselore): void => {
     any,
     {
       canCreateCourses?: CanCreateCourses;
-      demonstration?: "on";
-      administratorEmail?: string;
     },
     {},
     IsAdministratorMiddlewareLocals
@@ -386,11 +331,7 @@ export default (app: Courselore): void => {
     (req, res, next) => {
       if (
         typeof req.body.canCreateCourses !== "string" ||
-        !canCreateCourseses.includes(req.body.canCreateCourses) ||
-        ![undefined, "on"].includes(req.body.demonstration) ||
-        typeof req.body.administratorEmail !== "string" ||
-        req.body.administratorEmail.match(app.locals.helpers.emailRegExp) ===
-          null
+        !canCreateCourseses.includes(req.body.canCreateCourses)
       )
         return next("validation");
 
@@ -402,30 +343,6 @@ export default (app: Courselore): void => {
             UPDATE "configurations"
             SET "value" = ${JSON.stringify(req.body.canCreateCourses)}
             WHERE "key" = 'canCreateCourses'
-            RETURNING *
-          `
-        )!.value
-      );
-
-      app.locals.options.demonstration = JSON.parse(
-        app.locals.database.get<{ value: string }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(
-              req.body.demonstration === "on" ? new Date().toISOString() : null
-            )}
-            WHERE "key" = 'demonstrationAt'
-            RETURNING *
-          `
-        )!.value
-      );
-
-      app.locals.options.administratorEmail = JSON.parse(
-        app.locals.database.get<{ value: string }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(req.body.administratorEmail)}
-            WHERE "key" = 'administratorEmail'
             RETURNING *
           `
         )!.value
