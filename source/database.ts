@@ -778,12 +778,12 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
     sql`
-      CREATE TABLE "configuration" (
+      CREATE TABLE "options" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id = 1),
         "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 
-      INSERT INTO "configuration" ("userSystemRolesWhoMayCreateCourses") 
+      INSERT INTO "options" ("userSystemRolesWhoMayCreateCourses") 
       VALUES ('anyone');
     `,
     () => {
