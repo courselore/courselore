@@ -4,12 +4,15 @@ import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
-
 import {
   Courselore,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
+
+export interface AdministratorOptions {
+  userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+}
 
 export type UserSystemRolesWhoMayCreateCourses =
   typeof userSystemRolesWhoMayCreateCourseses[number];

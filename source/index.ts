@@ -45,10 +45,8 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
-import about, { AboutHandler } from "./about.js";
-
 import administrator, {
-  UserSystemRolesWhoMayCreateCourses,
+  AdministratorOptions,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
   mayCreateCoursesMiddleware,
@@ -64,6 +62,8 @@ export {
   MayCreateCoursesMiddlewareLocals,
   MayManageUserMiddlewareLocals,
 } from "./administrator.js";
+
+import about, { AboutHandler } from "./about.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
@@ -163,10 +163,10 @@ export interface Courselore extends express.Express {
       canonicalHost: string;
       metaCourseloreInvitation: string;
       tryHost: string;
-      userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
     } & Options &
       GlobalMiddlewaresOptions &
-      AuthenticationOptions;
+      AuthenticationOptions &
+      AdministratorOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
@@ -296,9 +296,9 @@ export default async (options: Options): Promise<Courselore> => {
   liveUpdates(app);
   await layouts(app);
   authentication(app);
+  administrator(app);
   about(app);
   user(app);
-  administrator(app);
   course(app);
   conversation(app);
   message(app);
