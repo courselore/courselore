@@ -19,6 +19,10 @@ import {
   SystemRole,
 } from "./index.js";
 
+export interface AuthenticationOptions {
+  argon2: argon2.Options & { raw?: false };
+}
+
 export interface SessionHelper {
   maxAge: number;
   open({
@@ -141,10 +145,6 @@ export interface PasswordResetHelper {
   maxAge: number;
   create(userId: number): string;
   get(nonce: string): number | undefined;
-}
-
-export interface AuthenticationOptions {
-  argon2: argon2.Options & { raw?: false };
 }
 
 export type EmailVerificationMailer = ({

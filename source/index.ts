@@ -32,12 +32,12 @@ import layouts, {
 } from "./layouts.js";
 
 import authentication, {
+  AuthenticationOptions,
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
   SignInHandler,
   PasswordResetHelper,
-  AuthenticationOptions,
   EmailVerificationMailer,
 } from "./authentication.js";
 export {
