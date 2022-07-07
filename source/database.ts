@@ -779,7 +779,7 @@ export default async (app: Courselore): Promise<void> => {
     `,
     sql`
       CREATE TABLE "options" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id = 1),
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
         "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 

@@ -58,7 +58,7 @@
   - Run an update
   - Run a backup
   - Email server configuration & other things that currently live in configuration file
-  - Have a wizard to set things up the first time
+  - Have a wizard to set things up the first time: It’d have to be something like a command-line application, because without the basic information the server can’t even start.
   - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
 - Take a look at other nice features from Discourse’s administrative interface
 
@@ -2410,6 +2410,7 @@ $$
   - <https://edstem.org>
   - <https://aula.education>
   - <https://yellowdig.com>
+    - Point-based system; gamification.
   - <https://moodle.org>
   - <https://canvaslms.com>
   - <https://www.acadly.com/>
