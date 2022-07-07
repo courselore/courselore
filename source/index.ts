@@ -164,7 +164,7 @@ export interface Courselore extends express.Express {
       metaCourseloreInvitation: string;
       tryHost: string;
       userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
-    } & Required<Options> &
+    } & Options &
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
     handlers: {
