@@ -778,16 +778,13 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
     sql`
-      CREATE TABLE "configurations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "key" TEXT UNIQUE NOT NULL,
-        "value" TEXT NOT NULL
+      CREATE TABLE "configuration" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id = 1),
+        "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 
-      INSERT INTO "configurations" ("key", "value") 
-      VALUES ('userSystemRolesWhoMayCreateCourses', ${JSON.stringify(
-        "anyone"
-      )});
+      INSERT INTO "configuration" ("userSystemRolesWhoMayCreateCourses") 
+      VALUES ('anyone');
     `,
     () => {
       app.locals.database.execute(
@@ -963,9 +960,7 @@ export default async (app: Courselore): Promise<void> => {
         }
         app.locals.database.run(
           sql`
-            UPDATE "users"
-            SET "systemRole" = 'administrator'
-            WHERE "id" = ${answer.id}
+            UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${answer.id}
           `
         );
         await prompts({
