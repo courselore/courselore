@@ -1035,7 +1035,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
-                            $${app.locals.icons.chat({ size: 14 })} Chats
+                            $${app.locals.icons.chat({ size: 12 })} Chats
                           </a>
                         `
                       : html`
@@ -1052,7 +1052,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
-                            $${app.locals.icons.chatFill({ size: 14 })} Chats
+                            $${app.locals.icons.chatFill({ size: 12 })} Chats
                           </a>
                         `}
                   </div>
@@ -2381,8 +2381,8 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
     chat: {
-      regular: app.locals.icons.chat({ size: 14 }),
-      fill: app.locals.icons.chatFill({ size: 14 }),
+      regular: app.locals.icons.chat({ size: 12 }),
+      fill: app.locals.icons.chatFill({ size: 12 }),
     },
   };
 

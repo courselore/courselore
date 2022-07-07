@@ -1679,6 +1679,10 @@ export default async (app: Courselore): Promise<void> => {
           align-items: center;
         }
 
+        .icon {
+          align-self: center;
+        }
+
         .separator {
           border-top: var(--border-width--1) solid
             var(--color--gray--medium--200);
@@ -3005,10 +3009,10 @@ export default async (app: Courselore): Promise<void> => {
     const viewBox = 32;
     return ({ size = viewBox } = {}) => html`
       <svg
+        class="icon"
         width="${size.toString()}"
         height="${size.toString()}"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           fill="currentColor"
@@ -3022,10 +3026,10 @@ export default async (app: Courselore): Promise<void> => {
     const viewBox = 32;
     return ({ size = viewBox } = {}) => html`
       <svg
+        class="icon"
         width="${size.toString()}"
         height="${size.toString()}"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           fill="currentColor"

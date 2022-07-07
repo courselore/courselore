@@ -987,6 +987,10 @@
           align-items: center;
 }
 
+        .icon {
+          align-self: center;
+        }
+
         .separator {
           border-top: var(--border-width--1) solid
             var(--color--gray--medium--200);
