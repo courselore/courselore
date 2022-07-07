@@ -80,17 +80,16 @@ export type AdministratorLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
-  app.locals.options.userSystemRolesWhoMayCreateCourses = JSON.parse(
+  for (const [key, value] of Object.entries(
     app.locals.database.get<{
-      value: string;
+      userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
     }>(
       sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
+        SELECT "userSystemRolesWhoMayCreateCourses" FROM "options"
       `
-    )!.value
-  );
+    )!
+  ))
+    app.locals.options[key as keyof AdministratorOptions] = value;
 
   app.locals.partials.systemRoleIcon = {
     administrator: {
