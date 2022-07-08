@@ -85,7 +85,7 @@ export default (app: Courselore): void => {
       userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
     }>(
       sql`
-        SELECT "userSystemRolesWhoMayCreateCourses" FROM "options"
+        SELECT "userSystemRolesWhoMayCreateCourses" FROM "configuration"
       `
     )!
   ))
@@ -343,20 +343,20 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      app.locals.options.userSystemRolesWhoMayCreateCourses = JSON.parse(
-        app.locals.database.get<{
-          value: string;
-        }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(
-              req.body.userSystemRolesWhoMayCreateCourses
-            )}
-            WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
-            RETURNING *
-          `
-        )!.value
-      );
+      const configuration = app.locals.database.get<{
+        userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+      }>(
+        sql`
+          UPDATE "configuration"
+          SET "value" = ${JSON.stringify(
+            req.body.userSystemRolesWhoMayCreateCourses
+          )}
+          WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
+          RETURNING *
+        `
+      )!;
+      for (const [key, value] of Object.entries(configuration))
+        app.locals.options[key as keyof AdministratorOptions] = value;
 
       app.locals.helpers.Flash.set({
         req,
