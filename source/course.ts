@@ -15,7 +15,6 @@ import {
   LiveUpdatesMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-  MayCreateCoursesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
