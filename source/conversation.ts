@@ -3229,7 +3229,6 @@ export default (app: Courselore): void => {
                                                     display: flex;
                                                     gap: var(--space--2);
                                                   `)}"
-                                                  disabled
                                                   onload="${javascript`
                                                                 this.onclick = () => {
                                                                   const displayTag = document.getElementById("tag-display-${tag.reference}");
