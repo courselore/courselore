@@ -2764,9 +2764,9 @@ export default async (app: Courselore): Promise<void> => {
 
                         <hr class="dropdown--separator" />
 
-                        <div class="dropdown--menu">
-                          $${res.locals.user.systemRole === "administrator"
-                            ? html`
+                        $${res.locals.user.systemRole === "administrator"
+                          ? html`
+                              <div class="dropdown--menu">
                                 <a
                                   class="dropdown--menu--item button button--transparent"
                                   href="https://${app.locals.options
@@ -2775,11 +2775,11 @@ export default async (app: Courselore): Promise<void> => {
                                   <i class="bi bi-pc-display-horizontal"></i>
                                   Administration
                                 </a>
-                              `
-                            : html``}
-                        </div>
+                              </div>
 
-                        <hr class="dropdown--separator" />
+                              <hr class="dropdown--separator" />
+                            `
+                          : html``}
 
                         <div class="dropdown--menu">
                           <a
