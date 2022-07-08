@@ -342,7 +342,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      const configuration = app.locals.database.get<{
+      const administrationOptions = app.locals.database.get<{
         userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
       }>(
         sql`
@@ -354,7 +354,7 @@ export default (app: Courselore): void => {
           RETURNING *
         `
       )!;
-      for (const [key, value] of Object.entries(configuration))
+      for (const [key, value] of Object.entries(administrationOptions))
         app.locals.options[key as keyof AdministrationOptions] = value;
 
       app.locals.helpers.Flash.set({
