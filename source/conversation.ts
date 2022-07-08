@@ -3188,9 +3188,7 @@ export default (app: Courselore): void => {
                       <div
                         css="${res.locals.css(css`
                           display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--8);
-                          row-gap: var(--space--2);
+                          flex-direction: column;
                         `)}"
                       >
                         $${res.locals.tags.length === 0 &&
@@ -3218,62 +3216,57 @@ export default (app: Courselore): void => {
                                       content: ${res.locals.html(
                                         html`
                                           <div
+                                            class="dropdown--menu"
                                             css="${res.locals.css(css`
-                                              max-height: var(--space--80);
+                                              max-height: var(--space--40);
                                               overflow: auto;
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
                                             `)}"
                                           >
-                                            <div class="dropdown--menu">
-                                              $${res.locals.tags.map(
-                                                (tag) => html`
-                                                  <div
-                                                    css="${res.locals.css(css`
-                                                      display: flex;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                    style="display: flex;"
-                                                    id="drop--${tag.reference}"
-                                                    onload="${javascript`
+                                            $${res.locals.tags.map(
+                                              (tag) => html`
+                                                <div
+                                                  css="${res.locals.css(css`
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                  `)}"
+                                                  disabled
+                                                  onload="${javascript`
                                                                 this.onclick = () => {
-                                                                  const tag = document.getElementById("tag--${tag.reference}");
-                                                                  tag.style.display = "flex";
+                                                                  const displayTag = document.getElementById("tag-display-${tag.reference}");
+                                                                  const input = document.getElementById("tag-input-${tag.reference}");
+                                                                  displayTag.hidden = false;
+                                                                  input.checked = true;
                                                                 };
                                                             `}"
+                                                >
+                                                  <label
+                                                    class="dropdown--menu--item button button--transparent"
                                                   >
-                                                    <label
-                                                      class="dropdown--menu--item button button--transparent"
-                                                    >
-                                                      <span>
-                                                        <i
-                                                          class="bi bi-tag"
-                                                        ></i>
-                                                        ${tag.name}
-                                                      </span>
-                                                    </label>
-                                                    $${tag.staffOnlyAt !== null
-                                                      ? html`
-                                                          <span
-                                                            class="text--sky"
-                                                            onload="${javascript`
+                                                    <span>
+                                                      <i class="bi bi-tag"></i>
+                                                      ${tag.name}
+                                                    </span>
+                                                  </label>
+                                                  $${tag.staffOnlyAt !== null
+                                                    ? html`
+                                                        <span
+                                                          class="text--sky"
+                                                          onload="${javascript`
                                                                   (this.tooltip ??= tippy(this)).setProps({
                                                                     touch: false,
                                                                     content: "This tag is visible by staff only.",
                                                                   });
                                                                 `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-mortarboard-fill"
-                                                            ></i>
-                                                          </span>
-                                                        `
-                                                      : html``}
-                                                  </div>
-                                                `
-                                              )}
-                                            </div>
+                                                        >
+                                                          <i
+                                                            class="bi bi-mortarboard-fill"
+                                                          ></i>
+                                                        </span>
+                                                      `
+                                                    : html``}
+                                                </div>
+                                              `
+                                            )}
                                           </div>
                                         `
                                       )},
@@ -3291,12 +3284,12 @@ export default (app: Courselore): void => {
                                   (tag) => html`
                                     <div
                                       key="tag--${tag.reference}"
+                                      id="tag-display-${tag.reference}"
+                                      hidden
                                       css="${res.locals.css(css`
                                         display: "flex";
                                         gap: var(--space--2);
                                       `)}"
-                                      style="display: none;"
-                                      id="tag--${tag.reference}"
                                       onload="${javascript`
                                           (this.tooltip ??= tippy(this)).setProps({
                                             theme: "rose",
@@ -3305,7 +3298,9 @@ export default (app: Courselore): void => {
                                           });
                                           
                                           this.onclick = () => {
-                                            this.style.display = "none";
+                                            const input = document.getElementById("tag-input-${tag.reference}");
+                                            this.hidden = true;
+                                            input.checked = false;
                                           };
                                         `}"
                                     >
@@ -3313,6 +3308,7 @@ export default (app: Courselore): void => {
                                         class="button button--tight button--transparent"
                                       >
                                         <input
+                                          id="tag-input-${tag.reference}"
                                           type="checkbox"
                                           name="tagsReferences[]"
                                           value="${tag.reference}"
@@ -3334,10 +3330,7 @@ export default (app: Courselore): void => {
                                           required
                                           class="visually-hidden input--radio-or-checkbox--multilabel"
                                         />
-                                        <span>
-                                          <i class="bi bi-tag"></i>
-                                          ${tag.name}
-                                        </span>
+                                        <span> </span>
                                         <span class="text--teal">
                                           <i class="bi bi-tag-fill"></i>
                                           ${tag.name}
