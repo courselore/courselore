@@ -218,7 +218,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
-                <p class="label--text">Allow to Create Courses</p>
+                <p class="label--text">Users Who May Create Courses</p>
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -257,7 +257,7 @@ export default (app: Courselore): void => {
                         : html``}
                       class="input--radio"
                     />
-                    Staff & administrators
+                    Staff & Administrators
                   </label>
                 </div>
                 <div
