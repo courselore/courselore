@@ -140,7 +140,7 @@ export default (app: Courselore): void => {
       res,
       head,
       menuButton: html`
-        <i class="bi bi-tools"></i>
+        <i class="bi bi-pc-display-horizontal"></i>
         Administration
       `,
       menu: html`
@@ -202,7 +202,7 @@ export default (app: Courselore): void => {
           `,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
+              <i class="bi bi-pc-display-horizontal"></i>
               Administration ·
               <i class="bi bi-gear"></i>
               Configuration
@@ -401,7 +401,7 @@ export default (app: Courselore): void => {
           head: html`<title>Users · Administration · Courselore</title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
+              <i class="bi bi-pc-display-horizontal"></i>
               Administration ·
               <i class="bi bi-people"></i>
               Users

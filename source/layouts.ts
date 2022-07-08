@@ -2772,7 +2772,7 @@ export default async (app: Courselore): Promise<void> => {
                                   href="https://${app.locals.options
                                     .host}/administration"
                                 >
-                                  <i class="bi bi-tools"></i>
+                                  <i class="bi bi-pc-display-horizontal"></i>
                                   Administration
                                 </a>
                               `
