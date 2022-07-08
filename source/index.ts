@@ -52,7 +52,7 @@ import administrator, {
   mayCreateCoursesMiddleware,
   MayManageUserMiddleware,
   AdministratorLayout,
-} from "./administrator.js";
+} from "./administration.js";
 export {
   UserSystemRolesWhoMayCreateCourses,
   userSystemRolesWhoMayCreateCourseses,
@@ -61,7 +61,7 @@ export {
   IsAdministratorMiddlewareLocals,
   MayCreateCoursesMiddlewareLocals,
   MayManageUserMiddlewareLocals,
-} from "./administrator.js";
+} from "./administration.js";
 
 import about, { AboutHandler } from "./about.js";
 
