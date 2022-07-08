@@ -783,8 +783,7 @@ export default async (app: Courselore): Promise<void> => {
         "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 
-      INSERT INTO "options" ("userSystemRolesWhoMayCreateCourses") 
-      VALUES ('anyone');
+      INSERT INTO "options" ("userSystemRolesWhoMayCreateCourses") VALUES ('anyone');
     `,
     () => {
       app.locals.database.execute(
