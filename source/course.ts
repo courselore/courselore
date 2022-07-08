@@ -65,6 +65,13 @@ export type CoursesPartial = ({
   tight?: boolean;
 }) => HTML;
 
+export type CourseRoleIconPartial = {
+  [courseRole in CourseRole]: {
+    regular: HTML;
+    fill: HTML;
+  };
+};
+
 export type CourseArchivedPartial = ({
   req,
   res,
@@ -73,12 +80,15 @@ export type CourseArchivedPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type CourseRoleIconPartial = {
-  [courseRole in CourseRole]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
+export type MayCreateCoursesMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  MayCreateCoursesMiddlewareLocals
+>[];
+export interface MayCreateCoursesMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {}
 
 export type DefaultAccentColorHelper = ({
   req,
@@ -530,6 +540,14 @@ export default (app: Courselore): void => {
       }
     }
   );
+
+  app.locals.middlewares.mayCreateCourses = [
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (res.locals.mayCreateCourses) return next();
+      next("route");
+    },
+  ];
 
   app.get<{}, HTML, {}, {}, MayCreateCoursesMiddlewareLocals>(
     "/courses/new",

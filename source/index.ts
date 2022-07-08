@@ -49,7 +49,6 @@ import administrator, {
   AdministrationOptions,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
-  mayCreateCoursesMiddleware,
   MayManageUserMiddleware,
   AdministrationLayout,
 } from "./administration.js";
@@ -59,7 +58,6 @@ export {
   SystemRole,
   systemRoles,
   IsAdministratorMiddlewareLocals,
-  MayCreateCoursesMiddlewareLocals,
   MayManageUserMiddlewareLocals,
 } from "./administration.js";
 
@@ -76,8 +74,9 @@ export {
 import course, {
   CoursePartial,
   CoursesPartial,
-  CourseArchivedPartial,
   CourseRoleIconPartial,
+  CourseArchivedPartial,
+  MayCreateCoursesMiddleware,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
@@ -93,6 +92,7 @@ export {
   courseRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
+  MayCreateCoursesMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
   InvitationExistsMiddlewareLocals,
@@ -179,7 +179,7 @@ export interface Courselore extends express.Express {
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isAdministrator: IsAdministratorMiddleware;
-      mayCreateCourses: mayCreateCoursesMiddleware;
+      mayCreateCourses: MayCreateCoursesMiddleware;
       mayManageUser: MayManageUserMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;

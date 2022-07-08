@@ -42,16 +42,6 @@ export type IsAdministratorMiddleware = express.RequestHandler<
 export interface IsAdministratorMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
-export type mayCreateCoursesMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  MayCreateCoursesMiddlewareLocals
->[];
-export interface MayCreateCoursesMiddlewareLocals
-  extends IsSignedInMiddlewareLocals {}
-
 export type MayManageUserMiddleware = express.RequestHandler<
   { userReference: string },
   any,
@@ -81,28 +71,26 @@ export type AdministrationLayout = ({
 
 export default (app: Courselore): void => {
   for (const [key, value] of Object.entries(
-    app.locals.database.get<{
-      userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
-    }>(
+    app.locals.database.get<{ [key: string]: any }>(
       sql`
-        SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
+        SELECT * FROM "administrationOptions"
       `
     )!
   ))
     app.locals.options[key as keyof AdministrationOptions] = value;
 
   app.locals.partials.systemRoleIcon = {
-    administrator: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
+    none: {
+      regular: html`<i class="bi bi-dash-circle"></i>`,
+      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
     },
     staff: {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
-    none: {
-      regular: html`<i class="bi bi-dash-circle"></i>`,
-      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
+    administrator: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
     },
   };
 
@@ -110,14 +98,6 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (res.locals.user.systemRole === "administrator") return next();
-      next("route");
-    },
-  ];
-
-  app.locals.middlewares.mayCreateCourses = [
-    ...app.locals.middlewares.isSignedIn,
-    (req, res, next) => {
-      if (res.locals.mayCreateCourses) return next();
       next("route");
     },
   ];
@@ -343,7 +323,7 @@ export default (app: Courselore): void => {
         return next("validation");
 
       const administrationOptions = app.locals.database.get<{
-        userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+        [key: string]: any;
       }>(
         sql`
           UPDATE "administrationOptions"
