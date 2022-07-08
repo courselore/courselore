@@ -948,7 +948,7 @@ export default async (app: Courselore): Promise<void> => {
           await prompts({
             type: "confirm",
             name: "output",
-            message: `${user.name} <${user.email}> will be set as the first administrator. Is this correct?`,
+            message: `${user.name} <${user.email}> will become the first administrator. Is this correct?`,
             initial: true,
           })
         ).output;
@@ -961,7 +961,7 @@ export default async (app: Courselore): Promise<void> => {
         await prompts({
           type: "text",
           name: "output",
-          message: `${user.name} <${user.email}> was set as the first administrator. Press enter to continue...`,
+          message: `${user.name} <${user.email}> has become the first administrator. Press enter to continue...`,
         });
         break;
       }
