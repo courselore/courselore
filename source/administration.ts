@@ -145,15 +145,16 @@ export default (app: Courselore): void => {
       `,
       menu: html`
         <a
-          href="https://${app.locals.options.host}/administration/configuration"
+          href="https://${app.locals.options
+            .host}/administration/system-settings"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administration/configuration"
+            "/administration/system-settings"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administration/configuration")
+            class="bi ${req.path.endsWith("/administration/system-settings")
               ? "bi-gear-fill"
               : "bi-gear"}"
           ></i>
@@ -184,13 +185,13 @@ export default (app: Courselore): void => {
     (res, req) => {
       req.redirect(
         303,
-        `https://${app.locals.options.host}/administration/configuration`
+        `https://${app.locals.options.host}/administration/system-settings`
       );
     }
   );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administration/configuration",
+    "/administration/system-settings",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       res.send(
@@ -211,7 +212,7 @@ export default (app: Courselore): void => {
             <form
               method="PATCH"
               action="https://${app.locals.options
-                .host}/administration/configuration"
+                .host}/administration/system-settings"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -311,7 +312,7 @@ export default (app: Courselore): void => {
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administration/configuration",
+    "/administration/system-settings",
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       if (
@@ -346,7 +347,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.host}/administration/configuration`
+        `https://${app.locals.options.host}/administration/system-settings`
       );
     }
   );
