@@ -2777,10 +2777,10 @@ export default async (app: Courselore): Promise<void> => {
                                 <a
                                   class="dropdown--menu--item button button--transparent"
                                   href="https://${app.locals.options
-                                    .host}/administrator-panel"
+                                    .host}/administration"
                                 >
                                   <i class="bi bi-tools"></i>
-                                  Administrator Panel
+                                  Administration
                                 </a>
                               `
                             : html``}

@@ -67,7 +67,7 @@ export interface MayManageUserMiddlewareLocals
   };
 }
 
-export type AdministratorLayout = ({
+export type AdministrationLayout = ({
   req,
   res,
   head,
@@ -154,42 +154,41 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.layouts.administratorPanel = ({ req, res, head, body }) =>
+  app.locals.layouts.administration = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
       res,
       head,
       menuButton: html`
         <i class="bi bi-tools"></i>
-        Administrator Panel
+        Administration
       `,
       menu: html`
         <a
-          href="https://${app.locals.options
-            .host}/administrator-panel/configuration"
+          href="https://${app.locals.options.host}/administration/configuration"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/configuration"
+            "/administration/configuration"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administrator-panel/configuration")
+            class="bi ${req.path.endsWith("/administration/configuration")
               ? "bi-gear-fill"
               : "bi-gear"}"
           ></i>
           Configuration
         </a>
         <a
-          href="https://${app.locals.options.host}/administrator-panel/users"
+          href="https://${app.locals.options.host}/administration/users"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/users"
+            "/administration/users"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administrator-panel/users")
+            class="bi ${req.path.endsWith("/administration/users")
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>
@@ -200,31 +199,31 @@ export default (app: Courselore): void => {
     });
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel",
+    "/administration",
     ...app.locals.middlewares.isAdministrator,
     (res, req) => {
       req.redirect(
         303,
-        `https://${app.locals.options.host}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administration/configuration`
       );
     }
   );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel/configuration",
+    "/administration/configuration",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       res.send(
-        app.locals.layouts.administratorPanel({
+        app.locals.layouts.administration({
           req,
           res,
           head: html`<title>
-            Configuration · Administrator Panel · Courselore
+            Configuration · Administration · Courselore
           </title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-tools"></i>
-              Administrator Panel ·
+              Administration ·
               <i class="bi bi-gear"></i>
               Configuration
             </h2>
@@ -232,7 +231,7 @@ export default (app: Courselore): void => {
             <form
               method="PATCH"
               action="https://${app.locals.options
-                .host}/administrator-panel/configuration"
+                .host}/administration/configuration"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -332,7 +331,7 @@ export default (app: Courselore): void => {
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administrator-panel/configuration",
+    "/administration/configuration",
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       if (
@@ -367,7 +366,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.host}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administration/configuration`
       );
     }
   );
@@ -379,7 +378,7 @@ export default (app: Courselore): void => {
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administrator-panel/users",
+    "/administration/users",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       const users = app.locals.database.all<{
@@ -416,14 +415,14 @@ export default (app: Courselore): void => {
       );
 
       res.send(
-        app.locals.layouts.administratorPanel({
+        app.locals.layouts.administration({
           req,
           res,
-          head: html`<title>Users · Administrator Panel · Courselore</title>`,
+          head: html`<title>Users · Administration · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-tools"></i>
-              Administrator Panel ·
+              Administration ·
               <i class="bi bi-people"></i>
               Users
             </h2>
@@ -822,7 +821,7 @@ export default (app: Courselore): void => {
         303,
         res.locals.managedUser.isSelf
           ? `https://${app.locals.options.host}`
-          : `https://${app.locals.options.host}/administrator-panel/users`
+          : `https://${app.locals.options.host}/administration/users`
       );
     }
   );

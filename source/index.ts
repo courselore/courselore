@@ -51,7 +51,7 @@ import administrator, {
   IsAdministratorMiddleware,
   mayCreateCoursesMiddleware,
   MayManageUserMiddleware,
-  AdministratorLayout,
+  AdministrationLayout,
 } from "./administration.js";
 export {
   UserSystemRolesWhoMayCreateCourses,
@@ -201,7 +201,7 @@ export interface Courselore extends express.Express {
       settings: SettingsLayout;
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
-      administratorPanel: AdministratorLayout;
+      administration: AdministrationLayout;
       courseSettings: CourseSettingsLayout;
       conversation: ConversationLayout;
     };
