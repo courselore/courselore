@@ -377,12 +377,10 @@ export default (app: Courselore): void => {
                  "biographyPreprocessed",
                  "systemRole"
           FROM "users"
-          ORDER BY CASE "systemRole"
-                     WHEN 'administrator' THEN 0
-                     WHEN 'staff' THEN 1
-                     WHEN 'none' THEN 2
-                   END,
-                  "users"."name" ASC
+          ORDER BY "systemRole" = 'administrator' DESC,
+                   "systemRole" = 'staff' DESC,
+                   "systemRole" = 'none' DESC,
+                   "users"."name" ASC
         `
       );
 
