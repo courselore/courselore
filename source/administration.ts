@@ -236,7 +236,7 @@ export default (app: Courselore): void => {
                         : html``}
                       class="input--radio"
                     />
-                    all
+                    All
                   </label>
                 </div>
                 <div
