@@ -2765,13 +2765,6 @@ export default async (app: Courselore): Promise<void> => {
                         <hr class="dropdown--separator" />
 
                         <div class="dropdown--menu">
-                          <a
-                            class="dropdown--menu--item button button--transparent"
-                            href="https://${app.locals.options.host}/settings"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            User Settings
-                          </a>
                           $${res.locals.user.systemRole === "administrator"
                             ? html`
                                 <a
@@ -2784,6 +2777,18 @@ export default async (app: Courselore): Promise<void> => {
                                 </a>
                               `
                             : html``}
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <a
+                            class="dropdown--menu--item button button--transparent"
+                            href="https://${app.locals.options.host}/settings"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
                           <form
                             method="DELETE"
                             action="https://${app.locals.options.host}/sign-out"
