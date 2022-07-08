@@ -153,12 +153,8 @@ export default (app: Courselore): void => {
             ? "button--blue"
             : "button--transparent"}"
         >
-          <i
-            class="bi ${req.path.endsWith("/administration/system-settings")
-              ? "bi-gear-fill"
-              : "bi-gear"}"
-          ></i>
-          Configuration
+          <i class="bi bi-sliders"></i>
+          System Settings
         </a>
         <a
           href="https://${app.locals.options.host}/administration/users"
@@ -199,14 +195,14 @@ export default (app: Courselore): void => {
           req,
           res,
           head: html`
-            <title>Configuration · Administration · Courselore</title>
+            <title>System Settings · Administration · Courselore</title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-pc-display-horizontal"></i>
               Administration ·
-              <i class="bi bi-gear"></i>
-              Configuration
+              <i class="bi bi-sliders"></i>
+              System Settings
             </h2>
 
             <form
@@ -286,14 +282,12 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
-              <hr class="separator" />
-
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Configuration
+                  Update System Settings
                 </button>
               </div>
             </form>
@@ -342,7 +336,7 @@ export default (app: Courselore): void => {
         req,
         res,
         theme: "green",
-        content: html`Configuration updated successfully.`,
+        content: html`System settings updated successfully.`,
       });
 
       res.redirect(
