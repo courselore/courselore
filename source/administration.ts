@@ -10,7 +10,7 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export interface AdministratorOptions {
+export interface AdministrationOptions {
   userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
 }
 
@@ -89,7 +89,7 @@ export default (app: Courselore): void => {
       `
     )!
   ))
-    app.locals.options[key as keyof AdministratorOptions] = value;
+    app.locals.options[key as keyof AdministrationOptions] = value;
 
   app.locals.partials.systemRoleIcon = {
     administrator: {
@@ -356,7 +356,7 @@ export default (app: Courselore): void => {
         `
       )!;
       for (const [key, value] of Object.entries(configuration))
-        app.locals.options[key as keyof AdministratorOptions] = value;
+        app.locals.options[key as keyof AdministrationOptions] = value;
 
       app.locals.helpers.Flash.set({
         req,

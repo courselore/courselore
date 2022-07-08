@@ -46,7 +46,7 @@ export {
 } from "./authentication.js";
 
 import administrator, {
-  AdministratorOptions,
+  AdministrationOptions,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
   mayCreateCoursesMiddleware,
@@ -166,7 +166,7 @@ export interface Courselore extends express.Express {
     } & Options &
       GlobalMiddlewaresOptions &
       AuthenticationOptions &
-      AdministratorOptions;
+      AdministrationOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
