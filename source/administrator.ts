@@ -85,7 +85,7 @@ export default (app: Courselore): void => {
       userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
     }>(
       sql`
-        SELECT "userSystemRolesWhoMayCreateCourses" FROM "options"
+        SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
       `
     )!
   ))
@@ -347,7 +347,7 @@ export default (app: Courselore): void => {
         userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
       }>(
         sql`
-          UPDATE "options"
+          UPDATE "administrationOptions"
           SET "value" = ${JSON.stringify(
             req.body.userSystemRolesWhoMayCreateCourses
           )}
