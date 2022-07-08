@@ -937,7 +937,7 @@ export default async (app: Courselore): Promise<void> => {
             type: "autocomplete",
             name: "output",
             message:
-              "Courselore 4.0.0 introduces an administration interface and the notion of system administrators. Please select a user to become the first administrator.",
+              "Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please select a user to become the first administrator.",
             choices: users.map((user) => ({
               title: `${user.name} <${user.email}>`,
               value: user,
