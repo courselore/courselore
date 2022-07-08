@@ -756,7 +756,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -891,7 +891,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -931,7 +931,7 @@ export default (app: Courselore): void => {
       );
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -986,7 +986,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1035,7 +1035,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1122,7 +1122,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1169,7 +1169,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1295,17 +1295,16 @@ export default (app: Courselore): void => {
               ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
               ${JSON.stringify({
                 from: {
-                  name: `${app.locals.configuration.sendMail.defaults.from.name} · ${res.locals.course.name}`,
-                  address:
-                    app.locals.configuration.sendMail.defaults.from.address,
+                  name: `${app.locals.options.sendMail.defaults.from.name} · ${res.locals.course.name}`,
+                  address: app.locals.options.sendMail.defaults.from.address,
                 },
                 to: enrollment.userEmail,
                 subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
                 html: html`
                   <p>
                     <a
-                      href="https://${app.locals.configuration
-                        .host}/courses/${res.locals.course
+                      href="https://${app.locals.options.host}/courses/${res
+                        .locals.course
                         .reference}/conversations/${conversation.reference}${qs.stringify(
                         { messages: { messageReference: message.reference } },
                         {
@@ -1334,7 +1333,7 @@ export default (app: Courselore): void => {
                   <p>
                     <small>
                       <a
-                        href="https://${app.locals.configuration
+                        href="https://${app.locals.options
                           .host}/settings/notifications-preferences"
                         >Change Notifications Preferences</a
                       >

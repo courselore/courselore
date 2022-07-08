@@ -4,8 +4,8 @@ export default (app: Courselore): void => {
   app.once("listen", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
-        app.locals.configuration.version
-      } started at https://${app.locals.configuration.host}`
+        app.locals.options.version
+      } started at https://${app.locals.options.host}`
     );
   });
   app.enable("trust proxy");
@@ -38,8 +38,8 @@ export default (app: Courselore): void => {
   app.once("close", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
-        app.locals.configuration.version
-      } stopped at https://${app.locals.configuration.host}`
+        app.locals.options.version
+      } stopped at https://${app.locals.options.host}`
     );
   });
 };

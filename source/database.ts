@@ -11,9 +11,9 @@ export interface DatabaseLocals {
 }
 
 export default async (app: Courselore): Promise<void> => {
-  await fs.ensureDir(app.locals.configuration.dataDirectory);
+  await fs.ensureDir(app.locals.options.dataDirectory);
   app.locals.database = new Database(
-    path.join(app.locals.configuration.dataDirectory, "courselore.db"),
+    path.join(app.locals.options.dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
   app.locals.database.pragma("journal_mode = WAL");
@@ -335,7 +335,7 @@ export default async (app: Courselore): Promise<void> => {
           text.replace(
             new RegExp(
               `(?<=https://${escapeStringRegexp(
-                app.locals.configuration.host
+                app.locals.options.host
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi"
             ),
@@ -452,7 +452,7 @@ export default async (app: Courselore): Promise<void> => {
         text.replace(
           new RegExp(
             `(?<=https://${escapeStringRegexp(
-              app.locals.configuration.host
+              app.locals.options.host
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi"
           ),
@@ -778,12 +778,12 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
     sql`
-      CREATE TABLE "configuration" (
+      CREATE TABLE "options" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
         "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 
-      INSERT INTO "configuration" ("userSystemRolesWhoMayCreateCourses") VALUES ('anyone');
+      INSERT INTO "options" ("userSystemRolesWhoMayCreateCourses") VALUES ('anyone');
     `,
     () => {
       app.locals.database.execute(

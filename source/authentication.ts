@@ -19,7 +19,7 @@ import {
   SystemRole,
 } from "./index.js";
 
-export interface AuthenticationConfiguration {
+export interface AuthenticationOptions {
   argon2: argon2.Options & { raw?: false };
 }
 
@@ -179,7 +179,7 @@ export default (app: Courselore): void => {
       )!;
       req.cookies.session = session.token;
       res.cookie("session", session.token, {
-        ...app.locals.configuration.cookies,
+        ...app.locals.options.cookies,
         maxAge: app.locals.helpers.Session.maxAge,
       });
     },
@@ -220,7 +220,7 @@ export default (app: Courselore): void => {
     close({ req, res }) {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
-      res.clearCookie("session", app.locals.configuration.cookies);
+      res.clearCookie("session", app.locals.options.cookies);
       app.locals.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
@@ -417,12 +417,11 @@ export default (app: Courselore): void => {
         }));
 
       res.locals.mayCreateCourses =
-        app.locals.configuration.userSystemRolesWhoMayCreateCourses ===
-          "anyone" ||
-        (app.locals.configuration.userSystemRolesWhoMayCreateCourses ===
+        app.locals.options.userSystemRolesWhoMayCreateCourses === "anyone" ||
+        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
           "staff-and-administrators" &&
           ["staff", "administrator"].includes(res.locals.user.systemRole)) ||
-        (app.locals.configuration.userSystemRolesWhoMayCreateCourses ===
+        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
           "administrators" &&
           res.locals.user.systemRole === "administrator");
 
@@ -443,8 +442,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.configuration
-              .host}/sign-in${qs.stringify(
+            action="https://${app.locals.options.host}/sign-in${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -506,8 +504,7 @@ export default (app: Courselore): void => {
             <p>
               Don’t have an account?
               <a
-                href="https://${app.locals.configuration
-                  .host}/sign-up${qs.stringify(
+                href="https://${app.locals.options.host}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -523,7 +520,7 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="https://${app.locals.configuration
+                href="https://${app.locals.options
                   .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -545,7 +542,7 @@ export default (app: Courselore): void => {
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...app.locals.middlewares.isSignedOut,
-    app.locals.configuration.host === app.locals.configuration.canonicalHost
+    app.locals.options.host === app.locals.options.canonicalHost
       ? (req, res, next) => app.locals.handlers.about(req, res, next)
       : app.locals.handlers.signIn
   );
@@ -560,7 +557,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -602,7 +599,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.configuration.host}/sign-in${qs.stringify(
+          `https://${app.locals.options.host}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -616,7 +613,7 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -700,7 +697,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.configuration
+            action="https://${app.locals.options
               .host}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
@@ -751,8 +748,7 @@ export default (app: Courselore): void => {
             <p>
               Don’t have an account?
               <a
-                href="https://${app.locals.configuration
-                  .host}/sign-up${qs.stringify(
+                href="https://${app.locals.options.host}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -768,8 +764,7 @@ export default (app: Courselore): void => {
             <p>
               Remember your password?
               <a
-                href="https://${app.locals.configuration
-                  .host}/sign-in${qs.stringify(
+                href="https://${app.locals.options.host}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -813,7 +808,7 @@ export default (app: Courselore): void => {
       });
       return res.redirect(
         303,
-        `https://${app.locals.configuration.host}/reset-password${qs.stringify(
+        `https://${app.locals.options.host}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
@@ -826,7 +821,7 @@ export default (app: Courselore): void => {
     }
 
     const link = `https://${
-      app.locals.configuration.host
+      app.locals.options.host
     }/reset-password/${app.locals.helpers.PasswordReset.create(
       user.id
     )}${qs.stringify(
@@ -892,7 +887,7 @@ export default (app: Courselore): void => {
           </p>
           <form
             method="POST"
-            action="https://${app.locals.configuration
+            action="https://${app.locals.options
               .host}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
@@ -935,7 +930,7 @@ export default (app: Courselore): void => {
       });
       return res.redirect(
         303,
-        `https://${app.locals.configuration.host}/reset-password${qs.stringify(
+        `https://${app.locals.options.host}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
@@ -958,7 +953,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.configuration
+            action="https://${app.locals.options
               .host}/reset-password/${app.locals.helpers.PasswordReset.create(
               userId
             )}${qs.stringify(
@@ -1039,9 +1034,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${
-            app.locals.configuration.host
-          }/reset-password${qs.stringify(
+          `https://${app.locals.options.host}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1058,7 +1051,7 @@ export default (app: Courselore): void => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             req.body.password,
-            app.locals.configuration.argon2
+            app.locals.options.argon2
           )}
           WHERE "id" = ${userId}
         `
@@ -1072,7 +1065,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1101,8 +1094,7 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.configuration
-              .host}/sign-up${qs.stringify(
+            action="https://${app.locals.options.host}/sign-up${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -1186,8 +1178,7 @@ export default (app: Courselore): void => {
             <p>
               Already have an account account?
               <a
-                href="https://${app.locals.configuration
-                  .host}/sign-in${qs.stringify(
+                href="https://${app.locals.options.host}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
@@ -1203,7 +1194,7 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="https://${app.locals.configuration
+                href="https://${app.locals.options
                   .host}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -1228,7 +1219,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1238,7 +1229,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.configuration.argon2 = {
+  app.locals.options.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
@@ -1267,7 +1258,7 @@ export default (app: Courselore): void => {
       )!;
     });
 
-    const link = `https://${app.locals.configuration.host}/email-verification/${
+    const link = `https://${app.locals.options.host}/email-verification/${
       emailVerification.nonce
     }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
     app.locals.database.run(
@@ -1347,7 +1338,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.configuration.host}/sign-in${qs.stringify(
+          `https://${app.locals.options.host}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1383,17 +1374,13 @@ export default (app: Courselore): void => {
             ${new Date().toISOString()},
             ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${req.body.email},
-            ${await argon2.hash(
-              req.body.password,
-              app.locals.configuration.argon2
-            )},
+            ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${null},
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${
-              app.locals.configuration.host !==
-                app.locals.configuration.tryHost &&
+              app.locals.options.host !== app.locals.options.tryHost &&
               app.locals.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count" FROM "users"
@@ -1421,7 +1408,7 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1444,7 +1431,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.configuration.host}${
+          `https://${app.locals.options.host}${
             typeof req.query.redirect === "string" &&
             req.query.redirect.trim() !== ""
               ? req.query.redirect
@@ -1466,7 +1453,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1511,7 +1498,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.configuration.host}${
+          `https://${app.locals.options.host}${
             typeof req.query.redirect === "string" &&
             req.query.redirect.trim() !== ""
               ? req.query.redirect
@@ -1534,7 +1521,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -1554,7 +1541,7 @@ export default (app: Courselore): void => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${app.locals.configuration.host}/`);
+        .redirect(303, `https://${app.locals.options.host}/`);
     }
   );
 };

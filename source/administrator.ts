@@ -10,7 +10,7 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export interface AdministratorConfiguration {
+export interface AdministratorOptions {
   userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
 }
 
@@ -85,11 +85,11 @@ export default (app: Courselore): void => {
       userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
     }>(
       sql`
-        SELECT "userSystemRolesWhoMayCreateCourses" FROM "configuration"
+        SELECT "userSystemRolesWhoMayCreateCourses" FROM "options"
       `
     )!
   ))
-    app.locals.configuration[key as keyof AdministratorConfiguration] = value;
+    app.locals.options[key as keyof AdministratorOptions] = value;
 
   app.locals.partials.systemRoleIcon = {
     administrator: {
@@ -165,7 +165,7 @@ export default (app: Courselore): void => {
       `,
       menu: html`
         <a
-          href="https://${app.locals.configuration
+          href="https://${app.locals.options
             .host}/administrator-panel/configuration"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/administrator-panel/configuration"
@@ -181,8 +181,7 @@ export default (app: Courselore): void => {
           Configuration
         </a>
         <a
-          href="https://${app.locals.configuration
-            .host}/administrator-panel/users"
+          href="https://${app.locals.options.host}/administrator-panel/users"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/administrator-panel/users"
           )
@@ -206,7 +205,7 @@ export default (app: Courselore): void => {
     (res, req) => {
       req.redirect(
         303,
-        `https://${app.locals.configuration.host}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administrator-panel/configuration`
       );
     }
   );
@@ -232,7 +231,7 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.configuration
+              action="https://${app.locals.options
                 .host}/administrator-panel/configuration"
               novalidate
               css="${res.locals.css(css`
@@ -255,7 +254,7 @@ export default (app: Courselore): void => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="anyone"
                       required
-                      $${app.locals.configuration
+                      $${app.locals.options
                         .userSystemRolesWhoMayCreateCourses === "anyone"
                         ? html`checked`
                         : html``}
@@ -275,7 +274,7 @@ export default (app: Courselore): void => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${app.locals.configuration
+                      $${app.locals.options
                         .userSystemRolesWhoMayCreateCourses ===
                       "staff-and-administrators"
                         ? html`checked`
@@ -296,7 +295,7 @@ export default (app: Courselore): void => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="administrators"
                       required
-                      $${app.locals.configuration
+                      $${app.locals.options
                         .userSystemRolesWhoMayCreateCourses === "administrators"
                         ? html`checked`
                         : html``}
@@ -348,7 +347,7 @@ export default (app: Courselore): void => {
         userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
       }>(
         sql`
-          UPDATE "configuration"
+          UPDATE "options"
           SET "value" = ${JSON.stringify(
             req.body.userSystemRolesWhoMayCreateCourses
           )}
@@ -357,7 +356,7 @@ export default (app: Courselore): void => {
         `
       )!;
       for (const [key, value] of Object.entries(configuration))
-        app.locals.configuration[key as keyof AdministratorConfiguration] = value;
+        app.locals.options[key as keyof AdministratorOptions] = value;
 
       app.locals.helpers.Flash.set({
         req,
@@ -368,7 +367,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.configuration.host}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administrator-panel/configuration`
       );
     }
   );
@@ -472,7 +471,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `https://${app.locals.configuration.host}/users/${user.reference}`;
+              const action = `https://${app.locals.options.host}/users/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -822,8 +821,8 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         res.locals.managedUser.isSelf
-          ? `https://${app.locals.configuration.host}`
-          : `https://${app.locals.configuration.host}/administrator-panel/users`
+          ? `https://${app.locals.options.host}`
+          : `https://${app.locals.options.host}/administrator-panel/users`
       );
     }
   );

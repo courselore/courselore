@@ -7,7 +7,7 @@ import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 
 import globalMiddlewares, {
-  GlobalMiddlewaresConfiguration,
+  GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
 export { BaseMiddlewareLocals } from "./global-middlewares.js";
 
@@ -32,7 +32,7 @@ import layouts, {
 } from "./layouts.js";
 
 import authentication, {
-  AuthenticationConfiguration,
+  AuthenticationOptions,
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
@@ -46,7 +46,7 @@ export {
 } from "./authentication.js";
 
 import administrator, {
-  AdministratorConfiguration,
+  AdministratorOptions,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
   mayCreateCoursesMiddleware,
@@ -158,15 +158,15 @@ import helpers, {
 
 export interface Courselore extends express.Express {
   locals: {
-    configuration: {
+    options: {
       version: string;
       canonicalHost: string;
       metaCourseloreInvitation: string;
       tryHost: string;
     } & Options &
-      GlobalMiddlewaresConfiguration &
-      AuthenticationConfiguration &
-      AdministratorConfiguration;
+      GlobalMiddlewaresOptions &
+      AuthenticationOptions &
+      AdministratorOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
@@ -270,7 +270,7 @@ export interface Options {
 
 export default async (options: Options): Promise<Courselore> => {
   const app = express() as Courselore;
-  app.locals.configuration = {
+  app.locals.options = {
     version: JSON.parse(
       await fs.readFile(
         url.fileURLToPath(new URL("../package.json", import.meta.url)),
