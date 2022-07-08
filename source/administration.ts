@@ -217,9 +217,9 @@ export default (app: Courselore): void => {
         app.locals.layouts.administration({
           req,
           res,
-          head: html`<title>
-            Configuration · Administration · Courselore
-          </title>`,
+          head: html`
+            <title>Configuration · Administration · Courselore</title>
+          `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-tools"></i>
