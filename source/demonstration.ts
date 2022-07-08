@@ -30,10 +30,10 @@ export type DemonstrationHandler = express.RequestHandler<
 >;
 
 export default (app: Courselore): void => {
-  if (app.locals.options.demonstration) {
+  if (app.locals.configuration.demonstration) {
     app.locals.handlers.demonstration = asyncHandler(async (req, res) => {
       const includeAdmins =
-        (app.locals.options.host !== app.locals.options.tryHost &&
+        (app.locals.configuration.host !== app.locals.configuration.tryHost &&
           app.locals.database.get<{ count: number }>(
             sql`
               SELECT COUNT(*) AS "count" FROM "users"
@@ -42,7 +42,7 @@ export default (app: Courselore): void => {
         res.locals.user?.systemRole === "administrator";
       const password = await argon2.hash(
         "courselore",
-        app.locals.options.argon2
+        app.locals.configuration.argon2
       );
       const avatarIndices = lodash.shuffle(lodash.range(250));
       const users = lodash.times(151, (userIndex) => {
@@ -102,7 +102,7 @@ export default (app: Courselore): void => {
               ${
                 Math.random() < 0.6
                   ? `https://${
-                      app.locals.options.host
+                      app.locals.configuration.host
                     }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                   : null
               },
@@ -627,7 +627,7 @@ export default (app: Courselore): void => {
           their password is “courselore”.
         `,
       });
-      res.redirect(303, `https://${app.locals.options.host}`);
+      res.redirect(303, `https://${app.locals.configuration.host}`);
     });
 
     app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(

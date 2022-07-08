@@ -193,12 +193,12 @@ export default async (app: Courselore): Promise<void> => {
         if (
           !element
             .getAttribute("src")
-            ?.startsWith(`https://${app.locals.options.host}`)
+            ?.startsWith(`https://${app.locals.configuration.host}`)
         )
           element.setAttribute(
             "src",
             `https://${
-              app.locals.options.host
+              app.locals.configuration.host
             }/content/image-proxy${qs.stringify(
               { url: element.getAttribute("src") },
               { addQueryPrefix: true }
@@ -248,15 +248,17 @@ export default async (app: Courselore): Promise<void> => {
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
         if (
           (!href.startsWith("#") &&
-            !href.startsWith(`https://${app.locals.options.host}`)) ||
-          href.startsWith(`https://${app.locals.options.host}/files/`)
+            !href.startsWith(`https://${app.locals.configuration.host}`)) ||
+          href.startsWith(`https://${app.locals.configuration.host}/files/`)
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "onload",
             javascript`
               ${
-                href.startsWith(`https://${app.locals.options.host}/files/`)
+                href.startsWith(
+                  `https://${app.locals.configuration.host}/files/`
+                )
                   ? javascript``
                   : javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -293,7 +295,7 @@ export default async (app: Courselore): Promise<void> => {
             const match = href.match(
               new RegExp(
                 `^https://${escapeStringRegexp(
-                  app.locals.options.host
+                  app.locals.configuration.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -464,8 +466,8 @@ export default async (app: Courselore): Promise<void> => {
                       if (messageReference === undefined)
                         return html`<a
                           class="reference"
-                          href="https://${app.locals.options.host}/courses/${res
-                            .locals.course!
+                          href="https://${app.locals.configuration
+                            .host}/courses/${res.locals.course!
                             .reference}/conversations/${conversation.reference}${qs.stringify(
                             {
                               conversations: req.query.conversations,
@@ -485,8 +487,8 @@ export default async (app: Courselore): Promise<void> => {
                       if (message === undefined) return match;
                       return html`<a
                         class="reference"
-                        href="https://${app.locals.options.host}/courses/${res
-                          .locals.course!
+                        href="https://${app.locals.configuration
+                          .host}/courses/${res.locals.course!
                           .reference}/conversations/${conversation.reference}${qs.stringify(
                           {
                             conversations: req.query.conversations,
@@ -515,7 +517,7 @@ export default async (app: Courselore): Promise<void> => {
             const hrefMatch = href.match(
               new RegExp(
                 `^https://${escapeStringRegexp(
-                  app.locals.options.host
+                  app.locals.configuration.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -773,7 +775,7 @@ export default async (app: Courselore): Promise<void> => {
                         preview,
                         await (
                           await fetch(${JSON.stringify(
-                            `https://${app.locals.options.host}${
+                            `https://${app.locals.configuration.host}${
                               res.locals.course === undefined
                                 ? ""
                                 : `/courses/${res.locals.course.reference}`
@@ -1743,7 +1745,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
-                      `https://${app.locals.options.host}/content-editor/attachments`
+                      `https://${app.locals.configuration.host}/content-editor/attachments`
                     )}, {
                       method: "POST",
                       body,
@@ -2015,9 +2017,9 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `https://${app.locals.options.host}/courses/${
-                                res.locals.course.reference
-                              }/${
+                              `https://${
+                                app.locals.configuration.host
+                              }/courses/${res.locals.course.reference}/${
                                 res.locals.conversation !== undefined
                                   ? `conversations/${res.locals.conversation.reference}/`
                                   : ``
@@ -2028,7 +2030,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `https://${app.locals.options.host}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${app.locals.configuration.host}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
@@ -2770,12 +2772,12 @@ ${contentSource}</textarea
         });
         await attachment.mv(
           path.join(
-            app.locals.options.dataDirectory,
+            app.locals.configuration.dataDirectory,
             `files/${folder}/${attachment.name}`
           )
         );
         const href = `https://${
-          app.locals.options.host
+          app.locals.configuration.host
         }/files/${folder}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
@@ -2801,13 +2803,13 @@ ${contentSource}</textarea
               .resize({ width: maximumWidth })
               .toFile(
                 path.join(
-                  app.locals.options.dataDirectory,
+                  app.locals.configuration.dataDirectory,
                   `files/${folder}/${nameThumbnail}`
                 )
               );
             attachmentsContentSources.push(
               `[<img src="https://${
-                app.locals.options.host
+                app.locals.configuration.host
               }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
                 attachment.name
               }" width="${maximumWidth / 2}" />](${href})`

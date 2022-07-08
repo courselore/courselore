@@ -15,7 +15,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.host}/sign-in${qs.stringify(
+        `https://${app.locals.configuration.host}/sign-in${qs.stringify(
           {
             redirect: req.originalUrl,
           },
@@ -35,7 +35,7 @@ export default (app: Courselore): void => {
       )
         return res.redirect(
           303,
-          `https://${app.locals.options.host}${req.query.redirect}`
+          `https://${app.locals.configuration.host}${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({
@@ -54,7 +54,7 @@ export default (app: Courselore): void => {
                 href="${app.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
-                >${app.locals.options.administratorEmail}</a
+                >${app.locals.configuration.administratorEmail}</a
               >.
             </p>
           `,
@@ -95,7 +95,7 @@ export default (app: Courselore): void => {
                     href="${app.locals.partials.reportIssueHref}"
                     target="_blank"
                     class="link"
-                    >${app.locals.options.administratorEmail}</a
+                    >${app.locals.configuration.administratorEmail}</a
                   >.
                 </p>
               `
@@ -107,7 +107,7 @@ export default (app: Courselore): void => {
                     href="${app.locals.partials.reportIssueHref}"
                     target="_blank"
                     class="link"
-                    >${app.locals.options.administratorEmail}</a
+                    >${app.locals.configuration.administratorEmail}</a
                   >.
                 </p>
               `}

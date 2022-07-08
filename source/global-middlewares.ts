@@ -6,7 +6,7 @@ import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 import { Courselore } from "./index.js";
 
-export interface GlobalMiddlewaresOptions {
+export interface GlobalMiddlewaresConfiguration {
   cookies: express.CookieOptions;
 }
 
@@ -26,8 +26,8 @@ export default (app: Courselore): void => {
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 
-  app.locals.options.cookies = (() => {
-    const url = new URL(`https://${app.locals.options.host}`);
+  app.locals.configuration.cookies = (() => {
+    const url = new URL(`https://${app.locals.configuration.host}`);
     return {
       domain: url.hostname,
       httpOnly: true,
@@ -50,13 +50,13 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     csurf({
       cookie: {
-        ...app.locals.options.cookies,
+        ...app.locals.configuration.cookies,
         maxAge: 30 * 24 * 60 * 60,
       },
     })
   );
 
-  if (app.locals.options.liveReload)
+  if (app.locals.configuration.liveReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {

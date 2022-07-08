@@ -101,7 +101,7 @@ export default (app: Courselore): void => {
         if (job === undefined) return;
         const mailOptions = JSON.parse(job.mailOptions);
         try {
-          const sentMessageInfo = await app.locals.options.sendMail(
+          const sentMessageInfo = await app.locals.configuration.sendMail(
             mailOptions
           );
           app.locals.database.run(

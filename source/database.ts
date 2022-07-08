@@ -11,9 +11,9 @@ export interface DatabaseLocals {
 }
 
 export default async (app: Courselore): Promise<void> => {
-  await fs.ensureDir(app.locals.options.dataDirectory);
+  await fs.ensureDir(app.locals.configuration.dataDirectory);
   app.locals.database = new Database(
-    path.join(app.locals.options.dataDirectory, "courselore.db"),
+    path.join(app.locals.configuration.dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
   app.locals.database.pragma("journal_mode = WAL");
@@ -335,7 +335,7 @@ export default async (app: Courselore): Promise<void> => {
           text.replace(
             new RegExp(
               `(?<=https://${escapeStringRegexp(
-                app.locals.options.host
+                app.locals.configuration.host
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi"
             ),
@@ -452,7 +452,7 @@ export default async (app: Courselore): Promise<void> => {
         text.replace(
           new RegExp(
             `(?<=https://${escapeStringRegexp(
-              app.locals.options.host
+              app.locals.configuration.host
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi"
           ),
