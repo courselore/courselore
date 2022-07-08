@@ -417,7 +417,7 @@ export default (app: Courselore): void => {
         }));
 
       res.locals.mayCreateCourses =
-        app.locals.options.userSystemRolesWhoMayCreateCourses === "anyone" ||
+        app.locals.options.userSystemRolesWhoMayCreateCourses === "all" ||
         (app.locals.options.userSystemRolesWhoMayCreateCourses ===
           "staff-and-administrators" &&
           ["staff", "administrator"].includes(res.locals.user.systemRole)) ||

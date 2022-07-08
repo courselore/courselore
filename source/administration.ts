@@ -17,7 +17,7 @@ export interface AdministrationOptions {
 export type UserSystemRolesWhoMayCreateCourses =
   typeof userSystemRolesWhoMayCreateCourseses[number];
 export const userSystemRolesWhoMayCreateCourseses = [
-  "anyone",
+  "all",
   "staff-and-administrators",
   "administrators",
 ] as const;
@@ -228,15 +228,15 @@ export default (app: Courselore): void => {
                     <input
                       type="radio"
                       name="userSystemRolesWhoMayCreateCourses"
-                      value="anyone"
+                      value="all"
                       required
                       $${app.locals.options
-                        .userSystemRolesWhoMayCreateCourses === "anyone"
+                        .userSystemRolesWhoMayCreateCourses === "all"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    Anyone
+                    all
                   </label>
                 </div>
                 <div
