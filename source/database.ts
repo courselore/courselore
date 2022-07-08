@@ -931,43 +931,40 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (users.length === 0) return;
-      await repl();
-      async function repl() {
-        const answer = (
+      while (true) {
+        const user = (
           await prompts({
             type: "autocomplete",
-            name: "answer",
+            name: "output",
             message:
-              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
+              "Courselore 4.0.0 introduces an administration interface and the notion of system administrators. Please select a user to become the first administrator.",
             choices: users.map((user) => ({
               title: `${user.name} <${user.email}>`,
               value: user,
             })),
           })
-        ).answer;
+        ).output;
         const confirmation = (
           await prompts({
             type: "confirm",
-            name: "confirmation",
-            message: `${answer.name} <${answer.email}> will be the first administrator. Is this correct?`,
+            name: "output",
+            message: `${user.name} <${user.email}> will be the first administrator. Is this correct?`,
             initial: true,
           })
-        ).confirmation;
-        if (!confirmation) {
-          await repl();
-          return;
-        }
+        ).output;
+        if (!confirmation) continue;
         app.locals.database.run(
           sql`
-            UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${answer.id}
+            UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
           `
         );
         await prompts({
           type: "text",
-          name: "finish",
+          name: "output",
           message:
             "The first administrator was set successfully. Press enter to continue...",
         });
+        break;
       }
     }
   );
