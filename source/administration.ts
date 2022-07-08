@@ -322,10 +322,7 @@ export default (app: Courselore): void => {
       }>(
         sql`
           UPDATE "administrationOptions"
-          SET "value" = ${JSON.stringify(
-            req.body.userSystemRolesWhoMayCreateCourses
-          )}
-          WHERE "key" = 'userSystemRolesWhoMayCreateCourses'
+          SET "userSystemRolesWhoMayCreateCourses" = ${req.body.userSystemRolesWhoMayCreateCourses}
           RETURNING *
         `
       )!;
