@@ -580,6 +580,7 @@ const { app, BrowserWindow } = require("electron");
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
       - But we could pre-fetch…
 - Preserve more client-side state, for example, on the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
+- Scroll to URL `#hashes`, which may occur in the middle of a message.
 
 ## Live-Updates
 
