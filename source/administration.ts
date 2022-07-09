@@ -768,11 +768,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.mayManageUser,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (
-          typeof req.body.role !== "string" ||
-          !systemRoles.includes(req.body.role)
-        )
-          return next("validation");
+        if (!systemRoles.includes(req.body.role)) return next("validation");
 
         app.locals.database.run(
           sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
