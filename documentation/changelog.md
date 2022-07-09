@@ -1,6 +1,6 @@
 # Changelog
 
-### 4.0.0
+## 4.0.0
 
 **2022-07-09 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
@@ -18,13 +18,13 @@ Update to Courselore 4.0.0 with the following steps:
 
 Enjoy!
 
-### 3.3.0
+## 3.3.0
 
 **2022-05-27 · [Download](https://github.com/courselore/courselore/releases/tag/v3.3.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 This minor release includes a non-breaking change to the configuration to allow third-party websites to embed images sent as attachments. This is necessary for Outlook (and perhaps other email clients) to show images in email notifications. Refer to <https://github.com/courselore/courselore/blob/v3.3.0/configuration/example.mjs> and apply the changes to your configuration accordingly.
 
-### 3.2.0
+## 3.2.0
 
 **2022-05-12 · [Download](https://github.com/courselore/courselore/releases/tag/v3.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
@@ -32,7 +32,7 @@ This release includes an optional but recommended [change to a header recently i
 
 `Referrer-Policy same-origin` → `Referrer-Policy no-referrer`
 
-### 3.0.0
+## 3.0.0
 
 **2022-04-30 · [Download](https://github.com/courselore/courselore/releases/tag/v3.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
@@ -42,7 +42,7 @@ People who self-host their own installation of Courselore on their server must u
 
 In particular, the configuration of the reverse proxy (Caddy) changed to include headers that improve security & privacy.
 
-### 2.1.0
+## 2.1.0
 
 **2022-04-09 · [Download](https://github.com/courselore/courselore/releases/tag/v2.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
@@ -50,25 +50,25 @@ In this minor release we introduce a backward-compatible but highly-recommended 
 
 This configuration line improves the cache management in the browser and prevents the use of old client-side JavaScript, CSS, fonts, images, and so forth.
 
-### 2.0.0
+## 2.0.0
 
 **2022-03-05 · [Download](https://github.com/courselore/courselore/releases/tag/v2.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 This release includes an overhaul in the architecture for better performance and maintainability. It requires changes to your configuration. You may either [start over with the new configuration example (recommended)](https://github.com/courselore/courselore/blob/c66f3b8f46f52d53bcb17f334ddd7b834070a25d/configuration/example.mjs) or [look at the changes and apply them to your existing configuration](https://github.com/courselore/courselore/compare/v1.2.10...c66f3b8f46f52d53bcb17f334ddd7b834070a25d#diff-1d4efc9a9a4c88b7dfd373d4aec08c68c4396f2c86211734014124d8aa12d3c3).
 
-### 1.2.0
+## 1.2.0
 
 **2022-01-31 · [Download](https://github.com/courselore/courselore/releases/tag/v1.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 We made a backwards-compatible improvement to logging that requires you to change your configuration file. Please refer to https://github.com/courselore/courselore/blob/3b102a6c2a9e8658dcd12e0bf99d4b078a7b6723/configuration/example.mjs and make the appropriate adjustments.
 
-### 1.1.0
+## 1.1.0
 
 **2022-01-27 · [Download](https://github.com/courselore/courselore/releases/tag/v1.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 We made a backwards-compatible improvement to the configuration to more gracefully close resources (for example, database connections) on shutdown. Refer to https://github.com/courselore/courselore/blob/0b26b4c3bf7f0807fdf1dac91e10d5a1f45dbcc1/configuration/example.mjs#L65-L82 and update your configuration.
 
-### 1.0.0
+## 1.0.0
 
 **2022-01-22 · [Download](https://github.com/courselore/courselore/releases/tag/v1.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
@@ -76,7 +76,7 @@ This is the first release of CourseLore that’s meant for self-hosting by the l
 
 There are still some known issues, and if you’re planning on using v1.0.0 you should expect to update often. If you’re an early adopter, you should join us on [Meta CourseLore](https://courselore.org/courses/8537410611/invitations/3667859788).
 
-### 0.9.0
+## 0.9.0
 
 **2022-01-16 · [Download](https://github.com/courselore/courselore/releases/tag/v0.9.0) · For early adopters.**
 

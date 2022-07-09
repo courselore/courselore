@@ -6,7 +6,7 @@ Courselore has been designed to be welcoming to new developers. It’s an excell
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new?body=%2A%2AWhat%20did%20you%20try%20to%20do%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20did%20you%20expect%20to%20happen%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20really%20happened%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20error%20messages%20%28if%20any%29%20did%20you%20run%20into%3F%2A%2A%0A%0A%0A%0A%2A%2APlease%20provide%20as%20much%20relevant%20context%20as%20possible%20%28operating%20system%2C%20browser%2C%20and%20so%20forth%29%3A%2A%2A%0A).
 
-### Running a Pre-Compiled Binary Locally
+## Running a Pre-Compiled Binary Locally
 
 The best way to get started is to run a pre-compiled Courselore binary on your machine. You may download Courselore from two channels: The latest development versions, which are available as [Actions Artifacts](https://github.com/courselore/courselore/actions); and stable versions, which are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded Courselore, extract it and run the `courselore` binary.
 
@@ -24,7 +24,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 >
 > 2. Use NSS to install the TLS certificate into Firefox’s trust store.
 
-### Running from Source
+## Running from Source
 
 <details>
 <summary>Windows</summary>
@@ -191,7 +191,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
 </details>
 
-### Testing on Mobile
+## Testing on Mobile
 
 You may run Courselore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
 

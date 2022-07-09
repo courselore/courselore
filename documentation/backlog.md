@@ -1,6 +1,6 @@
 # Backlog
 
-### Fall
+## Fall
 
 - Notifications:
   - Email notification digests
@@ -16,7 +16,7 @@
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
-### Administrative Interface
+## Administrative Interface
 
 **Goals**
 
@@ -62,7 +62,7 @@
   - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
 - Take a look at other nice features from Discourse’s administrative interface
 
-### Better Email Notifications
+## Better Email Notifications
 
 - New filters for email notifications.
   - Reenable on interface (`TODO`)
@@ -94,7 +94,7 @@
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 
-### User Interface Improvements
+## User Interface Improvements
 
 **Top Menus**
 
@@ -175,7 +175,7 @@
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
 - 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
-### Quality-of-Life Features
+## Quality-of-Life Features
 
 - Drafts:
   - Unhide buttons
@@ -217,7 +217,7 @@
 
 - Investigate browser crashes on Android Chrome
 
-### Notifications
+## Notifications
 
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -250,7 +250,7 @@ new Notification('Example');
 </button>
 ```
 
-### Granular Access Control
+## Granular Access Control
 
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
@@ -270,7 +270,7 @@ new Notification('Example');
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
-### Users
+## Users
 
 - Improvements to the workflow for when you change your email:
   - The verification email has a subject of “Welcome to Courselore!”. It should be “Please verify your email”.
@@ -290,7 +290,7 @@ new Notification('Example');
   - Pronoun.
   - A short audio with the name’s pronunciation.
 
-### Courses
+## Courses
 
 - Course archival: Currently, when a course is archived, we continue to show all the forms and return an error message after submission. It’d be more elegant to disable the forms and inform the user before they try to submit. But this requires revisiting almost every form, input, and button in the application.
 - Remove course entirely.
@@ -298,7 +298,7 @@ new Notification('Example');
 - Control who’s able to create courses, which makes sense for people who self-host.
 - Upload roster and show differences.
 
-### Invitations
+## Invitations
 
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
@@ -306,7 +306,7 @@ new Notification('Example');
 - Have a public listing of courses in the system and allow people to request to join.
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 
-### Conversations
+## Conversations
 
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
@@ -320,24 +320,24 @@ new Notification('Example');
 - Conversation templates, for example, for bug reports on Meta Courselore.
 - Let original question asker approve an answer.
 
-### Chat
+## Chat
 
 - Currently typing.
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
 
-### Anonymity
+## Anonymity
 
 - Allow people to create Personas.
 - Have a completely anonymous mode in which not even the staff has access to the identity.
 
-### Search
+## Search
 
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filter by date.
 
-### Content Editor
+## Content Editor
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
@@ -352,7 +352,7 @@ new Notification('Example');
 - Dragging an image from another website and dropping it in the content editor results in a 422.
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
-### Content Processor
+## Content Processor
 
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
@@ -380,7 +380,7 @@ new Notification('Example');
   - Messages
   - Biographies
 
-### Pagination
+## Pagination
 
 - `TODO`
 - Pagination of non-chat conversations should behave like GitHub Issues: Show the first couple messages, and the last couple messages, and have a gap in the middle that you can click to load.
@@ -402,7 +402,7 @@ new Notification('Example');
 - Paginate other things, for example, Course Settings · Enrollments, and invitations.
 - Things like clearing search and filters may affect query parameters.
 
-### File Management
+## File Management
 
 - Have a way to delete files.
 - Access control around attachments:
@@ -418,7 +418,7 @@ new Notification('Example');
 - Create a garbage collection routine for attachments.
 - Clean geolocation & other metadata from images.
 
-### Statistics
+## Statistics
 
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification
@@ -427,13 +427,13 @@ new Notification('Example');
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
 
-### Live Course Communication during the Lectures
+## Live Course Communication during the Lectures
 
 - References:
   - https://www.sli.do
   - https://pigeonholelive.com/features-qna/
 
-### Native Mobile & Desktop Applications
+## Native Mobile & Desktop Applications
 
 - PWA: https://checkvist.com/auth/mobile
 - Desktop: Electron.
@@ -491,7 +491,7 @@ const { app, BrowserWindow } = require("electron");
     - Still more popular, but dreaded.
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
 
-### API
+## API
 
 - Enable us to connect with other applications, for example, assignment management, and course material.
   - Though we won’t necessarily be going to those areas right away.
@@ -504,7 +504,7 @@ const { app, BrowserWindow } = require("electron");
       - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
 
-### User Interface
+## User Interface
 
 - Forms:
   - Use `maxlength`.
@@ -546,14 +546,14 @@ const { app, BrowserWindow } = require("electron");
   - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
   - https://www.digitalocean.com/community/tutorials/css-scrollbars
 
-### Design & Accessibility
+## Design & Accessibility
 
 - Translate to other languages.
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
 - Test contrast.
 
-### Live-Navigation
+## Live-Navigation
 
 - Client-side cache?
   - Advantages:
@@ -581,7 +581,7 @@ const { app, BrowserWindow } = require("electron");
       - But we could pre-fetch…
 - Preserve more client-side state, for example, on the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
 
-### Live-Updates
+## Live-Updates
 
 - Scroll to `#anchored` element.
 - We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
@@ -616,7 +616,7 @@ const { app, BrowserWindow } = require("electron");
   - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
 
-### Performance
+## Performance
 
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
@@ -686,7 +686,7 @@ const { app, BrowserWindow } = require("electron");
 
 - Try and optimize `html` tagged template literal, which sanitizes things over and over.
 
-### Infrastructure
+## Infrastructure
 
 - Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
@@ -2358,7 +2358,7 @@ $$
 
 </details>
 
-### Documentation
+## Documentation
 
 - Videos
   - Educators:
@@ -2379,7 +2379,7 @@ $$
   - Microsoft Azure.
   - https://sandstorm.io.
 
-### Marketing
+## Marketing
 
 - Homepage:
   - Better printscreens without `lorem ipsum`.
@@ -2403,7 +2403,7 @@ $$
 - In Meta Courselore, make a pinned announcement of how to report bugs.
   - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
 
-### References
+## References
 
 - Communication platforms for education
   - <https://piazza.com>
