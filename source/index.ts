@@ -179,8 +179,8 @@ export interface Courselore extends express.Express {
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isAdministrator: IsAdministratorMiddleware;
-      mayCreateCourses: MayCreateCoursesMiddleware;
       mayManageUser: MayManageUserMiddleware;
+      mayCreateCourses: MayCreateCoursesMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;
@@ -200,8 +200,8 @@ export interface Courselore extends express.Express {
       main: MainLayout;
       settings: SettingsLayout;
       partial: PartialLayout;
-      userSettings: UserSettingsLayout;
       administration: AdministrationLayout;
+      userSettings: UserSettingsLayout;
       courseSettings: CourseSettingsLayout;
       conversation: ConversationLayout;
     };
@@ -209,8 +209,8 @@ export interface Courselore extends express.Express {
       logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
-      user: UserPartial;
       systemRoleIcon: SystemRoleIconPartial;
+      user: UserPartial;
       course: CoursePartial;
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;

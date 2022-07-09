@@ -944,15 +944,17 @@ export default async (app: Courselore): Promise<void> => {
             })),
           })
         ).output;
-        const confirmation = (
-          await prompts({
-            type: "confirm",
-            name: "output",
-            message: `${user.name} <${user.email}> will become the first administrator. Is this correct?`,
-            initial: true,
-          })
-        ).output;
-        if (!confirmation) continue;
+        if (
+          !(
+            await prompts({
+              type: "confirm",
+              name: "output",
+              message: `${user.name} <${user.email}> will become the first administrator. Is this correct?`,
+              initial: true,
+            })
+          ).output
+        )
+          continue;
         app.locals.database.run(
           sql`
             UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}

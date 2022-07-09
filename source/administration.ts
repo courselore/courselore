@@ -70,14 +70,14 @@ export type AdministrationLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
-  for (const [key, value] of Object.entries(
-    app.locals.database.get<{ [key: string]: any }>(
+  app.locals.options = {
+    ...app.locals.options,
+    ...app.locals.database.get<{ [key: string]: any }>(
       sql`
         SELECT * FROM "administrationOptions"
       `
-    )!
-  ))
-    app.locals.options[key as keyof AdministrationOptions] = value;
+    )!,
+  };
 
   app.locals.partials.systemRoleIcon = {
     none: {
@@ -326,8 +326,7 @@ export default (app: Courselore): void => {
           RETURNING *
         `
       )!;
-      for (const [key, value] of Object.entries(administrationOptions))
-        app.locals.options[key as keyof AdministrationOptions] = value;
+      app.locals.options = { ...app.locals.options, ...administrationOptions };
 
       app.locals.helpers.Flash.set({
         req,
