@@ -102,38 +102,6 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.mayManageUser = [
-    ...app.locals.middlewares.isAdministrator,
-    (req, res, next) => {
-      const managedUser = app.locals.database.get<{
-        id: number;
-      }>(
-        sql`
-          SELECT "id"
-          FROM "users"
-          WHERE "reference" = ${req.params.userReference}
-        `
-      );
-      if (managedUser === undefined) return next("route");
-      res.locals.managedUser = {
-        ...managedUser,
-        isSelf: managedUser.id === res.locals.user.id,
-      };
-      if (
-        res.locals.managedUser.isSelf &&
-        app.locals.database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count"
-            FROM "users"
-            WHERE "systemRole" = 'administrator'
-          `
-        )!.count === 1
-      )
-        return next("validation");
-      next();
-    },
-  ];
-
   app.locals.layouts.administration = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
@@ -754,6 +722,38 @@ export default (app: Courselore): void => {
       );
     }
   );
+
+  app.locals.middlewares.mayManageUser = [
+    ...app.locals.middlewares.isAdministrator,
+    (req, res, next) => {
+      const managedUser = app.locals.database.get<{
+        id: number;
+      }>(
+        sql`
+          SELECT "id"
+          FROM "users"
+          WHERE "reference" = ${req.params.userReference}
+        `
+      );
+      if (managedUser === undefined) return next("route");
+      res.locals.managedUser = {
+        ...managedUser,
+        isSelf: managedUser.id === res.locals.user.id,
+      };
+      if (
+        res.locals.managedUser.isSelf &&
+        app.locals.database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count"
+            FROM "users"
+            WHERE "systemRole" = 'administrator'
+          `
+        )!.count === 1
+      )
+        return next("validation");
+      next();
+    },
+  ];
 
   app.patch<
     { userReference: string },
