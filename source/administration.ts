@@ -85,12 +85,12 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-dash-circle-fill"></i>`,
     },
     staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+      regular: html`<i class="bi bi-person-badge"></i>`,
+      fill: html`<i class="bi bi-person-badge-fill"></i>`,
     },
     administrator: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
+      regular: html`<i class="bi bi-pc-display-horizontal"></i>`,
+      fill: html`<i class="bi bi-pc-display-horizontal"></i>`,
     },
   };
 
