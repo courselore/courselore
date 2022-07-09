@@ -304,6 +304,7 @@ new Notification('Example');
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
+- When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 
 ### Conversations
 
