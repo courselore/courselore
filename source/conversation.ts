@@ -3188,7 +3188,7 @@ export default (app: Courselore): void => {
                       <div
                         css="${res.locals.css(css`
                           display: flex;
-                          flex-direction: column;
+                          row-gap: var(--space--4);
                         `)}"
                       >
                         $${res.locals.tags.length === 0 &&
@@ -3230,13 +3230,13 @@ export default (app: Courselore): void => {
                                                     gap: var(--space--2);
                                                   `)}"
                                                   onload="${javascript`
-                                                                this.onclick = () => {
-                                                                  const displayTag = document.getElementById("tag-display-${tag.reference}");
-                                                                  const input = document.getElementById("tag-input-${tag.reference}");
-                                                                  displayTag.hidden = false;
-                                                                  input.checked = true;
-                                                                };
-                                                            `}"
+                                                      this.onclick = () => {
+                                                        const displayTag = document.getElementById("tag-display-${tag.reference}");
+                                                        const input = document.getElementById("tag-input-${tag.reference}");
+                                                        displayTag.hidden = false;
+                                                        input.checked = true;
+                                                      };
+                                                  `}"
                                                 >
                                                   <label
                                                     class="dropdown--menu--item button button--transparent"
@@ -3251,11 +3251,11 @@ export default (app: Courselore): void => {
                                                         <span
                                                           class="text--sky"
                                                           onload="${javascript`
-                                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                                    touch: false,
-                                                                    content: "This tag is visible by staff only.",
-                                                                  });
-                                                                `}"
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: "This tag is visible by staff only.",
+                                                            });
+                                                          `}"
                                                         >
                                                           <i
                                                             class="bi bi-mortarboard-fill"
@@ -3278,7 +3278,14 @@ export default (app: Courselore): void => {
                                   </div>
                                 </label>
                               </div>
-                              <div>
+                              <div
+                                css="${res.locals.css(css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--8);
+                                  row-gap: var(--space--2);
+                                `)}"
+                              >
                                 $${res.locals.tags.map(
                                   (tag) => html`
                                     <div
@@ -3286,22 +3293,22 @@ export default (app: Courselore): void => {
                                       id="tag-display-${tag.reference}"
                                       hidden
                                       css="${res.locals.css(css`
-                                        display: "flex";
+                                        display: flex;
                                         gap: var(--space--2);
                                       `)}"
                                       onload="${javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            theme: "rose",
-                                            touch: false,
-                                            content: "Remove Tag",
-                                          });
-                                          
-                                          this.onclick = () => {
-                                            const input = document.getElementById("tag-input-${tag.reference}");
-                                            this.hidden = true;
-                                            input.checked = false;
-                                          };
-                                        `}"
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          theme: "rose",
+                                          touch: false,
+                                          content: "Remove Tag",
+                                        });
+                                        
+                                        this.onclick = () => {
+                                          const input = document.getElementById("tag-input-${tag.reference}");
+                                          this.hidden = true;
+                                          input.checked = false;
+                                        };
+                                      `}"
                                     >
                                       <label
                                         class="button button--tight button--transparent"
