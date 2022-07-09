@@ -77,7 +77,7 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 
 #### Updates
 
-> **Important:** Run a backup before an update.
+> **Important:** Backup before updating!
 
 [Download the latest Courselore release for your platform](https://github.com/courselore/courselore/releases) and restart the server. For example, if you followed the examples from [§ Server Setup](#server-setup), you may do the following:
 
