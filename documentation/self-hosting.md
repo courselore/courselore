@@ -79,6 +79,12 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 
 > **Important:** Backup before updating!
 
+> **Important:** Major updates (for example, 1.x.x → 2.x.x) include **required** extra manual steps. Minor updates (for example, x.1.x → x.2.x) include **optional** manual steps.
+>
+> If you’re updating across multiple major & minor versions, then you may update the configuration file with respect to the latest version, but you must follow all other steps for all the versions in between (for example, to update 1.2.3 → 3.2.5 use a configuration file compatible with 3.2.5, but follow the other steps for 1.2.3 → 2.0.0 → 2.1.0 → 2.2.0 → 3.0.0 → 3.1.0 → 3.2.5 as well).
+>
+> Refer to the [changelog](https://github.com/courselore/courselore/blob/main/documentation/changelog.md) for more information.
+
 [Download the latest Courselore release for your platform](https://github.com/courselore/courselore/releases) and restart the server. For example, if you followed the examples from [§ Server Setup](#server-setup), you may do the following:
 
 ```console
@@ -86,5 +92,3 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 # tar xzf courselore--linux--v<VERSION>.tgz
 # systemctl restart courselore
 ```
-
-> **Note:** Major updates, for example, v1.x.x → v2.x.x, require extra manual steps. Minor updates, for example, vx.1.x → vx.2.x, include optional manual steps. Refer to the [release notes](https://github.com/courselore/courselore/releases) for more information.
