@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-09</summary>
+
+- Administrative interface: Deployed.
+- Better email notifications: Deployed (but missing digests).
+- Icons: Improving the presentation of “New Conversation” form.
+
+</details>
+
+<details>
 <summary>2021-07-02</summary>
 
 - Administrative interface: It’s almost ready to deploy: We want to revert some changes before we actually deploy.
