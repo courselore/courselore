@@ -7,9 +7,8 @@ export default async ({
   sendMail,
   alternativeHosts = [],
   hstsPreload = false,
-  production = true,
-  demonstration = !production,
-  liveReload = false,
+  environment = "production",
+  demonstration = false,
 }) => {
   if (process.argv[3] === undefined) {
     const path = await courseloreImport("node:path");

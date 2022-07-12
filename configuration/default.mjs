@@ -15,6 +15,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         },
       },
     },
-    production: false,
+    environment: "default",
+    demonstration: true,
   });
 };
