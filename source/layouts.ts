@@ -453,10 +453,10 @@ export default async (app: Courselore): Promise<void> => {
             `)}"
           >
             $${(() => {
-              let content = html``;
+              let headerDemonstration = html``;
 
               if (app.locals.options.demonstration)
-                content += html`
+                headerDemonstration += html`
                   <div>
                     <button
                       class="button button--transparent"
@@ -516,7 +516,7 @@ export default async (app: Courselore): Promise<void> => {
                 `;
 
               if (process.env.NODE_ENV !== "production")
-                content += html`
+                headerDemonstration += html`
                   <form
                     method="DELETE"
                     action="https://${app.locals.options.host}/turn-off"
@@ -533,7 +533,7 @@ export default async (app: Courselore): Promise<void> => {
                   </form>
                 `;
 
-              return content !== html``
+              return headerDemonstration !== html``
                 ? html`
                     <div
                       key="header--demonstration"
@@ -542,7 +542,7 @@ export default async (app: Courselore): Promise<void> => {
                         flex-wrap: wrap;
                       `)}"
                     >
-                      $${content}
+                      $${headerDemonstration}
                     </div>
                   `
                 : html``;
