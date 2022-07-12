@@ -303,14 +303,15 @@ export default (app: Courselore): void => {
   `;
 
   app.locals.partials.courses = ({ req, res, tight = false }) => {
+    let courses = html``;
+
     const [unarchived, archived] = lodash.partition(
       res.locals.enrollments,
       (enrollment) => enrollment.course.archivedAt === null
     );
-    const content: HTML[] = [];
 
     if (unarchived.length > 0)
-      content.push(html`
+      courses += html`
         $${unarchived.map(
           (enrollment) =>
             html`
@@ -335,10 +336,12 @@ export default (app: Courselore): void => {
               </a>
             `
         )}
-      `);
+      `;
 
     if (archived.length > 0)
-      content.push(html`
+      courses += html`
+        $${courses !== html`` ? html`<hr class="separator" />` : html``}
+
         <button
           key="enrollment--archived"
           class="dropdown--menu--item menu-box--item button ${tight
@@ -390,9 +393,9 @@ export default (app: Courselore): void => {
               </a>
             `
         )}
-      `);
+      `;
 
-    return content.join(html`<hr class="separator" />`);
+    return courses;
   };
 
   app.locals.partials.courseRoleIcon = {
