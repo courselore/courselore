@@ -430,37 +430,17 @@ export default async (app: Courselore): Promise<void> => {
                   ></button>
                 </div>
               `}
-          <div
-            key="header"
-            css="${res.locals.css(css`
-              font-size: var(--font-size--xs);
-              line-height: var(--line-height--xs);
-              background-color: var(--color--gray--medium--100);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
-              }
-              display: flex;
-              flex-direction: column;
-              & > * {
-                padding: var(--space--0) var(--space--4);
-                border-bottom: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
-                }
-                display: flex;
-              }
-            `)}"
-          >
-            $${(() => {
-              let headerDemonstration = html``;
+          $${(() => {
+            let header = html``;
 
-              if (app.locals.options.demonstration)
-                headerDemonstration += html`
-                  <div>
-                    <button
-                      class="button button--transparent"
-                      onload="${javascript`
+            let headerDemonstration = html``;
+
+            if (app.locals.options.demonstration)
+              headerDemonstration += html`
+                <div>
+                  <button
+                    class="button button--transparent"
+                    onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
@@ -508,47 +488,75 @@ export default async (app: Courselore): Promise<void> => {
                         )},
                       });
                     `}"
-                    >
-                      <i class="bi bi-easel"></i>
-                      Demonstration Mode
-                    </button>
-                  </div>
-                `;
-
-              if (process.env.NODE_ENV !== "production")
-                headerDemonstration += html`
-                  <form
-                    method="DELETE"
-                    action="https://${app.locals.options.host}/turn-off"
                   >
-                    <input
-                      type="hidden"
-                      name="_csrf"
-                      value="${req.csrfToken()}"
-                    />
-                    <button class="button button--transparent">
-                      <i class="bi bi-power"></i>
-                      Turn off
-                    </button>
-                  </form>
-                `;
+                    <i class="bi bi-easel"></i>
+                    Demonstration Mode
+                  </button>
+                </div>
+              `;
 
-              return headerDemonstration !== html``
-                ? html`
-                    <div
-                      key="header--demonstration"
-                      css="${res.locals.css(css`
-                        justify-content: center;
-                        flex-wrap: wrap;
-                      `)}"
-                    >
-                      $${headerDemonstration}
-                    </div>
-                  `
-                : html``;
-            })()}
-            $${extraHeaders}
-          </div>
+            if (process.env.NODE_ENV !== "production")
+              headerDemonstration += html`
+                <form
+                  method="DELETE"
+                  action="https://${app.locals.options.host}/turn-off"
+                >
+                  <input
+                    type="hidden"
+                    name="_csrf"
+                    value="${req.csrfToken()}"
+                  />
+                  <button class="button button--transparent">
+                    <i class="bi bi-power"></i>
+                    Turn off
+                  </button>
+                </form>
+              `;
+
+            if (headerDemonstration !== html``)
+              header += html`
+                <div
+                  key="header--demonstration"
+                  css="${res.locals.css(css`
+                    justify-content: center;
+                    flex-wrap: wrap;
+                  `)}"
+                >
+                  $${headerDemonstration}
+                </div>
+              `;
+
+            header += extraHeaders;
+
+            return header !== html``
+              ? html`
+                  <div
+                    key="header"
+                    css="${res.locals.css(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      background-color: var(--color--gray--medium--100);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--800);
+                      }
+                      display: flex;
+                      flex-direction: column;
+                      & > * {
+                        padding: var(--space--0) var(--space--4);
+                        border-bottom: var(--border-width--1) solid
+                          var(--color--gray--medium--200);
+                        @media (prefers-color-scheme: dark) {
+                          border-color: var(--color--gray--medium--700);
+                        }
+                        display: flex;
+                      }
+                    `)}"
+                  >
+                    $${header}
+                  </div>
+                `
+              : html``;
+          })()}
 
           <div
             key="main"
