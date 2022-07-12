@@ -4907,6 +4907,10 @@ export default (app: Courselore): void => {
                                           <button
                                             class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
                                             css="${res.locals.css(css`
+                                              color: var(--color--teal--600);
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--teal--500);
+                                              }
                                               text-align: left;
                                             `)}"
                                             onload="${javascript`
