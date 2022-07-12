@@ -1066,7 +1066,7 @@ export default async (app: Courselore): Promise<void> => {
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
             leafac.liveNavigation($${JSON.stringify(app.locals.options.host)});
-            $${app.locals.options.liveReload
+            $${app.locals.options.environment === "development"
               ? javascript`
                   leafac.liveReload(${JSON.stringify(
                     `https://${app.locals.options.host}/live-reload`

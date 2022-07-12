@@ -56,7 +56,7 @@ export default (app: Courselore): void => {
     })
   );
 
-  if (app.locals.options.liveReload)
+  if (app.locals.options.environment === "development")
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {
