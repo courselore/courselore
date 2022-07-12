@@ -893,6 +893,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedOut,
     app.locals.handlers.about
   );
+
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/about",
     ...app.locals.middlewares.isSignedIn,

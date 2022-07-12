@@ -6,6 +6,8 @@ import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import {
   Courselore,
+  BaseMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
@@ -68,6 +70,14 @@ export type AdministrationLayout = ({
   head: HTML;
   body: HTML;
 }) => HTML;
+
+export type AdministrationNewsletterHandler = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+>;
 
 export default (app: Courselore): void => {
   app.locals.options = {
@@ -790,4 +800,74 @@ export default (app: Courselore): void => {
       );
     }
   );
+
+  if (
+    app.locals.options.host !== app.locals.options.canonicalHost &&
+    app.locals.options.environment !== "development"
+  )
+    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>(
+      "/administration/newsletter",
+      (req, res) => {
+        res.redirect(
+          303,
+          `https://${app.locals.options.canonicalHost}/administration/newsletter`
+        );
+      }
+    );
+  else {
+    app.locals.handlers.administrationNewsletter = (req, res) => {
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html` <title>Newsletter · Administration · Courselore</title> `,
+          body: html`
+            <form
+              method="POST"
+              action="https://${app.locals.options
+                .host}/administration/newsletter"
+              novalidate
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="administrator@educational-institution.edu"
+                  $${res.locals.user !== undefined
+                    ? html`value="${res.locals.user.email}"`
+                    : html``}
+                  required
+                  autofocus
+                  class="input--text"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-envelope-fill"></i>
+                Sign up to Administration Newsletter
+              </button>
+            </form>
+          `,
+        })
+      );
+    };
+
+    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+      "/administration/newsletter",
+      ...app.locals.middlewares.isSignedOut,
+      app.locals.handlers.administrationNewsletter
+    );
+
+    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+      "/administration/newsletter",
+      ...app.locals.middlewares.isSignedIn,
+      app.locals.handlers.administrationNewsletter
+    );
+  }
 };
