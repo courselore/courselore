@@ -2715,6 +2715,7 @@ ${contentSource}</textarea
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
         : [req.files.attachments];
+      if (attachments.length === 0) return next("validation");
       for (const attachment of attachments) {
         if (attachment.truncated)
           return res
