@@ -9,7 +9,6 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   userAvatarlessBackgroundColors,
