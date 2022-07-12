@@ -19,6 +19,16 @@ export type AboutHandler = express.RequestHandler<
 >;
 
 export default (app: Courselore): void => {
+  if (
+    app.locals.options.host !== app.locals.options.canonicalHost &&
+    app.locals.options.environment !== "development"
+  ) {
+    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
+      res.redirect(303, `https://${app.locals.options.canonicalHost}/about`);
+    });
+    return;
+  }
+
   app.locals.handlers.about = (req, res) => {
     res.send(
       app.locals.layouts.base({
@@ -878,22 +888,14 @@ export default (app: Courselore): void => {
     );
   };
 
-  if (
-    app.locals.options.host === app.locals.options.canonicalHost ||
-    app.locals.options.environment === "development"
-  ) {
-    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-      "/about",
-      ...app.locals.middlewares.isSignedOut,
-      app.locals.handlers.about
-    );
-    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-      "/about",
-      ...app.locals.middlewares.isSignedIn,
-      app.locals.handlers.about
-    );
-  } else
-    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
-      res.redirect(303, `https://${app.locals.options.canonicalHost}/about`);
-    });
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "/about",
+    ...app.locals.middlewares.isSignedOut,
+    app.locals.handlers.about
+  );
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/about",
+    ...app.locals.middlewares.isSignedIn,
+    app.locals.handlers.about
+  );
 };
