@@ -2721,12 +2721,12 @@ ${contentSource}</textarea
           return res
             .status(413)
             .send(
-              `<!-- Failed to upload: Attachments must be smaller than 10MB. -->`
+              `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`
             );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("validation");
       }
-      const attachmentsContentSources: string[] = [];
+      let attachmentsContentSources = ``;
       for (const attachment of attachments) {
         const folder = cryptoRandomString({
           length: 20,
@@ -2748,11 +2748,9 @@ ${contentSource}</textarea
             if (metadata.width === undefined) throw new Error();
             const maximumWidth = 1152; /* var(--width--6xl) */
             if (metadata.width <= maximumWidth) {
-              attachmentsContentSources.push(
-                `[<img src="${href}" alt="${attachment.name}" width="${
-                  metadata.width / 2
-                }" />](${href})`
-              );
+              attachmentsContentSources += `[<img src="${href}" alt="${
+                attachment.name
+              }" width="${metadata.width / 2}" />](${href})\n\n`;
               continue;
             }
             const ext = path.extname(attachment.name);
@@ -2769,18 +2767,16 @@ ${contentSource}</textarea
                   `files/${folder}/${nameThumbnail}`
                 )
               );
-            attachmentsContentSources.push(
-              `[<img src="https://${
-                app.locals.options.host
-              }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
-                attachment.name
-              }" width="${maximumWidth / 2}" />](${href})`
-            );
+            attachmentsContentSources += `[<img src="https://${
+              app.locals.options.host
+            }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
+              attachment.name
+            }" width="${maximumWidth / 2}" />](${href})\n\n`;
             continue;
           } catch {}
-        attachmentsContentSources.push(`[${attachment.name}](${href})`);
+        attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
-      res.send(` ${attachmentsContentSources.join("\n\n")} `);
+      res.send(`\n\n${attachmentsContentSources}`);
     })
   );
 
