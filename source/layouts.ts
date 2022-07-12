@@ -1095,6 +1095,43 @@ export default async (app: Courselore): Promise<void> => {
     `;
   };
 
+  if (app.locals.options.environment !== "production")
+    app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/turn-off",
+      (req, res) => {
+        res.send(
+          app.locals.layouts.box({
+            req,
+            res,
+            head: html`
+              <title>
+                Thanks for Trying! · Courselore · Communication Platform for
+                Education
+              </title>
+            `,
+            body: html`
+              <p class="strong">Thanks for trying Courselore!</p>
+              <p>
+                Next steps:
+                <a
+                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
+                  class="link"
+                  >Learn how to install Courselore on your own server</a
+                >
+                or
+                <a
+                  href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
+                  class="link"
+                  >learn how to setup for development</a
+                >.
+              </p>
+            `,
+          })
+        );
+        process.exit(0);
+      }
+    );
+
   if (process.env.NODE_ENV !== "production")
     await fs.writeFile(
       new URL("../static/global.css", import.meta.url),
