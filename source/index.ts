@@ -264,8 +264,8 @@ export interface Options {
       from: { name: string; address: string };
     };
   };
+  environment: "default" | "development" | "production";
   demonstration: boolean;
-  liveReload: boolean;
 }
 
 export default async (options: Options): Promise<Courselore> => {
