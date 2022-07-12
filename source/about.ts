@@ -880,7 +880,7 @@ export default (app: Courselore): void => {
 
   if (
     app.locals.options.host === app.locals.options.canonicalHost ||
-    process.env.NODE_ENV !== "production"
+    app.locals.options.environment === "development"
   ) {
     app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
       "/about",
