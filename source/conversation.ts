@@ -6732,7 +6732,7 @@ export default (app: Courselore): void => {
                                           </div>
 
                                           $${(() => {
-                                            const content: HTML[] = [];
+                                            let messageShowFooter = html``;
 
                                             const isLiked = message.likes.some(
                                               (like) =>
@@ -6748,77 +6748,72 @@ export default (app: Courselore): void => {
                                                 "chat" ||
                                               likesCount > 0
                                             )
-                                              content.push(
-                                                html`
-                                                  <form
-                                                    method="${isLiked
-                                                      ? "DELETE"
-                                                      : "POST"}"
-                                                    action="https://${app.locals
-                                                      .options
-                                                      .host}/courses/${res
-                                                      .locals.course
-                                                      .reference}/conversations/${res
-                                                      .locals.conversation
-                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          req.query
-                                                            .conversations,
-                                                        messages:
-                                                          req.query.messages,
-                                                      },
-                                                      {
-                                                        addQueryPrefix: true,
-                                                      }
-                                                    )}"
+                                              messageShowFooter += html`
+                                                <form
+                                                  method="${isLiked
+                                                    ? "DELETE"
+                                                    : "POST"}"
+                                                  action="https://${app.locals
+                                                    .options.host}/courses/${res
+                                                    .locals.course
+                                                    .reference}/conversations/${res
+                                                    .locals.conversation
+                                                    .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        req.query.conversations,
+                                                      messages:
+                                                        req.query.messages,
+                                                    },
+                                                    {
+                                                      addQueryPrefix: true,
+                                                    }
+                                                  )}"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <button
+                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                      ? "text--blue"
+                                                      : ""}"
+                                                    $${likesCount === 0
+                                                      ? html``
+                                                      : html`
+                                                          onload="${javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: ${JSON.stringify(
+                                                                isLiked
+                                                                  ? "Remove Like"
+                                                                  : "Like"
+                                                              )},
+                                                            });
+                                                          `}"
+                                                        `}
                                                   >
-                                                    <input
-                                                      type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
-                                                    <button
-                                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                        ? "text--blue"
-                                                        : ""}"
-                                                      $${likesCount === 0
-                                                        ? html``
-                                                        : html`
-                                                            onload="${javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                touch: false,
-                                                                content: ${JSON.stringify(
-                                                                  isLiked
-                                                                    ? "Remove Like"
-                                                                    : "Like"
-                                                                )},
-                                                              });
-                                                            `}"
-                                                          `}
-                                                    >
-                                                      $${isLiked
-                                                        ? html`
-                                                            <i
-                                                              class="bi bi-hand-thumbs-up-fill"
-                                                            ></i>
-                                                          `
-                                                        : html`<i
-                                                            class="bi bi-hand-thumbs-up"
-                                                          ></i>`}
-                                                      $${likesCount === 0
-                                                        ? html`Like`
-                                                        : html`
-                                                            ${likesCount.toString()}
-                                                            Like${likesCount ===
-                                                            1
-                                                              ? ""
-                                                              : "s"}
-                                                          `}
-                                                    </button>
-                                                  </form>
-                                                `
-                                              );
+                                                    $${isLiked
+                                                      ? html`
+                                                          <i
+                                                            class="bi bi-hand-thumbs-up-fill"
+                                                          ></i>
+                                                        `
+                                                      : html`<i
+                                                          class="bi bi-hand-thumbs-up"
+                                                        ></i>`}
+                                                    $${likesCount === 0
+                                                      ? html`Like`
+                                                      : html`
+                                                          ${likesCount.toString()}
+                                                          Like${likesCount === 1
+                                                            ? ""
+                                                            : "s"}
+                                                        `}
+                                                  </button>
+                                                </form>
+                                              `;
 
                                             if (
                                               res.locals.enrollment
@@ -6826,7 +6821,7 @@ export default (app: Courselore): void => {
                                               res.locals.conversation.type !==
                                                 "chat"
                                             )
-                                              content.push(html`
+                                              messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
@@ -6881,12 +6876,12 @@ export default (app: Courselore): void => {
                                                   ${message.readings.length.toString()}
                                                   Views
                                                 </button>
-                                              `);
+                                              `;
 
-                                            return content.length === 0
-                                              ? html``
-                                              : html`
+                                            return messageShowFooter !== html``
+                                              ? html`
                                                   <div
+                                                    key="message--show--footer"
                                                     css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
@@ -6902,9 +6897,10 @@ export default (app: Courselore): void => {
                                                       row-gap: var(--space--1);
                                                     `)}"
                                                   >
-                                                    $${content}
+                                                    $${messageShowFooter}
                                                   </div>
-                                                `;
+                                                `
+                                              : html``;
                                           })()}
                                         </div>
 
@@ -6979,14 +6975,14 @@ export default (app: Courselore): void => {
                                                             >
                                                               <span
                                                                 onload="${javascript`
-                                                                    this.hidden = leafac.isAppleDevice;
-                                                                  `}"
+                                                                  this.hidden = leafac.isAppleDevice;
+                                                                `}"
                                                                 >Ctrl+Enter</span
                                                               ><span
                                                                 class="keyboard-shortcut--cluster"
                                                                 onload="${javascript`
-                                                                    this.hidden = !leafac.isAppleDevice;
-                                                                  `}"
+                                                                  this.hidden = !leafac.isAppleDevice;
+                                                                `}"
                                                                 ><i
                                                                   class="bi bi-command"
                                                                 ></i
