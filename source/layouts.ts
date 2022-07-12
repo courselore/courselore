@@ -495,7 +495,7 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               `;
 
-            if (process.env.NODE_ENV !== "production")
+            if (app.locals.options.environment !== "production")
               headerDemonstration += html`
                 <form
                   method="DELETE"
@@ -1132,7 +1132,7 @@ export default async (app: Courselore): Promise<void> => {
       }
     );
 
-  if (process.env.NODE_ENV !== "production")
+  if (app.locals.options.environment === "development")
     await fs.writeFile(
       new URL("../static/global.css", import.meta.url),
       processCSS(css`

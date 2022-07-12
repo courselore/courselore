@@ -113,7 +113,7 @@ export default (app: Courselore): void => {
             `${new Date().toISOString()}\tworker.sendEmail\tSUCCEEDED\t\t${
               sentMessageInfo.response ?? ""
             }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-              process.env.NODE_ENV !== "production"
+              app.locals.options.environment !== "production"
                 ? `\n${JSON.stringify(sentMessageInfo, undefined, 2)}`
                 : ``
             }`
@@ -133,7 +133,7 @@ export default (app: Courselore): void => {
             `${new Date().toISOString()}\tworker.sendEmail\tFAILED\t\t${
               error.response ?? ""
             }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-              process.env.NODE_ENV !== "production"
+              app.locals.options.environment !== "production"
                 ? `\n${JSON.stringify(error, undefined, 2)}`
                 : ``
             }`

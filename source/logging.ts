@@ -25,7 +25,8 @@ export default (app: Courselore): void => {
           }ms\t\t${Math.floor(
             Number(res.getHeader("Content-Length") ?? "0") / 1000
           )}kB\t\t${req.originalUrl}${
-            process.env.NODE_ENV !== "production" && req.method !== "GET"
+            app.locals.options.environment === "development" &&
+            req.method !== "GET"
               ? `\n${JSON.stringify(req.body, undefined, 2)}`
               : ``
           }`
