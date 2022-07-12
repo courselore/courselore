@@ -350,6 +350,7 @@ new Notification('Example');
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 - Dragging an image from another website and dropping it in the content editor results in a 422.
+- Dragging a folder from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
 ## Content Processor
