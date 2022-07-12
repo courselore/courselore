@@ -5546,7 +5546,7 @@ export default (app: Courselore): void => {
                                       >
                                         $${(() => {
                                           const actions = html`
-                                            <div>
+                                            <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
                                                 css="${res.locals.css(css`
@@ -6102,7 +6102,7 @@ export default (app: Courselore): void => {
                                             </div>
                                           `;
 
-                                          let headers = html``;
+                                          let header = html``;
 
                                           if (
                                             app.locals.helpers.mayEditMessage({
@@ -6114,7 +6114,7 @@ export default (app: Courselore): void => {
                                             res.locals.conversation.type ===
                                               "question"
                                           )
-                                            headers += html`
+                                            header += html`
                                               <form
                                                 method="PATCH"
                                                 action="https://${app.locals
@@ -6192,7 +6192,7 @@ export default (app: Courselore): void => {
                                               "question" &&
                                             message.answerAt !== null
                                           )
-                                            headers += html`
+                                            header += html`
                                               <div class="text--emerald">
                                                 <i
                                                   class="bi bi-patch-check-fill"
@@ -6219,7 +6219,7 @@ export default (app: Courselore): void => {
                                                     res.locals.enrollment.id
                                               );
 
-                                            headers += html`
+                                            header += html`
                                               <form
                                                 method="${isEndorsed
                                                   ? "DELETE"
@@ -6387,7 +6387,7 @@ export default (app: Courselore): void => {
                                                 .courseRole !== "staff") &&
                                             message.endorsements.length > 0
                                           )
-                                            headers += html`
+                                            header += html`
                                               <div
                                                 class="text--lime"
                                                 onload="${javascript`
@@ -6441,9 +6441,10 @@ export default (app: Courselore): void => {
                                             `;
 
                                           return html`
-                                            $${headers !== html``
+                                            $${header !== html``
                                               ? html`
                                                   <div
+                                                    key="message--header"
                                                     css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
@@ -6472,7 +6473,7 @@ export default (app: Courselore): void => {
                                                         }
                                                       `)}"
                                                     >
-                                                      $${headers}
+                                                      $${header}
                                                     </div>
                                                     $${actions}
                                                   </div>
@@ -6582,7 +6583,7 @@ export default (app: Courselore): void => {
                                                   : html``}
                                               </div>
 
-                                              $${headers === html``
+                                              $${header === html``
                                                 ? actions
                                                 : html``}
                                             </div>
