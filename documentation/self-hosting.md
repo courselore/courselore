@@ -83,6 +83,14 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 >
 > Refer to the [changelog](https://github.com/courselore/courselore/blob/main/documentation/changelog.md) for more information.
 
+> **Note:** You may be notified about new Courselore releases in the following ways:
+>
+> **GitHub Notifications:** Watch for releases in the [Courselore repository](https://github.com/courselore/courselore/) using the **Watch > Custom > Releases** option.
+>
+> **Atom Feed:** Subscribe to the [releases Atom feed](https://github.com/courselore/courselore/releases.atom).
+>
+> **Email:** Sign up to the [releases Atom feed](https://github.com/courselore/courselore/releases.atom) via services such as [Blogtrottr](https://blogtrottr.com/) or [IFTTT](https://ifttt.com).
+
 [Download the latest Courselore release for your platform](https://github.com/courselore/courselore/releases) and restart the server. For example, if you followed the examples from [§ Server Setup](#server-setup), you may do the following:
 
 ```console
