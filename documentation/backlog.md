@@ -2392,6 +2392,9 @@ $$
     - Piazza has LTI support (for identity only?).
 - User groups.
 - Newsletter.
+  - For system administrators, including updates & so forth.
+  - For educators, including news & so forth.
+  - For students?
 - Create Courselore Gravatar.
   - Use in npm.
 - Create accounts on:
