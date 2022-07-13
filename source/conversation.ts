@@ -3188,7 +3188,8 @@ export default (app: Courselore): void => {
                       <div
                         css="${res.locals.css(css`
                           display: flex;
-                          row-gap: var(--space--4);
+                          gap: var(--space--2);
+                          flex-direction: column;
                         `)}"
                       >
                         $${res.locals.tags.length === 0 &&
@@ -3206,12 +3207,13 @@ export default (app: Courselore): void => {
                               </a>
                             `
                           : html`
-                              <label
-                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
-                                css="${res.locals.css(css`
-                                  gap: var(--space--2);
-                                `)}"
-                                onload="${javascript`
+                              <div>
+                                <label
+                                  class="button button--tight button--tight--inline button--inline button--transparent secondary"
+                                  css="${res.locals.css(css`
+                                    gap: var(--space--2);
+                                  `)}"
+                                  onload="${javascript`
                                   (this.dropdown ??= tippy(this)).setProps({
                                     trigger: "click",
                                     interactive: true,
@@ -3273,10 +3275,11 @@ export default (app: Courselore): void => {
                                     )},
                                   });
                                 `}"
-                              >
-                                <i class="bi bi-plus-circle"></i>
-                                Add Tags
-                              </label>
+                                >
+                                  <i class="bi bi-plus-circle"></i>
+                                  Add Tags
+                                </label>
+                              </div>
                               <div
                                 css="${res.locals.css(css`
                                   display: flex;
