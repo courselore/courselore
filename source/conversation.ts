@@ -737,9 +737,20 @@ export default (app: Courselore): void => {
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
-                      gap: var(--space--1-5);
+                      align-items: baseline;
+                      gap: var(--space--2);
+                      flex-wrap: wrap;
                     `)}"
                   >
+                    <div
+                      class="strong secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--2xs);
+                        line-height: var(--line-height--2xs);
+                      `)}"
+                    >
+                      New:
+                    </div>
                     $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
@@ -754,8 +765,41 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--blue"
                           >
-                            <i class="bi bi-sticky-fill"></i>
-                            Post a Note
+                            $${app.locals.partials.conversationTypeIcon.note
+                              .fill}
+                            Note
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "question" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.question
+                              .regular}
+                            Question
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "chat" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.chat
+                              .regular}
+                            Chat
                           </a>
                         `
                       : html`
@@ -773,21 +817,41 @@ export default (app: Courselore): void => {
                           >
                             $${app.locals.partials.conversationTypeIcon.question
                               .fill}
-                            Ask a Question
+                            Question
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "note" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.note
+                              .regular}
+                            Note
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "chat" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.chat
+                              .regular}
+                            Chat
                           </a>
                         `}
-                    <a
-                      href="https://${app.locals.options.host}/courses/${res
-                        .locals.course
-                        .reference}/conversations/new${qs.stringify(
-                        { conversations: req.query.conversations },
-                        { addQueryPrefix: true }
-                      )}"
-                      class="button button--transparent"
-                    >
-                      <i class="bi bi-chat-left-text"></i>
-                      Start a New Conversation
-                    </a>
                   </div>
 
                   <hr class="separator" />
@@ -797,11 +861,21 @@ export default (app: Courselore): void => {
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
+                      align-items: baseline;
                       column-gap: var(--space--4);
                       row-gap: var(--space--2);
                       flex-wrap: wrap;
                     `)}"
                   >
+                    <div
+                      class="strong secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--2xs);
+                        line-height: var(--line-height--2xs);
+                      `)}"
+                    >
+                      Quick Filters:
+                    </div>
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
