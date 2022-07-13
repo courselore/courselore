@@ -111,6 +111,7 @@
   - Change the visualization of “types” a little more, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
+- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
 
 **Messages**
 
@@ -252,6 +253,7 @@ new Notification('Example');
 
 ## Granular Access Control
 
+- Only chats must have this feature, other kinds of conversation don’t necessarily need it.
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Chats with only a few people.
