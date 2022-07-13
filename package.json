@@ -24,7 +24,7 @@
     "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./distribution/binary.js ./configuration/development.mjs\"",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
-    "clean": "shx rm -rf ./distribution/"
+    "clean": "shx rm -rf ./distribution/ ./node_modules/ ./static/node_modules/"
   },
   "engines": {
     "node": ">=18"
