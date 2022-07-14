@@ -2912,12 +2912,8 @@ export default (app: Courselore): void => {
               method="POST"
               action="https://${app.locals.options.host}/courses/${res.locals
                 .course.reference}/conversations${qs.stringify(
-                {
-                  conversations: req.query.conversations,
-                },
-                {
-                  addQueryPrefix: true,
-                }
+                { conversations: req.query.conversations },
+                { addQueryPrefix: true }
               )}"
               novalidate
               css="${res.locals.css(css`
