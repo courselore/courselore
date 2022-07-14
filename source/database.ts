@@ -334,8 +334,8 @@ export default async (app: Courselore): Promise<void> => {
         (text: string): string =>
           text.replace(
             new RegExp(
-              `(?<=${escapeStringRegexp(
-                app.locals.options.baseURL
+              `(?<=https://${escapeStringRegexp(
+                app.locals.options.host
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi"
             ),
@@ -451,8 +451,8 @@ export default async (app: Courselore): Promise<void> => {
       ): string =>
         text.replace(
           new RegExp(
-            `(?<=${escapeStringRegexp(
-              app.locals.options.baseURL
+            `(?<=https://${escapeStringRegexp(
+              app.locals.options.host
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi"
           ),
@@ -778,22 +778,12 @@ export default async (app: Courselore): Promise<void> => {
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
     sql`
-      CREATE TABLE "configurations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "key" TEXT UNIQUE NOT NULL,
-        "value" TEXT NOT NULL
+      CREATE TABLE "administrationOptions" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+        "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
       );
 
-      INSERT INTO "configurations" ("key", "value") 
-      VALUES ('canCreateCourses', ${JSON.stringify("anyone")});
-
-      INSERT INTO "configurations" ("key", "value")
-      VALUES ('demonstrationAt', ${JSON.stringify(new Date().toISOString())});
-
-      INSERT INTO "configurations" ("key", "value")
-      VALUES ('administratorEmail', ${JSON.stringify(
-        "please-change-me@courselore.org"
-      )});        
+      INSERT INTO "administrationOptions" ("userSystemRolesWhoMayCreateCourses") VALUES ('all');
     `,
     () => {
       app.locals.database.execute(
@@ -805,7 +795,6 @@ export default async (app: Courselore): Promise<void> => {
             "reference" TEXT NOT NULL UNIQUE,
             "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
             "password" TEXT NOT NULL,
-            "systemRole" TEXT NOT NULL,
             "emailVerifiedAt" TEXT NULL,
             "name" TEXT NOT NULL,
             "nameSearch" TEXT NOT NULL,
@@ -813,6 +802,7 @@ export default async (app: Courselore): Promise<void> => {
             "avatarlessBackgroundColor" TEXT NOT NULL,
             "biographySource" TEXT NULL,
             "biographyPreprocessed" TEXT NULL,
+            "systemRole" TEXT NOT NULL,
             "emailNotificationsForAllMessagesAt" TEXT NULL,
             "emailNotificationsForMentionsAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
@@ -874,7 +864,6 @@ export default async (app: Courselore): Promise<void> => {
               "reference",
               "email",
               "password",
-              "systemRole",
               "emailVerifiedAt",
               "name",
               "nameSearch",
@@ -882,6 +871,7 @@ export default async (app: Courselore): Promise<void> => {
               "avatarlessBackgroundColor",
               "biographySource",
               "biographyPreprocessed",
+              "systemRole",
               "emailNotificationsForAllMessagesAt",
               "emailNotificationsForMentionsAt",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
@@ -895,7 +885,6 @@ export default async (app: Courselore): Promise<void> => {
               ${user.reference},
               ${user.email},
               ${user.password},
-              ${"none"},
               ${user.emailVerifiedAt},
               ${user.name},
               ${user.nameSearch},
@@ -903,6 +892,7 @@ export default async (app: Courselore): Promise<void> => {
               ${user.avatarlessBackgroundColor},
               ${user.biographySource},
               ${user.biographyPreprocessed},
+              ${"none"},
               ${user.emailNotificationsForAllMessagesAt},
               ${user.emailNotificationsForMentionsAt},
               ${
@@ -941,45 +931,41 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (users.length === 0) return;
-      await repl();
-      async function repl() {
-        const answer = (
+      while (true) {
+        const user = (
           await prompts({
             type: "autocomplete",
-            name: "answer",
+            name: "output",
             message:
-              "Courselore 4.0.0 introduced an administrative interface and the notion of system administrators. Courselore now requires at least one user to be an administrator. Select a user to be the first administrator. If the person you want to select as the first administrator does not have an account, downgrade to before version 4.0.0, create the new account, then restart the upgrade process.",
+              "Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please select a user to become the first administrator.",
             choices: users.map((user) => ({
               title: `${user.name} <${user.email}>`,
               value: user,
             })),
           })
-        ).answer;
-        const confirmation = (
-          await prompts({
-            type: "confirm",
-            name: "confirmation",
-            message: `${answer.name} <${answer.email}> will be the first administrator. Is this correct?`,
-            initial: true,
-          })
-        ).confirmation;
-        if (!confirmation) {
-          await repl();
-          return;
-        }
+        ).output;
+        if (
+          !(
+            await prompts({
+              type: "confirm",
+              name: "output",
+              message: `${user.name} <${user.email}> will become the first administrator. Is this correct?`,
+              initial: true,
+            })
+          ).output
+        )
+          continue;
         app.locals.database.run(
           sql`
-            UPDATE "users"
-            SET "systemRole" = 'administrator'
-            WHERE "id" = ${answer.id}
+            UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
           `
         );
         await prompts({
           type: "text",
-          name: "finish",
-          message:
-            "The first administrator was set successfully. Press enter to continue...",
+          name: "output",
+          message: `${user.name} <${user.email}> has become the first administrator. Press enter to continue...`,
         });
+        break;
       }
     }
   );

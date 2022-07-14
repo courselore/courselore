@@ -27,11 +27,11 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 
   app.locals.options.cookies = (() => {
-    const baseURL = new URL(app.locals.options.baseURL);
+    const url = new URL(`https://${app.locals.options.host}`);
     return {
-      domain: baseURL.hostname,
+      domain: url.hostname,
       httpOnly: true,
-      path: baseURL.pathname,
+      path: url.pathname,
       sameSite: "lax",
       secure: true,
     };
@@ -56,7 +56,7 @@ export default (app: Courselore): void => {
     })
   );
 
-  if (app.locals.options.liveReload)
+  if (app.locals.options.environment === "development")
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {

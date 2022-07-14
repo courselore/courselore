@@ -15,7 +15,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/sign-in${qs.stringify(
+        `https://${app.locals.options.host}/sign-in${qs.stringify(
           {
             redirect: req.originalUrl,
           },
@@ -35,7 +35,7 @@ export default (app: Courselore): void => {
       )
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${req.query.redirect}`
+          `https://${app.locals.options.host}${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({
@@ -51,7 +51,7 @@ export default (app: Courselore): void => {
               If you think there should be something here, please contact your
               course staff or the system administrator at
               <a
-                href="${app.locals.partials.reportIssueHref()}"
+                href="${app.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
                 >${app.locals.options.administratorEmail}</a
@@ -92,7 +92,7 @@ export default (app: Courselore): void => {
                   If the issue persists, please report to the system
                   administrator at
                   <a
-                    href="${app.locals.partials.reportIssueHref()}"
+                    href="${app.locals.partials.reportIssueHref}"
                     target="_blank"
                     class="link"
                     >${app.locals.options.administratorEmail}</a
@@ -104,7 +104,7 @@ export default (app: Courselore): void => {
                   This is an issue in Courselore, please report to the system
                   administrator at
                   <a
-                    href="${app.locals.partials.reportIssueHref()}"
+                    href="${app.locals.partials.reportIssueHref}"
                     target="_blank"
                     class="link"
                     >${app.locals.options.administratorEmail}</a

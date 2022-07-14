@@ -5,7 +5,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
-      } started at ${app.locals.options.baseURL}`
+      } started at https://${app.locals.options.host}`
     );
   });
   app.enable("trust proxy");
@@ -25,7 +25,8 @@ export default (app: Courselore): void => {
           }ms\t\t${Math.floor(
             Number(res.getHeader("Content-Length") ?? "0") / 1000
           )}kB\t\t${req.originalUrl}${
-            process.env.NODE_ENV !== "production" && req.method !== "GET"
+            app.locals.options.environment === "development" &&
+            req.method !== "GET"
               ? `\n${JSON.stringify(req.body, undefined, 2)}`
               : ``
           }`
@@ -39,7 +40,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
-      } stopped at ${app.locals.options.baseURL}`
+      } stopped at https://${app.locals.options.host}`
     );
   });
 };

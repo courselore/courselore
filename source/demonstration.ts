@@ -9,7 +9,6 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   userAvatarlessBackgroundColors,
@@ -30,15 +29,9 @@ export type DemonstrationHandler = express.RequestHandler<
 >;
 
 export default (app: Courselore): void => {
-  app.locals.handlers.demonstration = asyncHandler(async (req, res, next) => {
-    if (!app.locals.options.demonstration) return next();
-    const includeAdmins =
-      app.locals.database.get<{ count: number }>(
-        sql`
-          SELECT COUNT(*) AS "count"
-          FROM "users"
-        `
-      )!.count === 0 || res.locals.user?.systemRole === "administrator";
+  if (!app.locals.options.demonstration) return;
+
+  app.locals.handlers.demonstration = asyncHandler(async (req, res) => {
     const password = await argon2.hash("courselore", app.locals.options.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
     const users = lodash.times(151, (userIndex) => {
@@ -58,103 +51,99 @@ export default (app: Courselore): void => {
         name: string;
       }>(
         sql`
-              INSERT INTO "users" (
-                "createdAt",
-                "lastSeenOnlineAt",
-                "reference",
-                "email",
-                "password",
-                "systemRole",
-                "emailVerifiedAt",
-                "name",
-                "nameSearch",
-                "avatar",
-                "avatarlessBackgroundColor",
-                "biographySource",
-                "biographyPreprocessed",
-                "emailNotificationsForAllMessagesAt",
-                "emailNotificationsForMentionsAt",
-                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                "emailNotificationsForMessagesInConversationsYouStartedAt",
-                "emailNotificationsDigestsFrequency"
-              )
-              VALUES (
-                ${new Date().toISOString()},
-                ${new Date(
-                  Date.now() -
-                    (Math.random() < 0.5
-                      ? 0
-                      : lodash.random(0, 5 * 60 * 60 * 1000))
-                ).toISOString()},
-                ${cryptoRandomString({ length: 20, type: "numeric" })},
-                ${`${slugify(name)}--${cryptoRandomString({
-                  length: 5,
-                  type: "numeric",
-                })}@courselore.org`},
-                ${password},
-                ${
-                  !includeAdmins
-                    ? "none"
-                    : userIndex === 0 || Math.random() < 0.1
-                    ? "administrator"
-                    : Math.random() < 0.3
-                    ? "staff"
-                    : "none"
-                },
-                ${new Date().toISOString()},
-                ${name},
-                ${html`${name}`},
-                ${
-                  Math.random() < 0.6
-                    ? `${
-                        app.locals.options.baseURL
-                      }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
-                    : null
-                },
-                ${lodash.sample(userAvatarlessBackgroundColors)},
-                ${biographySource},
-                ${
-                  app.locals.partials.content({
-                    req,
-                    res,
-                    type: "source",
-                    content: biographySource,
-                  }).preprocessed
-                },
-                ${
-                  isEmailNotificationsForMentions &&
-                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-                  isEmailNotificationsForMessagesInConversationsYouStarted &&
-                  Math.random() < 0.3
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  isEmailNotificationsForMentions
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  isEmailNotificationsForMessagesInConversationsYouStarted
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  (isEmailNotificationsForMentions ||
-                    isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-                    isEmailNotificationsForMessagesInConversationsYouStarted) &&
-                  Math.random() < 0.9
-                    ? lodash.sample(userEmailNotificationsDigestsFrequencies)
-                    : null
-                }
-              )
-              RETURNING *
-            `
+          INSERT INTO "users" (
+            "createdAt",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "nameSearch",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "systemRole",
+            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt",
+            "emailNotificationsDigestsFrequency"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date(
+              Date.now() -
+                (Math.random() < 0.5 ? 0 : lodash.random(0, 5 * 60 * 60 * 1000))
+            ).toISOString()},
+            ${cryptoRandomString({ length: 20, type: "numeric" })},
+            ${`${slugify(name)}--${cryptoRandomString({
+              length: 5,
+              type: "numeric",
+            })}@courselore.org`},
+            ${password},
+            ${new Date().toISOString()},
+            ${name},
+            ${html`${name}`},
+            ${
+              Math.random() < 0.6
+                ? `https://${
+                    app.locals.options.host
+                  }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                : null
+            },
+            ${lodash.sample(userAvatarlessBackgroundColors)},
+            ${biographySource},
+            ${
+              app.locals.partials.content({
+                req,
+                res,
+                type: "source",
+                content: biographySource,
+              }).preprocessed
+            },
+            ${
+              app.locals.options.host === app.locals.options.tryHost
+                ? "none"
+                : userIndex === 0 || Math.random() < 0.1
+                ? "administrator"
+                : Math.random() < 0.3
+                ? "staff"
+                : "none"
+            },
+            ${
+              isEmailNotificationsForMentions &&
+              isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+              isEmailNotificationsForMessagesInConversationsYouStarted &&
+              Math.random() < 0.3
+                ? new Date().toISOString()
+                : null
+            },
+            ${
+              isEmailNotificationsForMentions ? new Date().toISOString() : null
+            },
+            ${
+              isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                ? new Date().toISOString()
+                : null
+            },
+            ${
+              isEmailNotificationsForMessagesInConversationsYouStarted
+                ? new Date().toISOString()
+                : null
+            },
+            ${
+              (isEmailNotificationsForMentions ||
+                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+                isEmailNotificationsForMessagesInConversationsYouStarted) &&
+              Math.random() < 0.9
+                ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                : null
+            }
+          )
+          RETURNING *
+        `
       )!;
     });
     const demonstrationUser = res.locals.user ?? users.shift()!;
@@ -623,7 +612,7 @@ export default (app: Courselore): void => {
         password is “courselore”.
       `,
     });
-    res.redirect(303, app.locals.options.baseURL);
+    res.redirect(303, `https://${app.locals.options.host}`);
   });
 
   app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(
@@ -637,41 +626,4 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => app.locals.handlers.demonstration(req, res, next)
   );
-
-  if (process.env.NODE_ENV !== "production")
-    app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/turn-off",
-      (req, res, next) => {
-        res.send(
-          app.locals.layouts.box({
-            req,
-            res,
-            head: html`
-              <title>
-                Thanks for Trying! · Courselore · Communication Platform for
-                Education
-              </title>
-            `,
-            body: html`
-              <p class="strong">Thanks for trying Courselore!</p>
-              <p>
-                Next steps:
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
-                  class="link"
-                  >Learn how to install Courselore on your own server</a
-                >
-                or
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
-                  class="link"
-                  >learn how to setup for development</a
-                >.
-              </p>
-            `,
-          })
-        );
-        process.exit(0);
-      }
-    );
 };

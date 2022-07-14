@@ -191,11 +191,15 @@ export default async (app: Courselore): Promise<void> => {
       for (const element of contentElement.querySelectorAll("img")) {
         element.setAttribute("loading", "lazy");
         if (
-          !element.getAttribute("src")?.startsWith(app.locals.options.baseURL)
+          !element
+            .getAttribute("src")
+            ?.startsWith(`https://${app.locals.options.host}`)
         )
           element.setAttribute(
             "src",
-            `${app.locals.options.baseURL}/content/image-proxy${qs.stringify(
+            `https://${
+              app.locals.options.host
+            }/content/image-proxy${qs.stringify(
               { url: element.getAttribute("src") },
               { addQueryPrefix: true }
             )}`
@@ -244,15 +248,15 @@ export default async (app: Courselore): Promise<void> => {
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
         if (
           (!href.startsWith("#") &&
-            !href.startsWith(app.locals.options.baseURL)) ||
-          href.startsWith(`${app.locals.options.baseURL}/files/`)
+            !href.startsWith(`https://${app.locals.options.host}`)) ||
+          href.startsWith(`https://${app.locals.options.host}/files/`)
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "onload",
             javascript`
               ${
-                href.startsWith(`${app.locals.options.baseURL}/files/`)
+                href.startsWith(`https://${app.locals.options.host}/files/`)
                   ? javascript``
                   : javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -288,8 +292,8 @@ export default async (app: Courselore): Promise<void> => {
             if (href !== element.textContent!.trim()) continue;
             const match = href.match(
               new RegExp(
-                `^${escapeStringRegexp(
-                  app.locals.options.baseURL
+                `^https://${escapeStringRegexp(
+                  app.locals.options.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -460,7 +464,7 @@ export default async (app: Courselore): Promise<void> => {
                       if (messageReference === undefined)
                         return html`<a
                           class="reference"
-                          href="${app.locals.options.baseURL}/courses/${res
+                          href="https://${app.locals.options.host}/courses/${res
                             .locals.course!
                             .reference}/conversations/${conversation.reference}${qs.stringify(
                             {
@@ -481,8 +485,8 @@ export default async (app: Courselore): Promise<void> => {
                       if (message === undefined) return match;
                       return html`<a
                         class="reference"
-                        href="${app.locals.options.baseURL}/courses/${res.locals
-                          .course!
+                        href="https://${app.locals.options.host}/courses/${res
+                          .locals.course!
                           .reference}/conversations/${conversation.reference}${qs.stringify(
                           {
                             conversations: req.query.conversations,
@@ -510,8 +514,8 @@ export default async (app: Courselore): Promise<void> => {
             if (href === null) continue;
             const hrefMatch = href.match(
               new RegExp(
-                `^${escapeStringRegexp(
-                  app.locals.options.baseURL
+                `^https://${escapeStringRegexp(
+                  app.locals.options.host
                 )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
@@ -769,7 +773,7 @@ export default async (app: Courselore): Promise<void> => {
                         preview,
                         await (
                           await fetch(${JSON.stringify(
-                            `${app.locals.options.baseURL}${
+                            `https://${app.locals.options.host}${
                               res.locals.course === undefined
                                 ? ""
                                 : `/courses/${res.locals.course.reference}`
@@ -1739,7 +1743,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
-                      `${app.locals.options.baseURL}/content-editor/attachments`
+                      `https://${app.locals.options.host}/content-editor/attachments`
                     )}, {
                       method: "POST",
                       body,
@@ -2011,7 +2015,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `${app.locals.options.baseURL}/courses/${
+                              `https://${app.locals.options.host}/courses/${
                                 res.locals.course.reference
                               }/${
                                 res.locals.conversation !== undefined
@@ -2024,7 +2028,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${app.locals.options.host}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
@@ -2330,62 +2334,57 @@ ${contentSource}</textarea
       )
         return next("validation");
 
-      const results: HTML[] = [];
+      let results = html``;
 
       if (req.query.search.match(/^\d+$/) !== null)
-        results.push(
-          ...app.locals.database
-            .all<{ reference: string }>(
-              sql`
-                SELECT "conversations"."reference"
-                FROM "conversations"
-                JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-                                                      "conversationsReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                                        req.query.search,
-                                                        { prefix: true }
-                                                      )}
-                WHERE "conversations"."course" = ${res.locals.course.id}
-                ORDER BY "conversations"."id" ASC
-                LIMIT 5
-              `
-            )
-            .flatMap((conversationRow) => {
-              const conversation = app.locals.helpers.getConversation({
-                req,
-                res,
-                conversationReference: conversationRow.reference,
-              });
-              return conversation === undefined
-                ? []
-                : [
-                    html`
-                      <button
-                        key="refer-to-conversation-or-message-search--${conversation.reference}"
-                        type="button"
-                        class="dropdown--menu--item button button--transparent"
-                        onload="${javascript`
-                          this.onclick = () => {
-                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                              conversation.reference
-                            )});
-                          };
-                        `}"
-                      >
-                        <span>
-                          <span class="secondary">
-                            $${app.locals.helpers.highlightSearchResult(
-                              `#${conversation.reference}`,
-                              `#${req.query.search}`,
-                              { prefix: true }
-                            )}
-                          </span>
-                          <span class="strong">${conversation.title}</span>
-                        </span>
-                      </button>
-                    `,
-                  ];
-            })
-        );
+        for (const conversationRow of app.locals.database.all<{
+          reference: string;
+        }>(
+          sql`
+            SELECT "conversations"."reference"
+            FROM "conversations"
+            JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
+                                                  "conversationsReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                    req.query.search,
+                                                    { prefix: true }
+                                                  )}
+            WHERE "conversations"."course" = ${res.locals.course.id}
+            ORDER BY "conversations"."id" ASC
+            LIMIT 5
+          `
+        )) {
+          const conversation = app.locals.helpers.getConversation({
+            req,
+            res,
+            conversationReference: conversationRow.reference,
+          });
+          if (conversation === undefined) continue;
+          results += html`
+            <button
+              key="refer-to-conversation-or-message-search--${conversation.reference}"
+              type="button"
+              class="dropdown--menu--item button button--transparent"
+              onload="${javascript`
+                this.onclick = () => {
+                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                    conversation.reference
+                  )});
+                };
+              `}"
+            >
+              <span>
+                <span class="secondary">
+                  $${app.locals.helpers.highlightSearchResult(
+                    `#${conversation.reference}`,
+                    `#${req.query.search}`,
+                    { prefix: true }
+                  )}
+                </span>
+                <span class="strong">${conversation.title}</span>
+              </span>
+            </button>
+          `;
+        }
 
       const messageReferenceSearchMatch =
         req.query.search.match(/^(\d+)\/(\d*)$/);
@@ -2398,336 +2397,304 @@ ${contentSource}</textarea
           conversationReference,
         });
         if (conversation !== undefined) {
-          results.push(
-            ...app.locals.database
-              .all<{ reference: string }>(
-                sql`
-                  SELECT "messages"."reference"
-                  FROM "messages"
-                  $${
-                    messageReferenceSearch === ""
-                      ? sql``
-                      : sql`
-                        JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                                                         "messagesReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                                           messageReferenceSearch,
-                                                           { prefix: true }
-                                                         )}
-                      `
-                  }
-                  WHERE "messages"."conversation" = ${conversation.id}
-                  ORDER BY "messages"."id" ASC
-                  LIMIT 5
-                `
-              )
-              .flatMap((messageRow) => {
-                const message = app.locals.helpers.getMessage({
-                  req,
-                  res,
-                  conversation,
-                  messageReference: messageRow.reference,
-                });
-                return message === undefined
-                  ? []
-                  : [
-                      html`
-                        <button
-                          key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          onload="${javascript`
-                            this.onclick = () => {
-                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                                `${conversation.reference}/${message.reference}`
-                              )});
-                            };
-                          `}"
-                        >
-                          <div>
-                            <div>
-                              <span class="secondary">
-                                $${app.locals.helpers.highlightSearchResult(
-                                  `#${conversation.reference}/${message.reference}`,
-                                  `#${req.query.search}`,
-                                  { prefix: true }
-                                )}
-                              </span>
-                              <span class="strong">
-                                ${conversation.title}
-                              </span>
-                            </div>
-                            <div class="secondary">
-                              $${lodash.truncate(message.contentSearch, {
-                                length: 100,
-                                separator: /\W/,
-                              })}
-                            </div>
-                          </div>
-                        </button>
-                      `,
-                    ];
-              })
-          );
-          results.push(
-            html`
+          for (const messageRow of app.locals.database.all<{
+            reference: string;
+          }>(
+            sql`
+              SELECT "messages"."reference"
+              FROM "messages"
+              $${
+                messageReferenceSearch === ""
+                  ? sql``
+                  : sql`
+                    JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
+                                                      "messagesReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                        messageReferenceSearch,
+                                                        { prefix: true }
+                                                      )}
+                  `
+              }
+              WHERE "messages"."conversation" = ${conversation.id}
+              ORDER BY "messages"."id" ASC
+              LIMIT 5
+            `
+          )) {
+            const message = app.locals.helpers.getMessage({
+              req,
+              res,
+              conversation,
+              messageReference: messageRow.reference,
+            });
+            if (message === undefined) continue;
+            results += html`
               <button
+                key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
                 onload="${javascript`
                   this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                      conversation.reference
+                      `${conversation.reference}/${message.reference}`
                     )});
                   };
                 `}"
               >
-                <span>
-                  <span class="secondary">
-                    $${app.locals.helpers.highlightSearchResult(
-                      `#${conversation.reference}`,
-                      `#${conversationReference}`
-                    )}
-                  </span>
-                  <span class="strong">${conversation.title}</span>
-                </span>
+                <div>
+                  <div>
+                    <span class="secondary">
+                      $${app.locals.helpers.highlightSearchResult(
+                        `#${conversation.reference}/${message.reference}`,
+                        `#${req.query.search}`,
+                        { prefix: true }
+                      )}
+                    </span>
+                    <span class="strong">${conversation.title}</span>
+                  </div>
+                  <div class="secondary">
+                    $${lodash.truncate(message.contentSearch, {
+                      length: 100,
+                      separator: /\W/,
+                    })}
+                  </div>
+                </div>
               </button>
-            `
-          );
+            `;
+          }
+          results += html`
+            <button
+              type="button"
+              class="dropdown--menu--item button button--transparent"
+              onload="${javascript`
+                this.onclick = () => {
+                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                    conversation.reference
+                  )});
+                };
+              `}"
+            >
+              <span>
+                <span class="secondary">
+                  $${app.locals.helpers.highlightSearchResult(
+                    `#${conversation.reference}`,
+                    `#${conversationReference}`
+                  )}
+                </span>
+                <span class="strong">${conversation.title}</span>
+              </span>
+            </button>
+          `;
         }
       }
 
-      results.push(
-        ...app.locals.database
-          .all<{
-            reference: string;
-            conversationTitleSearchResultHighlight: string;
-          }>(
-            sql`
-              SELECT "conversations"."reference",
-                     highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
-              FROM "conversations"
-              JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-                                                      "conversationsTitleSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                                        req.query.search,
-                                                        { prefix: true }
-                                                      )}
-              WHERE "conversations"."course" = ${res.locals.course.id}
-              ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
-                       "conversations"."id" DESC
-              LIMIT 5
-            `
-          )
-          .flatMap((conversationRow) => {
-            const conversation = app.locals.helpers.getConversation({
-              req,
-              res,
-              conversationReference: conversationRow.reference,
-            });
-            return conversation === undefined
-              ? []
-              : [
-                  html`
-                    <button
-                      key="refer-to-conversation-or-message-search--${conversation.reference}"
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                            conversation.reference
-                          )});
-                        };
-                      `}"
-                    >
-                      <span>
-                        <span class="secondary">
-                          #${conversation.reference}
-                        </span>
-                        <span class="strong">
-                          $${conversationRow.conversationTitleSearchResultHighlight}
-                        </span>
-                      </span>
-                    </button>
-                  `,
-                ];
-          })
-      );
+      for (const conversationRow of app.locals.database.all<{
+        reference: string;
+        conversationTitleSearchResultHighlight: string;
+      }>(
+        sql`
+          SELECT "conversations"."reference",
+                  highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
+          FROM "conversations"
+          JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
+                                                  "conversationsTitleSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                    req.query.search,
+                                                    { prefix: true }
+                                                  )}
+          WHERE "conversations"."course" = ${res.locals.course.id}
+          ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
+                    "conversations"."id" DESC
+          LIMIT 5
+        `
+      )) {
+        const conversation = app.locals.helpers.getConversation({
+          req,
+          res,
+          conversationReference: conversationRow.reference,
+        });
+        if (conversation === undefined) continue;
+        results += html`
+          <button
+            key="refer-to-conversation-or-message-search--${conversation.reference}"
+            type="button"
+            class="dropdown--menu--item button button--transparent"
+            onload="${javascript`
+              this.onclick = () => {
+                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                  conversation.reference
+                )});
+              };
+            `}"
+          >
+            <span>
+              <span class="secondary">#${conversation.reference}</span>
+              <span class="strong">
+                $${conversationRow.conversationTitleSearchResultHighlight}
+              </span>
+            </span>
+          </button>
+        `;
+      }
 
-      results.push(
-        ...app.locals.database
-          .all<{
-            messageReference: string;
-            conversationReference: string;
-            messageAuthorUserNameSearchResultHighlight: string;
-          }>(
-            sql`
-              SELECT "messages"."reference" AS "messageReference",
-                     "conversations"."reference" AS "conversationReference",
-                     highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
-              FROM "messages"
-              JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
-              JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-                                             "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                               req.query.search,
-                                               { prefix: true }
-                                             )}
-              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                      "conversations"."course" = ${
-                                        res.locals.course.id
-                                      }
-              $${
-                res.locals.enrollment.courseRole === "staff"
-                  ? sql``
-                  : sql`
-                      WHERE (
-                       "messages"."anonymousAt" IS NULL OR
-                       "messages"."authorEnrollment" = ${res.locals.enrollment.id}
-                     )
-                   `
-              }
-              ORDER BY "usersNameSearchIndex"."rank" ASC,
-                       "messages"."id" DESC
-              LIMIT 5
-            `
-          )
-          .flatMap((messageRow) => {
-            const conversation = app.locals.helpers.getConversation({
-              req,
-              res,
-              conversationReference: messageRow.conversationReference,
-            });
-            if (conversation === undefined) return [];
-            const message = app.locals.helpers.getMessage({
-              req,
-              res,
-              conversation,
-              messageReference: messageRow.messageReference,
-            });
-            return message === undefined
-              ? []
-              : [
-                  html`
-                    <button
-                      key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                            `${conversation.reference}/${message.reference}`
-                          )});
-                        };
-                      `}"
-                    >
-                      <div>
-                        <div>
-                          <span class="secondary">
-                            #${conversation.reference}/${message.reference}
-                          </span>
-                          <span class="strong">${conversation.title}</span>
-                        </div>
-                        <div class="secondary">
-                          <div>
-                            $${app.locals.partials.user({
-                              req,
-                              res,
-                              enrollment: message.authorEnrollment,
-                              name: messageRow.messageAuthorUserNameSearchResultHighlight,
-                              tooltip: false,
-                            })}
-                          </div>
-                          <div>
-                            $${lodash.truncate(message.contentSearch, {
-                              length: 100,
-                              separator: /\W/,
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  `,
-                ];
-          })
-      );
+      for (const messageRow of app.locals.database.all<{
+        messageReference: string;
+        conversationReference: string;
+        messageAuthorUserNameSearchResultHighlight: string;
+      }>(
+        sql`
+          SELECT "messages"."reference" AS "messageReference",
+                  "conversations"."reference" AS "conversationReference",
+                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
+          FROM "messages"
+          JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
+          JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
+                                          "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                            req.query.search,
+                                            { prefix: true }
+                                          )}
+          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                  "conversations"."course" = ${
+                                    res.locals.course.id
+                                  }
+          $${
+            res.locals.enrollment.courseRole === "staff"
+              ? sql``
+              : sql`
+                  WHERE (
+                    "messages"."anonymousAt" IS NULL OR
+                    "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                  )
+                `
+          }
+          ORDER BY "usersNameSearchIndex"."rank" ASC,
+                    "messages"."id" DESC
+          LIMIT 5
+        `
+      )) {
+        const conversation = app.locals.helpers.getConversation({
+          req,
+          res,
+          conversationReference: messageRow.conversationReference,
+        });
+        if (conversation === undefined) continue;
+        const message = app.locals.helpers.getMessage({
+          req,
+          res,
+          conversation,
+          messageReference: messageRow.messageReference,
+        });
+        if (message === undefined) continue;
+        results += html`
+          <button
+            key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
+            type="button"
+            class="dropdown--menu--item button button--transparent"
+            onload="${javascript`
+              this.onclick = () => {
+                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                  `${conversation.reference}/${message.reference}`
+                )});
+              };
+            `}"
+          >
+            <div>
+              <div>
+                <span class="secondary">
+                  #${conversation.reference}/${message.reference}
+                </span>
+                <span class="strong">${conversation.title}</span>
+              </div>
+              <div class="secondary">
+                <div>
+                  $${app.locals.partials.user({
+                    req,
+                    res,
+                    enrollment: message.authorEnrollment,
+                    name: messageRow.messageAuthorUserNameSearchResultHighlight,
+                    tooltip: false,
+                  })}
+                </div>
+                <div>
+                  $${lodash.truncate(message.contentSearch, {
+                    length: 100,
+                    separator: /\W/,
+                  })}
+                </div>
+              </div>
+            </div>
+          </button>
+        `;
+      }
 
-      results.push(
-        ...app.locals.database
-          .all<{
-            messageReference: string;
-            conversationReference: string;
-            messageContentSearchResultSnippet: string;
-          }>(
-            sql`
-              SELECT "messages"."reference" AS "messageReference",
-                     "conversations"."reference" AS "conversationReference",
-                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
-              FROM "messages"
-              JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-                                                   "messagesContentSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                                     req.query.search,
-                                                     { prefix: true }
-                                                   )}
-              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                      "conversations"."course" = ${
-                                        res.locals.course.id
-                                      }
-              ORDER BY "messagesContentSearchIndex"."rank" ASC,
-                       "messages"."id" DESC
-              LIMIT 5
-            `
-          )
-          .flatMap((messageRow) => {
-            const conversation = app.locals.helpers.getConversation({
-              req,
-              res,
-              conversationReference: messageRow.conversationReference,
-            });
-            if (conversation === undefined) return [];
-            const message = app.locals.helpers.getMessage({
-              req,
-              res,
-              conversation,
-              messageReference: messageRow.messageReference,
-            });
-            return message === undefined
-              ? []
-              : [
-                  html`
-                    <button
-                      key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                            `${conversation.reference}/${message.reference}`
-                          )});
-                        };
-                      `}"
-                    >
-                      <div>
-                        <div>
-                          <span class="secondary">
-                            #${conversation.reference}/${message.reference}
-                          </span>
-                          <span class="strong">${conversation.title}</span>
-                        </div>
-                        <div class="secondary">
-                          $${messageRow.messageContentSearchResultSnippet}
-                        </div>
-                      </div>
-                    </button>
-                  `,
-                ];
-          })
-      );
+      for (const messageRow of app.locals.database.all<{
+        messageReference: string;
+        conversationReference: string;
+        messageContentSearchResultSnippet: string;
+      }>(
+        sql`
+          SELECT "messages"."reference" AS "messageReference",
+                  "conversations"."reference" AS "conversationReference",
+                  snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
+          FROM "messages"
+          JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
+                                                "messagesContentSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                  req.query.search,
+                                                  { prefix: true }
+                                                )}
+          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                  "conversations"."course" = ${
+                                    res.locals.course.id
+                                  }
+          ORDER BY "messagesContentSearchIndex"."rank" ASC,
+                    "messages"."id" DESC
+          LIMIT 5
+        `
+      )) {
+        const conversation = app.locals.helpers.getConversation({
+          req,
+          res,
+          conversationReference: messageRow.conversationReference,
+        });
+        if (conversation === undefined) continue;
+        const message = app.locals.helpers.getMessage({
+          req,
+          res,
+          conversation,
+          messageReference: messageRow.messageReference,
+        });
+        if (message === undefined) continue;
+        results += html`
+          <button
+            key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
+            type="button"
+            class="dropdown--menu--item button button--transparent"
+            onload="${javascript`
+              this.onclick = () => {
+                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                  `${conversation.reference}/${message.reference}`
+                )});
+              };
+            `}"
+          >
+            <div>
+              <div>
+                <span class="secondary">
+                  #${conversation.reference}/${message.reference}
+                </span>
+                <span class="strong">${conversation.title}</span>
+              </div>
+              <div class="secondary">
+                $${messageRow.messageContentSearchResultSnippet}
+              </div>
+            </div>
+          </button>
+        `;
+      }
 
       res.send(
         app.locals.layouts.partial({
           req,
           res,
           body: html`
-            $${results.length === 0
+            $${results === html``
               ? html`
                   <div class="dropdown--menu--item secondary">
                     No conversation or message found.
@@ -2748,17 +2715,18 @@ ${contentSource}</textarea
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
         : [req.files.attachments];
+      if (attachments.length === 0) return next("validation");
       for (const attachment of attachments) {
         if (attachment.truncated)
           return res
             .status(413)
             .send(
-              `<!-- Failed to upload: Attachments must be smaller than 10MB. -->`
+              `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`
             );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("validation");
       }
-      const attachmentsContentSources: string[] = [];
+      let attachmentsContentSources = ``;
       for (const attachment of attachments) {
         const folder = cryptoRandomString({
           length: 20,
@@ -2770,8 +2738,8 @@ ${contentSource}</textarea
             `files/${folder}/${attachment.name}`
           )
         );
-        const href = `${
-          app.locals.options.baseURL
+        const href = `https://${
+          app.locals.options.host
         }/files/${folder}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
@@ -2780,11 +2748,9 @@ ${contentSource}</textarea
             if (metadata.width === undefined) throw new Error();
             const maximumWidth = 1152; /* var(--width--6xl) */
             if (metadata.width <= maximumWidth) {
-              attachmentsContentSources.push(
-                `[<img src="${href}" alt="${attachment.name}" width="${
-                  metadata.width / 2
-                }" />](${href})`
-              );
+              attachmentsContentSources += `[<img src="${href}" alt="${
+                attachment.name
+              }" width="${metadata.width / 2}" />](${href})\n\n`;
               continue;
             }
             const ext = path.extname(attachment.name);
@@ -2801,18 +2767,16 @@ ${contentSource}</textarea
                   `files/${folder}/${nameThumbnail}`
                 )
               );
-            attachmentsContentSources.push(
-              `[<img src="${
-                app.locals.options.baseURL
-              }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
-                attachment.name
-              }" width="${maximumWidth / 2}" />](${href})`
-            );
+            attachmentsContentSources += `[<img src="https://${
+              app.locals.options.host
+            }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
+              attachment.name
+            }" width="${maximumWidth / 2}" />](${href})\n\n`;
             continue;
           } catch {}
-        attachmentsContentSources.push(`[${attachment.name}](${href})`);
+        attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
-      res.send(` ${attachmentsContentSources.join("\n\n")} `);
+      res.send(`\n\n${attachmentsContentSources}`);
     })
   );
 

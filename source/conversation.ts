@@ -652,8 +652,8 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <a
-                    href="${app.locals.options.baseURL}/courses/${res.locals
-                      .course.reference}"
+                    href="https://${app.locals.options.host}/courses/${res
+                      .locals.course.reference}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>
@@ -737,14 +737,25 @@ export default (app: Courselore): void => {
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
-                      gap: var(--space--1-5);
+                      align-items: baseline;
+                      gap: var(--space--2);
+                      flex-wrap: wrap;
                     `)}"
                   >
+                    <div
+                      class="strong secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--2xs);
+                        line-height: var(--line-height--2xs);
+                      `)}"
+                    >
+                      New:
+                    </div>
                     $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
-                            href="${app.locals.options.baseURL}/courses/${res
-                              .locals.course
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
                               .reference}/conversations/new${qs.stringify(
                               {
                                 conversations: req.query.conversations,
@@ -754,14 +765,47 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--blue"
                           >
-                            <i class="bi bi-sticky-fill"></i>
-                            Post a Note
+                            $${app.locals.partials.conversationTypeIcon.note
+                              .fill}
+                            Note
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "question" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.question
+                              .regular}
+                            Question
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "chat" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.chat
+                              .regular}
+                            Chat
                           </a>
                         `
                       : html`
                           <a
-                            href="${app.locals.options.baseURL}/courses/${res
-                              .locals.course
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
                               .reference}/conversations/new${qs.stringify(
                               {
                                 conversations: req.query.conversations,
@@ -773,20 +817,41 @@ export default (app: Courselore): void => {
                           >
                             $${app.locals.partials.conversationTypeIcon.question
                               .fill}
-                            Ask a Question
+                            Question
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "note" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.note
+                              .regular}
+                            Note
+                          </a>
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "chat" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.chat
+                              .regular}
+                            Chat
                           </a>
                         `}
-                    <a
-                      href="${app.locals.options.baseURL}/courses/${res.locals
-                        .course.reference}/conversations/new${qs.stringify(
-                        { conversations: req.query.conversations },
-                        { addQueryPrefix: true }
-                      )}"
-                      class="button button--transparent"
-                    >
-                      <i class="bi bi-chat-left-text"></i>
-                      Start a New Conversation
-                    </a>
                   </div>
 
                   <hr class="separator" />
@@ -796,11 +861,21 @@ export default (app: Courselore): void => {
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
+                      align-items: baseline;
                       column-gap: var(--space--4);
                       row-gap: var(--space--2);
                       flex-wrap: wrap;
                     `)}"
                   >
+                    <div
+                      class="strong secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--2xs);
+                        line-height: var(--line-height--2xs);
+                      `)}"
+                    >
+                      Quick Filters:
+                    </div>
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
@@ -810,8 +885,8 @@ export default (app: Courselore): void => {
                     )
                       ? html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -834,8 +909,8 @@ export default (app: Courselore): void => {
                         `
                       : html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
@@ -862,8 +937,8 @@ export default (app: Courselore): void => {
                           )
                             ? html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}${req.path}${qs.stringify(
+                                  href="https://${app.locals.options
+                                    .host}${req.path}${qs.stringify(
                                     {
                                       conversations: {
                                         filters: {
@@ -888,8 +963,8 @@ export default (app: Courselore): void => {
                               `
                             : html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}${req.path}${qs.stringify(
+                                  href="https://${app.locals.options
+                                    .host}${req.path}${qs.stringify(
                                     {
                                       messages: req.query.messages,
                                       newConversation:
@@ -916,8 +991,8 @@ export default (app: Courselore): void => {
                           )
                             ? html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}${req.path}${qs.stringify(
+                                  href="https://${app.locals.options
+                                    .host}${req.path}${qs.stringify(
                                     {
                                       conversations: {
                                         filters: {
@@ -941,8 +1016,8 @@ export default (app: Courselore): void => {
                               `
                             : html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}${req.path}${qs.stringify(
+                                  href="https://${app.locals.options
+                                    .host}${req.path}${qs.stringify(
                                     {
                                       messages: req.query.messages,
                                       newConversation:
@@ -968,8 +1043,8 @@ export default (app: Courselore): void => {
                     )
                       ? html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -992,8 +1067,8 @@ export default (app: Courselore): void => {
                         `
                       : html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
@@ -1017,8 +1092,8 @@ export default (app: Courselore): void => {
                     )
                       ? html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -1040,8 +1115,8 @@ export default (app: Courselore): void => {
                         `
                       : html`
                           <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
@@ -1154,8 +1229,8 @@ export default (app: Courselore): void => {
                         ? html`
                             <form
                               method="POST"
-                              action="${app.locals.options
-                                .baseURL}/courses/${res.locals.course
+                              action="https://${app.locals.options
+                                .host}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
                                 { redirect: req.originalUrl },
                                 { addQueryPrefix: true }
@@ -1180,8 +1255,8 @@ export default (app: Courselore): void => {
                     <form
                       key="search-and-filters--form"
                       method="GET"
-                      action="${app.locals.options
-                        .baseURL}${req.path}${qs.stringify(
+                      action="https://${app.locals.options
+                        .host}${req.path}${qs.stringify(
                         {
                           messages: req.query.messages,
                           newConversation: req.query.newConversation,
@@ -1238,8 +1313,8 @@ export default (app: Courselore): void => {
                         $${search !== undefined
                           ? html`
                               <a
-                                href="${app.locals.options
-                                  .baseURL}${req.path}${qs.stringify(
+                                href="https://${app.locals.options
+                                  .host}${req.path}${qs.stringify(
                                   {
                                     conversations: {
                                       filters: req.query.conversations?.filters,
@@ -1768,8 +1843,8 @@ export default (app: Courselore): void => {
                           $${Object.keys(filters).length > 0
                             ? html`
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}${req.path}${qs.stringify(
+                                  href="https://${app.locals.options
+                                    .host}${req.path}${qs.stringify(
                                     {
                                       conversations: { search },
                                       messages: req.query.messages,
@@ -1882,7 +1957,7 @@ export default (app: Courselore): void => {
                                 ? javascript`
                                     window.setTimeout(() => {
                                       if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+                                        `https://${app.locals.options.host}/courses/${res.locals.course.reference}`
                                       )})) return;
                                       this.querySelector('[key="conversation--${
                                         res.locals.conversation.reference
@@ -1900,8 +1975,8 @@ export default (app: Courselore): void => {
                               return html`
                                 <a
                                   key="conversation--${conversation.reference}"
-                                  href="${app.locals.options
-                                    .baseURL}/courses/${res.locals.course
+                                  href="https://${app.locals.options
+                                    .host}/courses/${res.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     {
                                       conversations: req.query.conversations,
@@ -2718,7 +2793,7 @@ export default (app: Courselore): void => {
         );
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${
+        `https://${app.locals.options.host}${
           typeof req.query.redirect === "string" &&
           req.query.redirect.trim() !== ""
             ? req.query.redirect
@@ -2807,8 +2882,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/conversations${qs.stringify(
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/conversations${qs.stringify(
                 {
                   conversations: req.query.conversations,
                 },
@@ -3172,8 +3247,8 @@ export default (app: Courselore): void => {
                                 `)}"
                               >
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}/courses/${res.locals.course
+                                  href="https://${app.locals.options
+                                    .host}/courses/${res.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
                                   class="button button--tight button--tight--inline button--transparent secondary"
@@ -3196,8 +3271,8 @@ export default (app: Courselore): void => {
                         res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <a
-                                href="${app.locals.options
-                                  .baseURL}/courses/${res.locals.course
+                                href="https://${app.locals.options
+                                  .host}/courses/${res.locals.course
                                   .reference}/settings/tags"
                                 target="_blank"
                                 class="button button--tight button--tight--inline button--inline button--transparent secondary"
@@ -3555,8 +3630,8 @@ export default (app: Courselore): void => {
                       <button
                         class="link text--rose"
                         formmethod="DELETE"
-                        formaction="${app.locals.options.baseURL}/courses/${res
-                          .locals.course
+                        formaction="https://${app.locals.options
+                          .host}/courses/${res.locals.course
                           .reference}/conversations/new${qs.stringify(
                           {
                             conversations: req.query.conversations,
@@ -3747,7 +3822,7 @@ export default (app: Courselore): void => {
           );
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/courses/${
+          `https://${app.locals.options.host}/courses/${
             res.locals.course.reference
           }/conversations/new${qs.stringify(
             {
@@ -3951,7 +4026,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${conversationRow.reference}${qs.stringify(
           {
@@ -4001,7 +4076,7 @@ export default (app: Courselore): void => {
       );
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/new${qs.stringify(
           {
@@ -4307,8 +4382,8 @@ export default (app: Courselore): void => {
                                                 <form
                                                   key="conversation-type--${conversationType}"
                                                   method="PATCH"
-                                                  action="${app.locals.options
-                                                    .baseURL}/courses/${res
+                                                  action="https://${app.locals
+                                                    .options.host}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
@@ -4395,8 +4470,8 @@ export default (app: Courselore): void => {
                                 ? html`
                                     <form
                                       method="PATCH"
-                                      action="${app.locals.options
-                                        .baseURL}/courses/${res.locals.course
+                                      action="https://${app.locals.options
+                                        .host}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation.reference}${qs.stringify(
                                         {
@@ -4495,8 +4570,8 @@ export default (app: Courselore): void => {
                           ? html`
                               <form
                                 method="PATCH"
-                                action="${app.locals.options
-                                  .baseURL}/courses/${res.locals.course
+                                action="https://${app.locals.options
+                                  .host}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}${qs.stringify(
                                   {
@@ -4590,9 +4665,8 @@ export default (app: Courselore): void => {
                                       html`
                                         <form
                                           method="PATCH"
-                                          action="${app.locals.options
-                                            .baseURL}/courses/${res.locals
-                                            .course
+                                          action="https://${app.locals.options
+                                            .host}/courses/${res.locals.course
                                             .reference}/conversations/${res
                                             .locals.conversation
                                             .reference}${qs.stringify(
@@ -4750,7 +4824,7 @@ export default (app: Courselore): void => {
                                         });
 
                                         this.onclick = async () => {
-                                          await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                          await navigator.clipboard.writeText("https://${app.locals.options.host}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                                           this.copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           this.copied.hide();
@@ -4795,9 +4869,9 @@ export default (app: Courselore): void => {
                                                     html`
                                                       <form
                                                         method="DELETE"
-                                                        action="${app.locals
-                                                          .options
-                                                          .baseURL}/courses/${res
+                                                        action="https://${app
+                                                          .locals.options
+                                                          .host}/courses/${res
                                                           .locals.course
                                                           .reference}/conversations/${res
                                                           .locals.conversation
@@ -4896,9 +4970,10 @@ export default (app: Courselore): void => {
                       ? html`
                           <form
                             method="PATCH"
-                            action="${app.locals.options.baseURL}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation.reference}${qs.stringify(
+                            action="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/${res.locals
+                              .conversation.reference}${qs.stringify(
                               {
                                 conversations: req.query.conversations,
                                 messages: req.query.messages,
@@ -5006,6 +5081,10 @@ export default (app: Courselore): void => {
                                           <button
                                             class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
                                             css="${res.locals.css(css`
+                                              color: var(--color--teal--600);
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--teal--500);
+                                              }
                                               text-align: left;
                                             `)}"
                                             onload="${javascript`
@@ -5046,9 +5125,9 @@ export default (app: Courselore): void => {
                                               key="tagging--${tagging.tag
                                                 .reference}"
                                               method="DELETE"
-                                              action="${app.locals.options
-                                                .baseURL}/courses/${res.locals
-                                                .course
+                                              action="https://${app.locals
+                                                .options.host}/courses/${res
+                                                .locals.course
                                                 .reference}/conversations/${res
                                                 .locals.conversation
                                                 .reference}/taggings${qs.stringify(
@@ -5153,9 +5232,9 @@ export default (app: Courselore): void => {
                                                             <form
                                                               key="tag--${tag.reference}"
                                                               method="POST"
-                                                              action="${app
+                                                              action="https://${app
                                                                 .locals.options
-                                                                .baseURL}/courses/${res
+                                                                .host}/courses/${res
                                                                 .locals.course
                                                                 .reference}/conversations/${res
                                                                 .locals
@@ -5218,9 +5297,9 @@ export default (app: Courselore): void => {
                                                         .courseRole === "staff"
                                                         ? html`
                                                             <a
-                                                              href="${app.locals
-                                                                .options
-                                                                .baseURL}/courses/${res
+                                                              href="https://${app
+                                                                .locals.options
+                                                                .host}/courses/${res
                                                                 .locals.course
                                                                 .reference}/settings/tags"
                                                               target="_blank"
@@ -5399,8 +5478,8 @@ export default (app: Courselore): void => {
                                       `)}"
                                     >
                                       <a
-                                        href="${app.locals.options
-                                          .baseURL}/courses/${res.locals.course
+                                        href="https://${app.locals.options
+                                          .host}/courses/${res.locals.course
                                           .reference}/conversations/${res.locals
                                           .conversation
                                           .reference}${qs.stringify(
@@ -5645,7 +5724,7 @@ export default (app: Courselore): void => {
                                       >
                                         $${(() => {
                                           const actions = html`
-                                            <div>
+                                            <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
                                                 css="${res.locals.css(css`
@@ -5707,10 +5786,10 @@ export default (app: Courselore): void => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="${app
+                                                                  action="https://${app
                                                                     .locals
                                                                     .options
-                                                                    .baseURL}/courses/${res
+                                                                    .host}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -5795,11 +5874,11 @@ export default (app: Courselore): void => {
                                                                       interactive: true,
                                                                       onShow: async () => {
                                                                         this.tooltip.setContent(loading);
-                                                                        leafac.loadPartial(content, await (await fetch("${
+                                                                        leafac.loadPartial(content, await (await fetch("https://${
                                                                           app
                                                                             .locals
                                                                             .options
-                                                                            .baseURL
+                                                                            .host
                                                                         }/courses/${
                                                                     res.locals
                                                                       .course
@@ -5886,10 +5965,10 @@ export default (app: Courselore): void => {
                                                               });
 
                                                               this.onclick = async () => {
-                                                                await navigator.clipboard.writeText("${
+                                                                await navigator.clipboard.writeText("https://${
                                                                   app.locals
                                                                     .options
-                                                                    .baseURL
+                                                                    .host
                                                                 }/courses/${
                                                               res.locals.course
                                                                 .reference
@@ -5939,10 +6018,10 @@ export default (app: Courselore): void => {
                                                             ? html`
                                                                 <form
                                                                   method="PATCH"
-                                                                  action="${app
+                                                                  action="https://${app
                                                                     .locals
                                                                     .options
-                                                                    .baseURL}/courses/${res
+                                                                    .host}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -6092,10 +6171,10 @@ export default (app: Courselore): void => {
                                                                           html`
                                                                             <form
                                                                               method="DELETE"
-                                                                              action="${app
+                                                                              action="https://${app
                                                                                 .locals
                                                                                 .options
-                                                                                .baseURL}/courses/${res
+                                                                                .host}/courses/${res
                                                                                 .locals
                                                                                 .course
                                                                                 .reference}/conversations/${res
@@ -6201,7 +6280,7 @@ export default (app: Courselore): void => {
                                             </div>
                                           `;
 
-                                          const headers: HTML[] = [];
+                                          let header = html``;
 
                                           if (
                                             app.locals.helpers.mayEditMessage({
@@ -6213,12 +6292,12 @@ export default (app: Courselore): void => {
                                             res.locals.conversation.type ===
                                               "question"
                                           )
-                                            headers.push(html`
+                                            header += html`
                                               <form
                                                 method="PATCH"
-                                                action="${app.locals.options
-                                                  .baseURL}/courses/${res.locals
-                                                  .course
+                                                action="https://${app.locals
+                                                  .options.host}/courses/${res
+                                                  .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
@@ -6284,21 +6363,21 @@ export default (app: Courselore): void => {
                                                       </button>
                                                     `}
                                               </form>
-                                            `);
+                                            `;
                                           else if (
                                             message.reference !== "1" &&
                                             res.locals.conversation.type ===
                                               "question" &&
                                             message.answerAt !== null
                                           )
-                                            headers.push(html`
+                                            header += html`
                                               <div class="text--emerald">
                                                 <i
                                                   class="bi bi-patch-check-fill"
                                                 ></i>
                                                 Answer
                                               </div>
-                                            `);
+                                            `;
 
                                           if (
                                             app.locals.helpers.mayEndorseMessage(
@@ -6318,14 +6397,14 @@ export default (app: Courselore): void => {
                                                     res.locals.enrollment.id
                                               );
 
-                                            headers.push(html`
+                                            header += html`
                                               <form
                                                 method="${isEndorsed
                                                   ? "DELETE"
                                                   : "POST"}"
-                                                action="${app.locals.options
-                                                  .baseURL}/courses/${res.locals
-                                                  .course
+                                                action="https://${app.locals
+                                                  .options.host}/courses/${res
+                                                  .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}/endorsements${qs.stringify(
@@ -6476,7 +6555,7 @@ export default (app: Courselore): void => {
                                                       </button>
                                                     `}
                                               </form>
-                                            `);
+                                            `;
                                           } else if (
                                             res.locals.conversation.type ===
                                               "question" &&
@@ -6486,7 +6565,7 @@ export default (app: Courselore): void => {
                                                 .courseRole !== "staff") &&
                                             message.endorsements.length > 0
                                           )
-                                            headers.push(html`
+                                            header += html`
                                               <div
                                                 class="text--lime"
                                                 onload="${javascript`
@@ -6537,13 +6616,13 @@ export default (app: Courselore): void => {
                                                   ? ""
                                                   : "s"}
                                               </div>
-                                            `);
+                                            `;
 
                                           return html`
-                                            $${headers.length === 0
-                                              ? html``
-                                              : html`
+                                            $${header !== html``
+                                              ? html`
                                                   <div
+                                                    key="message--header"
                                                     css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
@@ -6572,11 +6651,12 @@ export default (app: Courselore): void => {
                                                         }
                                                       `)}"
                                                     >
-                                                      $${headers}
+                                                      $${header}
                                                     </div>
                                                     $${actions}
                                                   </div>
-                                                `}
+                                                `
+                                              : html``}
 
                                             <div
                                               css="${res.locals.css(css`
@@ -6681,7 +6761,7 @@ export default (app: Courselore): void => {
                                                   : html``}
                                               </div>
 
-                                              $${headers.length === 0
+                                              $${header === html``
                                                 ? actions
                                                 : html``}
                                             </div>
@@ -6831,7 +6911,7 @@ export default (app: Courselore): void => {
                                           </div>
 
                                           $${(() => {
-                                            const content: HTML[] = [];
+                                            let messageShowFooter = html``;
 
                                             const isLiked = message.likes.some(
                                               (like) =>
@@ -6847,76 +6927,72 @@ export default (app: Courselore): void => {
                                                 "chat" ||
                                               likesCount > 0
                                             )
-                                              content.push(
-                                                html`
-                                                  <form
-                                                    method="${isLiked
-                                                      ? "DELETE"
-                                                      : "POST"}"
-                                                    action="${app.locals.options
-                                                      .baseURL}/courses/${res
-                                                      .locals.course
-                                                      .reference}/conversations/${res
-                                                      .locals.conversation
-                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          req.query
-                                                            .conversations,
-                                                        messages:
-                                                          req.query.messages,
-                                                      },
-                                                      {
-                                                        addQueryPrefix: true,
-                                                      }
-                                                    )}"
+                                              messageShowFooter += html`
+                                                <form
+                                                  method="${isLiked
+                                                    ? "DELETE"
+                                                    : "POST"}"
+                                                  action="https://${app.locals
+                                                    .options.host}/courses/${res
+                                                    .locals.course
+                                                    .reference}/conversations/${res
+                                                    .locals.conversation
+                                                    .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        req.query.conversations,
+                                                      messages:
+                                                        req.query.messages,
+                                                    },
+                                                    {
+                                                      addQueryPrefix: true,
+                                                    }
+                                                  )}"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <button
+                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                      ? "text--blue"
+                                                      : ""}"
+                                                    $${likesCount === 0
+                                                      ? html``
+                                                      : html`
+                                                          onload="${javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: ${JSON.stringify(
+                                                                isLiked
+                                                                  ? "Remove Like"
+                                                                  : "Like"
+                                                              )},
+                                                            });
+                                                          `}"
+                                                        `}
                                                   >
-                                                    <input
-                                                      type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
-                                                    <button
-                                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                        ? "text--blue"
-                                                        : ""}"
-                                                      $${likesCount === 0
-                                                        ? html``
-                                                        : html`
-                                                            onload="${javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                touch: false,
-                                                                content: ${JSON.stringify(
-                                                                  isLiked
-                                                                    ? "Remove Like"
-                                                                    : "Like"
-                                                                )},
-                                                              });
-                                                            `}"
-                                                          `}
-                                                    >
-                                                      $${isLiked
-                                                        ? html`
-                                                            <i
-                                                              class="bi bi-hand-thumbs-up-fill"
-                                                            ></i>
-                                                          `
-                                                        : html`<i
-                                                            class="bi bi-hand-thumbs-up"
-                                                          ></i>`}
-                                                      $${likesCount === 0
-                                                        ? html`Like`
-                                                        : html`
-                                                            ${likesCount.toString()}
-                                                            Like${likesCount ===
-                                                            1
-                                                              ? ""
-                                                              : "s"}
-                                                          `}
-                                                    </button>
-                                                  </form>
-                                                `
-                                              );
+                                                    $${isLiked
+                                                      ? html`
+                                                          <i
+                                                            class="bi bi-hand-thumbs-up-fill"
+                                                          ></i>
+                                                        `
+                                                      : html`<i
+                                                          class="bi bi-hand-thumbs-up"
+                                                        ></i>`}
+                                                    $${likesCount === 0
+                                                      ? html`Like`
+                                                      : html`
+                                                          ${likesCount.toString()}
+                                                          Like${likesCount === 1
+                                                            ? ""
+                                                            : "s"}
+                                                        `}
+                                                  </button>
+                                                </form>
+                                              `;
 
                                             if (
                                               res.locals.enrollment
@@ -6924,7 +7000,7 @@ export default (app: Courselore): void => {
                                               res.locals.conversation.type !==
                                                 "chat"
                                             )
-                                              content.push(html`
+                                              messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
@@ -6959,9 +7035,9 @@ export default (app: Courselore): void => {
                                                       interactive: true,
                                                       onShow: async () => {
                                                         this.tooltip.setContent(loading);
-                                                        leafac.loadPartial(content, await (await fetch("${
+                                                        leafac.loadPartial(content, await (await fetch("https://${
                                                           app.locals.options
-                                                            .baseURL
+                                                            .host
                                                         }/courses/${
                                                     res.locals.course.reference
                                                   }/conversations/${
@@ -6979,12 +7055,12 @@ export default (app: Courselore): void => {
                                                   ${message.readings.length.toString()}
                                                   Views
                                                 </button>
-                                              `);
+                                              `;
 
-                                            return content.length === 0
-                                              ? html``
-                                              : html`
+                                            return messageShowFooter !== html``
+                                              ? html`
                                                   <div
+                                                    key="message--show--footer"
                                                     css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
@@ -7000,9 +7076,10 @@ export default (app: Courselore): void => {
                                                       row-gap: var(--space--1);
                                                     `)}"
                                                   >
-                                                    $${content}
+                                                    $${messageShowFooter}
                                                   </div>
-                                                `;
+                                                `
+                                              : html``;
                                           })()}
                                         </div>
 
@@ -7014,9 +7091,9 @@ export default (app: Courselore): void => {
                                           ? html`
                                               <form
                                                 method="PATCH"
-                                                action="${app.locals.options
-                                                  .baseURL}/courses/${res.locals
-                                                  .course
+                                                action="https://${app.locals
+                                                  .options.host}/courses/${res
+                                                  .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
@@ -7077,14 +7154,14 @@ export default (app: Courselore): void => {
                                                             >
                                                               <span
                                                                 onload="${javascript`
-                                                                    this.hidden = leafac.isAppleDevice;
-                                                                  `}"
+                                                                  this.hidden = leafac.isAppleDevice;
+                                                                `}"
                                                                 >Ctrl+Enter</span
                                                               ><span
                                                                 class="keyboard-shortcut--cluster"
                                                                 onload="${javascript`
-                                                                    this.hidden = !leafac.isAppleDevice;
-                                                                  `}"
+                                                                  this.hidden = !leafac.isAppleDevice;
+                                                                `}"
                                                                 ><i
                                                                   class="bi bi-command"
                                                                 ></i
@@ -7142,8 +7219,8 @@ export default (app: Courselore): void => {
                                       `)}"
                                     >
                                       <a
-                                        href="${app.locals.options
-                                          .baseURL}/courses/${res.locals.course
+                                        href="https://${app.locals.options
+                                          .host}/courses/${res.locals.course
                                           .reference}/conversations/${res.locals
                                           .conversation
                                           .reference}${qs.stringify(
@@ -7321,7 +7398,7 @@ export default (app: Courselore): void => {
 
               <form
                 method="POST"
-                action="${app.locals.options.baseURL}/courses/${res.locals
+                action="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/conversations/${res.locals.conversation
                   .reference}/messages${qs.stringify(
                   {
@@ -7769,7 +7846,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -7811,7 +7888,7 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }${qs.stringify(
           {
@@ -7869,7 +7946,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -7923,7 +8000,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {

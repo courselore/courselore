@@ -1,142 +1,47 @@
+// COURSELORE CONFIGURATION
+
 export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
-  const execa = (await courseloreImport("execa")).execa;
-  const nodemailer = (await courseloreImport("nodemailer")).default;
-  const caddyfile = (await courseloreImport("dedent")).default;
-  const courselore = (await courseloreImport("./index.js")).default;
-  const baseURL = "https://YOUR-DOMAIN.EDU";
-  const administratorEmail = "administrator@YOUR-DOMAIN.EDU";
-  const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
-  if (process.argv[3] === undefined) {
-    const subprocesses = [
-      execa(
-        process.argv[0],
-        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
-        {
-          preferLocal: true,
-          stdio: "inherit",
-          env: { NODE_ENV: "production" },
-        }
-      ),
-      execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
-        preferLocal: true,
-        stdout: "ignore",
-        stderr: "ignore",
-        input: caddyfile`
-          {
-            admin off
-            email ${administratorEmail}
-          }
+  (await courseloreImport("../configuration/base.mjs")).default({
+    courseloreImport,
+    courseloreImportMetaURL,
 
-          (common) {
-            header Cache-Control no-cache
-            header Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
-            header Cross-Origin-Embedder-Policy require-corp
-            header Cross-Origin-Opener-Policy same-origin
-            header Cross-Origin-Resource-Policy same-origin
-            header Referrer-Policy no-referrer
-            header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-            header X-Content-Type-Options nosniff
-            header Origin-Agent-Cluster "?1"
-            header X-DNS-Prefetch-Control off
-            header X-Frame-Options DENY
-            header X-Permitted-Cross-Domain-Policies none
-            header -Server
-            header -X-Powered-By
-            header X-XSS-Protection 0
-            header Permissions-Policy "interest-cohort=()"
-            encode zstd gzip
-          }
+    // The main host through which people may access Courselore.
+    host: "YOUR-DOMAIN.EDU",
 
-          http://${
-            new URL(baseURL).host
-          }, http://WWW.YOUR-DOMAIN.EDU, http://AND-OTHER-DOMAINS-YOU-WOULD-LIKE-TO-REDIRECT {
-            import common
-            redir https://{host}{uri} 308
-            handle_errors {
-              import common
-            }
-          }
+    // This email address serves two purposes:
+    // 1. If something goes wrong in Courselore, we direct users to report the issue to this email.
+    // 2. We provide this email to the certificate authority providing a TLS certificate (necessary for httpS to work).
+    //    In case something goes wrong with the certificate, they’ll contact you at this address.
+    administratorEmail: "ADMINISTRATOR@YOUR-DOMAIN.EDU",
 
-          https://WWW.YOUR-DOMAIN.EDU, https://AND-OTHER-DOMAINS-YOU-WOULD-LIKE-TO-REDIRECT {
-            import common
-            redir ${baseURL}{uri} 307
-            handle_errors {
-              import common
-            }
-          }
+    // The path to the folder in which Courselore stores data: the database & the files uploaded by users (avatars & attachments in messages, for example).
+    // With the line below this is a folder called ‘data/’ relative to this configuration file.
+    // In most cases this is good enough, but you may want to change this to an absolute path, for example, ‘/home/courselore/data/’.
+    dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
 
-          ${new URL(baseURL).origin} {
-            route ${new URL(`${baseURL}/*`).pathname} {
-              import common
-              route {
-                root * ${path.resolve(
-                  url.fileURLToPath(
-                    new URL("../static/", courseloreImportMetaURL)
-                  )
-                )}
-                @file_exists file
-                file_server @file_exists
-              }
-              route /files/* {
-                root * ${dataDirectory}
-                @file_exists file
-                route @file_exists {
-                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-                  header @must_be_downloaded Content-Disposition attachment
-                  @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
-                  header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
-                  file_server
-                }
-              }
-              reverse_proxy 127.0.0.1:4000
-            }
-            handle_errors {
-              import common
-            }
-          }
-        `,
-      }),
-    ];
-    for (const subprocess of subprocesses)
-      subprocess.once("close", () => {
-        for (const otherSubprocess of subprocesses)
-          if (subprocess !== otherSubprocess) otherSubprocess.cancel();
-      });
-  } else {
-    const app = await courselore({
-      dataDirectory,
-      baseURL,
-      sendMail: (() => {
-        const transporter = nodemailer.createTransport(
-          {
-            host: "YOUR-EMAIL-DELIVERY-SERVICE, FOR EXAMPLE, email-smtp.us-east-1.amazonaws.com",
-            auth: {
-              user: "YOUR-USERNAME-AT-YOUR-EMAIL-DELIVERY-SERVICE",
-              pass: "YOUR-PASSWORD-AT-YOUR-EMAIL-DELIVERY-SERVICE",
-            },
-          },
-          { from: `"Courselore" <${administratorEmail}>` }
-        );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
-      })(),
-    });
-    const server = app.listen(4000, "127.0.0.1");
-    app.emit("listen");
-    for (const signal of [
-      "exit",
-      "SIGHUP",
-      "SIGINT",
-      "SIGQUIT",
-      "SIGUSR2",
-      "SIGTERM",
-      "SIGBREAK",
-    ])
-      process.once(signal, () => {
-        server.close();
-        app.emit("close");
-        if (signal.startsWith("SIG")) process.kill(process.pid, signal);
-      });
-  }
+    // Configuration to reach the email server which delivers email on Courselore’s behalf.
+    // Use the format of arguments accepted by Nodemailer’s ‘.createTransport()’. See https://nodemailer.com/smtp/.
+    sendMail: {
+      options: {
+        host: "SMTP.YOUR-DOMAIN.EDU",
+        auth: {
+          user: "SMTP USERNAME",
+          pass: "SMTP PASSWORD",
+        },
+      },
+      defaults: {
+        from: {
+          name: "Courselore",
+          address: "FROM@YOUR-DOMAIN.EDU",
+        },
+      },
+    },
+
+    // [OPTIONAL] Other hosts you’d like to redirect to this Courselore installation.
+    // alternativeHosts: ["WWW.YOUR-DOMAIN.EDU", "..."],
+
+    // [OPTIONAL, BUT RECOMMENDED] See https://hstspreload.org/ to learn more.
+    // hstsPreload: true,
+  });
 };

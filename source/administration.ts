@@ -4,22 +4,28 @@ import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
-
 import {
   Courselore,
+  BaseMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export type CanCreateCourses = typeof canCreateCourseses[number];
-export const canCreateCourseses = [
-  "anyone",
+export interface AdministrationOptions {
+  userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+}
+
+export type UserSystemRolesWhoMayCreateCourses =
+  typeof userSystemRolesWhoMayCreateCourseses[number];
+export const userSystemRolesWhoMayCreateCourseses = [
+  "all",
   "staff-and-administrators",
   "administrators",
 ] as const;
 
 export type SystemRole = typeof systemRoles[number];
-export const systemRoles = ["administrator", "staff", "none"] as const;
+export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export type SystemRoleIconPartial = {
   [role in SystemRole]: {
@@ -38,16 +44,6 @@ export type IsAdministratorMiddleware = express.RequestHandler<
 export interface IsAdministratorMiddlewareLocals
   extends IsSignedInMiddlewareLocals {}
 
-export type CanCreateCoursesMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  CanCreateCoursesMiddlewareLocals
->[];
-export interface CanCreateCoursesMiddlewareLocals
-  extends IsSignedInMiddlewareLocals {}
-
 export type MayManageUserMiddleware = express.RequestHandler<
   { userReference: string },
   any,
@@ -63,7 +59,7 @@ export interface MayManageUserMiddlewareLocals
   };
 }
 
-export type AdministratorLayout = ({
+export type AdministrationLayout = ({
   req,
   res,
   head,
@@ -75,56 +71,36 @@ export type AdministratorLayout = ({
   body: HTML;
 }) => HTML;
 
+export type AdministrationNewsletterHandler = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+>;
+
 export default (app: Courselore): void => {
-  app.locals.options.canCreateCourses = JSON.parse(
-    app.locals.database.get<{
-      value: string;
-    }>(
+  app.locals.options = {
+    ...app.locals.options,
+    ...app.locals.database.get<{ [key: string]: any }>(
       sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'canCreateCourses'
+        SELECT * FROM "administrationOptions"
       `
-    )!.value
-  );
-
-  app.locals.options.demonstration =
-    JSON.parse(
-      app.locals.database.get<{
-        value: string;
-      }>(
-        sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'demonstrationAt'
-      `
-      )!.value
-    ) !== null;
-
-  app.locals.options.administratorEmail = JSON.parse(
-    app.locals.database.get<{
-      value: string;
-    }>(
-      sql`
-        SELECT "value"
-        FROM "configurations"
-        WHERE "key" = 'administratorEmail'
-      `
-    )!.value
-  );
+    )!,
+  };
 
   app.locals.partials.systemRoleIcon = {
-    administrator: {
-      regular: html`<i class="bi bi-tools"></i>`,
-      fill: html`<i class="bi bi-tools"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
     none: {
       regular: html`<i class="bi bi-dash-circle"></i>`,
       fill: html`<i class="bi bi-dash-circle-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-person-badge"></i>`,
+      fill: html`<i class="bi bi-person-badge-fill"></i>`,
+    },
+    administrator: {
+      regular: html`<i class="bi bi-pc-display-horizontal"></i>`,
+      fill: html`<i class="bi bi-pc-display-horizontal"></i>`,
     },
   };
 
@@ -136,81 +112,38 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.canCreateCourses = [
-    ...app.locals.middlewares.isSignedIn,
-    (req, res, next) => {
-      if (res.locals.canCreateCourses) return next();
-      next("route");
-    },
-  ];
-
-  app.locals.middlewares.mayManageUser = [
-    ...app.locals.middlewares.isAdministrator,
-    (req, res, next) => {
-      const managedUser = app.locals.database.get<{
-        id: number;
-      }>(
-        sql`
-          SELECT "id"
-          FROM "users"
-          WHERE "reference" = ${req.params.userReference}
-        `
-      );
-      if (managedUser === undefined) return next("route");
-      res.locals.managedUser = {
-        ...managedUser,
-        isSelf: managedUser.id === res.locals.user.id,
-      };
-      if (
-        res.locals.managedUser.isSelf &&
-        app.locals.database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count"
-            FROM "users"
-            WHERE "systemRole" = 'administrator'
-          `
-        )!.count === 1
-      )
-        return next("validation");
-      next();
-    },
-  ];
-
-  app.locals.layouts.administratorPanel = ({ req, res, head, body }) =>
+  app.locals.layouts.administration = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
       res,
       head,
       menuButton: html`
-        <i class="bi bi-tools"></i>
-        Administrator Panel
+        <i class="bi bi-pc-display-horizontal"></i>
+        Administration
       `,
       menu: html`
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/configuration"
+          href="https://${app.locals.options
+            .host}/administration/system-settings"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/configuration"
+            "/administration/system-settings"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
-          <i
-            class="bi ${req.path.endsWith("/administrator-panel/configuration")
-              ? "bi-gear-fill"
-              : "bi-gear"}"
-          ></i>
-          Configuration
+          <i class="bi bi-sliders"></i>
+          System Settings
         </a>
         <a
-          href="${app.locals.options.baseURL}/administrator-panel/users"
+          href="https://${app.locals.options.host}/administration/users"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administrator-panel/users"
+            "/administration/users"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administrator-panel/users")
+            class="bi ${req.path.endsWith("/administration/users")
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>
@@ -221,39 +154,39 @@ export default (app: Courselore): void => {
     });
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel",
+    "/administration",
     ...app.locals.middlewares.isAdministrator,
     (res, req) => {
       req.redirect(
         303,
-        `${app.locals.options.baseURL}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administration/system-settings`
       );
     }
   );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administrator-panel/configuration",
+    "/administration/system-settings",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       res.send(
-        app.locals.layouts.administratorPanel({
+        app.locals.layouts.administration({
           req,
           res,
-          head: html`<title>
-            Configuration · Administrator Panel · Courselore
-          </title>`,
+          head: html`
+            <title>System Settings · Administration · Courselore</title>
+          `,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
-              Administrator Panel ·
-              <i class="bi bi-gear"></i>
-              Configuration
+              <i class="bi bi-pc-display-horizontal"></i>
+              Administration ·
+              <i class="bi bi-sliders"></i>
+              System Settings
             </h2>
 
             <form
               method="PATCH"
-              action="${app.locals.options
-                .baseURL}/administrator-panel/configuration"
+              action="https://${app.locals.options
+                .host}/administration/system-settings"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -263,7 +196,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
-                <p class="label--text">Allow to Create Courses</p>
+                <p class="label--text">Users Who May Create Courses</p>
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -272,15 +205,16 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
-                      value="anyone"
+                      name="userSystemRolesWhoMayCreateCourses"
+                      value="all"
                       required
-                      $${app.locals.options.canCreateCourses === "anyone"
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses === "all"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    Anyone
+                    All
                   </label>
                 </div>
                 <div
@@ -291,16 +225,17 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
+                      name="userSystemRolesWhoMayCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${app.locals.options.canCreateCourses ===
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses ===
                       "staff-and-administrators"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    Staff & administrators
+                    Staff & Administrators
                   </label>
                 </div>
                 <div
@@ -311,11 +246,11 @@ export default (app: Courselore): void => {
                   <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
-                      name="canCreateCourses"
+                      name="userSystemRolesWhoMayCreateCourses"
                       value="administrators"
                       required
-                      $${app.locals.options.canCreateCourses ===
-                      "administrators"
+                      $${app.locals.options
+                        .userSystemRolesWhoMayCreateCourses === "administrators"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -324,43 +259,13 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
               </div>
-              <div
-                css="${res.locals.css(css`
-                  display: flex;
-                `)}"
-              >
-                <label class="button button--tight button--tight--inline">
-                  <input
-                    type="checkbox"
-                    name="demonstration"
-                    $${app.locals.options.demonstration
-                      ? html`checked`
-                      : html``}
-                    class="input--checkbox"
-                  />
-                  Run in demonstration mode
-                </label>
-              </div>
-              <label class="label">
-                <p class="label--text">Administrator Email</p>
-                <input
-                  type="email"
-                  name="administratorEmail"
-                  placeholder="you@educational-institution.edu"
-                  value="${app.locals.options.administratorEmail}"
-                  required
-                  class="input--text"
-                />
-              </label>
-
-              <hr class="separator" />
 
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Configuration
+                  Update System Settings
                 </button>
               </div>
             </form>
@@ -374,73 +279,43 @@ export default (app: Courselore): void => {
     {},
     any,
     {
-      canCreateCourses?: CanCreateCourses;
-      demonstration?: "on";
-      administratorEmail?: string;
+      userSystemRolesWhoMayCreateCourses?: UserSystemRolesWhoMayCreateCourses;
     },
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administrator-panel/configuration",
+    "/administration/system-settings",
     ...app.locals.middlewares.isAdministrator,
     (req, res, next) => {
       if (
-        typeof req.body.canCreateCourses !== "string" ||
-        !canCreateCourseses.includes(req.body.canCreateCourses) ||
-        ![undefined, "on"].includes(req.body.demonstration) ||
-        typeof req.body.administratorEmail !== "string" ||
-        req.body.administratorEmail.match(app.locals.helpers.emailRegExp) ===
-          null
+        typeof req.body.userSystemRolesWhoMayCreateCourses !== "string" ||
+        !userSystemRolesWhoMayCreateCourseses.includes(
+          req.body.userSystemRolesWhoMayCreateCourses
+        )
       )
         return next("validation");
 
-      app.locals.options.canCreateCourses = JSON.parse(
-        app.locals.database.get<{
-          value: string;
-        }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(req.body.canCreateCourses)}
-            WHERE "key" = 'canCreateCourses'
-            RETURNING *
-          `
-        )!.value
-      );
-
-      app.locals.options.demonstration = JSON.parse(
-        app.locals.database.get<{ value: string }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(
-              req.body.demonstration === "on" ? new Date().toISOString() : null
-            )}
-            WHERE "key" = 'demonstrationAt'
-            RETURNING *
-          `
-        )!.value
-      );
-
-      app.locals.options.administratorEmail = JSON.parse(
-        app.locals.database.get<{ value: string }>(
-          sql`
-            UPDATE "configurations"
-            SET "value" = ${JSON.stringify(req.body.administratorEmail)}
-            WHERE "key" = 'administratorEmail'
-            RETURNING *
-          `
-        )!.value
-      );
+      const administrationOptions = app.locals.database.get<{
+        [key: string]: any;
+      }>(
+        sql`
+          UPDATE "administrationOptions"
+          SET "userSystemRolesWhoMayCreateCourses" = ${req.body.userSystemRolesWhoMayCreateCourses}
+          RETURNING *
+        `
+      )!;
+      app.locals.options = { ...app.locals.options, ...administrationOptions };
 
       app.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
-        content: html`Configuration updated successfully.`,
+        content: html`System settings updated successfully.`,
       });
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/administrator-panel/configuration`
+        `https://${app.locals.options.host}/administration/system-settings`
       );
     }
   );
@@ -452,7 +327,7 @@ export default (app: Courselore): void => {
     {},
     IsAdministratorMiddlewareLocals
   >(
-    "/administrator-panel/users",
+    "/administration/users",
     ...app.locals.middlewares.isAdministrator,
     (req, res) => {
       const users = app.locals.database.all<{
@@ -479,24 +354,22 @@ export default (app: Courselore): void => {
                  "biographyPreprocessed",
                  "systemRole"
           FROM "users"
-          ORDER BY CASE "systemRole"
-                     WHEN 'administrator' THEN 0
-                     WHEN 'staff' THEN 1
-                     WHEN 'none' THEN 2
-                   END,
-                  "users"."name" ASC
+          ORDER BY "systemRole" = 'administrator' DESC,
+                   "systemRole" = 'staff' DESC,
+                   "systemRole" = 'none' DESC,
+                   "users"."name" ASC
         `
       );
 
       res.send(
-        app.locals.layouts.administratorPanel({
+        app.locals.layouts.administration({
           req,
           res,
-          head: html`<title>Users · Administrator Panel · Courselore</title>`,
+          head: html`<title>Users · Administration · Courselore</title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-tools"></i>
-              Administrator Panel ·
+              <i class="bi bi-pc-display-horizontal"></i>
+              Administration ·
               <i class="bi bi-people"></i>
               Users
             </h2>
@@ -544,7 +417,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${users.map((user) => {
-              const action = `${app.locals.options.baseURL}/users/${user.reference}`;
+              const action = `https://${app.locals.options.host}/users/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -860,6 +733,38 @@ export default (app: Courselore): void => {
     }
   );
 
+  app.locals.middlewares.mayManageUser = [
+    ...app.locals.middlewares.isAdministrator,
+    (req, res, next) => {
+      const managedUser = app.locals.database.get<{
+        id: number;
+      }>(
+        sql`
+          SELECT "id"
+          FROM "users"
+          WHERE "reference" = ${req.params.userReference}
+        `
+      );
+      if (managedUser === undefined) return next("route");
+      res.locals.managedUser = {
+        ...managedUser,
+        isSelf: managedUser.id === res.locals.user.id,
+      };
+      if (
+        res.locals.managedUser.isSelf &&
+        app.locals.database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count"
+            FROM "users"
+            WHERE "systemRole" = 'administrator'
+          `
+        )!.count === 1
+      )
+        return next("validation");
+      next();
+    },
+  ];
+
   app.patch<
     { userReference: string },
     HTML,
@@ -873,11 +778,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.mayManageUser,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (
-          typeof req.body.role !== "string" ||
-          !systemRoles.includes(req.body.role)
-        )
-          return next("validation");
+        if (!systemRoles.includes(req.body.role)) return next("validation");
 
         app.locals.database.run(
           sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
@@ -894,8 +795,8 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         res.locals.managedUser.isSelf
-          ? `${app.locals.options.baseURL}`
-          : `${app.locals.options.baseURL}/administrator-panel/users`
+          ? `https://${app.locals.options.host}`
+          : `https://${app.locals.options.host}/administration/users`
       );
     }
   );

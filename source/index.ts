@@ -33,12 +33,12 @@ import layouts, {
 } from "./layouts.js";
 
 import authentication, {
+  AuthenticationOptions,
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
   SignInHandler,
   PasswordResetHelper,
-  AuthenticationOptions,
   EmailVerificationMailer,
 } from "./authentication.js";
 export {
@@ -46,25 +46,24 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
-import about, { AboutHandler } from "./about.js";
-
 import administrator, {
-  CanCreateCourses,
+  AdministrationOptions,
   SystemRoleIconPartial,
   IsAdministratorMiddleware,
-  CanCreateCoursesMiddleware,
   MayManageUserMiddleware,
-  AdministratorLayout,
-} from "./administrator.js";
+  AdministrationLayout,
+  AdministrationNewsletterHandler,
+} from "./administration.js";
 export {
-  CanCreateCourses,
-  canCreateCourseses,
+  UserSystemRolesWhoMayCreateCourses,
+  userSystemRolesWhoMayCreateCourseses,
   SystemRole,
   systemRoles,
   IsAdministratorMiddlewareLocals,
-  CanCreateCoursesMiddlewareLocals,
-  MayManageUserMiddlewareLocals as MayManageUserSystemRolesMiddlewareLocals,
-} from "./administrator.js";
+  MayManageUserMiddlewareLocals,
+} from "./administration.js";
+
+import about, { AboutHandler } from "./about.js";
 
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
@@ -77,8 +76,9 @@ export {
 import course, {
   CoursePartial,
   CoursesPartial,
-  CourseArchivedPartial,
   CourseRoleIconPartial,
+  CourseArchivedPartial,
+  MayCreateCoursesMiddleware,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
@@ -94,6 +94,7 @@ export {
   courseRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
+  MayCreateCoursesMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
   InvitationExistsMiddlewareLocals,
@@ -161,17 +162,17 @@ export interface Courselore extends express.Express {
   locals: {
     options: {
       version: string;
-      canonicalBaseURL: string;
+      canonicalHost: string;
       metaCourseloreInvitation: string;
-      demonstration: boolean;
-      canCreateCourses: CanCreateCourses;
-      administratorEmail: string;
-    } & Required<Options> &
+      tryHost: string;
+    } & Options &
       GlobalMiddlewaresOptions &
-      AuthenticationOptions;
+      AuthenticationOptions &
+      AdministrationOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
+      administrationNewsletter: AdministrationNewsletterHandler;
       mentionUserSearch: MentionUserSearchHandler;
       contentPreview: ContentPreviewHandler;
       demonstration: DemonstrationHandler;
@@ -181,8 +182,8 @@ export interface Courselore extends express.Express {
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isAdministrator: IsAdministratorMiddleware;
-      canCreateCourses: CanCreateCoursesMiddleware;
       mayManageUser: MayManageUserMiddleware;
+      mayCreateCourses: MayCreateCoursesMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;
@@ -202,16 +203,16 @@ export interface Courselore extends express.Express {
       main: MainLayout;
       settings: SettingsLayout;
       partial: PartialLayout;
+      administration: AdministrationLayout;
       userSettings: UserSettingsLayout;
       courseSettings: CourseSettingsLayout;
-      administratorPanel: AdministratorLayout;
       conversation: ConversationLayout;
     };
     partials: {
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
-      user: UserPartial;
       systemRoleIcon: SystemRoleIconPartial;
+      user: UserPartial;
       course: CoursePartial;
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
@@ -259,28 +260,35 @@ export interface Courselore extends express.Express {
 }
 
 export interface Options {
+  host: string;
+  administratorEmail: string;
   dataDirectory: string;
-  baseURL: string;
-  sendMail: (
+  sendMail: ((
     mailOptions: nodemailer.SendMailOptions
-  ) => Promise<nodemailer.SentMessageInfo>;
-  liveReload?: boolean;
+  ) => Promise<nodemailer.SentMessageInfo>) & {
+    options: any;
+    defaults: nodemailer.SendMailOptions & {
+      from: { name: string; address: string };
+    };
+  };
+  environment: "default" | "development" | "production";
+  demonstration: boolean;
 }
 
 export default async (options: Options): Promise<Courselore> => {
   const app = express() as Courselore;
   app.locals.options = {
+    ...options,
     version: JSON.parse(
       await fs.readFile(
         url.fileURLToPath(new URL("../package.json", import.meta.url)),
         "utf8"
       )
     ).version,
-    canonicalBaseURL: "https://courselore.org",
+    canonicalHost: "courselore.org",
     metaCourseloreInvitation:
       "https://courselore.org/courses/8537410611/invitations/3667859788",
-    liveReload: false,
-    ...options,
+    tryHost: "try.courselore.org",
   } as any;
   app.locals.handlers = {} as any;
   app.locals.middlewares = {} as any;
@@ -296,9 +304,9 @@ export default async (options: Options): Promise<Courselore> => {
   liveUpdates(app);
   await layouts(app);
   authentication(app);
+  administrator(app);
   about(app);
   user(app);
-  administrator(app);
   course(app);
   conversation(app);
   message(app);

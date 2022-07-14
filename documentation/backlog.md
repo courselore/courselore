@@ -1,6 +1,6 @@
 # Backlog
 
-### Fall
+## Fall
 
 - Notifications:
   - Email notification digests
@@ -16,53 +16,18 @@
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
-### Administrative Interface
-
-**Overview**
-
-- For system administrators.
-- For department-wide installations.
-- Introduce the notion of an “administrator”, which is installation-wide, not course-wide.
-  - The “administrator” has complete access on the system: They can grant privileges to other people, see all course information, and so forth. (This is exactly the kind of data that’s already available to them by inspecting the database, we’re just providing a nicer interface).
-  - An administrator may also be staff or student on courses using the same account.
+## Administrative Interface
 
 **Goals**
 
-- Configuration that’s currently on configuration files and should be moved into administrative interface:
-  - `administratorEmail`: By default it should be the email of the first administrator, but continue giving this as a separate option in case administrators have their personal accounts & want to receive notifications on a mailing list that reaches the whole team.
-  - `sendMail`: Have a default mailer using regular SMTP connection, and ask for URL, username, and password (which needs to be stored in plain text). But continue to give this as an option on the configuration file, in case people want to do something different, for example, what we do in development mode.
-  - `demonstration`
-  - `liveReload`: Perhaps this shouldn’t be given as an option, but just configured based on `process.env.NODE_ENV`.
-- Introduce the notion of system-wide roles:
-  - Administrators
-  - Staff
-  - `NULL`
-- How to get the first administrator in the system:
-  - New installation: The first user that’s created is an administrator.
-  - Existing installations: Have a script that people can use in the update to grant themselves the administrator role.
-- **Question:** How do we get other administrators & staff on the system?
-  - Option 1: The only way is to ask people to create their accounts, then as an administrator go into the list of users and grant them the role
-  - Option 2: Invitations for installation-wide roles
-    - These would be similar to the invitations for a course.
-    - For staff?
-    - For administrators?
-  - Option 3: Administrators can create users.
 - List of people in the system
-  - Manage roles
   - See what courses people are on
 - List of courses in the system
   - Access the course
   - Have a quick way to archive a course directly from this list
-- Control who can create a course:
-  - Anyone.
-  - Only staff & administrators.
-  - Only administrators.
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-  - **Question:** What happens when you’re the administrator and also the staff/student on a course?
-    - Do you see everything, including conversations you aren’t a part of, because you’re administrator?
-    - Or do you see the course as a regular as staff/student would?
-    - Or perhaps you can do both, so you’d have to switch into the administrator role, and see the course differently?
-- **Question:** Should administrators not be able to see **some** things, for example, the upcoming private conversations between groups of people?
+- Deal with the case in which you’re the administrator and also the staff/student on a course.
+  - Switch in out of administrator role and see the course differently.
 
 **Good to Have in the Future**
 
@@ -73,6 +38,12 @@
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
   - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
+  - Perhaps even some more personal settings, for example, preferences related to email notifications
+- Other ways to get administrators into the system:
+  - Invitations for installation-wide roles
+    - These would be similar to the invitations for a course. But email only, no invitation link.
+  - Administrators may create users.
+- Have some sort of visual indication of your own role in the system.
 - Introduce the notion of “institution”
   - An institution may be a department, an university, and so forth.
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
@@ -87,16 +58,25 @@
   - Run an update
   - Run a backup
   - Email server configuration & other things that currently live in configuration file
-  - Have a wizard to set things up the first time
+  - Have a wizard to set things up the first time: It’d have to be something like a command-line application, because without the basic information the server can’t even start.
   - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
 - Take a look at other nice features from Discourse’s administrative interface
 
-### Better Email Notifications
+## Better Email Notifications
 
-- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-  - Respect the new settings on email delivery
-    - `TODO`
-- Database index for notification settings, since they’re used in the query to decide who to notify?
+- New filters for email notifications.
+  - Reenable on interface (`TODO`)
+  - Implement SQL
+  - Database index for notification settings, since they’re used in the query to decide who to notify?
+- Details on the emails:
+  - Make emails be replies, so that they’re grouped in conversations on email readers.
+  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+  - Add support for Dark Mode in emails.
+    - This should fix the duplication of code blocks.
+- Digests.
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online and/or has seen the message.
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
@@ -105,19 +85,6 @@
     - When you select this option, check “Pin” in the form
   - Store this into conversation
   - Show these conversations differently on sidebar
-- Receive notifications for questions you asked, or for conversations you’ve participated in, in general. (If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.)
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
-- Details on the emails:
-  - Make emails be replies, so that they’re grouped in conversations on email readers.
-  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-  - Add support for Dark Mode in emails.
-    - This should fix the duplication of code blocks.
-
----
-
-**BACKUP BEFORE DEPLOYMENT**
 
 ---
 
@@ -127,7 +94,7 @@
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 
-### User Interface Improvements
+## User Interface Improvements
 
 **Top Menus**
 
@@ -144,6 +111,7 @@
   - Change the visualization of “types” a little more, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
+- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
 
 **Messages**
 
@@ -208,7 +176,7 @@
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
 - 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
-### Quality-of-Life Features
+## Quality-of-Life Features
 
 - Drafts:
   - Unhide buttons
@@ -250,7 +218,7 @@
 
 - Investigate browser crashes on Android Chrome
 
-### Notifications
+## Notifications
 
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -283,8 +251,9 @@ new Notification('Example');
 </button>
 ```
 
-### Granular Access Control
+## Granular Access Control
 
+- Only chats must have this feature, other kinds of conversation don’t necessarily need it.
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Chats with only a few people.
@@ -303,7 +272,7 @@ new Notification('Example');
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
-### Users
+## Users
 
 - Improvements to the workflow for when you change your email:
   - The verification email has a subject of “Welcome to Courselore!”. It should be “Please verify your email”.
@@ -323,7 +292,7 @@ new Notification('Example');
   - Pronoun.
   - A short audio with the name’s pronunciation.
 
-### Courses
+## Courses
 
 - Course archival: Currently, when a course is archived, we continue to show all the forms and return an error message after submission. It’d be more elegant to disable the forms and inform the user before they try to submit. But this requires revisiting almost every form, input, and button in the application.
 - Remove course entirely.
@@ -331,14 +300,15 @@ new Notification('Example');
 - Control who’s able to create courses, which makes sense for people who self-host.
 - Upload roster and show differences.
 
-### Invitations
+## Invitations
 
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
+- When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 
-### Conversations
+## Conversations
 
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
@@ -352,24 +322,24 @@ new Notification('Example');
 - Conversation templates, for example, for bug reports on Meta Courselore.
 - Let original question asker approve an answer.
 
-### Chat
+## Chat
 
 - Currently typing.
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
 
-### Anonymity
+## Anonymity
 
 - Allow people to create Personas.
 - Have a completely anonymous mode in which not even the staff has access to the identity.
 
-### Search
+## Search
 
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filter by date.
 
-### Content Editor
+## Content Editor
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
@@ -382,9 +352,10 @@ new Notification('Example');
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 - Dragging an image from another website and dropping it in the content editor results in a 422.
+- Dragging a folder from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
-### Content Processor
+## Content Processor
 
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
@@ -412,7 +383,7 @@ new Notification('Example');
   - Messages
   - Biographies
 
-### Pagination
+## Pagination
 
 - `TODO`
 - Pagination of non-chat conversations should behave like GitHub Issues: Show the first couple messages, and the last couple messages, and have a gap in the middle that you can click to load.
@@ -434,7 +405,7 @@ new Notification('Example');
 - Paginate other things, for example, Course Settings · Enrollments, and invitations.
 - Things like clearing search and filters may affect query parameters.
 
-### File Management
+## File Management
 
 - Have a way to delete files.
 - Access control around attachments:
@@ -450,7 +421,7 @@ new Notification('Example');
 - Create a garbage collection routine for attachments.
 - Clean geolocation & other metadata from images.
 
-### Statistics
+## Statistics
 
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification
@@ -459,13 +430,13 @@ new Notification('Example');
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
 
-### Live Course Communication during the Lectures
+## Live Course Communication during the Lectures
 
 - References:
   - https://www.sli.do
   - https://pigeonholelive.com/features-qna/
 
-### Native Mobile & Desktop Applications
+## Native Mobile & Desktop Applications
 
 - PWA: https://checkvist.com/auth/mobile
 - Desktop: Electron.
@@ -523,7 +494,7 @@ const { app, BrowserWindow } = require("electron");
     - Still more popular, but dreaded.
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
 
-### API
+## API
 
 - Enable us to connect with other applications, for example, assignment management, and course material.
   - Though we won’t necessarily be going to those areas right away.
@@ -536,7 +507,7 @@ const { app, BrowserWindow } = require("electron");
       - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
 
-### User Interface
+## User Interface
 
 - Forms:
   - Use `maxlength`.
@@ -578,14 +549,14 @@ const { app, BrowserWindow } = require("electron");
   - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
   - https://www.digitalocean.com/community/tutorials/css-scrollbars
 
-### Design & Accessibility
+## Design & Accessibility
 
 - Translate to other languages.
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
 - Test contrast.
 
-### Live-Navigation
+## Live-Navigation
 
 - Client-side cache?
   - Advantages:
@@ -611,8 +582,10 @@ const { app, BrowserWindow } = require("electron");
     - Use the `/preview` route?
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
       - But we could pre-fetch…
+- Preserve more client-side state, for example, on the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
+- Scroll to URL `#hashes`, which may occur in the middle of a message.
 
-### Live-Updates
+## Live-Updates
 
 - Scroll to `#anchored` element.
 - We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
@@ -647,7 +620,7 @@ const { app, BrowserWindow } = require("electron");
   - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
 
-### Performance
+## Performance
 
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
@@ -717,12 +690,18 @@ const { app, BrowserWindow } = require("electron");
 
 - Try and optimize `html` tagged template literal, which sanitizes things over and over.
 
-### Infrastructure
+## Infrastructure
 
+- Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
+- Do things break if you’re trying to run Courselore from a folder that includes spaces & weird characters?
+  - Note Caddy’s configuration and the serving of static files.
+  - Test development.
+  - Test binary.
+  - Test on Windows.
 - Cluster mode:
   - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
   - Approaches:
@@ -805,13 +784,55 @@ const { app, BrowserWindow } = require("electron");
 2. Run Courselore with the Localtunnel address, for example:
 
    ```console
-   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   $ env HOST=THE-LOCAL-TUNNEL-ADDRESS npm start
    ```
 ````
 
 > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 3. Visit the Localtunnel address on the phone.
+
+</details>
+```
+
+- Also SSH tunneling hasn’t been tested since the latest changes in Caddy infrastructure, so it probably doesn’t work either:
+
+````markdown
+<details>
+
+<summary>Option 2: Using an SSH Tunnel through a Server That You Have Access to</summary>
+
+1. Follow the instructions from Option 1 to transfer a certificate to the phone.
+
+2. On the server that you have access to, open an SSH tunnel, for example, on Ubuntu:
+
+   - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
+   - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
+
+3. Run Courselore with the server’s address, for example:
+
+   ```console
+   $ env HOST=YOUR-SERVER.COM:4000 npm start
+   ```
+````
+
+4. Connect to the tunnel from your machine, for example:
+
+   ```console
+   ssh -NR 4001:localhost:4000 root@YOUR-SERVER.COM
+   ```
+
+5. Visit the server’s address on the phone.
+
+</details>
+```
+
+- And here’s the disclosure element for the first option, for when we get other options back:
+
+```markdown
+<details>
+
+<summary>Option 1: Using the Local Area Network (Preferred)</summary>
 
 </details>
 ```
@@ -2341,7 +2362,7 @@ $$
 
 </details>
 
-### Documentation
+## Documentation
 
 - Videos
   - Educators:
@@ -2362,7 +2383,7 @@ $$
   - Microsoft Azure.
   - https://sandstorm.io.
 
-### Marketing
+## Marketing
 
 - Homepage:
   - Better printscreens without `lorem ipsum`.
@@ -2373,6 +2394,9 @@ $$
     - Piazza has LTI support (for identity only?).
 - User groups.
 - Newsletter.
+  - For system administrators, including updates & so forth.
+  - For educators, including news & so forth.
+  - For students?
 - Create Courselore Gravatar.
   - Use in npm.
 - Create accounts on:
@@ -2386,7 +2410,7 @@ $$
 - In Meta Courselore, make a pinned announcement of how to report bugs.
   - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
 
-### References
+## References
 
 - Communication platforms for education
   - <https://piazza.com>
@@ -2395,6 +2419,7 @@ $$
   - <https://edstem.org>
   - <https://aula.education>
   - <https://yellowdig.com>
+    - Point-based system; gamification.
   - <https://moodle.org>
   - <https://canvaslms.com>
   - <https://www.acadly.com/>

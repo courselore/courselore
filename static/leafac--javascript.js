@@ -1,7 +1,7 @@
-// This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
+// This file is here for now because it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
 const leafac = {
-  liveNavigation(baseURL) {
+  liveNavigation(host) {
     let abortController;
     let previousLocation = { ...window.location };
 
@@ -76,7 +76,7 @@ const leafac = {
         event.shiftKey ||
         event.target.isContentEditable ||
         link === null ||
-        !link.href.startsWith(baseURL)
+        !link.href.startsWith(`https://${host}`)
       )
         return;
       event.preventDefault();
@@ -99,7 +99,7 @@ const leafac = {
       const submitterName = event.submitter?.getAttribute("name");
       if (typeof submitterName === "string")
         body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
-      if (!action.startsWith(baseURL)) return;
+      if (!action.startsWith(`https://${host}`)) return;
       event.preventDefault();
       if (event.submitter?.disabled !== undefined)
         event.submitter.disabled = true;

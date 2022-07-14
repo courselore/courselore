@@ -6,7 +6,7 @@ import url from "node:url";
 await (
   await import(
     process.argv[2] === undefined
-      ? new URL("../configuration/development.mjs", import.meta.url).href
+      ? new URL("../configuration/default.mjs", import.meta.url).href
       : url.pathToFileURL(path.resolve(process.argv[2])).href
   )
 ).default({

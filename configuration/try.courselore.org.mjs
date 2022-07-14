@@ -3,19 +3,18 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
-    host: process.env.HOST ?? "localhost",
-    administratorEmail: "development@courselore.org",
-    dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
+    host: "try.courselore.org",
+    administratorEmail: "try@courselore.org",
+    dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
     sendMail: {
       options: { jsonTransport: true },
       defaults: {
         from: {
           name: "Courselore",
-          address: "development@courselore.org",
+          address: "try@courselore.org",
         },
       },
     },
-    environment: "development",
     demonstration: true,
   });
 };

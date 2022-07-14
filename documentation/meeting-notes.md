@@ -1,6 +1,24 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-09</summary>
+
+- Administrative interface: Deployed.
+- Better email notifications: Deployed (but missing digests).
+- Icons: Improving the presentation of “New Conversation” form.
+
+</details>
+
+<details>
+<summary>2021-07-02</summary>
+
+- Administrative interface: It’s almost ready to deploy: We want to revert some changes before we actually deploy.
+- Simplified configuration.
+- Better email notifications: Doing filtering on database. Everything but digests.
+
+</details>
+
+<details>
 <summary>2021-06-25</summary>
 
 - Better email notifications:
@@ -1206,7 +1224,7 @@
 <details>
 <summary>2020-01-30</summary>
 
-#### Progress Report
+**Progress Report**
 
 - The text processor for posts is done. It supports Markdown, LaTeX, and syntax highlighting. Also, it’s secure against Cross-Side Scripting (XSS) attacks. [Here’s some input that exercises all these features](https://github.com/courselore/courselore/raw/e01f05f87039326fba47abab24c78a754a4ff7a8/misc/text-processor-example.md).
 
@@ -1226,7 +1244,7 @@
 
   - <https://npm.im/@leafac/pkg>: Fixes some problems with <https://npm.im/pkg>, particularly in how it manages native modules.
 
-#### Design Decisions
+**Design Decisions**
 
 - The course URLs may be:
 

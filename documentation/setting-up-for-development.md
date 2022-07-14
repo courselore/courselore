@@ -1,10 +1,14 @@
 # Setting Up for Development
 
+**Welcome!** 👋
+
 Courselore has been designed to be welcoming to new developers. It’s an excellent first project for people who are new to contributing to open-source software.
 
-> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
+> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new?body=%2A%2AWhat%20did%20you%20try%20to%20do%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20did%20you%20expect%20to%20happen%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20really%20happened%3F%2A%2A%0A%0A%0A%0A%2A%2AWhat%20error%20messages%20%28if%20any%29%20did%20you%20run%20into%3F%2A%2A%0A%0A%0A%0A%2A%2APlease%20provide%20as%20much%20relevant%20context%20as%20possible%20%28operating%20system%2C%20browser%2C%20and%20so%20forth%29%3A%2A%2A%0A).
 
-### Running a Pre-Compiled Binary Locally
+> **Note:** Join our community at [Meta Courselore](https://courselore.org/courses/8537410611/invitations/3667859788) to talk to the developers, propose pull requests, get help on what you’re developing, and so forth.
+
+## Running a Pre-Compiled Binary Locally
 
 The best way to get started is to run a pre-compiled Courselore binary on your machine. You may download Courselore from two channels: The latest development versions, which are available as [Actions Artifacts](https://github.com/courselore/courselore/actions); and stable versions, which are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded Courselore, extract it and run the `courselore` binary.
 
@@ -22,7 +26,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 >
 > 2. Use NSS to install the TLS certificate into Firefox’s trust store.
 
-### Running from Source
+## Running from Source
 
 <details>
 <summary>Windows</summary>
@@ -43,7 +47,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    > **Package Breakdown**
    >
-   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use NVM for Windows from the beginning.
+   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use NVM for Windows from the start.
    >
    > - [Python (`python`)](https://www.python.org) and [Visual Studio C++ Build Tools (`visualstudio2022-workload-vctools`)](https://visualstudio.microsoft.com/visual-cpp-build-tools/): These tools are necessary to build native Node.js extensions written in C/C++.
    >
@@ -96,7 +100,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    > **Package Breakdown**
    >
-   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the beginning.
+   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the start.
    >
    > - [Visual Studio Code (`visual-studio-code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in Courselore.
    >
@@ -149,7 +153,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    > **Package Breakdown**
    >
-   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the beginning.
+   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the start.
    >
    > - [Git (`git`)](https://git-scm.com): The version control system used by Courselore.
    >
@@ -189,23 +193,19 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
 </details>
 
-### Testing on Mobile
+## Testing on Mobile
 
 You may run Courselore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
 
-<details>
-
-<summary>Option 1: Using the Local Area Network (Preferred)</summary>
-
 1. Establish a network route between your development machine running Courselore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
 
-   > **iPhone/iPad + Mac Tip:** Connect an iPhone/iPad to a Mac with an USB cable and iOS & macOS will establish a route between them. In macOS you may go to System Preferences… > Sharing to find the address you should use in the browser on the iPhone/iPad.
+   > **iPhone/iPad + Mac Tip:** Connect an iPhone/iPad to a Mac with an USB cable and iOS & macOS will establish a route between them. In macOS you may go to **System Preferences… > Sharing** to find the address you should use in the browser on the iPhone/iPad.
 
 2. Send the root TLS certificate created by [Caddy](https://caddyserver.com) to the phone.
 
    > **Example:** In the author’s development machine running macOS the certificate is found at `~/Library/Application Support/Caddy/pki/authorities/local/root.crt`. It’s possible to AirDrop that file to an iPhone/iPad.
 
-   > **Note:** Certificates have a `.crt` extension. **Importantly, `.key` files are not certificates.** These files are signing keys which shouldn’t leave your development machine. Anyone with access to that file could intercept and tamper with any network traffic.
+   > **Note:** Certificates have a `.crt` extension. **Importantly, `.key` files are not certificates.** These files are signing keys which shouldn’t leave your development machine. Anyone with access to that file could intercept and tamper with your network traffic.
 
 3. Install & trust the TLS certificate on the phone.
 
@@ -213,45 +213,12 @@ You may run Courselore on your machine and access it from a phone, which is esse
 
    > **iPhone/iPad Tip:** Install the certificate on **Settings > General > VPN & Device Management Certificates**, and trust it on **Settings > General > About > Certificate Trust Settings**.
 
-   > **Windows:** If instead of a phone you’re trying to test Courselore on a secondary Windows machine, install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
+   > **Windows Tip:** If instead of a phone you’re trying to test Courselore on a secondary Windows machine, install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
 
-4. Run Courselore with the Local Area Network address, for example:
+4. Run Courselore with the Local Area Network address by setting the `HOST` environment variable, for example, in macOS and Linux:
 
    ```console
-   $ env BASE_URL=https://leafac.local npm start
+   $ env HOST=leafac.local npm start
    ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 5. Visit the address on the phone.
-
-</details>
-
-<details>
-
-<summary>Option 2: Using an SSH Tunnel through a Server That You Have Access to</summary>
-
-1. Follow the instructions from Option 1 to transfer a certificate to the phone.
-
-2. On the server that you have access to, open an SSH tunnel, for example, on Ubuntu:
-
-   - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
-   - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
-
-3. Run Courselore with the server’s address, for example:
-
-   ```console
-   $ env BASE_URL=https://YOUR-SERVER.COM:4000 npm start
-   ```
-
-   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
-
-4. Connect to the tunnel from your machine, for example:
-
-   ```console
-   ssh -NR 4001:localhost:4000 root@YOUR-SERVER.COM
-   ```
-
-5. Visit the server’s address on the phone.
-
-</details>

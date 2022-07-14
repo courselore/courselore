@@ -19,6 +19,16 @@ export type AboutHandler = express.RequestHandler<
 >;
 
 export default (app: Courselore): void => {
+  if (
+    app.locals.options.host !== app.locals.options.canonicalHost &&
+    app.locals.options.environment !== "development"
+  ) {
+    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
+      res.redirect(303, `https://${app.locals.options.canonicalHost}/about`);
+    });
+    return;
+  }
+
   app.locals.handlers.about = (req, res) => {
     res.send(
       app.locals.layouts.base({
@@ -50,7 +60,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <a
-                href="${app.locals.options.baseURL}/about"
+                href="https://${app.locals.options.host}/about"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   font-size: var(--font-size--5xl);
@@ -96,7 +106,8 @@ export default (app: Courselore): void => {
                   $${res.locals.user === undefined
                     ? html`
                         <a
-                          href="${app.locals.options.canonicalBaseURL}/sign-up"
+                          href="https://${app.locals.options
+                            .canonicalHost}/sign-up"
                           class="button button--blue"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
@@ -109,7 +120,8 @@ export default (app: Courselore): void => {
                           Sign up
                         </a>
                         <a
-                          href="${app.locals.options.canonicalBaseURL}/sign-in"
+                          href="https://${app.locals.options
+                            .canonicalHost}/sign-in"
                           class="button button--transparent"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
@@ -124,7 +136,7 @@ export default (app: Courselore): void => {
                       `
                     : html`
                         <a
-                          href="${app.locals.options.baseURL}/"
+                          href="https://${app.locals.options.host}/"
                           class="button button--blue"
                         >
                           Return to Courselore
@@ -169,7 +181,7 @@ export default (app: Courselore): void => {
 
                 <div>
                   <a
-                    href="https://try.courselore.org/"
+                    href="https://${app.locals.options.tryHost}"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -793,7 +805,7 @@ export default (app: Courselore): void => {
             $${res.locals.user === undefined
               ? html`
                   <a
-                    href="${app.locals.options.canonicalBaseURL}/sign-up"
+                    href="https://${app.locals.options.canonicalHost}/sign-up"
                     class="button button--blue"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -806,7 +818,7 @@ export default (app: Courselore): void => {
                     Sign up
                   </a>
                   <a
-                    href="${app.locals.options.canonicalBaseURL}/sign-in"
+                    href="https://${app.locals.options.canonicalHost}/sign-in"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -821,7 +833,7 @@ export default (app: Courselore): void => {
                 `
               : html`
                   <a
-                    href="${app.locals.options.baseURL}/"
+                    href="https://${app.locals.options.host}/"
                     class="button button--blue"
                   >
                     Return to Courselore
@@ -858,7 +870,7 @@ export default (app: Courselore): void => {
               Source Code
             </a>
             <a
-              href="https://try.courselore.org/"
+              href="https://${app.locals.options.tryHost}"
               class="button button--transparent"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({
@@ -876,22 +888,15 @@ export default (app: Courselore): void => {
     );
   };
 
-  if (
-    app.locals.options.baseURL === app.locals.options.canonicalBaseURL ||
-    process.env.NODE_ENV !== "production"
-  ) {
-    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-      "/about",
-      ...app.locals.middlewares.isSignedOut,
-      app.locals.handlers.about
-    );
-    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-      "/about",
-      ...app.locals.middlewares.isSignedIn,
-      app.locals.handlers.about
-    );
-  } else
-    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
-      res.redirect(303, `${app.locals.options.canonicalBaseURL}/about`);
-    });
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "/about",
+    ...app.locals.middlewares.isSignedOut,
+    app.locals.handlers.about
+  );
+
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/about",
+    ...app.locals.middlewares.isSignedIn,
+    app.locals.handlers.about
+  );
 };

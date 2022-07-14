@@ -1,23 +1,36 @@
-export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const path = await courseloreImport("node:path");
-  const url = await courseloreImport("node:url");
-  const fs = (await courseloreImport("fs-extra")).default;
-  const execa = (await courseloreImport("execa")).execa;
-  const nodemailer = (await courseloreImport("nodemailer")).default;
-  const caddyfile = (await courseloreImport("dedent")).default;
-  const courselore = (await courseloreImport("./index.js")).default;
-  const baseURL = "https://courselore.org";
-  const administratorEmail = "administrator@courselore.org";
-  const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
+export default async ({
+  courseloreImport,
+  courseloreImportMetaURL,
+  host,
+  administratorEmail,
+  dataDirectory,
+  sendMail,
+  alternativeHosts = [],
+  hstsPreload = false,
+  environment = "production",
+  demonstration = false,
+}) => {
   if (process.argv[3] === undefined) {
+    const path = await courseloreImport("node:path");
+    const url = await courseloreImport("node:url");
+    const execa = (await courseloreImport("execa")).execa;
+    const caddyfile = (await courseloreImport("dedent")).default;
+
     const subprocesses = [
       execa(
         process.argv[0],
-        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
+        [
+          process.argv[1],
+          process.argv[2] ??
+            url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
+          "server",
+        ],
         {
           preferLocal: true,
           stdio: "inherit",
-          env: { NODE_ENV: "production" },
+          ...(environment === "production"
+            ? { env: { NODE_ENV: "production" } }
+            : {}),
         }
       ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
@@ -27,17 +40,23 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         input: caddyfile`
           {
             admin off
-            email ${administratorEmail}
+            ${
+              environment === "production"
+                ? `email ${administratorEmail}`
+                : `local_certs`
+            }
           }
 
           (common) {
             header Cache-Control no-cache
-            header Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+            header Content-Security-Policy "default-src https://${host}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
             header Cross-Origin-Embedder-Policy require-corp
             header Cross-Origin-Opener-Policy same-origin
             header Cross-Origin-Resource-Policy same-origin
             header Referrer-Policy no-referrer
-            header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+            header Strict-Transport-Security "max-age=31536000; includeSubDomains${
+              hstsPreload ? `; preload` : ``
+            }"
             header X-Content-Type-Options nosniff
             header Origin-Agent-Cluster "?1"
             header X-DNS-Prefetch-Control off
@@ -50,9 +69,9 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             encode zstd gzip
           }
 
-          http://${
-            new URL(baseURL).host
-          }, http://www.courselore.org, http://courselore.com, http://www.courselore.com {
+          ${[host, ...alternativeHosts]
+            .map((host) => `http://${host}`)
+            .join(", ")} {
             import common
             redir https://{host}{uri} 308
             handle_errors {
@@ -60,16 +79,24 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             }
           }
 
-          https://www.courselore.org, https://courselore.com, https://www.courselore.com {
-            import common
-            redir ${baseURL}{uri} 307
-            handle_errors {
-              import common
-            }
+          ${
+            alternativeHosts.length > 0
+              ? caddyfile`
+                  ${alternativeHosts
+                    .map((host) => `https://${host}`)
+                    .join(", ")} {
+                    import common
+                    redir https://${host}{uri} 307
+                    handle_errors {
+                      import common
+                    }
+                  }
+                `
+              : ``
           }
-
-          ${new URL(baseURL).origin} {
-            route ${new URL(`${baseURL}/*`).pathname} {
+          
+          https://${host} {
+            route {
               import common
               route {
                 root * ${path.resolve(
@@ -81,7 +108,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
                 file_server @file_exists
               }
               route /files/* {
-                root * ${dataDirectory}
+                root * ${path.resolve(dataDirectory)}
                 @file_exists file
                 route @file_exists {
                   @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
@@ -106,28 +133,23 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const secrets = JSON.parse(
-      await fs.readFile(
-        url.fileURLToPath(new URL("./secrets.json", import.meta.url)),
-        "utf8"
-      )
-    );
+    const nodemailer = await courseloreImport("nodemailer");
+    const courselore = (await courseloreImport("./index.js")).default;
+
+    if (typeof sendMail !== "function") {
+      const { options, defaults } = sendMail;
+      const transport = nodemailer.createTransport(options, defaults);
+      sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
+      sendMail.options = options;
+      sendMail.defaults = defaults;
+    }
     const app = await courselore({
+      host,
+      administratorEmail,
       dataDirectory,
-      baseURL,
-      sendMail: (() => {
-        const transporter = nodemailer.createTransport(
-          {
-            host: "email-smtp.us-east-1.amazonaws.com",
-            auth: {
-              user: secrets.smtp.username,
-              pass: secrets.smtp.password,
-            },
-          },
-          { from: `"Courselore" <${administratorEmail}>` }
-        );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
-      })(),
+      sendMail,
+      environment,
+      demonstration,
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");

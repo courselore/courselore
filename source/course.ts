@@ -15,7 +15,6 @@ import {
   LiveUpdatesMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-  CanCreateCoursesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
@@ -65,6 +64,13 @@ export type CoursesPartial = ({
   tight?: boolean;
 }) => HTML;
 
+export type CourseRoleIconPartial = {
+  [courseRole in CourseRole]: {
+    regular: HTML;
+    fill: HTML;
+  };
+};
+
 export type CourseArchivedPartial = ({
   req,
   res,
@@ -73,12 +79,15 @@ export type CourseArchivedPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type CourseRoleIconPartial = {
-  [courseRole in CourseRole]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
+export type MayCreateCoursesMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  MayCreateCoursesMiddlewareLocals
+>[];
+export interface MayCreateCoursesMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {}
 
 export type DefaultAccentColorHelper = ({
   req,
@@ -294,21 +303,22 @@ export default (app: Courselore): void => {
   `;
 
   app.locals.partials.courses = ({ req, res, tight = false }) => {
+    let courses = html``;
+
     const [unarchived, archived] = lodash.partition(
       res.locals.enrollments,
       (enrollment) => enrollment.course.archivedAt === null
     );
-    const content: HTML[] = [];
 
     if (unarchived.length > 0)
-      content.push(html`
+      courses += html`
         $${unarchived.map(
           (enrollment) =>
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="${app.locals.options.baseURL}/courses/${enrollment.course
-                  .reference}"
+                href="https://${app.locals.options.host}/courses/${enrollment
+                  .course.reference}"
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
                   : "button--tight"} ${enrollment.id ===
@@ -326,10 +336,12 @@ export default (app: Courselore): void => {
               </a>
             `
         )}
-      `);
+      `;
 
     if (archived.length > 0)
-      content.push(html`
+      courses += html`
+        $${courses !== html`` ? html`<hr class="separator" />` : html``}
+
         <button
           key="enrollment--archived"
           class="dropdown--menu--item menu-box--item button ${tight
@@ -361,8 +373,8 @@ export default (app: Courselore): void => {
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="${app.locals.options.baseURL}/courses/${enrollment.course
-                  .reference}"
+                href="https://${app.locals.options.host}/courses/${enrollment
+                  .course.reference}"
                 hidden
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
@@ -381,9 +393,9 @@ export default (app: Courselore): void => {
               </a>
             `
         )}
-      `);
+      `;
 
-    return content.join(html`<hr class="separator" />`);
+    return courses;
   };
 
   app.locals.partials.courseRoleIcon = {
@@ -448,7 +460,7 @@ export default (app: Courselore): void => {
 
                   <div class="menu-box">
                     <a
-                      href="${app.locals.options.baseURL}/settings/profile"
+                      href="https://${app.locals.options.host}/settings/profile"
                       class="menu-box--item button button--blue"
                     >
                       <i class="bi bi-person-circle"></i>
@@ -466,14 +478,17 @@ export default (app: Courselore): void => {
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
-                    $${res.locals.canCreateCourses
-                      ? html` <a
-                          href="${app.locals.options.baseURL}/courses/new"
-                          class="menu-box--item button button--transparent"
-                        >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>`
+                    $${res.locals.mayCreateCourses
+                      ? html`
+                          <a
+                            href="https://${app.locals.options
+                              .host}/courses/new"
+                            class="menu-box--item button button--transparent"
+                          >
+                            <i class="bi bi-journal-plus"></i>
+                            Create a New Course
+                          </a>
+                        `
                       : html``}
                   </div>
                 </div>
@@ -485,7 +500,7 @@ export default (app: Courselore): void => {
         case 1:
           res.redirect(
             303,
-            `${app.locals.options.baseURL}/courses/${res.locals.enrollments[0].course.reference}`
+            `https://${app.locals.options.host}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
 
@@ -528,9 +543,17 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, CanCreateCoursesMiddlewareLocals>(
+  app.locals.middlewares.mayCreateCourses = [
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (res.locals.mayCreateCourses) return next();
+      next("route");
+    },
+  ];
+
+  app.get<{}, HTML, {}, {}, MayCreateCoursesMiddlewareLocals>(
     "/courses/new",
-    ...app.locals.middlewares.canCreateCourses,
+    ...app.locals.middlewares.mayCreateCourses,
     (req, res) => {
       res.send(
         app.locals.layouts.main({
@@ -543,8 +566,7 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.baseURL ===
-            app.locals.options.canonicalBaseURL
+            $${app.locals.options.host === app.locals.options.canonicalHost
               ? html`
                   <div
                     css="${res.locals.css(css`
@@ -609,7 +631,7 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/courses"
+              action="https://${app.locals.options.host}/courses"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -714,10 +736,10 @@ export default (app: Courselore): void => {
       code?: string;
     },
     {},
-    CanCreateCoursesMiddlewareLocals
+    MayCreateCoursesMiddlewareLocals
   >(
     "/courses",
-    ...app.locals.middlewares.canCreateCourses,
+    ...app.locals.middlewares.mayCreateCourses,
     (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -789,7 +811,7 @@ export default (app: Courselore): void => {
       );
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${course.reference}`
+        `https://${app.locals.options.host}/courses/${course.reference}`
       );
     }
   );
@@ -877,7 +899,7 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+          `https://${app.locals.options.host}/courses/${res.locals.course.reference}`
         );
       }
 
@@ -931,7 +953,7 @@ export default (app: Courselore): void => {
                   $${res.locals.enrollment.courseRole === "staff"
                     ? html`
                         <a
-                          href="${app.locals.options.baseURL}/courses/${res
+                          href="https://${app.locals.options.host}/courses/${res
                             .locals.course.reference}/settings/tags"
                           class="menu-box--item button button--blue"
                         >
@@ -941,8 +963,8 @@ export default (app: Courselore): void => {
                       `
                     : html``}
                   <a
-                    href="${app.locals.options.baseURL}/courses/${res.locals
-                      .course.reference}/conversations/new"
+                    href="https://${app.locals.options.host}/courses/${res
+                      .locals.course.reference}/conversations/new"
                     class="menu-box--item button ${res.locals.enrollment
                       .courseRole === "staff"
                       ? "button--transparent"
@@ -1061,7 +1083,7 @@ export default (app: Courselore): void => {
   ];
 
   app.locals.mailers.invitation = ({ req, res, invitation }) => {
-    const link = `${app.locals.options.baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    const link = `https://${app.locals.options.host}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
@@ -1075,10 +1097,10 @@ export default (app: Courselore): void => {
           ${new Date().toISOString()},
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
-            from: `"Courselore · ${invitation.course.name.replace(
-              /[^\w ]/g,
-              "•"
-            )}" <${app.locals.options.administratorEmail}>`,
+            from: {
+              name: `${app.locals.options.sendMail.defaults.from.name} · ${invitation.course.name}`,
+              address: app.locals.options.sendMail.defaults.from.address,
+            },
             to: invitation.email!,
             subject: `Enroll in ${invitation.course.name}`,
             html: html`
@@ -1152,8 +1174,8 @@ export default (app: Courselore): void => {
         res.locals.enrollment.courseRole === "staff"
           ? html`
               <a
-                href="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/settings/course-information"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/course-information"
                 )
@@ -1164,8 +1186,8 @@ export default (app: Courselore): void => {
                 Course Information
               </a>
               <a
-                href="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/settings/tags"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/tags"
                 )
@@ -1180,8 +1202,8 @@ export default (app: Courselore): void => {
                 Tags
               </a>
               <a
-                href="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/settings/invitations"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/invitations"
                 )
@@ -1196,8 +1218,8 @@ export default (app: Courselore): void => {
                 Invitations
               </a>
               <a
-                href="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/settings/enrollments"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/enrollments"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/enrollments"
                 )
@@ -1212,8 +1234,8 @@ export default (app: Courselore): void => {
                 Enrollments
               </a>
               <a
-                href="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/settings/your-enrollment"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
                 )
@@ -1244,7 +1266,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/settings/${
           res.locals.enrollment.courseRole === "staff"
@@ -1284,8 +1306,8 @@ export default (app: Courselore): void => {
             </h2>
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/course-information"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/course-information"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1371,8 +1393,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/course-information"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/course-information"
               css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
@@ -1603,7 +1625,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/course-information`
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -1657,8 +1679,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PUT"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/tags"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/tags"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1904,8 +1926,8 @@ export default (app: Courselore): void => {
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="${app.locals.options
-                                      .baseURL}/courses/${res.locals.course
+                                    href="https://${app.locals.options
+                                      .host}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
                                         conversations: {
@@ -2173,7 +2195,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/tags`
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/tags`
       );
 
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -2227,8 +2249,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/invitations"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/invitations"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -2526,7 +2548,7 @@ export default (app: Courselore): void => {
               ? html``
               : html`
                   $${invitations.map((invitation) => {
-                    const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                    const action = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired = app.locals.helpers.isExpired(
                       invitation.expiresAt
                     );
@@ -2597,7 +2619,7 @@ export default (app: Courselore): void => {
                                         interactive: true,
                                         maxWidth: "none",
                                         content: ${(() => {
-                                          const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                          const link = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                           return res.locals.html(
                                             html`
                                               <div
@@ -3399,7 +3421,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3516,7 +3538,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3643,7 +3665,7 @@ export default (app: Courselore): void => {
             </label>
 
             $${enrollments.map((enrollment) => {
-              const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const action = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
               const isSelf = enrollment.id === res.locals.enrollment.id;
               const isOnlyStaff =
                 isSelf &&
@@ -4078,8 +4100,8 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         res.locals.managedEnrollment.isSelf
-          ? `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
-          : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `https://${app.locals.options.host}/courses/${res.locals.course.reference}`
+          : `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -4115,8 +4137,8 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         res.locals.managedEnrollment.isSelf
-          ? `${app.locals.options.baseURL}/`
-          : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `https://${app.locals.options.host}/`
+          : `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -4153,8 +4175,8 @@ export default (app: Courselore): void => {
 
             <form
               method="PATCH"
-              action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/your-enrollment"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/your-enrollment"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -4270,7 +4292,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -4293,9 +4315,9 @@ export default (app: Courselore): void => {
       )
         res.redirect(
           303,
-          `${app.locals.options.baseURL}/courses/${res.locals.course.reference}${req.query.redirect}`
+          `https://${app.locals.options.host}/courses/${res.locals.course.reference}${req.query.redirect}`
         );
-      const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
+      const link = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.locals.layouts.box({
           req,
@@ -4377,7 +4399,7 @@ export default (app: Courselore): void => {
 
               $${(
                 await QRCode.toString(
-                  `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
+                  `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
                   { type: "svg" }
                 )
               )
@@ -4386,8 +4408,8 @@ export default (app: Courselore): void => {
             </div>
 
             <a
-              href="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}"
+              href="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}"
               class="button button--blue"
             >
               Go to ${res.locals.course.name}
@@ -4431,7 +4453,7 @@ export default (app: Courselore): void => {
             })}
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/courses/${res.locals
+              action="https://${app.locals.options.host}/courses/${res.locals
                 .invitation.course.reference}/invitations/${res.locals
                 .invitation.reference}${qs.stringify(
                 {
@@ -4494,7 +4516,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `${app.locals.options.baseURL}/courses/${
+        `https://${app.locals.options.host}/courses/${
           res.locals.invitation.course.reference
         }${
           typeof req.query.redirect === "string" &&
@@ -4547,7 +4569,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <a
-                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                href="https://${app.locals.options.host}/sign-up${qs.stringify(
                   {
                     redirect: req.originalUrl,
                     invitation: {
@@ -4563,7 +4585,7 @@ export default (app: Courselore): void => {
                 Sign up
               </a>
               <a
-                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                href="https://${app.locals.options.host}/sign-in${qs.stringify(
                   {
                     redirect: req.originalUrl,
                     invitation: {
