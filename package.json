@@ -22,9 +22,12 @@
   "scripts": {
     "postinstall": "cd ./static/ && npm install",
     "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./distribution/binary.js ./configuration/development.mjs\"",
+    "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
-    "clean": "shx rm -rf ./distribution/ ./node_modules/ ./static/node_modules/"
+    "clean": "shx rm -rf ./distribution/ ./node_modules/ ./static/node_modules/",
+    "clean:data": "shx rm -rf ./data/",
+    "update": "npm-check-updates --upgrade && (cd static && npm-check-updates --upgrade) && npm install"
   },
   "engines": {
     "node": ">=18"
@@ -90,6 +93,7 @@
     "@types/sharp": "^0.30.4",
     "caxa": "^2.1.0",
     "nodemon": "^2.0.18",
+    "npm-check-updates": "^15.3.3",
     "prettier": "^2.7.1",
     "rollup": "^2.75.7",
     "shx": "^0.3.4",
