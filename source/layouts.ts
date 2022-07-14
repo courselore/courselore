@@ -690,10 +690,9 @@ export default async (app: Courselore): Promise<void> => {
                             href="${app.locals.options
                               .metaCourseloreInvitation}${qs.stringify(
                               {
-                                redirect: `/conversations/new${qs.stringify(
+                                redirect: `/conversations/new/question${qs.stringify(
                                   {
                                     newConversation: {
-                                      type: "question",
                                       content: dedent`
                                         **What did you try to do?**
 

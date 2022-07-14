@@ -756,11 +756,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "note" },
-                              },
+                              .reference}/conversations/new/note${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--blue"
@@ -772,11 +769,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "question" },
-                              },
+                              .reference}/conversations/new/question${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -788,11 +782,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "chat" },
-                              },
+                              .reference}/conversations/new/chat${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -806,11 +797,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "question" },
-                              },
+                              .reference}/conversations/new/question${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--blue"
@@ -822,11 +810,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "note" },
-                              },
+                              .reference}/conversations/new/note${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -838,11 +823,8 @@ export default (app: Courselore): void => {
                           <a
                             href="https://${app.locals.options
                               .host}/courses/${res.locals.course
-                              .reference}/conversations/new${qs.stringify(
-                              {
-                                conversations: req.query.conversations,
-                                newConversation: { type: "chat" },
-                              },
+                              .reference}/conversations/new/chat${qs.stringify(
+                              { conversations: req.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -2806,7 +2788,7 @@ export default (app: Courselore): void => {
   );
 
   app.get<
-    { courseReference: string },
+    { courseReference: string; type?: ConversationType },
     HTML,
     {},
     {
@@ -2824,7 +2806,9 @@ export default (app: Courselore): void => {
     },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/new",
+    `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
+      "|"
+    )}))?`,
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
@@ -2902,7 +2886,13 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
-              <div class="label">
+              <div
+                class="label"
+                $${typeof req.params.type === "string" &&
+                conversationTypes.includes(req.params.type)
+                  ? html`hidden`
+                  : html``}
+              >
                 <p class="label--text">Type</p>
                 <div
                   css="${res.locals.css(css`
@@ -2922,7 +2912,8 @@ export default (app: Courselore): void => {
                           name="type"
                           value="${conversationType}"
                           required
-                          $${conversationDraft?.type === conversationType ||
+                          $${req.params.type === conversationType ||
+                          conversationDraft?.type === conversationType ||
                           (conversationDraft === undefined &&
                             req.query.newConversation?.type ===
                               conversationType)
@@ -3533,12 +3524,8 @@ export default (app: Courselore): void => {
                         formaction="https://${app.locals.options
                           .host}/courses/${res.locals.course
                           .reference}/conversations/new${qs.stringify(
-                          {
-                            conversations: req.query.conversations,
-                          },
-                          {
-                            addQueryPrefix: true,
-                          }
+                          { conversations: req.query.conversations },
+                          { addQueryPrefix: true }
                         )}"
                         onload="${javascript`
                           this.onclick = () => {
@@ -3979,12 +3966,8 @@ export default (app: Courselore): void => {
         `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/new${qs.stringify(
-          {
-            conversations: req.query.conversations,
-          },
-          {
-            addQueryPrefix: true,
-          }
+          { conversations: req.query.conversations },
+          { addQueryPrefix: true }
         )}`
       );
     }
