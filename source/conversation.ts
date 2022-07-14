@@ -3146,7 +3146,7 @@ export default (app: Courselore): void => {
               res.locals.enrollment.courseRole !== "staff"
                 ? html``
                 : html`
-                    <div class="label">
+                    <div key="tags" class="label">
                       <div class="label--text">
                         Tags
                         <button
@@ -3209,70 +3209,72 @@ export default (app: Courselore): void => {
                           : html`
                               <div>
                                 <label
+                                  key="add-tags"
                                   class="button button--tight button--tight--inline button--inline button--transparent secondary"
                                   css="${res.locals.css(css`
                                     gap: var(--space--2);
                                   `)}"
                                   onload="${javascript`
+                                  this.content = ${res.locals.html(
+                                    html`
+                                      <div
+                                        class="dropdown--menu"
+                                        css="${res.locals.css(css`
+                                          max-height: var(--space--40);
+                                          overflow: auto;
+                                        `)}"
+                                      >
+                                        $${res.locals.tags.map(
+                                          (tag) => html`
+                                            <div
+                                              css="${res.locals.css(css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                              `)}"
+                                              onload="${javascript`
+                                                  this.onclick = () => {
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
+                                                    this.querySelector("label").classList.add("disabled");
+                                                  };
+                                              `}"
+                                            >
+                                              <label
+                                                key="${tag.reference}"
+                                                class="dropdown--menu--item button button--transparent"
+                                              >
+                                                <span>
+                                                  <i class="bi bi-tag"></i>
+                                                  ${tag.name}
+                                                </span>
+                                              </label>
+                                              $${tag.staffOnlyAt !== null
+                                                ? html`
+                                                    <span
+                                                      class="text--sky"
+                                                      onload="${javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          touch: false,
+                                                          content: "This tag is visible by staff only.",
+                                                        });
+                                                      `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-mortarboard-fill"
+                                                      ></i>
+                                                    </span>
+                                                  `
+                                                : html``}
+                                            </div>
+                                          `
+                                        )}
+                                      </div>
+                                    `
+                                  )};
                                   (this.dropdown ??= tippy(this)).setProps({
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${res.locals.html(
-                                      html`
-                                        <div
-                                          class="dropdown--menu"
-                                          css="${res.locals.css(css`
-                                            max-height: var(--space--40);
-                                            overflow: auto;
-                                          `)}"
-                                        >
-                                          $${res.locals.tags.map(
-                                            (tag) => html`
-                                              <div
-                                                css="${res.locals.css(css`
-                                                  display: flex;
-                                                  gap: var(--space--2);
-                                                `)}"
-                                                onload="${javascript`
-                                                    this.onclick = () => {
-                                                      const displayTag = document.getElementById("tag-display-${tag.reference}");
-                                                      const input = document.getElementById("tag-input-${tag.reference}");
-                                                      displayTag.hidden = false;
-                                                      input.checked = true;
-                                                    };
-                                                `}"
-                                              >
-                                                <label
-                                                  class="dropdown--menu--item button button--transparent"
-                                                >
-                                                  <span>
-                                                    <i class="bi bi-tag"></i>
-                                                    ${tag.name}
-                                                  </span>
-                                                </label>
-                                                $${tag.staffOnlyAt !== null
-                                                  ? html`
-                                                      <span
-                                                        class="text--sky"
-                                                        onload="${javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            touch: false,
-                                                            content: "This tag is visible by staff only.",
-                                                          });
-                                                        `}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-mortarboard-fill"
-                                                        ></i>
-                                                      </span>
-                                                    `
-                                                  : html``}
-                                              </div>
-                                            `
-                                          )}
-                                        </div>
-                                      `
-                                    )},
+                                    content: this.content,
                                   });
                                 `}"
                                 >
@@ -3292,7 +3294,6 @@ export default (app: Courselore): void => {
                                   (tag) => html`
                                     <div
                                       key="tag--${tag.reference}"
-                                      id="tag-display-${tag.reference}"
                                       hidden
                                       css="${res.locals.css(css`
                                         display: flex;
@@ -3306,9 +3307,9 @@ export default (app: Courselore): void => {
                                         });
                                         
                                         this.onclick = () => {
-                                          const input = document.getElementById("tag-input-${tag.reference}");
                                           this.hidden = true;
-                                          input.checked = false;
+                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
+                                          this.querySelector("input").checked = false;
                                         };
                                       `}"
                                     >
@@ -3316,7 +3317,7 @@ export default (app: Courselore): void => {
                                         class="button button--tight button--transparent"
                                       >
                                         <input
-                                          id="tag-input-${tag.reference}"
+                                          key="input--${tag.reference}"
                                           type="checkbox"
                                           name="tagsReferences[]"
                                           value="${tag.reference}"
@@ -3337,6 +3338,9 @@ export default (app: Courselore): void => {
                                             : html``}
                                           required
                                           class="visually-hidden input--radio-or-checkbox--multilabel"
+                                          onload="${javascript`
+                                            this.validationTarget = this.closest('[key="tags"]').querySelector('[key="add-tags"]');
+                                          `}"
                                         />
                                         <span> </span>
                                         <span class="text--teal">

@@ -1680,6 +1680,8 @@ export default async (app: Courselore): Promise<void> => {
         }
 
         .icon {
+          width: 1em;
+          height: 1em;
           align-self: center;
         }
 
@@ -3009,9 +3011,7 @@ export default async (app: Courselore): Promise<void> => {
     const viewBox = 32;
     return ({ size = viewBox } = {}) => html`
       <svg
-        class="icon"
-        width="${size.toString()}"
-        height="${size.toString()}"
+        class="icon"    
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
       >
         <path
@@ -3027,8 +3027,6 @@ export default async (app: Courselore): Promise<void> => {
     return ({ size = viewBox } = {}) => html`
       <svg
         class="icon"
-        width="${size.toString()}"
-        height="${size.toString()}"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
       >
         <path

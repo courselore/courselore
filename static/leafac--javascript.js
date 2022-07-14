@@ -405,9 +405,11 @@ const leafac = {
       for (const [element, valueInputByUser] of elementsToReset)
         element.value = valueInputByUser;
       const target =
+        element.validationTarget ??
         element.closest(
           "[hidden], .visually-hidden, .visually-hidden--interactive:not(:focus):not(:focus-within):not(:active)"
-        )?.parentElement ?? element;
+        )?.parentElement ??
+        element;
       (target.validationErrorTooltip ??= tippy(target)).setProps({
         theme: "error",
         trigger: "manual",
