@@ -2853,17 +2853,59 @@ export default (app: Courselore): void => {
           res,
           head: html`
             <title>
-              Start
-              ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
-              Conversation · ${res.locals.course.name} · Courselore
+              ${req.params.type === "note"
+                ? `Post ${
+                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                  } Note`
+                : req.params.type === "question"
+                ? `Ask ${
+                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                  } Question`
+                : req.params.type === "chat"
+                ? `Start ${
+                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                  } Chat`
+                : `Start ${
+                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                  } Conversation`}
+              · ${res.locals.course.name} · Courselore
             </title>
           `,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-chat-left-text"></i>
-              Start
-              ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
-              Conversation
+              $${req.params.type === "note"
+                ? html`
+                    $${app.locals.partials.conversationTypeIcon.note.fill} Post
+                    ${res.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Note
+                  `
+                : req.params.type === "question"
+                ? html`
+                    $${app.locals.partials.conversationTypeIcon.question.fill}
+                    Ask
+                    ${res.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Question
+                  `
+                : req.params.type === "chat"
+                ? html`
+                    $${app.locals.partials.conversationTypeIcon.chat.fill} Start
+                    ${res.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Chat
+                  `
+                : html`
+                    <i class="bi bi-chat-left-text"></i>
+                    Start
+                    ${res.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Conversation
+                  `}
             </h2>
 
             <form
