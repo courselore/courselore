@@ -3202,7 +3202,7 @@ export default (app: Courselore): void => {
                         class="visually-hidden input--radio-or-checkbox--multilabel"
                         onload="${javascript`
                           this.onchange = () => {
-                            const anonymity = this.closest("form").querySelector(".anonymity");
+                            const anonymity = this.closest("form").querySelector('[key="anonymity"]');
                             if (anonymity === null) return;
                             anonymity.hidden = this.checked;
                             for (const element of anonymity.querySelectorAll("*"))
@@ -3379,7 +3379,8 @@ export default (app: Courselore): void => {
                     `
                   : html`
                       <div
-                        class="anonymity label"
+                        key="anonymity"
+                        class="label"
                         css="${res.locals.css(css`
                           width: var(--space--60);
                         `)}"
