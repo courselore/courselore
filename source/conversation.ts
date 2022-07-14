@@ -2955,10 +2955,11 @@ export default (app: Courselore): void => {
                           value="${conversationType}"
                           required
                           $${req.params.type === conversationType ||
-                          conversationDraft?.type === conversationType ||
-                          (conversationDraft === undefined &&
-                            req.query.newConversation?.type ===
-                              conversationType)
+                          (req.params.type === undefined &&
+                            (conversationDraft?.type === conversationType ||
+                              (conversationDraft === undefined &&
+                                req.query.newConversation?.type ===
+                                  conversationType)))
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -3170,17 +3171,92 @@ export default (app: Courselore): void => {
                       </div>
                     </div>
                   `}
-              $${res.locals.enrollment.courseRole === "staff"
-                ? html`
-                    <div
-                      key="new-conversation--notification"
-                      $${conversationDraft?.type === "note" ||
-                      (conversationDraft === undefined &&
-                        req.query.newConversation?.type === "note")
-                        ? html``
-                        : html`hidden`}
+
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--4);
+                `)}"
+              >
+                <div
+                  class="label"
+                  css="${res.locals.css(css`
+                    width: var(--space--40);
+                  `)}"
+                >
+                  <p class="label--text">Visibility</p>
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                    `)}"
+                  >
+                    <label
+                      class="button button--tight button--tight--inline button--transparent"
                     >
-                      <div class="label">
+                      <input
+                        type="checkbox"
+                        name="isStaffOnly"
+                        $${conversationDraft?.isStaffOnly === "true" ||
+                        (conversationDraft === undefined &&
+                          req.query.newConversation?.isStaffOnly === "true")
+                          ? html`checked`
+                          : html``}
+                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                        onload="${javascript`
+                          this.onchange = () => {
+                            const anonymity = this.closest("form").querySelector(".anonymity");
+                            if (anonymity === null) return;
+                            anonymity.hidden = this.checked;
+                            for (const element of anonymity.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = this.checked;
+                          };
+                        `}"
+                      />
+                      <span
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            touch: false,
+                            content: "Set as Visible by Staff Only",
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-eye"></i>
+                        Visible by Everyone
+                      </span>
+                      <span
+                        class="text--sky"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            touch: false,
+                            content: "Set as Visible by Everyone",
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-mortarboard-fill"></i>
+                        Visible by Staff Only
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                $${res.locals.enrollment.courseRole === "staff"
+                  ? html`
+                      <div
+                        key="new-conversation--notification"
+                        $${req.params.type === "note" ||
+                        (req.params.type === undefined &&
+                          (conversationDraft?.type === "note" ||
+                            (conversationDraft === undefined &&
+                              req.query.newConversation?.type === "note")))
+                          ? html``
+                          : html`hidden`}
+                        class="label"
+                        css="${res.locals.css(css`
+                          width: var(--space--28);
+                        `)}"
+                      >
                         <div class="label--text">Notification</div>
                         <div
                           css="${res.locals.css(css`
@@ -3193,9 +3269,12 @@ export default (app: Courselore): void => {
                             <input
                               type="checkbox"
                               name="shouldNotify"
-                              $${conversationDraft?.type === "note" ||
-                              (conversationDraft === undefined &&
-                                req.query.newConversation?.type === "note")
+                              $${req.params.type === "note" ||
+                              (req.params.type === undefined &&
+                                (conversationDraft?.type === "note" ||
+                                  (conversationDraft === undefined &&
+                                    req.query.newConversation?.type ===
+                                      "note")))
                                 ? html``
                                 : html`disabled`}
                               $${(
@@ -3213,7 +3292,7 @@ export default (app: Courselore): void => {
                               onload="${javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
-                                  content: "Notify Everyone in Conversation",
+                                  content: "Notify",
                                 });
                               `}"
                             >
@@ -3230,25 +3309,12 @@ export default (app: Courselore): void => {
                               `}"
                             >
                               <i class="bi bi-bell-fill"></i>
-                              Notify Everyone in Conversation
+                              Notify
                             </span>
                           </label>
                         </div>
                       </div>
-                    </div>
-                  `
-                : html``}
 
-              <div
-                css="${res.locals.css(css`
-                  display: flex;
-                  flex-wrap: wrap;
-                  column-gap: var(--space--8);
-                  row-gap: var(--space--4);
-                `)}"
-              >
-                $${res.locals.enrollment.courseRole === "staff"
-                  ? html`
                       <div
                         class="label"
                         css="${res.locals.css(css`
@@ -3315,149 +3381,89 @@ export default (app: Courselore): void => {
                         </div>
                       </div>
                     `
-                  : html``}
-
-                <div
-                  class="label"
-                  css="${res.locals.css(css`
-                    width: var(--space--40);
-                  `)}"
-                >
-                  <p class="label--text">Visibility</p>
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                    `)}"
-                  >
-                    <label
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <input
-                        type="checkbox"
-                        name="isStaffOnly"
-                        $${conversationDraft?.isStaffOnly === "true" ||
-                        (conversationDraft === undefined &&
-                          req.query.newConversation?.isStaffOnly === "true")
-                          ? html`checked`
-                          : html``}
-                        class="visually-hidden input--radio-or-checkbox--multilabel"
-                        onload="${javascript`
-                          this.onchange = () => {
-                            const anonymity = this.closest("form").querySelector(".anonymity");
-                            if (anonymity === null) return;
-                            anonymity.hidden = this.checked;
-                            for (const element of anonymity.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = this.checked;
-                          };
-                        `}"
-                      />
-                      <span
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Set as Visible by Staff Only",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-eye"></i>
-                        Visible by Everyone
-                      </span>
-                      <span
-                        class="text--sky"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Set as Visible by Everyone",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-mortarboard-fill"></i>
-                        Visible by Staff Only
-                      </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              $${res.locals.enrollment.courseRole === "staff"
-                ? html``
-                : html`
-                    <div class="anonymity label">
-                      <p class="label--text">Anonymity</p>
+                  : html`
                       <div
+                        class="anonymity label"
                         css="${res.locals.css(css`
-                          display: flex;
+                          width: var(--space--60);
                         `)}"
                       >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
+                        <p class="label--text">Anonymity</p>
+                        <div
+                          css="${res.locals.css(css`
+                            display: flex;
+                          `)}"
                         >
-                          <input
-                            type="checkbox"
-                            name="isAnonymous"
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onload="${javascript`
-                              this.isModified = false;
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                              onload="${javascript`
+                                this.isModified = false;
 
-                              this.onchange = () => {
-                                localStorage.setItem("anonymity", JSON.stringify(this.checked));  
-                              };
-                              
-                              if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
-                            `}"
-                          />
-                          <span
-                            onload="${javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                touch: false,
-                                content: "Set as Anonymous to Other Students",
-                              });
-                            `}"
-                          >
-                            <span>
-                              $${app.locals.partials.user({
-                                req,
-                                res,
-                                user: res.locals.user,
-                                decorate: false,
-                                name: false,
-                              })}
-                              <span
-                                css="${res.locals.css(css`
-                                  margin-left: var(--space--1);
-                                `)}"
-                              >
-                                Signed by You
+                                this.onchange = () => {
+                                  localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                };
+                                
+                                if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
+                              `}"
+                            />
+                            <span
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Set as Anonymous to Other Students",
+                                });
+                              `}"
+                            >
+                              <span>
+                                $${app.locals.partials.user({
+                                  req,
+                                  res,
+                                  user: res.locals.user,
+                                  decorate: false,
+                                  name: false,
+                                })}
+                                <span
+                                  css="${res.locals.css(css`
+                                    margin-left: var(--space--1);
+                                  `)}"
+                                >
+                                  Signed by You
+                                </span>
                               </span>
                             </span>
-                          </span>
-                          <span
-                            onload="${javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                touch: false,
-                                content: "Set as Signed by You",
-                              });
-                            `}"
-                          >
-                            <span>
-                              $${app.locals.partials.user({
-                                req,
-                                res,
-                                name: false,
-                              })}
-                              <span
-                                css="${res.locals.css(css`
-                                  margin-left: var(--space--1);
-                                `)}"
-                              >
-                                Anonymous to Other Students
+                            <span
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Set as Signed by You",
+                                });
+                              `}"
+                            >
+                              <span>
+                                $${app.locals.partials.user({
+                                  req,
+                                  res,
+                                  name: false,
+                                })}
+                                <span
+                                  css="${res.locals.css(css`
+                                    margin-left: var(--space--1);
+                                  `)}"
+                                >
+                                  Anonymous to Other Students
+                                </span>
                               </span>
                             </span>
-                          </span>
-                        </label>
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                  `}
+                    `}
+              </div>
 
               <div>
                 <button
@@ -4680,7 +4686,7 @@ export default (app: Courselore): void => {
                                                   class="button button--rose"
                                                 >
                                                   <i
-                                                    class="bi bi-mortarboard"
+                                                    class="bi bi-mortarboard-fill"
                                                   ></i>
                                                   Set as Visible by Staff Only
                                                 </button>
