@@ -964,7 +964,17 @@ export default (app: Courselore): void => {
                     : html``}
                   <a
                     href="https://${app.locals.options.host}/courses/${res
-                      .locals.course.reference}/conversations/new"
+                      .locals.course.reference}/conversations/new${qs.stringify(
+                      {
+                        newConversation: {
+                          type:
+                            res.locals.enrollment.courseRole === "staff"
+                              ? "note"
+                              : "question",
+                        },
+                      },
+                      { addQueryPrefix: true }
+                    )}"
                     class="menu-box--item button ${res.locals.enrollment
                       .courseRole === "staff"
                       ? "button--transparent"
