@@ -325,6 +325,30 @@ export default async (app: Courselore): Promise<void> => {
                             <button
                               class="button button--tight button--tight--inline button--transparent"
                               onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  theme: "green",
+                                  touch: false,
+                                  content: ${res.locals.html(
+                                    html`
+                                      Close
+                                      <span class="keyboard-shortcut">
+                                        (<span
+                                          onload="${javascript`
+                                            this.hidden = leafac.isAppleDevice;
+                                          `}"
+                                          >Esc</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          onload="${javascript`
+                                            this.hidden = !leafac.isAppleDevice;
+                                          `}"
+                                          ><i class="bi bi-escape"></i></span
+                                        >)
+                                      </span>
+                                    `
+                                  )},
+                                });
+
                                 this.onclick = () => {
                                   this.closest("[data-tippy-root]")._tippy.hide();
                                 };

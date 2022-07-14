@@ -4930,7 +4930,18 @@ export default (app: Courselore): void => {
                                     html`
                                       Cancel
                                       <span class="keyboard-shortcut">
-                                        (Escape)
+                                        (<span
+                                          onload="${javascript`
+                                            this.hidden = leafac.isAppleDevice;
+                                          `}"
+                                          >Esc</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          onload="${javascript`
+                                            this.hidden = !leafac.isAppleDevice;
+                                          `}"
+                                          ><i class="bi bi-escape"></i></span
+                                        >)
                                       </span>
                                     `
                                   )},
@@ -7088,6 +7099,32 @@ export default (app: Courselore): void => {
                                                     type="reset"
                                                     class="button button--transparent"
                                                     onload="${javascript`
+                                                      (this.tooltip ??= tippy(this)).setProps({
+                                                        touch: false,
+                                                        content: ${res.locals.html(
+                                                          html`
+                                                            <span
+                                                              class="keyboard-shortcut"
+                                                            >
+                                                              <span
+                                                                onload="${javascript`
+                                                                  this.hidden = leafac.isAppleDevice;
+                                                                `}"
+                                                                >Esc</span
+                                                              ><span
+                                                                class="keyboard-shortcut--cluster"
+                                                                onload="${javascript`
+                                                                  this.hidden = !leafac.isAppleDevice;
+                                                                `}"
+                                                                ><i
+                                                                  class="bi bi-escape"
+                                                                ></i
+                                                              ></span>
+                                                            </span>
+                                                          `
+                                                        )},
+                                                      });
+
                                                       this.onclick = () => {
                                                         this.closest(".message").querySelector(".message--show").hidden = false;
                                                         this.closest(".message").querySelector(".message--edit").hidden = true;
