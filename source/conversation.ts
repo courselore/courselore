@@ -3010,6 +3010,166 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
+              <input
+                type="text"
+                name="title"
+                required
+                $${typeof conversationDraft?.title === "string" &&
+                conversationDraft.title.trim() !== ""
+                  ? html`value="${conversationDraft.title}"`
+                  : conversationDraft === undefined &&
+                    typeof req.query.newConversation?.title === "string" &&
+                    req.query.newConversation.title.trim() !== ""
+                  ? html`value="${req.query.newConversation.title}"`
+                  : html``}
+                placeholder="Title…"
+                autocomplete="off"
+                $${conversationDraft === undefined ? html`autofocus` : html``}
+                class="input--text"
+              />
+
+              $${app.locals.partials.contentEditor({
+                req,
+                res,
+                contentSource:
+                  typeof conversationDraft?.content === "string" &&
+                  conversationDraft.content.trim() !== ""
+                    ? conversationDraft.content
+                    : conversationDraft === undefined &&
+                      typeof req.query.newConversation?.content === "string" &&
+                      req.query.newConversation.content.trim() !== ""
+                    ? req.query.newConversation.content
+                    : undefined,
+              })}
+              $${res.locals.tags.length === 0 &&
+              res.locals.enrollment.courseRole !== "staff"
+                ? html``
+                : html`
+                    <div class="label">
+                      <div class="label--text">
+                        Tags
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          onload="${javascript`
+                            (this.tooltip ??= tippy(this)).setProps({
+                              trigger: "click",
+                              content: "Tags help to organize conversations.",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                        $${res.locals.tags.length > 0 &&
+                        res.locals.enrollment.courseRole === "staff"
+                          ? html`
+                              <div
+                                css="${res.locals.css(css`
+                                  flex: 1;
+                                  display: flex;
+                                  justify-content: flex-end;
+                                `)}"
+                              >
+                                <a
+                                  href="https://${app.locals.options
+                                    .host}/courses/${res.locals.course
+                                    .reference}/settings/tags"
+                                  target="_blank"
+                                  class="button button--tight button--tight--inline button--transparent secondary"
+                                >
+                                  <i class="bi bi-sliders"></i>
+                                  Manage Tags
+                                </a>
+                              </div>
+                            `
+                          : html``}
+                      </div>
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--8);
+                          row-gap: var(--space--2);
+                        `)}"
+                      >
+                        $${res.locals.tags.length === 0 &&
+                        res.locals.enrollment.courseRole === "staff"
+                          ? html`
+                              <a
+                                href="https://${app.locals.options
+                                  .host}/courses/${res.locals.course
+                                  .reference}/settings/tags"
+                                target="_blank"
+                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
+                              >
+                                <i class="bi bi-sliders"></i>
+                                Create the First Tag
+                              </a>
+                            `
+                          : res.locals.tags.map(
+                              (tag) => html`
+                                <div
+                                  key="tag--${tag.reference}"
+                                  css="${res.locals.css(css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `)}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      name="tagsReferences[]"
+                                      value="${tag.reference}"
+                                      $${(typeof conversationDraft?.tagsReferences ===
+                                        "string" &&
+                                        JSON.parse(
+                                          conversationDraft.tagsReferences
+                                        ).includes(tag.reference)) ||
+                                      (conversationDraft === undefined &&
+                                        Array.isArray(
+                                          req.query.newConversation
+                                            ?.tagsReferences
+                                        ) &&
+                                        req.query.newConversation!.tagsReferences.includes(
+                                          tag.reference
+                                        ))
+                                        ? html`checked`
+                                        : html``}
+                                      required
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    />
+                                    <span>
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </span>
+                                    <span class="text--teal">
+                                      <i class="bi bi-tag-fill"></i>
+                                      ${tag.name}
+                                    </span>
+                                  </label>
+                                  $${tag.staffOnlyAt !== null
+                                    ? html`
+                                        <span
+                                          class="text--sky"
+                                          onload="${javascript`
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              touch: false,
+                                              content: "This tag is visible by staff only.",
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-mortarboard-fill"></i>
+                                        </span>
+                                      `
+                                    : html``}
+                                </div>
+                              `
+                            )}
+                      </div>
+                    </div>
+                  `}
               $${res.locals.enrollment.courseRole === "staff"
                 ? html`
                     <div
@@ -3219,168 +3379,6 @@ export default (app: Courselore): void => {
                 </div>
               </div>
 
-              <div class="label">
-                <p class="label--text">Title</p>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  $${typeof conversationDraft?.title === "string" &&
-                  conversationDraft.title.trim() !== ""
-                    ? html`value="${conversationDraft.title}"`
-                    : conversationDraft === undefined &&
-                      typeof req.query.newConversation?.title === "string" &&
-                      req.query.newConversation.title.trim() !== ""
-                    ? html`value="${req.query.newConversation.title}"`
-                    : html``}
-                  autocomplete="off"
-                  $${conversationDraft === undefined ? html`autofocus` : html``}
-                  class="input--text"
-                />
-              </div>
-
-              $${app.locals.partials.contentEditor({
-                req,
-                res,
-                contentSource:
-                  typeof conversationDraft?.content === "string" &&
-                  conversationDraft.content.trim() !== ""
-                    ? conversationDraft.content
-                    : conversationDraft === undefined &&
-                      typeof req.query.newConversation?.content === "string" &&
-                      req.query.newConversation.content.trim() !== ""
-                    ? req.query.newConversation.content
-                    : undefined,
-              })}
-              $${res.locals.tags.length === 0 &&
-              res.locals.enrollment.courseRole !== "staff"
-                ? html``
-                : html`
-                    <div class="label">
-                      <div class="label--text">
-                        Tags
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          onload="${javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              trigger: "click",
-                              content: "Tags help to organize conversations.",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                        $${res.locals.tags.length > 0 &&
-                        res.locals.enrollment.courseRole === "staff"
-                          ? html`
-                              <div
-                                css="${res.locals.css(css`
-                                  flex: 1;
-                                  display: flex;
-                                  justify-content: flex-end;
-                                `)}"
-                              >
-                                <a
-                                  href="https://${app.locals.options
-                                    .host}/courses/${res.locals.course
-                                    .reference}/settings/tags"
-                                  target="_blank"
-                                  class="button button--tight button--tight--inline button--transparent secondary"
-                                >
-                                  <i class="bi bi-sliders"></i>
-                                  Manage Tags
-                                </a>
-                              </div>
-                            `
-                          : html``}
-                      </div>
-                      <div
-                        css="${res.locals.css(css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--8);
-                          row-gap: var(--space--2);
-                        `)}"
-                      >
-                        $${res.locals.tags.length === 0 &&
-                        res.locals.enrollment.courseRole === "staff"
-                          ? html`
-                              <a
-                                href="https://${app.locals.options
-                                  .host}/courses/${res.locals.course
-                                  .reference}/settings/tags"
-                                target="_blank"
-                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
-                              >
-                                <i class="bi bi-sliders"></i>
-                                Create the First Tag
-                              </a>
-                            `
-                          : res.locals.tags.map(
-                              (tag) => html`
-                                <div
-                                  key="tag--${tag.reference}"
-                                  css="${res.locals.css(css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `)}"
-                                >
-                                  <label
-                                    class="button button--tight button--tight--inline button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="tagsReferences[]"
-                                      value="${tag.reference}"
-                                      $${(typeof conversationDraft?.tagsReferences ===
-                                        "string" &&
-                                        JSON.parse(
-                                          conversationDraft.tagsReferences
-                                        ).includes(tag.reference)) ||
-                                      (conversationDraft === undefined &&
-                                        Array.isArray(
-                                          req.query.newConversation
-                                            ?.tagsReferences
-                                        ) &&
-                                        req.query.newConversation!.tagsReferences.includes(
-                                          tag.reference
-                                        ))
-                                        ? html`checked`
-                                        : html``}
-                                      required
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    />
-                                    <span>
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </span>
-                                    <span class="text--teal">
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tag.name}
-                                    </span>
-                                  </label>
-                                  $${tag.staffOnlyAt !== null
-                                    ? html`
-                                        <span
-                                          class="text--sky"
-                                          onload="${javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "This tag is visible by staff only.",
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-mortarboard-fill"></i>
-                                        </span>
-                                      `
-                                    : html``}
-                                </div>
-                              `
-                            )}
-                      </div>
-                    </div>
-                  `}
               $${res.locals.enrollment.courseRole === "staff"
                 ? html``
                 : html`
@@ -3497,8 +3495,42 @@ export default (app: Courselore): void => {
                     };
                   `}"
                 >
-                  <i class="bi bi-chat-left-text-fill"></i>
-                  Start Conversation
+                  $${req.params.type === "note"
+                    ? html`
+                        $${app.locals.partials.conversationTypeIcon.note.fill}
+                        Post
+                        ${res.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Note
+                      `
+                    : req.params.type === "question"
+                    ? html`
+                        $${app.locals.partials.conversationTypeIcon.question
+                          .fill}
+                        Ask
+                        ${res.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Question
+                      `
+                    : req.params.type === "chat"
+                    ? html`
+                        $${app.locals.partials.conversationTypeIcon.chat.fill}
+                        Start
+                        ${res.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Chat
+                      `
+                    : html`
+                        <i class="bi bi-chat-left-text-fill"></i>
+                        Start
+                        ${res.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Conversation
+                      `}
                 </button>
               </div>
 
