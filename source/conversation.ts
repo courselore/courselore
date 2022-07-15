@@ -3263,8 +3263,8 @@ export default (app: Courselore): void => {
                       <div
                         css="${res.locals.css(css`
                           display: flex;
-                          gap: var(--space--2);
                           flex-direction: column;
+                          gap: var(--space--2);
                         `)}"
                       >
                         $${res.locals.tags.length === 0 &&
@@ -3309,6 +3309,7 @@ export default (app: Courselore): void => {
                                               onload="${javascript`
                                                   this.onclick = () => {
                                                     this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
                                                     this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
                                                     this.querySelector("label").classList.add("disabled");
                                                   };
@@ -3358,11 +3359,13 @@ export default (app: Courselore): void => {
                                 </label>
                               </div>
                               <div
+                                key="added-tags"
+                                hidden
                                 css="${res.locals.css(css`
                                   display: flex;
                                   flex-wrap: wrap;
-                                  column-gap: var(--space--8);
-                                  row-gap: var(--space--2);
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--1);
                                 `)}"
                               >
                                 $${res.locals.tags.map(
@@ -3383,8 +3386,10 @@ export default (app: Courselore): void => {
                                         
                                         this.onclick = () => {
                                           this.hidden = true;
-                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
                                           this.querySelector("input").checked = false;
+                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
+                                          if (!this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length)
+                                            this.closest('[key="added-tags"]').hidden = true;
                                         };
                                       `}"
                                     >
