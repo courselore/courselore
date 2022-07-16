@@ -1,6 +1,14 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-16</summary>
+
+- Better ways for administrators to be notified of updates.
+- “New Conversation” interface changes (sidebar & main form).
+
+</details>
+
+<details>
 <summary>2021-07-09</summary>
 
 - Administrative interface: Deployed.
