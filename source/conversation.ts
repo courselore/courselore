@@ -2962,7 +2962,7 @@ export default (app: Courselore): void => {
                           onload="${javascript`
                             this.onchange = () => {
                               const form = this.closest("form");
-                              for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
+                              for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
                                 element.required = ${JSON.stringify(
                                   conversationType !== "chat"
                                 )};
@@ -3037,6 +3037,16 @@ export default (app: Courselore): void => {
                       req.query.newConversation.content.trim() !== ""
                     ? req.query.newConversation.content
                     : undefined,
+                // TODO: Drafts
+                required:
+                  (typeof req.params.type === "string" &&
+                    ["question", "note"].includes(req.params.type)) ||
+                  (req.params.type === undefined &&
+                    ((typeof req.query.newConversation?.type === "string" &&
+                      ["question", "note"].includes(
+                        req.query.newConversation.type
+                      )) ||
+                      req.query.newConversation?.type === undefined)),
               })}
               $${res.locals.tags.length === 0 &&
               res.locals.enrollment.courseRole !== "staff"
@@ -3134,7 +3144,23 @@ export default (app: Courselore): void => {
                                         ))
                                         ? html`checked`
                                         : html``}
-                                      required
+                                      $${
+                                        // TODO: Drafts
+                                        (typeof req.params.type === "string" &&
+                                          ["question", "note"].includes(
+                                            req.params.type
+                                          )) ||
+                                        (req.params.type === undefined &&
+                                          ((typeof req.query.newConversation
+                                            ?.type === "string" &&
+                                            ["question", "note"].includes(
+                                              req.query.newConversation.type
+                                            )) ||
+                                            req.query.newConversation?.type ===
+                                              undefined))
+                                          ? html`required`
+                                          : html``
+                                      }
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
                                     />
                                     <span>
@@ -3578,7 +3604,8 @@ export default (app: Courselore): void => {
 
                     const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
-                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
+                    // TODO: Drafts
+                    // (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
 
                     this.onclick = () => {
                       this.closest("form").isValid = true;
