@@ -44,7 +44,7 @@ export default (app: Courselore): void => {
           head: html`<title>404 Not Found · Courselore</title>`,
           body: html`
             <h2 class="heading">
-              <i class="bi bi-question-diamond"></i>
+              <i class="bi bi-question-diamond-fill"></i>
               404 Not Found
             </h2>
             <p>
@@ -79,7 +79,7 @@ export default (app: Courselore): void => {
         head: html`<title>${message} Error · Courselore</title>`,
         body: html`
           <h2 class="heading">
-            <i class="bi bi-bug"></i>
+            <i class="bi bi-bug-fill"></i>
             ${message} Error
           </h2>
           $${isCSRF

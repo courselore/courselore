@@ -692,6 +692,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Exclude `assets/` folder from build?
 - Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.

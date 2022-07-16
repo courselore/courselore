@@ -1073,7 +1073,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
-              <i class="bi bi-key"></i>
+              <i class="bi bi-key-fill"></i>
               Email & Password
             </h2>
 
@@ -1311,7 +1311,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
-              <i class="bi bi-bell"></i>
+              <i class="bi bi-bell-fill"></i>
               Notifications
             </h2>
 

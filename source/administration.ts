@@ -370,7 +370,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-pc-display-horizontal"></i>
               Administration ·
-              <i class="bi bi-people"></i>
+              <i class="bi bi-people-fill"></i>
               Users
             </h2>
 

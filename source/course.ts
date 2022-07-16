@@ -1665,7 +1665,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               Course Settings ·
-              <i class="bi bi-tags"></i>
+              <i class="bi bi-tags-fill"></i>
               Tags
             </h2>
 
@@ -2253,7 +2253,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               Course Settings ·
-              <i class="bi bi-person-plus"></i>
+              <i class="bi bi-person-plus-fill"></i>
               Invitations
             </h2>
 
@@ -3104,7 +3104,7 @@ export default (app: Courselore): void => {
                                                   >
                                                     <h3 class="heading">
                                                       <i
-                                                        class="bi bi-calendar-x"
+                                                        class="bi bi-calendar-x-fill"
                                                       ></i>
                                                       <span>
                                                         Expired
@@ -3204,7 +3204,7 @@ export default (app: Courselore): void => {
                                                   >
                                                     <h3 class="heading">
                                                       <i
-                                                        class="bi bi-calendar-plus"
+                                                        class="bi bi-calendar-plus-fill"
                                                       ></i>
                                                       <span>
                                                         Expires
@@ -3628,7 +3628,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               Course Settings ·
-              <i class="bi bi-people"></i>
+              <i class="bi bi-people-fill"></i>
               Enrollments
             </h2>
 
@@ -4179,7 +4179,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               Course Settings ·
-              <i class="bi bi-person"></i>
+              <i class="bi bi-person-fill"></i>
               Your Enrollment
             </h2>
 

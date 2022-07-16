@@ -2899,7 +2899,7 @@ export default (app: Courselore): void => {
                     Chat
                   `
                 : html`
-                    <i class="bi bi-chat-left-text"></i>
+                    <i class="bi bi-chat-left-text-fill"></i>
                     Start
                     ${res.locals.conversationsCount === 0
                       ? "the First"
@@ -4769,7 +4769,7 @@ export default (app: Courselore): void => {
                               content: ${res.locals.html(
                                 html`
                                   <h3 class="heading">
-                                    <i class="bi bi-chat-left-text"></i>
+                                    <i class="bi bi-chat-left-text-fill"></i>
                                     Conversation
                                     #${res.locals.conversation.reference}
                                   </h3>
@@ -5555,6 +5555,7 @@ export default (app: Courselore): void => {
                                                 `)}"
                                               />
                                               <span class="heading text--rose">
+                                                <i class="bi bi-fire"></i>
                                                 New
                                               </span>
                                               <hr
@@ -5578,7 +5579,7 @@ export default (app: Courselore): void => {
                                         ? html`
                                             <div
                                               hidden
-                                              class="message--date-separator"
+                                              key="message--date-separator"
                                               css="${res.locals.css(css`
                                                 margin: var(--space--2)
                                                   var(--space--0);
@@ -5593,27 +5594,31 @@ export default (app: Courselore): void => {
                                                   flex: 1;
                                                 `)}"
                                               />
-                                              <time
-                                                datetime="${new Date(
-                                                  message.createdAt
-                                                ).toISOString()}"
-                                                class="heading secondary"
-                                                onload="${javascript`
-                                                  const element = this;
-                                                  leafac.relativizeDateElement(element);
+                                              <span class="heading secondary">
+                                                <i
+                                                  class="bi bi-calendar-week-fill"
+                                                ></i>
+                                                <time
+                                                  datetime="${new Date(
+                                                    message.createdAt
+                                                  ).toISOString()}"
+                                                  onload="${javascript`
+                                                    const element = this;
+                                                    leafac.relativizeDateElement(element);
 
-                                                  window.clearTimeout(element.updateTimeout);
-                                                  (function update() {
-                                                    if (!leafac.isConnected(element)) return;
-                                                    const dateSeparators = [...document.querySelectorAll(".message--date-separator")];
-                                                    const thisDateSeparator = element.closest(".message--date-separator");
-                                                    const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
-                                                    const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
-                                                    thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                    element.updateTimeout = window.setTimeout(update, 60 * 1000);
-                                                  })();
-                                                `}"
-                                              ></time>
+                                                    window.clearTimeout(element.updateTimeout);
+                                                    (function update() {
+                                                      if (!leafac.isConnected(element)) return;
+                                                      const dateSeparators = [...document.querySelectorAll('[key="message--date-separator"]')];
+                                                      const thisDateSeparator = element.closest('[key="message--date-separator"]');
+                                                      const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
+                                                      const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
+                                                      thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
+                                                      element.updateTimeout = window.setTimeout(update, 60 * 1000);
+                                                    })();
+                                                  `}"
+                                                ></time>
+                                              </span>
                                               <hr
                                                 class="separator"
                                                 css="${res.locals.css(css`
@@ -5739,7 +5744,7 @@ export default (app: Courselore): void => {
                                                       html`
                                                         <h3 class="heading">
                                                           <i
-                                                            class="bi bi-chat-left-text"
+                                                            class="bi bi-chat-left-text-fill"
                                                           ></i>
                                                           Message
                                                           #${res.locals
