@@ -981,8 +981,8 @@ export default (app: Courselore): void => {
                       : "button--blue"}"
                   >
                     $${res.locals.enrollment.courseRole === "staff"
-                      ? html`<i class="bi bi-chat-left-text"></i>`
-                      : html`<i class="bi bi-chat-left-text-fill"></i>`}
+                      ? html`<i class="bi bi-chat-text"></i>`
+                      : html`<i class="bi bi-chat-text-fill"></i>`}
                     Start the First Conversation
                   </a>
                 </div>
@@ -1957,7 +1957,7 @@ export default (app: Courselore): void => {
                                       });
                                     `}"
                                   >
-                                    <i class="bi bi-chat-left-text"></i>
+                                    <i class="bi bi-chat-text"></i>
                                   </a>
                                 `
                               : html``}

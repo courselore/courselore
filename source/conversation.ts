@@ -657,7 +657,7 @@ export default (app: Courselore): void => {
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>
-                    <i class="bi bi-chat-left-text"></i>
+                    <i class="bi bi-chat-text"></i>
                     Conversations
                   </a>
                 </div>
@@ -1891,7 +1891,7 @@ export default (app: Courselore): void => {
                           `)}"
                         >
                           <div class="decorative-icon">
-                            <i class="bi bi-chat-left-text"></i>
+                            <i class="bi bi-chat-text"></i>
                           </div>
                           <p class="secondary">No conversation found.</p>
                         </div>
@@ -2899,7 +2899,7 @@ export default (app: Courselore): void => {
                     Chat
                   `
                 : html`
-                    <i class="bi bi-chat-left-text-fill"></i>
+                    <i class="bi bi-chat-text-fill"></i>
                     Start
                     ${res.locals.conversationsCount === 0
                       ? "the First"
@@ -3527,7 +3527,7 @@ export default (app: Courselore): void => {
                         Chat
                       `
                     : html`
-                        <i class="bi bi-chat-left-text-fill"></i>
+                        <i class="bi bi-chat-text-fill"></i>
                         Start
                         ${res.locals.conversationsCount === 0
                           ? "the First"
@@ -4769,7 +4769,7 @@ export default (app: Courselore): void => {
                               content: ${res.locals.html(
                                 html`
                                   <h3 class="heading">
-                                    <i class="bi bi-chat-left-text-fill"></i>
+                                    <i class="bi bi-chat-text-fill"></i>
                                     Conversation
                                     #${res.locals.conversation.reference}
                                   </h3>
@@ -5416,7 +5416,7 @@ export default (app: Courselore): void => {
                               `)}"
                             >
                               <div class="decorative-icon">
-                                <i class="bi bi-chat-left-text"></i>
+                                <i class="bi bi-chat-text"></i>
                               </div>
                               <p class="secondary">
                                 ${afterMessage !== undefined ||
@@ -5744,7 +5744,7 @@ export default (app: Courselore): void => {
                                                       html`
                                                         <h3 class="heading">
                                                           <i
-                                                            class="bi bi-chat-left-text-fill"
+                                                            class="bi bi-chat-text-fill"
                                                           ></i>
                                                           Message
                                                           #${res.locals
@@ -6839,7 +6839,7 @@ export default (app: Courselore): void => {
                                                           `}"
                                                         >
                                                           <i
-                                                            class="bi bi-chat-left-quote"
+                                                            class="bi bi-chat-quote"
                                                           ></i>
                                                           Quote
                                                         </button>

@@ -296,7 +296,12 @@ export default (app: Courselore): void => {
                     }
                   `)}"
                 >
-                  <i class="bi bi-chat-left-text-fill"></i>
+                  <i
+                    class="bi bi-chat-text-fill"
+                    css="${res.locals.css(css`
+                      margin-left: var(--space--0-5);
+                    `)}"
+                  ></i>
                 </div>
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
@@ -339,7 +344,12 @@ export default (app: Courselore): void => {
                     }
                   `)}"
                 >
-                  <i class="bi bi-file-earmark-code-fill"></i>
+                  <i
+                    class="bi bi-file-earmark-code-fill"
+                    css="${res.locals.css(css`
+                      margin-left: var(--space--0-5);
+                    `)}"
+                  ></i>
                 </div>
                 <h2 class="heading--display">Open Source</h2>
               </div>

@@ -1301,7 +1301,7 @@ export default async (app: Courselore): Promise<void> => {
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
                 `}"
               >
-                <i class="bi bi-chat-left-quote"></i>
+                <i class="bi bi-quote"></i>
               </button>
               <button
                 type="button"

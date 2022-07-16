@@ -2575,8 +2575,8 @@ export default async (app: Courselore): Promise<void> => {
                                         class="bi ${req.path.includes(
                                           "/settings/"
                                         )
-                                          ? "bi-chat-left-text"
-                                          : "bi-chat-left-text-fill"}"
+                                          ? "bi-chat-text"
+                                          : "bi-chat-text-fill"}"
                                       ></i>
                                       Conversations
                                     </a>
