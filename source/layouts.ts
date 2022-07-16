@@ -457,10 +457,73 @@ export default async (app: Courselore): Promise<void> => {
           $${(() => {
             let header = html``;
 
-            let headerDemonstration = html``;
+            let headerMeta = html``;
+
+            if (
+              res.locals.user?.systemRole === "administrator" &&
+              app.locals.options.needsUpdate
+            )
+              headerMeta += html`
+                <div>
+                  <button
+                    class="button button--green"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        interactive: true,
+                        content: ${res.locals.html(
+                          html`
+                            <div
+                              css="${res.locals.css(css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `)}"
+                            >
+                              <p>
+                                This Courselore installation is running in
+                                demonstration mode and must not be used for real
+                                courses. Any data may be lost, including users,
+                                courses, invitations, conversations, messages,
+                                and so forth. Emails aren’t delivered. You may
+                                create demonstration data to give you a better
+                                idea of what Courselore looks like in use.
+                              </p>
+                              <form
+                                method="POST"
+                                action="https://${app.locals.options
+                                  .host}/demonstration-data"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="_csrf"
+                                  value="${req.csrfToken()}"
+                                />
+                                <button
+                                  class="button button--blue"
+                                  css="${res.locals.css(css`
+                                    width: 100%;
+                                  `)}"
+                                >
+                                  <i class="bi bi-easel-fill"></i>
+                                  Create Demonstration Data
+                                </button>
+                              </form>
+                            </div>
+                          `
+                        )},
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-arrow-repeat"></i>
+                    Update
+                  </button>
+                </div>
+              `;
 
             if (app.locals.options.demonstration)
-              headerDemonstration += html`
+              headerMeta += html`
                 <div>
                   <button
                     class="button button--transparent"
@@ -520,7 +583,7 @@ export default async (app: Courselore): Promise<void> => {
               `;
 
             if (app.locals.options.environment !== "production")
-              headerDemonstration += html`
+              headerMeta += html`
                 <form
                   method="DELETE"
                   action="https://${app.locals.options.host}/turn-off"
@@ -537,16 +600,16 @@ export default async (app: Courselore): Promise<void> => {
                 </form>
               `;
 
-            if (headerDemonstration !== html``)
+            if (headerMeta !== html``)
               header += html`
                 <div
-                  key="header--demonstration"
+                  key="header--meta"
                   css="${res.locals.css(css`
                     justify-content: center;
                     flex-wrap: wrap;
                   `)}"
                 >
-                  $${headerDemonstration}
+                  $${headerMeta}
                 </div>
               `;
 
@@ -1477,7 +1540,7 @@ export default async (app: Courselore): Promise<void> => {
             }
           }
 
-          ${["blue", "rose", "amber"].map(
+          ${["blue", "green", "rose", "amber"].map(
             (color) => css`
               &.button--${color} {
                 color: var(--color--${color}--50);

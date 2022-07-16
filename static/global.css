@@ -471,6 +471,83 @@
                 }
                   }
 
+        .button.button--green {
+                color: var(--color--green--50);
+              }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button.button--green {
+                  color: var(--color--green--100)
+              }
+                }
+
+        .button.button--green:not(:disabled):not(.disabled) {
+                  background-color: var(--color--green--600);
+                }
+
+        .button.button--green:not(:disabled):not(.disabled):hover,
+                  .button.button--green:not(:disabled):not(.disabled):focus-within,
+                  .button.button--green:not(:disabled):not(.disabled).hover {
+                    background-color: var(--color--green--500);
+                  }
+
+        .button.button--green:not(:disabled):not(.disabled):active {
+                    background-color: var(--color--green--700);
+                  }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button.button--green:not(:disabled):not(.disabled) {
+                    background-color: var(--color--green--800)
+                }
+                    .button.button--green:not(:disabled):not(.disabled):hover,
+                    .button.button--green:not(:disabled):not(.disabled):focus-within,
+                    .button.button--green:not(:disabled):not(.disabled).hover {
+                      background-color: var(--color--green--700);
+                    }
+                    .button.button--green:not(:disabled):not(.disabled):active {
+                      background-color: var(--color--green--900);
+                    }
+                  }
+
+        .button.button--green:disabled,
+                .button.button--green.disabled {
+                  background-color: var(--color--green--300);
+                }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button.button--green:disabled,
+                .button.button--green.disabled {
+                    background-color: var(--color--green--500)
+                }
+                  }
+
+        .button.button--green .strong {
+                  color: var(--color--green--50);
+                }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button.button--green .strong {
+                    color: var(--color--green--100)
+                }
+                  }
+
+        .button.button--green .secondary,
+                .button.button--green [class^="text--"] {
+                  color: var(--color--green--100);
+                }
+
+        @media (prefers-color-scheme: dark) {
+
+        .button.button--green .secondary,
+                .button.button--green [class^="text--"] {
+                    color: var(--color--green--200)
+                }
+                  }
+
         .button.button--rose {
                 color: var(--color--rose--50);
               }
