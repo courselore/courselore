@@ -539,7 +539,7 @@ export default (app: Courselore): void => {
                 line-height: var(--line-height--xl);
               `)}"
             >
-              <i class="bi bi-sunglasses"></i>
+              <i class="bi bi-incognito"></i>
             </span>
           </foreignObject>
         </svg>`;
