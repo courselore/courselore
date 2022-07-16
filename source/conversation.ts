@@ -3308,8 +3308,8 @@ export default (app: Courselore): void => {
                                               `)}"
                                               onload="${javascript`
                                                   this.onclick = () => {
-                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
                                                     this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
                                                     this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
                                                     this.querySelector("label").classList.add("disabled");
                                                   };

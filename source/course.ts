@@ -452,7 +452,12 @@ export default (app: Courselore): void => {
                 >
                   <h2 class="heading--display">Welcome to Courselore!</h2>
 
-                  <div class="decorative-icon">
+                  <div 
+                    class="decorative-icon"
+                    css="${res.locals.css(css`
+                      font-size: 144px;
+                    `)}"
+                  >
                     $${app.locals.icons.logo({
                       size: 144 /* var(--space--36) */,
                     })}

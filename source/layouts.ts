@@ -604,9 +604,15 @@ export default async (app: Courselore): Promise<void> => {
                     content: ${res.locals.html(
                       html`
                         <h3 class="heading">
-                          $${app.locals.icons.logo({
-                            size: 12 /* var(--space--3) */,
-                          })}
+                          <div
+                            css="${res.locals.css(css`
+                              font-size: 12px;
+                            `)}"
+                          >
+                            $${app.locals.icons.logo({
+                              size: 12 /* var(--space--3) */,
+                            })}
+                          </div>
                           <span>
                             Courselore <br />
                             Communication Platform for Education <br />
@@ -644,7 +650,14 @@ export default async (app: Courselore): Promise<void> => {
                   });
                 `}"
               >
-                $${app.locals.icons.logo({ size: 16 /* var(--space--4) */ })}
+                <div
+                  css="${res.locals.css(css`
+                    font-size: 16px;
+                    align-self: center;
+                  `)}"
+                >
+                  $${app.locals.icons.logo({ size: 16 /* var(--space--4) */ })}
+                </div>
                 Courselore
               </button>
             </div>
@@ -2299,7 +2312,15 @@ export default async (app: Courselore): Promise<void> => {
                   align-items: center;
                 `)}"
               >
-                $${app.locals.icons.logo()} Courselore
+                <div
+                  css="${res.locals.css(css`
+                    font-size: 24px;
+                    align-self: center;
+                 `)}"
+                >
+                  $${app.locals.icons.logo()}
+                </div>
+                Courselore
               </a>
             </div>
             <div
@@ -2483,7 +2504,14 @@ export default async (app: Courselore): Promise<void> => {
               });
             `}"
           >
-            $${app.locals.icons.logo()}
+            <div
+              css="${res.locals.css(css`
+                font-size: 24px;
+                align-self: center;
+              `)}"
+            >
+              $${app.locals.icons.logo()}
+            </div>
           </a>
 
           <div
@@ -3040,8 +3068,7 @@ export default async (app: Courselore): Promise<void> => {
       .join(" L ")} Z`;
     return ({ size = viewBox } = {}) => html`
       <svg
-        width="${size.toString()}"
-        height="${size.toString()}"
+        class="icon"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
       >
         <path

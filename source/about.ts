@@ -69,9 +69,16 @@ export default (app: Courselore): void => {
                   align-items: center;
                 `)}"
               >
-                $${app.locals.icons.logo({
-                  size: 48 /* var(--space--12) */,
-                })}
+                <div
+                  css="${res.locals.css(css`
+                    font-size: 48px;
+                    align-self: center;
+                  `)}"
+                >
+                  $${app.locals.icons.logo({
+                    size: 48 /* var(--space--12) */,
+                  })}
+                </div>
                 Courselore
               </a>
               <h3
@@ -159,9 +166,16 @@ export default (app: Courselore): void => {
                       });
                     `}"
                   >
-                    $${app.locals.icons.logo({
-                      size: 16 /* var(--space--4) */,
-                    })}
+                    <div
+                      css="${res.locals.css(css`
+                        font-size: 16px;
+                        align-self: center;
+                      `)}"
+                    >
+                      $${app.locals.icons.logo({
+                        size: 16 /* var(--space--4) */,
+                      })}
+                    </div>
                     Meta Courselore
                   </a>
                   <a
@@ -853,7 +867,14 @@ export default (app: Courselore): void => {
                 });
               `}"
             >
-              $${app.locals.icons.logo({ size: 24 /* var(--space--6) */ })}
+              <div
+                css="${res.locals.css(css`
+                  font-size: 24px;
+                  align-self: center;
+                `)}"
+              >
+                $${app.locals.icons.logo({ size: 24 /* var(--space--6) */ })}
+              </div>
               Meta Courselore
             </a>
             <a
