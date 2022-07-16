@@ -459,69 +459,6 @@ export default async (app: Courselore): Promise<void> => {
 
             let headerMeta = html``;
 
-            if (
-              res.locals.user?.systemRole === "administrator" &&
-              app.locals.options.needsUpdate
-            )
-              headerMeta += html`
-                <div>
-                  <button
-                    class="button button--green"
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        interactive: true,
-                        content: ${res.locals.html(
-                          html`
-                            <div
-                              css="${res.locals.css(css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `)}"
-                            >
-                              <p>
-                                This Courselore installation is running in
-                                demonstration mode and must not be used for real
-                                courses. Any data may be lost, including users,
-                                courses, invitations, conversations, messages,
-                                and so forth. Emails aren’t delivered. You may
-                                create demonstration data to give you a better
-                                idea of what Courselore looks like in use.
-                              </p>
-                              <form
-                                method="POST"
-                                action="https://${app.locals.options
-                                  .host}/demonstration-data"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="_csrf"
-                                  value="${req.csrfToken()}"
-                                />
-                                <button
-                                  class="button button--blue"
-                                  css="${res.locals.css(css`
-                                    width: 100%;
-                                  `)}"
-                                >
-                                  <i class="bi bi-easel-fill"></i>
-                                  Create Demonstration Data
-                                </button>
-                              </form>
-                            </div>
-                          `
-                        )},
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-arrow-repeat"></i>
-                    Update
-                  </button>
-                </div>
-              `;
-
             if (app.locals.options.demonstration)
               headerMeta += html`
                 <div>
@@ -735,6 +672,7 @@ export default async (app: Courselore): Promise<void> => {
                 Courselore
               </button>
             </div>
+
             <div>
               <button
                 class="button button--transparent"
@@ -848,6 +786,72 @@ export default async (app: Courselore): Promise<void> => {
                 Report an Issue
               </button>
             </div>
+
+            $${res.locals.user?.systemRole === "administrator" &&
+            typeof app.locals.options.updateVersion === "string"
+              ? html`
+                  <div>
+                    <button
+                      class="button button--transparent strong text--green"
+                      css="${res.locals.css(css`
+                        animation: bounce 1s 3;
+                      `)}"
+                      onload="${javascript`
+                        (this.tooltip ??= tippy(this)).setProps({
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.html(
+                            html`
+                              <div
+                                css="${res.locals.css(css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `)}"
+                              >
+                                <p>
+                                  Courselore installation is running version
+                                  ${app.locals.options.version} in demonstration
+                                  mode and must not be used for real courses.
+                                  Any data may be lost, including users,
+                                  courses, invitations, conversations, messages,
+                                  and so forth. Emails aren’t delivered. You may
+                                  create demonstration data to give you a better
+                                  idea of what Courselore looks like in use.
+                                </p>
+                                <form
+                                  method="POST"
+                                  action="https://${app.locals.options
+                                    .host}/demonstration-data"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="${req.csrfToken()}"
+                                  />
+                                  <button
+                                    class="button button--blue"
+                                    css="${res.locals.css(css`
+                                      width: 100%;
+                                    `)}"
+                                  >
+                                    <i class="bi bi-easel-fill"></i>
+                                    Create Demonstration Data
+                                  </button>
+                                </form>
+                              </div>
+                            `
+                          )},
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-arrow-up-circle-fill"></i>
+                      Update
+                    </button>
+                  </div>
+                `
+              : html``}
           </div>
         </div>
 

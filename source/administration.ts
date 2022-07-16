@@ -12,7 +12,7 @@ import {
 } from "./index.js";
 
 export interface AdministrationOptions {
-  needsUpdate: boolean;
+  updateVersion?: string;
   userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
 }
 
@@ -82,7 +82,7 @@ export type AdministrationNewsletterHandler = express.RequestHandler<
 export default (app: Courselore): void => {
   (async () => {
     while (true) {
-      app.locals.options.needsUpdate = true /* TODO */;
+      app.locals.options.updateVersion = "TODO";
       await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
     }
   })();

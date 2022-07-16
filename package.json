@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.4",
-    "@leafac/css": "^0.6.0",
+    "@leafac/css": "^0.6.1",
     "@leafac/express-async-handler": "^0.0.1",
     "@leafac/html": "^3.0.2",
     "@leafac/javascript": "^0.2.11",
@@ -85,7 +85,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/jsdom": "^16.2.14",
     "@types/lodash": "^4.14.182",
-    "@types/node": "^18.0.4",
+    "@types/node": "^18.0.5",
     "@types/nodemailer": "^6.4.4",
     "@types/prompts": "^2.0.14",
     "@types/qrcode": "^1.4.2",
@@ -95,7 +95,7 @@
     "nodemon": "^2.0.19",
     "npm-check-updates": "^15.3.3",
     "prettier": "^2.7.1",
-    "rollup": "^2.76.0",
+    "rollup": "^2.77.0",
     "shx": "^0.3.4",
     "typescript": "^4.7.4"
   }
