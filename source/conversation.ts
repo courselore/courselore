@@ -3449,6 +3449,7 @@ export default (app: Courselore): void => {
                                   user: res.locals.user,
                                   decorate: false,
                                   name: false,
+                                  size: "xs",
                                 })}
                                 <span
                                   css="${res.locals.css(css`
@@ -3472,6 +3473,7 @@ export default (app: Courselore): void => {
                                   req,
                                   res,
                                   name: false,
+                                  size: "xs",
                                 })}
                                 <span
                                   css="${res.locals.css(css`
@@ -7676,6 +7678,7 @@ export default (app: Courselore): void => {
                                     user: res.locals.user,
                                     decorate: false,
                                     name: false,
+                                    size: "xs",
                                   })}
                                   <span
                                     css="${res.locals.css(css`
@@ -7699,6 +7702,7 @@ export default (app: Courselore): void => {
                                     req,
                                     res,
                                     name: false,
+                                    size: "xs",
                                   })}
                                   <span
                                     css="${res.locals.css(css`
