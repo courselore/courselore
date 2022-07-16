@@ -3,6 +3,7 @@ import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
+import got from "got";
 import lodash from "lodash";
 import {
   Courselore,
@@ -82,7 +83,28 @@ export type AdministrationNewsletterHandler = express.RequestHandler<
 export default (app: Courselore): void => {
   (async () => {
     while (true) {
-      app.locals.options.latestVersion = "TODO";
+      try {
+        const latestVersion = (
+          (await got(
+            "https://api.github.com/repos/courselore/courselore/releases/latest"
+          ).json()) as { tag_name: string }
+        ).tag_name.replace(/^v/, "");
+        if (latestVersion !== app.locals.options.version) {
+          app.locals.options.latestVersion = latestVersion;
+          console.log(
+            `${new Date().toISOString()}\tUPDATE CHECK\tNew version available: ${
+              app.locals.options.latestVersion
+            }.`
+          );
+        } else
+          console.log(
+            `${new Date().toISOString()}\tUPDATE CHECK\tCurrent version is the latest.`
+          );
+      } catch (error) {
+        console.error(
+          `${new Date().toISOString()}\tUPDATE CHECK\tERROR:\n${error}`
+        );
+      }
       await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
     }
   })();
