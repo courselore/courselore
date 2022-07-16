@@ -1092,7 +1092,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
-                            <i class="bi bi-cup"></i>
+                            <i class="bi bi-chat-text"></i>
                             Chats
                           </a>
                         `
@@ -1110,7 +1110,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
-                            <i class="bi bi-cup-fill"></i>
+                            <i class="bi bi-chat-text-fill"></i>
                             Chats
                           </a>
                         `}
@@ -2440,8 +2440,8 @@ export default (app: Courselore): void => {
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
     chat: {
-      regular: html`<i class="bi bi-cup"></i>`,
-      fill: html`<i class="bi bi-cup-fill"></i>`,
+      regular: html`<i class="bi bi-chat-text"></i>`,
+      fill: html`<i class="bi bi-chat-text-fill"></i>`,
     },
   };
 
