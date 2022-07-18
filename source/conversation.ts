@@ -3388,7 +3388,7 @@ export default (app: Courselore): void => {
                                           this.hidden = true;
                                           this.querySelector("input").checked = false;
                                           this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
-                                          if (!this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length)
+                                          if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
                                             this.closest('[key="added-tags"]').hidden = true;
                                         };
                                       `}"
