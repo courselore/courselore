@@ -149,12 +149,137 @@ export default (app: Courselore): void => {
     const demonstrationUser = res.locals.user ?? users.shift()!;
 
     const exampleOfAllFeaturesInRichTextMessages = `
-**Sources:**
+**Edit to see source**
+
+---
+
+# Sources
 
 - Markdown: \`remark-parse\`, \`remark-gfm\`.
 - LaTeX: \`remark-math\`, \`rehype-katex\`, \`katex\`
 - Syntax Highlighting: \`@leafac/rehype-shiki\`, \`shiki\`
 - HTML: \`rehype-raw\`, \`rehype-sanitize\` (\`hast-util-sanitize\`)
+
+---
+
+# Markdown (CommonMark)
+
+> Block quote.
+
+Some _emphasis_, **importance**, and \`code\`.
+
+---
+
+# GitHub Flavored Markdown (GFM)
+
+## Autolink literals
+
+www.example.com, https://example.com, and contact@example.com.
+
+## Footnote
+
+A note[^1]
+
+[^1]: Big note.
+
+## Strikethrough
+
+~one~ or ~~two~~ tildes.
+
+## Table
+
+| a   | b   |   c |  d  |
+| --- | :-- | --: | :-: |
+
+## Tasklist
+
+- [ ] Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
+- [x] Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, voluptatem at architecto excepturi officia, dolores quibusdam fugiat eligendi veniam perspiciatis, nostrum laudantium autem quasi sequi explicabo molestias ea minima iusto.
+
+---
+
+# LaTeX (Mathematics · KaTeX)
+
+https://katex.org
+
+$\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
+
+$$
+L = \\frac{1}{2} \\rho v^2 S C_L
+$$
+
+A raw dollar sign: \\$
+
+$$
+\\invalidMacro
+$$
+
+Prevent large width/height visual affronts:
+
+$$
+\\rule{500em}{500em}
+$$
+
+---
+
+# Syntax Highlighting (Shiki)
+
+https://shiki.matsu.io
+
+\`\`\`javascript
+const fs = require("fs");
+const markdown = require("markdown-it");
+const shiki = require("shiki");
+
+shiki
+  .getHighlighter({
+    theme: "nord",
+  })
+  .then((highlighter) => {
+    const md = markdown({
+      html: true,
+      highlight: (code, lang) => {
+        return highlighter.codeToHtml(code, lang);
+      },
+    });
+
+    const html = md.render(fs.readFileSync("index.md", "utf-8"));
+    const out = \`
+    <title>Shiki</title>
+    <link rel="stylesheet" href="style.css">
+    \${html}
+    <script src="index.js"></script>
+  \`;
+    fs.writeFileSync("index.html", out);
+
+    console.log("done");
+  });
+\`\`\`
+
+---
+
+# HTML
+
+<details class="note">
+
+A mix of _Markdown_ and <em>HTML</em>.
+
+</details>
+
+---
+
+# Cross-Site Scripting (XSS)
+
+👍<script>document.write("💩");</script>🙌
+
+---
+
+# All Supported HTML Tags
+
+https://github.com/syntax-tree/hast-util-sanitize
 
 ---
 
@@ -282,8 +407,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 
 ---
 
-https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del
 
 <blockquote>
     There is <del>nothing</del> <ins>no code</ins> either good or bad, but <del>thinking</del> <ins>running it</ins> makes it so.
@@ -674,216 +799,6 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
   <input type="checkbox" id="horns" name="horns">
   <label for="horns">Horns</label>
 </div>
-
----
-
-https://shiki.matsu.io
-
-\`\`\`javascript
-const fs = require("fs");
-const markdown = require("markdown-it");
-const shiki = require("shiki");
-
-shiki
-  .getHighlighter({
-    theme: "nord",
-  })
-  .then((highlighter) => {
-    const md = markdown({
-      html: true,
-      highlight: (code, lang) => {
-        return highlighter.codeToHtml(code, lang);
-      },
-    });
-
-    const html = md.render(fs.readFileSync("index.md", "utf-8"));
-    const out = \`
-    <title>Shiki</title>
-    <link rel="stylesheet" href="style.css">
-    \${html}
-    <script src="index.js"></script>
-  \`;
-    fs.writeFileSync("index.html", out);
-
-    console.log("done");
-  });
-\`\`\`
-
----
-
-https://katex.org
-
-$\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
-
----
-
-\`\`\`json
-[
-  "abbr",
-  "accept",
-  "acceptCharset",
-  "accessKey",
-  "action",
-  "align",
-  "alt",
-  "ariaDescribedBy",
-  "ariaHidden",
-  "ariaLabel",
-  "ariaLabelledBy",
-  "axis",
-  "border",
-  "cellPadding",
-  "cellSpacing",
-  "char",
-  "charOff",
-  "charSet",
-  "checked",
-  "clear",
-  "cols",
-  "colSpan",
-  "color",
-  "compact",
-  "coords",
-  "dateTime",
-  "dir",
-  "disabled",
-  "encType",
-  "htmlFor",
-  "frame",
-  "headers",
-  "height",
-  "hrefLang",
-  "hSpace",
-  "isMap",
-  "id",
-  "label",
-  "lang",
-  "maxLength",
-  "media",
-  "method",
-  "multiple",
-  "name",
-  "noHref",
-  "noShade",
-  "noWrap",
-  "open",
-  "prompt",
-  "readOnly",
-  "rel",
-  "rev",
-  "rows",
-  "rowSpan",
-  "rules",
-  "scope",
-  "selected",
-  "shape",
-  "size",
-  "span",
-  "start",
-  "summary",
-  "tabIndex",
-  "target",
-  "title",
-  "type",
-  "useMap",
-  "vAlign",
-  "value",
-  "vSpace",
-  "width",
-  "itemProp"
-]
-\`\`\`
-
----
-
-# CommonMark
-
-> Block quote.
-
-Some _emphasis_, **importance**, and \`code\`.
-
----
-
-# GitHub Flavored Markdown (GFM)
-
-## Autolink literals
-
-www.example.com, https://example.com, and contact@example.com.
-
-## Footnote
-
-A note[^1]
-
-[^1]: Big note.
-
-## Strikethrough
-
-~one~ or ~~two~~ tildes.
-
-## Table
-
-| a   | b   |   c |  d  |
-| --- | :-- | --: | :-: |
-
-## Tasklist
-
-- [ ] Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
-- [x] Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, voluptatem at architecto excepturi officia, dolores quibusdam fugiat eligendi veniam perspiciatis, nostrum laudantium autem quasi sequi explicabo molestias ea minima iusto.
-
----
-
-# HTML
-
-<details class="note">
-
-A mix of _Markdown_ and <em>HTML</em>.
-
-</details>
-
----
-
-# Cross-Site Scripting (XSS)
-
-👍<script>document.write("💩");</script>🙌
-
----
-
-# Syntax highlighting (Shiki)
-
-\`\`\`javascript
-const shiki = require("shiki");
-
-shiki
-  .getHighlighter({
-    theme: "nord",
-  })
-  .then((highlighter) => {
-    console.log(highlighter.codeToHtml(\`console.log('shiki');\`, "js"));
-  });
-\`\`\`
-
----
-
-# Mathematics (KaTeX)
-
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
-equation.
-
-$$
-L = \\frac{1}{2} \\rho v^2 S C_L
-$$
-
-A raw dollar sign: \\$
-
-$$
-\\invalidMacro
-$$
-
-Prevent large width/height visual affronts:
-
-$$
-\\rule{500em}{500em}
-$$
 `;
 
     const year = new Date().getFullYear().toString();
