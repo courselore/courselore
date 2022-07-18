@@ -543,7 +543,9 @@ export default (app: Courselore): void => {
     "/",
     ...app.locals.middlewares.isSignedOut,
     app.locals.options.host === app.locals.options.canonicalHost
-      ? (req, res, next) => app.locals.handlers.about(req, res, next)
+      ? (req, res, next) => {
+          app.locals.handlers.about(req, res, next);
+        }
       : app.locals.handlers.signIn
   );
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
