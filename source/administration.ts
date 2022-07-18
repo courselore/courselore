@@ -72,14 +72,6 @@ export type AdministrationLayout = ({
   body: HTML;
 }) => HTML;
 
-export type AdministrationNewsletterHandler = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
->;
-
 export default (app: Courselore): void => {
   if (app.locals.options.environment === "production")
     (async () => {
