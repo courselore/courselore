@@ -76,9 +76,7 @@ export default (app: Courselore): void => {
                     align-self: center;
                   `)}"
                 >
-                  $${app.locals.icons.logo({
-                    size: 48 /* var(--space--12) */,
-                  })}
+                  $${app.locals.icons.logo}
                 </div>
                 Courselore
               </a>
@@ -174,9 +172,7 @@ export default (app: Courselore): void => {
                         align-self: center;
                       `)}"
                     >
-                      $${app.locals.icons.logo({
-                        size: 16 /* var(--space--4) */,
-                      })}
+                      $${app.locals.icons.logo}
                     </div>
                     Meta Courselore
                   </a>
@@ -876,7 +872,7 @@ export default (app: Courselore): void => {
                   align-self: center;
                 `)}"
               >
-                $${app.locals.icons.logo({ size: 24 /* var(--space--6) */ })}
+                $${app.locals.icons.logo}
               </div>
               Meta Courselore
             </a>

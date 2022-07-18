@@ -122,7 +122,7 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type IconPartial = (options?: { size?: number }) => HTML;
+export type IconPartial = HTML;
 
 export type PartialLayout = ({
   req,
@@ -137,11 +137,9 @@ export type PartialLayout = ({
 export type SpinnerPartial = ({
   req,
   res,
-  size,
 }: {
   req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
   res: express.Response<any, BaseMiddlewareLocals>;
-  size?: number;
 }) => HTML;
 
 export type ReportIssueHrefPartial = string;
@@ -609,9 +607,7 @@ export default async (app: Courselore): Promise<void> => {
                               font-size: 12px;
                             `)}"
                           >
-                            $${app.locals.icons.logo({
-                              size: 12 /* var(--space--3) */,
-                            })}
+                            $${app.locals.icons.logo}
                           </div>
                           <span>
                             Courselore <br />
@@ -657,7 +653,7 @@ export default async (app: Courselore): Promise<void> => {
                     align-self: center;
                   `)}"
                 >
-                  $${app.locals.icons.logo({ size: 16 /* var(--space--4) */ })}
+                  $${app.locals.icons.logo}
                 </div>
                 Courselore
               </button>
@@ -718,10 +714,7 @@ export default async (app: Courselore): Promise<void> => {
                               align-items: center;
                             `)}"
                           >
-                            $${app.locals.icons.logo({
-                              size: 14 /* var(--space--3-5) */,
-                            })}
-                            Meta Courselore
+                            $${app.locals.icons.logo} Meta Courselore
                           </a>
                           <a
                             href="${app.locals.partials.reportIssueHref}"
@@ -2320,7 +2313,7 @@ export default async (app: Courselore): Promise<void> => {
                     align-self: center;
                   `)}"
                 >
-                  $${app.locals.icons.logo()}
+                  $${app.locals.icons.logo}
                 </div>
                 Courselore
               </a>
@@ -2513,7 +2506,7 @@ export default async (app: Courselore): Promise<void> => {
                 align-self: center;
               `)}"
             >
-              $${app.locals.icons.logo()}
+              $${app.locals.icons.logo}
             </div>
           </a>
 
@@ -3069,7 +3062,7 @@ export default async (app: Courselore): Promise<void> => {
     const pathD = `M ${points
       .map((point) => point.map((coordinate) => coordinate * viewBox).join(" "))
       .join(" L ")} Z`;
-    return ({ size = viewBox } = {}) => html`
+    return html`
       <svg
         class="icon"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
@@ -3087,7 +3080,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.locals.icons.chat = (() => {
     const viewBox = 32;
-    return ({ size = viewBox } = {}) => html`
+    return html`
       <svg
         class="icon"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
@@ -3102,7 +3095,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.locals.icons.chatFill = (() => {
     const viewBox = 32;
-    return ({ size = viewBox } = {}) => html`
+    return html`
       <svg
         class="icon"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
@@ -3127,7 +3120,7 @@ export default async (app: Courselore): Promise<void> => {
     </html>
   `;
 
-  app.locals.partials.spinner = ({ req, res, size = 20 }) => html`
+  app.locals.partials.spinner = ({ req, res }) => html`
     <svg
       class="icon"
       viewBox="0 0 20 20"
