@@ -11,7 +11,6 @@
 - Minimal integration with Learning Management Systems (identity, not grades).
 - Performance:
   - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
-- Administrative interface.
 - Smaller things:
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
