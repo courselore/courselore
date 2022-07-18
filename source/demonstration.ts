@@ -2,6 +2,7 @@ import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import { html } from "@leafac/html";
+import markdown from "dedent";
 import argon2 from "argon2";
 import casual from "casual";
 import lodash from "lodash";
@@ -147,6 +148,10 @@ export default (app: Courselore): void => {
       )!;
     });
     const demonstrationUser = res.locals.user ?? users.shift()!;
+
+    const exampleOfAllFeaturesInRichTextMessages = markdown`
+Example Markdown
+    `;
 
     const year = new Date().getFullYear().toString();
     const month = new Date().getMonth() + 1;
@@ -365,9 +370,11 @@ export default (app: Courselore): void => {
         const conversationCreatedAt =
           conversationCreatedAts[conversationReference - 1];
         const type =
-          conversationTypes[
-            Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
-          ];
+          conversationReference === 1
+            ? conversationTypes[1]
+            : conversationTypes[
+                Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
+              ];
         const nextMessageReference =
           type === "chat" ? lodash.random(50, 100) : lodash.random(2, 30);
         const messageCreatedAts = [conversationCreatedAt];
@@ -386,9 +393,12 @@ export default (app: Courselore): void => {
               )
             ).toISOString()
           );
-        const title = `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
-          type === "question" ? "?" : ""
-        }`;
+        const title =
+          conversationReference === 1
+            ? `Example of All Features in Rich-Text Messages`
+            : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
+                type === "question" ? "?" : ""
+              }`;
         const conversationAuthorEnrollment = lodash.sample(enrollments)!;
         const conversation = app.locals.database.get<{
           id: number;
@@ -460,7 +470,9 @@ export default (app: Courselore): void => {
         ) {
           const messageCreatedAt = messageCreatedAts[messageReference - 1];
           const contentSource =
-            type === "chat" && Math.random() < 0.9
+            conversationReference === 1 && messageReference === 1
+              ? exampleOfAllFeaturesInRichTextMessages
+              : type === "chat" && Math.random() < 0.9
               ? casual.sentences(lodash.random(1, 2))
               : lodash
                   .times(lodash.random(1, 6), () =>
