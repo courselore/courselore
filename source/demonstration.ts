@@ -150,7 +150,14 @@ export default (app: Courselore): void => {
     const demonstrationUser = res.locals.user ?? users.shift()!;
 
     const exampleOfAllFeaturesInRichTextMessages = markdown`
-Example Markdown
+**Sources:**
+
+- Markdown: \`remark-parse\`, \`remark-gfm\`.
+- LaTeX: \`remark-math\`, \`rehype-katex\`, \`katex\`
+- Syntax Highlighting: \`@leafac/rehype-shiki\`, \`shiki\`
+- HTML: \`rehype-raw\`, \`rehype-sanitize\` (\`hast-util-sanitize\`)
+
+---
     `;
 
     const year = new Date().getFullYear().toString();
