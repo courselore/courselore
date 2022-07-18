@@ -2316,7 +2316,7 @@ export default async (app: Courselore): Promise<void> => {
                   css="${res.locals.css(css`
                     font-size: 24px;
                     align-self: center;
-                 `)}"
+                  `)}"
                 >
                   $${app.locals.icons.logo()}
                 </div>
@@ -3086,7 +3086,7 @@ export default async (app: Courselore): Promise<void> => {
     const viewBox = 32;
     return ({ size = viewBox } = {}) => html`
       <svg
-        class="icon"    
+        class="icon"
         viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
       >
         <path
@@ -3126,8 +3126,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.locals.partials.spinner = ({ req, res, size = 20 }) => html`
     <svg
-      width="${size.toString()}"
-      height="${size.toString()}"
+      class="icon"
       viewBox="0 0 20 20"
       fill="none"
       stroke="currentColor"

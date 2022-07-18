@@ -850,7 +850,14 @@ export default (app: Courselore): void => {
                                 gap: var(--space--2);
                               `)}"
                             >
-                              $${app.locals.partials.spinner({ req, res })}
+                              <div
+                                css="${res.locals.css(css`
+                                  font-size: 20px;
+                                  align-self: center;
+                                `)}"
+                              >
+                                $${app.locals.partials.spinner({ req, res })}
+                              </div>
                               Uploading…
                             </div>
                           `

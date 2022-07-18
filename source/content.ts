@@ -1785,7 +1785,14 @@ export default async (app: Courselore): Promise<void> => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.locals.partials.spinner({ req, res })}
+                          <div
+                            css="${res.locals.css(css`
+                              font-size: 20px;
+                              align-self: center;
+                            `)}"
+                          >
+                            $${app.locals.partials.spinner({ req, res })}
+                          </div>
                           Uploading…
                         </div>
                       `
@@ -2156,7 +2163,14 @@ ${contentSource}</textarea
                   gap: var(--space--2);
                 `)}"
               >
-                $${app.locals.partials.spinner({ req, res })} Loading…
+                <div
+                  css="${res.locals.css(css`
+                    font-size: 20px;
+                  `)}"
+                >
+                  $${app.locals.partials.spinner({ req, res })}
+                </div>
+                Loading…
               </div>
 
               <div

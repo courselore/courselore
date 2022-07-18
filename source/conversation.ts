@@ -5858,12 +5858,21 @@ export default (app: Courselore): void => {
                                                                           align-items: center;
                                                                         `)}"
                                                                       >
-                                                                        $${app.locals.partials.spinner(
-                                                                          {
-                                                                            req,
-                                                                            res,
-                                                                          }
-                                                                        )}
+                                                                        <div
+                                                                          css="${res
+                                                                            .locals
+                                                                            .css(css`
+                                                                            font-size: 20px;
+                                                                            align-self: center;
+                                                                          `)}"
+                                                                        >
+                                                                          $${app.locals.partials.spinner(
+                                                                            {
+                                                                              req,
+                                                                              res,
+                                                                            }
+                                                                          )}
+                                                                        </div>
                                                                         Loading…
                                                                       </div>
                                                                     `)};
@@ -7019,12 +7028,19 @@ export default (app: Courselore): void => {
                                                           align-items: center;
                                                         `)}"
                                                       >
-                                                        $${app.locals.partials.spinner(
-                                                          {
-                                                            req,
-                                                            res,
-                                                          }
-                                                        )}
+                                                        <div
+                                                          css="${res.locals
+                                                            .css(css`
+                                                            font-size: 20px;
+                                                          `)}"
+                                                        >
+                                                          $${app.locals.partials.spinner(
+                                                            {
+                                                              req,
+                                                              res,
+                                                            }
+                                                          )}
+                                                        </div>
                                                         Loading…
                                                       </div>
                                                     `)};
@@ -7379,11 +7395,18 @@ export default (app: Courselore): void => {
                                             </div>
                                           `}
                                       <span>Sending…</span>
-                                      $${app.locals.partials.spinner({
-                                        req,
-                                        res,
-                                        size: 10,
-                                      })}
+                                      <div
+                                        css="${res.locals.css(css`
+                                          font-size: 10px;
+                                          align-self: center;
+                                        `)}"
+                                      >
+                                        $${app.locals.partials.spinner({
+                                          req,
+                                          res,
+                                          size: 10,
+                                        })}
+                                      </div>
                                     </div>
                                   </div>
                                   <div
