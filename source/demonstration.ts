@@ -188,30 +188,30 @@ export default (app: Courselore): void => {
         nextConversationReference: number;
       }>(
         sql`
-              INSERT INTO "courses" (
-                "createdAt",
-                "reference",
-                "archivedAt",
-                "name",
-                "year",
-                "term",
-                "institution",
-                "code",      
-                "nextConversationReference"
-              )
-              VALUES (
-                ${new Date().toISOString()},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${isArchived ? new Date().toISOString() : null},
-                ${name},
-                ${year},
-                ${term},
-                ${institution},
-                ${code},
-                ${lodash.random(30, 50)}
-              )
-              RETURNING *
-            `
+          INSERT INTO "courses" (
+            "createdAt",
+            "reference",
+            "archivedAt",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",      
+            "nextConversationReference"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${isArchived ? new Date().toISOString() : null},
+            ${name},
+            ${year},
+            ${term},
+            ${institution},
+            ${code},
+            ${lodash.random(30, 50)}
+          )
+          RETURNING *
+        `
       )!;
 
       const enrollment = app.locals.database.get<{
@@ -219,17 +219,17 @@ export default (app: Courselore): void => {
         courseRole: CourseRole;
       }>(
         sql`
-              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-              VALUES (
-                ${new Date().toISOString()},
-                ${demonstrationUser.id},
-                ${course.id},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${courseRole},
-                ${accentColor}
-              )
-              RETURNING *
-            `
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+          VALUES (
+            ${new Date().toISOString()},
+            ${demonstrationUser.id},
+            ${course.id},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${courseRole},
+            ${accentColor}
+          )
+          RETURNING *
+        `
       )!;
 
       for (const _ of lodash.times(20)) {
@@ -246,38 +246,36 @@ export default (app: Courselore): void => {
         const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
         app.locals.database.run(
           sql`
-                INSERT INTO "invitations" (
-                  "createdAt",
-                  "expiresAt",
-                  "usedAt",
-                  "course",
-                  "reference",
-                  "email",
-                  "name",
-                  "courseRole"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${expiresAt},
-                  ${
-                    user === null || Math.random() < 0.4
-                      ? null
-                      : new Date(
-                          (expiresAt === null
-                            ? Date.now()
-                            : Math.min(
-                                Date.now(),
-                                new Date(expiresAt).getTime()
-                              )) - lodash.random(20 * 24 * 60 * 60 * 1000)
-                        ).toISOString()
-                  },
-                  ${course.id},
-                  ${cryptoRandomString({ length: 10, type: "numeric" })},
-                  ${user?.email},
-                  ${Math.random() < 0.5 ? user?.name : null},
-                  ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
-                )
-              `
+            INSERT INTO "invitations" (
+              "createdAt",
+              "expiresAt",
+              "usedAt",
+              "course",
+              "reference",
+              "email",
+              "name",
+              "courseRole"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${expiresAt},
+              ${
+                user === null || Math.random() < 0.4
+                  ? null
+                  : new Date(
+                      (expiresAt === null
+                        ? Date.now()
+                        : Math.min(Date.now(), new Date(expiresAt).getTime())) -
+                        lodash.random(20 * 24 * 60 * 60 * 1000)
+                    ).toISOString()
+              },
+              ${course.id},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${user?.email},
+              ${Math.random() < 0.5 ? user?.name : null},
+              ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
+            )
+          `
         );
       }
 
@@ -290,17 +288,17 @@ export default (app: Courselore): void => {
               courseRole: CourseRole;
             }>(
               sql`
-                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${enrollmentUser.id},
-                      ${course.id},
-                      ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${courseRoles[Math.random() < 0.1 ? 1 : 0]},
-                      ${lodash.sample(enrollmentAccentColors)!}
-                    )
-                    RETURNING *
-                  `
+                INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${enrollmentUser.id},
+                  ${course.id},
+                  ${cryptoRandomString({ length: 10, type: "numeric" })},
+                  ${courseRoles[Math.random() < 0.1 ? 1 : 0]},
+                  ${lodash.sample(enrollmentAccentColors)!}
+                )
+                RETURNING *
+              `
             )!
         ),
       ];
@@ -331,16 +329,16 @@ export default (app: Courselore): void => {
         ({ name, staffOnlyAt }) =>
           app.locals.database.get<{ id: number }>(
             sql`
-                  INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-                  VALUES (
-                    ${new Date().toISOString()},
-                    ${course.id},
-                    ${cryptoRandomString({ length: 10, type: "numeric" })},
-                    ${name},
-                    ${staffOnlyAt}
-                  )
-                  RETURNING *
-                `
+              INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+              VALUES (
+                ${new Date().toISOString()},
+                ${course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${name},
+                ${staffOnlyAt}
+              )
+              RETURNING *
+            `
           )!
       );
 
@@ -401,58 +399,58 @@ export default (app: Courselore): void => {
           title: string;
         }>(
           sql`
-              INSERT INTO "conversations" (
-                "createdAt",
-                "updatedAt",
-                "course",
-                "reference",
-                "authorEnrollment",
-                "anonymousAt",      
-                "type",
-                "resolvedAt",
-                "pinnedAt",
-                "staffOnlyAt",
-                "title",
-                "titleSearch",
-                "nextMessageReference"
-              )
-              VALUES (
-                ${conversationCreatedAt},
-                ${messageCreatedAts[messageCreatedAts.length - 1]},
-                ${course.id},
-                ${String(conversationReference)},
-                ${conversationAuthorEnrollment.id},
-                ${
-                  conversationAuthorEnrollment.courseRole !== "staff" &&
-                  Math.random() < 0.5
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${type},
-                ${
-                  type === "question" && Math.random() < 0.75
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${Math.random() < 0.15 ? new Date().toISOString() : null},
-                ${Math.random() < 0.25 ? new Date().toISOString() : null},
-                ${title},
-                ${html`${title}`},
-                ${nextMessageReference}
-              )
-              RETURNING *
-            `
+            INSERT INTO "conversations" (
+              "createdAt",
+              "updatedAt",
+              "course",
+              "reference",
+              "authorEnrollment",
+              "anonymousAt",      
+              "type",
+              "resolvedAt",
+              "pinnedAt",
+              "staffOnlyAt",
+              "title",
+              "titleSearch",
+              "nextMessageReference"
+            )
+            VALUES (
+              ${conversationCreatedAt},
+              ${messageCreatedAts[messageCreatedAts.length - 1]},
+              ${course.id},
+              ${String(conversationReference)},
+              ${conversationAuthorEnrollment.id},
+              ${
+                conversationAuthorEnrollment.courseRole !== "staff" &&
+                Math.random() < 0.5
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${type},
+              ${
+                type === "question" && Math.random() < 0.75
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${Math.random() < 0.15 ? new Date().toISOString() : null},
+              ${Math.random() < 0.25 ? new Date().toISOString() : null},
+              ${title},
+              ${html`${title}`},
+              ${nextMessageReference}
+            )
+            RETURNING *
+          `
         )!;
 
         app.locals.database.run(
           sql`
-                INSERT INTO "taggings" ("createdAt", "conversation", "tag")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${conversation.id},
-                  ${lodash.sample(tags)!.id}
-                )
-              `
+            INSERT INTO "taggings" ("createdAt", "conversation", "tag")
+            VALUES (
+              ${new Date().toISOString()},
+              ${conversation.id},
+              ${lodash.sample(tags)!.id}
+            )
+          `
         );
 
         for (
@@ -484,52 +482,52 @@ export default (app: Courselore): void => {
               : lodash.sample(enrollments)!;
           const message = app.locals.database.get<{ id: number }>(
             sql`
-                  INSERT INTO "messages" (
-                    "createdAt",
-                    "updatedAt",
-                    "conversation",
-                    "reference",
-                    "authorEnrollment",
-                    "anonymousAt",
-                    "answerAt",
-                    "contentSource",
-                    "contentPreprocessed",
-                    "contentSearch"
-                  )
-                  VALUES (
-                    ${messageCreatedAt},
-                    ${
-                      Math.random() < 0.8
-                        ? null
-                        : new Date(
-                            Math.min(
-                              Date.now(),
-                              new Date(messageCreatedAt).getTime() +
-                                lodash.random(
-                                  5 * 60 * 60 * 1000,
-                                  18 * 60 * 60 * 1000
-                                )
+              INSERT INTO "messages" (
+                "createdAt",
+                "updatedAt",
+                "conversation",
+                "reference",
+                "authorEnrollment",
+                "anonymousAt",
+                "answerAt",
+                "contentSource",
+                "contentPreprocessed",
+                "contentSearch"
+              )
+              VALUES (
+                ${messageCreatedAt},
+                ${
+                  Math.random() < 0.8
+                    ? null
+                    : new Date(
+                        Math.min(
+                          Date.now(),
+                          new Date(messageCreatedAt).getTime() +
+                            lodash.random(
+                              5 * 60 * 60 * 1000,
+                              18 * 60 * 60 * 1000
                             )
-                          ).toISOString()
-                    },
-                    ${conversation.id},
-                    ${String(messageReference)},
-                    ${messageAuthorEnrollment?.id},
-                    ${
-                      messageReference === 1
-                        ? conversation.anonymousAt
-                        : messageAuthorEnrollment?.courseRole !== "staff" &&
-                          Math.random() < 0.5
-                        ? new Date().toISOString()
-                        : null
-                    },
-                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                    ${contentSource},
-                    ${processedContent.preprocessed},
-                    ${processedContent.search}
-                  )
-                  RETURNING *
-                `
+                        )
+                      ).toISOString()
+                },
+                ${conversation.id},
+                ${String(messageReference)},
+                ${messageAuthorEnrollment?.id},
+                ${
+                  messageReference === 1
+                    ? conversation.anonymousAt
+                    : messageAuthorEnrollment?.courseRole !== "staff" &&
+                      Math.random() < 0.5
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                ${contentSource},
+                ${processedContent.preprocessed},
+                ${processedContent.search}
+              )
+              RETURNING *
+            `
           )!;
 
           const readers =
@@ -548,13 +546,13 @@ export default (app: Courselore): void => {
             ).toISOString();
             app.locals.database.run(
               sql`
-                    INSERT INTO "readings" ("createdAt", "message", "enrollment")
-                    VALUES (
-                      ${readingCreatedAt},
-                      ${message.id},
-                      ${enrollment.id}
-                    )
-                  `
+                INSERT INTO "readings" ("createdAt", "message", "enrollment")
+                VALUES (
+                  ${readingCreatedAt},
+                  ${message.id},
+                  ${enrollment.id}
+                )
+              `
             );
           }
 
@@ -564,13 +562,13 @@ export default (app: Courselore): void => {
           ))
             app.locals.database.run(
               sql`
-                    INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${message.id},
-                      ${enrollment.id}
-                    )
-                  `
+                INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${message.id},
+                  ${enrollment.id}
+                )
+              `
             );
 
           for (const enrollment of lodash.sampleSize(
@@ -581,13 +579,13 @@ export default (app: Courselore): void => {
           ))
             app.locals.database.run(
               sql`
-                    INSERT INTO "likes" ("createdAt", "message", "enrollment")
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${message.id},
-                      ${enrollment.id}
-                    )
-                  `
+                INSERT INTO "likes" ("createdAt", "message", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${message.id},
+                  ${enrollment.id}
+                )
+              `
             );
         }
       }
