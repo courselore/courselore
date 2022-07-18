@@ -15,6 +15,11 @@
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
 
+**Roadmap**
+
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
+
 ## Administrative Interface
 
 **Goals**
@@ -164,16 +169,6 @@
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
-
-**Windows**
-
-- `global.css` is regenerated (probably because of line endings)
-- `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
-
-**Roadmap**
-
-- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
 
 ## Quality-of-Life Features
 
@@ -691,6 +686,9 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Windows development:
+  - `global.css` is regenerated (probably because of line endings)
+  - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
 - Exclude `assets/` folder from build?
 - Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
@@ -2403,8 +2401,6 @@ $$
   - Facebook.
   - Instagram.
   - Reddit.
-- Don’t deploy big design changes until around 2022-05-11, because we’re approaching the end of the semester and big design changes could confuse people.
-- Over the summer, start thinking more strategically.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
 - In Meta Courselore, make a pinned announcement of how to report bugs.
