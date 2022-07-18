@@ -1787,6 +1787,7 @@ export default async (app: Courselore): Promise<void> => {
                         >
                           <div
                             css="${res.locals.css(css`
+                              display: flex;
                               font-size: 20px;
                               align-self: center;
                             `)}"
@@ -2165,6 +2166,7 @@ ${contentSource}</textarea
               >
                 <div
                   css="${res.locals.css(css`
+                    display: flex;
                     font-size: 20px;
                   `)}"
                 >

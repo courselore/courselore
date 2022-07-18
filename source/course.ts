@@ -455,6 +455,7 @@ export default (app: Courselore): void => {
                   <div 
                     class="decorative-icon"
                     css="${res.locals.css(css`
+                      display: flex;
                       font-size: 144px;
                     `)}"
                   >

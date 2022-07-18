@@ -652,6 +652,7 @@ export default async (app: Courselore): Promise<void> => {
               >
                 <div
                   css="${res.locals.css(css`
+                    display: flex;
                     font-size: 16px;
                     align-self: center;
                   `)}"
@@ -2314,6 +2315,7 @@ export default async (app: Courselore): Promise<void> => {
               >
                 <div
                   css="${res.locals.css(css`
+                    display: flex;
                     font-size: 24px;
                     align-self: center;
                   `)}"
@@ -2506,6 +2508,7 @@ export default async (app: Courselore): Promise<void> => {
           >
             <div
               css="${res.locals.css(css`
+                display: flex;
                 font-size: 24px;
                 align-self: center;
               `)}"

@@ -5862,6 +5862,7 @@ export default (app: Courselore): void => {
                                                                           css="${res
                                                                             .locals
                                                                             .css(css`
+                                                                            display: flex;
                                                                             font-size: 20px;
                                                                             align-self: center;
                                                                           `)}"
@@ -7031,6 +7032,7 @@ export default (app: Courselore): void => {
                                                         <div
                                                           css="${res.locals
                                                             .css(css`
+                                                            display: flex;
                                                             font-size: 20px;
                                                           `)}"
                                                         >
@@ -7397,6 +7399,7 @@ export default (app: Courselore): void => {
                                       <span>Sending…</span>
                                       <div
                                         css="${res.locals.css(css`
+                                          display: flex;
                                           font-size: 10px;
                                           align-self: center;
                                         `)}"

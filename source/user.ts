@@ -852,6 +852,7 @@ export default (app: Courselore): void => {
                             >
                               <div
                                 css="${res.locals.css(css`
+                                  display: flex;
                                   font-size: 20px;
                                   align-self: center;
                                 `)}"

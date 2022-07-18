@@ -71,6 +71,7 @@ export default (app: Courselore): void => {
               >
                 <div
                   css="${res.locals.css(css`
+                    display: flex;
                     font-size: 48px;
                     align-self: center;
                   `)}"
@@ -168,6 +169,7 @@ export default (app: Courselore): void => {
                   >
                     <div
                       css="${res.locals.css(css`
+                        display: flex;
                         font-size: 16px;
                         align-self: center;
                       `)}"
@@ -869,6 +871,7 @@ export default (app: Courselore): void => {
             >
               <div
                 css="${res.locals.css(css`
+                  display: flex;
                   font-size: 24px;
                   align-self: center;
                 `)}"
