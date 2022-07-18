@@ -376,6 +376,7 @@ new Notification('Example');
 - Add a job to re-preprocess content:
   - Messages
   - Biographies
+- Sanitize allowlist of attributes to prevent abuse (for example, `<code class="some-class-that-exists-in-the-system">`)
 
 ## Pagination
 
