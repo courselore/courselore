@@ -104,13 +104,11 @@ export {
 import message, {
   GetMessageHelper,
   MayEditMessageHelper,
-  MayEditMessageMiddleware,
   MayEndorseMessageHelper,
   MayEndorseMessageMiddleware,
   NotificationsMailer,
 } from "./message.js";
 export {
-  MayEditMessageMiddlewareLocals,
   MayEndorseMessageMiddlewareLocals,
 } from "./message.js";
 
@@ -151,7 +149,6 @@ export interface Courselore extends express.Express {
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       isConversationAccessible: IsConversationAccessibleMiddleware;
-      mayEditMessage: MayEditMessageMiddleware;
       mayEndorseMessage: MayEndorseMessageMiddleware;
     };
     layouts: {

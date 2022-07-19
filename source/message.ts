@@ -74,20 +74,6 @@ export type MayEditMessageHelper = ({
   >;
 }) => boolean;
 
-export type MayEditMessageMiddleware = express.RequestHandler<
-  {
-    courseReference: string;
-    conversationReference: string;
-    messageReference: string;
-  },
-  any,
-  {},
-  {},
-  MayEditMessageMiddlewareLocals
->[];
-export interface MayEditMessageMiddlewareLocals
-  extends MessageExistsMiddlewareLocals {}
-
 export type MayEndorseMessageHelper = ({
   req,
   res,
@@ -508,21 +494,6 @@ export default (app: Courselore): void => {
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === res.locals.enrollment.id);
 
-  app.locals.middlewares.mayEditMessage = [
-    ...messageExistsMiddleware,
-    (req, res, next) => {
-      if (
-        app.locals.helpers.mayEditMessage({
-          req,
-          res,
-          message: res.locals.message,
-        })
-      )
-        return next();
-      next("route");
-    },
-  ];
-
   app.get<
     {
       courseReference: string;
@@ -789,11 +760,20 @@ export default (app: Courselore): void => {
       conversations?: object;
       messages?: object;
     },
-    MayEditMessageMiddlewareLocals
+    MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...app.locals.middlewares.mayEditMessage,
+    ...messageExistsMiddleware,
     (req, res, next) => {
+      if (
+        !app.locals.helpers.mayEditMessage({
+          req,
+          res,
+          message: res.locals.message,
+        })
+      )
+        return next("route");
+
       if (typeof req.body.isAnswer === "string")
         if (
           !["true", "false"].includes(req.body.isAnswer) ||
