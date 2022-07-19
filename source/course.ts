@@ -118,36 +118,6 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type InvitationExistsMiddleware = express.RequestHandler<
-  { courseReference: string; invitationReference: string },
-  any,
-  {},
-  {},
-  InvitationExistsMiddlewareLocals
->[];
-export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
-  invitation: {
-    id: number;
-    expiresAt: string | null;
-    usedAt: string | null;
-    course: {
-      id: number;
-      reference: string;
-      archivedAt: string | null;
-      name: string;
-      year: string | null;
-      term: string | null;
-      institution: string | null;
-      code: string | null;
-      nextConversationReference: number;
-    };
-    reference: string;
-    email: string | null;
-    name: string | null;
-    courseRole: CourseRole;
-  };
-}
-
 export type MayManageInvitationMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
@@ -997,7 +967,35 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.middlewares.invitationExists = [
+  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+    invitation: {
+      id: number;
+      expiresAt: string | null;
+      usedAt: string | null;
+      course: {
+        id: number;
+        reference: string;
+        archivedAt: string | null;
+        name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        nextConversationReference: number;
+      };
+      reference: string;
+      email: string | null;
+      name: string | null;
+      courseRole: CourseRole;
+    };
+  }
+  const invitationExistsMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    InvitationExistsMiddlewareLocals
+  >[] = [
     (req, res, next) => {
       const invitation = app.locals.database.get<{
         id: number;
@@ -1067,11 +1065,11 @@ export default (app: Courselore): void => {
 
   app.locals.middlewares.mayManageInvitation = [
     ...app.locals.middlewares.isCourseStaff,
-    ...app.locals.middlewares.invitationExists,
+    ...invitationExistsMiddleware,
   ];
 
   app.locals.middlewares.isInvitationUsable = [
-    ...app.locals.middlewares.invitationExists,
+    ...invitationExistsMiddleware,
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
