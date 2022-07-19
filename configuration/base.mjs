@@ -10,6 +10,7 @@ export default async ({
   environment = "production",
   demonstration = false,
 }) => {
+  host = host.toLowerCase();
   if (process.argv[3] === undefined) {
     const path = await courseloreImport("node:path");
     const url = await courseloreImport("node:url");

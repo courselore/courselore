@@ -1040,6 +1040,11 @@ export default async (app: Courselore): Promise<void> => {
           <link
             rel="stylesheet"
             href="https://${app.locals.options
+              .host}/node_modules/autocompleter/autocomplete.min.css"
+          />
+          <link
+            rel="stylesheet"
+            href="https://${app.locals.options
               .host}/node_modules/@leafac/css/distribution/browser.css"
           />
           <link
@@ -1060,6 +1065,8 @@ export default async (app: Courselore): Promise<void> => {
               .host}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="https://${app.locals.options
               .host}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="https://${app.locals.options
+              .host}/node_modules/autocompleter/autocomplete.min.js"></script>
           <script src="https://${app.locals.options
               .host}/node_modules/textarea-caret/index.js"></script>
           <script src="https://${app.locals.options
