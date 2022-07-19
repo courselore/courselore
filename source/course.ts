@@ -118,17 +118,6 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type MayManageInvitationMiddleware = express.RequestHandler<
-  { courseReference: string; invitationReference: string },
-  any,
-  {},
-  {},
-  MayManageInvitationMiddlewareLocals
->[];
-export interface MayManageInvitationMiddlewareLocals
-  extends IsCourseStaffMiddlewareLocals,
-    InvitationExistsMiddlewareLocals {}
-
 export type IsInvitationUsableMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
@@ -1061,11 +1050,6 @@ export default (app: Courselore): void => {
       };
       next();
     },
-  ];
-
-  app.locals.middlewares.mayManageInvitation = [
-    ...app.locals.middlewares.isCourseStaff,
-    ...invitationExistsMiddleware,
   ];
 
   app.locals.middlewares.isInvitationUsable = [
@@ -3439,10 +3423,11 @@ export default (app: Courselore): void => {
       expire?: "true";
     },
     {},
-    MayManageInvitationMiddlewareLocals
+    IsCourseStaffMiddlewareLocals & InvitationExistsMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
-    ...app.locals.middlewares.mayManageInvitation,
+    ...app.locals.middlewares.isCourseStaff,
+    ...invitationExistsMiddleware,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
