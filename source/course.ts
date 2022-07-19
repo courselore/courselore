@@ -128,22 +128,6 @@ export type InvitationMailer = ({
   invitation: InvitationExistsMiddlewareLocals["invitation"];
 }) => void;
 
-export type MayManageEnrollmentMiddleware = express.RequestHandler<
-  { courseReference: string; enrollmentReference: string },
-  any,
-  {},
-  {},
-  MayManageEnrollmentMiddlewareLocals
->[];
-export interface MayManageEnrollmentMiddlewareLocals
-  extends IsCourseStaffMiddlewareLocals {
-  managedEnrollment: {
-    id: number;
-    reference: string;
-    isSelf: boolean;
-  };
-}
-
 export type CourseSettingsLayout = ({
   req,
   res,
@@ -988,41 +972,6 @@ export default (app: Courselore): void => {
     );
     app.locals.workers.sendEmail();
   };
-
-  app.locals.middlewares.mayManageEnrollment = [
-    ...app.locals.middlewares.isCourseStaff,
-    (req, res, next) => {
-      const managedEnrollment = app.locals.database.get<{
-        id: number;
-        reference: string;
-      }>(
-        sql`
-          SELECT "id", "reference"
-          FROM "enrollments"
-          WHERE "course" = ${res.locals.course.id} AND
-                "reference" = ${req.params.enrollmentReference}
-        `
-      );
-      if (managedEnrollment === undefined) return next("route");
-      res.locals.managedEnrollment = {
-        ...managedEnrollment,
-        isSelf: managedEnrollment.id === res.locals.enrollment.id,
-      };
-      if (
-        res.locals.managedEnrollment.isSelf &&
-        app.locals.database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count"
-            FROM "enrollments"
-            WHERE "course" = ${res.locals.course.id} AND
-                  "courseRole" = ${"staff"}
-          `
-        )!.count === 1
-      )
-        return next("validation");
-      next();
-    },
-  ];
 
   app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
@@ -4032,6 +3981,55 @@ export default (app: Courselore): void => {
     }
   );
 
+  interface MayManageEnrollmentMiddlewareLocals
+    extends IsCourseStaffMiddlewareLocals {
+    managedEnrollment: {
+      id: number;
+      reference: string;
+      isSelf: boolean;
+    };
+  }
+  const mayManageEnrollmentMiddleware: express.RequestHandler<
+    { courseReference: string; enrollmentReference: string },
+    any,
+    {},
+    {},
+    MayManageEnrollmentMiddlewareLocals
+  >[] = [
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res, next) => {
+      const managedEnrollment = app.locals.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
+          SELECT "id", "reference"
+          FROM "enrollments"
+          WHERE "course" = ${res.locals.course.id} AND
+                "reference" = ${req.params.enrollmentReference}
+        `
+      );
+      if (managedEnrollment === undefined) return next("route");
+      res.locals.managedEnrollment = {
+        ...managedEnrollment,
+        isSelf: managedEnrollment.id === res.locals.enrollment.id,
+      };
+      if (
+        res.locals.managedEnrollment.isSelf &&
+        app.locals.database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count"
+            FROM "enrollments"
+            WHERE "course" = ${res.locals.course.id} AND
+                  "courseRole" = ${"staff"}
+          `
+        )!.count === 1
+      )
+        return next("validation");
+      next();
+    },
+  ];
+
   app.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
@@ -4040,7 +4038,7 @@ export default (app: Courselore): void => {
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
+    ...mayManageEnrollmentMiddleware,
     (req, res, next) => {
       if (typeof req.body.courseRole === "string") {
         if (!courseRoles.includes(req.body.courseRole))
@@ -4076,7 +4074,7 @@ export default (app: Courselore): void => {
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
+    ...mayManageEnrollmentMiddleware,
     (req, res) => {
       app.locals.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
