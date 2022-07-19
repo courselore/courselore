@@ -34,31 +34,6 @@ export type SystemRoleIconPartial = {
   };
 };
 
-export type IsAdministratorMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  IsAdministratorMiddlewareLocals
->[];
-export interface IsAdministratorMiddlewareLocals
-  extends IsSignedInMiddlewareLocals {}
-
-export type MayManageUserMiddleware = express.RequestHandler<
-  { userReference: string },
-  any,
-  {},
-  {},
-  MayManageUserMiddlewareLocals
->[];
-export interface MayManageUserMiddlewareLocals
-  extends IsAdministratorMiddlewareLocals {
-  managedUser: {
-    id: number;
-    isSelf: boolean;
-  };
-}
-
 export type AdministrationLayout = ({
   req,
   res,
@@ -72,6 +47,15 @@ export type AdministrationLayout = ({
 }) => HTML;
 
 export default (app: Courselore): void => {
+  app.locals.options = {
+    ...app.locals.options,
+    ...app.locals.database.get<{ [key: string]: any }>(
+      sql`
+        SELECT * FROM "administrationOptions"
+      `
+    )!,
+  };
+
   if (app.locals.options.environment === "production")
     (async () => {
       while (true) {
@@ -101,15 +85,6 @@ export default (app: Courselore): void => {
       }
     })();
 
-  app.locals.options = {
-    ...app.locals.options,
-    ...app.locals.database.get<{ [key: string]: any }>(
-      sql`
-        SELECT * FROM "administrationOptions"
-      `
-    )!,
-  };
-
   app.locals.partials.systemRoleIcon = {
     none: {
       regular: html`<i class="bi bi-dash-circle"></i>`,
@@ -125,7 +100,15 @@ export default (app: Courselore): void => {
     },
   };
 
-  app.locals.middlewares.isAdministrator = [
+  interface IsAdministratorMiddlewareLocals
+    extends IsSignedInMiddlewareLocals {}
+  const isAdministratorMiddleware: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    IsAdministratorMiddlewareLocals
+  >[] = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (res.locals.user.systemRole === "administrator") return next();
@@ -176,7 +159,7 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administration",
-    ...app.locals.middlewares.isAdministrator,
+    ...isAdministratorMiddleware,
     (res, req) => {
       req.redirect(
         303,
@@ -187,7 +170,7 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administration/system-settings",
-    ...app.locals.middlewares.isAdministrator,
+    ...isAdministratorMiddleware,
     (req, res) => {
       res.send(
         app.locals.layouts.administration({
@@ -306,7 +289,7 @@ export default (app: Courselore): void => {
     IsAdministratorMiddlewareLocals
   >(
     "/administration/system-settings",
-    ...app.locals.middlewares.isAdministrator,
+    ...isAdministratorMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.userSystemRolesWhoMayCreateCourses !== "string" ||
@@ -347,444 +330,405 @@ export default (app: Courselore): void => {
     {},
     {},
     IsAdministratorMiddlewareLocals
-  >(
-    "/administration/users",
-    ...app.locals.middlewares.isAdministrator,
-    (req, res) => {
-      const users = app.locals.database.all<{
-        id: number;
-        lastSeenOnlineAt: string;
-        reference: string;
-        email: string;
-        name: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        biographySource: string | null;
-        biographyPreprocessed: HTML | null;
-        systemRole: SystemRole;
-      }>(
-        sql`
-          SELECT "id",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "name",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "systemRole"
-          FROM "users"
-          ORDER BY "systemRole" = 'administrator' DESC,
-                   "systemRole" = 'staff' DESC,
-                   "systemRole" = 'none' DESC,
-                   "users"."name" ASC
-        `
-      );
+  >("/administration/users", ...isAdministratorMiddleware, (req, res) => {
+    const users = app.locals.database.all<{
+      id: number;
+      lastSeenOnlineAt: string;
+      reference: string;
+      email: string;
+      name: string;
+      avatar: string | null;
+      avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+      biographySource: string | null;
+      biographyPreprocessed: HTML | null;
+      systemRole: SystemRole;
+    }>(
+      sql`
+        SELECT "id",
+                "lastSeenOnlineAt",
+                "reference",
+                "email",
+                "name",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biographySource",
+                "biographyPreprocessed",
+                "systemRole"
+        FROM "users"
+        ORDER BY "systemRole" = 'administrator' DESC,
+                  "systemRole" = 'staff' DESC,
+                  "systemRole" = 'none' DESC,
+                  "users"."name" ASC
+      `
+    );
 
-      res.send(
-        app.locals.layouts.administration({
-          req,
-          res,
-          head: html`<title>Users · Administration · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-pc-display-horizontal"></i>
-              Administration ·
-              <i class="bi bi-people-fill"></i>
-              Users
-            </h2>
+    res.send(
+      app.locals.layouts.administration({
+        req,
+        res,
+        head: html`<title>Users · Administration · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-pc-display-horizontal"></i>
+            Administration ·
+            <i class="bi bi-people-fill"></i>
+            Users
+          </h2>
 
-            <label
-              css="${res.locals.css(css`
-                display: flex;
-                gap: var(--space--2);
-                align-items: baseline;
-              `)}"
-            >
-              <i class="bi bi-funnel"></i>
-              <input
-                type="text"
-                class="input--text"
-                placeholder="Filter…"
-                onload="${javascript`
-                  this.isModified = false;
+          <label
+            css="${res.locals.css(css`
+              display: flex;
+              gap: var(--space--2);
+              align-items: baseline;
+            `)}"
+          >
+            <i class="bi bi-funnel"></i>
+            <input
+              type="text"
+              class="input--text"
+              placeholder="Filter…"
+              onload="${javascript`
+                this.isModified = false;
 
-                  this.oninput = () => {
-                    const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                    for (const user of document.querySelectorAll(".user")) {
-                      let userHidden = filterPhrases.length > 0;
-                      for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
-                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                        const filterablePhrasesElementChildren = [];
-                        for (const filterablePhrase of filterablePhrases) {
-                          let filterablePhraseElement;
-                          if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                            filterablePhraseElement = document.createElement("mark");
-                            filterablePhraseElement.classList.add("mark");
-                            userHidden = false;
-                          } else
-                            filterablePhraseElement = document.createElement("span");
-                          filterablePhraseElement.textContent = filterablePhrase;
-                          filterablePhrasesElementChildren.push(filterablePhraseElement);
-                        }
-                        filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                this.oninput = () => {
+                  const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                  for (const user of document.querySelectorAll(".user")) {
+                    let userHidden = filterPhrases.length > 0;
+                    for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
+                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                      const filterablePhrasesElementChildren = [];
+                      for (const filterablePhrase of filterablePhrases) {
+                        let filterablePhraseElement;
+                        if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                          filterablePhraseElement = document.createElement("mark");
+                          filterablePhraseElement.classList.add("mark");
+                          userHidden = false;
+                        } else
+                          filterablePhraseElement = document.createElement("span");
+                        filterablePhraseElement.textContent = filterablePhrase;
+                        filterablePhrasesElementChildren.push(filterablePhraseElement);
                       }
-                      user.hidden = userHidden;
+                      filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                     }
-                  };
-                `}"
-              />
-            </label>
+                    user.hidden = userHidden;
+                  }
+                };
+              `}"
+            />
+          </label>
 
-            $${users.map((user) => {
-              const action = `https://${app.locals.options.host}/users/${user.reference}`;
-              const isSelf = user.id === res.locals.user.id;
-              const isOnlyAdministrator =
-                isSelf &&
-                users.filter((user) => user.systemRole === "administrator")
-                  .length === 1;
+          $${users.map((user) => {
+            const action = `https://${app.locals.options.host}/users/${user.reference}`;
+            const isSelf = user.id === res.locals.user.id;
+            const isOnlyAdministrator =
+              isSelf &&
+              users.filter((user) => user.systemRole === "administrator")
+                .length === 1;
 
-              return html`
+            return html`
+              <div
+                key="user--${user.reference}"
+                class="user"
+                css="${res.locals.css(css`
+                  padding-top: var(--space--2);
+                  border-top: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                  display: flex;
+                  gap: var(--space--2);
+                `)}"
+              >
+                <div>
+                  $${app.locals.partials.user({
+                    req,
+                    res,
+                    user,
+                    name: false,
+                  })}
+                </div>
+
                 <div
-                  key="user--${user.reference}"
-                  class="user"
                   css="${res.locals.css(css`
-                    padding-top: var(--space--2);
-                    border-top: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--700);
-                    }
+                    flex: 1;
+                    margin-top: var(--space--0-5);
                     display: flex;
+                    flex-direction: column;
                     gap: var(--space--2);
+                    min-width: var(--space--0);
                   `)}"
                 >
                   <div>
-                    $${app.locals.partials.user({
-                      req,
-                      res,
-                      user,
-                      name: false,
-                    })}
+                    <div
+                      data-filterable-phrases="${JSON.stringify(
+                        app.locals.helpers.splitFilterablePhrases(user.name)
+                      )}"
+                      class="strong"
+                    >
+                      ${user.name}
+                    </div>
+                    <div class="secondary">
+                      <span
+                        data-filterable-phrases="${JSON.stringify(
+                          app.locals.helpers.splitFilterablePhrases(user.email)
+                        )}"
+                        css="${res.locals.css(css`
+                          margin-right: var(--space--2);
+                        `)}"
+                      >
+                        ${user.email}
+                      </span>
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                        css="${res.locals.css(css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          display: inline-flex;
+                        `)}"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            touch: false,
+                            content: "Copy Email",
+                          });
+                          (this.copied ??= tippy(this)).setProps({
+                            theme: "green",
+                            trigger: "manual",
+                            content: "Copied",
+                          });
+
+                          this.onclick = async () => {
+                            await navigator.clipboard.writeText(${JSON.stringify(
+                              user.email
+                            )});
+                            this.copied.show();
+                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                            this.copied.hide();
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-stickies"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--xs);
+                      `)}"
+                    >
+                      <span>
+                        Last seen online
+                        <time
+                          datetime="${new Date(
+                            user.lastSeenOnlineAt
+                          ).toISOString()}"
+                          onload="${javascript`
+                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                          `}"
+                        ></time>
+                      </span>
+                    </div>
                   </div>
 
                   <div
                     css="${res.locals.css(css`
-                      flex: 1;
-                      margin-top: var(--space--0-5);
                       display: flex;
-                      flex-direction: column;
+                      flex-wrap: wrap;
                       gap: var(--space--2);
-                      min-width: var(--space--0);
                     `)}"
                   >
-                    <div>
-                      <div
-                        data-filterable-phrases="${JSON.stringify(
-                          app.locals.helpers.splitFilterablePhrases(user.name)
-                        )}"
-                        class="strong"
-                      >
-                        ${user.name}
-                      </div>
-                      <div class="secondary">
-                        <span
-                          data-filterable-phrases="${JSON.stringify(
-                            app.locals.helpers.splitFilterablePhrases(
-                              user.email
-                            )
-                          )}"
-                          css="${res.locals.css(css`
-                            margin-right: var(--space--2);
-                          `)}"
-                        >
-                          ${user.email}
-                        </span>
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          css="${res.locals.css(css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                            display: inline-flex;
-                          `)}"
-                          onload="${javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Copy Email",
-                            });
-                            (this.copied ??= tippy(this)).setProps({
-                              theme: "green",
-                              trigger: "manual",
-                              content: "Copied",
-                            });
-
-                            this.onclick = async () => {
-                              await navigator.clipboard.writeText(${JSON.stringify(
-                                user.email
-                              )});
-                              this.copied.show();
-                              await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                              this.copied.hide();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-stickies"></i>
-                        </button>
-                      </div>
-                      <div
-                        class="secondary"
-                        css="${res.locals.css(css`
-                          font-size: var(--font-size--xs);
-                        `)}"
-                      >
-                        <span>
-                          Last seen online
-                          <time
-                            datetime="${new Date(
-                              user.lastSeenOnlineAt
-                            ).toISOString()}"
-                            onload="${javascript`
-                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                            `}"
-                          ></time>
-                        </span>
-                      </div>
-                    </div>
-
                     <div
                       css="${res.locals.css(css`
+                        width: var(--space--28);
                         display: flex;
-                        flex-wrap: wrap;
-                        gap: var(--space--2);
+                        justify-content: flex-start;
                       `)}"
                     >
-                      <div
-                        css="${res.locals.css(css`
-                          width: var(--space--28);
-                          display: flex;
-                          justify-content: flex-start;
-                        `)}"
-                      >
-                        <button
-                          class="button button--tight button--tight--inline button--transparent ${user.systemRole ===
-                          "administrator"
-                            ? "text--rose"
-                            : user.systemRole === "staff"
-                            ? "text--teal"
-                            : ""}"
-                          onload="${javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Update System Role",
-                            });
-                            
-                            (this.dropdown ??= tippy(this)).setProps({
-                              trigger: "click",
-                              interactive: true,
-                              content: ${res.locals.html(
-                                html`
-                                  <div class="dropdown--menu">
-                                    $${systemRoles.map((role) =>
-                                      role === user.systemRole
-                                        ? html``
-                                        : html`
-                                            <form
-                                              key="role--${role}"
-                                              method="PATCH"
-                                              action="${action}"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="_csrf"
-                                                value="${req.csrfToken()}"
-                                              />
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <div>
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent $${role ===
-                                                  "administrator"
-                                                    ? "text--rose"
-                                                    : role === "staff"
-                                                    ? "text--teal"
-                                                    : ""}"
-                                                  $${isOnlyAdministrator
-                                                    ? html`
-                                                        type="button"
-                                                        onload="${javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            content: "You may not update your own role because you’re the only administrator.",
-                                                          });
-                                                        `}"
-                                                      `
-                                                    : isSelf
-                                                    ? html`
-                                                        type="button"
-                                                        onload="${javascript`
-                                                          (this.dropdown ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            interactive: true,
-                                                            appendTo: document.querySelector("body"),
-                                                            content: ${res.locals.html(
-                                                              html`
-                                                                <form
-                                                                  key="role--${role}"
-                                                                  method="PATCH"
-                                                                  action="${action}"
-                                                                  css="${res
-                                                                    .locals
-                                                                    .css(css`
-                                                                    padding: var(
-                                                                      --space--2
-                                                                    );
-                                                                    display: flex;
-                                                                    flex-direction: column;
-                                                                    gap: var(
-                                                                      --space--4
-                                                                    );
-                                                                  `)}"
-                                                                >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="role"
-                                                                    value="${role}"
-                                                                  />
-                                                                  <p>
-                                                                    Are you sure
-                                                                    you want to
-                                                                    update your
-                                                                    own role to
-                                                                    ${role}?
-                                                                  </p>
-                                                                  <p>
-                                                                    <strong
-                                                                      css="${res
-                                                                        .locals
-                                                                        .css(css`
-                                                                        font-weight: var(
-                                                                          --font-weight--bold
-                                                                        );
-                                                                      `)}"
-                                                                    >
-                                                                      You may
-                                                                      not undo
-                                                                      this
-                                                                      action!
-                                                                    </strong>
-                                                                  </p>
-                                                                  <button
-                                                                    class="button button--rose"
+                      <button
+                        class="button button--tight button--tight--inline button--transparent ${user.systemRole ===
+                        "administrator"
+                          ? "text--rose"
+                          : user.systemRole === "staff"
+                          ? "text--teal"
+                          : ""}"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            touch: false,
+                            content: "Update System Role",
+                          });
+                          
+                          (this.dropdown ??= tippy(this)).setProps({
+                            trigger: "click",
+                            interactive: true,
+                            content: ${res.locals.html(
+                              html`
+                                <div class="dropdown--menu">
+                                  $${systemRoles.map((role) =>
+                                    role === user.systemRole
+                                      ? html``
+                                      : html`
+                                          <form
+                                            key="role--${role}"
+                                            method="PATCH"
+                                            action="${action}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="_csrf"
+                                              value="${req.csrfToken()}"
+                                            />
+                                            <input
+                                              type="hidden"
+                                              name="role"
+                                              value="${role}"
+                                            />
+                                            <div>
+                                              <button
+                                                class="dropdown--menu--item button button--transparent $${role ===
+                                                "administrator"
+                                                  ? "text--rose"
+                                                  : role === "staff"
+                                                  ? "text--teal"
+                                                  : ""}"
+                                                $${isOnlyAdministrator
+                                                  ? html`
+                                                      type="button"
+                                                      onload="${javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          content: "You may not update your own role because you’re the only administrator.",
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : isSelf
+                                                  ? html`
+                                                      type="button"
+                                                      onload="${javascript`
+                                                        (this.dropdown ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          appendTo: document.querySelector("body"),
+                                                          content: ${res.locals.html(
+                                                            html`
+                                                              <form
+                                                                key="role--${role}"
+                                                                method="PATCH"
+                                                                action="${action}"
+                                                                css="${res
+                                                                  .locals
+                                                                  .css(css`
+                                                                  padding: var(
+                                                                    --space--2
+                                                                  );
+                                                                  display: flex;
+                                                                  flex-direction: column;
+                                                                  gap: var(
+                                                                    --space--4
+                                                                  );
+                                                                `)}"
+                                                              >
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="_csrf"
+                                                                  value="${req.csrfToken()}"
+                                                                />
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="role"
+                                                                  value="${role}"
+                                                                />
+                                                                <p>
+                                                                  Are you sure
+                                                                  you want to
+                                                                  update your
+                                                                  own role to
+                                                                  ${role}?
+                                                                </p>
+                                                                <p>
+                                                                  <strong
+                                                                    css="${res
+                                                                      .locals
+                                                                      .css(css`
+                                                                      font-weight: var(
+                                                                        --font-weight--bold
+                                                                      );
+                                                                    `)}"
                                                                   >
-                                                                    <i
-                                                                      class="bi bi-pencil-fill"
-                                                                    ></i>
-                                                                    Update My
-                                                                    Own Role to
-                                                                    ${lodash.capitalize(
-                                                                      role
-                                                                    )}
-                                                                  </button>
-                                                                </form>
-                                                              `
-                                                            )},
-                                                          });
-                                                        `}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  $${app.locals.partials
-                                                    .systemRoleIcon[role][
-                                                    role !== "none"
-                                                      ? "fill"
-                                                      : "regular"
-                                                  ]}
-                                                  ${lodash.capitalize(role)}
-                                                </button>
-                                              </div>
-                                            </form>
-                                          `
-                                    )}
-                                  </div>
-                                `
-                              )},
-                            });
-                          `}"
-                        >
-                          $${app.locals.partials.systemRoleIcon[
-                            user.systemRole
-                          ][user.systemRole !== "none" ? "fill" : "regular"]}
-                          ${lodash.capitalize(user.systemRole)}
-                          <i class="bi bi-chevron-down"></i>
-                        </button>
-                      </div>
+                                                                    You may not
+                                                                    undo this
+                                                                    action!
+                                                                  </strong>
+                                                                </p>
+                                                                <button
+                                                                  class="button button--rose"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-pencil-fill"
+                                                                  ></i>
+                                                                  Update My Own
+                                                                  Role to
+                                                                  ${lodash.capitalize(
+                                                                    role
+                                                                  )}
+                                                                </button>
+                                                              </form>
+                                                            `
+                                                          )},
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : html``}
+                                              >
+                                                $${app.locals.partials
+                                                  .systemRoleIcon[role][
+                                                  role !== "none"
+                                                    ? "fill"
+                                                    : "regular"
+                                                ]}
+                                                ${lodash.capitalize(role)}
+                                              </button>
+                                            </div>
+                                          </form>
+                                        `
+                                  )}
+                                </div>
+                              `
+                            )},
+                          });
+                        `}"
+                      >
+                        $${app.locals.partials.systemRoleIcon[user.systemRole][
+                          user.systemRole !== "none" ? "fill" : "regular"
+                        ]}
+                        ${lodash.capitalize(user.systemRole)}
+                        <i class="bi bi-chevron-down"></i>
+                      </button>
                     </div>
-
-                    $${user.biographyPreprocessed !== null
-                      ? html`
-                          <details class="details">
-                            <summary>Biography</summary>
-                            $${app.locals.partials.content({
-                              req,
-                              res,
-                              type: "preprocessed",
-                              content: user.biographyPreprocessed,
-                            }).processed}
-                          </details>
-                        `
-                      : html``}
                   </div>
-                </div>
-              `;
-            })}
-          `,
-        })
-      );
-    }
-  );
 
-  app.locals.middlewares.mayManageUser = [
-    ...app.locals.middlewares.isAdministrator,
-    (req, res, next) => {
-      const managedUser = app.locals.database.get<{
-        id: number;
-      }>(
-        sql`
-          SELECT "id"
-          FROM "users"
-          WHERE "reference" = ${req.params.userReference}
-        `
-      );
-      if (managedUser === undefined) return next("route");
-      res.locals.managedUser = {
-        ...managedUser,
-        isSelf: managedUser.id === res.locals.user.id,
-      };
-      if (
-        res.locals.managedUser.isSelf &&
-        app.locals.database.get<{ count: number }>(
-          sql`
-            SELECT COUNT(*) AS "count"
-            FROM "users"
-            WHERE "systemRole" = 'administrator'
-          `
-        )!.count === 1
-      )
-        return next("validation");
-      next();
-    },
-  ];
+                  $${user.biographyPreprocessed !== null
+                    ? html`
+                        <details class="details">
+                          <summary>Biography</summary>
+                          $${app.locals.partials.content({
+                            req,
+                            res,
+                            type: "preprocessed",
+                            content: user.biographyPreprocessed,
+                          }).processed}
+                        </details>
+                      `
+                    : html``}
+                </div>
+              </div>
+            `;
+          })}
+        `,
+      })
+    );
+  });
 
   app.patch<
     { userReference: string },
@@ -793,32 +737,51 @@ export default (app: Courselore): void => {
       role?: SystemRole;
     },
     {},
-    MayManageUserMiddlewareLocals
-  >(
-    "/users/:userReference",
-    ...app.locals.middlewares.mayManageUser,
-    (req, res, next) => {
-      if (typeof req.body.role === "string") {
-        if (!systemRoles.includes(req.body.role)) return next("validation");
+    IsAdministratorMiddlewareLocals
+  >("/users/:userReference", ...isAdministratorMiddleware, (req, res, next) => {
+    const managedUser = app.locals.database.get<{
+      id: number;
+    }>(
+      sql`
+        SELECT "id"
+        FROM "users"
+        WHERE "reference" = ${req.params.userReference}
+      `
+    );
+    if (managedUser === undefined) return next("route");
+    const isSelf = managedUser.id === res.locals.user.id;
+    if (
+      isSelf &&
+      app.locals.database.get<{ count: number }>(
+        sql`
+          SELECT COUNT(*) AS "count"
+          FROM "users"
+          WHERE "systemRole" = 'administrator'
+        `
+      )!.count === 1
+    )
+      return next("validation");
 
-        app.locals.database.run(
-          sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${res.locals.managedUser.id}`
-        );
-      }
+    if (typeof req.body.role === "string") {
+      if (!systemRoles.includes(req.body.role)) return next("validation");
 
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        theme: "green",
-        content: html`User updated successfully.`,
-      });
-
-      res.redirect(
-        303,
-        res.locals.managedUser.isSelf
-          ? `https://${app.locals.options.host}`
-          : `https://${app.locals.options.host}/administration/users`
+      app.locals.database.run(
+        sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${managedUser.id}`
       );
     }
-  );
+
+    app.locals.helpers.Flash.set({
+      req,
+      res,
+      theme: "green",
+      content: html`User updated successfully.`,
+    });
+
+    res.redirect(
+      303,
+      isSelf
+        ? `https://${app.locals.options.host}`
+        : `https://${app.locals.options.host}/administration/users`
+    );
+  });
 };
