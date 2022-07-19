@@ -118,17 +118,6 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type IsInvitationUsableMiddleware = express.RequestHandler<
-  { courseReference: string; invitationReference: string },
-  any,
-  {},
-  {},
-  IsInvitationUsableMiddlewareLocals
->[];
-export interface IsInvitationUsableMiddlewareLocals
-  extends InvitationExistsMiddlewareLocals,
-    Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
-
 export type InvitationMailer = ({
   req,
   res,
@@ -1052,7 +1041,16 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.middlewares.isInvitationUsable = [
+  interface IsInvitationUsableMiddlewareLocals
+    extends InvitationExistsMiddlewareLocals,
+      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
+  const isInvitationUsableMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    IsInvitationUsableMiddlewareLocals
+  >[] = [
     ...invitationExistsMiddleware,
     (req, res, next) => {
       if (
@@ -4293,7 +4291,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
       if (
         typeof req.query.redirect === "string" &&
@@ -4417,7 +4415,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
         app.locals.layouts.box({
@@ -4477,7 +4475,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       app.locals.database.run(
         sql`
@@ -4525,7 +4523,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedOut,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
         app.locals.layouts.box({
