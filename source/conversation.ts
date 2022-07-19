@@ -3420,29 +3420,27 @@ export default (app: Courselore): void => {
                                                     });
                                                   `}"
                                             >
-                                              <i
-                                                class="bi bi-mortarboard-fill"
-                                              ></i>
+                                              <i class="bi bi-mortarboard-fill"></i>
                                             </span>
                                           `
                                         : html``}
                                       <label
                                         class="button button--tight button--transparent"
                                         onload="${javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          theme: "rose",
-                                          touch: false,
-                                          content: "Remove Tag",
-                                        });
-                                        
-                                        this.onclick = () => {
-                                          this.closest("div").hidden = true;
-                                          this.closest("div").querySelector("input").checked = false;
-                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
-                                          if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
-                                            this.closest('[key="added-tags"]').hidden = true;
-                                        };
-                                      `}"
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            theme: "rose",
+                                            touch: false,
+                                            content: "Remove Tag",
+                                          });
+                                          
+                                          this.onclick = () => {
+                                            this.closest("div").hidden = true;
+                                            this.closest("div").querySelector("input").checked = false;
+                                            this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
+                                            if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
+                                              this.closest('[key="added-tags"]').hidden = true;
+                                          };
+                                        `}"
                                       >
                                         <span class="">
                                           <i class="bi bi-x-lg"></i>
