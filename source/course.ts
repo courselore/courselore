@@ -64,13 +64,6 @@ export type CoursesPartial = ({
   tight?: boolean;
 }) => HTML;
 
-export type CourseRoleIconPartial = {
-  [courseRole in CourseRole]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
-
 export type CourseArchivedPartial = ({
   req,
   res,
@@ -119,6 +112,22 @@ export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
 export default (app: Courselore): void => {
+  const courseRoleIcon: {
+    [courseRole in CourseRole]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
+
   app.locals.partials.course = ({
     req,
     res,
@@ -188,7 +197,7 @@ export default (app: Courselore): void => {
             ? html``
             : html`
                 <div>
-                  $${app.locals.partials.courseRoleIcon[enrollment.courseRole]
+                  $${courseRoleIcon[enrollment.courseRole]
                     .regular} ${lodash.capitalize(enrollment.courseRole)}
                 </div>
               `}
@@ -296,17 +305,6 @@ export default (app: Courselore): void => {
       `;
 
     return courses;
-  };
-
-  app.locals.partials.courseRoleIcon = {
-    student: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
   };
 
   app.locals.partials.courseArchived = ({ req, res }) => html`
@@ -2183,13 +2181,11 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span>
-                            $${app.locals.partials.courseRoleIcon[courseRole]
-                              .regular}
+                            $${courseRoleIcon[courseRole].regular}
                             ${lodash.capitalize(courseRole)}
                           </span>
                           <span class="text--blue">
-                            $${app.locals.partials.courseRoleIcon[courseRole]
-                              .fill}
+                            $${courseRoleIcon[courseRole].fill}
                             ${lodash.capitalize(courseRole)}
                           </span>
                         </label>
@@ -2657,8 +2653,7 @@ export default (app: Courselore): void => {
                                                           `
                                                         : html``}
                                                     >
-                                                      $${app.locals.partials
-                                                        .courseRoleIcon[
+                                                      $${courseRoleIcon[
                                                         courseRole
                                                       ][
                                                         courseRole === "staff"
@@ -2678,9 +2673,7 @@ export default (app: Courselore): void => {
                                   });
                                 `}"
                               >
-                                $${app.locals.partials.courseRoleIcon[
-                                  invitation.courseRole
-                                ][
+                                $${courseRoleIcon[invitation.courseRole][
                                   invitation.courseRole === "staff"
                                     ? "fill"
                                     : "regular"
@@ -3837,8 +3830,7 @@ export default (app: Courselore): void => {
                                                       `
                                                     : html``}
                                                 >
-                                                  $${app.locals.partials
-                                                    .courseRoleIcon[courseRole][
+                                                  $${courseRoleIcon[courseRole][
                                                     courseRole === "staff"
                                                       ? "fill"
                                                       : "regular"
@@ -3857,9 +3849,7 @@ export default (app: Courselore): void => {
                             });
                           `}"
                         >
-                          $${app.locals.partials.courseRoleIcon[
-                            enrollment.courseRole
-                          ][
+                          $${courseRoleIcon[enrollment.courseRole][
                             enrollment.courseRole === "staff"
                               ? "fill"
                               : "regular"
