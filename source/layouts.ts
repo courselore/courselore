@@ -122,8 +122,6 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type IconPartial = HTML;
-
 export type PartialLayout = ({
   req,
   res,

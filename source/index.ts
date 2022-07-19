@@ -1,6 +1,7 @@
 import url from "node:url";
 import fs from "fs-extra";
 import express from "express";
+import { HTML } from "@leafac/html";
 import nodemailer from "nodemailer";
 
 import database, { DatabaseLocals } from "./database.js";
@@ -24,8 +25,6 @@ import layouts, {
   ApplicationLayout,
   MainLayout,
   SettingsLayout,
-  // LogoPartial,
-  IconPartial,
   PartialLayout,
   SpinnerPartial,
   ReportIssueHrefPartial,
@@ -251,9 +250,9 @@ export interface Courselore extends express.Express {
       sendEmail: SendEmailWorker;
     };
     icons: {
-      logo: IconPartial;
-      chat: IconPartial;
-      chatFill: IconPartial;
+      logo: HTML;
+      chat: HTML;
+      chatFill: HTML;
     };
   } & DatabaseLocals &
     LiveUpdatesLocals;

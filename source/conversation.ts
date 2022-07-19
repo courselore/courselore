@@ -3363,8 +3363,7 @@ export default (app: Courselore): void => {
                                 hidden
                                 css="${res.locals.css(css`
                                   display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
+                                  flex-direction: column;
                                   row-gap: var(--space--1);
                                 `)}"
                               >
@@ -3375,59 +3374,41 @@ export default (app: Courselore): void => {
                                       hidden
                                       css="${res.locals.css(css`
                                         display: flex;
+                                        align-items: center;
                                         gap: var(--space--2);
                                       `)}"
-                                      onload="${javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          theme: "rose",
-                                          touch: false,
-                                          content: "Remove Tag",
-                                        });
-                                        
-                                        this.onclick = () => {
-                                          this.hidden = true;
-                                          this.querySelector("input").checked = false;
-                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
-                                          if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
-                                            this.closest('[key="added-tags"]').hidden = true;
-                                        };
-                                      `}"
                                     >
-                                      <label
-                                        class="button button--tight button--transparent"
-                                      >
-                                        <input
-                                          key="input--${tag.reference}"
-                                          type="checkbox"
-                                          name="tagsReferences[]"
-                                          value="${tag.reference}"
-                                          $${(typeof conversationDraft?.tagsReferences ===
-                                            "string" &&
-                                            JSON.parse(
-                                              conversationDraft.tagsReferences
-                                            ).includes(tag.reference)) ||
-                                          (conversationDraft === undefined &&
-                                            Array.isArray(
-                                              req.query.newConversation
-                                                ?.tagsReferences
-                                            ) &&
-                                            req.query.newConversation!.tagsReferences.includes(
-                                              tag.reference
-                                            ))
-                                            ? html`checked`
-                                            : html``}
-                                          required
-                                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                                          onload="${javascript`
-                                            this.validationTarget = this.closest('[key="tags"]').querySelector('[key="add-tags"]');
-                                          `}"
-                                        />
-                                        <span> </span>
-                                        <span class="text--teal">
-                                          <i class="bi bi-tag-fill"></i>
-                                          ${tag.name}
-                                        </span>
-                                      </label>
+                                      <input
+                                        key="input--${tag.reference}"
+                                        type="checkbox"
+                                        name="tagsReferences[]"
+                                        value="${tag.reference}"
+                                        $${(typeof conversationDraft?.tagsReferences ===
+                                          "string" &&
+                                          JSON.parse(
+                                            conversationDraft.tagsReferences
+                                          ).includes(tag.reference)) ||
+                                        (conversationDraft === undefined &&
+                                          Array.isArray(
+                                            req.query.newConversation
+                                              ?.tagsReferences
+                                          ) &&
+                                          req.query.newConversation!.tagsReferences.includes(
+                                            tag.reference
+                                          ))
+                                          ? html`checked`
+                                          : html``}
+                                        required
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                        onload="${javascript`
+                                        this.validationTarget = this.closest('[key="tags"]').querySelector('[key="add-tags"]');
+                                      `}"
+                                      />
+                                      <span></span>
+                                      <span class="text--teal">
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${tag.name}
+                                      </span>
                                       $${tag.staffOnlyAt !== null
                                         ? html`
                                             <span
@@ -3445,6 +3426,28 @@ export default (app: Courselore): void => {
                                             </span>
                                           `
                                         : html``}
+                                      <label
+                                        class="button button--tight button--transparent"
+                                        onload="${javascript`
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          theme: "rose",
+                                          touch: false,
+                                          content: "Remove Tag",
+                                        });
+                                        
+                                        this.onclick = () => {
+                                          this.closest("div").hidden = true;
+                                          this.closest("div").querySelector("input").checked = false;
+                                          this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
+                                          if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
+                                            this.closest('[key="added-tags"]').hidden = true;
+                                        };
+                                      `}"
+                                      >
+                                        <span class="">
+                                          <i class="bi bi-x-lg"></i>
+                                        </span>
+                                      </label>
                                     </div>
                                   `
                                 )}
