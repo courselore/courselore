@@ -90,7 +90,9 @@ export type MayEndorseMessageHelper = ({
     IsConversationAccessibleMiddlewareLocals
   >;
   res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-  message: MessageExistsMiddlewareLocals["message"];
+  message: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
 }) => boolean;
 
 export type CourseLiveUpdater = ({
