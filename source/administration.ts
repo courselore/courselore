@@ -34,18 +34,6 @@ export type SystemRoleIconPartial = {
   };
 };
 
-export type AdministrationLayout = ({
-  req,
-  res,
-  head,
-  body,
-}: {
-  req: express.Request<{}, any, {}, {}, IsAdministratorMiddlewareLocals>;
-  res: express.Response<any, IsAdministratorMiddlewareLocals>;
-  head: HTML;
-  body: HTML;
-}) => HTML;
-
 export default (app: Courselore): void => {
   app.locals.options = {
     ...app.locals.options,
@@ -116,7 +104,17 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.layouts.administration = ({ req, res, head, body }) =>
+  const administrationLayout = ({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsAdministratorMiddlewareLocals>;
+    res: express.Response<any, IsAdministratorMiddlewareLocals>;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
     app.locals.layouts.settings({
       req,
       res,
@@ -173,7 +171,7 @@ export default (app: Courselore): void => {
     ...isAdministratorMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.administration({
+        administrationLayout({
           req,
           res,
           head: html`
@@ -363,7 +361,7 @@ export default (app: Courselore): void => {
     );
 
     res.send(
-      app.locals.layouts.administration({
+      administrationLayout({
         req,
         res,
         head: html`<title>Users · Administration · Courselore</title>`,
