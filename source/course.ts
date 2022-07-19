@@ -118,18 +118,6 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type CourseSettingsLayout = ({
-  req,
-  res,
-  head,
-  body,
-}: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-  head: HTML;
-  body: HTML;
-}) => HTML;
-
 export default (app: Courselore): void => {
   app.locals.partials.course = ({
     req,
@@ -919,7 +907,40 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res) => {
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/courses/${
+          res.locals.course.reference
+        }/settings/${
+          res.locals.enrollment.courseRole === "staff"
+            ? "course-information"
+            : "your-enrollment"
+        }`
+      );
+    }
+  );
+
+  const courseSettingsLayout = ({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
     app.locals.layouts.settings({
       req,
       res,
@@ -1017,36 +1038,13 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    (req, res) => {
-      res.redirect(
-        303,
-        `https://${app.locals.options.host}/courses/${
-          res.locals.course.reference
-        }/settings/${
-          res.locals.enrollment.courseRole === "staff"
-            ? "course-information"
-            : "your-enrollment"
-        }`
-      );
-    }
-  );
-
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -1401,7 +1399,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -1988,7 +1986,7 @@ export default (app: Courselore): void => {
       );
 
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -3512,7 +3510,7 @@ export default (app: Courselore): void => {
         }));
 
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -4112,7 +4110,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`

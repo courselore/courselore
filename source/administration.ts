@@ -104,6 +104,17 @@ export default (app: Courselore): void => {
     },
   ];
 
+  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
+    "/administration",
+    ...isAdministratorMiddleware,
+    (res, req) => {
+      req.redirect(
+        303,
+        `https://${app.locals.options.host}/administration/system-settings`
+      );
+    }
+  );
+
   const administrationLayout = ({
     req,
     res,
@@ -154,17 +165,6 @@ export default (app: Courselore): void => {
       `,
       body,
     });
-
-  app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
-    "/administration",
-    ...isAdministratorMiddleware,
-    (res, req) => {
-      req.redirect(
-        303,
-        `https://${app.locals.options.host}/administration/system-settings`
-      );
-    }
-  );
 
   app.get<{}, HTML, {}, {}, IsAdministratorMiddlewareLocals>(
     "/administration/system-settings",

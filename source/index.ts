@@ -73,7 +73,6 @@ import course, {
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
-  CourseSettingsLayout,
 } from "./course.js";
 export {
   CourseRole,
@@ -153,7 +152,6 @@ export interface Courselore extends express.Express {
       main: MainLayout;
       settings: SettingsLayout;
       partial: PartialLayout;
-      courseSettings: CourseSettingsLayout;
       conversation: ConversationLayout;
     };
     partials: {
