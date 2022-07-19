@@ -137,7 +137,7 @@ export {
 import content, { ContentPartial, ContentEditorPartial } from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
-import demonstration, { DemonstrationHandler } from "./demonstration.js";
+import demonstration from "./demonstration.js";
 import error from "./error.js";
 
 import helpers, {
@@ -163,7 +163,6 @@ export interface Courselore extends express.Express {
       AdministrationOptions;
     handlers: {
       about: AboutHandler;
-      demonstration: DemonstrationHandler;
     };
     middlewares: {
       liveUpdates: LiveUpdatesMiddleware;

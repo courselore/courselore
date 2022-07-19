@@ -20,18 +20,16 @@ import {
   conversationTypes,
 } from "./index.js";
 
-export type DemonstrationHandler = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
->;
-
 export default (app: Courselore): void => {
   if (!app.locals.options.demonstration) return;
 
-  app.locals.handlers.demonstration = asyncHandler(async (req, res) => {
+  const handler: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  > = asyncHandler(async (req, res) => {
     const password = await argon2.hash("courselore", app.locals.options.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
     const users = lodash.times(151, (userIndex) => {
@@ -1276,12 +1274,12 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
   app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(
     "/demonstration-data",
     ...app.locals.middlewares.isSignedOut,
-    (req, res, next) => app.locals.handlers.demonstration(req, res, next)
+    handler
   );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/demonstration-data",
     ...app.locals.middlewares.isSignedIn,
-    (req, res, next) => app.locals.handlers.demonstration(req, res, next)
+    handler
   );
 };
