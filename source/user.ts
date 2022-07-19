@@ -80,18 +80,6 @@ export type UserPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
-export type UserSettingsLayout = ({
-  req,
-  res,
-  head,
-  body,
-}: {
-  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-  res: express.Response<any, IsSignedInMiddlewareLocals>;
-  head: HTML;
-  body: HTML;
-}) => HTML;
-
 export default (app: Courselore): void => {
   app.locals.partials.user = ({
     req,
@@ -592,7 +580,25 @@ export default (app: Courselore): void => {
       : html``;
   };
 
-  app.locals.layouts.userSettings = ({ req, res, head, body }) =>
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/settings",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res) => {
+      res.redirect(303, `https://${app.locals.options.host}/settings/profile`);
+    }
+  );
+
+  const userSettingsLayout = ({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
+    res: express.Response<any, IsSignedInMiddlewareLocals>;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
     app.locals.layouts.settings({
       req,
       res,
@@ -648,19 +654,11 @@ export default (app: Courselore): void => {
     });
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings",
-    ...app.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.redirect(303, `https://${app.locals.options.host}/settings/profile`);
-    }
-  );
-
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.userSettings({
+        userSettingsLayout({
           req,
           res,
           head: html`<title>Profile · User Settings · Courselore</title>`,
@@ -1063,7 +1061,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.userSettings({
+        userSettingsLayout({
           req,
           res,
           head: html`<title>
@@ -1303,7 +1301,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.userSettings({
+        userSettingsLayout({
           req,
           res,
           head: html`<title>Notifications · User Settings · Courselore</title>`,
