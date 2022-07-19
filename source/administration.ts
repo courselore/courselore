@@ -300,10 +300,16 @@ export default (app: Courselore): void => {
     }
   );
 
-  const systemRoleIcon = {
+  const systemRoleIcon: { [key in SystemRole]: HTML } = {
     none: html`<i class="bi bi-dash-circle"></i>`,
     staff: html`<i class="bi bi-person-badge-fill"></i>`,
     administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
+  };
+
+  const systemRoleTextColor: { [key in SystemRole]: string } = {
+    none: "",
+    staff: "text--teal",
+    administrator: "text--rose",
   };
 
   app.get<
@@ -527,12 +533,9 @@ export default (app: Courselore): void => {
                       `)}"
                     >
                       <button
-                        class="button button--tight button--tight--inline button--transparent ${user.systemRole ===
-                        "administrator"
-                          ? "text--rose"
-                          : user.systemRole === "staff"
-                          ? "text--teal"
-                          : ""}"
+                        class="button button--tight button--tight--inline button--transparent ${systemRoleTextColor[
+                          user.systemRole
+                        ]}"
                         onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
@@ -568,12 +571,9 @@ export default (app: Courselore): void => {
                                               class="dropdown--menu--item button ${systemRole ===
                                               user.systemRole
                                                 ? "button--blue"
-                                                : "button--transparent"} $${systemRole ===
-                                              "administrator"
-                                                ? "text--rose"
-                                                : systemRole === "staff"
-                                                ? "text--teal"
-                                                : ""}"
+                                                : "button--transparent"} ${systemRoleTextColor[
+                                                systemRole
+                                              ]}"
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
