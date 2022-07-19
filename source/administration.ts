@@ -27,13 +27,6 @@ export const userSystemRolesWhoMayCreateCourseses = [
 export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
-export type SystemRoleIconPartial = {
-  [role in SystemRole]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
-
 export default (app: Courselore): void => {
   app.locals.options = {
     ...app.locals.options,
@@ -72,21 +65,6 @@ export default (app: Courselore): void => {
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
       }
     })();
-
-  app.locals.partials.systemRoleIcon = {
-    none: {
-      regular: html`<i class="bi bi-dash-circle"></i>`,
-      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-person-badge"></i>`,
-      fill: html`<i class="bi bi-person-badge-fill"></i>`,
-    },
-    administrator: {
-      regular: html`<i class="bi bi-pc-display-horizontal"></i>`,
-      fill: html`<i class="bi bi-pc-display-horizontal"></i>`,
-    },
-  };
 
   interface IsAdministratorMiddlewareLocals
     extends IsSignedInMiddlewareLocals {}
@@ -321,6 +299,21 @@ export default (app: Courselore): void => {
       );
     }
   );
+
+  const systemRoleIcon = {
+    none: {
+      regular: html`<i class="bi bi-dash-circle"></i>`,
+      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-person-badge"></i>`,
+      fill: html`<i class="bi bi-person-badge-fill"></i>`,
+    },
+    administrator: {
+      regular: html`<i class="bi bi-pc-display-horizontal"></i>`,
+      fill: html`<i class="bi bi-pc-display-horizontal"></i>`,
+    },
+  };
 
   app.get<
     { userReference: string },
@@ -679,8 +672,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   : html``}
                                               >
-                                                $${app.locals.partials
-                                                  .systemRoleIcon[role][
+                                                $${systemRoleIcon[role][
                                                   role !== "none"
                                                     ? "fill"
                                                     : "regular"
@@ -697,7 +689,7 @@ export default (app: Courselore): void => {
                           });
                         `}"
                       >
-                        $${app.locals.partials.systemRoleIcon[user.systemRole][
+                        $${systemRoleIcon[user.systemRole][
                           user.systemRole !== "none" ? "fill" : "regular"
                         ]}
                         ${lodash.capitalize(user.systemRole)}

@@ -46,7 +46,6 @@ export {
 
 import administrator, {
   AdministrationOptions,
-  SystemRoleIconPartial,
 } from "./administration.js";
 export {
   UserSystemRolesWhoMayCreateCourses,
@@ -158,7 +157,6 @@ export interface Courselore extends express.Express {
       logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
-      systemRoleIcon: SystemRoleIconPartial;
       user: UserPartial;
       course: CoursePartial;
       courses: CoursesPartial;
