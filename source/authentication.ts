@@ -133,14 +133,6 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   mayCreateCourses: boolean;
 }
 
-export type SignInHandler = express.RequestHandler<
-  {},
-  HTML,
-  {},
-  { redirect?: string; invitation?: { email?: string; name?: string } },
-  IsSignedOutMiddlewareLocals
->;
-
 export interface PasswordResetHelper {
   maxAge: number;
   create(userId: number): string;
@@ -429,145 +421,154 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.handlers.signIn = (req, res) => {
-    res.send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html`
-          <title>
-            Sign in · Courselore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <form
-            method="POST"
-            action="https://${app.locals.options.host}/sign-in${qs.stringify(
-              {
-                redirect: req.query.redirect,
-                invitation: req.query.invitation,
-              },
-              {
-                addQueryPrefix: true,
-              }
-            )}"
-            novalidate
-            css="${res.locals.css(css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `)}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${typeof req.query.invitation?.email === "string" &&
-                req.query.invitation.email.trim() !== ""
-                  ? req.query.invitation.email
-                  : ""}"
-                required
-                autofocus
-                class="input--text"
-                onload="${javascript`
-                  this.isModified = false;
-                `}"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                class="input--text"
-                onload="${javascript`
-                  this.isModified = false;
-                `}"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-box-arrow-in-right"></i>
-              Sign in
-            </button>
-          </form>
-          <div
-            css="${res.locals.css(css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `)}"
-          >
-            <p>
-              Don’t have an account?
-              <a
-                href="https://${app.locals.options.host}/sign-up${qs.stringify(
-                  {
-                    redirect: req.query.redirect,
-                    invitation: req.query.invitation,
-                  },
-                  {
-                    addQueryPrefix: true,
-                  }
-                )}"
-                class="link"
-                >Sign up</a
-              >.
-            </p>
-            <p>
-              Forgot your password?
-              <a
-                href="https://${app.locals.options
-                  .host}/reset-password${qs.stringify(
-                  {
-                    redirect: req.query.redirect,
-                    invitation: req.query.invitation,
-                  },
-                  {
-                    addQueryPrefix: true,
-                  }
-                )}"
-                class="link"
-                >Reset password</a
-              >.
-            </p>
-          </div>
-        `,
-      })
-    );
-  };
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-    "/",
-    ...app.locals.middlewares.isSignedOut,
-    app.locals.options.host === app.locals.options.canonicalHost
-      ? (req, res, next) => {
-          app.locals.handlers.about(req, res, next);
-        }
-      : app.locals.handlers.signIn
-  );
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-    "/sign-in",
-    ...app.locals.middlewares.isSignedOut,
-    app.locals.handlers.signIn
-  );
-  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
-    "/sign-in",
-    ...app.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.redirect(
-        303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
-        }`
+  (() => {
+    const handler: express.RequestHandler<
+      {},
+      HTML,
+      {},
+      { redirect?: string; invitation?: { email?: string; name?: string } },
+      IsSignedOutMiddlewareLocals
+    > = (req, res) => {
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Sign in · Courselore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="https://${app.locals.options.host}/sign-in${qs.stringify(
+                {
+                  redirect: req.query.redirect,
+                  invitation: req.query.invitation,
+                },
+                {
+                  addQueryPrefix: true,
+                }
+              )}"
+              novalidate
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${typeof req.query.invitation?.email === "string" &&
+                  req.query.invitation.email.trim() !== ""
+                    ? req.query.invitation.email
+                    : ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  onload="${javascript`
+                    this.isModified = false;
+                  `}"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  class="input--text"
+                  onload="${javascript`
+                    this.isModified = false;
+                  `}"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in
+              </button>
+            </form>
+            <div
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `)}"
+            >
+              <p>
+                Don’t have an account?
+                <a
+                  href="https://${app.locals.options
+                    .host}/sign-up${qs.stringify(
+                    {
+                      redirect: req.query.redirect,
+                      invitation: req.query.invitation,
+                    },
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
+                  class="link"
+                  >Sign up</a
+                >.
+              </p>
+              <p>
+                Forgot your password?
+                <a
+                  href="https://${app.locals.options
+                    .host}/reset-password${qs.stringify(
+                    {
+                      redirect: req.query.redirect,
+                      invitation: req.query.invitation,
+                    },
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
+                  class="link"
+                  >Reset password</a
+                >.
+              </p>
+            </div>
+          `,
+        })
       );
-    }
-  );
+    };
+    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+      "/",
+      ...app.locals.middlewares.isSignedOut,
+      app.locals.options.host === app.locals.options.canonicalHost
+        ? (req, res, next) => {
+            app.locals.handlers.about(req, res, next);
+          }
+        : handler
+    );
+    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+      "/sign-in",
+      ...app.locals.middlewares.isSignedOut,
+      handler
+    );
+    app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+      "/sign-in",
+      ...app.locals.middlewares.isSignedIn,
+      (req, res) => {
+        res.redirect(
+          303,
+          `https://${app.locals.options.host}${
+            typeof req.query.redirect === "string" &&
+            req.query.redirect.trim() !== ""
+              ? req.query.redirect
+              : "/"
+          }`
+        );
+      }
+    );
+  })();
 
   app.post<
     {},

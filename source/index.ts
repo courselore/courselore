@@ -36,7 +36,6 @@ import authentication, {
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
-  SignInHandler,
   PasswordResetHelper,
   EmailVerificationMailer,
 } from "./authentication.js";
@@ -169,7 +168,6 @@ export interface Courselore extends express.Express {
       AdministrationOptions;
     handlers: {
       about: AboutHandler;
-      signIn: SignInHandler;
       mentionUserSearch: MentionUserSearchHandler;
       contentPreview: ContentPreviewHandler;
       demonstration: DemonstrationHandler;
