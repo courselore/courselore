@@ -203,19 +203,6 @@ export type MayEditConversationHelper = ({
   res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
 }) => boolean;
 
-export type MayEditConversationMiddleware = express.RequestHandler<
-  {
-    courseReference: string;
-    conversationReference: string;
-  },
-  any,
-  {},
-  {},
-  MayEditConversationMiddlewareLocals
->[];
-export interface MayEditConversationMiddlewareLocals
-  extends IsConversationAccessibleMiddlewareLocals {}
-
 export default (app: Courselore): void => {
   app.locals.layouts.conversation = ({
     req,
@@ -4098,14 +4085,6 @@ export default (app: Courselore): void => {
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
 
-  app.locals.middlewares.mayEditConversation = [
-    ...app.locals.middlewares.isConversationAccessible,
-    (req, res, next) => {
-      if (app.locals.helpers.mayEditConversation({ req, res })) return next();
-      next("route");
-    },
-  ];
-
   app.get<
     { courseReference: string; conversationReference: string },
     HTML,
@@ -7767,6 +7746,25 @@ export default (app: Courselore): void => {
     }
   );
 
+  interface MayEditConversationMiddlewareLocals
+    extends IsConversationAccessibleMiddlewareLocals {}
+  const mayEditConversationMiddleware: express.RequestHandler<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEditConversationMiddlewareLocals
+  >[] = [
+    ...app.locals.middlewares.isConversationAccessible,
+    (req, res, next) => {
+      if (app.locals.helpers.mayEditConversation({ req, res })) return next();
+      next("route");
+    },
+  ];
+
   app.patch<
     { courseReference: string; conversationReference: string },
     HTML,
@@ -7784,7 +7782,7 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (typeof req.body.type === "string")
         if (!conversationTypes.includes(req.body.type))
@@ -7951,7 +7949,7 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.reference !== "string" ||
@@ -8008,7 +8006,7 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (
         res.locals.conversation.taggings.length === 1 ||

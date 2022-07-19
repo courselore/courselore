@@ -92,7 +92,6 @@ import conversation, {
   GetConversationHelper,
   IsConversationAccessibleMiddleware,
   MayEditConversationHelper,
-  MayEditConversationMiddleware,
 } from "./conversation.js";
 export {
   ConversationType,
@@ -100,7 +99,6 @@ export {
   AuthorEnrollment,
   AuthorEnrollmentUser,
   IsConversationAccessibleMiddlewareLocals,
-  MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 
 import message, {
@@ -155,7 +153,6 @@ export interface Courselore extends express.Express {
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       isConversationAccessible: IsConversationAccessibleMiddleware;
-      mayEditConversation: MayEditConversationMiddleware;
       messageExists: MessageExistsMiddleware;
       mayEditMessage: MayEditMessageMiddleware;
       mayEndorseMessage: MayEndorseMessageMiddleware;
