@@ -945,127 +945,6 @@ export default (app: Courselore): void => {
     }
   );
 
-  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
-    invitation: {
-      id: number;
-      expiresAt: string | null;
-      usedAt: string | null;
-      course: {
-        id: number;
-        reference: string;
-        archivedAt: string | null;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
-      };
-      reference: string;
-      email: string | null;
-      name: string | null;
-      courseRole: CourseRole;
-    };
-  }
-  const invitationExistsMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    InvitationExistsMiddlewareLocals
-  >[] = [
-    (req, res, next) => {
-      const invitation = app.locals.database.get<{
-        id: number;
-        expiresAt: string | null;
-        usedAt: string | null;
-        courseId: number;
-        courseReference: string;
-        courseArchivedAt: string | null;
-        courseName: string;
-        courseYear: string | null;
-        courseTerm: string | null;
-        courseInstitution: string | null;
-        courseCode: string | null;
-        courseNextConversationReference: number;
-        reference: string;
-        email: string | null;
-        name: string | null;
-        courseRole: CourseRole;
-      }>(
-        sql`
-          SELECT "invitations"."id",
-                 "invitations"."expiresAt",
-                 "invitations"."usedAt",
-                 "courses"."id" AS "courseId",
-                 "courses"."reference" AS "courseReference",
-                 "courses"."archivedAt" AS "courseArchivedAt",
-                 "courses"."name" AS "courseName",
-                 "courses"."year" AS "courseYear",
-                 "courses"."term" AS "courseTerm",
-                 "courses"."institution" AS "courseInstitution",
-                 "courses"."code" AS "courseCode",
-                 "courses"."nextConversationReference" AS "courseNextConversationReference",
-                 "invitations"."reference",
-                 "invitations"."email",
-                 "invitations"."name",
-                 "invitations"."courseRole"
-          FROM "invitations"
-          JOIN "courses" ON "invitations"."course" = "courses"."id" AND
-                            "courses"."reference" = ${req.params.courseReference}
-          WHERE "invitations"."reference" = ${req.params.invitationReference}
-        `
-      );
-      if (invitation === undefined) return next("route");
-      res.locals.invitation = {
-        id: invitation.id,
-        expiresAt: invitation.expiresAt,
-        usedAt: invitation.usedAt,
-        course: {
-          id: invitation.courseId,
-          reference: invitation.courseReference,
-          archivedAt: invitation.courseArchivedAt,
-          name: invitation.courseName,
-          year: invitation.courseYear,
-          term: invitation.courseTerm,
-          institution: invitation.courseInstitution,
-          code: invitation.courseCode,
-          nextConversationReference: invitation.courseNextConversationReference,
-        },
-        reference: invitation.reference,
-        email: invitation.email,
-        name: invitation.name,
-        courseRole: invitation.courseRole,
-      };
-      next();
-    },
-  ];
-
-  interface IsInvitationUsableMiddlewareLocals
-    extends InvitationExistsMiddlewareLocals,
-      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
-  const isInvitationUsableMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    IsInvitationUsableMiddlewareLocals
-  >[] = [
-    ...invitationExistsMiddleware,
-    (req, res, next) => {
-      if (
-        res.locals.invitation.usedAt !== null ||
-        app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
-        (res.locals.invitation.email !== null &&
-          res.locals.user !== undefined &&
-          res.locals.invitation.email.toLowerCase() !==
-            res.locals.user.email.toLowerCase())
-      )
-        return next("route");
-      next();
-    },
-  ];
-
   app.locals.mailers.invitation = ({ req, res, invitation }) => {
     const link = `https://${app.locals.options.host}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     app.locals.database.run(
@@ -3410,6 +3289,102 @@ export default (app: Courselore): void => {
     }
   );
 
+  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+    invitation: {
+      id: number;
+      expiresAt: string | null;
+      usedAt: string | null;
+      course: {
+        id: number;
+        reference: string;
+        archivedAt: string | null;
+        name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        nextConversationReference: number;
+      };
+      reference: string;
+      email: string | null;
+      name: string | null;
+      courseRole: CourseRole;
+    };
+  }
+  const invitationExistsMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    InvitationExistsMiddlewareLocals
+  >[] = [
+    (req, res, next) => {
+      const invitation = app.locals.database.get<{
+        id: number;
+        expiresAt: string | null;
+        usedAt: string | null;
+        courseId: number;
+        courseReference: string;
+        courseArchivedAt: string | null;
+        courseName: string;
+        courseYear: string | null;
+        courseTerm: string | null;
+        courseInstitution: string | null;
+        courseCode: string | null;
+        courseNextConversationReference: number;
+        reference: string;
+        email: string | null;
+        name: string | null;
+        courseRole: CourseRole;
+      }>(
+        sql`
+          SELECT "invitations"."id",
+                 "invitations"."expiresAt",
+                 "invitations"."usedAt",
+                 "courses"."id" AS "courseId",
+                 "courses"."reference" AS "courseReference",
+                 "courses"."archivedAt" AS "courseArchivedAt",
+                 "courses"."name" AS "courseName",
+                 "courses"."year" AS "courseYear",
+                 "courses"."term" AS "courseTerm",
+                 "courses"."institution" AS "courseInstitution",
+                 "courses"."code" AS "courseCode",
+                 "courses"."nextConversationReference" AS "courseNextConversationReference",
+                 "invitations"."reference",
+                 "invitations"."email",
+                 "invitations"."name",
+                 "invitations"."courseRole"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id" AND
+                            "courses"."reference" = ${req.params.courseReference}
+          WHERE "invitations"."reference" = ${req.params.invitationReference}
+        `
+      );
+      if (invitation === undefined) return next("route");
+      res.locals.invitation = {
+        id: invitation.id,
+        expiresAt: invitation.expiresAt,
+        usedAt: invitation.usedAt,
+        course: {
+          id: invitation.courseId,
+          reference: invitation.courseReference,
+          archivedAt: invitation.courseArchivedAt,
+          name: invitation.courseName,
+          year: invitation.courseYear,
+          term: invitation.courseTerm,
+          institution: invitation.courseInstitution,
+          code: invitation.courseCode,
+          nextConversationReference: invitation.courseNextConversationReference,
+        },
+        reference: invitation.reference,
+        email: invitation.email,
+        name: invitation.name,
+        courseRole: invitation.courseRole,
+      };
+      next();
+    },
+  ];
+
   app.patch<
     { courseReference: string; invitationReference: string },
     HTML,
@@ -4281,6 +4256,31 @@ export default (app: Courselore): void => {
       );
     }
   );
+
+  interface IsInvitationUsableMiddlewareLocals
+    extends InvitationExistsMiddlewareLocals,
+      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
+  const isInvitationUsableMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    IsInvitationUsableMiddlewareLocals
+  >[] = [
+    ...invitationExistsMiddleware,
+    (req, res, next) => {
+      if (
+        res.locals.invitation.usedAt !== null ||
+        app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+        (res.locals.invitation.email !== null &&
+          res.locals.user !== undefined &&
+          res.locals.invitation.email.toLowerCase() !==
+            res.locals.user.email.toLowerCase())
+      )
+        return next("route");
+      next();
+    },
+  ];
 
   app.get<
     { courseReference: string; invitationReference: string },
