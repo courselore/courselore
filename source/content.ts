@@ -100,14 +100,6 @@ export type ContentEditorPartial = ({
   compact?: boolean;
 }) => HTML;
 
-export type ContentPreviewHandler = express.RequestHandler<
-  {},
-  any,
-  { content?: string },
-  {},
-  BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
->;
-
 export default async (app: Courselore): Promise<void> => {
   app.locals.partials.content = await (async () => {
     const unifiedProcessor = unified()
@@ -2785,45 +2777,56 @@ ${contentSource}</textarea
     })
   );
 
-  app.locals.handlers.contentPreview = (req, res, next) => {
-    if (typeof req.body.content !== "string" || req.body.content.trim() === "")
-      return next("validation");
-    res.send(
-      app.locals.layouts.partial({
-        req,
-        res,
-        body: app.locals.partials.content({
+  (() => {
+    const handler: express.RequestHandler<
+      {},
+      any,
+      { content?: string },
+      {},
+      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    > = (req, res, next) => {
+      if (
+        typeof req.body.content !== "string" ||
+        req.body.content.trim() === ""
+      )
+        return next("validation");
+      res.send(
+        app.locals.layouts.partial({
           req,
           res,
-          type: "source",
-          content: req.body.content,
-          decorate: true,
-        }).processed,
-      })
+          body: app.locals.partials.content({
+            req,
+            res,
+            type: "source",
+            content: req.body.content,
+            decorate: true,
+          }).processed,
+        })
+      );
+    };
+
+    app.post<
+      { courseReference: string },
+      any,
+      { content?: string },
+      {},
+      IsEnrolledInCourseMiddlewareLocals
+    >(
+      "/courses/:courseReference/content-editor/preview",
+      ...app.locals.middlewares.isEnrolledInCourse,
+      handler
     );
-  };
 
-  app.post<
-    { courseReference: string },
-    any,
-    { content?: string },
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/content-editor/preview",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    app.locals.handlers.contentPreview
-  );
+    app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
+      "/content-editor/preview",
+      ...app.locals.middlewares.isSignedIn,
+      handler
+    );
 
-  app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
-    "/content-editor/preview",
-    ...app.locals.middlewares.isSignedIn,
-    app.locals.handlers.contentPreview
-  );
-
-  app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
-    "/content-editor/preview",
-    ...app.locals.middlewares.isSignedOut,
-    app.locals.handlers.contentPreview
-  );
+    app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
+      "/content-editor/preview",
+      ...app.locals.middlewares.isSignedOut,
+      handler
+    );
+  })();
 };

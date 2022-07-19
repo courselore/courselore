@@ -134,11 +134,7 @@ export {
   MayEndorseMessageMiddlewareLocals,
 } from "./message.js";
 
-import content, {
-  ContentPartial,
-  ContentEditorPartial,
-  ContentPreviewHandler,
-} from "./content.js";
+import content, { ContentPartial, ContentEditorPartial } from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
 import demonstration, { DemonstrationHandler } from "./demonstration.js";
@@ -167,7 +163,6 @@ export interface Courselore extends express.Express {
       AdministrationOptions;
     handlers: {
       about: AboutHandler;
-      contentPreview: ContentPreviewHandler;
       demonstration: DemonstrationHandler;
     };
     middlewares: {
