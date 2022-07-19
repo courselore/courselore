@@ -301,18 +301,9 @@ export default (app: Courselore): void => {
   );
 
   const systemRoleIcon = {
-    none: {
-      regular: html`<i class="bi bi-dash-circle"></i>`,
-      fill: html`<i class="bi bi-dash-circle-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-person-badge"></i>`,
-      fill: html`<i class="bi bi-person-badge-fill"></i>`,
-    },
-    administrator: {
-      regular: html`<i class="bi bi-pc-display-horizontal"></i>`,
-      fill: html`<i class="bi bi-pc-display-horizontal"></i>`,
-    },
+    none: html`<i class="bi bi-dash-circle"></i>`,
+    staff: html`<i class="bi bi-person-badge-fill"></i>`,
+    administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
   };
 
   app.get<
@@ -672,11 +663,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   : html``}
                                               >
-                                                $${systemRoleIcon[role][
-                                                  role !== "none"
-                                                    ? "fill"
-                                                    : "regular"
-                                                ]}
+                                                $${systemRoleIcon[role]}
                                                 ${lodash.capitalize(role)}
                                               </button>
                                             </div>
@@ -689,9 +676,7 @@ export default (app: Courselore): void => {
                           });
                         `}"
                       >
-                        $${systemRoleIcon[user.systemRole][
-                          user.systemRole !== "none" ? "fill" : "regular"
-                        ]}
+                        $${systemRoleIcon[user.systemRole]}
                         ${lodash.capitalize(user.systemRole)}
                         <i class="bi bi-chevron-down"></i>
                       </button>
