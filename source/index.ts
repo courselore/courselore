@@ -73,7 +73,6 @@ import course, {
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
-  InvitationMailer,
   CourseSettingsLayout,
 } from "./course.js";
 export {
@@ -209,7 +208,6 @@ export interface Courselore extends express.Express {
     };
     mailers: {
       emailVerification: EmailVerificationMailer;
-      invitation: InvitationMailer;
       notifications: NotificationsMailer;
     };
     workers: {

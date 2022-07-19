@@ -118,16 +118,6 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type InvitationMailer = ({
-  req,
-  res,
-  invitation,
-}: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
-  invitation: InvitationExistsMiddlewareLocals["invitation"];
-}) => void;
-
 export type CourseSettingsLayout = ({
   req,
   res,
@@ -928,50 +918,6 @@ export default (app: Courselore): void => {
       );
     }
   );
-
-  app.locals.mailers.invitation = ({ req, res, invitation }) => {
-    const link = `https://${app.locals.options.host}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-    app.locals.database.run(
-      sql`
-        INSERT INTO "sendEmailJobs" (
-          "createdAt",
-          "startAt",
-          "expiresAt",
-          "mailOptions"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${new Date().toISOString()},
-          ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-          ${JSON.stringify({
-            from: {
-              name: `${app.locals.options.sendMail.defaults.from.name} · ${invitation.course.name}`,
-              address: app.locals.options.sendMail.defaults.from.address,
-            },
-            to: invitation.email!,
-            subject: `Enroll in ${invitation.course.name}`,
-            html: html`
-              <p>
-                Enroll in ${invitation.course.name}:<br />
-                <a href="${link}" target="_blank">${link}</a>
-              </p>
-              $${invitation.expiresAt === null
-                ? html``
-                : html`
-                    <p>
-                      <small>
-                        This invitation is valid until
-                        ${new Date(invitation.expiresAt).toISOString()}.
-                      </small>
-                    </p>
-                  `}
-            `,
-          })}
-        )
-      `
-    );
-    app.locals.workers.sendEmail();
-  };
 
   app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
@@ -3057,6 +3003,58 @@ export default (app: Courselore): void => {
     }
   );
 
+  const invitationMailer = ({
+    req,
+    res,
+    invitation,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+    invitation: InvitationExistsMiddlewareLocals["invitation"];
+  }): void => {
+    const link = `https://${app.locals.options.host}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    app.locals.database.run(
+      sql`
+        INSERT INTO "sendEmailJobs" (
+          "createdAt",
+          "startAt",
+          "expiresAt",
+          "mailOptions"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${new Date().toISOString()},
+          ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+          ${JSON.stringify({
+            from: {
+              name: `${app.locals.options.sendMail.defaults.from.name} · ${invitation.course.name}`,
+              address: app.locals.options.sendMail.defaults.from.address,
+            },
+            to: invitation.email!,
+            subject: `Enroll in ${invitation.course.name}`,
+            html: html`
+              <p>
+                Enroll in ${invitation.course.name}:<br />
+                <a href="${link}" target="_blank">${link}</a>
+              </p>
+              $${invitation.expiresAt === null
+                ? html``
+                : html`
+                    <p>
+                      <small>
+                        This invitation is valid until
+                        ${new Date(invitation.expiresAt).toISOString()}.
+                      </small>
+                    </p>
+                  `}
+            `,
+          })}
+        )
+      `
+    );
+    app.locals.workers.sendEmail();
+  };
+
   app.post<
     { courseReference: string },
     HTML,
@@ -3212,7 +3210,7 @@ export default (app: Courselore): void => {
               `
             )!;
 
-            app.locals.mailers.invitation({
+            invitationMailer({
               req,
               res,
               invitation: {
@@ -3359,7 +3357,7 @@ export default (app: Courselore): void => {
           res.locals.invitation.email === null
         )
           return next("validation");
-        app.locals.mailers.invitation({
+        invitationMailer({
           req,
           res,
           invitation: res.locals.invitation,
