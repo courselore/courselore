@@ -128,6 +128,13 @@ export default (app: Courselore): void => {
     },
   };
 
+  const courseRoleTextColor: {
+    [courseRole in CourseRole]: string;
+  } = {
+    student: "",
+    staff: "text--sky",
+  };
+
   app.locals.partials.course = ({
     req,
     res,
@@ -1544,7 +1551,7 @@ export default (app: Courselore): void => {
                                   Visible by Everyone
                                 </span>
                                 <span
-                                  class="text--sky"
+                                  class="${courseRoleTextColor.staff}"
                                   onload="${javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
@@ -1799,7 +1806,7 @@ export default (app: Courselore): void => {
                                       Visible by Everyone
                                     </span>
                                     <span
-                                      class="text--sky"
+                                      class="${courseRoleTextColor.staff}"
                                       onloadpartial="${javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           touch: false,
@@ -2589,10 +2596,9 @@ export default (app: Courselore): void => {
                               `)}"
                             >
                               <button
-                                class="button button--tight button--tight--inline button--transparent ${invitation.courseRole ===
-                                "staff"
-                                  ? "text--sky"
-                                  : ""}"
+                                class="button button--tight button--tight--inline button--transparent ${courseRoleTextColor[
+                                  invitation.courseRole
+                                ]}"
                                 onload="${javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
@@ -2625,10 +2631,9 @@ export default (app: Courselore): void => {
                                                       value="${courseRole}"
                                                     />
                                                     <button
-                                                      class="dropdown--menu--item button button--transparent ${courseRole ===
-                                                      "staff"
-                                                        ? "text--sky"
-                                                        : ""}"
+                                                      class="dropdown--menu--item button button--transparent ${courseRoleTextColor[
+                                                        courseRole
+                                                      ]}"
                                                       $${isUsed
                                                         ? html`
                                                             type="button"
@@ -3695,10 +3700,9 @@ export default (app: Courselore): void => {
                         `)}"
                       >
                         <button
-                          class="button button--tight button--tight--inline button--transparent ${enrollment.courseRole ===
-                          "staff"
-                            ? "text--sky"
-                            : ""}"
+                          class="button button--tight button--tight--inline button--transparent ${courseRoleTextColor[
+                            enrollment.courseRole
+                          ]}"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
@@ -3732,10 +3736,9 @@ export default (app: Courselore): void => {
                                               />
                                               <div>
                                                 <button
-                                                  class="dropdown--menu--item button button--transparent ${courseRole ===
-                                                  "staff"
-                                                    ? "text--sky"
-                                                    : ""}"
+                                                  class="dropdown--menu--item button button--transparent ${courseRoleTextColor[
+                                                    courseRole
+                                                  ]}"
                                                   $${isOnlyStaff
                                                     ? html`
                                                         type="button"
