@@ -7,7 +7,6 @@ import got from "got";
 import lodash from "lodash";
 import {
   Courselore,
-  IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
