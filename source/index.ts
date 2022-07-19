@@ -70,7 +70,6 @@ import course, {
   CoursesPartial,
   CourseRoleIconPartial,
   CourseArchivedPartial,
-  MayCreateCoursesMiddleware,
   DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
@@ -86,7 +85,6 @@ export {
   courseRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
-  MayCreateCoursesMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
   InvitationExistsMiddlewareLocals,
@@ -163,7 +161,6 @@ export interface Courselore extends express.Express {
       liveUpdates: LiveUpdatesMiddleware;
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
-      mayCreateCourses: MayCreateCoursesMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       invitationExists: InvitationExistsMiddleware;
