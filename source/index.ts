@@ -137,7 +137,6 @@ export {
 import content, {
   ContentPartial,
   ContentEditorPartial,
-  MentionUserSearchHandler,
   ContentPreviewHandler,
 } from "./content.js";
 
@@ -168,7 +167,6 @@ export interface Courselore extends express.Express {
       AdministrationOptions;
     handlers: {
       about: AboutHandler;
-      mentionUserSearch: MentionUserSearchHandler;
       contentPreview: ContentPreviewHandler;
       demonstration: DemonstrationHandler;
     };

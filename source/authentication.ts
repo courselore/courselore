@@ -539,6 +539,7 @@ export default (app: Courselore): void => {
         })
       );
     };
+
     app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
       "/",
       ...app.locals.middlewares.isSignedOut,
@@ -548,11 +549,13 @@ export default (app: Courselore): void => {
           }
         : handler
     );
+
     app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
       "/sign-in",
       ...app.locals.middlewares.isSignedOut,
       handler
     );
+
     app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
       "/sign-in",
       ...app.locals.middlewares.isSignedIn,

@@ -100,15 +100,6 @@ export type ContentEditorPartial = ({
   compact?: boolean;
 }) => HTML;
 
-export type MentionUserSearchHandler = express.RequestHandler<
-  { courseReference: string; conversationReference?: string },
-  any,
-  {},
-  { search?: string },
-  IsEnrolledInCourseMiddlewareLocals &
-    Partial<IsConversationAccessibleMiddlewareLocals>
->;
-
 export type ContentPreviewHandler = express.RequestHandler<
   {},
   any,
@@ -2171,152 +2162,166 @@ ${contentSource}</textarea
     </div>
   `;
 
-  app.locals.handlers.mentionUserSearch = (req, res, next) => {
-    if (typeof req.query.search !== "string" || req.query.search.trim() === "")
-      return next("validation");
-
-    const enrollments = app.locals.database
-      .all<{
-        id: number;
-        userId: number;
-        userLastSeenOnlineAt: string;
-        userReference: string;
-        userEmail: string;
-        userName: string;
-        userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        userBiographySource: string | null;
-        userBiographyPreprocessed: HTML | null;
-        userNameSearchResultHighlight: string;
-        reference: string;
-        courseRole: CourseRole;
-      }>(
-        sql`
-          SELECT "enrollments"."id",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."reference" AS "userReference",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                 highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
-                 "enrollments"."reference",
-                 "enrollments"."courseRole"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                          "enrollments"."course" = ${res.locals.course.id} AND
-                          "users"."id" != ${res.locals.user.id}
-          JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                        "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
-                                          req.query.search,
-                                          { prefix: true }
-                                        )}
-          $${
-            res.locals.conversation !== undefined &&
-            res.locals.conversation.staffOnlyAt !== null
-              ? sql`
-                  WHERE "enrollments"."courseRole" = ${"staff"} OR
-                        EXISTS(
-                          SELECT TRUE
-                          FROM "messages"
-                          WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
-                                "messages"."conversation" = ${
-                                  res.locals.conversation.id
-                                }
-                        )
-                `
-              : sql``
-          }
-          ORDER BY "usersNameSearchIndex"."rank" ASC,
-                   "users"."name" ASC
-          LIMIT 5
-        `
+  (() => {
+    const handler: express.RequestHandler<
+      { courseReference: string; conversationReference?: string },
+      any,
+      {},
+      { search?: string },
+      IsEnrolledInCourseMiddlewareLocals &
+        Partial<IsConversationAccessibleMiddlewareLocals>
+    > = (req, res, next) => {
+      if (
+        typeof req.query.search !== "string" ||
+        req.query.search.trim() === ""
       )
-      .map((enrollment) => ({
-        id: enrollment.id,
-        user: {
-          id: enrollment.userId,
-          lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-          reference: enrollment.userReference,
-          email: enrollment.userEmail,
-          name: enrollment.userName,
-          avatar: enrollment.userAvatar,
-          avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-          biographySource: enrollment.userBiographySource,
-          biographyPreprocessed: enrollment.userBiographyPreprocessed,
-          nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
-        },
-        reference: enrollment.reference,
-        courseRole: enrollment.courseRole,
-      }));
+        return next("validation");
 
-    res.send(
-      app.locals.layouts.partial({
-        req,
-        res,
-        body: html`
-          $${enrollments.length === 0
-            ? html`
-                <div class="dropdown--menu--item secondary">No user found.</div>
-              `
-            : enrollments.map(
-                (enrollment) => html`
-                  <button
-                    key="mention-user-search--${enrollment.reference}"
-                    type="button"
-                    class="dropdown--menu--item button button--transparent"
-                    onload="${javascript`
-                      this.onclick = () => {
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
-                          `${enrollment.reference}--${slugify(
-                            enrollment.user.name
-                          )}`
-                        )});  
-                      };
-                  `}"
-                  >
-                    $${app.locals.partials.user({
-                      req,
-                      res,
-                      enrollment,
-                      name: enrollment.user.nameSearchResultHighlight,
-                      tooltip: false,
-                      size: "xs",
-                    })}
-                  </button>
+      const enrollments = app.locals.database
+        .all<{
+          id: number;
+          userId: number;
+          userLastSeenOnlineAt: string;
+          userReference: string;
+          userEmail: string;
+          userName: string;
+          userAvatar: string | null;
+          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          userBiographySource: string | null;
+          userBiographyPreprocessed: HTML | null;
+          userNameSearchResultHighlight: string;
+          reference: string;
+          courseRole: CourseRole;
+        }>(
+          sql`
+            SELECT "enrollments"."id",
+                  "users"."id" AS "userId",
+                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                  "users"."reference" AS "userReference",
+                  "users"."email" AS "userEmail",
+                  "users"."name" AS "userName",
+                  "users"."avatar" AS "userAvatar",
+                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                  "users"."biographySource" AS "userBiographySource",
+                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
+                  "enrollments"."reference",
+                  "enrollments"."courseRole"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                            "enrollments"."course" = ${res.locals.course.id} AND
+                            "users"."id" != ${res.locals.user.id}
+            JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
+                                          "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                            req.query.search,
+                                            { prefix: true }
+                                          )}
+            $${
+              res.locals.conversation !== undefined &&
+              res.locals.conversation.staffOnlyAt !== null
+                ? sql`
+                    WHERE "enrollments"."courseRole" = ${"staff"} OR
+                          EXISTS(
+                            SELECT TRUE
+                            FROM "messages"
+                            WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
+                                  "messages"."conversation" = ${
+                                    res.locals.conversation.id
+                                  }
+                          )
+                  `
+                : sql``
+            }
+            ORDER BY "usersNameSearchIndex"."rank" ASC,
+                    "users"."name" ASC
+            LIMIT 5
+          `
+        )
+        .map((enrollment) => ({
+          id: enrollment.id,
+          user: {
+            id: enrollment.userId,
+            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+            reference: enrollment.userReference,
+            email: enrollment.userEmail,
+            name: enrollment.userName,
+            avatar: enrollment.userAvatar,
+            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
+            biographySource: enrollment.userBiographySource,
+            biographyPreprocessed: enrollment.userBiographyPreprocessed,
+            nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
+          },
+          reference: enrollment.reference,
+          courseRole: enrollment.courseRole,
+        }));
+
+      res.send(
+        app.locals.layouts.partial({
+          req,
+          res,
+          body: html`
+            $${enrollments.length === 0
+              ? html`
+                  <div class="dropdown--menu--item secondary">
+                    No user found.
+                  </div>
                 `
-              )}
-        `,
-      })
+              : enrollments.map(
+                  (enrollment) => html`
+                    <button
+                      key="mention-user-search--${enrollment.reference}"
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onload="${javascript`
+                        this.onclick = () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                            `${enrollment.reference}--${slugify(
+                              enrollment.user.name
+                            )}`
+                          )});  
+                        };
+                    `}"
+                    >
+                      $${app.locals.partials.user({
+                        req,
+                        res,
+                        enrollment,
+                        name: enrollment.user.nameSearchResultHighlight,
+                        tooltip: false,
+                        size: "xs",
+                      })}
+                    </button>
+                  `
+                )}
+          `,
+        })
+      );
+    };
+
+    app.get<
+      { courseReference: string },
+      any,
+      {},
+      { search?: string },
+      IsEnrolledInCourseMiddlewareLocals
+    >(
+      "/courses/:courseReference/content-editor/mention-user-search",
+      ...app.locals.middlewares.isEnrolledInCourse,
+      handler
     );
-  };
 
-  app.get<
-    { courseReference: string },
-    any,
-    {},
-    { search?: string },
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/content-editor/mention-user-search",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    app.locals.handlers.mentionUserSearch
-  );
-
-  app.get<
-    { courseReference: string; conversationReference: string },
-    any,
-    {},
-    { search?: string },
-    IsConversationAccessibleMiddlewareLocals
-  >(
-    "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
-    ...app.locals.middlewares.isConversationAccessible,
-    app.locals.handlers.mentionUserSearch
-  );
+    app.get<
+      { courseReference: string; conversationReference: string },
+      any,
+      {},
+      { search?: string },
+      IsConversationAccessibleMiddlewareLocals
+    >(
+      "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
+      ...app.locals.middlewares.isConversationAccessible,
+      handler
+    );
+  })();
 
   app.get<
     { courseReference: string },
