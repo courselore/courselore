@@ -3335,8 +3335,6 @@ export default (app: Courselore): void => {
                                                       this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
                                                       this.querySelector("label").classList.add("disabled");
                                                     };
-                                                    
-                                                    console.log('ontouchstart' in window || navigator.maxTouchPoints > 0);
                                                 `}"
                                               >
                                                 <label
