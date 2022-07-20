@@ -44,9 +44,7 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
-import administrator, {
-  AdministrationOptions,
-} from "./administration.js";
+import administrator, { AdministrationOptions } from "./administration.js";
 export {
   UserSystemRolesWhoMayCreateCourses,
   userSystemRolesWhoMayCreateCourseses,
@@ -84,8 +82,6 @@ export {
 import conversation, {
   ConversationLayout,
   ConversationPartial,
-  ConversationTypeIconPartial,
-  ConversationTypeTextColorPartial,
   GetConversationHelper,
   IsConversationAccessibleMiddleware,
   MayEditConversationHelper,
@@ -161,8 +157,6 @@ export interface Courselore extends express.Express {
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
       conversation: ConversationPartial;
-      conversationTypeIcon: ConversationTypeIconPartial;
-      conversationTypeTextColor: ConversationTypeTextColorPartial;
       content: ContentPartial;
       contentEditor: ContentEditorPartial;
     };

@@ -120,20 +120,6 @@ export type ConversationPartial = ({
   >;
 }) => HTML;
 
-export type ConversationTypeIconPartial = {
-  [conversationType in ConversationType]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
-
-export type ConversationTypeTextColorPartial = {
-  [conversationType in ConversationType]: {
-    display: string;
-    select: string;
-  };
-};
-
 export type GetConversationHelper = ({
   req,
   res,
@@ -204,6 +190,46 @@ export type MayEditConversationHelper = ({
 }) => boolean;
 
 export default (app: Courselore): void => {
+  const conversationTypeIcon: {
+    [conversationType in ConversationType]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    question: {
+      regular: html`<i class="bi bi-patch-question"></i>`,
+      fill: html`<i class="bi bi-patch-question-fill"></i>`,
+    },
+    note: {
+      regular: html`<i class="bi bi-sticky"></i>`,
+      fill: html`<i class="bi bi-sticky-fill"></i>`,
+    },
+    chat: {
+      regular: html`<i class="bi bi-chat-text"></i>`,
+      fill: html`<i class="bi bi-chat-text-fill"></i>`,
+    },
+  };
+
+  const conversationTypeTextColor: {
+    [conversationType in ConversationType]: {
+      display: string;
+      select: string;
+    };
+  } = {
+    question: {
+      display: "text--rose",
+      select: "text--rose",
+    },
+    note: {
+      display: "text--fuchsia",
+      select: "text--fuchsia",
+    },
+    chat: {
+      display: "text--cyan",
+      select: "text--cyan",
+    },
+  };
+
   app.locals.layouts.conversation = ({
     req,
     res,
@@ -749,9 +775,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--blue"
                           >
-                            $${app.locals.partials.conversationTypeIcon.note
-                              .fill}
-                            Note
+                            $${conversationTypeIcon.note.fill} Note
                           </a>
                           <a
                             href="https://${app.locals.options
@@ -762,9 +786,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${app.locals.partials.conversationTypeIcon.question
-                              .regular}
-                            Question
+                            $${conversationTypeIcon.question.regular} Question
                           </a>
                           <a
                             href="https://${app.locals.options
@@ -775,9 +797,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${app.locals.partials.conversationTypeIcon.chat
-                              .regular}
-                            Chat
+                            $${conversationTypeIcon.chat.regular} Chat
                           </a>
                         `
                       : html`
@@ -790,9 +810,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--blue"
                           >
-                            $${app.locals.partials.conversationTypeIcon.question
-                              .fill}
-                            Question
+                            $${conversationTypeIcon.question.fill} Question
                           </a>
                           <a
                             href="https://${app.locals.options
@@ -803,9 +821,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${app.locals.partials.conversationTypeIcon.note
-                              .regular}
-                            Note
+                            $${conversationTypeIcon.note.regular} Note
                           </a>
                           <a
                             href="https://${app.locals.options
@@ -816,9 +832,7 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${app.locals.partials.conversationTypeIcon.chat
-                              .regular}
-                            Chat
+                            $${conversationTypeIcon.chat.regular} Chat
                           </a>
                         `}
                   </div>
@@ -1442,20 +1456,17 @@ export default (app: Courselore): void => {
                                     `}"
                                   />
                                   <span>
-                                    $${app.locals.partials.conversationTypeIcon[
-                                      conversationType
-                                    ].regular}
+                                    $${conversationTypeIcon[conversationType]
+                                      .regular}
                                     $${lodash.capitalize(conversationType)}
                                   </span>
                                   <span
-                                    class="${app.locals.partials
-                                      .conversationTypeTextColor[
+                                    class="${conversationTypeTextColor[
                                       conversationType
                                     ].select}"
                                   >
-                                    $${app.locals.partials.conversationTypeIcon[
-                                      conversationType
-                                    ].fill}
+                                    $${conversationTypeIcon[conversationType]
+                                      .fill}
                                     $${lodash.capitalize(conversationType)}
                                   </span>
                                 </label>
@@ -2179,10 +2190,9 @@ export default (app: Courselore): void => {
           class="${conversation.type === "question" &&
           conversation.resolvedAt !== null
             ? "text--emerald"
-            : app.locals.partials.conversationTypeTextColor[conversation.type]
-                .display}"
+            : conversationTypeTextColor[conversation.type].display}"
         >
-          $${app.locals.partials.conversationTypeIcon[conversation.type].fill}
+          $${conversationTypeIcon[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
         </div>
         $${conversation.type === "question"
@@ -2416,36 +2426,6 @@ export default (app: Courselore): void => {
         : html``}
     </div>
   `;
-
-  app.locals.partials.conversationTypeIcon = {
-    question: {
-      regular: html`<i class="bi bi-patch-question"></i>`,
-      fill: html`<i class="bi bi-patch-question-fill"></i>`,
-    },
-    note: {
-      regular: html`<i class="bi bi-sticky"></i>`,
-      fill: html`<i class="bi bi-sticky-fill"></i>`,
-    },
-    chat: {
-      regular: html`<i class="bi bi-chat-text"></i>`,
-      fill: html`<i class="bi bi-chat-text-fill"></i>`,
-    },
-  };
-
-  app.locals.partials.conversationTypeTextColor = {
-    question: {
-      display: "text--rose",
-      select: "text--rose",
-    },
-    note: {
-      display: "text--fuchsia",
-      select: "text--fuchsia",
-    },
-    chat: {
-      display: "text--cyan",
-      select: "text--cyan",
-    },
-  };
 
   app.locals.helpers.getConversation = ({
     req,
@@ -2862,7 +2842,7 @@ export default (app: Courselore): void => {
             <h2 class="heading">
               $${req.params.type === "note"
                 ? html`
-                    $${app.locals.partials.conversationTypeIcon.note.fill} Post
+                    $${conversationTypeIcon.note.fill} Post
                     ${res.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -2870,8 +2850,7 @@ export default (app: Courselore): void => {
                   `
                 : req.params.type === "question"
                 ? html`
-                    $${app.locals.partials.conversationTypeIcon.question.fill}
-                    Ask
+                    $${conversationTypeIcon.question.fill} Ask
                     ${res.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -2879,7 +2858,7 @@ export default (app: Courselore): void => {
                   `
                 : req.params.type === "chat"
                 ? html`
-                    $${app.locals.partials.conversationTypeIcon.chat.fill} Start
+                    $${conversationTypeIcon.chat.fill} Start
                     ${res.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -2973,19 +2952,14 @@ export default (app: Courselore): void => {
                           `}"
                         />
                         <span>
-                          $${app.locals.partials.conversationTypeIcon[
-                            conversationType
-                          ].regular}
+                          $${conversationTypeIcon[conversationType].regular}
                           $${lodash.capitalize(conversationType)}
                         </span>
                         <span
-                          class="${app.locals.partials
-                            .conversationTypeTextColor[conversationType]
+                          class="${conversationTypeTextColor[conversationType]
                             .select}"
                         >
-                          $${app.locals.partials.conversationTypeIcon[
-                            conversationType
-                          ].fill}
+                          $${conversationTypeIcon[conversationType].fill}
                           $${lodash.capitalize(conversationType)}
                         </span>
                       </label>
@@ -3515,8 +3489,7 @@ export default (app: Courselore): void => {
                 >
                   $${req.params.type === "note"
                     ? html`
-                        $${app.locals.partials.conversationTypeIcon.note.fill}
-                        Post
+                        $${conversationTypeIcon.note.fill} Post
                         ${res.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -3524,9 +3497,7 @@ export default (app: Courselore): void => {
                       `
                     : req.params.type === "question"
                     ? html`
-                        $${app.locals.partials.conversationTypeIcon.question
-                          .fill}
-                        Ask
+                        $${conversationTypeIcon.question.fill} Ask
                         ${res.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -3534,8 +3505,7 @@ export default (app: Courselore): void => {
                       `
                     : req.params.type === "chat"
                     ? html`
-                        $${app.locals.partials.conversationTypeIcon.chat.fill}
-                        Start
+                        $${conversationTypeIcon.chat.fill} Start
                         ${res.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -4329,8 +4299,7 @@ export default (app: Courselore): void => {
                                     .locals.conversation.type === "question" &&
                                   res.locals.conversation.resolvedAt !== null
                                     ? "text--emerald"
-                                    : app.locals.partials
-                                        .conversationTypeTextColor[
+                                    : conversationTypeTextColor[
                                         res.locals.conversation.type
                                       ].display}"
                                   onload="${javascript`
@@ -4381,14 +4350,11 @@ export default (app: Courselore): void => {
                                                     class="dropdown--menu--item button ${conversationType ===
                                                     res.locals.conversation.type
                                                       ? "button--blue"
-                                                      : "button--transparent"} ${app
-                                                      .locals.partials
-                                                      .conversationTypeTextColor[
+                                                      : "button--transparent"} ${conversationTypeTextColor[
                                                       conversationType
                                                     ].display}"
                                                   >
-                                                    $${app.locals.partials
-                                                      .conversationTypeIcon[
+                                                    $${conversationTypeIcon[
                                                       conversationType
                                                     ].fill}
                                                     $${lodash.capitalize(
@@ -4404,7 +4370,7 @@ export default (app: Courselore): void => {
                                     });
                                   `}"
                                 >
-                                  $${app.locals.partials.conversationTypeIcon[
+                                  $${conversationTypeIcon[
                                     res.locals.conversation.type
                                   ].fill}
                                   $${lodash.capitalize(
@@ -4419,12 +4385,11 @@ export default (app: Courselore): void => {
                                   "question" &&
                                 res.locals.conversation.resolvedAt !== null
                                   ? "text--emerald"
-                                  : app.locals.partials
-                                      .conversationTypeTextColor[
+                                  : conversationTypeTextColor[
                                       res.locals.conversation.type
                                     ].display}"
                               >
-                                $${app.locals.partials.conversationTypeIcon[
+                                $${conversationTypeIcon[
                                   res.locals.conversation.type
                                 ].fill}
                                 $${lodash.capitalize(
