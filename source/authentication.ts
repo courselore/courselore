@@ -133,12 +133,6 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   mayCreateCourses: boolean;
 }
 
-export interface PasswordResetHelper {
-  maxAge: number;
-  create(userId: number): string;
-  get(nonce: string): number | undefined;
-}
-
 export type EmailVerificationMailer = ({
   req,
   res,
@@ -629,10 +623,10 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.locals.helpers.PasswordReset = {
+  const PasswordReset = {
     maxAge: 10 * 60 * 1000,
 
-    create(userId) {
+    create(userId: number): string {
       app.locals.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
@@ -651,7 +645,7 @@ export default (app: Courselore): void => {
       )!.nonce;
     },
 
-    get(nonce) {
+    get(nonce: string): number | undefined {
       const passwordReset = app.locals.database.get<{
         createdAt: string;
         user: number;
@@ -665,7 +659,7 @@ export default (app: Courselore): void => {
       );
       return passwordReset === undefined ||
         new Date(passwordReset.createdAt).getTime() <
-          Date.now() - app.locals.helpers.PasswordReset.maxAge
+          Date.now() - PasswordReset.maxAge
         ? undefined
         : passwordReset.user;
     },
@@ -676,7 +670,7 @@ export default (app: Courselore): void => {
         sql`
           DELETE FROM "passwordResets"
           WHERE "createdAt" < ${new Date(
-            Date.now() - app.locals.helpers.PasswordReset.maxAge
+            Date.now() - PasswordReset.maxAge
           ).toISOString()}
         `
       );
@@ -828,9 +822,7 @@ export default (app: Courselore): void => {
 
     const link = `https://${
       app.locals.options.host
-    }/reset-password/${app.locals.helpers.PasswordReset.create(
-      user.id
-    )}${qs.stringify(
+    }/reset-password/${PasswordReset.create(user.id)}${qs.stringify(
       {
         redirect: req.query.redirect,
         invitation: req.query.invitation,
@@ -924,9 +916,7 @@ export default (app: Courselore): void => {
     { redirect?: string; invitation?: object },
     BaseMiddlewareLocals
   >("/reset-password/:passwordResetNonce", (req, res) => {
-    const userId = app.locals.helpers.PasswordReset.get(
-      req.params.passwordResetNonce
-    );
+    const userId = PasswordReset.get(req.params.passwordResetNonce);
     if (userId === undefined) {
       app.locals.helpers.Flash.set({
         req,
@@ -960,7 +950,7 @@ export default (app: Courselore): void => {
           <form
             method="POST"
             action="https://${app.locals.options
-              .host}/reset-password/${app.locals.helpers.PasswordReset.create(
+              .host}/reset-password/${PasswordReset.create(
               userId
             )}${qs.stringify(
               {
@@ -1027,9 +1017,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      const userId = app.locals.helpers.PasswordReset.get(
-        req.params.passwordResetNonce
-      );
+      const userId = PasswordReset.get(req.params.passwordResetNonce);
       if (userId === undefined) {
         app.locals.helpers.Flash.set({
           req,

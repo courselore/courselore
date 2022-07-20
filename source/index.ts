@@ -36,7 +36,6 @@ import authentication, {
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
-  PasswordResetHelper,
   EmailVerificationMailer,
 } from "./authentication.js";
 export {
@@ -164,7 +163,6 @@ export interface Courselore extends express.Express {
       liveUpdatesDispatch: LiveUpdatesDispatchHelper;
       Flash: FlashHelper;
       Session: SessionHelper;
-      PasswordReset: PasswordResetHelper;
       defaultAccentColor: DefaultAccentColorHelper;
       getConversation: GetConversationHelper;
       mayEditConversation: MayEditConversationHelper;
