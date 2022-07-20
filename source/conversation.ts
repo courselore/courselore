@@ -3299,8 +3299,8 @@ export default (app: Courselore): void => {
                                             overflow: auto;
                                           `)}"
                                         >
-                                          <input 
-                                            type="text" 
+                                          <input
+                                            type="text"
                                             onload="${javascript`
                                               this.isModified = false;
 
@@ -3444,7 +3444,9 @@ export default (app: Courselore): void => {
                                                     });
                                                   `}"
                                             >
-                                              <i class="bi bi-mortarboard-fill"></i>
+                                              <i
+                                                class="bi bi-mortarboard-fill"
+                                              ></i>
                                             </span>
                                           `
                                         : html``}
