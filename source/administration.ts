@@ -300,13 +300,13 @@ export default (app: Courselore): void => {
     }
   );
 
-  const systemRoleIcon: { [key in SystemRole]: HTML } = {
+  const systemRoleIcon: { [systemRole in SystemRole]: HTML } = {
     none: html`<i class="bi bi-dash-circle"></i>`,
     staff: html`<i class="bi bi-person-badge-fill"></i>`,
     administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
   };
 
-  const systemRoleTextColor: { [key in SystemRole]: string } = {
+  const systemRoleTextColor: { [systemRole in SystemRole]: string } = {
     none: "",
     staff: "text--teal",
     administrator: "text--rose",
