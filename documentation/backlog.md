@@ -687,6 +687,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
 - Windows development:
   - `global.css` is regenerated (probably because of line endings)
   - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
