@@ -19,8 +19,6 @@ export type HighlightSearchResultHelper = (
   options?: { prefix?: boolean }
 ) => HTML;
 
-export type SplitSearchPhrasesHelper = (search: string) => string[];
-
 export type SplitFilterablePhrasesHelper = (filterable: string) => string[];
 
 export default (app: Courselore): void => {
@@ -34,8 +32,7 @@ export default (app: Courselore): void => {
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
   app.locals.helpers.sanitizeSearch = (search, { prefix = false } = {}) =>
-    app.locals.helpers
-      .splitSearchPhrases(search)
+    splitSearchPhrases(search)
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
 
@@ -46,7 +43,7 @@ export default (app: Courselore): void => {
   ) => {
     if (searchPhrases === undefined) return searchResult;
     if (typeof searchPhrases === "string")
-      searchPhrases = app.locals.helpers.splitSearchPhrases(searchPhrases);
+      searchPhrases = splitSearchPhrases(searchPhrases);
     if (searchPhrases.length === 0) return searchResult;
     return searchResult.replace(
       new RegExp(
@@ -59,7 +56,7 @@ export default (app: Courselore): void => {
     );
   };
 
-  app.locals.helpers.splitSearchPhrases = (search) =>
+  const splitSearchPhrases = (search: string): string[] =>
     search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
   app.locals.helpers.splitFilterablePhrases = (filterable) =>

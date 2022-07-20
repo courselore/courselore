@@ -110,7 +110,6 @@ import helpers, {
   IsExpiredHelper,
   SanitizeSearchHelper,
   HighlightSearchResultHelper,
-  SplitSearchPhrasesHelper,
   SplitFilterablePhrasesHelper,
 } from "./helpers.js";
 
@@ -170,7 +169,6 @@ export interface Courselore extends express.Express {
       isExpired: IsExpiredHelper;
       sanitizeSearch: SanitizeSearchHelper;
       highlightSearchResult: HighlightSearchResultHelper;
-      splitSearchPhrases: SplitSearchPhrasesHelper;
       splitFilterablePhrases: SplitFilterablePhrasesHelper;
     };
     mailers: {
