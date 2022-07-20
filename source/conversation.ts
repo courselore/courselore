@@ -175,20 +175,6 @@ export interface IsConversationAccessibleMiddlewareLocals
   >;
 }
 
-export type MayEditConversationHelper = ({
-  req,
-  res,
-}: {
-  req: express.Request<
-    { courseReference: string; conversationReference: string },
-    any,
-    {},
-    {},
-    IsConversationAccessibleMiddlewareLocals
-  >;
-  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-}) => boolean;
-
 export default (app: Courselore): void => {
   const conversationTypeIcon: {
     [conversationType in ConversationType]: {
@@ -4037,7 +4023,19 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.helpers.mayEditConversation = ({ req, res }) =>
+  const mayEditConversation = ({
+    req,
+    res,
+  }: {
+    req: express.Request<
+      { courseReference: string; conversationReference: string },
+      any,
+      {},
+      {},
+      IsConversationAccessibleMiddlewareLocals
+    >;
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  }): boolean =>
     res.locals.enrollment.courseRole === "staff" ||
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
@@ -4278,7 +4276,7 @@ export default (app: Courselore): void => {
                           }
                         `)}"
                       >
-                        $${app.locals.helpers.mayEditConversation({ req, res })
+                        $${mayEditConversation({ req, res })
                           ? html`
                               <div>
                                 <button
@@ -4754,7 +4752,7 @@ export default (app: Courselore): void => {
                                       <i class="bi bi-link"></i>
                                       Copy Conversation Permanent Link
                                     </button>
-                                    $${app.locals.helpers.mayEditConversation({
+                                    $${mayEditConversation({
                                       req,
                                       res,
                                     })
@@ -4886,7 +4884,7 @@ export default (app: Courselore): void => {
                       )}
                     </h2>
 
-                    $${app.locals.helpers.mayEditConversation({ req, res })
+                    $${mayEditConversation({ req, res })
                       ? html`
                           <form
                             method="PATCH"
@@ -5000,7 +4998,7 @@ export default (app: Courselore): void => {
                               }
                             `)}"
                           >
-                            $${app.locals.helpers.mayEditConversation({
+                            $${mayEditConversation({
                               req,
                               res,
                             })
@@ -7712,7 +7710,7 @@ export default (app: Courselore): void => {
   >[] = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      if (app.locals.helpers.mayEditConversation({ req, res })) return next();
+      if (mayEditConversation({ req, res })) return next();
       next("route");
     },
   ];

@@ -82,7 +82,6 @@ import conversation, {
   ConversationPartial,
   GetConversationHelper,
   IsConversationAccessibleMiddleware,
-  MayEditConversationHelper,
 } from "./conversation.js";
 export {
   ConversationType,
@@ -163,7 +162,6 @@ export interface Courselore extends express.Express {
       Flash: FlashHelper;
       Session: SessionHelper;
       getConversation: GetConversationHelper;
-      mayEditConversation: MayEditConversationHelper;
       getMessage: GetMessageHelper;
       mayEditMessage: MayEditMessageHelper;
       mayEndorseMessage: MayEndorseMessageHelper;
