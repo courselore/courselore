@@ -2695,7 +2695,6 @@ export default (app: Courselore): void => {
                                     method="PATCH"
                                     action="${action}"
                                     novalidate
-                                    class="dropdown--menu"
                                     css="${res.locals.css(css`
                                       gap: var(--space--2);
                                     `)}"
@@ -2735,11 +2734,7 @@ export default (app: Courselore): void => {
                                   </form>
                                 `;
                                 const removeExpirationForm = html`
-                                  <form
-                                    method="PATCH"
-                                    action="${action}"
-                                    class="dropdown--menu"
-                                  >
+                                  <form method="PATCH" action="${action}">
                                     <input
                                       type="hidden"
                                       name="_csrf"
@@ -2759,11 +2754,7 @@ export default (app: Courselore): void => {
                                   </form>
                                 `;
                                 const expireForm = html`
-                                  <form
-                                    method="PATCH"
-                                    action="${action}"
-                                    class="dropdown--menu"
-                                  >
+                                  <form method="PATCH" action="${action}">
                                     <input
                                       type="hidden"
                                       name="_csrf"
@@ -2856,11 +2847,15 @@ export default (app: Courselore): void => {
                                                         ></time>
                                                       </span>
                                                     </h3>
-                                                    $${updateExpirationForm}
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
                                                     <hr
                                                       class="dropdown--separator"
                                                     />
-                                                    $${removeExpirationForm}
+                                                    <div class="dropdown--menu">
+                                                      $${removeExpirationForm}
+                                                    </div>
                                                   </div>
                                                 `
                                               )},
@@ -2899,11 +2894,15 @@ export default (app: Courselore): void => {
                                                       gap: var(--space--2);
                                                     `)}"
                                                   >
-                                                    $${updateExpirationForm}
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
                                                     <hr
                                                       class="dropdown--separator"
                                                     />
-                                                    $${expireForm}
+                                                    <div class="dropdown--menu">
+                                                      $${expireForm}
+                                                    </div>
                                                   </div>
                                                 `
                                               )},
@@ -2956,18 +2955,16 @@ export default (app: Courselore): void => {
                                                         ></time>
                                                       </span>
                                                     </h3>
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
                                                     <hr
                                                       class="dropdown--separator"
                                                     />
-                                                    $${updateExpirationForm}
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${removeExpirationForm}
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${expireForm}
+                                                    <div class="dropdown--menu">
+                                                      $${removeExpirationForm}
+                                                      $${expireForm}
+                                                    </div>
                                                   </div>
                                                 `
                                               )},
