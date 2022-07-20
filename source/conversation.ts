@@ -5003,61 +5003,58 @@ export default (app: Courselore): void => {
                               res,
                             })
                               ? html`
-                                  $${res.locals.conversation.taggings.map(
-                                    (tagging) =>
-                                      res.locals.conversation.taggings
-                                        .length === 1
-                                        ? html`
-                                            <div
-                                              css="${res.locals.css(css`
-                                                display: flex;
-                                                gap: var(--space--2);
-                                              `)}"
-                                            >
-                                              <span
-                                                class="button button--tight button--tight--inline button--tight-gap button--transparent disabled"
-                                                css="${res.locals.css(css`
-                                                  color: var(
-                                                    --color--teal--600
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--teal--500
-                                                    );
-                                                  }
-                                                  text-align: left;
-                                                `)}"
-                                                onload="${javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    theme: "rose",
-                                                    touch: false,
-                                                    content: "You may not remove this tag because a conversation must have at least one tag.",
-                                                  });
+                                  $${res.locals.conversation.taggings.length ===
+                                  1
+                                    ? html`
+                                        <div
+                                          css="${res.locals.css(css`
+                                            display: flex;
+                                            gap: var(--space--2);
+                                          `)}"
+                                        >
+                                          <span
+                                            class="button button--tight button--tight--inline button--tight-gap button--transparent disabled"
+                                            css="${res.locals.css(css`
+                                              color: var(--color--teal--600);
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--teal--500);
+                                              }
+                                              text-align: left;
+                                            `)}"
+                                            onload="${javascript`
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                theme: "rose",
+                                                touch: false,
+                                                content: "You may not remove this tag because a conversation must have at least one tag.",
+                                              });
                                             `}"
-                                              >
-                                                <i class="bi bi-tag-fill"></i>
-                                                ${tagging.tag.name}
-                                              </span>
-                                              $${tagging.tag.staffOnlyAt !==
-                                              null
-                                                ? html`
-                                                    <span
-                                                      class="text--sky"
-                                                      onload="${javascript`
+                                          >
+                                            <i class="bi bi-tag-fill"></i>
+                                            ${res.locals.conversation
+                                              .taggings[0].tag.name}
+                                          </span>
+                                          $${res.locals.conversation.taggings[0]
+                                            .tag.staffOnlyAt !== null
+                                            ? html`
+                                                <span
+                                                  class="text--sky"
+                                                  onload="${javascript`
                                                     (this.tooltip ??= tippy(this)).setProps({
                                                       content: "This tag is visible by staff only.",
                                                     });
                                                   `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-mortarboard-fill"
-                                                      ></i>
-                                                    </span>
-                                                  `
-                                                : html``}
-                                            </div>
-                                          `
-                                        : html`
+                                                >
+                                                  <i
+                                                    class="bi bi-mortarboard-fill"
+                                                  ></i>
+                                                </span>
+                                              `
+                                            : html``}
+                                        </div>
+                                      `
+                                    : res.locals.conversation.taggings.map(
+                                        (tagging) =>
+                                          html`
                                             <form
                                               key="tagging--${tagging.tag
                                                 .reference}"
@@ -5130,7 +5127,7 @@ export default (app: Courselore): void => {
                                                 : html``}
                                             </form>
                                           `
-                                  )}
+                                      )}
 
                                   <div>
                                     <button
