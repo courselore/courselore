@@ -5042,18 +5042,7 @@ export default (app: Courselore): void => {
                                             name="reference"
                                             value="${tagging.tag.reference}"
                                           />
-                                          <button
-                                            $${disabled
-                                              ? html`disabled`
-                                              : html``}
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                            css="${res.locals.css(css`
-                                              color: var(--color--teal--600);
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(--color--teal--500);
-                                              }
-                                              text-align: left;
-                                            `)}"
+                                          <span
                                             onload="${javascript`
                                               (this.tooltip ??= tippy(this)).setProps({
                                                 theme: "rose",
@@ -5066,9 +5055,25 @@ export default (app: Courselore): void => {
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-tag-fill"></i>
-                                            ${tagging.tag.name}
-                                          </button>
+                                            <button
+                                              $${disabled
+                                                ? html`disabled`
+                                                : html``}
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
+                                              css="${res.locals.css(css`
+                                                color: var(--color--teal--600);
+                                                @media (prefers-color-scheme: dark) {
+                                                  color: var(
+                                                    --color--teal--500
+                                                  );
+                                                }
+                                                text-align: left;
+                                              `)}"
+                                            >
+                                              <i class="bi bi-tag-fill"></i>
+                                              ${tagging.tag.name}
+                                            </button>
+                                          </span>
                                           $${tagging.tag.staffOnlyAt !== null
                                             ? html`
                                                 <span
