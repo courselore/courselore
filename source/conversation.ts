@@ -211,23 +211,11 @@ export default (app: Courselore): void => {
   };
 
   const conversationTypeTextColor: {
-    [conversationType in ConversationType]: {
-      display: string;
-      select: string;
-    };
+    [conversationType in ConversationType]: string;
   } = {
-    question: {
-      display: "text--rose",
-      select: "text--rose",
-    },
-    note: {
-      display: "text--fuchsia",
-      select: "text--fuchsia",
-    },
-    chat: {
-      display: "text--cyan",
-      select: "text--cyan",
-    },
+    question: "text--rose",
+    note: "text--fuchsia",
+    chat: "text--cyan",
   };
 
   app.locals.layouts.conversation = ({
@@ -1463,7 +1451,7 @@ export default (app: Courselore): void => {
                                   <span
                                     class="${conversationTypeTextColor[
                                       conversationType
-                                    ].select}"
+                                    ]}"
                                   >
                                     $${conversationTypeIcon[conversationType]
                                       .fill}
@@ -2190,7 +2178,7 @@ export default (app: Courselore): void => {
           class="${conversation.type === "question" &&
           conversation.resolvedAt !== null
             ? "text--emerald"
-            : conversationTypeTextColor[conversation.type].display}"
+            : conversationTypeTextColor[conversation.type]}"
         >
           $${conversationTypeIcon[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
@@ -2956,8 +2944,7 @@ export default (app: Courselore): void => {
                           $${lodash.capitalize(conversationType)}
                         </span>
                         <span
-                          class="${conversationTypeTextColor[conversationType]
-                            .select}"
+                          class="${conversationTypeTextColor[conversationType]}"
                         >
                           $${conversationTypeIcon[conversationType].fill}
                           $${lodash.capitalize(conversationType)}
@@ -4301,7 +4288,7 @@ export default (app: Courselore): void => {
                                     ? "text--emerald"
                                     : conversationTypeTextColor[
                                         res.locals.conversation.type
-                                      ].display}"
+                                      ]}"
                                   onload="${javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
@@ -4352,7 +4339,7 @@ export default (app: Courselore): void => {
                                                       ? "button--blue"
                                                       : "button--transparent"} ${conversationTypeTextColor[
                                                       conversationType
-                                                    ].display}"
+                                                    ]}"
                                                   >
                                                     $${conversationTypeIcon[
                                                       conversationType
@@ -4387,7 +4374,7 @@ export default (app: Courselore): void => {
                                   ? "text--emerald"
                                   : conversationTypeTextColor[
                                       res.locals.conversation.type
-                                    ].display}"
+                                    ]}"
                               >
                                 $${conversationTypeIcon[
                                   res.locals.conversation.type
