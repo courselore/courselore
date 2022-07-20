@@ -3290,69 +3290,93 @@ export default (app: Courselore): void => {
                                     gap: var(--space--2);
                                   `)}"
                                   onload="${javascript`
-                                  this.content = ${res.locals.html(
-                                    html`
-                                      <div
-                                        class="dropdown--menu"
-                                        css="${res.locals.css(css`
-                                          max-height: var(--space--40);
-                                          overflow: auto;
-                                        `)}"
-                                      >
-                                        $${res.locals.tags.map(
-                                          (tag) => html`
-                                            <div
-                                              css="${res.locals.css(css`
-                                                display: flex;
-                                                gap: var(--space--2);
-                                              `)}"
-                                              onload="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
-                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
-                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
-                                                    this.querySelector("label").classList.add("disabled");
-                                                  };
-                                              `}"
-                                            >
-                                              <label
-                                                key="${tag.reference}"
-                                                class="dropdown--menu--item button button--transparent"
+                                    this.content = ${res.locals.html(
+                                      html`
+                                        <div
+                                          class="dropdown--menu"
+                                          css="${res.locals.css(css`
+                                            max-height: var(--space--40);
+                                            overflow: auto;
+                                          `)}"
+                                        >
+                                          <input 
+                                            type="text" 
+                                            onload="${javascript`
+                                              this.isModified = false;
+
+                                              this.oninput = () => {
+                                                const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                for (var tag of this.closest("div").querySelectorAll("div")) {
+                                                  const tagPhrases = tag.querySelector("label").querySelector("span").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                  let tagHidden = filterPhrases.length > 0;
+                                                  
+                                                  const matchingPhrases = filterPhrases.filter(filterPhrase => tagPhrases.filter(tagPhrase => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
+                                                  if (matchingPhrases.length < filterPhrases.length) {
+                                                    tagHidden = true;
+                                                  } else
+                                                    tagHidden = false;
+                                                  
+                                                  tag.hidden = tagHidden
+                                                }
+                                              };
+                                            `}"
+                                          />
+                                          $${res.locals.tags.map(
+                                            (tag) => html`
+                                              <div
+                                                css="${res.locals.css(css`
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                `)}"
+                                                onload="${javascript`
+                                                    this.onclick = () => {
+                                                      this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
+                                                      this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
+                                                      this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
+                                                      this.querySelector("label").classList.add("disabled");
+                                                    };
+                                                    
+                                                    console.log('ontouchstart' in window || navigator.maxTouchPoints > 0);
+                                                `}"
                                               >
-                                                <span>
-                                                  <i class="bi bi-tag"></i>
-                                                  ${tag.name}
-                                                </span>
-                                              </label>
-                                              $${tag.staffOnlyAt !== null
-                                                ? html`
-                                                    <span
-                                                      class="text--sky"
-                                                      onload="${javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          touch: false,
-                                                          content: "This tag is visible by staff only.",
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-mortarboard-fill"
-                                                      ></i>
-                                                    </span>
-                                                  `
-                                                : html``}
-                                            </div>
-                                          `
-                                        )}
-                                      </div>
-                                    `
-                                  )};
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: this.content,
-                                  });
-                                `}"
+                                                <label
+                                                  key="${tag.reference}"
+                                                  class="dropdown--menu--item button button--transparent"
+                                                >
+                                                  <span>
+                                                    <i class="bi bi-tag"></i>
+                                                    ${tag.name}
+                                                  </span>
+                                                </label>
+                                                $${tag.staffOnlyAt !== null
+                                                  ? html`
+                                                      <span
+                                                        class="text--sky"
+                                                        onload="${javascript`
+                                                          (this.tooltip ??= tippy(this)).setProps({
+                                                            touch: false,
+                                                            content: "This tag is visible by staff only.",
+                                                          });
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-mortarboard-fill"
+                                                        ></i>
+                                                      </span>
+                                                    `
+                                                  : html``}
+                                              </div>
+                                            `
+                                          )}
+                                        </div>
+                                      `
+                                    )};
+                                    (this.dropdown ??= tippy(this)).setProps({
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: this.content,
+                                    });
+                                  `}"
                                 >
                                   <i class="bi bi-plus-circle"></i>
                                   Add Tags
