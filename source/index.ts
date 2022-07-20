@@ -65,7 +65,6 @@ import course, {
   CoursePartial,
   CoursesPartial,
   CourseArchivedPartial,
-  DefaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
 } from "./course.js";
@@ -163,7 +162,6 @@ export interface Courselore extends express.Express {
       liveUpdatesDispatch: LiveUpdatesDispatchHelper;
       Flash: FlashHelper;
       Session: SessionHelper;
-      defaultAccentColor: DefaultAccentColorHelper;
       getConversation: GetConversationHelper;
       mayEditConversation: MayEditConversationHelper;
       getMessage: GetMessageHelper;

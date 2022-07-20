@@ -72,14 +72,6 @@ export type CourseArchivedPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type DefaultAccentColorHelper = ({
-  req,
-  res,
-}: {
-  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-  res: express.Response<any, IsSignedInMiddlewareLocals>;
-}) => EnrollmentAccentColor;
-
 export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
@@ -715,7 +707,7 @@ export default (app: Courselore): void => {
           ${course.id},
           ${cryptoRandomString({ length: 10, type: "numeric" })},
           ${"staff"},
-          ${app.locals.helpers.defaultAccentColor({ req, res })}
+          ${defaultAccentColor({ req, res })}
         )
       `
     );
@@ -725,7 +717,7 @@ export default (app: Courselore): void => {
     );
   });
 
-  app.locals.helpers.defaultAccentColor = ({
+  const defaultAccentColor = ({
     req,
     res,
   }: {
@@ -4473,7 +4465,7 @@ export default (app: Courselore): void => {
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitation.courseRole},
-            ${app.locals.helpers.defaultAccentColor({ req, res })}
+            ${defaultAccentColor({ req, res })}
           )
         `
       );
