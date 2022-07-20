@@ -2603,66 +2603,68 @@ export default (app: Courselore): void => {
                                     content: ${res.locals.html(
                                       html`
                                         <div class="dropdown--menu">
-                                          $${courseRoles.map((courseRole) =>
-                                            courseRole === invitation.courseRole
-                                              ? html``
-                                              : html`
-                                                  <form
-                                                    key="course-role--${courseRole}"
-                                                    method="PATCH"
-                                                    action="${action}"
+                                          $${courseRoles.map(
+                                            (courseRole) =>
+                                              html`
+                                                <form
+                                                  key="course-role--${courseRole}"
+                                                  method="PATCH"
+                                                  action="${action}"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
+                                                    name="courseRole"
+                                                    value="${courseRole}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button ${courseRole ===
+                                                    invitation.courseRole
+                                                      ? "button--blue"
+                                                      : "button--transparent"} ${courseRoleTextColor[
+                                                      courseRole
+                                                    ]}"
+                                                    $${isUsed
+                                                      ? html`
+                                                          type="button"
+                                                          onload="${javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              content: "You may not update the course role of this invitation because it’s used.",
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : isInvitationExpired
+                                                      ? html`
+                                                          type="button"
+                                                          onload="${javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              content: "You may not update the course role of this invitation because it’s expired.",
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : html``}
                                                   >
-                                                    <input
-                                                      type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseRole"
-                                                      value="${courseRole}"
-                                                    />
-                                                    <button
-                                                      class="dropdown--menu--item button button--transparent ${courseRoleTextColor[
-                                                        courseRole
-                                                      ]}"
-                                                      $${isUsed
-                                                        ? html`
-                                                            type="button"
-                                                            onload="${javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                theme: "rose",
-                                                                trigger: "click",
-                                                                content: "You may not update the course role of this invitation because it’s used.",
-                                                              });
-                                                            `}"
-                                                          `
-                                                        : isInvitationExpired
-                                                        ? html`
-                                                            type="button"
-                                                            onload="${javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                theme: "rose",
-                                                                trigger: "click",
-                                                                content: "You may not update the course role of this invitation because it’s expired.",
-                                                              });
-                                                            `}"
-                                                          `
-                                                        : html``}
-                                                    >
-                                                      $${courseRoleIcon[
-                                                        courseRole
-                                                      ][
-                                                        courseRole === "staff"
-                                                          ? "fill"
-                                                          : "regular"
-                                                      ]}
-                                                      ${lodash.capitalize(
-                                                        courseRole
-                                                      )}
-                                                    </button>
-                                                  </form>
-                                                `
+                                                    $${courseRoleIcon[
+                                                      courseRole
+                                                    ][
+                                                      courseRole === "staff"
+                                                        ? "fill"
+                                                        : "regular"
+                                                    ]}
+                                                    ${lodash.capitalize(
+                                                      courseRole
+                                                    )}
+                                                  </button>
+                                                </form>
+                                              `
                                           )}
                                         </div>
                                       `
@@ -2962,6 +2964,9 @@ export default (app: Courselore): void => {
                                                       class="dropdown--separator"
                                                     />
                                                     $${removeExpirationForm}
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
                                                     $${expireForm}
                                                   </div>
                                                 `
@@ -3707,136 +3712,134 @@ export default (app: Courselore): void => {
                               content: ${res.locals.html(
                                 html`
                                   <div class="dropdown--menu">
-                                    $${courseRoles.map((courseRole) =>
-                                      courseRole === enrollment.courseRole
-                                        ? html``
-                                        : html`
-                                            <form
-                                              key="course-role--${courseRole}"
-                                              method="PATCH"
-                                              action="${action}"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="_csrf"
-                                                value="${req.csrfToken()}"
-                                              />
-                                              <input
-                                                type="hidden"
-                                                name="courseRole"
-                                                value="${courseRole}"
-                                              />
-                                              <div>
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent ${courseRoleTextColor[
-                                                    courseRole
-                                                  ]}"
-                                                  $${isOnlyStaff
-                                                    ? html`
-                                                        type="button"
-                                                        onload="${javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            content: "You may not update your own course role because you’re the only staff member.",
-                                                          });
-                                                        `}"
-                                                      `
-                                                    : isSelf
-                                                    ? html`
-                                                        type="button"
-                                                        onload="${javascript`
-                                                          (this.dropdown ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            interactive: true,
-                                                            appendTo: document.querySelector("body"),
-                                                            content: ${res.locals.html(
-                                                              html`
-                                                                <form
-                                                                  key="course-role--${courseRole}"
-                                                                  method="PATCH"
-                                                                  action="${action}"
-                                                                  css="${res
-                                                                    .locals
-                                                                    .css(css`
-                                                                    padding: var(
-                                                                      --space--2
-                                                                    );
-                                                                    display: flex;
-                                                                    flex-direction: column;
-                                                                    gap: var(
-                                                                      --space--4
-                                                                    );
-                                                                  `)}"
-                                                                >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="courseRole"
-                                                                    value="${courseRole}"
-                                                                  />
-                                                                  <p>
-                                                                    Are you sure
-                                                                    you want to
-                                                                    update your
-                                                                    own course
-                                                                    role to
-                                                                    ${courseRole}?
-                                                                  </p>
-                                                                  <p>
-                                                                    <strong
-                                                                      css="${res
-                                                                        .locals
-                                                                        .css(css`
-                                                                        font-weight: var(
-                                                                          --font-weight--bold
-                                                                        );
-                                                                      `)}"
-                                                                    >
-                                                                      You may
-                                                                      not undo
-                                                                      this
-                                                                      action!
-                                                                    </strong>
-                                                                  </p>
-                                                                  <button
-                                                                    class="button button--rose"
+                                    $${courseRoles.map(
+                                      (courseRole) =>
+                                        html`
+                                          <form
+                                            key="course-role--${courseRole}"
+                                            method="PATCH"
+                                            action="${action}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="_csrf"
+                                              value="${req.csrfToken()}"
+                                            />
+                                            <input
+                                              type="hidden"
+                                              name="courseRole"
+                                              value="${courseRole}"
+                                            />
+                                            <div>
+                                              <button
+                                                class="dropdown--menu--item button ${courseRole ===
+                                                enrollment.courseRole
+                                                  ? "button--blue"
+                                                  : "button--transparent"} ${courseRoleTextColor[
+                                                  courseRole
+                                                ]}"
+                                                $${isOnlyStaff
+                                                  ? html`
+                                                      type="button"
+                                                      onload="${javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          content: "You may not update your own course role because you’re the only staff member.",
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : isSelf
+                                                  ? html`
+                                                      type="button"
+                                                      onload="${javascript`
+                                                        (this.dropdown ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          appendTo: document.querySelector("body"),
+                                                          content: ${res.locals.html(
+                                                            html`
+                                                              <form
+                                                                key="course-role--${courseRole}"
+                                                                method="PATCH"
+                                                                action="${action}"
+                                                                css="${res
+                                                                  .locals
+                                                                  .css(css`
+                                                                  padding: var(
+                                                                    --space--2
+                                                                  );
+                                                                  display: flex;
+                                                                  flex-direction: column;
+                                                                  gap: var(
+                                                                    --space--4
+                                                                  );
+                                                                `)}"
+                                                              >
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="_csrf"
+                                                                  value="${req.csrfToken()}"
+                                                                />
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="courseRole"
+                                                                  value="${courseRole}"
+                                                                />
+                                                                <p>
+                                                                  Are you sure
+                                                                  you want to
+                                                                  update your
+                                                                  own course
+                                                                  role to
+                                                                  ${courseRole}?
+                                                                </p>
+                                                                <p>
+                                                                  <strong
+                                                                    css="${res
+                                                                      .locals
+                                                                      .css(css`
+                                                                      font-weight: var(
+                                                                        --font-weight--bold
+                                                                      );
+                                                                    `)}"
                                                                   >
-                                                                    <i
-                                                                      class="bi bi-pencil-fill"
-                                                                    ></i>
-                                                                    Update My
-                                                                    Own Course
-                                                                    Role to
-                                                                    ${lodash.capitalize(
-                                                                      courseRole
-                                                                    )}
-                                                                  </button>
-                                                                </form>
-                                                              `
-                                                            )},
-                                                          });
-                                                        `}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  $${courseRoleIcon[courseRole][
-                                                    courseRole === "staff"
-                                                      ? "fill"
-                                                      : "regular"
-                                                  ]}
-                                                  ${lodash.capitalize(
-                                                    courseRole
-                                                  )}
-                                                </button>
-                                              </div>
-                                            </form>
-                                          `
+                                                                    You may not
+                                                                    undo this
+                                                                    action!
+                                                                  </strong>
+                                                                </p>
+                                                                <button
+                                                                  class="button button--rose"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-pencil-fill"
+                                                                  ></i>
+                                                                  Update My Own
+                                                                  Course Role to
+                                                                  ${lodash.capitalize(
+                                                                    courseRole
+                                                                  )}
+                                                                </button>
+                                                              </form>
+                                                            `
+                                                          )},
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : html``}
+                                              >
+                                                $${courseRoleIcon[courseRole][
+                                                  courseRole === "staff"
+                                                    ? "fill"
+                                                    : "regular"
+                                                ]}
+                                                ${lodash.capitalize(courseRole)}
+                                              </button>
+                                            </div>
+                                          </form>
+                                        `
                                     )}
                                   </div>
                                 `
