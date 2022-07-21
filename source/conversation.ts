@@ -5102,7 +5102,11 @@ export default (app: Courselore): void => {
                             </form>
                           `;
 
-                      if (true)
+                      if (
+                        res.locals.enrollment.courseRole === "staff" ||
+                        (mayEditConversation({ req, res }) &&
+                          res.locals.tags.length > 0)
+                      )
                         tags += html`
                           <div>
                             <button
