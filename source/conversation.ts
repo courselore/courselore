@@ -3301,6 +3301,8 @@ export default (app: Courselore): void => {
                                         >
                                           <input
                                             type="text"
+                                            class="secondary"
+                                            placeholder="Filter…"
                                             onload="${javascript`
                                               this.isModified = false;
 
@@ -3310,7 +3312,7 @@ export default (app: Courselore): void => {
                                                   const tagPhrases = tag.querySelector("label").querySelector("span").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                   let tagHidden = filterPhrases.length > 0;
                                                   
-                                                  const matchingPhrases = filterPhrases.filter(filterPhrase => tagPhrases.filter(tagPhrase => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
+                                                  const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
                                                   if (matchingPhrases.length < filterPhrases.length) {
                                                     tagHidden = true;
                                                   } else
@@ -3321,6 +3323,7 @@ export default (app: Courselore): void => {
                                               };
                                             `}"
                                           />
+                                          <hr class="separator" />
                                           $${res.locals.tags.map(
                                             (tag) => html`
                                               <div
