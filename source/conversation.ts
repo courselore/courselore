@@ -3373,9 +3373,7 @@ export default (app: Courselore): void => {
                                       `
                                     )};
                                     (this.dropdown ??= tippy(this, {
-                                      onMount() {
-                                        this.content.querySelector("input").focus();
-                                      }
+                                      onMount() { this.content.querySelector("input").focus(); }     
                                     })).setProps({
                                       trigger: "click",
                                       interactive: true,
@@ -5235,123 +5233,150 @@ export default (app: Courselore): void => {
                                         <div>
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--teal"
-                                            onload="${javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "Add Tag",
-                                              });
-                                              
-                                              (this.dropdown ??= tippy(this)).setProps({
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${res.locals.html(
-                                                  html`
-                                                    <div
-                                                      class="dropdown--menu"
-                                                      css="${res.locals.css(css`
-                                                        max-height: var(
-                                                          --space--40
-                                                        );
-                                                        overflow: auto;
-                                                      `)}"
-                                                    >
-                                                      $${res.locals.tags
-                                                        .filter(
-                                                          (tag) =>
-                                                            !res.locals.conversation.taggings.some(
-                                                              (tagging) =>
-                                                                tagging.tag
-                                                                  .id === tag.id
-                                                            )
-                                                        )
-                                                        .map(
-                                                          (tag) => html`
-                                                            <form
-                                                              key="tag--${tag.reference}"
-                                                              method="POST"
-                                                              action="https://${app
-                                                                .locals.options
-                                                                .host}/courses/${res
-                                                                .locals.course
-                                                                .reference}/conversations/${res
-                                                                .locals
-                                                                .conversation
-                                                                .reference}/taggings${qs.stringify(
-                                                                {
-                                                                  conversations:
-                                                                    req.query
-                                                                      .conversations,
-                                                                  messages:
-                                                                    req.query
-                                                                      .messages,
-                                                                },
-                                                                {
-                                                                  addQueryPrefix:
-                                                                    true,
-                                                                }
-                                                              )}"
-                                                            >
-                                                              <input
-                                                                type="hidden"
-                                                                name="_csrf"
-                                                                value="${req.csrfToken()}"
-                                                              />
-                                                              <input
-                                                                type="hidden"
-                                                                name="reference"
-                                                                value="${tag.reference}"
-                                                              />
-                                                              <button
-                                                                class="dropdown--menu--item button button--transparent text--teal"
-                                                              >
-                                                                <i
-                                                                  class="bi bi-tag-fill"
-                                                                ></i>
-                                                                ${tag.name}
-                                                                $${tag.staffOnlyAt !==
-                                                                null
-                                                                  ? html`
-                                                                      <span
-                                                                        class="text--sky"
-                                                                        onload="${javascript`
-                                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                                            touch: false,
-                                                                            content: "This tag is visible by staff only.",
-                                                                          });
-                                                                        `}"
-                                                                      >
-                                                                        <i
-                                                                          class="bi bi-mortarboard-fill"
-                                                                        ></i>
-                                                                      </span>
-                                                                    `
-                                                                  : html``}
-                                                              </button>
-                                                            </form>
-                                                          `
-                                                        )}
-                                                      $${res.locals.enrollment
-                                                        .courseRole === "staff"
-                                                        ? html`
-                                                            <a
-                                                              href="https://${app
-                                                                .locals.options
-                                                                .host}/courses/${res
-                                                                .locals.course
-                                                                .reference}/settings/tags"
-                                                              target="_blank"
+                                            onload="${javascript`     
+                                              this.content = ${res.locals.html(
+                                                html`
+                                                  <div
+                                                    class="dropdown--menu"
+                                                    css="${res.locals.css(css`
+                                                      max-height: var(
+                                                        --space--40
+                                                      );
+                                                      overflow: auto;
+                                                    `)}"
+                                                  >
+                                                    <input
+                                                      type="text"
+                                                      class="secondary"
+                                                      placeholder="Filter…"
+                                                      onload="${javascript`
+                                                    this.isModified = false;
+
+                                                    this.oninput = () => {
+                                                      const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                      for (var tag of this.closest("div").querySelectorAll("form")) {
+                                                        const tagPhrases = tag.querySelector("button").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                        let tagHidden = filterPhrases.length > 0;
+                                                        
+                                                        const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
+                                                        if (matchingPhrases.length < filterPhrases.length) {
+                                                          tagHidden = true;
+                                                        } else
+                                                          tagHidden = false;
+                                                        
+                                                        tag.hidden = tagHidden
+                                                      }
+                                                    };
+                                                  `}"
+                                                    />
+                                                    <hr class="separator" />
+                                                    $${res.locals.tags
+                                                      .filter(
+                                                        (tag) =>
+                                                          !res.locals.conversation.taggings.some(
+                                                            (tagging) =>
+                                                              tagging.tag.id ===
+                                                              tag.id
+                                                          )
+                                                      )
+                                                      .map(
+                                                        (tag) => html`
+                                                          <form
+                                                            key="tag--${tag.reference}"
+                                                            method="POST"
+                                                            action="https://${app
+                                                              .locals.options
+                                                              .host}/courses/${res
+                                                              .locals.course
+                                                              .reference}/conversations/${res
+                                                              .locals
+                                                              .conversation
+                                                              .reference}/taggings${qs.stringify(
+                                                              {
+                                                                conversations:
+                                                                  req.query
+                                                                    .conversations,
+                                                                messages:
+                                                                  req.query
+                                                                    .messages,
+                                                              },
+                                                              {
+                                                                addQueryPrefix:
+                                                                  true,
+                                                              }
+                                                            )}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="_csrf"
+                                                              value="${req.csrfToken()}"
+                                                            />
+                                                            <input
+                                                              type="hidden"
+                                                              name="reference"
+                                                              value="${tag.reference}"
+                                                            />
+                                                            <button
                                                               class="dropdown--menu--item button button--transparent"
                                                             >
                                                               <i
-                                                                class="bi bi-sliders"
+                                                                class="bi bi-tag"
                                                               ></i>
-                                                              Manage Tags
-                                                            </a>
-                                                          `
-                                                        : html``}
-                                                    </div>
-                                                  `
-                                                )},
+                                                              ${tag.name}
+                                                              $${tag.staffOnlyAt !==
+                                                              null
+                                                                ? html`
+                                                                    <span
+                                                                      class="text--sky"
+                                                                      onload="${javascript`
+                                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                                      touch: false,
+                                                                      content: "This tag is visible by staff only.",
+                                                                    });
+                                                                  `}"
+                                                                    >
+                                                                      <i
+                                                                        class="bi bi-mortarboard-fill"
+                                                                      ></i>
+                                                                    </span>
+                                                                  `
+                                                                : html``}
+                                                            </button>
+                                                          </form>
+                                                        `
+                                                      )}
+                                                    $${res.locals.enrollment
+                                                      .courseRole === "staff"
+                                                      ? html`
+                                                          <a
+                                                            href="https://${app
+                                                              .locals.options
+                                                              .host}/courses/${res
+                                                              .locals.course
+                                                              .reference}/settings/tags"
+                                                            target="_blank"
+                                                            class="dropdown--menu--item button button--transparent"
+                                                          >
+                                                            <i
+                                                              class="bi bi-sliders"
+                                                            ></i>
+                                                            Manage Tags
+                                                          </a>
+                                                        `
+                                                      : html``}
+                                                  </div>
+                                                `
+                                              )};                                         
+                                              (this.dropdown ??= tippy(this, {
+                                                onMount() { this.content.querySelector("input").focus(); }
+                                              })).setProps({
+                                                trigger: "click",
+                                                interactive: true,
+                                                content: this.content,
+                                              });
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: false,
+                                                content: "Add Tag",
                                               });
                                             `}"
                                           >
