@@ -5110,7 +5110,7 @@ export default (app: Courselore): void => {
                         tags += html`
                           <div>
                             <button
-                              class="button button--tight button--tight--inline button--transparent text--teal"
+                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
                               onload="${javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
