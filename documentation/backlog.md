@@ -69,7 +69,6 @@
 ## Better Email Notifications
 
 - New filters for email notifications.
-  - Implement SQL
   - Database index for notification settings, since they’re used in the query to decide who to notify?
 - Details on the emails:
   - Make emails be replies, so that they’re grouped in conversations on email readers.
