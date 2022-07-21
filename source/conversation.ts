@@ -8052,7 +8052,8 @@ export default (app: Courselore): void => {
     ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (
-        res.locals.conversation.taggings.length === 1 ||
+        (res.locals.conversation.taggings.length === 1 &&
+          res.locals.conversation.type !== "chat") ||
         typeof req.body.reference !== "string" ||
         !res.locals.conversation.taggings.some(
           (tagging) => req.body.reference === tagging.tag.reference
