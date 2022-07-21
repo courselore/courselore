@@ -5224,25 +5224,18 @@ export default (app: Courselore): void => {
                                               ? html`
                                                   <div
                                                     class="dropdown--menu--item button button--blue text--teal disabled"
+                                                    onload="${javascript`
+                                                      (this.tooltip ??= tippy(this)).setProps({
+                                                        theme: "rose",
+                                                        touch: false,
+                                                        content: "You may not remove this tag because a conversation must have at least one tag.",
+                                                      });
+                                                    `}"
                                                   >
-                                                    <div
-                                                      css="${res.locals.css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                      `)}"
-                                                      onload="${javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          touch: false,
-                                                          content: "You may not remove this tag because a conversation must have at least one tag.",
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-tag-fill"
-                                                      ></i>
-                                                      ${tag.name}
-                                                    </div>
+                                                    <i
+                                                      class="bi bi-tag-fill"
+                                                    ></i>
+                                                    ${tag.name}
                                                     $${tag.staffOnlyAt !== null
                                                       ? html`
                                                           <span
