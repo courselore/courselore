@@ -1272,6 +1272,7 @@ export default (app: Courselore): void => {
           GROUP BY "enrollments"."id"
         `
       );
+      const inReplyTo = `courses/${res.locals.course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`;
       for (const enrollment of enrollments) {
         app.locals.database.run(
           sql`
@@ -1291,6 +1292,8 @@ export default (app: Courselore): void => {
                   address: app.locals.options.sendMail.defaults.from.address,
                 },
                 to: enrollment.userEmail,
+                inReplyTo,
+                references: inReplyTo,
                 subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
                 html: html`
                   <p>
