@@ -1253,9 +1253,21 @@ export default (app: Courselore): void => {
                       } OR
                       "enrollments"."reference" IN ${mentions}
                     )
+                  ) OR (
+                    "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND (
+                      SELECT TRUE
+                      FROM "messages"
+                      WHERE "conversation" = ${conversation.id} AND
+                            "authorEnrollment" = "enrollments"."id"
+                    )
+                  ) OR (
+                    "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND (
+                      SELECT TRUE
+                      FROM "conversations"
+                      WHERE "id" = ${conversation.id} AND
+                            "authorEnrollment" = "enrollments"."id"
+                    )
                   )
-                  -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt"
-                  -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsYouStartedAt"
                 )
           GROUP BY "enrollments"."id"
         `
