@@ -68,8 +68,6 @@
 
 ## Better Email Notifications
 
-- New filters for email notifications.
-  - Database index for notification settings, since they’re used in the query to decide who to notify?
 - Details on the emails:
   - Make emails be replies, so that they’re grouped in conversations on email readers.
   - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
