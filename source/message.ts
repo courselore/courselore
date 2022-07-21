@@ -1206,11 +1206,11 @@ export default (app: Courselore): void => {
       }>(
         sql`
           SELECT "enrollments"."id",
-                  "users"."id" AS "userId",
-                  "users"."email" AS "userEmail",
-                  "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
-                  "enrollments"."reference",
-                  "enrollments"."courseRole"
+                 "users"."id" AS "userId",
+                 "users"."email" AS "userEmail",
+                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
+                 "enrollments"."reference",
+                 "enrollments"."courseRole"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
                           "users"."emailVerifiedAt" IS NOT NULL
