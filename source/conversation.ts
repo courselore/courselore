@@ -3369,7 +3369,11 @@ export default (app: Courselore): void => {
                                         </div>
                                       `
                                     )};
-                                    (this.dropdown ??= tippy(this)).setProps({
+                                    (this.dropdown ??= tippy(this, {
+                                      onMount() {
+                                        this.content.querySelector("input").focus();
+                                      }
+                                    })).setProps({
                                       trigger: "click",
                                       interactive: true,
                                       content: this.content,
