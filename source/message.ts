@@ -1205,60 +1205,60 @@ export default (app: Courselore): void => {
         courseRole: CourseRole;
       }>(
         sql`
-            SELECT "enrollments"."id",
-                   "users"."id" AS "userId",
-                   "users"."email" AS "userEmail",
-                   "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole"
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                            "users"."emailVerifiedAt" IS NOT NULL
-            LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-                                                  "notificationDeliveries"."message" = ${
-                                                    message.id
-                                                  }
-            $${
-              conversation.staffOnlyAt !== null
-                ? sql`
-                    LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                            "messages"."conversation" = ${conversation.id}
-                  `
-                : sql``
-            }
-            WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                  "notificationDeliveries"."id" IS NULL
-                  $${
-                    conversation.staffOnlyAt !== null
-                      ? sql`
-                        AND (
-                          "enrollments"."courseRole" = 'staff' OR
-                          "messages"."id" IS NOT NULL
-                        )
-                      `
-                      : sql``
-                  } AND (
-                    "users"."emailNotificationsForAllMessagesAt" IS NOT NULL OR (
-                      "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
-                        $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
-                        $${
-                          mentions.has("staff")
-                            ? sql`"enrollments"."courseRole" = 'staff'`
-                            : sql`FALSE`
-                        } OR
-                        $${
-                          mentions.has("students")
-                            ? sql`"enrollments"."courseRole" = 'student'`
-                            : sql`FALSE`
-                        } OR
-                        "enrollments"."reference" IN ${mentions}
+          SELECT "enrollments"."id",
+                  "users"."id" AS "userId",
+                  "users"."email" AS "userEmail",
+                  "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
+                  "enrollments"."reference",
+                  "enrollments"."courseRole"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                          "users"."emailVerifiedAt" IS NOT NULL
+          LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+                                                "notificationDeliveries"."message" = ${
+                                                  message.id
+                                                }
+          $${
+            conversation.staffOnlyAt !== null
+              ? sql`
+                  LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                          "messages"."conversation" = ${conversation.id}
+                `
+              : sql``
+          }
+          WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                "notificationDeliveries"."id" IS NULL
+                $${
+                  conversation.staffOnlyAt !== null
+                    ? sql`
+                      AND (
+                        "enrollments"."courseRole" = 'staff' OR
+                        "messages"."id" IS NOT NULL
                       )
+                    `
+                    : sql``
+                } AND (
+                  "users"."emailNotificationsForAllMessagesAt" IS NOT NULL OR (
+                    "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
+                      $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
+                      $${
+                        mentions.has("staff")
+                          ? sql`"enrollments"."courseRole" = 'staff'`
+                          : sql`FALSE`
+                      } OR
+                      $${
+                        mentions.has("students")
+                          ? sql`"enrollments"."courseRole" = 'student'`
+                          : sql`FALSE`
+                      } OR
+                      "enrollments"."reference" IN ${mentions}
                     )
-                    -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt"
-                    -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsYouStartedAt"
                   )
-            GROUP BY "enrollments"."id"
-          `
+                  -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt"
+                  -- TODO: Better email notifications: "users"."emailNotificationsForMessagesInConversationsYouStartedAt"
+                )
+          GROUP BY "enrollments"."id"
+        `
       );
       for (const enrollment of enrollments) {
         app.locals.database.run(
