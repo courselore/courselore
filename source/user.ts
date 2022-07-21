@@ -1386,8 +1386,6 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
-                  hidden
-                  TODO
                   css="${res.locals.css(css`
                     display: flex;
                   `)}"
@@ -1418,8 +1416,6 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
                 <div
-                  hidden
-                  TODO
                   css="${res.locals.css(css`
                     display: flex;
                   `)}"

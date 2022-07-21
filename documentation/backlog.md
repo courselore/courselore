@@ -69,7 +69,6 @@
 ## Better Email Notifications
 
 - New filters for email notifications.
-  - Reenable on interface (`TODO`)
   - Implement SQL
   - Database index for notification settings, since they’re used in the query to decide who to notify?
 - Details on the emails:
@@ -79,6 +78,7 @@
   - Add support for Dark Mode in emails.
     - This should fix the duplication of code blocks.
 - Digests.
+  - Reenable on interface (`TODO`)
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
   - Don’t send notifications when the person is online and/or has seen the message.
 - “Important staff announcements”
