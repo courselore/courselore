@@ -4532,38 +4532,68 @@ export default (app: Courselore): void => {
                 }
               `)}"
             >
-              <a
-                href="https://${app.locals.options.host}/sign-up${qs.stringify(
-                  {
-                    redirect: req.originalUrl,
-                    invitation: {
-                      email: res.locals.invitation.email ?? undefined,
-                      name: res.locals.invitation.name ?? undefined,
-                    },
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="button button--blue"
-              >
-                <i class="bi bi-person-plus-fill"></i>
-                Sign up
-              </a>
-              <a
-                href="https://${app.locals.options.host}/sign-in${qs.stringify(
-                  {
-                    redirect: req.originalUrl,
-                    invitation: {
-                      email: res.locals.invitation.email ?? undefined,
-                      name: res.locals.invitation.name ?? undefined,
-                    },
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="button button--transparent"
-              >
-                <i class="bi bi-box-arrow-in-right"></i>
-                Sign in
-              </a>
+              $${(() => {
+                let buttons = html``;
+
+                const hasInvitationEmail = res.locals.invitation.email !== null;
+                const invitationUserExists =
+                  hasInvitationEmail &&
+                  app.locals.database.get<{ exists: number }>(
+                    sql`
+                      SELECT EXISTS(
+                        SELECT TRUE
+                        FROM "users"
+                        WHERE "email" = ${res.locals.invitation.email}
+                      ) AS "exists"
+                    `
+                  )!.exists === 1;
+
+                if (!hasInvitationEmail || !invitationUserExists)
+                  buttons += html`
+                    <a
+                      href="https://${app.locals.options
+                        .host}/sign-up${qs.stringify(
+                        {
+                          redirect: req.originalUrl,
+                          invitation: {
+                            email: res.locals.invitation.email ?? undefined,
+                            name: res.locals.invitation.name ?? undefined,
+                          },
+                        },
+                        { addQueryPrefix: true }
+                      )}"
+                      class="button button--blue"
+                    >
+                      <i class="bi bi-person-plus-fill"></i>
+                      Sign up
+                    </a>
+                  `;
+
+                if (!hasInvitationEmail || invitationUserExists)
+                  buttons += html`
+                    <a
+                      href="https://${app.locals.options
+                        .host}/sign-in${qs.stringify(
+                        {
+                          redirect: req.originalUrl,
+                          invitation: {
+                            email: res.locals.invitation.email ?? undefined,
+                            name: res.locals.invitation.name ?? undefined,
+                          },
+                        },
+                        { addQueryPrefix: true }
+                      )}"
+                      class="button ${invitationUserExists
+                        ? "button--blue"
+                        : "button--transparent"}"
+                    >
+                      <i class="bi bi-box-arrow-in-right"></i>
+                      Sign in
+                    </a>
+                  `;
+
+                return buttons;
+              })()}
             </div>
           `,
         })
