@@ -5153,73 +5153,134 @@ export default (app: Courselore): void => {
                                           : html``}
 
                                         <div class="dropdown--menu">
-                                          $${res.locals.tags.map((tag) => {
-                                            const isTagging =
-                                              res.locals.conversation.taggings.some(
-                                                (tagging) =>
-                                                  tagging.tag.id === tag.id
-                                              );
-                                            return html`
-                                              <form
-                                                key="tag--${tag.reference}"
-                                                method="${isTagging
-                                                  ? "DELETE"
-                                                  : "POST"}"
-                                                action="https://${app.locals
-                                                  .options.host}/courses/${res
-                                                  .locals.course
-                                                  .reference}/conversations/${res
-                                                  .locals.conversation
-                                                  .reference}/taggings${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      req.query.conversations,
-                                                    messages:
-                                                      req.query.messages,
-                                                  },
-                                                  {
-                                                    addQueryPrefix: true,
-                                                  }
-                                                )}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
-                                                <input
-                                                  type="hidden"
-                                                  name="reference"
-                                                  value="${tag.reference}"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button ${isTagging
-                                                    ? "button--blue"
-                                                    : "button--transparent"} text--teal"
-                                                >
-                                                  <i class="bi bi-tag-fill"></i>
-                                                  ${tag.name}
-                                                  $${tag.staffOnlyAt !== null
-                                                    ? html`
-                                                        <span
-                                                          class="text--sky"
-                                                          onload="${javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              touch: false,
-                                                              content: "This tag is visible by staff only.",
-                                                            });
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-mortarboard-fill"
-                                                          ></i>
-                                                        </span>
-                                                      `
-                                                    : html``}
-                                                </button>
-                                              </form>
-                                            `;
-                                          })}
+                                          $${res.locals.tags.map((tag) =>
+                                            !res.locals.conversation.taggings.some(
+                                              (tagging) =>
+                                                tagging.tag.id === tag.id
+                                            )
+                                              ? html`
+                                                  <form
+                                                    key="tag--${tag.reference}"
+                                                    method="POST"
+                                                    action="https://${app.locals
+                                                      .options
+                                                      .host}/courses/${res
+                                                      .locals.course
+                                                      .reference}/conversations/${res
+                                                      .locals.conversation
+                                                      .reference}/taggings${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          req.query
+                                                            .conversations,
+                                                        messages:
+                                                          req.query.messages,
+                                                      },
+                                                      {
+                                                        addQueryPrefix: true,
+                                                      }
+                                                    )}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="_csrf"
+                                                      value="${req.csrfToken()}"
+                                                    />
+                                                    <input
+                                                      type="hidden"
+                                                      name="reference"
+                                                      value="${tag.reference}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent text--teal"
+                                                    >
+                                                      <i
+                                                        class="bi bi-tag-fill"
+                                                      ></i>
+                                                      ${tag.name}
+                                                      $${tag.staffOnlyAt !==
+                                                      null
+                                                        ? html`
+                                                            <span
+                                                              class="text--sky"
+                                                              onload="${javascript`
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                touch: false,
+                                                                content: "This tag is visible by staff only.",
+                                                              });
+                                                            `}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-mortarboard-fill"
+                                                              ></i>
+                                                            </span>
+                                                          `
+                                                        : html``}
+                                                    </button>
+                                                  </form>
+                                                `
+                                              : html`
+                                                  <form
+                                                    key="tag--${tag.reference}"
+                                                    method="DELETE"
+                                                    action="https://${app.locals
+                                                      .options
+                                                      .host}/courses/${res
+                                                      .locals.course
+                                                      .reference}/conversations/${res
+                                                      .locals.conversation
+                                                      .reference}/taggings${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          req.query
+                                                            .conversations,
+                                                        messages:
+                                                          req.query.messages,
+                                                      },
+                                                      {
+                                                        addQueryPrefix: true,
+                                                      }
+                                                    )}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="_csrf"
+                                                      value="${req.csrfToken()}"
+                                                    />
+                                                    <input
+                                                      type="hidden"
+                                                      name="reference"
+                                                      value="${tag.reference}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--blue text--teal"
+                                                    >
+                                                      <i
+                                                        class="bi bi-tag-fill"
+                                                      ></i>
+                                                      ${tag.name}
+                                                      $${tag.staffOnlyAt !==
+                                                      null
+                                                        ? html`
+                                                            <span
+                                                              class="text--sky"
+                                                              onload="${javascript`
+                                                                (this.tooltip ??= tippy(this)).setProps({
+                                                                  touch: false,
+                                                                  content: "This tag is visible by staff only.",
+                                                                });
+                                                              `}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-mortarboard-fill"
+                                                              ></i>
+                                                            </span>
+                                                          `
+                                                        : html``}
+                                                    </button>
+                                                  </form>
+                                                `
+                                          )}
                                         </div>
                                       </div>
                                     `
