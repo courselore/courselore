@@ -4984,122 +4984,7 @@ export default (app: Courselore): void => {
                       let tags = html``;
 
                       for (const tagging of res.locals.conversation.taggings)
-                        if (mayEditConversation({ req, res }))
-                          tags += html`
-                            $${res.locals.conversation.taggings.length === 1
-                              ? html`
-                                  <div
-                                    css="${res.locals.css(css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `)}"
-                                  >
-                                    <span
-                                      class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled"
-                                      css="${res.locals.css(css`
-                                        color: var(--color--teal--600);
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--teal--500);
-                                        }
-                                        text-align: left;
-                                      `)}"
-                                      onload="${javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          theme: "rose",
-                                          touch: false,
-                                          content: "You may not remove this tag because a conversation must have at least one tag.",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tagging.tag.name}
-                                    </span>
-                                    $${tagging.tag.staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--sky"
-                                            onload="${javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                content: "This tag is visible by staff only.",
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </div>
-                                `
-                              : html`
-                                  <form
-                                    key="tagging--${tagging.tag.reference}"
-                                    method="DELETE"
-                                    action="https://${app.locals.options
-                                      .host}/courses/${res.locals.course
-                                      .reference}/conversations/${res.locals
-                                      .conversation
-                                      .reference}/taggings${qs.stringify(
-                                      {
-                                        conversations: req.query.conversations,
-                                        messages: req.query.messages,
-                                      },
-                                      {
-                                        addQueryPrefix: true,
-                                      }
-                                    )}"
-                                    css="${res.locals.css(css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `)}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <input
-                                      type="hidden"
-                                      name="reference"
-                                      value="${tagging.tag.reference}"
-                                    />
-                                    <button
-                                      class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                      css="${res.locals.css(css`
-                                        text-align: left;
-                                      `)}"
-                                      onload="${javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          theme: "rose",
-                                          touch: false,
-                                          content: "Remove Tag",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tagging.tag.name}
-                                    </button>
-                                    $${tagging.tag.staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--sky"
-                                            onload="${javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                content: "This tag is visible by staff only.",
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </form>
-                                `}
-                          `;
-                        else
+                        if (!mayEditConversation({ req, res }))
                           tags += html`
                             $${res.locals.conversation.taggings.map(
                               (tagging) => html`
@@ -5109,6 +4994,112 @@ export default (app: Courselore): void => {
                                 </div>
                               `
                             )}
+                          `;
+                        else if (res.locals.conversation.taggings.length === 1)
+                          tags += html`
+                            <div
+                              css="${res.locals.css(css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <span
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled"
+                                css="${res.locals.css(css`
+                                  color: var(--color--teal--600);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--teal--500);
+                                  }
+                                  text-align: left;
+                                `)}"
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    theme: "rose",
+                                    touch: false,
+                                    content: "You may not remove this tag because a conversation must have at least one tag.",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-tag-fill"></i>
+                                ${tagging.tag.name}
+                              </span>
+                              $${tagging.tag.staffOnlyAt !== null
+                                ? html`
+                                    <span
+                                      class="text--sky"
+                                      onload="${javascript`
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          content: "This tag is visible by staff only.",
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                    </span>
+                                  `
+                                : html``}
+                            </div>
+                          `;
+                        else
+                          tags += html`
+                            <form
+                              key="tagging--${tagging.tag.reference}"
+                              method="DELETE"
+                              action="https://${app.locals.options
+                                .host}/courses/${res.locals.course
+                                .reference}/conversations/${res.locals
+                                .conversation.reference}/taggings${qs.stringify(
+                                {
+                                  conversations: req.query.conversations,
+                                  messages: req.query.messages,
+                                },
+                                { addQueryPrefix: true }
+                              )}"
+                              css="${res.locals.css(css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
+                              <input
+                                type="hidden"
+                                name="reference"
+                                value="${tagging.tag.reference}"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
+                                css="${res.locals.css(css`
+                                  text-align: left;
+                                `)}"
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    theme: "rose",
+                                    touch: false,
+                                    content: "Remove Tag",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-tag-fill"></i>
+                                ${tagging.tag.name}
+                              </button>
+                              $${tagging.tag.staffOnlyAt !== null
+                                ? html`
+                                    <span
+                                      class="text--sky"
+                                      onload="${javascript`
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          content: "This tag is visible by staff only.",
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                    </span>
+                                  `
+                                : html``}
+                            </form>
                           `;
 
                       if (true)
