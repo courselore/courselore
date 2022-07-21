@@ -4983,8 +4983,8 @@ export default (app: Courselore): void => {
                     $${(() => {
                       let tags = html``;
 
-                      if (mayEditConversation({ req, res }))
-                        for (const tagging of res.locals.conversation.taggings)
+                      for (const tagging of res.locals.conversation.taggings)
+                        if (mayEditConversation({ req, res }))
                           tags += html`
                             $${res.locals.conversation.taggings.length === 1
                               ? html`
@@ -5227,17 +5227,17 @@ export default (app: Courselore): void => {
                               </button>
                             </div>
                           `;
-                      else
-                        tags += html`
-                          $${res.locals.conversation.taggings.map(
-                            (tagging) => html`
-                              <div class="text--teal">
-                                <i class="bi bi-tag-fill"></i>
-                                ${tagging.tag.name}
-                              </div>
-                            `
-                          )}
-                        `;
+                        else
+                          tags += html`
+                            $${res.locals.conversation.taggings.map(
+                              (tagging) => html`
+                                <div class="text--teal">
+                                  <i class="bi bi-tag-fill"></i>
+                                  ${tagging.tag.name}
+                                </div>
+                              `
+                            )}
+                          `;
 
                       return tags !== html``
                         ? html`
