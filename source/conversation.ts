@@ -4995,7 +4995,10 @@ export default (app: Courselore): void => {
                               `
                             )}
                           `;
-                        else if (res.locals.conversation.taggings.length === 1)
+                        else if (
+                          res.locals.conversation.taggings.length === 1 &&
+                          res.locals.conversation.type !== "chat"
+                        )
                           tags += html`
                             <div
                               css="${res.locals.css(css`
@@ -5220,7 +5223,9 @@ export default (app: Courselore): void => {
                                                   </form>
                                                 `
                                               : res.locals.conversation.taggings
-                                                  .length === 1
+                                                  .length === 1 &&
+                                                res.locals.conversation.type !==
+                                                  "chat"
                                               ? html`
                                                   <div
                                                     class="dropdown--menu--item button button--blue text--teal disabled"
