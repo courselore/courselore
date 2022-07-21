@@ -5232,7 +5232,7 @@ export default (app: Courselore): void => {
                                     ? html`
                                         <div>
                                           <button
-                                            class="button button--tight button--tight--inline button--transparent text--teal"
+                                            class="button button--tight button--tight--inline button--transparent"
                                             onload="${javascript`     
                                               this.content = ${res.locals.html(
                                                 html`
@@ -5380,7 +5380,7 @@ export default (app: Courselore): void => {
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-tags-fill"></i>
+                                            <i class="bi bi-tags"></i>
                                             Tags
                                           </button>
                                         </div>
