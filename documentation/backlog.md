@@ -94,6 +94,9 @@
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+    - Email notifications should include:
+      - Link to one-click unsubscription in message body.
+      - `List-*` headers to allow one-click unsubscription.
 
 ## User Interface Improvements
 
