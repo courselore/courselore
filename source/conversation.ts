@@ -5147,6 +5147,7 @@ export default (app: Courselore): void => {
                                                   Manage Tags
                                                 </a>
                                               </div>
+
                                               <hr class="separator" />
                                             `
                                           : html``}
