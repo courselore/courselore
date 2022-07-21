@@ -69,22 +69,6 @@
 ## Better Email Notifications
 
 - Details on the emails:
-  - Make emails be replies, so that they’re grouped in conversations on email readers.
-
-```
-ORIGINAL MESSAGE
-Message-ID: <leafac/kill-the-newsletter/issues/63@github.com>
-
-REPLY
-Message-ID: <leafac/kill-the-newsletter/issues/63/1159415372@github.com>
-In-Reply-To: <leafac/kill-the-newsletter/issues/63@github.com>
-References: <leafac/kill-the-newsletter/issues/63@github.com>
-
-messageId - optional Message-Id value, random value will be generated if not set (Message-IDs are required to have a specific format which is a subset of an email address[2] and be globally unique.)
-inReplyTo - The Message-ID this message is replying to
-references - Message-ID list (an array or space separated string)
-```
-
   - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
   - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
   - Add support for Dark Mode in emails.
