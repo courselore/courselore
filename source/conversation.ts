@@ -5219,6 +5219,49 @@ export default (app: Courselore): void => {
                                                     </button>
                                                   </form>
                                                 `
+                                              : res.locals.conversation.taggings
+                                                  .length === 1
+                                              ? html`
+                                                  <div
+                                                    class="dropdown--menu--item button button--blue text--teal disabled"
+                                                  >
+                                                    <div
+                                                      css="${res.locals.css(css`
+                                                        display: flex;
+                                                        gap: var(--space--2);
+                                                      `)}"
+                                                      onload="${javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          touch: false,
+                                                          content: "You may not remove this tag because a conversation must have at least one tag.",
+                                                        });
+                                                      `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-tag-fill"
+                                                      ></i>
+                                                      ${tag.name}
+                                                    </div>
+                                                    $${tag.staffOnlyAt !== null
+                                                      ? html`
+                                                          <span
+                                                            class="text--sky"
+                                                            onload="${javascript`
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                touch: false,
+                                                                content: "This tag is visible by staff only.",
+                                                              });
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-mortarboard-fill"
+                                                            ></i>
+                                                          </span>
+                                                        `
+                                                      : html``}
+                                                  </div>
+                                                `
                                               : html`
                                                   <form
                                                     key="tag--${tag.reference}"
