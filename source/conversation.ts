@@ -3348,6 +3348,12 @@ export default (app: Courselore): void => {
                                                   gap: var(--space--2);
                                                 `)}"
                                                 onload="${javascript`
+                                                  if (${checked(tag)}) {
+                                                    this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
+                                                    this.querySelector("label").classList.add("button--blue");
+                                                  }
                                                   this.onclick = () => {
                                                     if (this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked) {              
                                                       this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = true;
@@ -3435,9 +3441,6 @@ export default (app: Courselore): void => {
                                         type="checkbox"
                                         name="tagsReferences[]"
                                         value="${tag.reference}"
-                                        $${checked(tag)
-                                          ? html`checked`
-                                          : html``}
                                         required
                                         class="visually-hidden input--radio-or-checkbox--multilabel"
                                         onload="${javascript`
