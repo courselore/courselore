@@ -3332,13 +3332,20 @@ export default (app: Courselore): void => {
                                                   gap: var(--space--2);
                                                 `)}"
                                                 onload="${javascript`
-                                                    this.onclick = () => {
+                                                  this.onclick = () => {
+                                                    if (this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked) {              
+                                                      this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = true;
+                                                      this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = false;
+                                                      this.querySelector("label").classList.remove("button--blue");
+                                                      if (this.closest('[key="tags"]').querySelector('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
+                                                        this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = true;
+                                                    } else {
                                                       this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
                                                       this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
                                                       this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
-                                                      
-                                                      //this.querySelector("label").classList.add("disabled");
-                                                    };
+                                                      this.querySelector("label").classList.add("button--blue");
+                                                    }
+                                                  };
                                                 `}"
                                               >
                                                 <label
@@ -3467,7 +3474,7 @@ export default (app: Courselore): void => {
                                           this.onclick = () => {
                                             this.closest("div").hidden = true;
                                             this.closest("div").querySelector("input").checked = false;
-                                            this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("disabled");
+                                            this.closest('[key="tags"]').querySelector('[key="add-tags"]').content.querySelector('[key="${tag.reference}"]').classList.remove("button--blue");
                                             if (this.closest('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
                                               this.closest('[key="added-tags"]').hidden = true;
                                           };
@@ -5289,7 +5296,9 @@ export default (app: Courselore): void => {
                                                             ></i>
                                                             Manage Tags
                                                           </a>
-                                                          <hr class="separator" />
+                                                          <hr
+                                                            class="separator"
+                                                          />
                                                         `
                                                       : html``}
                                                     $${res.locals.tags
