@@ -2859,6 +2859,22 @@ export default (app: Courselore): void => {
             )
           : undefined;
 
+      const checked = (tag: {
+        id: number;
+        reference: string;
+        name: string;
+        staffOnlyAt: string | null;
+      }) =>
+        (typeof conversationDraft?.tagsReferences === "string" &&
+          JSON.parse(conversationDraft.tagsReferences).includes(
+            tag.reference
+          )) ||
+        (conversationDraft === undefined &&
+          Array.isArray(req.query.newConversation?.tagsReferences) &&
+          req.query.newConversation!.tagsReferences.includes(
+            tag.reference
+          ));
+
       res.send(
         (res.locals.conversationsCount === 0
           ? app.locals.layouts.main
@@ -3419,19 +3435,7 @@ export default (app: Courselore): void => {
                                         type="checkbox"
                                         name="tagsReferences[]"
                                         value="${tag.reference}"
-                                        $${(typeof conversationDraft?.tagsReferences ===
-                                          "string" &&
-                                          JSON.parse(
-                                            conversationDraft.tagsReferences
-                                          ).includes(tag.reference)) ||
-                                        (conversationDraft === undefined &&
-                                          Array.isArray(
-                                            req.query.newConversation
-                                              ?.tagsReferences
-                                          ) &&
-                                          req.query.newConversation!.tagsReferences.includes(
-                                            tag.reference
-                                          ))
+                                        $${checked(tag)
                                           ? html`checked`
                                           : html``}
                                         required
