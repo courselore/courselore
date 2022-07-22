@@ -3336,7 +3336,8 @@ export default (app: Courselore): void => {
                                                       this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
                                                       this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
                                                       this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
-                                                      this.querySelector("label").classList.add("disabled");
+                                                      
+                                                      //this.querySelector("label").classList.add("disabled");
                                                     };
                                                 `}"
                                               >
@@ -3373,12 +3374,13 @@ export default (app: Courselore): void => {
                                       `
                                     )};
                                     (this.dropdown ??= tippy(this, {
-                                      onMount() { this.content.querySelector("input").focus(); }     
+                                      onMount() { window.onkeydown = () => { this.content.querySelector("input").focus(); } },
+                                      onHide() { window.onkeydown = undefined; },
                                     })).setProps({
                                       trigger: "click",
                                       interactive: true,
                                       content: this.content,
-                                    });
+                                    });                       
                                   `}"
                                 >
                                   <i class="bi bi-plus-circle"></i>
@@ -5270,6 +5272,26 @@ export default (app: Courselore): void => {
                                                   `}"
                                                     />
                                                     <hr class="separator" />
+                                                    $${res.locals.enrollment
+                                                      .courseRole === "staff"
+                                                      ? html`
+                                                          <a
+                                                            href="https://${app
+                                                              .locals.options
+                                                              .host}/courses/${res
+                                                              .locals.course
+                                                              .reference}/settings/tags"
+                                                            target="_blank"
+                                                            class="dropdown--menu--item button button--transparent"
+                                                          >
+                                                            <i
+                                                              class="bi bi-sliders"
+                                                            ></i>
+                                                            Manage Tags
+                                                          </a>
+                                                          <hr class="separator" />
+                                                        `
+                                                      : html``}
                                                     $${res.locals.tags
                                                       .filter(
                                                         (tag) =>
@@ -5345,25 +5367,6 @@ export default (app: Courselore): void => {
                                                           </form>
                                                         `
                                                       )}
-                                                    $${res.locals.enrollment
-                                                      .courseRole === "staff"
-                                                      ? html`
-                                                          <a
-                                                            href="https://${app
-                                                              .locals.options
-                                                              .host}/courses/${res
-                                                              .locals.course
-                                                              .reference}/settings/tags"
-                                                            target="_blank"
-                                                            class="dropdown--menu--item button button--transparent"
-                                                          >
-                                                            <i
-                                                              class="bi bi-sliders"
-                                                            ></i>
-                                                            Manage Tags
-                                                          </a>
-                                                        `
-                                                      : html``}
                                                   </div>
                                                 `
                                               )};                                         

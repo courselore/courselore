@@ -6,7 +6,6 @@ import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import {
   Courselore,
-  BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
