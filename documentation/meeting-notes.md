@@ -7,7 +7,8 @@
   - Filters for conversations in which you participated is now deployed.
   - Emails are threaded.
   - Do we want more granular control for digests, for example, answers to your questions should be received right away?
-- Eliot’s work isn’t finished yet.
+- Eliot’s work on the new tags widget isn’t finished yet.
+  - Start investigating mobile application.
 - Sketch of 1-to-1 conversations.
 
 </details>

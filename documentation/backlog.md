@@ -71,6 +71,49 @@
 - Details on the emails:
   - Add support for Dark Mode in emails.
     - This should fix the duplication of code blocks.
+    - What about mathematics?
+    - Potential approaches:
+      - Have Shiki generate classes instead of inline colors.
+        - Possible with the `css-variables` theme, but “is less granular than most other supported VSCode themes”.
+      - Have a processor to remove one of the versions of code block from the email. (Remove inline styles as well).
+      - Use CSS to enable dark mode.
+
+```
+
+
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+
+<style type="text/css">
+:root {
+  color-scheme: light dark;
+  supported-color-schemes: light dark;
+}
+</style>
+
+<style>
+/* Normal styles */
+@media (prefers-color-scheme: dark) {
+/* Dark mode styles */
+}
+</style>
+
+
+
+        .dark {
+          display: none !important;
+        }
+        @media (prefers-color-scheme: dark) {
+          .light {
+            display: none !important;
+          }
+          .dark {
+            display: block !important;
+          }
+        }
+
+```
+
   - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
     - Complications:
       - Currently we schedule emails to be delivered (including the content of said emails) in the request/response cycle, so rendering content for every person would take too long. Wait to implement this when we finish implement other features in this section, which may introduce an intermediary job to schedule emails that will be outside the request/response cycle.
