@@ -71,8 +71,23 @@
 - Details on the emails:
   - Ways to test emails locally:
     - Create `.eml` files and open them with Mail.app.
-    - https://nodemailer.com/app/
-    - https://ethereal.email/
+      - Use the stub transport (is this still a thing?)
+        - https://nodemailer.com/transports/stream/
+        - https://github.com/nodemailer/nodemailer/issues/411
+        - https://www.npmjs.com/package/nodemailer-stub
+      - https://nodemailer.com/extras/mailcomposer/
+    - Some sort of development SMTP & IMAP server.
+      - https://nodemailer.com/extras/smtp-server/ & save `.eml` file.
+        - https://github.com/leafac/kill-the-newsletter
+        - https://github.com/ReachFive/fake-smtp-server
+      - https://golb.hplar.ch/2019/08/catch-all-smtp.html
+      - https://auth0.com/docs/customize/email/configure-test-smtp-email-servers
+      - https://www.acorel.nl/en/2022/03/fake-smtp-servers-for-testing/
+      - https://github.com/inbucket/inbucket
+      - https://github.com/mailslurper/mailslurper
+      - https://mailcatcher.me
+    - https://nodemailer.com/app/ (Doesn’t seem to be maintained and isn’t available in Homebrew.)
+    - https://ethereal.email/ (Would run our test emails through third-party & requires network connectivity.)
   - Add support for Dark Mode in emails.
     - This should fix the duplication of code blocks.
     - What about mathematics?
