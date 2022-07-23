@@ -8,6 +8,14 @@
 >
 > **Email:** Use [CodeRelease.io](https://coderelease.io/) or sign up to the [releases Atom feed](https://github.com/courselore/courselore/releases.atom) via services such as [Blogtrottr](https://blogtrottr.com/) or [IFTTT](https://ifttt.com).
 
+## Unreleased
+
+**2022-07-23 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added email notifications for conversations in which you participated, and conversations which you started.
+- Changed email notifications so that they’re threaded per conversation.
+- Added notification of updates for system administrators in Courselore itself.
+
 ## 4.0.0
 
 **2022-07-09 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
