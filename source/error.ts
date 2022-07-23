@@ -113,6 +113,6 @@ export default (app: Courselore): void => {
         `,
       })
     );
-    console.error(`${new Date().toISOString()}\tERROR\t${err}`);
+    console.error(`${new Date().toISOString()}\tERROR\n${err}`);
   }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
 };
