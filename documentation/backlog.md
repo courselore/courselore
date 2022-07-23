@@ -69,10 +69,14 @@
 ## Better Email Notifications
 
 - Details on the emails:
-  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
   - Add support for Dark Mode in emails.
     - This should fix the duplication of code blocks.
+  - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+    - Complications:
+      - Currently we schedule emails to be delivered (including the content of said emails) in the request/response cycle, so rendering content for every person would take too long. Wait to implement this when we finish implement other features in this section, which may introduce an intermediary job to schedule emails that will be outside the request/response cycle.
+      - The content renderer currently relies on `{req, res}` to determine things like `res.locals.user`. It needs to support passing arbitrary users in.
+  - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+    - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
 - Digests.
   - Reenable on interface (`TODO`)
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
