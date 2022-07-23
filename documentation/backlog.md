@@ -754,6 +754,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- `filenamify` may generate long names in pathological cases in which the extension is long.
 - Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
 - Windows development:
   - `global.css` is regenerated (probably because of line endings)

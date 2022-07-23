@@ -7,7 +7,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     administratorEmail: "feedback@courselore.org",
     dataDirectory: path.join(process.cwd(), "data"),
     sendMail: {
-      options: { jsonTransport: true },
+      options: { streamTransport: true, buffer: true },
       defaults: {
         from: {
           name: "Courselore",

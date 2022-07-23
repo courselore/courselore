@@ -64,7 +64,6 @@ export default (app: Courselore): void => {
   );
 
   app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
-    console.error(`${new Date().toISOString()}\tERROR\t${err}`);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
     const message = isCSRF
@@ -114,5 +113,6 @@ export default (app: Courselore): void => {
         `,
       })
     );
+    console.error(`${new Date().toISOString()}\tERROR\t${err}`);
   }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
 };

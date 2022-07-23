@@ -133,13 +133,34 @@ export default async ({
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
+    const path = await courseloreImport("node:path");
+    const fs = (await courseloreImport("fs-extra")).default;
+    const filenamify = (await courseloreImport("filenamify")).default;
     const nodemailer = await courseloreImport("nodemailer");
     const courselore = (await courseloreImport("./index.js")).default;
 
     if (typeof sendMail !== "function") {
       const { options, defaults } = sendMail;
       const transport = nodemailer.createTransport(options, defaults);
-      sendMail = async (mailOptions) => await transport.sendMail(mailOptions);
+      sendMail =
+        options.streamTransport && options.buffer
+          ? async (mailOptions) => {
+              const sentMessageInfo = await transport.sendMail(mailOptions);
+              const emailsDirectory = path.join(dataDirectory, "emails");
+              await fs.ensureDir(emailsDirectory);
+              await fs.writeFile(
+                path.join(
+                  emailsDirectory,
+                  filenamify(
+                    `${new Date().toISOString()}--${mailOptions.to}.eml`,
+                    { replacement: "-" }
+                  )
+                ),
+                sentMessageInfo.message
+              );
+              return sentMessageInfo;
+            }
+          : async (mailOptions) => await transport.sendMail(mailOptions);
       sendMail.options = options;
       sendMail.defaults = defaults;
     }
