@@ -1,6 +1,18 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-23</summary>
+
+- Better email notifications:
+  - Filters for conversations in which you participated is now deployed.
+  - Emails are threaded.
+  - Do we want more granular control for digests, for example, answers to your questions should be received right away?
+- Eliot’s work isn’t finished yet.
+- Sketch of 1-to-1 conversations.
+
+</details>
+
+<details>
 <summary>2021-07-16</summary>
 
 - Better ways for administrators to be notified of updates.
