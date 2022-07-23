@@ -112,11 +112,7 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tworker.sendEmail\tSUCCEEDED\t\t${
               sentMessageInfo.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-              app.locals.options.environment !== "production"
-                ? `\n${JSON.stringify(sentMessageInfo, undefined, 2)}`
-                : ``
-            }`
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}`
           );
         } catch (error: nodemailer.SentMessageInfo) {
           app.locals.database.run(
@@ -132,11 +128,11 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tworker.sendEmail\tFAILED\t\t${
               error.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-              app.locals.options.environment !== "production"
-                ? `\n${JSON.stringify(error, undefined, 2)}`
-                : ``
-            }`
+            }\t\t${mailOptions.to}\t\t${mailOptions.subject}\n${JSON.stringify(
+              error,
+              undefined,
+              2
+            )}`
           );
         }
       }
