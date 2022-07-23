@@ -1015,14 +1015,18 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
       ) {
         const conversationCreatedAt =
           conversationCreatedAts[conversationReference - 1];
-        const type =
-          conversationReference === 1
-            ? conversationTypes[1]
-            : conversationTypes[
-                Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
-              ];
-        const nextMessageReference =
-          type === "chat" ? lodash.random(50, 100) : lodash.random(2, 30);
+        const isExampleOfAllFeaturesInRichTextMessages =
+          conversationReference === 1;
+        const type = isExampleOfAllFeaturesInRichTextMessages
+          ? conversationTypes[1]
+          : conversationTypes[
+              Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
+            ];
+        const nextMessageReference = isExampleOfAllFeaturesInRichTextMessages
+          ? 2
+          : type === "chat"
+          ? lodash.random(50, 100)
+          : lodash.random(2, 30);
         const messageCreatedAts = [conversationCreatedAt];
         for (
           let messageReference = 1;
@@ -1039,12 +1043,11 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               )
             ).toISOString()
           );
-        const title =
-          conversationReference === 1
-            ? `Example of All Features in Rich-Text Messages`
-            : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
-                type === "question" ? "?" : ""
-              }`;
+        const title = isExampleOfAllFeaturesInRichTextMessages
+          ? `Example of All Features in Rich-Text Messages`
+          : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
+              type === "question" ? "?" : ""
+            }`;
         const conversationAuthorEnrollment = lodash.sample(enrollments)!;
         const conversation = app.locals.database.get<{
           id: number;
@@ -1088,7 +1091,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   ? new Date().toISOString()
                   : null
               },
-              ${Math.random() < 0.15 ? new Date().toISOString() : null},
+              ${
+                isExampleOfAllFeaturesInRichTextMessages
+                  ? null
+                  : Math.random() < 0.15
+                  ? new Date().toISOString()
+                  : null
+              },
               ${Math.random() < 0.25 ? new Date().toISOString() : null},
               ${title},
               ${html`${title}`},
@@ -1115,16 +1124,15 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           messageReference++
         ) {
           const messageCreatedAt = messageCreatedAts[messageReference - 1];
-          const contentSource =
-            conversationReference === 1 && messageReference === 1
-              ? exampleOfAllFeaturesInRichTextMessages
-              : type === "chat" && Math.random() < 0.9
-              ? casual.sentences(lodash.random(1, 2))
-              : lodash
-                  .times(lodash.random(1, 6), () =>
-                    casual.sentences(lodash.random(1, 6))
-                  )
-                  .join("\n\n");
+          const contentSource = isExampleOfAllFeaturesInRichTextMessages
+            ? exampleOfAllFeaturesInRichTextMessages
+            : type === "chat" && Math.random() < 0.9
+            ? casual.sentences(lodash.random(1, 2))
+            : lodash
+                .times(lodash.random(1, 6), () =>
+                  casual.sentences(lodash.random(1, 6))
+                )
+                .join("\n\n");
           const processedContent = app.locals.partials.content({
             req,
             res,
