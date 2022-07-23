@@ -58,7 +58,7 @@ export default (app: Courselore): void => {
               `${new Date().toISOString()}\tUPDATE CHECK\tCurrent version is the latest.`
             );
         } catch (error) {
-          console.error(
+          console.log(
             `${new Date().toISOString()}\tUPDATE CHECK\tERROR:\n${error}`
           );
         }
