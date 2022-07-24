@@ -3348,25 +3348,36 @@ export default (app: Courselore): void => {
                                                   gap: var(--space--2);
                                                 `)}"
                                                 onload="${javascript`
-                                                  if (${checked(tag)}) {
+                                                  const selectTag = () => {
                                                     this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
                                                     this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
                                                     this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
                                                     this.querySelector("label").classList.add("button--blue");
                                                   }
+                                                  const removeTag = () => {
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = true;
+                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = false;
+                                                    this.querySelector("label").classList.remove("button--blue");
+                                                    if (this.closest('[key="tags"]').querySelector('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
+                                                      this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = true;
+                                                  }
+                                                  if (${
+                                                    (typeof conversationDraft?.tagsReferences === "string" &&
+                                                      JSON.parse(conversationDraft.tagsReferences).includes(
+                                                        tag.reference
+                                                      )) ||
+                                                    (conversationDraft === undefined &&
+                                                      Array.isArray(req.query.newConversation?.tagsReferences) &&
+                                                      req.query.newConversation!.tagsReferences.includes(
+                                                        tag.reference
+                                                      ))
+                                                  })
+                                                    selectTag();
                                                   this.onclick = () => {
                                                     if (this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked) {              
-                                                      this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = true;
-                                                      this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = false;
-                                                      this.querySelector("label").classList.remove("button--blue");
-                                                      if (this.closest('[key="tags"]').querySelector('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
-                                                        this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = true;
-                                                    } else {
-                                                      this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
-                                                      this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
-                                                      this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
-                                                      this.querySelector("label").classList.add("button--blue");
-                                                    }
+                                                      removeTag();
+                                                    } else
+                                                      selectTag();
                                                   };
                                                 `}"
                                               >
