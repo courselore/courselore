@@ -3414,8 +3414,31 @@ export default (app: Courselore): void => {
                                       `
                                     )};
                                     (this.dropdown ??= tippy(this, {
-                                      onMount() { window.onkeydown = () => { this.content.querySelector("input").focus(); } },
-                                      onHide() { window.onkeydown = undefined; },
+                                      onMount(instance) { 
+                                        window.onkeydown = (event) => {
+                                          switch (event.code) {
+                                            case "ArrowUp":
+                                            case "ArrowDown": 
+                                              // ...
+                                              break;
+                                            case "Enter":
+                                            case "Tab": 
+                                              // ...
+                                              break;
+                                            case "Escape":
+                                            case "ArrowLeft":
+                                            case "ArrowRight":
+                                            case "Home":
+                                            case "End":
+                                              instance.hide();
+                                              break;
+                                            default: 
+                                              this.content.querySelector("input").focus();
+                                              break;
+                                          }
+                                        }
+                                      },
+                                      onHide(instance) { window.onkeydown = undefined; },
                                     })).setProps({
                                       trigger: "click",
                                       interactive: true,
