@@ -3344,23 +3344,21 @@ export default (app: Courselore): void => {
                                                 }
                                                 this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
                                               };
-                                              /*
-                                              this.oninput = () => {
-                                                for (const button of this.closest(".dropdown--menu").querySelectorAll(".button")) button.classList.remove("hover");
-                                                const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                for (var tag of this.closest(".dropdown--menu").querySelectorAll('div')) {
-                                                  const tagPhrases = tag.querySelector(".button").querySelector('span').textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                  let tagHidden = filterPhrases.length > 0;
-                                                  const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
-                                                  if (matchingPhrases.length < filterPhrases.length) {
-                                                    tagHidden = true;
-                                                  } else
-                                                    tagHidden = false;
-                                                  tag.hidden = tagHidden
-                                                }
-                                                this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
-                                              };
-                                              */
+                                              // this.oninput = () => {
+                                              //   for (const button of this.closest(".dropdown--menu").querySelectorAll(".button")) button.classList.remove("hover");
+                                              //   const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                              //   for (var tag of this.closest(".dropdown--menu").querySelectorAll('div')) {
+                                              //     const tagPhrases = tag.querySelector(".button").querySelector('span').textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                              //     let tagHidden = filterPhrases.length > 0;
+                                              //     const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
+                                              //     if (matchingPhrases.length < filterPhrases.length) {
+                                              //       tagHidden = true;
+                                              //     } else
+                                              //       tagHidden = false;
+                                              //     tag.hidden = tagHidden
+                                              //   }
+                                              //   this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
+                                              // };
                                             `}"
                                           />
                                           <hr class="separator" />
@@ -3418,9 +3416,11 @@ export default (app: Courselore): void => {
                                                   class="dropdown--menu--item button button--transparent"
                                                 >
                                                   <i class="bi bi-tag"></i>
-                                                  <span 
+                                                  <span
                                                     data-filterable-phrases="${JSON.stringify(
-                                                      app.locals.helpers.splitFilterablePhrases(tag.name)
+                                                      app.locals.helpers.splitFilterablePhrases(
+                                                        tag.name
+                                                      )
                                                     )}"
                                                   >
                                                     ${tag.name}
