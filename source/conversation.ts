@@ -3322,6 +3322,32 @@ export default (app: Courselore): void => {
                                               this.oninput = () => {
                                                 for (const button of this.closest(".dropdown--menu").querySelectorAll(".button")) button.classList.remove("hover");
                                                 const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                for (const tag of this.closest(".dropdown--menu").querySelectorAll('div')) {
+                                                  let tagHidden = filterPhrases.length > 0;
+                                                  for (const filterablePhrasesElement of tag.querySelectorAll("[data-filterable-phrases]")) {
+                                                    const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                    const filterablePhrasesElementChildren = [];
+                                                    for (const filterablePhrase of filterablePhrases) {
+                                                      let filterablePhraseElement;
+                                                      if (filterPhrases.some((filterPhrase) => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                        filterablePhraseElement = document.createElement("mark");
+                                                        filterablePhraseElement.classList.add("mark");
+                                                        tagHidden = false;
+                                                      } else
+                                                        filterablePhraseElement = document.createElement("span");
+                                                      filterablePhraseElement.textContent = filterablePhrase;
+                                                      filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                    }
+                                                    filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                  }
+                                                  tag.hidden = tagHidden;
+                                                }
+                                                this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
+                                              };
+                                              /*
+                                              this.oninput = () => {
+                                                for (const button of this.closest(".dropdown--menu").querySelectorAll(".button")) button.classList.remove("hover");
+                                                const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                 for (var tag of this.closest(".dropdown--menu").querySelectorAll('div')) {
                                                   const tagPhrases = tag.querySelector(".button").querySelector('span').textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                   let tagHidden = filterPhrases.length > 0;
@@ -3334,6 +3360,7 @@ export default (app: Courselore): void => {
                                                 }
                                                 this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
                                               };
+                                              */
                                             `}"
                                           />
                                           <hr class="separator" />
@@ -3390,8 +3417,12 @@ export default (app: Courselore): void => {
                                                   key="${tag.reference}"
                                                   class="dropdown--menu--item button button--transparent"
                                                 >
-                                                  <span>
-                                                    <i class="bi bi-tag"></i>
+                                                  <i class="bi bi-tag"></i>
+                                                  <span 
+                                                    data-filterable-phrases="${JSON.stringify(
+                                                      app.locals.helpers.splitFilterablePhrases(tag.name)
+                                                    )}"
+                                                  >
                                                     ${tag.name}
                                                   </span>
                                                 </label>
@@ -5323,24 +5354,21 @@ export default (app: Courselore): void => {
                                                       class="secondary"
                                                       placeholder="Filter…"
                                                       onload="${javascript`
-                                                    this.isModified = false;
-
-                                                    this.oninput = () => {
-                                                      const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                      for (var tag of this.closest("div").querySelectorAll("form")) {
-                                                        const tagPhrases = tag.querySelector("button").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                        let tagHidden = filterPhrases.length > 0;
-                                                        
-                                                        const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
-                                                        if (matchingPhrases.length < filterPhrases.length) {
-                                                          tagHidden = true;
-                                                        } else
-                                                          tagHidden = false;
-                                                        
-                                                        tag.hidden = tagHidden
-                                                      }
-                                                    };
-                                                  `}"
+                                                        this.isModified = false;
+                                                        this.oninput = () => {
+                                                          const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                          for (var tag of this.closest("div").querySelectorAll("form")) {
+                                                            const tagPhrases = tag.querySelector("button").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                            let tagHidden = filterPhrases.length > 0;
+                                                            const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
+                                                            if (matchingPhrases.length < filterPhrases.length) {
+                                                              tagHidden = true;
+                                                            } else
+                                                              tagHidden = false;
+                                                            tag.hidden = tagHidden
+                                                          }
+                                                        };
+                                                      `}"
                                                     />
                                                     <hr class="separator" />
                                                     $${res.locals.enrollment
