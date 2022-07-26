@@ -3324,22 +3324,21 @@ export default (app: Courselore): void => {
                                                 const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                 for (const tag of this.closest(".dropdown--menu").querySelectorAll('div')) {
                                                   let tagHidden = filterPhrases.length > 0;
-                                                  for (const filterablePhrasesElement of tag.querySelectorAll("[data-filterable-phrases]")) {
-                                                    const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                    const filterablePhrasesElementChildren = [];
-                                                    for (const filterablePhrase of filterablePhrases) {
-                                                      let filterablePhraseElement;
-                                                      if (filterPhrases.some((filterPhrase) => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                        filterablePhraseElement = document.createElement("mark");
-                                                        filterablePhraseElement.classList.add("mark");
-                                                        tagHidden = false;
-                                                      } else
-                                                        filterablePhraseElement = document.createElement("span");
-                                                      filterablePhraseElement.textContent = filterablePhrase;
-                                                      filterablePhrasesElementChildren.push(filterablePhraseElement);
-                                                    }
-                                                    filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                  const filterablePhrasesElement = tag.querySelector("[data-filterable-phrases]");
+                                                  const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                  const filterablePhrasesElementChildren = [];
+                                                  for (const filterablePhrase of filterablePhrases) {
+                                                    let filterablePhraseElement;
+                                                    if (filterPhrases.some((filterPhrase) => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                      filterablePhraseElement = document.createElement("mark");
+                                                      filterablePhraseElement.classList.add("mark");
+                                                      tagHidden = false;
+                                                    } else
+                                                      filterablePhraseElement = document.createElement("span");
+                                                    filterablePhraseElement.textContent = filterablePhrase;
+                                                    filterablePhrasesElementChildren.push(filterablePhraseElement);
                                                   }
+                                                  filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                                                   tag.hidden = tagHidden;
                                                 }
                                                 this.closest(".dropdown--menu").querySelectorAll('div:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
