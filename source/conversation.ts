@@ -5340,17 +5340,28 @@ export default (app: Courselore): void => {
                                                       onload="${javascript`
                                                         this.isModified = false;
                                                         this.oninput = () => {
+                                                          for (const button of this.closest(".dropdown--menu").querySelectorAll(".button")) button.classList.remove("hover");
                                                           const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                          for (var tag of this.closest("div").querySelectorAll("form")) {
-                                                            const tagPhrases = tag.querySelector("button").textContent.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                          for (const tag of this.closest('div').querySelectorAll('form')) {
                                                             let tagHidden = filterPhrases.length > 0;
-                                                            const matchingPhrases = filterPhrases.filter((filterPhrase) => tagPhrases.filter((tagPhrase) => tagPhrase.toLowerCase().startsWith(filterPhrase.toLowerCase())).length > 0);
-                                                            if (matchingPhrases.length < filterPhrases.length) {
-                                                              tagHidden = true;
-                                                            } else
-                                                              tagHidden = false;
-                                                            tag.hidden = tagHidden
+                                                            const filterablePhrasesElement = tag.querySelector("[data-filterable-phrases]");
+                                                            const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                            const filterablePhrasesElementChildren = [];
+                                                            for (const filterablePhrase of filterablePhrases) {
+                                                              let filterablePhraseElement;
+                                                              if (filterPhrases.some((filterPhrase) => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                                filterablePhraseElement = document.createElement("mark");
+                                                                filterablePhraseElement.classList.add("mark");
+                                                                tagHidden = false;
+                                                              } else
+                                                                filterablePhraseElement = document.createElement("span");
+                                                              filterablePhraseElement.textContent = filterablePhrase;
+                                                              filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                            }
+                                                            filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                            tag.hidden = tagHidden;
                                                           }
+                                                          this.closest(".dropdown--menu").querySelectorAll('form:not([hidden])')[0]?.querySelector(".button").classList.add("hover");
                                                         };
                                                       `}"
                                                     />
@@ -5429,7 +5440,15 @@ export default (app: Courselore): void => {
                                                               <i
                                                                 class="bi bi-tag"
                                                               ></i>
-                                                              ${tag.name}
+                                                              <span
+                                                                data-filterable-phrases="${JSON.stringify(
+                                                                  app.locals.helpers.splitFilterablePhrases(
+                                                                    tag.name
+                                                                  )
+                                                                )}"
+                                                              >
+                                                                ${tag.name}
+                                                              </span>
                                                               $${tag.staffOnlyAt !==
                                                               null
                                                                 ? html`
@@ -5456,7 +5475,49 @@ export default (app: Courselore): void => {
                                                 `
                                               )};                                         
                                               (this.dropdown ??= tippy(this, {
-                                                onMount() { this.content.querySelector("input").focus(); }
+                                                onMount(instance) {
+                                                  this.content.querySelectorAll('form > .button')[0].classList.add("hover");
+                                                  window.onkeydown = (event) => {
+                                                    switch (event.code) {
+                                                      case "ArrowUp":
+                                                      case "ArrowDown": 
+                                                        event.preventDefault();
+                                                        const buttons = [...this.content.querySelectorAll("form:not([hidden]) > .button")];
+                                                        if (buttons.length === 0) break;    
+                                                        const currentHoverIndex = buttons.indexOf(this.content.querySelector(".button.hover"));
+                                                        if (
+                                                          currentHoverIndex === -1 ||
+                                                          (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                                                          (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                                                        ) break;
+                                                        buttons[currentHoverIndex].classList.remove("hover");
+                                                        const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                                                        buttonToHover.classList.add("hover");
+                                                        scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                                                        break;
+                                                      case "Enter":
+                                                      case "Tab": 
+                                                        const buttonHover = this.content.querySelector(".button.hover");
+                                                        if (buttonHover === null) instance.hide();
+                                                        else {
+                                                          event.preventDefault();
+                                                          buttonHover.click();
+                                                        }
+                                                        break;
+                                                      case "Escape":
+                                                      case "ArrowLeft":
+                                                      case "ArrowRight":
+                                                      case "Home":
+                                                      case "End":
+                                                        instance.hide();
+                                                        break;
+                                                      default: 
+                                                        this.content.querySelector("input").focus();
+                                                        break;
+                                                    }
+                                                  }
+                                                },
+                                                onHide(instance) { window.onkeydown = undefined; },
                                               })).setProps({
                                                 trigger: "click",
                                                 interactive: true,
