@@ -3388,9 +3388,7 @@ export default (app: Courselore): void => {
                                                   })
                                                     selectTag();
                                                   this.onclick = () => {
-                                                    if (this.closest('[key="tags"]').querySelector('[key="input--${
-                                                      tag.reference
-                                                    }"]').checked) {              
+                                                    if (this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked) {              
                                                       removeTag();
                                                     } else
                                                       selectTag();
