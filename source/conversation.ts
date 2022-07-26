@@ -3356,21 +3356,13 @@ export default (app: Courselore): void => {
                                                 onload="${javascript`
                                                   const selectTag = () => {
                                                     this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = false;
-                                                    this.closest('[key="tags"]').querySelector('[key="tag--${
-                                                      tag.reference
-                                                    }"]').hidden = false;
-                                                    this.closest('[key="tags"]').querySelector('[key="input--${
-                                                      tag.reference
-                                                    }"]').checked = true;
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = true;
                                                     this.querySelector(".button").classList.add("button--blue");
                                                   }
                                                   const removeTag = () => {
-                                                    this.closest('[key="tags"]').querySelector('[key="tag--${
-                                                      tag.reference
-                                                    }"]').hidden = true;
-                                                    this.closest('[key="tags"]').querySelector('[key="input--${
-                                                      tag.reference
-                                                    }"]').checked = false;
+                                                    this.closest('[key="tags"]').querySelector('[key="tag--${tag.reference}"]').hidden = true;
+                                                    this.closest('[key="tags"]').querySelector('[key="input--${tag.reference}"]').checked = false;
                                                     this.querySelector(".button").classList.remove("button--blue");
                                                     if (this.closest('[key="tags"]').querySelector('[key="added-tags"]').querySelectorAll('div:not([hidden])').length === 0)
                                                       this.closest('[key="tags"]').querySelector('[key="added-tags"]').hidden = true;
