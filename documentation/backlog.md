@@ -69,6 +69,7 @@
 ## Better Email Notifications
 
 - Digests.
+  - Database schema.
   - Reenable on interface (`TODO`)
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
   - Don’t send notifications when the person is online and/or has seen the message.
