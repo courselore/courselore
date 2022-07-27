@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +7,18 @@
       import { Browser } from "@capacitor/browser";
       import { Storage } from '@capacitor/storage';
       window.Browser = Browser;
+    </script>
+    <script>
+      (() => {
+        const selection = window.localStorage.getItem('selection');
+        if (selection !== null) window.location.href = selection;
+        // async () => {
+        //   const { selection } = await Storage.get({
+        //     key: 'selection'
+        //   });
+        //   if (selection !== null) window.location.href = selection;
+        // };
+      })();
     </script>
   </head>
   <body>
@@ -30,22 +41,24 @@
       <script>
         document.querySelector('.button-1').onclick = () => {
           const href = 'https://www.courselore.org';
-          async () => {
-            await Storage.set({
-              key: 'selection',
-              value: href,
-            });
-          };
+          window.localStorage.setItem('selection', href);
+          // async () => {
+          //   await Storage.set({
+          //     key: 'selection',
+          //     value: href,
+          //   });
+          // };
           window.location.href = href;
         };
         document.querySelector('.button-2').onclick = () => {
           const href = document.querySelector('input').value;
-          async () => {
-            await Storage.set({
-              key: 'selection',
-              value: href,
-            });
-          };
+          window.localStorage.setItem('selection', href);
+          // async () => {
+          //   await Storage.set({
+          //     key: 'selection',
+          //     value: href,
+          //   });
+          // };
           window.location.href = href;
         };
       </script>
