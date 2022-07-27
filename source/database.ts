@@ -967,6 +967,150 @@ export default async (app: Courselore): Promise<void> => {
         });
         break;
       }
+    },
+    () => {
+      app.locals.database.execute(
+        sql`
+          CREATE TABLE "new_users" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "lastSeenOnlineAt" TEXT NOT NULL,
+            "reference" TEXT NOT NULL UNIQUE,
+            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
+            "password" TEXT NOT NULL,
+            "emailVerifiedAt" TEXT NULL,
+            "name" TEXT NOT NULL,
+            "nameSearch" TEXT NOT NULL,
+            "avatar" TEXT NULL,
+            "avatarlessBackgroundColor" TEXT NOT NULL,
+            "biographySource" TEXT NULL,
+            "biographyPreprocessed" TEXT NULL,
+            "systemRole" TEXT NOT NULL,
+            "emailNotificationsForAllMessages" TEXT NOT NULL,
+            "emailNotificationsForMentionsAt" TEXT NULL,
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
+            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL
+          );
+        `
+      );
+      for (const user of app.locals.database.all<{
+        id: number;
+        createdAt: string;
+        lastSeenOnlineAt: string;
+        reference: string;
+        email: string;
+        password: string;
+        emailVerifiedAt: string | null;
+        name: string;
+        nameSearch: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: string;
+        biographySource: string | null;
+        biographyPreprocessed: string | null;
+        systemRole: "none" | "staff" | "administrator";
+        emailNotificationsForAllMessagesAt: string | null;
+        emailNotificationsForMentionsAt: string | null;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+          | string
+          | null;
+        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+        emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
+      }>(
+        sql`
+          SELECT "id",
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "systemRole",
+                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt",
+                 "emailNotificationsDigestsFrequency"
+          FROM "users"
+        `
+      ))
+        app.locals.database.run(
+          sql`
+            INSERT INTO "new_users" (
+              "id",
+              "createdAt",
+              "lastSeenOnlineAt",
+              "reference",
+              "email",
+              "password",
+              "emailVerifiedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "systemRole",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt" 
+            )
+            VALUES (
+              ${user.id},
+              ${user.createdAt},
+              ${user.lastSeenOnlineAt},
+              ${user.reference},
+              ${user.email},
+              ${user.password},
+              ${user.emailVerifiedAt},
+              ${user.name},
+              ${user.nameSearch},
+              ${user.avatar},
+              ${user.avatarlessBackgroundColor},
+              ${user.biographySource},
+              ${user.biographyPreprocessed},
+              ${user.systemRole},
+              ${
+                user.emailNotificationsForAllMessagesAt === null
+                  ? "none"
+                  : user.emailNotificationsDigestsFrequency === null
+                  ? "instant"
+                  : user.emailNotificationsDigestsFrequency === "hourly"
+                  ? "hourly"
+                  : user.emailNotificationsDigestsFrequency === "daily"
+                  ? "daily"
+                  : null
+              },
+              ${user.emailNotificationsForMentionsAt},
+              ${
+                user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt
+              },
+              ${user.emailNotificationsForMessagesInConversationsYouStartedAt}
+            )
+          `
+        );
+      app.locals.database.execute(
+        sql`
+          DROP TABLE "users";
+          ALTER TABLE "new_users" RENAME TO "users";
+          CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+          END;
+          CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+          END;
+          CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+          END;
+        `
+      );
     }
   );
   app.once("close", () => {
