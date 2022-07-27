@@ -1,7 +1,7 @@
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { processCSS, css } from "@leafac/css";
+import { processCSS, css, localCSS } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
@@ -3285,4 +3285,15 @@ export default async (app: Courselore): Promise<void> => {
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
   })();
+
+  // if (app.locals.options.environment === "development")
+  //   await fs.writeFile(
+  //     new URL("../test.html", import.meta.url),
+  //     app.locals.layouts.box({
+  //       req: { path: "/", csrfToken: () => "", cookies: { flash: "" } } as any,
+  //       res: { locals: { css: localCSS(), html: html}, clearCookie: () => "" } as any,
+  //       head: html`<title>Welcome to the Courselore iOS application</title>`,
+  //       body: html`<h1>Welcome to the Courselore iOS application</h1>`,
+  //     })
+  //   );
 };
