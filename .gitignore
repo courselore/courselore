@@ -2,3 +2,5 @@
 /distribution/
 /data/
 /static/node_modules/
+/mobile-application/node_modules/
+/mobile-application/dist/

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World</title>
+    <script type="module">
+      import { Browser } from "@capacitor/browser";
+      window.Browser = Browser;
+    </script>
+  </head>
+  <body>
+    <p>
+      <br /><br /><br /><br />
+      Courselore + Capacitor<br /><br /><br /><br />
+
+      <a href="https://try.courselore.org">LINK Go to Courselore</a>
+
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <button
+        onclick='
+          (async () => {
+            await window.Browser.open({ url: "https://try.courselore.org" });
+          })();
+        '
+      >
+        BUTTON Go to Courselore
+      </button>
+    </p>
+  </body>
+</html>

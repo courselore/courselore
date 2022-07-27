@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@capacitor/browser": "^1.0.7",
+    "@capacitor/core": "^3.6.0",
+    "@capacitor/ios": "^3.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^3.6.0"
+  }
+}

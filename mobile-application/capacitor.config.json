@@ -1,0 +1,9 @@
+{
+  "appId": "org.courselore.app",
+  "appName": "Courselore",
+  "bundledWebRuntime": false,
+  "webDir": "assets",
+  "server": {
+    "allowNavigation": ["*"]
+  }
+}
