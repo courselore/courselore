@@ -1,6 +1,6 @@
-/node_modules/
-/distribution/
-/data/
-/static/node_modules/
+/server/node_modules/
+/server/distribution/
+/server/data/
+/server/static/node_modules/
 /mobile-application/node_modules/
 /mobile-application/dist/
