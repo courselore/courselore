@@ -33,9 +33,9 @@
       <br />
       <button class="button-1">Hosted by Courselore</button>
       <br />
-      <button onclick="document.querySelector('div').hidden = false">Self hosted</button>
+      <button onclick="document.querySelector('div').hidden = !document.querySelector('div').hidden">Self hosted</button>
       <div hidden>
-        <input type="email" placeholder="Type the full address here">
+        <input type="email" value="https://">
         <button class="button-2">Submit</button>
       </div>
       <script>
