@@ -1538,4 +1538,122 @@ export default (app: Courselore): void => {
         .redirect(303, `https://${app.locals.options.host}/`);
     }
   );
+
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/mobile-app", (req, res) => {
+    res.send(
+      app.locals.layouts.base({
+        req,
+        res,
+        head: html``,
+        body: html`
+          <div
+            css="${res.locals.css(css`
+              display: flex;
+              gap: var(--space--10);
+              justify-content: center;
+              padding: var(--space--20) var(--space--8);
+              align-items: center;
+              @media (max-width: 959px) {
+                flex-direction: column;
+              }
+            `)}"
+          >
+            <div class="decorative-icon">
+              $${app.locals.partials.logo({
+                size: 144 /* var(--space--36) */,
+              })}
+            </div>
+            <div
+              class="heading--display"
+              css="${res.locals.css(css`
+                font-size: var(--font-size--5xl);
+                line-height: var(--line-height--5xl);
+                font-weight: var(--font-weight--black);
+                align-items: center;
+              `)}"
+            >
+              Welcome to Courselore!
+            </div>
+            <h3
+              class="heading--display secondary"
+              css="${res.locals.css(css`
+                font-size: var(--font-size--lg);
+                line-height: var(--line-height--lg);
+                font-weight: var(--font-weight--bold);
+              `)}"
+            >
+              Thank you for installing the Courselore app. To begin, select the
+              type of Courselore installation you plan to access.
+              <i
+                class="bi bi-info-circle"
+                onload="${javascript`
+                  (this.tooltip ??= tippy(this)).setProps({
+                    trigger: "click",
+                    content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain.",
+                  });
+                `}"
+              >
+              </i>
+            </h3>
+            <a
+              href="https://www.courselore.org"
+              class="button button--blue heading--display"
+              css="${res.locals.css(css`
+                align-items: center;
+              `)}"
+            >
+              $${app.locals.partials.logo({ size: 20 })} Hosted by Courselore
+            </a>
+            <button
+              class="button button--blue heading--display"
+              onload="${javascript`
+                (this.dropdown ??= tippy(this)).setProps({
+                  trigger: "click",
+                  interactive: true,
+                  content: ${res.locals.html(html`
+                    <div
+                      css="${res.locals.css(css`
+                        gap: var(--space--2);
+                      `)}"
+                    >
+                      <label>
+                        Enter the full URL below
+                      </label>
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <input 
+                          class="secondary"
+                          type="email" 
+                          value="https://"
+                        >
+                        </input>
+                        <button
+                          class="button button--blue"
+                        >
+                          Set
+                        </button>
+                      </div>
+                    </div>
+                  `)}
+                });
+              `}"
+            >
+              <i class="bi bi-person-fill"></i>
+              Self hosted
+            </button>
+          </div>
+        `,
+      })
+    );
+  });
+
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/mobile-app-authenticate",
+    (req, res) => {
+      res.send(JSON.stringify("courselore"));
+    }
+  );
 };
