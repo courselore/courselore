@@ -1550,7 +1550,7 @@ export default (app: Courselore): void => {
             css="${res.locals.css(css`
               display: flex;
               gap: var(--space--10);
-              padding: var(--space--20) var(--space--8);
+              padding: var(--space--10) var(--space--8);
               align-items: center;
               flex-direction: column;
             `)}"
@@ -1637,12 +1637,18 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <input
-                    type="email"
+                    key="url-input-box"
+                    type="url"
                     class="input--text secondary"
                     value="https://"
                   ></input>
                   <button
                     class="button button--blue heading--display"
+                    onload="${javascript`
+                      this.onclick = () => {
+                        window.location.href = document.querySelector('[key="url-input-box"]').value;
+                      };
+                    `}"
                   >
                     Go
                   </button>
@@ -1654,11 +1660,4 @@ export default (app: Courselore): void => {
       })
     );
   });
-
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-    "/mobile-app-authenticate",
-    (req, res) => {
-      res.send(JSON.stringify("courselore"));
-    }
-  );
 };

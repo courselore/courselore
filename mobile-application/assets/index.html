@@ -8,18 +8,6 @@
       import { Storage } from '@capacitor/storage';
       window.Browser = Browser;
     </script>
-    <script>
-      (() => {
-        const selection = window.localStorage.getItem('selection');
-        if (selection !== null) window.location.href = selection;
-        // async () => {
-        //   const { selection } = await Storage.get({
-        //     key: 'selection'
-        //   });
-        //   if (selection !== null) window.location.href = selection;
-        // };
-      })();
-    </script>
   </head>
   <body>
     <p>
@@ -35,10 +23,24 @@
       <br />
       <button onclick="document.querySelector('div').hidden = !document.querySelector('div').hidden">Self hosted</button>
       <div hidden>
-        <input type="email" value="https://">
+        <input type="url" value="https://">
         <button class="button-2">Submit</button>
       </div>
+      <br />
+      <button class="button-3">TEST</button>
       <script>
+        (() => {
+          window.localStorage.clear();
+          const selection = window.localStorage.getItem('selection');
+          if (selection !== null) window.location.href = selection;
+          // async () => {
+          //   const { selection } = await Storage.get({
+          //     key: 'selection'
+          //   });
+          //   if (selection !== null) window.location.href = selection;
+          // };
+        })();
+   
         document.querySelector('.button-1').onclick = () => {
           const href = 'https://www.courselore.org';
           window.localStorage.setItem('selection', href);
@@ -52,6 +54,17 @@
         };
         document.querySelector('.button-2').onclick = () => {
           const href = document.querySelector('input').value;
+          window.localStorage.setItem('selection', href);
+          // async () => {
+          //   await Storage.set({
+          //     key: 'selection',
+          //     value: href,
+          //   });
+          // };
+          window.location.href = href;
+        };
+        document.querySelector('.button-3').onclick = () => {
+          const href = 'https://eliots-orp-koobcam.local/mobile-app';
           window.localStorage.setItem('selection', href);
           // async () => {
           //   await Storage.set({
