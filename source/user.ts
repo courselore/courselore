@@ -1397,7 +1397,7 @@ export default (app: Courselore): void => {
                       $${false /* TODO */ ? html`checked` : html``}
                       class="input--radio"
                     />
-                    Hourly Digest
+                    Hourly Digests
                   </label>
 
                   <label
@@ -1414,7 +1414,7 @@ export default (app: Courselore): void => {
                       $${true /* TODO */ ? html`checked` : html``}
                       class="input--radio"
                     />
-                    Daily Digest
+                    Daily Digests
                   </label>
                 </div>
 
