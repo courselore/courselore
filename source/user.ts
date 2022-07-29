@@ -1338,7 +1338,7 @@ export default (app: Courselore): void => {
                     <input
                       type="checkbox"
                       name="isEmailNotificationsForAllMessages"
-                      $${res.locals.user.emailNotificationsForAllMessagesAt !==
+                      $${res.locals.user.emailNotificationsForAllMessages !==
                       null
                         ? html`checked`
                         : html``}
@@ -1473,7 +1473,7 @@ export default (app: Courselore): void => {
 
               $${(() => {
                 const disabled =
-                  res.locals.user.emailNotificationsForAllMessagesAt === null &&
+                  res.locals.user.emailNotificationsForAllMessages === null &&
                   res.locals.user.emailNotificationsForMentionsAt === null &&
                   res.locals.user
                     .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
@@ -1718,7 +1718,7 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`
           UPDATE "users"
-          SET "emailNotificationsForAllMessagesAt" = ${
+          SET "emailNotificationsForAllMessages" = ${
             req.body.isEmailNotificationsForAllMessages === "on"
               ? new Date().toISOString()
               : null

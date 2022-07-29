@@ -89,7 +89,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
     systemRole: SystemRole;
-    emailNotificationsForAllMessagesAt: string | null;
+    emailNotificationsForAllMessages: string | null;
     emailNotificationsForMentionsAt: string | null;
     emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
       | string
@@ -260,7 +260,7 @@ export default (app: Courselore): void => {
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
         systemRole: SystemRole;
-        emailNotificationsForAllMessagesAt: string | null;
+        emailNotificationsForAllMessages: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
           | string
@@ -281,7 +281,7 @@ export default (app: Courselore): void => {
                  "biographySource",
                  "biographyPreprocessed",
                  "systemRole",
-                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForAllMessages",
                  "emailNotificationsForMentionsAt",
                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
                  "emailNotificationsForMessagesInConversationsYouStartedAt",
@@ -1357,7 +1357,7 @@ export default (app: Courselore): void => {
             "nameSearch",
             "avatarlessBackgroundColor",
             "systemRole",
-            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForAllMessages",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
             "emailNotificationsForMessagesInConversationsYouStartedAt",
@@ -1383,7 +1383,7 @@ export default (app: Courselore): void => {
                 ? "administrator"
                 : "none"
             },
-            ${null},
+            ${"none"},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
