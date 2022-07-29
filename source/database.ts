@@ -1082,9 +1082,9 @@ export default async (app: Courselore): Promise<void> => {
                   : user.emailNotificationsDigestsFrequency === null
                   ? "instant"
                   : user.emailNotificationsDigestsFrequency === "hourly"
-                  ? "hourly"
+                  ? "hourly-digests"
                   : user.emailNotificationsDigestsFrequency === "daily"
-                  ? "daily"
+                  ? "daily-digests"
                   : null
               },
               ${user.emailNotificationsForMentionsAt},

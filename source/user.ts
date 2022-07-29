@@ -45,8 +45,8 @@ export type UserEmailNotificationsForAllMessages =
 export const userEmailNotificationsForAllMessageses = [
   "none",
   "instant",
-  "hourly",
-  "daily",
+  "hourly-digests",
+  "daily-digests",
 ] as const;
 
 export type UserPartial = ({
