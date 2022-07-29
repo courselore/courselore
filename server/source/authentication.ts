@@ -1550,12 +1550,9 @@ export default (app: Courselore): void => {
             css="${res.locals.css(css`
               display: flex;
               gap: var(--space--10);
-              justify-content: center;
               padding: var(--space--20) var(--space--8);
               align-items: center;
-              @media (max-width: 959px) {
-                flex-direction: column;
-              }
+              flex-direction: column;
             `)}"
           >
             <div class="decorative-icon">
@@ -1604,46 +1601,54 @@ export default (app: Courselore): void => {
             >
               $${app.locals.partials.logo({ size: 20 })} Hosted by Courselore
             </a>
-            <button
-              class="button button--blue heading--display"
-              onload="${javascript`
-                (this.dropdown ??= tippy(this)).setProps({
-                  trigger: "click",
-                  interactive: true,
-                  content: ${res.locals.html(html`
-                    <div
-                      css="${res.locals.css(css`
-                        gap: var(--space--2);
-                      `)}"
-                    >
-                      <label>
-                        Enter the full URL below
-                      </label>
-                      <div
-                        css="${res.locals.css(css`
-                          display: flex;
-                        `)}"
-                      >
-                        <input 
-                          class="secondary"
-                          type="email" 
-                          value="https://"
-                        >
-                        </input>
-                        <button
-                          class="button button--blue"
-                        >
-                          Set
-                        </button>
-                      </div>
-                    </div>
-                  `)}
-                });
-              `}"
-            >
-              <i class="bi bi-person-fill"></i>
-              Self hosted
-            </button>
+            <div
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: var(--space--5);
+              `)}"
+            > 
+              <button
+                class="button button--blue heading--display"
+                onload="${javascript`
+                  this.onclick = () => {
+                    document.querySelector('[key="url-input"]').hidden = !document.querySelector('[key="url-input"]').hidden;
+                  }
+                `}"
+              >
+                <i class="bi bi-person-fill"></i>
+                Self hosted
+              </button>
+              <div
+                key="url-input"
+                hidden
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--3);
+                `)}"
+              >
+                Enter the full URL of the Courselore server below.
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                    gap: var(--space--3);
+                  `)}"
+                >
+                  <input
+                    type="email"
+                    class="input--text secondary"
+                    value="https://"
+                  ></input>
+                  <button
+                    class="button button--blue heading--display"
+                  >
+                    Go
+                  </button>
+                </div>
+              </div>
+            </div> 
           </div>
         `,
       })
