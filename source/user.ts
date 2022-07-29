@@ -1350,6 +1350,10 @@ export default (app: Courselore): void => {
                             this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = true;
                             this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                           }
+                          for (const element of this.closest("form").querySelectorAll('[name="emailNotificationsForAllMessages"]')) {
+                            element.disabled = !this.checked;
+                            element.closest("label").classList[this.checked ? "remove" : "add"]("disabled");
+                          }
                         };
                       `}"
                     />
@@ -1456,7 +1460,11 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          if (!this.checked) {
+                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                            element.checked = false;
+                            element.onchange();
+                          }
                         };
                       `}"
                     />
@@ -1481,7 +1489,11 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          if (!this.checked) {
+                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                            element.checked = false;
+                            element.onchange();
+                          }
                           if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                         };
                       `}"
@@ -1507,7 +1519,11 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]').checked = false;
+                          if (!this.checked) {
+                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                            element.checked = false;
+                            element.onchange();
+                          }
                           if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                         };
                       `}"
