@@ -196,7 +196,6 @@ export default async (app: Courselore): Promise<void> => {
           css="${res.locals.css(css`
             position: absolute;
             padding-top: env(safe-area-inset-top);
-            
             right: 0;
             bottom: 20px;
             left: 0;
