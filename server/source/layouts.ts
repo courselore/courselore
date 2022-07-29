@@ -197,7 +197,7 @@ export default async (app: Courselore): Promise<void> => {
             position: absolute;
             padding-top: env(safe-area-inset-top);
             right: 0;
-            bottom: 20px;
+            padding-bottom: env(safe-area-inset-bottom);
             left: 0;
             display: flex;
             flex-direction: column;
