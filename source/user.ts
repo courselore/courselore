@@ -1339,7 +1339,7 @@ export default (app: Courselore): void => {
                       type="checkbox"
                       name="isEmailNotificationsForAllMessages"
                       $${res.locals.user.emailNotificationsForAllMessages !==
-                      null
+                      "none"
                         ? html`checked`
                         : html``}
                       class="input--checkbox"
