@@ -895,6 +895,25 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ).toISOString()
             : null;
         const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
+        const name =
+          user !== null
+            ? Math.random() < 0.7
+              ? user.name
+              : null
+            : Math.random() < 0.5
+            ? casual.full_name
+            : null;
+        const email =
+          user !== null
+            ? Math.random() < 0.7
+              ? user.email
+              : null
+            : Math.random() < 0.5
+            ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
+                length: 5,
+                type: "numeric",
+              })}@courselore.org`
+            : null;
         app.locals.database.run(
           sql`
             INSERT INTO "invitations" (
@@ -922,8 +941,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               },
               ${course.id},
               ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${user?.email},
-              ${Math.random() < 0.5 ? user?.name : null},
+              ${email},
+              ${name},
               ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
             )
           `
