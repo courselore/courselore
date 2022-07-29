@@ -1359,6 +1359,7 @@ export default (app: Courselore): void => {
                     All messages
                   </label>
                 </div>
+
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -1387,6 +1388,7 @@ export default (app: Courselore): void => {
                     @mentions
                   </label>
                 </div>
+
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -1417,6 +1419,7 @@ export default (app: Courselore): void => {
                     Messages in conversations in which you participated
                   </label>
                 </div>
+
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -1447,6 +1450,7 @@ export default (app: Courselore): void => {
                     Messages in conversations you started
                   </label>
                 </div>
+
                 <div
                   css="${res.locals.css(css`
                     display: flex;
@@ -1470,164 +1474,6 @@ export default (app: Courselore): void => {
                   </label>
                 </div>
               </div>
-
-              $${(() => {
-                const disabled =
-                  res.locals.user.emailNotificationsForAllMessages === null &&
-                  res.locals.user.emailNotificationsForMentionsAt === null &&
-                  res.locals.user
-                    .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt ===
-                    null &&
-                  res.locals.user
-                    .emailNotificationsForMessagesInConversationsYouStartedAt ===
-                    null;
-                const isEmailNotificationsDigests =
-                  res.locals.user.emailNotificationsForAllMessages !== null ||
-                  disabled;
-                return html`
-                  <div
-                    key="isEmailNotificationsDigests"
-                    class="label"
-                    hidden
-                    TODO
-                  >
-                    <div
-                      css="${res.locals.css(css`
-                        display: flex;
-                      `)}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline ${disabled
-                          ? "disabled"
-                          : ""}"
-                      >
-                        <input
-                          type="radio"
-                          name="isEmailNotificationsDigests"
-                          value="false"
-                          required
-                          $${disabled ? html`disabled` : html``}
-                          $${!isEmailNotificationsDigests
-                            ? html`checked`
-                            : html``}
-                          class="input--radio"
-                          onload="${javascript`
-                            this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
-                                element.required = element.checked = false;
-                            };
-                          `}"
-                        />
-                        One email notification per message
-                      </label>
-                    </div>
-                    <div
-                      css="${res.locals.css(css`
-                        display: flex;
-                      `)}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline ${disabled
-                          ? "disabled"
-                          : ""}"
-                      >
-                        <input
-                          type="radio"
-                          name="isEmailNotificationsDigests"
-                          value="true"
-                          required
-                          $${disabled ? html`disabled` : html``}
-                          $${isEmailNotificationsDigests
-                            ? html`checked`
-                            : html``}
-                          class="input--radio"
-                          onload="${javascript`
-                            this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
-                                element.required = true;
-                              this.closest("form").querySelector('[name="emailNotificationsForAllMessages"][value="daily"]').checked = true;
-                            };
-                          `}"
-                        />
-                        Digests of multiple messages
-                      </label>
-                    </div>
-                    <div
-                      key="emailNotificationsForAllMessages"
-                      class="label"
-                      css="${res.locals.css(css`
-                        margin-left: var(--space--6);
-                      `)}"
-                    >
-                      <div
-                        css="${res.locals.css(css`
-                          display: flex;
-                        `)}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline ${disabled
-                            ? "disabled"
-                            : ""}"
-                        >
-                          <input
-                            type="radio"
-                            name="emailNotificationsForAllMessages"
-                            value="hourly"
-                            $${isEmailNotificationsDigests ? "required" : ""}
-                            $${disabled ? html`disabled` : html``}
-                            $${res.locals.user
-                              .emailNotificationsForAllMessages === "hourly"
-                              ? html`checked`
-                              : html``}
-                            class="input--radio"
-                            onload="${javascript`
-                              this.onchange = () => {
-                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
-                                  element.required = true;
-                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
-                              };
-                            `}"
-                          />
-                          Hourly
-                        </label>
-                      </div>
-                      <div
-                        css="${res.locals.css(css`
-                          display: flex;
-                        `)}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline ${disabled
-                            ? "disabled"
-                            : ""}"
-                        >
-                          <input
-                            type="radio"
-                            name="emailNotificationsForAllMessages"
-                            value="daily"
-                            $${isEmailNotificationsDigests ? "required" : ""}
-                            $${disabled ? html`disabled` : html``}
-                            $${res.locals.user
-                              .emailNotificationsForAllMessages === "daily" ||
-                            disabled
-                              ? html`checked`
-                              : html``}
-                            class="input--radio"
-                            onload="${javascript`
-                              this.onchange = () => {
-                                this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
-                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
-                                  element.required = true;
-                              };
-                            `}"
-                          />
-                          Daily
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              })()}
 
               <div>
                 <button
