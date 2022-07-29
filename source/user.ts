@@ -1482,7 +1482,7 @@ export default (app: Courselore): void => {
                     .emailNotificationsForMessagesInConversationsYouStartedAt ===
                     null;
                 const isEmailNotificationsDigests =
-                  res.locals.user.emailNotificationsDigestsFrequency !== null ||
+                  res.locals.user.emailNotificationsForAllMessages !== null ||
                   disabled;
                 return html`
                   <div
@@ -1513,7 +1513,7 @@ export default (app: Courselore): void => {
                           class="input--radio"
                           onload="${javascript`
                             this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
                                 element.required = element.checked = false;
                             };
                           `}"
@@ -1543,9 +1543,9 @@ export default (app: Courselore): void => {
                           class="input--radio"
                           onload="${javascript`
                             this.onchange = () => {
-                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                              for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
                                 element.required = true;
-                              this.closest("form").querySelector('[name="emailNotificationsDigestsFrequency"][value="daily"]').checked = true;
+                              this.closest("form").querySelector('[name="emailNotificationsForAllMessages"][value="daily"]').checked = true;
                             };
                           `}"
                         />
@@ -1553,7 +1553,7 @@ export default (app: Courselore): void => {
                       </label>
                     </div>
                     <div
-                      key="emailNotificationsDigestsFrequency"
+                      key="emailNotificationsForAllMessages"
                       class="label"
                       css="${res.locals.css(css`
                         margin-left: var(--space--6);
@@ -1571,18 +1571,18 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="radio"
-                            name="emailNotificationsDigestsFrequency"
+                            name="emailNotificationsForAllMessages"
                             value="hourly"
                             $${isEmailNotificationsDigests ? "required" : ""}
                             $${disabled ? html`disabled` : html``}
                             $${res.locals.user
-                              .emailNotificationsDigestsFrequency === "hourly"
+                              .emailNotificationsForAllMessages === "hourly"
                               ? html`checked`
                               : html``}
                             class="input--radio"
                             onload="${javascript`
                               this.onchange = () => {
-                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
                                   element.required = true;
                                 this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
                               };
@@ -1603,12 +1603,12 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="radio"
-                            name="emailNotificationsDigestsFrequency"
+                            name="emailNotificationsForAllMessages"
                             value="daily"
                             $${isEmailNotificationsDigests ? "required" : ""}
                             $${disabled ? html`disabled` : html``}
                             $${res.locals.user
-                              .emailNotificationsDigestsFrequency === "daily" ||
+                              .emailNotificationsForAllMessages === "daily" ||
                             disabled
                               ? html`checked`
                               : html``}
@@ -1616,7 +1616,7 @@ export default (app: Courselore): void => {
                             onload="${javascript`
                               this.onchange = () => {
                                 this.closest("form").querySelector('[name="isEmailNotificationsDigests"][value="true"]').checked = true;
-                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsDigestsFrequency"] input')) 
+                                for (const element of this.closest("form").querySelectorAll('[key="emailNotificationsForAllMessages"] input')) 
                                   element.required = true;
                               };
                             `}"
@@ -1653,7 +1653,7 @@ export default (app: Courselore): void => {
       isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
       isEmailNotificationsDigests?: "false" | "true";
-      emailNotificationsDigestsFrequency?: UserEmailNotificationsForAllMessages;
+      emailNotificationsForAllMessages?: UserEmailNotificationsForAllMessages;
     },
     {},
     IsSignedInMiddlewareLocals
@@ -1694,7 +1694,7 @@ export default (app: Courselore): void => {
           req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
             "on" &&
           (req.body.isEmailNotificationsDigests !== undefined ||
-            req.body.emailNotificationsDigestsFrequency !== undefined)) ||
+            req.body.emailNotificationsForAllMessages !== undefined)) ||
         ((req.body.isEmailNotificationsForAllMessages === "on" ||
           req.body.isEmailNotificationsForMentions === "on" ||
           req.body
@@ -1705,12 +1705,11 @@ export default (app: Courselore): void => {
           (typeof req.body.isEmailNotificationsDigests !== "string" ||
             !["false", "true"].includes(req.body.isEmailNotificationsDigests) ||
             (req.body.isEmailNotificationsDigests === "false" &&
-              req.body.emailNotificationsDigestsFrequency !== undefined) ||
+              req.body.emailNotificationsForAllMessages !== undefined) ||
             (req.body.isEmailNotificationsDigests === "true" &&
-              (typeof req.body.emailNotificationsDigestsFrequency !==
-                "string" ||
+              (typeof req.body.emailNotificationsForAllMessages !== "string" ||
                 !userEmailNotificationsForAllMessageses.includes(
-                  req.body.emailNotificationsDigestsFrequency
+                  req.body.emailNotificationsForAllMessages
                 )))))
       )
         return next("validation");
@@ -1742,9 +1741,9 @@ export default (app: Courselore): void => {
                   ? new Date().toISOString()
                   : null
               },
-              "emailNotificationsDigestsFrequency" = ${
+              "emailNotificationsForAllMessages" = ${
                 req.body.isEmailNotificationsDigests === "true"
-                  ? req.body.emailNotificationsDigestsFrequency
+                  ? req.body.emailNotificationsForAllMessages
                   : null
               }
           WHERE "id" = ${res.locals.user.id}

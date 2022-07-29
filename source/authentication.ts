@@ -89,13 +89,12 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
     systemRole: SystemRole;
-    emailNotificationsForAllMessages: string | null;
+    emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
     emailNotificationsForMentionsAt: string | null;
     emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
       | string
       | null;
     emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-    emailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
   };
   invitations: {
     id: number;
@@ -260,13 +259,12 @@ export default (app: Courselore): void => {
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
         systemRole: SystemRole;
-        emailNotificationsForAllMessages: string | null;
+        emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
           | string
           | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        emailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
       }>(
         sql`
           SELECT "id",
@@ -284,8 +282,7 @@ export default (app: Courselore): void => {
                  "emailNotificationsForAllMessages",
                  "emailNotificationsForMentionsAt",
                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "emailNotificationsForMessagesInConversationsYouStartedAt",
-                 "emailNotificationsDigestsFrequency"
+                 "emailNotificationsForMessagesInConversationsYouStartedAt"
           FROM "users"
           WHERE "id" = ${userId}
         `
@@ -1360,8 +1357,7 @@ export default (app: Courselore): void => {
             "emailNotificationsForAllMessages",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "emailNotificationsDigestsFrequency"
+            "emailNotificationsForMessagesInConversationsYouStartedAt"
           )
           VALUES (
             ${new Date().toISOString()},
@@ -1386,8 +1382,7 @@ export default (app: Courselore): void => {
             ${"none"},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
-            ${new Date().toISOString()},
-            ${"daily"}
+            ${new Date().toISOString()}
           )
           RETURNING *
         `

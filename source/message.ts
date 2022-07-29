@@ -1208,7 +1208,7 @@ export default (app: Courselore): void => {
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
-                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsForAllMessages",
+                 "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
                  "enrollments"."reference",
                  "enrollments"."courseRole"
           FROM "enrollments"
