@@ -63,11 +63,10 @@ export default (app: Courselore): void => {
             "biographySource",
             "biographyPreprocessed",
             "systemRole",
-            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForAllMessages",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt",
-            "emailNotificationsDigestsFrequency"
+            "emailNotificationsForMessagesInConversationsYouStartedAt"
           )
           VALUES (
             ${new Date().toISOString()},
@@ -115,8 +114,8 @@ export default (app: Courselore): void => {
               isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
               isEmailNotificationsForMessagesInConversationsYouStarted &&
               Math.random() < 0.3
-                ? new Date().toISOString()
-                : null
+                ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                : "none"
             },
             ${
               isEmailNotificationsForMentions ? new Date().toISOString() : null
@@ -129,14 +128,6 @@ export default (app: Courselore): void => {
             ${
               isEmailNotificationsForMessagesInConversationsYouStarted
                 ? new Date().toISOString()
-                : null
-            },
-            ${
-              (isEmailNotificationsForMentions ||
-                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-                isEmailNotificationsForMessagesInConversationsYouStarted) &&
-              Math.random() < 0.9
-                ? lodash.sample(userEmailNotificationsDigestsFrequencies)
                 : null
             }
           )
