@@ -1200,7 +1200,7 @@ export default (app: Courselore): void => {
         id: number;
         userId: number;
         userEmail: string;
-        userEmailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
+        userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages | null;
         reference: string;
         courseRole: CourseRole;
       }>(
@@ -1208,7 +1208,7 @@ export default (app: Courselore): void => {
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
-                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsDigestsFrequency",
+                 "users"."emailNotificationsDigestsFrequency" AS "userEmailNotificationsForAllMessages",
                  "enrollments"."reference",
                  "enrollments"."courseRole"
           FROM "enrollments"
