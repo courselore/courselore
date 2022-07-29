@@ -1345,13 +1345,10 @@ export default (app: Courselore): void => {
                       class="input--checkbox"
                       onload="${javascript`
                         this.onchange = () => {
-                          if (this.checked)
-                            for (const element of this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input"))
-                              element.checked = true;
-                          const isEmailNotificationsDigestsDisabled = [...this.closest('[key="isEmailNotificationsFor"]').querySelectorAll("input")].every((element) => element.disabled || !element.checked);
-                          for (const element of this.closest("form").querySelectorAll('[key="isEmailNotificationsDigests"] input')) {
-                            element.disabled = isEmailNotificationsDigestsDisabled;
-                            element.closest(".button").classList[element.disabled ? "add" : "remove"]("disabled");
+                          if (this.checked) {
+                            this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
+                            this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = true;
+                            this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                           }
                         };
                       `}"
