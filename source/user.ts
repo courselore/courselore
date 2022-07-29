@@ -1367,7 +1367,8 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <label
-                    class="button button--tight button--tight--inline ${false /* TODO */
+                    class="button button--tight button--tight--inline ${res
+                      .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
                   >
@@ -1376,42 +1377,63 @@ export default (app: Courselore): void => {
                       name="emailNotificationsForAllMessages"
                       value="instant"
                       required
-                      $${false /* TODO */ ? html`disabled` : html``}
-                      $${false /* TODO */ ? html`checked` : html``}
+                      $${res.locals.user.emailNotificationsForAllMessages ===
+                      "none"
+                        ? html`disabled`
+                        : html``}
+                      $${res.locals.user.emailNotificationsForAllMessages ===
+                      "instant"
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
                     Instant
                   </label>
 
                   <label
-                    class="button button--tight button--tight--inline ${false /* TODO */
+                    class="button button--tight button--tight--inline ${res
+                      .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
                   >
                     <input
                       type="radio"
                       name="emailNotificationsForAllMessages"
-                      value="instant"
+                      value="hourly-digests"
                       required
-                      $${false /* TODO */ ? html`disabled` : html``}
-                      $${false /* TODO */ ? html`checked` : html``}
+                      $${res.locals.user.emailNotificationsForAllMessages ===
+                      "none"
+                        ? html`disabled`
+                        : html``}
+                      $${res.locals.user.emailNotificationsForAllMessages ===
+                      "hourly-digests"
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
                     Hourly Digests
                   </label>
 
                   <label
-                    class="button button--tight button--tight--inline ${false /* TODO */
+                    class="button button--tight button--tight--inline ${res
+                      .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
                   >
                     <input
                       type="radio"
                       name="emailNotificationsForAllMessages"
-                      value="instant"
+                      value="daily-digests"
                       required
-                      $${false /* TODO */ ? html`disabled` : html``}
-                      $${true /* TODO */ ? html`checked` : html``}
+                      $${res.locals.user.emailNotificationsForAllMessages ===
+                      "none"
+                        ? html`disabled`
+                        : html``}
+                      $${["none", "daily-digests"].includes(
+                        res.locals.user.emailNotificationsForAllMessages
+                      )
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
                     Daily Digests
