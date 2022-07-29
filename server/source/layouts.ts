@@ -195,9 +195,9 @@ export default async (app: Courselore): Promise<void> => {
           content="viewport-fit=cover, width=device-width, initial-scale=1.0"
           css="${res.locals.css(css`
             position: absolute;
-            padding-top: env(safe-area-inset-top);
+            top: env(safe-area-inset-top);
             right: 0;
-            padding-bottom: env(safe-area-inset-bottom);
+            bottom: env(safe-area-inset-bottom);
             left: 0;
             display: flex;
             flex-direction: column;
