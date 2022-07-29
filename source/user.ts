@@ -1362,7 +1362,7 @@ export default (app: Courselore): void => {
                     margin-left: var(--space--10);
                     display: flex;
                     flex-wrap: wrap;
-                    column-gap: var(--space--4);
+                    column-gap: var(--space--8);
                     row-gap: var(--space--1);
                   `)}"
                 >
