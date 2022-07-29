@@ -12,7 +12,7 @@ import {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   userAvatarlessBackgroundColors,
-  userEmailNotificationsDigestsFrequencies,
+  userEmailNotificationsForAllMessageses,
   CourseRole,
   courseRoles,
   enrollmentAccentColors,
@@ -114,7 +114,7 @@ export default (app: Courselore): void => {
               isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
               isEmailNotificationsForMessagesInConversationsYouStarted &&
               Math.random() < 0.3
-                ? lodash.sample(userEmailNotificationsDigestsFrequencies)
+                ? lodash.sample(userEmailNotificationsForAllMessageses)
                 : "none"
             },
             ${

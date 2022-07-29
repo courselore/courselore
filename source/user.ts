@@ -40,9 +40,11 @@ export const userAvatarlessBackgroundColors = [
   "rose",
 ] as const;
 
-export type UserEmailNotificationsDigestsFrequency =
-  typeof userEmailNotificationsDigestsFrequencies[number];
-export const userEmailNotificationsDigestsFrequencies = [
+export type UserEmailNotificationsForAllMessages =
+  typeof userEmailNotificationsForAllMessageses[number];
+export const userEmailNotificationsForAllMessageses = [
+  "none",
+  "instant",
   "hourly",
   "daily",
 ] as const;
@@ -1651,7 +1653,7 @@ export default (app: Courselore): void => {
       isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
       isEmailNotificationsDigests?: "false" | "true";
-      emailNotificationsDigestsFrequency?: UserEmailNotificationsDigestsFrequency;
+      emailNotificationsDigestsFrequency?: UserEmailNotificationsForAllMessages;
     },
     {},
     IsSignedInMiddlewareLocals
@@ -1707,7 +1709,7 @@ export default (app: Courselore): void => {
             (req.body.isEmailNotificationsDigests === "true" &&
               (typeof req.body.emailNotificationsDigestsFrequency !==
                 "string" ||
-                !userEmailNotificationsDigestsFrequencies.includes(
+                !userEmailNotificationsForAllMessageses.includes(
                   req.body.emailNotificationsDigestsFrequency
                 )))))
       )

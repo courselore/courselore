@@ -57,8 +57,8 @@ import user, { UserPartial } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
-  UserEmailNotificationsDigestsFrequency,
-  userEmailNotificationsDigestsFrequencies,
+  UserEmailNotificationsForAllMessages,
+  userEmailNotificationsForAllMessageses,
 } from "./user.js";
 
 import course, {

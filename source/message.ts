@@ -7,7 +7,7 @@ import { javascript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
-  UserEmailNotificationsDigestsFrequency,
+  UserEmailNotificationsForAllMessages,
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -1200,7 +1200,7 @@ export default (app: Courselore): void => {
         id: number;
         userId: number;
         userEmail: string;
-        userEmailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
+        userEmailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
         reference: string;
         courseRole: CourseRole;
       }>(

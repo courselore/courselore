@@ -13,7 +13,7 @@ import {
   BaseMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
-  UserEmailNotificationsDigestsFrequency,
+  UserEmailNotificationsForAllMessages,
   CourseRole,
   EnrollmentAccentColor,
   SystemRole,
@@ -95,7 +95,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       | string
       | null;
     emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-    emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
+    emailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
   };
   invitations: {
     id: number;
@@ -266,7 +266,7 @@ export default (app: Courselore): void => {
           | string
           | null;
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
-        emailNotificationsDigestsFrequency: UserEmailNotificationsDigestsFrequency | null;
+        emailNotificationsDigestsFrequency: UserEmailNotificationsForAllMessages | null;
       }>(
         sql`
           SELECT "id",
