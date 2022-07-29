@@ -1359,6 +1359,67 @@ export default (app: Courselore): void => {
 
                 <div
                   css="${res.locals.css(css`
+                    margin-left: var(--space--10);
+                    display: flex;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--4);
+                    row-gap: var(--space--1);
+                  `)}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline ${false /* TODO */
+                      ? "disabled"
+                      : ""}"
+                  >
+                    <input
+                      type="radio"
+                      name="emailNotificationsForAllMessages"
+                      value="instant"
+                      required
+                      $${false /* TODO */ ? html`disabled` : html``}
+                      $${false /* TODO */ ? html`checked` : html``}
+                      class="input--radio"
+                    />
+                    Instant
+                  </label>
+
+                  <label
+                    class="button button--tight button--tight--inline ${false /* TODO */
+                      ? "disabled"
+                      : ""}"
+                  >
+                    <input
+                      type="radio"
+                      name="emailNotificationsForAllMessages"
+                      value="instant"
+                      required
+                      $${false /* TODO */ ? html`disabled` : html``}
+                      $${false /* TODO */ ? html`checked` : html``}
+                      class="input--radio"
+                    />
+                    Hourly Digest
+                  </label>
+
+                  <label
+                    class="button button--tight button--tight--inline ${false /* TODO */
+                      ? "disabled"
+                      : ""}"
+                  >
+                    <input
+                      type="radio"
+                      name="emailNotificationsForAllMessages"
+                      value="instant"
+                      required
+                      $${false /* TODO */ ? html`disabled` : html``}
+                      $${true /* TODO */ ? html`checked` : html``}
+                      class="input--radio"
+                    />
+                    Daily Digest
+                  </label>
+                </div>
+
+                <div
+                  css="${res.locals.css(css`
                     display: flex;
                   `)}"
                 >
