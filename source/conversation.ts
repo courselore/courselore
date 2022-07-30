@@ -3800,6 +3800,9 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
+      const hasMessage =
+        typeof req.body.content === "string" && req.body.content.trim() !== "";
+
       app.locals.database.run(
         sql`
           UPDATE "courses"
@@ -3841,7 +3844,7 @@ export default (app: Courselore): void => {
             ${req.body.isStaffOnly === "on" ? new Date().toISOString() : null},
             ${req.body.title},
             ${html`${req.body.title}`},
-            ${2}
+            ${hasMessage ? 2 : 1}
           )
           RETURNING *
         `
@@ -3862,22 +3865,18 @@ export default (app: Courselore): void => {
           `
         );
 
-      if (
-        typeof req.body.content === "string" &&
-        req.body.content.trim() !== ""
-      ) {
+      if (hasMessage) {
         const processedContent = app.locals.partials.content({
           req,
           res,
           type: "source",
-          content: req.body.content,
+          content: req.body.content!,
           decorate: true,
         });
         if (req.body.shouldNotify === "on")
           processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
-          reference: string;
         }>(
           sql`
             INSERT INTO "messages" (
@@ -3915,23 +3914,7 @@ export default (app: Courselore): void => {
             )
           `
         );
-        const conversation = app.locals.helpers.getConversation({
-          req,
-          res,
-          conversationReference: conversationRow.reference,
-        })!;
-        app.locals.mailers.notifications({
-          req,
-          res,
-          conversation,
-          message: app.locals.helpers.getMessage({
-            req,
-            res,
-            conversation,
-            messageReference: message.reference,
-          })!,
-          mentions: processedContent.mentions!,
-        });
+        app.locals.mailers.notifications({ req, res, messageId: message.id });
       }
 
       if (
