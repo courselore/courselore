@@ -1238,7 +1238,7 @@ export default (app: Courselore): void => {
                     `
                     : sql``
                 } AND (
-                  "users"."emailNotificationsForAllMessages" != "none" OR (
+                  "users"."emailNotificationsForAllMessages" != 'none' OR (
                     "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
                       $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
                       $${
