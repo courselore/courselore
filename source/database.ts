@@ -1111,7 +1111,33 @@ export default async (app: Courselore): Promise<void> => {
           END;
         `
       );
-    }
+    },
+    sql`
+      CREATE TABLE "notificationMessageJobs" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "startAt" TEXT NOT NULL,
+        "startedAt" TEXT NULL,
+        "expiresAt" TEXT NOT NULL,
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
+      );
+      CREATE INDEX "notificationMessageJobsStartAtIndex" ON "notificationMessageJobs" ("startAt");
+      CREATE INDEX "notificationMessageJobsStartedAtIndex" ON "notificationMessageJobs" ("startedAt");
+      CREATE INDEX "notificationMessageJobsExpiresAtIndex" ON "notificationMessageJobs" ("expiresAt");
+
+      CREATE TABLE "notificationDigestJobs" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "startAt" TEXT NOT NULL,
+        "startedAt" TEXT NULL,
+        "expiresAt" TEXT NOT NULL,
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE
+      );
+      CREATE INDEX "notificationDigestJobsStartAtIndex" ON "notificationDigestJobs" ("startAt");
+      CREATE INDEX "notificationDigestJobsStartedAtIndex" ON "notificationDigestJobs" ("startedAt");
+      CREATE INDEX "notificationDigestJobsExpiresAtIndex" ON "notificationDigestJobs" ("expiresAt");
+    `
   );
   app.once("close", () => {
     app.locals.database.close();
