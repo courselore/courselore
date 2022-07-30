@@ -1143,185 +1143,209 @@ export default (app: Courselore): void => {
   );
 
   app.locals.mailers.notifications = ({ req, res, messageId }) => {
-    // app.locals.database.run(
-    //   sql`
-    //     INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-    //     VALUES (
-    //       ${new Date().toISOString()},
-    //       ${message.id},
-    //       ${res.locals.enrollment.id}
-    //     )
-    //   `
-    // );
-    // if (message.authorEnrollment !== "no-longer-enrolled")
-    //   app.locals.database.run(
-    //     sql`
-    //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-    //       VALUES (
-    //         ${new Date().toISOString()},
-    //         ${message.id},
-    //         ${message.authorEnrollment.id}
-    //       )
-    //     `
-    //   );
-
-    // app.locals.database.executeTransaction(() => {
-    //   const enrollments = app.locals.database.all<{
-    //     id: number;
-    //     userId: number;
-    //     userEmail: string;
-    //     userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages | null;
-    //     reference: string;
-    //     courseRole: CourseRole;
-    //   }>(
-    //     sql`
-    //       SELECT "enrollments"."id",
-    //              "users"."id" AS "userId",
-    //              "users"."email" AS "userEmail",
-    //              "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
-    //              "enrollments"."reference",
-    //              "enrollments"."courseRole"
-    //       FROM "enrollments"
-    //       JOIN "users" ON "enrollments"."user" = "users"."id" AND
-    //                       "users"."emailVerifiedAt" IS NOT NULL
-    //       LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-    //                                             "notificationDeliveries"."message" = ${
-    //                                               message.id
-    //                                             }
-    //       $${
-    //         conversation.staffOnlyAt !== null
-    //           ? sql`
-    //               LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-    //                                       "messages"."conversation" = ${conversation.id}
-    //             `
-    //           : sql``
-    //       }
-    //       WHERE "enrollments"."course" = ${res.locals.course.id} AND
-    //             "notificationDeliveries"."id" IS NULL
-    //             $${
-    //               conversation.staffOnlyAt !== null
-    //                 ? sql`
-    //                   AND (
-    //                     "enrollments"."courseRole" = 'staff' OR
-    //                     "messages"."id" IS NOT NULL
-    //                   )
-    //                 `
-    //                 : sql``
-    //             } AND (
-    //               "users"."emailNotificationsForAllMessages" != 'none' OR (
-    //                 "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
-    //                   $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
-    //                   $${
-    //                     mentions.has("staff")
-    //                       ? sql`"enrollments"."courseRole" = 'staff'`
-    //                       : sql`FALSE`
-    //                   } OR
-    //                   $${
-    //                     mentions.has("students")
-    //                       ? sql`"enrollments"."courseRole" = 'student'`
-    //                       : sql`FALSE`
-    //                   } OR
-    //                   "enrollments"."reference" IN ${mentions}
-    //                 )
-    //               ) OR (
-    //                 "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND (
-    //                   SELECT TRUE
-    //                   FROM "messages"
-    //                   WHERE "conversation" = ${conversation.id} AND
-    //                         "authorEnrollment" = "enrollments"."id"
-    //                 )
-    //               ) OR (
-    //                 "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND (
-    //                   SELECT TRUE
-    //                   FROM "conversations"
-    //                   WHERE "id" = ${conversation.id} AND
-    //                         "authorEnrollment" = "enrollments"."id"
-    //                 )
-    //               )
-    //             )
-    //       GROUP BY "enrollments"."id"
-    //     `
-    //   );
-    //   const inReplyTo = `courses/${res.locals.course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`;
-    //   for (const enrollment of enrollments) {
-    //     app.locals.database.run(
-    //       sql`
-    //         INSERT INTO "sendEmailJobs" (
-    //           "createdAt",
-    //           "startAt",
-    //           "expiresAt",
-    //           "mailOptions"
-    //         )
-    //         VALUES (
-    //           ${new Date().toISOString()},
-    //           ${new Date().toISOString()},
-    //           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-    //           ${JSON.stringify({
-    //             from: {
-    //               name: `${app.locals.options.sendMail.defaults.from.name} · ${res.locals.course.name}`,
-    //               address: app.locals.options.sendMail.defaults.from.address,
-    //             },
-    //             to: enrollment.userEmail,
-    //             inReplyTo,
-    //             references: inReplyTo,
-    //             subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
-    //             html: html`
-    //               <p>
-    //                 <a
-    //                   href="https://${app.locals.options.host}/courses/${res
-    //                     .locals.course
-    //                     .reference}/conversations/${conversation.reference}${qs.stringify(
-    //                     { messages: { messageReference: message.reference } },
-    //                     {
-    //                       addQueryPrefix: true,
-    //                     }
-    //                   )}"
-    //                   >${message.authorEnrollment === "no-longer-enrolled"
-    //                     ? "Someone who is no longer enrolled"
-    //                     : message.anonymousAt !== null
-    //                     ? `Anonymous ${
-    //                         enrollment.courseRole === "staff"
-    //                           ? `(${message.authorEnrollment.user.name})`
-    //                           : ""
-    //                       }`
-    //                     : message.authorEnrollment.user.name}
-    //                   says</a
-    //                 >:
-    //               </p>
-
-    //               <hr />
-
-    //               $${message.contentPreprocessed}
-
-    //               <hr />
-
-    //               <p>
-    //                 <small>
-    //                   <a
-    //                     href="https://${app.locals.options
-    //                       .host}/settings/notifications-preferences"
-    //                     >Change Notifications Preferences</a
-    //                   >
-    //                 </small>
-    //               </p>
-    //             `,
-    //           })}
-    //         )
-    //       `
-    //     );
-    //     app.locals.database.run(
-    //       sql`
-    //         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-    //         VALUES (
-    //           ${new Date().toISOString()},
-    //           ${message.id},
-    //           ${enrollment.id}
-    //         )
-    //       `
-    //     );
-    //   }
-    // });
-
-    // app.locals.workers.sendEmail();
+    app.locals.database.executeTransaction(() => {
+      app.locals.database.run(
+        sql`
+          DELETE FROM "notificationMessageJobs" WHERE "message" = ${messageId}
+        `
+      );
+      app.locals.database.run(
+        sql`
+          INSERT INTO "notificationMessageJobs" (
+            "createdAt",
+            "startAt",
+            "expiresAt",
+            "message"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+            ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
+            ${messageId}
+          )
+        `
+      );
+    });
   };
+
+  // app.locals.database.run(
+  //   sql`
+  //     INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+  //     VALUES (
+  //       ${new Date().toISOString()},
+  //       ${message.id},
+  //       ${res.locals.enrollment.id}
+  //     )
+  //   `
+  // );
+  // if (message.authorEnrollment !== "no-longer-enrolled")
+  //   app.locals.database.run(
+  //     sql`
+  //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+  //       VALUES (
+  //         ${new Date().toISOString()},
+  //         ${message.id},
+  //         ${message.authorEnrollment.id}
+  //       )
+  //     `
+  //   );
+
+  // app.locals.database.executeTransaction(() => {
+  //   const enrollments = app.locals.database.all<{
+  //     id: number;
+  //     userId: number;
+  //     userEmail: string;
+  //     userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages | null;
+  //     reference: string;
+  //     courseRole: CourseRole;
+  //   }>(
+  //     sql`
+  //       SELECT "enrollments"."id",
+  //              "users"."id" AS "userId",
+  //              "users"."email" AS "userEmail",
+  //              "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
+  //              "enrollments"."reference",
+  //              "enrollments"."courseRole"
+  //       FROM "enrollments"
+  //       JOIN "users" ON "enrollments"."user" = "users"."id" AND
+  //                       "users"."emailVerifiedAt" IS NOT NULL
+  //       LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+  //                                             "notificationDeliveries"."message" = ${
+  //                                               message.id
+  //                                             }
+  //       $${
+  //         conversation.staffOnlyAt !== null
+  //           ? sql`
+  //               LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+  //                                       "messages"."conversation" = ${conversation.id}
+  //             `
+  //           : sql``
+  //       }
+  //       WHERE "enrollments"."course" = ${res.locals.course.id} AND
+  //             "notificationDeliveries"."id" IS NULL
+  //             $${
+  //               conversation.staffOnlyAt !== null
+  //                 ? sql`
+  //                   AND (
+  //                     "enrollments"."courseRole" = 'staff' OR
+  //                     "messages"."id" IS NOT NULL
+  //                   )
+  //                 `
+  //                 : sql``
+  //             } AND (
+  //               "users"."emailNotificationsForAllMessages" != 'none' OR (
+  //                 "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
+  //                   $${mentions.has("everyone") ? sql`TRUE` : sql`FALSE`} OR
+  //                   $${
+  //                     mentions.has("staff")
+  //                       ? sql`"enrollments"."courseRole" = 'staff'`
+  //                       : sql`FALSE`
+  //                   } OR
+  //                   $${
+  //                     mentions.has("students")
+  //                       ? sql`"enrollments"."courseRole" = 'student'`
+  //                       : sql`FALSE`
+  //                   } OR
+  //                   "enrollments"."reference" IN ${mentions}
+  //                 )
+  //               ) OR (
+  //                 "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND (
+  //                   SELECT TRUE
+  //                   FROM "messages"
+  //                   WHERE "conversation" = ${conversation.id} AND
+  //                         "authorEnrollment" = "enrollments"."id"
+  //                 )
+  //               ) OR (
+  //                 "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND (
+  //                   SELECT TRUE
+  //                   FROM "conversations"
+  //                   WHERE "id" = ${conversation.id} AND
+  //                         "authorEnrollment" = "enrollments"."id"
+  //                 )
+  //               )
+  //             )
+  //       GROUP BY "enrollments"."id"
+  //     `
+  //   );
+  //   const inReplyTo = `courses/${res.locals.course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`;
+  //   for (const enrollment of enrollments) {
+  //     app.locals.database.run(
+  //       sql`
+  //         INSERT INTO "sendEmailJobs" (
+  //           "createdAt",
+  //           "startAt",
+  //           "expiresAt",
+  //           "mailOptions"
+  //         )
+  //         VALUES (
+  //           ${new Date().toISOString()},
+  //           ${new Date().toISOString()},
+  //           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+  //           ${JSON.stringify({
+  //             from: {
+  //               name: `${app.locals.options.sendMail.defaults.from.name} · ${res.locals.course.name}`,
+  //               address: app.locals.options.sendMail.defaults.from.address,
+  //             },
+  //             to: enrollment.userEmail,
+  //             inReplyTo,
+  //             references: inReplyTo,
+  //             subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
+  //             html: html`
+  //               <p>
+  //                 <a
+  //                   href="https://${app.locals.options.host}/courses/${res
+  //                     .locals.course
+  //                     .reference}/conversations/${conversation.reference}${qs.stringify(
+  //                     { messages: { messageReference: message.reference } },
+  //                     {
+  //                       addQueryPrefix: true,
+  //                     }
+  //                   )}"
+  //                   >${message.authorEnrollment === "no-longer-enrolled"
+  //                     ? "Someone who is no longer enrolled"
+  //                     : message.anonymousAt !== null
+  //                     ? `Anonymous ${
+  //                         enrollment.courseRole === "staff"
+  //                           ? `(${message.authorEnrollment.user.name})`
+  //                           : ""
+  //                       }`
+  //                     : message.authorEnrollment.user.name}
+  //                   says</a
+  //                 >:
+  //               </p>
+
+  //               <hr />
+
+  //               $${message.contentPreprocessed}
+
+  //               <hr />
+
+  //               <p>
+  //                 <small>
+  //                   <a
+  //                     href="https://${app.locals.options
+  //                       .host}/settings/notifications-preferences"
+  //                     >Change Notifications Preferences</a
+  //                   >
+  //                 </small>
+  //               </p>
+  //             `,
+  //           })}
+  //         )
+  //       `
+  //     );
+  //     app.locals.database.run(
+  //       sql`
+  //         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+  //         VALUES (
+  //           ${new Date().toISOString()},
+  //           ${message.id},
+  //           ${enrollment.id}
+  //         )
+  //       `
+  //     );
+  //   }
+  // });
+
+  // app.locals.workers.sendEmail();
 };
