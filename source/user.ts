@@ -1576,11 +1576,13 @@ export default (app: Courselore): void => {
     any,
     {
       isEmailNotificationsForAllMessages?: "on";
+      emailNotificationsForAllMessages?:
+        | "instant"
+        | "hourly-digests"
+        | "daily-digests";
       isEmailNotificationsForMentions?: "on";
       isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
-      isEmailNotificationsDigests?: "false" | "true";
-      emailNotificationsForAllMessages?: UserEmailNotificationsForAllMessages;
     },
     {},
     IsSignedInMiddlewareLocals
@@ -1592,6 +1594,13 @@ export default (app: Courselore): void => {
         ![undefined, "on"].includes(
           req.body.isEmailNotificationsForAllMessages
         ) ||
+        (req.body.isEmailNotificationsForAllMessages === undefined &&
+          req.body.emailNotificationsForAllMessages !== undefined) ||
+        (req.body.isEmailNotificationsForAllMessages === "on" &&
+          (typeof req.body.emailNotificationsForAllMessages !== "string" ||
+            !["instant", "hourly-digests", "daily-digests"].includes(
+              req.body.emailNotificationsForAllMessages
+            ))) ||
         ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
         ![undefined, "on"].includes(
           req.body
@@ -1612,32 +1621,7 @@ export default (app: Courselore): void => {
           .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
           "on" &&
           req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
-            "on") ||
-        (req.body.isEmailNotificationsForAllMessages !== "on" &&
-          req.body.isEmailNotificationsForMentions !== "on" &&
-          req.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
-            "on" &&
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
-            "on" &&
-          (req.body.isEmailNotificationsDigests !== undefined ||
-            req.body.emailNotificationsForAllMessages !== undefined)) ||
-        ((req.body.isEmailNotificationsForAllMessages === "on" ||
-          req.body.isEmailNotificationsForMentions === "on" ||
-          req.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-            "on" ||
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted ===
-            "on") &&
-          (typeof req.body.isEmailNotificationsDigests !== "string" ||
-            !["false", "true"].includes(req.body.isEmailNotificationsDigests) ||
-            (req.body.isEmailNotificationsDigests === "false" &&
-              req.body.emailNotificationsForAllMessages !== undefined) ||
-            (req.body.isEmailNotificationsDigests === "true" &&
-              (typeof req.body.emailNotificationsForAllMessages !== "string" ||
-                !userEmailNotificationsForAllMessageses.includes(
-                  req.body.emailNotificationsForAllMessages
-                )))))
+            "on")
       )
         return next("validation");
 
@@ -1645,9 +1629,9 @@ export default (app: Courselore): void => {
         sql`
           UPDATE "users"
           SET "emailNotificationsForAllMessages" = ${
-            req.body.isEmailNotificationsForAllMessages === "on"
-              ? new Date().toISOString()
-              : null
+            req.body.isEmailNotificationsForAllMessages === undefined
+              ? "none"
+              : req.body.emailNotificationsForAllMessages
           },
               "emailNotificationsForMentionsAt" = ${
                 req.body.isEmailNotificationsForMentions === "on"
@@ -1666,11 +1650,6 @@ export default (app: Courselore): void => {
                   .isEmailNotificationsForMessagesInConversationsYouStarted ===
                 "on"
                   ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsForAllMessages" = ${
-                req.body.isEmailNotificationsDigests === "true"
-                  ? req.body.emailNotificationsForAllMessages
                   : null
               }
           WHERE "id" = ${res.locals.user.id}
