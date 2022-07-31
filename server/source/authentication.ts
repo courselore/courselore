@@ -8,7 +8,7 @@ import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
-import storage from "../../mobile-application/node_modules/@capacitor/storage"
+// import { Storage } from "../../mobile-application/node_modules/@capacitor/storage";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -1555,6 +1555,9 @@ export default (app: Courselore): void => {
               align-items: center;
               flex-direction: column;
             `)}"
+            onload="${javascript`
+              
+            `}"
           >
             <div class="decorative-icon">
               $${app.locals.partials.logo({
@@ -1593,15 +1596,21 @@ export default (app: Courselore): void => {
               >
               </i>
             </h3>
-            <a
-              href="https://www.courselore.org"
+            <button
               class="button button--blue heading--display"
               css="${res.locals.css(css`
                 align-items: center;
               `)}"
+              onload="${javascript`
+                this.onclick = () => {
+                  const href = "https://www.courselore.org";
+                  window.location.href = href;
+                };
+              `}"
             >
-              $${app.locals.partials.logo({ size: 20 })} Hosted by Courselore
-            </a>
+              $${app.locals.partials.logo({ size: 20 })}
+              Hosted by Courselore
+            </button>
             <div
               css="${res.locals.css(css`
                 display: flex;
@@ -1647,7 +1656,8 @@ export default (app: Courselore): void => {
                     class="button button--blue heading--display"
                     onload="${javascript`
                       this.onclick = () => {
-                        window.location.href = document.querySelector('[key="url-input-box"]').value;
+                        const href = document.querySelector('[key="url-input-box"]').value;
+                        window.location.href = href;
                       };
                     `}"
                   >

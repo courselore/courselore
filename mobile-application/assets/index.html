@@ -4,9 +4,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module">
-      import { Browser } from "@capacitor/browser";
-      import { Storage } from "@capacitor/storage";
-      window.Browser = Browser;
+      // import { Storage } from "@capacitor/storage";
+      // import { Browser } from "@capacitor/browser";
+      // window.Browser = Browser;
     </script>
   </head>
   <body>
@@ -19,61 +19,18 @@
       Thank you for installing the Courselore app. In order to set up the app, please select what kind of Courselore installation you plan to access.
       <br />
       <br />
-      <button class="button-3">TEST</button>
-      <br />
-      <button class="button-1">Hosted by Courselore</button>
-      <br />
-      <button onclick="document.querySelector('div').hidden = !document.querySelector('div').hidden">Self hosted</button>
-      <div hidden>
-        <input type="url" value="https://">
-        <button class="button-2">Submit</button>
-      </div>
+      <button class="button-1">TEST</button>
       <script>
-        (() => {
+        (async () => {
           window.location.href='https://eliots-orp-koobcam.local/mobile-app'
           
-          window.localStorage.clear();
+          //window.localStorage.clear();
           const selection = window.localStorage.getItem('selection');
           if (selection !== null) window.location.href = selection;
-          // async () => {
-          //   const { selection } = await Storage.get({
-          //     key: 'selection'
-          //   });
-          //   if (selection !== null) window.location.href = selection;
-          // };
         })();
-   
         document.querySelector('.button-1').onclick = () => {
-          const href = 'https://www.courselore.org';
-          window.localStorage.setItem('selection', href);
-          // async () => {
-          //   await Storage.set({
-          //     key: 'selection',
-          //     value: href,
-          //   });
-          // };
-          window.location.href = href;
-        };
-        document.querySelector('.button-2').onclick = () => {
-          const href = document.querySelector('input').value;
-          window.localStorage.setItem('selection', href);
-          // async () => {
-          //   await Storage.set({
-          //     key: 'selection',
-          //     value: href,
-          //   });
-          // };
-          window.location.href = href;
-        };
-        document.querySelector('.button-3').onclick = () => {
           const href = 'https://eliots-orp-koobcam.local/mobile-app';
           window.localStorage.setItem('selection', href);
-          // async () => {
-          //   await Storage.set({
-          //     key: 'selection',
-          //     value: href,
-          //   });
-          // };
           window.location.href = href;
         };
       </script>
