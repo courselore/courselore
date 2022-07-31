@@ -8,6 +8,7 @@ import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
+import storage from "../../mobile-application/node_modules/@capacitor/storage"
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -1550,7 +1551,7 @@ export default (app: Courselore): void => {
             css="${res.locals.css(css`
               display: flex;
               gap: var(--space--10);
-              padding: var(--space--10) var(--space--8);
+              padding: var(--space--20) var(--space--10) var(--space--10) var(--space--10);
               align-items: center;
               flex-direction: column;
             `)}"
