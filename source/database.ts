@@ -281,6 +281,7 @@ export default async (app: Courselore): Promise<void> => {
       );
       CREATE INDEX "likesMessageIndex" ON "likes" ("message");
     `,
+
     sql`
       CREATE TABLE "sendEmailJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -306,12 +307,15 @@ export default async (app: Courselore): Promise<void> => {
       DROP INDEX "sessionsCreatedAtIndex";
       CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
     `,
+
     sql`
       ALTER TABLE "conversations" ADD COLUMN "resolvedAt" TEXT NULL;
     `,
+
     sql`
       CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
     `,
+
     sql`
       DELETE FROM "readings" WHERE "id" IN (
         SELECT "readings"."id"
@@ -329,6 +333,7 @@ export default async (app: Courselore): Promise<void> => {
                                 )
       );
     `,
+
     () => {
       const makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork =
         (text: string): string =>
@@ -396,6 +401,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
     },
+
     sql`
       DROP TABLE "flashes";
       CREATE TABLE "flashes" (
@@ -407,10 +413,12 @@ export default async (app: Courselore): Promise<void> => {
       );
       CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
     `,
+
     sql`
       DROP INDEX "flashesCreatedAtIndex";
       CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
     `,
+
     sql`
       CREATE TABLE "conversationDrafts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -427,6 +435,7 @@ export default async (app: Courselore): Promise<void> => {
         UNIQUE ("course", "reference")
       );
     `,
+
     sql`
       DROP TABLE "conversationDrafts";
       CREATE TABLE "conversationDrafts" (
@@ -445,6 +454,7 @@ export default async (app: Courselore): Promise<void> => {
         UNIQUE ("course", "reference")
       );
     `,
+
     () => {
       const changeMessageReferencePermanentLinkQueryParameter = (
         text: string
@@ -513,9 +523,11 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
     },
+
     sql`
       ALTER TABLE "courses" ADD COLUMN "archivedAt" TEXT NULL;
     `,
+
     sql`
       UPDATE "users"
       SET "emailNotifications" = 'mentions'
@@ -525,12 +537,14 @@ export default async (app: Courselore): Promise<void> => {
       SET "type" = 'note'
       WHERE "type" = 'announcement';
     `,
+
     sql`
       DROP INDEX "emailConfirmationsCreatedAtIndex";
       ALTER TABLE "emailConfirmations" RENAME TO "emailVerifications";
       CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
       ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
     `,
+
     () => {
       app.locals.database.execute(
         sql`
@@ -637,6 +651,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
     },
+
     () => {
       app.locals.database.execute(
         sql`
@@ -773,10 +788,12 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
     },
+
     sql`
       ALTER TABLE "invitations" RENAME COLUMN "role" TO "courseRole";
       ALTER TABLE "enrollments" RENAME COLUMN "role" TO "courseRole";
     `,
+
     sql`
       CREATE TABLE "administrationOptions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
@@ -785,6 +802,7 @@ export default async (app: Courselore): Promise<void> => {
 
       INSERT INTO "administrationOptions" ("userSystemRolesWhoMayCreateCourses") VALUES ('all');
     `,
+
     () => {
       app.locals.database.execute(
         sql`
@@ -920,6 +938,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
     },
+
     async () => {
       const users = app.locals.database.all<{
         id: number;
@@ -968,6 +987,7 @@ export default async (app: Courselore): Promise<void> => {
         break;
       }
     },
+
     () => {
       app.locals.database.execute(
         sql`
@@ -1112,6 +1132,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
     },
+
     sql`
       CREATE TABLE "notificationMessageJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
