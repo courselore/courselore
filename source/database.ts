@@ -1140,7 +1140,7 @@ export default async (app: Courselore): Promise<void> => {
         "startAt" TEXT NOT NULL,
         "startedAt" TEXT NULL,
         "expiresAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL UNIQUE REFERENCES "messages" ON DELETE CASCADE
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
       );
       CREATE INDEX "notificationMessageJobsStartAtIndex" ON "notificationMessageJobs" ("startAt");
       CREATE INDEX "notificationMessageJobsStartedAtIndex" ON "notificationMessageJobs" ("startedAt");
@@ -1153,8 +1153,7 @@ export default async (app: Courselore): Promise<void> => {
         "startedAt" TEXT NULL,
         "expiresAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        UNIQUE ("message", "enrollment")
+        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE
       );
       CREATE INDEX "notificationDigestJobsStartAtIndex" ON "notificationDigestJobs" ("startAt");
       CREATE INDEX "notificationDigestJobsStartedAtIndex" ON "notificationDigestJobs" ("startedAt");
