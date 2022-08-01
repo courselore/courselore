@@ -192,7 +192,6 @@ export default async (app: Courselore): Promise<void> => {
       >
         <div
           key="viewport"
-          content="viewport-fit=cover, width=device-width, initial-scale=1.0"
           css="${res.locals.css(css`
             position: absolute;
             top: 0;
@@ -3286,15 +3285,4 @@ export default async (app: Courselore): Promise<void> => {
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
   })();
-
-  // if (app.locals.options.environment === "development")
-  //   await fs.writeFile(
-  //     new URL("../test.html", import.meta.url),
-  //     app.locals.layouts.base({
-  //       req: { cookies: { flash: undefined }, csrfToken: () => "" } as any,
-  //       res: { locals: { css: localCSS, html: html } } as any,
-  //       head: html`<title>Welcome to the Courselore iOS application</title>`,
-  //       body: html`<h1>Welcome to the Courselore iOS application</h1>`,
-  //     })
-  //   );
 };

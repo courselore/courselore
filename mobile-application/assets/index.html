@@ -4,8 +4,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module">
-      import { Storage } from "@capacitor/preferences";
-      window.Storage = Storage;
+      import { Preferences } from "@capacitor/preferences";
+      window.Preferences = Preferences;
       // import { Browser } from "@capacitor/browser";
       // window.Browser = Browser;
     </script>
@@ -22,13 +22,23 @@
       <br />
       <button class="button-1">TEST</button>
       <script>
-        (async () => {
-          window.setTimeout(() => {
-           
-          }, 0)
+        (() => {
+          window.location.href = 'https://eliots-orp-koobcam.local/mobile-app';
+          // window.setTimeout(() => {
+          //   async () => {
+          //     const { selection } = window.Preferences.get( {key: 'selection'} );
+          //     window.location.href = selection;
+          //   }
+          // }, 0);
         })();
         document.querySelector('.button-1').onclick = () => {
-          const href = 'https://eliots-orp-koobcam.local/mobile-app';
+          const href = 'https://try.courselore.org';
+          // window.setTimeout(() => {
+          //   async () => {
+          //     await window.Preferences.get( {key: 'selection', value: href} );
+          //   }
+          // }, 0)
+          window.location.href = href;
         };
       </script>
     </p>
