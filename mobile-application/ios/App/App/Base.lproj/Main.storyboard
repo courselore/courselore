@@ -4,15 +4,45 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Bridge View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CAPBridgeViewController" customModule="Capacitor" sceneMemberID="viewController"/>
+                <viewController id="BYZ-38-t0r" customClass="CAPBridgeViewController" customModule="Capacitor" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mSX-sd-d3D">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q3M-q6-k19" userLabel="View Safe">
+                                <rect key="frame" x="0.0" y="44" width="428" height="848"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="DBb-uh-pNE"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="q3M-q6-k19" firstAttribute="top" secondItem="DBb-uh-pNE" secondAttribute="top" id="ChF-O6-xIV"/>
+                            <constraint firstItem="q3M-q6-k19" firstAttribute="leading" secondItem="DBb-uh-pNE" secondAttribute="leading" id="Vdv-oA-4DJ"/>
+                            <constraint firstItem="DBb-uh-pNE" firstAttribute="bottom" secondItem="q3M-q6-k19" secondAttribute="bottom" id="XLO-tY-Dig"/>
+                            <constraint firstItem="DBb-uh-pNE" firstAttribute="trailing" secondItem="q3M-q6-k19" secondAttribute="trailing" id="YVg-qZ-5QU"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="view" destination="q3M-q6-k19" id="PNu-0m-haw"/>
+                    </connections>
+                </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="34" y="45"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
