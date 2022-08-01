@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-07-30</summary>
+
+- Mobile application is under way: Capacitor is setup, and we’re working on the page that lets you select the server. We may have issues getting the application approved by Apple.
+- Email notification digests are almost done. Also implemented a grace period between sending a message and its email notification, to allow the person to edit.
+- The new Tags selector widget is done. The person selector widget for DMs will reuse this work.
+
+</details>
+
+<details>
 <summary>2021-07-23</summary>
 
 - Better email notifications:
