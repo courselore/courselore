@@ -1588,7 +1588,7 @@ export default (app: Courselore): void => {
             >
               Thank you for installing the Courselore app. To begin, select the
               type of Courselore installation you plan to access.
-              <button 
+              <button
                 class="button button--tight button--tight--inline button--inline button--transparent"
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({

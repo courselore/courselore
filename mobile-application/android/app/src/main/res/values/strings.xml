@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Courselore</string>
+    <string name="title_activity_main">Courselore</string>
+    <string name="package_name">org.courselore.app</string>
+    <string name="custom_url_scheme">org.courselore.app</string>
+</resources>
