@@ -4,7 +4,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module">
-      // import { Storage } from "@capacitor/storage";
+      import { Storage } from "@capacitor/preferences";
+      window.Storage = Storage;
       // import { Browser } from "@capacitor/browser";
       // window.Browser = Browser;
     </script>
@@ -22,16 +23,12 @@
       <button class="button-1">TEST</button>
       <script>
         (async () => {
-          window.location.href='https://eliots-orp-koobcam.local/mobile-app'
-          
-          //window.localStorage.clear();
-          const selection = window.localStorage.getItem('selection');
-          if (selection !== null) window.location.href = selection;
+          window.setTimeout(() => {
+           
+          }, 0)
         })();
         document.querySelector('.button-1').onclick = () => {
           const href = 'https://eliots-orp-koobcam.local/mobile-app';
-          window.localStorage.setItem('selection', href);
-          window.location.href = href;
         };
       </script>
     </p>
