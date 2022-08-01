@@ -154,7 +154,11 @@
 
 **Conversations List on Sidebar**
 
-- Group conversations by date & pinned (similar to Piazza & Campuswire).
+- Group conversations (similar to Piazza & Campuswire).
+  - Date
+  - Pinned
+  - Tags
+  - Type
 - Separate the conversations in sections: One section for conversations with unread messages.
 - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
   - Wait for a little while, 10~30 minutes, before sorting.
