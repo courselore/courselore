@@ -7,7 +7,6 @@ import { javascript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
-  UserEmailNotificationsForAllMessages,
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -1146,7 +1145,9 @@ export default (app: Courselore): void => {
     app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
-          DELETE FROM "notificationMessageJobs" WHERE "message" = ${messageId}
+          DELETE FROM "notificationMessageJobs"
+          WHERE "message" = ${messageId} AND
+                "startedAt" IS NULL
         `
       );
       app.locals.database.run(
