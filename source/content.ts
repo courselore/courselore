@@ -51,7 +51,7 @@ export type ContentPartial = () => {
   mentions: Set<string>;
 };
 
-export type ContentPartialTODO = ({
+export type TODO = ({
   req,
   res,
   type,
