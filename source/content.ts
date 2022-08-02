@@ -47,22 +47,9 @@ export type ContentPreprocessedPartial = (content: string) => {
 };
 
 export type ContentPartial = ({
-  contentPreprocessed,
-  search,
-}: {
-  contentPreprocessed: HTML;
-  search?: string | string[] | undefined;
-}) => {
-  processed: HTML;
-  mentions: Set<string>;
-};
-
-export type TODO = ({
   req,
   res,
-  type,
-  content,
-  decorate,
+  contentPreprocessed,
   search,
 }: {
   req: express.Request<
@@ -76,15 +63,11 @@ export type TODO = ({
     any,
     BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
-  type: "source" | "preprocessed";
-  content: string;
-  decorate?: boolean;
+  contentPreprocessed: HTML;
   search?: string | string[] | undefined;
 }) => {
-  preprocessed: HTML | undefined;
-  search: string | undefined;
   processed: HTML;
-  mentions: Set<string> | undefined;
+  mentions: Set<string>;
 };
 
 export type ContentEditorPartial = ({
@@ -167,6 +150,8 @@ export default async (app: Courselore): Promise<void> => {
   })();
 
   app.locals.partials.content = ({
+    req,
+    res,
     contentPreprocessed,
     search = undefined,
   }) => {
