@@ -3866,15 +3866,12 @@ export default (app: Courselore): void => {
         );
 
       if (hasMessage) {
-        const processedContent = app.locals.partials.TODO({
-          req,
-          res,
-          type: "source",
-          content: req.body.content!,
-          decorate: true,
-        });
-        if (req.body.shouldNotify === "on")
-          processedContent.mentions!.add("everyone");
+        const preprocessedContent = app.locals.partials.contentPreprocessed(
+          req.body.content!
+        );
+        // TODO: Better email notifications
+        // if (req.body.shouldNotify === "on")
+        //   processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
         }>(
@@ -3898,8 +3895,8 @@ export default (app: Courselore): void => {
                 req.body.isAnonymous === "on" ? new Date().toISOString() : null
               },
               ${req.body.content},
-              ${processedContent.preprocessed},
-              ${processedContent.search}
+              ${preprocessedContent.contentPreprocessed},
+              ${preprocessedContent.contentSearch}
             )
             RETURNING *
           `
@@ -6901,13 +6898,11 @@ export default (app: Courselore): void => {
                                                 };
                                               `}"
                                             >
-                                              $${app.locals.partials.TODO({
+                                              $${app.locals.partials.content({
                                                 req,
                                                 res,
-                                                type: "preprocessed",
-                                                content:
+                                                contentPreprocessed:
                                                   message.contentPreprocessed,
-                                                decorate: true,
                                                 search:
                                                   typeof req.query.conversations
                                                     ?.search === "string" &&
@@ -6916,7 +6911,7 @@ export default (app: Courselore): void => {
                                                     ? req.query.conversations
                                                         .search
                                                     : undefined,
-                                              }).processed}
+                                              }).contentProcessed}
                                             </div>
                                           </div>
 
