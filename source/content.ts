@@ -41,6 +41,16 @@ import {
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
+export type ContentPreprocessPartial = (content: string) => {
+  preprocessed: string;
+  search: string;
+};
+
+export type TODO = () => {
+  processed: HTML;
+  mentions: Set<string>;
+};
+
 export type ContentPartial = ({
   req,
   res,
