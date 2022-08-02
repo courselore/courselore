@@ -41,9 +41,9 @@ import {
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
-export type ContentPreprocessedPartial = (content: string) => {
-  preprocessed: string;
-  search: string;
+export type ContentPreprocessedPartial = (contentSource: string) => {
+  contentPreprocessed: string;
+  contentSearch: string;
 };
 
 export type ContentPartial = ({
@@ -66,7 +66,7 @@ export type ContentPartial = ({
   contentPreprocessed: HTML;
   search?: string | string[] | undefined;
 }) => {
-  processed: HTML;
+  contentProcessed: HTML;
   mentions: Set<string>;
 };
 
@@ -137,14 +137,14 @@ export default async (app: Courselore): Promise<void> => {
       })
       .use(rehypeStringify);
 
-    return (content) => {
+    return (contentSource) => {
       const contentElement = JSDOM.fragment(html`
-        <div>$${unifiedProcessor.processSync(content).toString()}</div>
+        <div>$${unifiedProcessor.processSync(contentSource).toString()}</div>
       `).firstElementChild!;
 
       return {
-        preprocessed: contentElement.innerHTML,
-        search: contentElement.textContent!,
+        contentPreprocessed: contentElement.innerHTML,
+        contentSearch: contentElement.textContent!,
       };
     };
   })();
@@ -599,7 +599,7 @@ export default async (app: Courselore): Promise<void> => {
         }
       })(contentElement);
 
-    return { processed: contentElement.outerHTML, mentions };
+    return { contentProcessed: contentElement.outerHTML, mentions };
   };
 
   app.get<{}, any, {}, { url?: string }, {}>(

@@ -691,7 +691,7 @@ export default (app: Courselore): void => {
                             req,
                             res,
                             contentPreprocessed: user.biographyPreprocessed,
-                          }).processed}
+                          }).contentProcessed}
                         </details>
                       `
                     : html``}
