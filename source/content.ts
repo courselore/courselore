@@ -111,9 +111,54 @@ export type ContentEditorPartial = ({
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.partials.contentPreprocessed = (content) => {
-    return "TODO" as any;
-  };
+  app.locals.partials.contentPreprocessed = await (async () => {
+    const unifiedProcessor = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(
+        rehypeSanitize,
+        deepMerge(rehypeSanitizeDefaultSchema, {
+          attributes: {
+            code: ["className"],
+            span: [["className", "math", "math-inline"]],
+            div: [["className", "math", "math-display"]],
+          },
+        })
+      )
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
+      .use(rehypeShiki, {
+        highlighter: {
+          light: await shiki.getHighlighter({ theme: "light-plus" }),
+          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+        },
+      })
+      .use(() => (tree) => {
+        unistUtilVisit(tree, (node) => {
+          if (
+            (node as any).properties !== undefined &&
+            node.position !== undefined
+          )
+            (node as any).properties.dataPosition = JSON.stringify(
+              node.position
+            );
+        });
+      })
+      .use(rehypeStringify);
+
+    return (content) => {
+      const contentElement = JSDOM.fragment(html`
+        <div>$${unifiedProcessor.processSync(content).toString()}</div>
+      `).firstElementChild!;
+
+      return {
+        preprocessed: contentElement.innerHTML,
+        search: contentElement.textContent!,
+      };
+    };
+  })();
 
   app.locals.partials.content = () => {
     return "TODO" as any;
