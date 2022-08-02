@@ -48,8 +48,10 @@ export type ContentPreprocessedPartial = (content: string) => {
 
 export type ContentPartial = ({
   contentPreprocessed,
+  search,
 }: {
   contentPreprocessed: HTML;
+  search?: string | string[] | undefined;
 }) => {
   processed: HTML;
   mentions: Set<string>;
@@ -164,7 +166,10 @@ export default async (app: Courselore): Promise<void> => {
     };
   })();
 
-  app.locals.partials.content = ({ contentPreprocessed }) => {
+  app.locals.partials.content = ({
+    contentPreprocessed,
+    search = undefined,
+  }) => {
     const contentElement = JSDOM.fragment(html`
       <div key="content" class="content">$${contentPreprocessed}</div>
     `).firstElementChild!;
@@ -259,10 +264,36 @@ export default async (app: Courselore): Promise<void> => {
       }
     }
 
+    // TODO
+
+    if (search !== undefined)
+      (function processTree(node: Node): void {
+        processNode();
+        if (node.hasChildNodes())
+          for (const childNode of node.childNodes) processTree(childNode);
+        function processNode() {
+          switch (node.nodeType) {
+            case node.TEXT_NODE:
+              const parentElement = node.parentElement;
+              if (node.textContent === null || parentElement === null) return;
+              parentElement.replaceChild(
+                JSDOM.fragment(
+                  app.locals.helpers.highlightSearchResult(
+                    html`${node.textContent}`,
+                    search
+                  )
+                ),
+                node
+              );
+              break;
+          }
+        }
+      })(contentElement);
+
     return { processed: contentElement.outerHTML, mentions };
   };
 
-  app.locals.partials.TODO = ({ req, res, search = undefined }) => {
+  app.locals.partials.TODO = ({ req, res }) => {
     if (res.locals.course !== undefined) {
       const narrowReq = req as express.Request<
         {},
@@ -589,30 +620,6 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
     }
-
-    if (search !== undefined)
-      (function processTree(node: Node): void {
-        processNode();
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) processTree(childNode);
-        function processNode() {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (node.textContent === null || parentElement === null) return;
-              parentElement.replaceChild(
-                JSDOM.fragment(
-                  app.locals.helpers.highlightSearchResult(
-                    html`${node.textContent}`,
-                    search
-                  )
-                ),
-                node
-              );
-              break;
-          }
-        }
-      })(contentElement);
   };
 
   app.get<{}, any, {}, { url?: string }, {}>(
