@@ -1189,7 +1189,7 @@ export default (app: Courselore): void => {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
-          mailOptions: string;
+          message: number;
         }>(
           sql`
             SELECT "id", "message"
@@ -1203,11 +1203,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\n${JSON.stringify(
-              JSON.parse(job.mailOptions),
-              undefined,
-              2
-            )}`
+            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\nmessage = ${
+              job.message
+            }`
           );
         }
       });
@@ -1215,10 +1213,10 @@ export default (app: Courselore): void => {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
-          mailOptions: string;
+          message: number;
         }>(
           sql`
-            SELECT "id", "mailOptions"
+            SELECT "id", "message"
             FROM "notificationMessageJobs"
             WHERE "startedAt" < ${new Date(
               Date.now() - 2 * 60 * 1000
@@ -1233,11 +1231,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\n${JSON.stringify(
-              JSON.parse(job.mailOptions),
-              undefined,
-              2
-            )}`
+            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\nmessage = ${
+              job.message
+            }`
           );
         }
       });
@@ -1267,7 +1263,7 @@ export default (app: Courselore): void => {
             );
           return job;
         });
-        if (job === undefined) return;
+        if (job === undefined) break;
         const mailOptions = JSON.parse(job.mailOptions);
         try {
           const sentMessageInfo = await app.locals.options.sendMail(

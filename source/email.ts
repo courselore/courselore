@@ -98,7 +98,7 @@ export default (app: Courselore): void => {
             );
           return job;
         });
-        if (job === undefined) return;
+        if (job === undefined) break;
         const mailOptions = JSON.parse(job.mailOptions);
         try {
           const sentMessageInfo = await app.locals.options.sendMail(
