@@ -98,7 +98,7 @@ import message, {
   NotificationsMailer,
 } from "./message.js";
 
-import content, { ContentPartial, ContentEditorPartial } from "./content.js";
+import content, { ContentPartialTODO, ContentEditorPartial } from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
 import demonstration from "./demonstration.js";
@@ -153,7 +153,7 @@ export interface Courselore extends express.Express {
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
       conversation: ConversationPartial;
-      content: ContentPartial;
+      content: ContentPartialTODO;
       contentEditor: ContentEditorPartial;
     };
     helpers: {

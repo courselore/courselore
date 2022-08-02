@@ -46,12 +46,12 @@ export type ContentPreprocessPartial = (content: string) => {
   search: string;
 };
 
-export type TODO = () => {
+export type ContentPartial = () => {
   processed: HTML;
   mentions: Set<string>;
 };
 
-export type ContentPartial = ({
+export type ContentPartialTODO = ({
   req,
   res,
   type,
