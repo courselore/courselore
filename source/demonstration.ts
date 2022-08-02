@@ -93,12 +93,8 @@ export default (app: Courselore): void => {
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${biographySource},
             ${
-              app.locals.partials.TODO({
-                req,
-                res,
-                type: "source",
-                content: biographySource,
-              }).preprocessed
+              app.locals.partials.contentPreprocessed(biographySource)
+                .contentPreprocessed
             },
             ${
               app.locals.options.host === app.locals.options.tryHost
@@ -1167,13 +1163,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   casual.sentences(lodash.random(1, 6))
                 )
                 .join("\n\n");
-          const processedContent = app.locals.partials.TODO({
-            req,
-            res,
-            type: "source",
-            content: contentSource,
-            decorate: true,
-          });
+          const preprocessedContent =
+            app.locals.partials.contentPreprocessed(contentSource);
           const messageAuthorEnrollment =
             messageReference === 1
               ? conversationAuthorEnrollment
@@ -1223,8 +1214,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 },
                 ${Math.random() < 0.5 ? new Date().toISOString() : null},
                 ${contentSource},
-                ${processedContent.preprocessed},
-                ${processedContent.search}
+                ${preprocessedContent.contentPreprocessed},
+                ${preprocessedContent.contentSearch}
               )
               RETURNING *
             `

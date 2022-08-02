@@ -581,13 +581,8 @@ export default (app: Courselore): void => {
           5 * 60 * 1000
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const processedContent = app.locals.partials.TODO({
-          req,
-          res,
-          type: "source",
-          content: contentSource,
-          decorate: true,
-        });
+        const preprocessedContent =
+          app.locals.partials.contentPreprocessed(contentSource);
         app.locals.database.run(
           sql`
             UPDATE "conversations"
@@ -599,8 +594,8 @@ export default (app: Courselore): void => {
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${processedContent.preprocessed},
-                "contentSearch" = ${processedContent.search}
+                "contentPreprocessed" = ${preprocessedContent.contentPreprocessed},
+                "contentSearch" = ${preprocessedContent.contentSearch}
             WHERE "id" = ${mostRecentMessage.id}
             RETURNING *
           `
@@ -613,13 +608,9 @@ export default (app: Courselore): void => {
           `
         );
       } else {
-        const processedContent = app.locals.partials.TODO({
-          req,
-          res,
-          type: "source",
-          content: req.body.content,
-          decorate: true,
-        });
+        const preprocessedContent = app.locals.partials.contentPreprocessed(
+          req.body.content
+        );
         app.locals.database.run(
           sql`
             UPDATE "conversations"
@@ -671,8 +662,8 @@ export default (app: Courselore): void => {
               },
               ${req.body.isAnswer === "on" ? new Date().toISOString() : null},
               ${req.body.content},
-              ${processedContent.preprocessed},
-              ${processedContent.search}
+              ${preprocessedContent.contentPreprocessed},
+              ${preprocessedContent.contentSearch}
             )
             RETURNING *
           `
@@ -801,19 +792,17 @@ export default (app: Courselore): void => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        const processedContent = app.locals.partials.TODO({
-          req,
-          res,
-          type: "source",
-          content: req.body.content,
-          decorate: true,
-        });
+        const preprocessedContent = app.locals.partials.contentPreprocessed(
+          req.body.content
+        );
         app.locals.database.run(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
-                "contentPreprocessed" = ${processedContent.preprocessed},
-                "contentSearch" = ${processedContent.search},
+                "contentPreprocessed" = ${
+                  preprocessedContent.contentPreprocessed
+                },
+                "contentSearch" = ${preprocessedContent.contentSearch},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `

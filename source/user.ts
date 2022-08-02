@@ -474,12 +474,11 @@ export default (app: Courselore): void => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? app.locals.partials.TODO({
+                    ? app.locals.partials.content({
                         req,
                         res,
-                        type: "preprocessed",
-                        content: user!.biographyPreprocessed,
-                      }).processed
+                        contentPreprocessed: user!.biographyPreprocessed,
+                      }).contentProcessed
                     : html``}
                 </div>
               `
@@ -981,12 +980,8 @@ export default (app: Courselore): void => {
               "biographyPreprocessed" = ${
                 req.body.biography.trim() === ""
                   ? null
-                  : app.locals.partials.TODO({
-                      req,
-                      res,
-                      type: "source",
-                      content: req.body.biography,
-                    }).preprocessed
+                  : app.locals.partials.contentPreprocessed(req.body.biography)
+                      .contentPreprocessed
               }
           WHERE "id" = ${res.locals.user.id}
         `
