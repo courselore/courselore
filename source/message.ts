@@ -581,7 +581,7 @@ export default (app: Courselore): void => {
           5 * 60 * 1000
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const preprocessedContent =
+        const contentPreprocessed =
           app.locals.partials.contentPreprocessed(contentSource);
         app.locals.database.run(
           sql`
@@ -594,8 +594,8 @@ export default (app: Courselore): void => {
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${preprocessedContent.contentPreprocessed},
-                "contentSearch" = ${preprocessedContent.contentSearch}
+                "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
+                "contentSearch" = ${contentPreprocessed.contentSearch}
             WHERE "id" = ${mostRecentMessage.id}
             RETURNING *
           `
@@ -608,7 +608,7 @@ export default (app: Courselore): void => {
           `
         );
       } else {
-        const preprocessedContent = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content
         );
         app.locals.database.run(
@@ -662,8 +662,8 @@ export default (app: Courselore): void => {
               },
               ${req.body.isAnswer === "on" ? new Date().toISOString() : null},
               ${req.body.content},
-              ${preprocessedContent.contentPreprocessed},
-              ${preprocessedContent.contentSearch}
+              ${contentPreprocessed.contentPreprocessed},
+              ${contentPreprocessed.contentSearch}
             )
             RETURNING *
           `
@@ -792,7 +792,7 @@ export default (app: Courselore): void => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        const preprocessedContent = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content
         );
         app.locals.database.run(
@@ -800,9 +800,9 @@ export default (app: Courselore): void => {
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
                 "contentPreprocessed" = ${
-                  preprocessedContent.contentPreprocessed
+                  contentPreprocessed.contentPreprocessed
                 },
-                "contentSearch" = ${preprocessedContent.contentSearch},
+                "contentSearch" = ${contentPreprocessed.contentSearch},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `

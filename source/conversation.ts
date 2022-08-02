@@ -3866,7 +3866,7 @@ export default (app: Courselore): void => {
         );
 
       if (hasMessage) {
-        const preprocessedContent = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content!
         );
         // TODO: Better email notifications
@@ -3895,8 +3895,8 @@ export default (app: Courselore): void => {
                 req.body.isAnonymous === "on" ? new Date().toISOString() : null
               },
               ${req.body.content},
-              ${preprocessedContent.contentPreprocessed},
-              ${preprocessedContent.contentSearch}
+              ${contentPreprocessed.contentPreprocessed},
+              ${contentPreprocessed.contentSearch}
             )
             RETURNING *
           `

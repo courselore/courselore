@@ -1163,7 +1163,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   casual.sentences(lodash.random(1, 6))
                 )
                 .join("\n\n");
-          const preprocessedContent =
+          const contentPreprocessed =
             app.locals.partials.contentPreprocessed(contentSource);
           const messageAuthorEnrollment =
             messageReference === 1
@@ -1214,8 +1214,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 },
                 ${Math.random() < 0.5 ? new Date().toISOString() : null},
                 ${contentSource},
-                ${preprocessedContent.contentPreprocessed},
-                ${preprocessedContent.contentSearch}
+                ${contentPreprocessed.contentPreprocessed},
+                ${contentPreprocessed.contentSearch}
               )
               RETURNING *
             `
