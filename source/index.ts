@@ -101,7 +101,6 @@ import message, {
 import content, {
   ContentPreprocessedPartial,
   ContentPartial,
-  TODO,
   ContentEditorPartial,
 } from "./content.js";
 
@@ -160,7 +159,6 @@ export interface Courselore extends express.Express {
       conversation: ConversationPartial;
       contentPreprocessed: ContentPreprocessedPartial;
       content: ContentPartial;
-      TODO: TODO;
       contentEditor: ContentEditorPartial;
     };
     helpers: {
