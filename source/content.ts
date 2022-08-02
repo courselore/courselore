@@ -2770,13 +2770,13 @@ ${contentSource}</textarea
         app.locals.layouts.partial({
           req,
           res,
-          body: app.locals.partials.TODO({
+          body: app.locals.partials.content({
             req,
             res,
-            type: "source",
-            content: req.body.content,
-            decorate: true,
-          }).processed,
+            contentPreprocessed: app.locals.partials.contentPreprocessed(
+              req.body.content
+            ).contentPreprocessed,
+          }).contentProcessed,
         })
       );
     };
