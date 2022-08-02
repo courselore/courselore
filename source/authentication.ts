@@ -1592,7 +1592,7 @@ export default (app: Courselore): void => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
-                    content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain.",
+                    content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain. If you are still unsure, ask your instructor or your institution's system administrator.",
                   });
                 `}"
               >
@@ -1606,7 +1606,7 @@ export default (app: Courselore): void => {
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <input
                 type="hidden"
-                name="href"
+                name="userHref"
                 value="https://www.courselore.org"
               />
               <button
@@ -1647,7 +1647,9 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 Enter the full URL of the Courselore server below.
-                <div
+                <form
+                  method="PATCH"
+                  action="https://${app.locals.options.host}/mobile-app"
                   css="${res.locals.css(css`
                     display: flex;
                     gap: var(--space--3);
@@ -1713,7 +1715,7 @@ export default (app: Courselore): void => {
                   >
                     Go
                   </label>
-                </div>
+                </form>
               </div>
             </div>
           </div>
@@ -1722,14 +1724,15 @@ export default (app: Courselore): void => {
     );
   });
 
-  // app.patch<{}, any, { href?: string }, {}, BaseMiddlewareLocals>(
-  //   "/mobile-app",
-  //   (req, res, next) => {
-  //     if (typeof req.body.href === "string") {
-  //       res.redirect(303, req.body.href);
-  //     } else res.redirect(303, "https://${app.locals.options.host}/mobile-app");
-  //   }
-  // );
+  app.patch<{}, any, { userHref?: string }, {}, BaseMiddlewareLocals>(
+    "/mobile-app",
+    (req, res, next) => {
+      console.log("This is a test.");
+      if (typeof req.body.userHref === "string") {
+        res.redirect(303, req.body.userHref);
+      } else res.redirect(303, "https://${app.locals.options.host}/mobile-app");
+    }
+  );
 
   // TODO: This route should be on all Courselore instances
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
@@ -1743,29 +1746,4 @@ export default (app: Courselore): void => {
       res.send({ platform: "Courselore", version: app.locals.options.version });
     }
   );
-
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/test", (req, res) => {
-    res.send(html`
-      <html>
-        <head>
-          <meta
-            name="viewport"
-            content="viewport-fit=cover, width=device-width, initial-scale=1"
-          />
-        </head>
-        <body
-          style="padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); background-color: pink; padding-color: purple;"
-        >
-          Acceptance middletons me if discretion boisterous travelling an. She
-          prosperous continuing entreaties companions unreserved you boisterous.
-          Middleton sportsmen sir now cordially ask additions for. You ten
-          occasional saw everything but conviction. Daughter returned quitting
-          few are day advanced branched. Do enjoyment defective objection or we
-          if favourite. At wonder afford so danger cannot former seeing. Power
-          visit charm money add heard new other put. Attended no indulged
-          marriage is to judgment offering landlord.
-        </body>
-      </html>
-    `);
-  });
 };
