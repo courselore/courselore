@@ -111,6 +111,14 @@ export type ContentEditorPartial = ({
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
+  app.locals.partials.contentPreprocessed = (content) => {
+    return "TODO" as any;
+  };
+
+  app.locals.partials.content = () => {
+    return "TODO" as any;
+  };
+
   app.locals.partials.TODO = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
