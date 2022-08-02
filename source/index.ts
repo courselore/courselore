@@ -99,7 +99,7 @@ import message, {
 } from "./message.js";
 
 import content, {
-  ContentPreprocessPartial,
+  ContentPreprocessedPartial,
   ContentPartial,
   TODO,
   ContentEditorPartial,
@@ -158,6 +158,8 @@ export interface Courselore extends express.Express {
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
       conversation: ConversationPartial;
+      contentPreprocessed: ContentPreprocessedPartial;
+      content: ContentPartial;
       TODO: TODO;
       contentEditor: ContentEditorPartial;
     };
