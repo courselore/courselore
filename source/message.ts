@@ -581,7 +581,7 @@ export default (app: Courselore): void => {
           5 * 60 * 1000
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const processedContent = app.locals.partials.content({
+        const processedContent = app.locals.partials.TODO({
           req,
           res,
           type: "source",
@@ -613,7 +613,7 @@ export default (app: Courselore): void => {
           `
         );
       } else {
-        const processedContent = app.locals.partials.content({
+        const processedContent = app.locals.partials.TODO({
           req,
           res,
           type: "source",
@@ -801,7 +801,7 @@ export default (app: Courselore): void => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        const processedContent = app.locals.partials.content({
+        const processedContent = app.locals.partials.TODO({
           req,
           res,
           type: "source",

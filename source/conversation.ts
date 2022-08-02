@@ -3866,7 +3866,7 @@ export default (app: Courselore): void => {
         );
 
       if (hasMessage) {
-        const processedContent = app.locals.partials.content({
+        const processedContent = app.locals.partials.TODO({
           req,
           res,
           type: "source",
@@ -6901,7 +6901,7 @@ export default (app: Courselore): void => {
                                                 };
                                               `}"
                                             >
-                                              $${app.locals.partials.content({
+                                              $${app.locals.partials.TODO({
                                                 req,
                                                 res,
                                                 type: "preprocessed",

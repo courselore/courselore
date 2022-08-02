@@ -93,7 +93,7 @@ export default (app: Courselore): void => {
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${biographySource},
             ${
-              app.locals.partials.content({
+              app.locals.partials.TODO({
                 req,
                 res,
                 type: "source",
@@ -1167,7 +1167,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   casual.sentences(lodash.random(1, 6))
                 )
                 .join("\n\n");
-          const processedContent = app.locals.partials.content({
+          const processedContent = app.locals.partials.TODO({
             req,
             res,
             type: "source",

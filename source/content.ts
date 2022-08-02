@@ -111,7 +111,7 @@ export type ContentEditorPartial = ({
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.partials.content = await (async () => {
+  app.locals.partials.TODO = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -2804,7 +2804,7 @@ ${contentSource}</textarea
         app.locals.layouts.partial({
           req,
           res,
-          body: app.locals.partials.content({
+          body: app.locals.partials.TODO({
             req,
             res,
             type: "source",

@@ -3943,7 +3943,7 @@ export default (app: Courselore): void => {
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            $${app.locals.partials.content({
+                            $${app.locals.partials.TODO({
                               req,
                               res,
                               type: "preprocessed",

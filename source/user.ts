@@ -474,7 +474,7 @@ export default (app: Courselore): void => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? app.locals.partials.content({
+                    ? app.locals.partials.TODO({
                         req,
                         res,
                         type: "preprocessed",
@@ -981,7 +981,7 @@ export default (app: Courselore): void => {
               "biographyPreprocessed" = ${
                 req.body.biography.trim() === ""
                   ? null
-                  : app.locals.partials.content({
+                  : app.locals.partials.TODO({
                       req,
                       res,
                       type: "source",

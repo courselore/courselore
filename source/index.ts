@@ -158,7 +158,7 @@ export interface Courselore extends express.Express {
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
       conversation: ConversationPartial;
-      content: TODO;
+      TODO: TODO;
       contentEditor: ContentEditorPartial;
     };
     helpers: {
