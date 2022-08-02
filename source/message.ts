@@ -1143,29 +1143,44 @@ export default (app: Courselore): void => {
 
   app.locals.mailers.notifications = ({ req, res, messageId }) => {
     app.locals.database.executeTransaction(() => {
-      app.locals.database.run(
+      const job = app.locals.database.get<{ id: number }>(
         sql`
-          DELETE FROM "notificationMessageJobs"
+          SELECT "id"
+          FROM "notificationMessageJobs"
           WHERE "message" = ${messageId} AND
                 "startedAt" IS NULL
         `
       );
-      app.locals.database.run(
-        sql`
-          INSERT INTO "notificationMessageJobs" (
-            "createdAt",
-            "startAt",
-            "expiresAt",
-            "message"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-            ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
-            ${messageId}
-          )
-        `
-      );
+      if (job === undefined)
+        app.locals.database.run(
+          sql`
+            INSERT INTO "notificationMessageJobs" (
+              "createdAt",
+              "startAt",
+              "expiresAt",
+              "message"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
+              ${messageId}
+            )
+          `
+        );
+      else
+        app.locals.database.run(
+          sql`
+            UPDATE "notificationMessageJobs"
+            SET "startAt" = ${new Date(
+              Date.now() + 5 * 60 * 1000
+            ).toISOString()},
+                "expiresAt" = ${new Date(
+                  Date.now() + 5 * 60 * 60 * 1000
+                ).toISOString()}
+            WHERE "id" = ${job.id}
+          `
+        );
     });
   };
 
