@@ -176,26 +176,9 @@ export default async (app: Courselore): Promise<void> => {
   app.locals.partials.TODO = ({
     req,
     res,
-    type,
-    content,
     decorate = false,
     search = undefined,
   }) => {
-    const contentElement = JSDOM.fragment(html`
-      <div key="content" class="content">
-        $${type === "source"
-          ? unifiedProcessor.processSync(content).toString()
-          : type === "preprocessed"
-          ? content
-          : html``}
-      </div>
-    `).firstElementChild!;
-    const contentPreprocessed =
-      type === "source" ? contentElement.innerHTML : undefined;
-    const contentSearch =
-      type === "source" ? contentElement.textContent! : undefined;
-    let mentions: Set<string> | undefined;
-
     for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
       element.innerHTML = [...element.childNodes].some(
         (node) =>
