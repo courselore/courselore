@@ -205,6 +205,7 @@ export default (app: Courselore): void => {
 
       const enrollment = app.locals.database.get<{
         id: number;
+        reference: string;
         courseRole: CourseRole;
       }>(
         sql`
@@ -287,12 +288,13 @@ export default (app: Courselore): void => {
         );
       }
 
-      const enrollments: { id: number; courseRole: CourseRole }[] = [
+      const enrollments = [
         enrollment,
         ...enrollmentsUsers.map(
           (enrollmentUser) =>
             app.locals.database.get<{
               id: number;
+              reference: string;
               courseRole: CourseRole;
             }>(
               sql`
@@ -376,6 +378,22 @@ export default (app: Courselore): void => {
 - LaTeX: \`remark-math\`, \`rehype-katex\`, \`katex\`
 - Syntax Highlighting: \`@leafac/rehype-shiki\`, \`shiki\`
 - HTML: \`rehype-raw\`, \`rehype-sanitize\` (\`hast-util-sanitize\`)
+
+---
+
+# Mentions & References
+
+Self: @${enrollment.reference}
+
+Other: @${lodash.sample(enrollments)!.reference}
+
+Non-existent: @1571024857
+
+Conversation: #1
+
+Message: #1/1
+
+Non-existent: #14981039481
 
 ---
 
@@ -1108,7 +1126,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   ? new Date().toISOString()
                   : null
               },
-              ${Math.random() < 0.25 ? new Date().toISOString() : null},
+              ${
+                isExampleOfAllFeaturesInRichTextMessages
+                  ? null
+                  : Math.random() < 0.25
+                  ? new Date().toISOString()
+                  : null
+              },
               ${title},
               ${html`${title}`},
               ${nextMessageReference}
