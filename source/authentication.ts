@@ -1552,8 +1552,7 @@ export default (app: Courselore): void => {
             css="${res.locals.css(css`
               display: flex;
               gap: var(--space--10);
-              padding: var(--space--20) var(--space--10) var(--space--10)
-                var(--space--10);
+              padding: var(--space--10);
               align-items: center;
               flex-direction: column;
             `)}"
@@ -1744,4 +1743,22 @@ export default (app: Courselore): void => {
       res.send({ platform: "Courselore", version: app.locals.options.version });
     }
   );
+
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/test", (req, res) => {
+    res.send(html`
+      <html>
+        <head>
+          <meta 
+            name="viewport"
+            content="viewport-fit=cover, width=device-width, initial-scale=1"
+          >
+        </head>
+        <body 
+          style="padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); background-color: pink; padding-color: purple;"
+        >
+          Acceptance middletons me if discretion boisterous travelling an. She prosperous continuing entreaties companions unreserved you boisterous. Middleton sportsmen sir now cordially ask additions for. You ten occasional saw everything but conviction. Daughter returned quitting few are day advanced branched. Do enjoyment defective objection or we if favourite. At wonder afford so danger cannot former seeing. Power visit charm money add heard new other put. Attended no indulged marriage is to judgment offering landlord. 
+        </body>
+      </html>
+    `);
+  });
 };

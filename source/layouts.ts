@@ -190,17 +190,55 @@ export default async (app: Courselore): Promise<void> => {
           }
         `)}"
       >
+        $${app.locals.options.demonstration
+          ? html`
+              <div
+                css="${res.locals.css(css`
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  bottom: 0;
+                  left: 0;
+                  height: env(safe-area-inset-top);
+                  background-color: var(--color--gray--medium--50);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--800);
+                  }
+                `)}"
+              ></div>
+            `
+          : html``}
+        <div
+          css="${res.locals.css(css`
+            position: absolute;
+            top: 100vh-env(safe-area-inset-bottom);
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: env(safe-area-inset-bottom);
+            background-color: var(--color--gray--medium--50);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--medium--800);
+            }
+          `)}"
+        ></div>
         <div
           key="viewport"
           css="${res.locals.css(css`
             position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
+            top: env(safe-area-inset-top);
+            right: env(safe-area-inset-right);
+            bottom: env(safe-area-inset-bottom);
+            left: env(safe-area-inset-left);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            @media (orientation: landscape) {
+              top: env(safe-area-inset-top);
+              right: 0;
+              bottom: env(safe-area-inset-bottom);
+              left: 0;
+            }
           `)}"
           onload="${javascript`
             this.onscroll = () => {
@@ -940,7 +978,7 @@ export default async (app: Courselore): Promise<void> => {
           <meta charset="UTF-8" />
           <meta
             name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
+            content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1"
           />
           <meta
             name="description"
