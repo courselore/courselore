@@ -98,7 +98,12 @@ import message, {
   NotificationsMailer,
 } from "./message.js";
 
-import content, { ContentPartialTODO, ContentEditorPartial } from "./content.js";
+import content, {
+  ContentPreprocessPartial,
+  ContentPartial,
+  ContentPartialTODO,
+  ContentEditorPartial,
+} from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
 import demonstration from "./demonstration.js";
