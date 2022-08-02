@@ -264,36 +264,6 @@ export default async (app: Courselore): Promise<void> => {
       }
     }
 
-    // TODO
-
-    if (search !== undefined)
-      (function processTree(node: Node): void {
-        processNode();
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) processTree(childNode);
-        function processNode() {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (node.textContent === null || parentElement === null) return;
-              parentElement.replaceChild(
-                JSDOM.fragment(
-                  app.locals.helpers.highlightSearchResult(
-                    html`${node.textContent}`,
-                    search
-                  )
-                ),
-                node
-              );
-              break;
-          }
-        }
-      })(contentElement);
-
-    return { processed: contentElement.outerHTML, mentions };
-  };
-
-  app.locals.partials.TODO = ({ req, res }) => {
     if (res.locals.course !== undefined) {
       const narrowReq = req as express.Request<
         {},
@@ -350,7 +320,6 @@ export default async (app: Courselore): Promise<void> => {
         element.textContent = `#${conversation.reference}/${message.reference}`;
       }
 
-      mentions = new Set();
       (function processTree(node: Node): void {
         processNode();
         if (node.hasChildNodes())
@@ -620,6 +589,32 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
     }
+
+    if (search !== undefined)
+      (function processTree(node: Node): void {
+        processNode();
+        if (node.hasChildNodes())
+          for (const childNode of node.childNodes) processTree(childNode);
+        function processNode() {
+          switch (node.nodeType) {
+            case node.TEXT_NODE:
+              const parentElement = node.parentElement;
+              if (node.textContent === null || parentElement === null) return;
+              parentElement.replaceChild(
+                JSDOM.fragment(
+                  app.locals.helpers.highlightSearchResult(
+                    html`${node.textContent}`,
+                    search
+                  )
+                ),
+                node
+              );
+              break;
+          }
+        }
+      })(contentElement);
+
+    return { processed: contentElement.outerHTML, mentions };
   };
 
   app.get<{}, any, {}, { url?: string }, {}>(
