@@ -231,8 +231,8 @@ export default async (app: Courselore): Promise<void> => {
 
       if (
         !(
-          href.startsWith("#") ||
-          href.startsWith(`https://${app.locals.options.host}`)
+          href.startsWith(`https://${app.locals.options.host}`) ||
+          href.startsWith("#")
         )
       ) {
         element.setAttribute("target", "_blank");
