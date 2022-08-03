@@ -146,7 +146,8 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
   (req, res, next) => {
     // TODO: Verify that the user is on the mobile app via Capacitor, if possible
     // Currently bypasses cookies for testing
-    if (false) { //req.cookies.mobileAppRedirectUrl !== undefined
+    if (false) {
+      //req.cookies.mobileAppRedirectUrl !== undefined
       res.redirect(303, req.cookies.mobileAppURedirectUrl);
       return;
     }
@@ -1712,7 +1713,9 @@ export default (app: Courselore): void => {
         // JSON.parse(httpRequest.responseText).platform !== "Courselore"
         res.redirect(
           303,
-          `https://${app.locals.options.host}/mobile-app/confirm-selection/${encodeURIComponent(req.body.href)}`
+          `https://${
+            app.locals.options.host
+          }/mobile-app/confirm-selection/${encodeURIComponent(req.body.href)}`
         );
         return;
       }
