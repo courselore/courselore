@@ -229,13 +229,16 @@ export default async (app: Courselore): Promise<void> => {
       )
         element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
 
+      const isExternal =
+        !href.startsWith(`https://${app.locals.options.host}`) &&
+        !href.startsWith("#");
       if (
-        !(
-          href.startsWith(`https://${app.locals.options.host}`) ||
-          href.startsWith("#")
-        )
-      ) {
+        isExternal ||
+        href.startsWith(`https://${app.locals.options.host}/files/`)
+      )
         element.setAttribute("target", "_blank");
+
+      if (isExternal)
         element.setAttribute(
           "onload",
           javascript`
@@ -250,7 +253,6 @@ export default async (app: Courselore): Promise<void> => {
             });
           `
         );
-      }
     }
 
     if (res.locals.course !== undefined) {
