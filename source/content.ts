@@ -222,32 +222,32 @@ export default async (app: Courselore): Promise<void> => {
         href = `#user-content-${href.slice(1)}--${namespace}`;
         element.setAttribute("href", href);
       }
+
       if (
         href.startsWith("#user-content-user-content-fnref-") &&
         element.innerHTML === "↩"
       )
         element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
+
       if (
-        (!href.startsWith("#") &&
-          !href.startsWith(`https://${app.locals.options.host}`)) ||
-        href.startsWith(`https://${app.locals.options.host}/files/`)
+        !(
+          href.startsWith("#") ||
+          href.startsWith(`https://${app.locals.options.host}`)
+        )
       ) {
         element.setAttribute("target", "_blank");
         element.setAttribute(
           "onload",
           javascript`
-            ${
-              href.startsWith(`https://${app.locals.options.host}/files/`)
-                ? javascript``
-                : javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${res.locals.html(
-                        html`External link to <code class="code">${href}</code>`
-                      )},
-                    });
-                  `
-            }
+            (this.tooltip ??= tippy(this)).setProps({
+              touch: false,
+              content: ${res.locals.html(
+                href.startsWith("mailto:")
+                  ? html`Send email to
+                      <code class="code">${href.slice("mailto:".length)}</code>`
+                  : html`External link to <code class="code">${href}</code>`
+              )},
+            });
           `
         );
       }
