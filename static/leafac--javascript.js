@@ -76,10 +76,7 @@ const leafac = {
         event.shiftKey ||
         event.target.isContentEditable ||
         link === null ||
-        !link.href.startsWith(`https://${host}`) ||
-        link.href.startsWith(
-          `${window.location.origin}${window.location.pathname}#`
-        )
+        !link.href.startsWith(`https://${host}`)
       )
         return;
       event.preventDefault();
