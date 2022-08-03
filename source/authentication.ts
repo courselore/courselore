@@ -1592,7 +1592,7 @@ export default (app: Courselore): void => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
-                    content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain. If you are still unsure, ask your instructor or your institution's system administrator.",
+                    content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain. If you are unsure, ask your instructor or your institution's system administrator.",
                   });
                 `}"
               >
@@ -1688,7 +1688,7 @@ export default (app: Courselore): void => {
                             />
                             <input
                               type="hidden"
-                              name="href"
+                              name="userHref"
                               value=""
                             />
                             <p>
@@ -1727,10 +1727,9 @@ export default (app: Courselore): void => {
   app.patch<{}, any, { userHref?: string }, {}, BaseMiddlewareLocals>(
     "/mobile-app",
     (req, res, next) => {
-      console.log("This is a test.");
       if (typeof req.body.userHref === "string") {
         res.redirect(303, req.body.userHref);
-      } else res.redirect(303, "https://${app.locals.options.host}/mobile-app");
+      } else res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
     }
   );
 
