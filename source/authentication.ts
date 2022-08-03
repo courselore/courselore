@@ -145,9 +145,11 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
 >[] = [
   (req, res, next) => {
     // TODO: Verify that the user is on the mobile app via Capacitor, if possible
+    // Currently clears cookies for testing
     req.cookies.mobileAppRedirectUrl = undefined;
     if (req.cookies.mobileAppRedirectUrl !== undefined) {
-     return res.redirect(303, req.cookies.mobileAppURedirectUrl);
+      res.redirect(303, req.cookies.mobileAppURedirectUrl);
+      return;
     }
     next();
   },
@@ -1632,20 +1634,6 @@ export default (app: Courselore): void => {
                   css="${res.locals.css(css`
                     align-items: center;
                   `)}"
-                  onload="${javascript`
-                    // TODO: Delay patch, or do validation within patch
-                    this.onclick = () => {
-                      (() => {
-                        const httpRequest = new XMLHttpRequest();
-                        httpRequest.open("GET", "https://courselore.org");
-                        httpRequest.send();
-                        httpRequest.onreadystatechange = () => {
-                          if (this.readyState === 4 && this.status === 200)
-                            // TODO: JSON.parse(httpResponse.responseText);
-                        };                      
-                      })();
-                    };
-                  `}"
                 >
                   $${app.locals.partials.logo({ size: 20 })} Hosted by
                   Courselore
@@ -1694,64 +1682,9 @@ export default (app: Courselore): void => {
                       class="input--text secondary"
                       value="https://"
                     />
-                    <label
-                      class="button button--blue heading--display"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          // TODO: Validate url, see XMLHttpRequest above
-                        };
-
-                        (this.dropdown ??= tippy(this)).setProps({
-                          theme: "rose",
-                          trigger: "click",
-                          interactive: true,
-                          content: ${res.locals.html(`
-                            <form
-                              method="PATCH"
-                              action="https://${
-                                app.locals.options.host
-                              }/mobile-app"
-                              css="${res.locals.css(css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `)}"
-                            >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <input
-                                type="hidden"
-                                name="userHref"
-                                value=""
-                              />
-                              <p>
-                                The URL you entered could not be validated as being for a Courselore installation. It may not be supported in the Courselore app, and selecting it could result in unexpected behavior.
-                              </p>
-                              <p>
-                                <strong
-                                  css="${res.locals.css(css`
-                                    font-weight: var(--font-weight--bold);
-                                  `)}"
-                                >
-                                  Are you sure you want to continue?
-                                </strong>
-                              </p>
-                              <button
-                                class="button button--rose"
-                              >
-                                Yes, continue anyways
-                              </button>
-                            </form>
-                          `)},
-                        });
-                     `}"
-                    >
+                    <button class="button button--blue heading--display">
                       Go
-                    </label>
+                    </button>
                   </form>
                 </div>
               </div>
@@ -1765,14 +1698,79 @@ export default (app: Courselore): void => {
   app.patch<{}, any, { userHref?: string }, {}, BaseMiddlewareLocals>(
     "/mobile-app",
     (req, res, next) => {
-      if (typeof req.body.userHref !== "string")
-        return next("validation");
-      req.cookies.mobileAppRedirectUrl = req.body.userHref;
-      res.cookie("mobileAppRedirectUrl", req.body.userHref, {
-        ...app.locals.options.cookies,
-        maxAge: app.locals.helpers.Session.maxAge,
-      });
-      res.redirect(303, req.body.userHref);
+      if (typeof req.body.userHref !== "string") return next("validation");
+
+      // TODO: URL validation
+      // const httpRequest = new XMLHttpRequest();
+      // httpRequest.open("GET", req.body.userHref, false);
+      // httpRequest.send( null );
+      // httpRequest.onreadystatechange = () => {
+      // JSON.parse(httpRequest.responseText).platform !== "Courselore"
+      if (true) {
+        res.redirect(
+          303,
+          `https://${app.locals.options.host}/mobile-app/confirm-selection`
+        );
+        return;
+      }
+
+      // req.cookies.mobileAppRedirectUrl = req.body.userHref;
+      // res.cookie("mobileAppRedirectUrl", req.body.userHref, {
+      //   ...app.locals.options.cookies,
+      //   maxAge: app.locals.helpers.Session.maxAge,
+      // });
+      // res.redirect(303, req.body.userHref);
+    }
+  );
+
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/mobile-app/confirm-selection",
+    (req, res) => {
+      res.send(
+        app.locals.layouts.base({
+          req,
+          res,
+          head: html` <title>Confirm Selection · Courselore</title> `,
+          body: html`
+            <div
+              css="${res.locals.css(css`
+                display: flex;
+                gap: var(--space--10);
+                padding: var(--space--10);
+                align-items: center;
+                flex-direction: column;
+              `)}"
+            >
+              <h3
+                class="heading--display"
+                css="${res.locals.css(css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `)}"
+              >
+                The URL you entered could not be validated as being for a
+                Courselore installation. It may not be supported in the
+                Courselore app, and selecting it could result in unexpected
+                behavior.
+              </h3>
+              <h3
+                class="heading--display text--rose"
+                css="${res.locals.css(css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `)}"
+              >
+                Are you sure you want to continue?
+              </h3>
+              <button class="button button--rose heading--display">
+                Yes, continue anyways
+              </button>
+            </div>
+          `,
+        })
+      );
     }
   );
 
