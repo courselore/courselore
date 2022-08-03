@@ -163,7 +163,10 @@ export default async (app: Courselore): Promise<void> => {
     for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
       element.innerHTML = [...element.childNodes].some(
         (node) =>
-          node.nodeType === node.TEXT_NODE && node.textContent!.trim() !== ""
+          (node.nodeType === node.TEXT_NODE &&
+            node.textContent!.trim() !== "") ||
+          (node.nodeType === node.ELEMENT_NODE &&
+            (node as Element).matches("a"))
       )
         ? html`<div><p>$${element.innerHTML}</p></div>`
         : html`<div>$${element.innerHTML}</div>`;
