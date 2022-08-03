@@ -188,28 +188,29 @@ export default async (app: Courselore): Promise<void> => {
     }
 
     for (const element of contentElement.querySelectorAll("details")) {
-      const summaries: Node[] = [];
-      const rest: Node[] = [];
-      for (const child of element.childNodes)
-        (child.nodeType === child.ELEMENT_NODE &&
-        (child as Element).matches("summary")
-          ? summaries
-          : rest
-        ).push(child);
-      switch (summaries.length) {
-        case 0:
-          summaries.push(
-            JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!
-          );
-          break;
-        case 1:
-          break;
-        default:
-          continue;
-      }
+      const childNodes = [...element.childNodes];
+      while (
+        childNodes.length > 0 &&
+        childNodes[0].nodeType === childNodes[0].TEXT_NODE &&
+        typeof childNodes[0].nodeValue === "string" &&
+        childNodes[0].nodeValue.trim() === ""
+      )
+        childNodes.shift();
       const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
-      wrapper.replaceChildren(...rest);
-      element.replaceChildren(summaries[0], wrapper);
+      if (
+        childNodes.length > 0 &&
+        childNodes[0].nodeType === childNodes[0].ELEMENT_NODE &&
+        (childNodes[0] as Element).matches("summary")
+      ) {
+        wrapper.replaceChildren(...childNodes.slice(1));
+        element.replaceChildren(childNodes[0], wrapper);
+      } else {
+        wrapper.replaceChildren(...childNodes);
+        element.replaceChildren(
+          JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!,
+          wrapper
+        );
+      }
     }
 
     const namespace = Math.random().toString(36).slice(2);
