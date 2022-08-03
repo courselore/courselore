@@ -145,9 +145,8 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
 >[] = [
   (req, res, next) => {
     // TODO: Verify that the user is on the mobile app via Capacitor, if possible
-    // Currently clears cookies for testing
-    req.cookies.mobileAppRedirectUrl = undefined;
-    if (req.cookies.mobileAppRedirectUrl !== undefined) {
+    // Currently bypasses cookies for testing
+    if (false) { //req.cookies.mobileAppRedirectUrl !== undefined
       res.redirect(303, req.cookies.mobileAppURedirectUrl);
       return;
     }
@@ -1626,7 +1625,7 @@ export default (app: Courselore): void => {
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
                 <input
                   type="hidden"
-                  name="userHref"
+                  name="href"
                   value="https://courselore.org"
                 />
                 <button
@@ -1677,10 +1676,15 @@ export default (app: Courselore): void => {
                     `)}"
                   >
                     <input
-                      key="url-input-box"
+                      type="hidden"
+                      name="_csrf"
+                      value="${req.csrfToken()}"
+                    />
+                    <input
                       type="url"
-                      class="input--text secondary"
+                      name="href"
                       value="https://"
+                      class="input--text secondary"
                     />
                     <button class="button button--blue heading--display">
                       Go
@@ -1695,36 +1699,35 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.patch<{}, any, { userHref?: string }, {}, BaseMiddlewareLocals>(
+  app.patch<{}, any, { href?: string }, {}, BaseMiddlewareLocals>(
     "/mobile-app",
     (req, res, next) => {
-      if (typeof req.body.userHref !== "string") return next("validation");
+      if (typeof req.body.href !== "string") return next("validation");
 
       // TODO: URL validation
       // const httpRequest = new XMLHttpRequest();
-      // httpRequest.open("GET", req.body.userHref, false);
+      // httpRequest.open("GET", req.body.href, false);
       // httpRequest.send( null );
-      // httpRequest.onreadystatechange = () => {
-      // JSON.parse(httpRequest.responseText).platform !== "Courselore"
       if (true) {
+        // JSON.parse(httpRequest.responseText).platform !== "Courselore"
         res.redirect(
           303,
-          `https://${app.locals.options.host}/mobile-app/confirm-selection`
+          `https://${app.locals.options.host}/mobile-app/confirm-selection/${encodeURIComponent(req.body.href)}`
         );
         return;
       }
 
-      // req.cookies.mobileAppRedirectUrl = req.body.userHref;
-      // res.cookie("mobileAppRedirectUrl", req.body.userHref, {
+      // req.cookies.mobileAppRedirectUrl = req.body.href;
+      // res.cookie("mobileAppRedirectUrl", req.body.href, {
       //   ...app.locals.options.cookies,
       //   maxAge: app.locals.helpers.Session.maxAge,
       // });
-      // res.redirect(303, req.body.userHref);
+      // res.redirect(303, req.body.href);
     }
   );
 
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-    "/mobile-app/confirm-selection",
+  app.get<{ href: string }, any, {}, {}, BaseMiddlewareLocals>(
+    "/mobile-app/confirm-selection/:href",
     (req, res) => {
       res.send(
         app.locals.layouts.base({
@@ -1764,9 +1767,27 @@ export default (app: Courselore): void => {
               >
                 Are you sure you want to continue?
               </h3>
-              <button class="button button--rose heading--display">
-                Yes, continue anyways
-              </button>
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  gap: var(--space--5);
+                  align-items: center;
+                  flex-direction: column;
+                `)}"
+              >
+                <a
+                  class="button button--rose heading--display"
+                  href="${decodeURIComponent(req.params.href)}"
+                >
+                  Yes, continue anyways
+                </a>
+                <a
+                  class="button button--blue heading--display"
+                  href="https://${app.locals.options.host}/mobile-app"
+                >
+                  Go back
+                </a>
+              </div>
             </div>
           `,
         })
