@@ -134,6 +134,25 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   mayCreateCourses: boolean;
 }
 
+// TODO: This middleware is needed only on courselore.org, for /mobile-app
+interface IsUsingMobileAppMiddlewareLocals extends BaseMiddlewareLocals {}
+const isUsingMobileAppMiddleware: express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsUsingMobileAppMiddlewareLocals
+>[] = [
+  (req, res, next) => {
+    // TODO: Verify that the user is on the mobile app via Capacitor, if possible
+    req.cookies.mobileAppRedirectUrl = undefined;
+    if (req.cookies.mobileAppRedirectUrl !== undefined) {
+     return res.redirect(303, req.cookies.mobileAppURedirectUrl);
+    }
+    next();
+  },
+];
+
 export type EmailVerificationMailer = ({
   req,
   res,
@@ -1541,195 +1560,219 @@ export default (app: Courselore): void => {
   );
 
   // TODO: This route should be on courselore.org only
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/mobile-app", (req, res) => {
-    res.send(
-      app.locals.layouts.base({
-        req,
-        res,
-        head: html``,
-        body: html`
-          <div
-            css="${res.locals.css(css`
-              display: flex;
-              gap: var(--space--10);
-              padding: var(--space--10);
-              align-items: center;
-              flex-direction: column;
-            `)}"
-            onload="${javascript`
-
-              
-            `}"
-          >
-            <div class="decorative-icon">
-              $${app.locals.partials.logo({
-                size: 144 /* var(--space--36) */,
-              })}
-            </div>
+  app.get<{}, any, {}, {}, IsUsingMobileAppMiddlewareLocals>(
+    "/mobile-app",
+    ...isUsingMobileAppMiddleware,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.base({
+          req,
+          res,
+          head: html``,
+          body: html`
             <div
-              class="heading--display"
               css="${res.locals.css(css`
-                font-size: var(--font-size--5xl);
-                line-height: var(--line-height--5xl);
-                font-weight: var(--font-weight--black);
+                display: flex;
+                gap: var(--space--10);
+                padding: var(--space--10);
                 align-items: center;
+                flex-direction: column;
               `)}"
             >
-              Welcome to Courselore!
-            </div>
-            <h3
-              class="heading--display secondary"
-              css="${res.locals.css(css`
-                font-size: var(--font-size--lg);
-                line-height: var(--line-height--lg);
-                font-weight: var(--font-weight--bold);
-              `)}"
-            >
-              Thank you for installing the Courselore app. To begin, select the
-              type of Courselore installation you plan to access.
-              <button
-                class="button button--tight button--tight--inline button--inline button--transparent"
-                onload="${javascript`
+              <div class="decorative-icon">
+                $${app.locals.partials.logo({
+                  size: 144 /* var(--space--36) */,
+                })}
+              </div>
+              <div
+                class="heading--display"
+                css="${res.locals.css(css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
+                  align-items: center;
+                `)}"
+              >
+                Welcome to Courselore!
+              </div>
+              <h3
+                class="heading--display secondary"
+                css="${res.locals.css(css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `)}"
+              >
+                Thank you for installing the Courselore app. To begin, select
+                the type of Courselore installation you plan to access.
+                <button
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     content: "An installation hosted by Courselore has the 'courselore.org' domain. A self hosted installation does not have that domain. If you are unsure, ask your instructor or your institution's system administrator.",
                   });
                 `}"
+                >
+                  <i class="bi bi-info-circle"></i>
+                </button>
+              </h3>
+              <form
+                method="PATCH"
+                action="https://${app.locals.options.host}/mobile-app"
               >
-                <i class="bi bi-info-circle"></i>
-              </button>
-            </h3>
-            <form
-              method="PATCH"
-              action="https://${app.locals.options.host}/mobile-app"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <input
-                type="hidden"
-                name="userHref"
-                value="https://www.courselore.org"
-              />
-              <button
-                class="button button--blue heading--display"
-                css="${res.locals.css(css`
-                  align-items: center;
-                `)}"
-              >
-                $${app.locals.partials.logo({ size: 20 })} Hosted by Courselore
-              </button>
-            </form>
-            <div
-              css="${res.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: var(--space--5);
-              `)}"
-            >
-              <button
-                class="button button--blue heading--display"
-                onload="${javascript`
-                  this.onclick = () => {
-                    document.querySelector('[key="url-input"]').hidden = !document.querySelector('[key="url-input"]').hidden;
-                  }
-                `}"
-              >
-                <i class="bi bi-person-fill"></i>
-                Self hosted
-              </button>
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+                <input
+                  type="hidden"
+                  name="userHref"
+                  value="https://courselore.org"
+                />
+                <button
+                  class="button button--blue heading--display"
+                  css="${res.locals.css(css`
+                    align-items: center;
+                  `)}"
+                  onload="${javascript`
+                    // TODO: Delay patch, or do validation within patch
+                    this.onclick = () => {
+                      (() => {
+                        const httpRequest = new XMLHttpRequest();
+                        httpRequest.open("GET", "https://courselore.org");
+                        httpRequest.send();
+                        httpRequest.onreadystatechange = () => {
+                          if (this.readyState === 4 && this.status === 200)
+                            // TODO: JSON.parse(httpResponse.responseText);
+                        };                      
+                      })();
+                    };
+                  `}"
+                >
+                  $${app.locals.partials.logo({ size: 20 })} Hosted by
+                  Courselore
+                </button>
+              </form>
               <div
-                key="url-input"
-                hidden
                 css="${res.locals.css(css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--3);
+                  align-items: center;
+                  gap: var(--space--5);
                 `)}"
               >
-                Enter the full URL of the Courselore server below.
-                <form
-                  method="PATCH"
-                  action="https://${app.locals.options.host}/mobile-app"
+                <button
+                  class="button button--blue heading--display"
+                  onload="${javascript`
+                    this.onclick = () => {
+                      document.querySelector('[key="url-input"]').hidden = !document.querySelector('[key="url-input"]').hidden;
+                    }
+                  `}"
+                >
+                  <i class="bi bi-person-fill"></i>
+                  Self hosted
+                </button>
+                <div
+                  key="url-input"
+                  hidden
                   css="${res.locals.css(css`
                     display: flex;
+                    flex-direction: column;
                     gap: var(--space--3);
                   `)}"
                 >
-                  <input
-                    key="url-input-box"
-                    type="url"
-                    class="input--text secondary"
-                    value="https://"
-                  />
-                  <label
-                    class="button button--blue heading--display"
-                    onload="${javascript`
-                      (this.dropdown ??= tippy(this)).setProps({
-                        theme: "rose",
-                        trigger: "click",
-                        interactive: true,
-                        content: ${res.locals.html(`
-                          <form
-                            method="PATCH"
-                            action="https://${
-                              app.locals.options.host
-                            }/mobile-app"
-                            css="${res.locals.css(css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `)}"
-                          >
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="${req.csrfToken()}"
-                            />
-                            <input
-                              type="hidden"
-                              name="userHref"
-                              value=""
-                            />
-                            <p>
-                              The URL you entered could not be validated as being for a Courselore installation. It may not be supported in the Courselore app, and selecting it could result in unexpected behavior.
-                            </p>
-                            <p>
-                              <strong
-                                css="${res.locals.css(css`
-                                  font-weight: var(--font-weight--bold);
-                                `)}"
-                              >
-                                Are you sure you want to continue?
-                              </strong>
-                            </p>
-                            <button
-                              class="button button--rose"
-                            >
-                              Yes, continue anyways
-                            </button>
-                          </form>
-                        `)},
-                      });
-                    `}"
+                  Enter the full URL of the Courselore server below.
+                  <form
+                    method="PATCH"
+                    action="https://${app.locals.options.host}/mobile-app"
+                    css="${res.locals.css(css`
+                      display: flex;
+                      gap: var(--space--3);
+                    `)}"
                   >
-                    Go
-                  </label>
-                </form>
+                    <input
+                      key="url-input-box"
+                      type="url"
+                      class="input--text secondary"
+                      value="https://"
+                    />
+                    <label
+                      class="button button--blue heading--display"
+                      onload="${javascript`
+                        this.onclick = () => {
+                          // TODO: Validate url, see XMLHttpRequest above
+                        };
+
+                        (this.dropdown ??= tippy(this)).setProps({
+                          theme: "rose",
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.html(`
+                            <form
+                              method="PATCH"
+                              action="https://${
+                                app.locals.options.host
+                              }/mobile-app"
+                              css="${res.locals.css(css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `)}"
+                            >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
+                              <input
+                                type="hidden"
+                                name="userHref"
+                                value=""
+                              />
+                              <p>
+                                The URL you entered could not be validated as being for a Courselore installation. It may not be supported in the Courselore app, and selecting it could result in unexpected behavior.
+                              </p>
+                              <p>
+                                <strong
+                                  css="${res.locals.css(css`
+                                    font-weight: var(--font-weight--bold);
+                                  `)}"
+                                >
+                                  Are you sure you want to continue?
+                                </strong>
+                              </p>
+                              <button
+                                class="button button--rose"
+                              >
+                                Yes, continue anyways
+                              </button>
+                            </form>
+                          `)},
+                        });
+                     `}"
+                    >
+                      Go
+                    </label>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-        `,
-      })
-    );
-  });
+          `,
+        })
+      );
+    }
+  );
 
   app.patch<{}, any, { userHref?: string }, {}, BaseMiddlewareLocals>(
     "/mobile-app",
     (req, res, next) => {
-      if (typeof req.body.userHref === "string") {
-        res.redirect(303, req.body.userHref);
-      } else res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
+      if (typeof req.body.userHref !== "string")
+        return next("validation");
+      req.cookies.mobileAppRedirectUrl = req.body.userHref;
+      res.cookie("mobileAppRedirectUrl", req.body.userHref, {
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Session.maxAge,
+      });
+      res.redirect(303, req.body.userHref);
     }
   );
 
@@ -1737,11 +1780,11 @@ export default (app: Courselore): void => {
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/mobile-app/validation",
     (req, res) => {
-      // req.cookies.isUsingMobileApp = "true";
-      // res.cookie("isUsingMobileApp", "true", {
-      //   ...app.locals.options.cookies,
-      //   maxAge: app.locals.helpers.Session.maxAge,
-      // });
+      req.cookies.isUsingMobileApp = "true";
+      res.cookie("isUsingMobileApp", "true", {
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Session.maxAge,
+      });
       res.send({ platform: "Courselore", version: app.locals.options.version });
     }
   );
