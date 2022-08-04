@@ -9,6 +9,7 @@ const leafac = {
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (body.getAttribute("live-navigating") !== null) return;
+      const isGet = ["GET", "HEAD"].includes(request.method);
       const requestURL = new URL(request.url);
       if (
         isGet &&
@@ -25,11 +26,11 @@ const leafac = {
           document
             .getElementById(window.location.hash.slice(1))
             ?.scrollIntoView();
+        previousLocation = { ...window.location };
         return;
       }
       body.setAttribute("live-navigating", "true");
       const detail = { request, previousLocation };
-      const isGet = ["GET", "HEAD"].includes(request.method);
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
