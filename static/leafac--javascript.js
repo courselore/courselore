@@ -26,7 +26,10 @@ const leafac = {
             window.location.pathname === requestURL.pathname &&
             window.location.search === requestURL.search
           ) {
-            if (window.location.hash !== requestURL.hash)
+            if (
+              window.location.hash !== requestURL.hash &&
+              !(event instanceof PopStateEvent)
+            )
               window.history.pushState(undefined, "", request.url);
           } else {
             abortController = new AbortController();
