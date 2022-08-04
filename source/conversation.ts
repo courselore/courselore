@@ -5382,7 +5382,12 @@ export default (app: Courselore): void => {
                     `)}"
                     onload="${javascript`
                       window.setTimeout(() => {
-                        if (event?.detail?.previousLocation?.pathname !== window.location.pathname) {
+                        if (
+                          event?.detail?.previousLocation?.pathname !== window.location.pathname || (
+                            typeof event?.detail?.previousLocation?.href === "string" &&
+                            new URL(event.detail.previousLocation.href).searchParams.get("messages[messageReference]") !== new URL(window.location.href).searchParams.get("messages[messageReference]")
+                          )
+                        ) {
                           ${
                             typeof req.query.messages?.messageReference ===
                               "string" &&
