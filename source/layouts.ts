@@ -190,7 +190,9 @@ export default async (app: Courselore): Promise<void> => {
           }
         `)}"
       >
-        $${app.locals.options.demonstration
+        $${app.locals.options.demonstration ||
+        app.locals.options.environment !== "production" ||
+        window.location.href !== `https://${app.locals.options.host}/mobile-app`
           ? html`
               <div
                 css="${res.locals.css(css`
@@ -200,7 +202,7 @@ export default async (app: Courselore): Promise<void> => {
                   bottom: 0;
                   left: 0;
                   height: env(safe-area-inset-top);
-                  background-color: var(--color--gray--medium--50);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--medium--800);
                   }
@@ -216,7 +218,7 @@ export default async (app: Courselore): Promise<void> => {
             bottom: 0;
             left: 0;
             height: env(safe-area-inset-bottom);
-            background-color: var(--color--gray--medium--50);
+            background-color: var(--color--gray--medium--100);
             @media (prefers-color-scheme: dark) {
               background-color: var(--color--gray--medium--800);
             }
@@ -245,7 +247,7 @@ export default async (app: Courselore): Promise<void> => {
               this.scroll(0, 0);
             };
 
-            const body = document.querySelector("body");
+            const body = document.querySelector('[key="main"]'); //document.querySelector("body");
 
             ${
               res.locals.user !== undefined &&
@@ -917,7 +919,7 @@ export default async (app: Courselore): Promise<void> => {
           hidden
           css="${res.locals.css(css`
             position: fixed;
-            top: 0;
+            top: env(safe-area-inset-top);
             right: 0;
             left: 0;
           `)}"
