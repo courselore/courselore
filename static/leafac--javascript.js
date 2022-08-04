@@ -26,10 +26,10 @@ const leafac = {
           const responseText = await response.text();
           const responseURL = new URL(response.url);
           if (
-            !(event instanceof PopStateEvent) &&
             (isGet ||
               window.location.origin !== responseURL.origin ||
-              window.location.pathname !== responseURL.pathname)
+              window.location.pathname !== responseURL.pathname) &&
+            !(event instanceof PopStateEvent)
           )
             window.history.pushState(undefined, "", response.url);
           leafac.loadDocument(responseText, detail);
