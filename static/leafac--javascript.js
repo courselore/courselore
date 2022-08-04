@@ -19,20 +19,27 @@ const leafac = {
         window.onbeforenavigate?.() !== false
       ) {
         try {
-          abortController = new AbortController();
-          const response = await fetch(request, {
-            signal: abortController.signal,
-          });
-          const responseText = await response.text();
-          const responseURL = new URL(response.url);
+          const requestURL = new URL(request.url);
           if (
-            (isGet ||
-              window.location.origin !== responseURL.origin ||
-              window.location.pathname !== responseURL.pathname) &&
-            !(event instanceof PopStateEvent)
-          )
-            window.history.pushState(undefined, "", response.url);
-          leafac.loadDocument(responseText, detail);
+            !isGet ||
+            window.location.origin !== requestURL.origin ||
+            window.location.pathname !== requestURL.pathname
+          ) {
+            abortController = new AbortController();
+            const response = await fetch(request, {
+              signal: abortController.signal,
+            });
+            const responseText = await response.text();
+            const responseURL = new URL(response.url);
+            if (
+              (isGet ||
+                window.location.origin !== responseURL.origin ||
+                window.location.pathname !== responseURL.pathname) &&
+              !(event instanceof PopStateEvent)
+            )
+              window.history.pushState(undefined, "", response.url);
+            leafac.loadDocument(responseText, detail);
+          }
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
