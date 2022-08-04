@@ -1734,12 +1734,12 @@ export default (app: Courselore): void => {
         return;
       }
 
-      // req.cookies.mobileAppRedirectUrl = req.body.href;
-      // res.cookie("mobileAppRedirectUrl", req.body.href, {
-      //   ...app.locals.options.cookies,
-      //   maxAge: app.locals.helpers.Session.maxAge,
-      // });
-      // res.redirect(303, req.body.href);
+      req.cookies.mobileAppRedirectUrl = req.body.href;
+      res.cookie("mobileAppRedirectUrl", req.body.href, {
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Session.maxAge,
+      });
+      res.redirect(303, req.body.href);
     }
   );
 
