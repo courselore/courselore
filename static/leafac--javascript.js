@@ -9,6 +9,24 @@ const leafac = {
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (body.getAttribute("live-navigating") !== null) return;
+      const requestURL = new URL(request.url);
+      if (
+        isGet &&
+        window.location.origin === requestURL.origin &&
+        window.location.pathname === requestURL.pathname &&
+        window.location.search === requestURL.search
+      ) {
+        if (
+          window.location.hash !== requestURL.hash &&
+          !(event instanceof PopStateEvent)
+        )
+          window.history.pushState(undefined, "", request.url);
+        if (window.location.hash.trim() !== "")
+          document
+            .getElementById(window.location.hash.slice(1))
+            ?.scrollIntoView();
+        return;
+      }
       body.setAttribute("live-navigating", "true");
       const detail = { request, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
@@ -19,35 +37,21 @@ const leafac = {
         window.onbeforenavigate?.() !== false
       ) {
         try {
-          const requestURL = new URL(request.url);
+          abortController = new AbortController();
+          const response = await fetch(request, {
+            signal: abortController.signal,
+          });
+          const responseText = await response.text();
+          const responseURL = new URL(response.url);
           if (
-            isGet &&
-            window.location.origin === requestURL.origin &&
-            window.location.pathname === requestURL.pathname &&
-            window.location.search === requestURL.search
-          ) {
-            if (
-              window.location.hash !== requestURL.hash &&
-              !(event instanceof PopStateEvent)
-            )
-              window.history.pushState(undefined, "", request.url);
-          } else {
-            abortController = new AbortController();
-            const response = await fetch(request, {
-              signal: abortController.signal,
-            });
-            const responseText = await response.text();
-            const responseURL = new URL(response.url);
-            if (
-              (isGet ||
-                window.location.origin !== responseURL.origin ||
-                window.location.pathname !== responseURL.pathname ||
-                window.location.search !== responseURL.search) &&
-              !(event instanceof PopStateEvent)
-            )
-              window.history.pushState(undefined, "", response.url);
-            leafac.loadDocument(responseText, detail);
-          }
+            (isGet ||
+              window.location.origin !== responseURL.origin ||
+              window.location.pathname !== responseURL.pathname ||
+              window.location.search !== responseURL.search) &&
+            !(event instanceof PopStateEvent)
+          )
+            window.history.pushState(undefined, "", response.url);
+          leafac.loadDocument(responseText, detail);
           if (window.location.hash.trim() !== "")
             document
               .getElementById(window.location.hash.slice(1))
