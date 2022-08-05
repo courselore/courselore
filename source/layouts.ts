@@ -589,7 +589,12 @@ export default async (app: Courselore): Promise<void> => {
               overflow: auto;
             `)}"
             onload="${javascript`
-              if (event?.detail?.previousLocation?.pathname !== window.location.pathname) this.scroll(0, 0);
+              if (
+                event?.detail?.previousLocation?.origin !== window.location.origin ||
+                event?.detail?.previousLocation?.pathname !== window.location.pathname ||
+                event?.detail?.previousLocation?.search !== window.location.search
+              )
+                this.scroll(0, 0);
             `}"
           >
             $${body}
