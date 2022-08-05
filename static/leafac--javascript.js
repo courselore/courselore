@@ -11,6 +11,7 @@ const leafac = {
       else if (body.getAttribute("live-navigating") !== null) return;
       const isGet = ["GET", "HEAD"].includes(request.method);
       const requestURL = new URL(request.url);
+      const detail = { request, previousLocation };
       if (
         isGet &&
         window.location.origin === requestURL.origin &&
@@ -22,6 +23,7 @@ const leafac = {
           !(event instanceof PopStateEvent)
         )
           window.history.pushState(undefined, "", request.url);
+        window.dispatchEvent(new CustomEvent("navigateself", { detail }));
         if (window.location.hash.trim() !== "")
           document
             .getElementById(window.location.hash.slice(1))
@@ -30,7 +32,6 @@ const leafac = {
         return;
       }
       body.setAttribute("live-navigating", "true");
-      const detail = { request, previousLocation };
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })

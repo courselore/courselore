@@ -5381,7 +5381,8 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      window.setTimeout(() => {
+                      window.removeEventListener("navigateself", this.scrollConversation);
+                      this.scrollConversation = () => {
                         if (
                           [undefined, "GET", "HEAD"].includes(event?.detail?.request?.method) &&
                           !event?.detail?.liveUpdate
@@ -5424,7 +5425,9 @@ export default (app: Courselore): void => {
                               `
                             : javascript``
                         }
-                      });
+                      };
+                      window.addEventListener("navigateself", this.scrollConversation);
+                      window.setTimeout(this.scrollConversation);
                     `}"
                   >
                     <div
