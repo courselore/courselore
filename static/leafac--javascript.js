@@ -6,6 +6,7 @@ const leafac = {
     let previousLocation = { ...window.location };
 
     const navigate = async ({ request, event }) => {
+      request.headers.set("Live-Navigation", "true");
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (body.getAttribute("live-navigating") !== null) return;
