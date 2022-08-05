@@ -43,6 +43,8 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
+import mobile from "./mobile.js";
+
 import administrator, { AdministrationOptions } from "./administration.js";
 export {
   UserSystemRolesWhoMayCreateCourses,
@@ -226,6 +228,7 @@ export default async (options: Options): Promise<Courselore> => {
   liveUpdates(app);
   await layouts(app);
   authentication(app);
+  mobile(app);
   administrator(app);
   about(app);
   user(app);

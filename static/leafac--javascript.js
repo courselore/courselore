@@ -127,8 +127,10 @@ const leafac = {
       documentString,
       "text/html"
     );
-    document.querySelector("title").textContent =
-      newDocument.querySelector("title").textContent;
+    const documentTitle = document.querySelector("title");
+    const newDocumentTitle = newDocument.querySelector("title");
+    if (documentTitle !== null && newDocumentTitle !== null)
+      documentTitle.textContent = newDocumentTitle.textContent;
     if (!detail.liveUpdate)
       for (const element of document.querySelectorAll(`[key="local-css"]`))
         element.remove();
