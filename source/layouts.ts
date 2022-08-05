@@ -190,55 +190,21 @@ export default async (app: Courselore): Promise<void> => {
           }
         `)}"
       >
-        $${app.locals.options.demonstration ||
-        app.locals.options.environment !== "production" ||
-        window.location.href !== `https://${app.locals.options.host}/mobile-app`
-          ? html`
-              <div
-                css="${res.locals.css(css`
-                  position: absolute;
-                  top: 0;
-                  right: 0;
-                  bottom: 0;
-                  left: 0;
-                  height: env(safe-area-inset-top);
-                  background-color: var(--color--gray--medium--100);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--800);
-                  }
-                `)}"
-              ></div>
-            `
-          : html``}
-        <div
-          css="${res.locals.css(css`
-            position: absolute;
-            top: 100vh-env(safe-area-inset-bottom);
-            right: 0;
-            bottom: 0;
-            left: 0;
-            height: env(safe-area-inset-bottom);
-            background-color: var(--color--gray--medium--100);
-            @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--medium--800);
-            }
-          `)}"
-        ></div>
         <div
           key="viewport"
           css="${res.locals.css(css`
             position: absolute;
-            top: env(safe-area-inset-top);
+            top: 0;
             right: env(safe-area-inset-right);
-            bottom: env(safe-area-inset-bottom);
+            bottom: 0;
             left: env(safe-area-inset-left);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             @media (orientation: landscape) {
-              top: env(safe-area-inset-top);
+              top: 0;
               right: 0;
-              bottom: env(safe-area-inset-bottom);
+              bottom: 0;
               left: 0;
             }
           `)}"
@@ -432,7 +398,10 @@ export default async (app: Courselore): Promise<void> => {
                 <div
                   key="header--accent-color"
                   css="${res.locals.css(css`
-                    height: var(--border-width--8);
+                    height: max(
+                      var(--border-width--8),
+                      env(safe-area-inset-top)
+                    );
                     display: flex;
                   `)}"
                 >
@@ -584,6 +553,9 @@ export default async (app: Courselore): Promise<void> => {
                   css="${res.locals.css(css`
                     justify-content: center;
                     flex-wrap: wrap;
+                    padding-top: ${res.locals.enrollment === undefined
+                      ? "env(safe-area-inset-top)"
+                      : "0"};
                   `)}"
                 >
                   $${headerMeta}
@@ -653,6 +625,7 @@ export default async (app: Courselore): Promise<void> => {
               display: flex;
               justify-content: center;
               flex-wrap: wrap;
+              padding-bottom: env(safe-area-inset-bottom);
             `)}"
           >
             <div>
@@ -2610,7 +2583,10 @@ export default async (app: Courselore): Promise<void> => {
         <div
           key="header--menu--primary"
           css="${res.locals.css(css`
-            padding-top: var(--space--1);
+            padding-top: ${app.locals.options.environment === "production" &&
+            !app.locals.options.demonstration
+              ? "max(var(--space--1), env(safe-area-inset-top))"
+              : "var(--space--1)"};
             padding-bottom: var(--space--1);
             gap: var(--space--4);
             align-items: center;

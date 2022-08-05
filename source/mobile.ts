@@ -37,7 +37,7 @@ export default (app: Courselore): void => {
         app.locals.layouts.base({
           req,
           res,
-          head: html``,
+          head: html`<title>Mobile App Setup · Courselore</title>`,
           body: html`
             <div
               css="${res.locals.css(css`
@@ -172,20 +172,16 @@ export default (app: Courselore): void => {
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.href !== "string") return next("validation");
 
-      // TODO: URL validation
       let isValidUrl: boolean;
-
       try {
         const parsedText = (await got(
           `${req.body.href}/information`
-        ).json()) as { platform: string };
+        ).json()) as { platform: string; version: string };
         isValidUrl = parsedText.platform === "Courselore";
       } catch (error) {
-        // TODO: res.send("It didn’t work 🤷")
         isValidUrl = false;
       }
 
-      // TODO: isValidUrl is a promise, not a boolean
       if (!isValidUrl) {
         res.redirect(
           303,
@@ -199,12 +195,12 @@ export default (app: Courselore): void => {
         ...app.locals.options.cookies,
         maxAge: app.locals.helpers.Session.maxAge,
       });
-      res.redirect(303, req.body.href);
+      res.redirect(303, `${req.body.href}/mobile-app/entrypoint`);
     })
   );
 
   // TODO: This route should be on courselore.org only
-  app.get<{ href: string }, any, {}, {}, BaseMiddlewareLocals>(
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/mobile-app/invalid-selection",
     (req, res) => {
       res.send(
@@ -251,9 +247,9 @@ export default (app: Courselore): void => {
                     font-weight: var(--font-weight--bold);
                   `)}"
                 >
-                  Try to submit the URL again, ensuring there
-                  are no typos. If the problem persists, contact your instructor
-                  or your institution's system administrator.
+                  Try to submit the URL again, ensuring there are no typos. If
+                  the problem persists, contact your instructor or your
+                  institution's system administrator.
                 </h3>
                 <div
                   css="${res.locals.css(css`
@@ -281,6 +277,7 @@ export default (app: Courselore): void => {
     res.send({ platform: "Courselore", version: app.locals.options.version });
   });
 
+  // TODO: This route should be on all Courselore instances
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/mobile-app/entrypoint",
     (req, res) => {
