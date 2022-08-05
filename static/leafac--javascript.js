@@ -43,6 +43,12 @@ const leafac = {
           const response = await fetch(request, {
             signal: abortController.signal,
           });
+          if (response.headers.has("Live-Navigation-External-Redirect")) {
+            window.location.assign(
+              response.headers.get("Live-Navigation-External-Redirect")
+            );
+            return;
+          }
           const responseText = await response.text();
           const responseURL = new URL(response.url);
           if (
