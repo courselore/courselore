@@ -151,7 +151,7 @@ export default (app: Courselore): void => {
                     <input
                       type="url"
                       name="href"
-                      value="https://"
+                      placeholder="https://example-server.org"
                       class="input--text secondary"
                     />
                     <button class="button button--blue heading--display">
@@ -189,9 +189,7 @@ export default (app: Courselore): void => {
       if (!isValidUrl) {
         res.redirect(
           303,
-          `https://${
-            app.locals.options.host
-          }/mobile-app/confirm-selection/${encodeURIComponent(req.body.href)}`
+          `https://${app.locals.options.host}/mobile-app/invalid-selection`
         );
         return;
       }
@@ -207,66 +205,69 @@ export default (app: Courselore): void => {
 
   // TODO: This route should be on courselore.org only
   app.get<{ href: string }, any, {}, {}, BaseMiddlewareLocals>(
-    "/mobile-app/confirm-selection/:href",
+    "/mobile-app/invalid-selection",
     (req, res) => {
       res.send(
         app.locals.layouts.base({
           req,
           res,
-          head: html` <title>Confirm Selection · Courselore</title> `,
+          head: html` <title>Invalid Selection · Courselore</title> `,
           body: html`
             <div
+              key="layout--box"
               css="${res.locals.css(css`
+                min-width: 100%;
+                min-height: 100%;
                 display: flex;
-                gap: var(--space--10);
-                padding: var(--space--10);
+                justify-content: center;
                 align-items: center;
-                flex-direction: column;
               `)}"
             >
-              <h3
-                class="heading--display"
-                css="${res.locals.css(css`
-                  font-size: var(--font-size--lg);
-                  line-height: var(--line-height--lg);
-                  font-weight: var(--font-weight--bold);
-                `)}"
-              >
-                The URL you entered could not be validated as being for a
-                Courselore installation. It may not be supported in the
-                Courselore app, and selecting it could result in unexpected
-                behavior.
-              </h3>
-              <h3
-                class="heading--display text--rose"
-                css="${res.locals.css(css`
-                  font-size: var(--font-size--lg);
-                  line-height: var(--line-height--lg);
-                  font-weight: var(--font-weight--bold);
-                `)}"
-              >
-                Are you sure you want to continue?
-              </h3>
               <div
                 css="${res.locals.css(css`
                   display: flex;
-                  gap: var(--space--5);
-                  align-items: center;
+                  gap: var(--space--10);
+                  padding: var(--space--10);
                   flex-direction: column;
                 `)}"
               >
-                <a
-                  class="button button--rose heading--display"
-                  href="${decodeURIComponent(req.params.href)}"
+                <h3
+                  class="heading--display"
+                  css="${res.locals.css(css`
+                    font-size: var(--font-size--lg);
+                    line-height: var(--line-height--lg);
+                    font-weight: var(--font-weight--bold);
+                  `)}"
                 >
-                  Yes, continue anyways
-                </a>
-                <a
-                  class="button button--blue heading--display"
-                  href="https://${app.locals.options.host}/mobile-app"
+                  The URL you entered could not be validated as being for a
+                  Courselore installation, and is not currently supported by the
+                  Courselore app.
+                </h3>
+                <h3
+                  class="heading--display"
+                  css="${res.locals.css(css`
+                    font-size: var(--font-size--lg);
+                    line-height: var(--line-height--lg);
+                    font-weight: var(--font-weight--bold);
+                  `)}"
                 >
-                  Go back
-                </a>
+                  Try to submit the URL again, ensuring there
+                  are no typos. If the problem persists, contact your instructor
+                  or your institution's system administrator.
+                </h3>
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                    justify-content: center;
+                  `)}"
+                >
+                  <a
+                    class="button button--blue heading--display"
+                    href="https://${app.locals.options.host}/mobile-app"
+                  >
+                    Go back
+                  </a>
+                </div>
               </div>
             </div>
           `,
