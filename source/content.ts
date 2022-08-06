@@ -316,8 +316,7 @@ export default async (app: Courselore): Promise<void> => {
 
       (function processTree(node: Node): void {
         processNode();
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) processTree(childNode);
+        for (const childNode of node.childNodes) processTree(childNode);
         function processNode() {
           if (node.nodeType !== node.TEXT_NODE) return;
           const parentElement = node.parentElement;
@@ -584,8 +583,7 @@ export default async (app: Courselore): Promise<void> => {
     if (search !== undefined)
       (function processTree(node: Node): void {
         processNode();
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) processTree(childNode);
+        for (const childNode of node.childNodes) processTree(childNode);
         function processNode() {
           if (node.nodeType !== node.TEXT_NODE) return;
           const parentElement = node.parentElement;
