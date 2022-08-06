@@ -633,6 +633,7 @@ const { app, BrowserWindow } = require("electron");
   - On the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
   - In chats, submitting a form collapses the `conversation--header--full`.
 - Scroll to URL `#hashes`, which may occur in the middle of a message.
+- On main conversation page, when using a link like `#23/4` that’s a reference to another message in the conversation you’re in (say you’re conversation `#23` in this example), then there’s a weird scrolling glitch for a split second.
 
 ## Live-Updates
 
