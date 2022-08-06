@@ -20,7 +20,7 @@ const leafac = {
         previousLocation.search === requestURL.search
       ) {
         if (
-          window.location.hash !== requestURL.hash &&
+          previousLocation.hash !== requestURL.hash &&
           !(event instanceof PopStateEvent)
         )
           window.history.pushState(undefined, "", requestURL.href);
