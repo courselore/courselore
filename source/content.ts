@@ -224,10 +224,12 @@ export default async (app: Courselore): Promise<void> => {
       }
     }
 
-    for (const element of contentElement.querySelectorAll("[id]"))
-      element.setAttribute("id", `${id}--${element.getAttribute("id")}`);
-    for (const element of contentElement.querySelectorAll("[name]"))
-      element.setAttribute("name", `${id}--${element.getAttribute("name")}`);
+    for (const attribute of ["id", "name"])
+      for (const element of contentElement.querySelectorAll(`[${attribute}]`))
+        element.setAttribute(
+          attribute,
+          `${id}--${element.getAttribute(attribute)}`
+        );
     for (const element of contentElement.querySelectorAll("[href]")) {
       let href = element.getAttribute("href")!;
       if (href.startsWith("#")) {
