@@ -5,7 +5,7 @@ const leafac = {
     let abortController;
     let previousLocation = { ...window.location };
 
-    const navigate = async ({ request, event }) => {
+    const liveNavigate = async ({ request, event }) => {
       request.headers.set("Live-Navigation", "true");
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
@@ -24,7 +24,7 @@ const leafac = {
           !(event instanceof PopStateEvent)
         )
           window.history.pushState(undefined, "", requestURL.href);
-        window.dispatchEvent(new CustomEvent("navigateself", { detail }));
+        window.dispatchEvent(new CustomEvent("livenavigateself", { detail }));
         if (window.location.hash.trim() !== "")
           document
             .getElementById(window.location.hash.slice(1))
@@ -34,13 +34,13 @@ const leafac = {
       }
       if (
         !window.dispatchEvent(
-          new CustomEvent("beforenavigate", { cancelable: true, detail })
+          new CustomEvent("beforelivenavigate", { cancelable: true, detail })
         ) ||
-        window.onbeforenavigate?.() === false
+        window.onbeforelivenavigate?.() === false
       )
         return;
       body.setAttribute("live-navigating", "true");
-      window.dispatchEvent(new CustomEvent("navigate", { detail }));
+      window.dispatchEvent(new CustomEvent("livenavigate", { detail }));
       try {
         abortController = new AbortController();
         const response = await fetch(request, {
@@ -84,7 +84,7 @@ const leafac = {
               "You appear to be offline. Please check your internet connection and try reloading the page.",
           });
           body.liveNavigationErrorTooltip.show();
-          window.onnavigateerror?.();
+          window.onlivenavigateerror?.();
         }
       }
       previousLocation = { ...window.location };
@@ -117,7 +117,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      navigate({ request: new Request(link.href), event });
+      liveNavigate({ request: new Request(link.href), event });
     };
 
     document.onsubmit = async (event) => {
@@ -148,11 +148,11 @@ const leafac = {
             return new Request(actionURL.href, { method });
           })()
         : new Request(action, { method, body });
-      navigate({ request, event });
+      liveNavigate({ request, event });
     };
 
     window.onpopstate = async (event) => {
-      navigate({
+      liveNavigate({
         request: new Request(window.location),
         event,
       });
@@ -335,7 +335,7 @@ const leafac = {
     const body = document.querySelector("body");
     let inLiveNavigation = false;
     window.addEventListener(
-      "navigate",
+      "livenavigate",
       (event) => {
         event.detail.request.headers.set("Live-Updates-Abort", nonce);
         inLiveNavigation = true;
@@ -348,7 +348,7 @@ const leafac = {
         const abort = () => {
           abortController.abort();
         };
-        window.addEventListener("navigate", abort, { once: true });
+        window.addEventListener("livenavigate", abort, { once: true });
         let heartbeatTimeout = setTimeout(abort, 50 * 1000);
         const response = await fetch(window.location.href, {
           headers: { "Live-Updates": nonce },
@@ -522,7 +522,7 @@ const leafac = {
       event.preventDefault();
       event.returnValue = "";
     };
-    window.addEventListener("beforenavigate", (event) => {
+    window.addEventListener("beforelivenavigate", (event) => {
       if (
         isSubmittingForm ||
         !leafac.isModified(document.querySelector("body")) ||

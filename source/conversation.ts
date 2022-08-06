@@ -5429,9 +5429,9 @@ export default (app: Courselore): void => {
                             : javascript``
                         }
                       };
-                      window.addEventListener("navigateself", scroll);
-                      window.addEventListener("navigate", () => {
-                        window.removeEventListener("navigateself", scroll);
+                      window.addEventListener("livenavigateself", scroll);
+                      window.addEventListener("livenavigate", () => {
+                        window.removeEventListener("livenavigateself", scroll);
                       }, { once: true });
                       window.setTimeout(scroll);
                     `}"

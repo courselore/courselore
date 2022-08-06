@@ -894,7 +894,7 @@ export default async (app: Courselore): Promise<void> => {
               content: "Loading…",
             });
 
-            window.onbeforenavigate = () => {
+            window.onbeforelivenavigate = () => {
               const parentElement = this;
               parentElement.hidden = false;
               const element = parentElement.querySelector("div");
@@ -908,7 +908,7 @@ export default async (app: Courselore): Promise<void> => {
               })();
             };
 
-            window.onnavigateerror = () => {
+            window.onlivenavigateerror = () => {
               this.hidden = true;
             };
           `}"
