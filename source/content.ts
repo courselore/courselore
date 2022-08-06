@@ -236,7 +236,7 @@ export default async (app: Courselore): Promise<void> => {
       }
 
       if (
-        href.startsWith("#user-content-user-content-fnref-") &&
+        href.startsWith(`#${id}--user-content-fnref-`) &&
         element.innerHTML === "↩"
       )
         element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
