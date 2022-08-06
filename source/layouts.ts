@@ -894,7 +894,7 @@ export default async (app: Courselore): Promise<void> => {
               content: "Loading…",
             });
 
-            window.onbeforelivenavigate = () => {
+            window.onlivenavigate = () => {
               const parentElement = this;
               parentElement.hidden = false;
               const element = parentElement.querySelector("div");

@@ -32,15 +32,10 @@ const leafac = {
         previousLocation = { ...window.location };
         return;
       }
-      if (
-        !window.dispatchEvent(
-          new CustomEvent("beforelivenavigate", { cancelable: true, detail })
-        ) ||
-        window.onbeforelivenavigate?.() === false
-      )
-        return;
+      if (window.onbeforelivenavigate?.() === false) return;
       body.setAttribute("live-navigation", "true");
       window.dispatchEvent(new CustomEvent("livenavigate", { detail }));
+      window.onlivenavigate?.();
       try {
         abortController = new AbortController();
         const response = await fetch(request, {
@@ -522,18 +517,12 @@ const leafac = {
       event.preventDefault();
       event.returnValue = "";
     };
-    window.addEventListener("beforelivenavigate", (event) => {
-      if (
-        isSubmittingForm ||
-        !leafac.isModified(document.querySelector("body")) ||
-        confirm(
-          "Your changes will be lost if you leave this page. Do you wish to continue?"
-        )
-      )
-        return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    });
+    window.onbeforelivenavigate = () =>
+      isSubmittingForm ||
+      !leafac.isModified(document.querySelector("body")) ||
+      confirm(
+        "Your changes will be lost if you leave this page. Do you wish to continue?"
+      );
   },
 
   isModified(element) {
