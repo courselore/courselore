@@ -23,7 +23,7 @@ const leafac = {
           window.location.hash !== requestURL.hash &&
           !(event instanceof PopStateEvent)
         )
-          window.history.pushState(undefined, "", request.url);
+          window.history.pushState(undefined, "", requestURL.href);
         window.dispatchEvent(new CustomEvent("navigateself", { detail }));
         if (window.location.hash.trim() !== "")
           document
@@ -52,6 +52,7 @@ const leafac = {
           }
           const responseText = await response.text();
           const responseURL = new URL(response.url);
+          responseURL.hash = requestURL.hash;
           if (
             (isGet ||
               window.location.origin !== responseURL.origin ||
@@ -59,7 +60,7 @@ const leafac = {
               window.location.search !== responseURL.search) &&
             !(event instanceof PopStateEvent)
           )
-            window.history.pushState(undefined, "", response.url);
+            window.history.pushState(undefined, "", responseURL.href);
           leafac.loadDocument(responseText, detail);
           if (window.location.hash.trim() !== "")
             document
@@ -69,7 +70,7 @@ const leafac = {
           if (error.name !== "AbortError") {
             console.error(error);
             if (isGet && !(event instanceof PopStateEvent))
-              window.history.pushState(undefined, "", request.url);
+              window.history.pushState(undefined, "", requestURL.href);
             (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
               appendTo: body,
               trigger: "manual",
