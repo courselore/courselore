@@ -170,6 +170,7 @@ export default (app: Courselore): void => {
     ].reverse()) {
       const course = app.locals.database.get<{
         id: number;
+        reference: string;
         nextConversationReference: number;
       }>(
         sql`
@@ -377,7 +378,7 @@ export default (app: Courselore): void => {
 
 ---
 
-# Mentions & References
+# \`@mentions\`
 
 Self: @${enrollment.reference}
 
@@ -385,11 +386,49 @@ Other: @${lodash.sample(enrollments)!.reference}
 
 Non-existent: @1571024857
 
-Conversation: #1
+---
 
-Message: #1/1
+# \`#references\`
 
-Non-existent: #14981039481
+Conversation self: #1
+
+Conversation other: #2
+
+Conversation non-existent: #14981039481
+
+Conversation permanent link turned reference: <https://${
+        app.locals.options.host
+      }/courses/${course.reference}/conversations/1>
+
+Conversation non-existent permanent link turned reference: <https://${
+        app.locals.options.host
+      }/courses/${course.reference}/conversations/14981039481>
+
+Message self: #1/1
+
+Message other: #2/1
+
+Message non-existent: #1/2
+
+Message permanent link turned reference: <https://${
+        app.locals.options.host
+      }/courses/${
+        course.reference
+      }/conversations/1?messages%5BmessageReference%5D=1>
+
+Message non-existent permanent link turned reference: <https://${
+        app.locals.options.host
+      }/courses/${
+        course.reference
+      }/conversations/1?messages%5BmessageReference%5D=2>
+
+---
+
+# \`#anchors\`
+
+<p id="destination">Destination</p>
+
+[Anchor](#destination)
 
 ---
 
