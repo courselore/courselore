@@ -6907,6 +6907,7 @@ export default (app: Courselore): void => {
                                               $${app.locals.partials.content({
                                                 req,
                                                 res,
+                                                id: message.reference,
                                                 contentPreprocessed:
                                                   message.contentPreprocessed,
                                                 search:
