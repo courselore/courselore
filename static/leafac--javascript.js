@@ -32,61 +32,61 @@ const leafac = {
         previousLocation = { ...window.location };
         return;
       }
-      body.setAttribute("live-navigating", "true");
       if (
-        window.dispatchEvent(
+        !window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
-        ) &&
-        window.onbeforenavigate?.() !== false
-      ) {
-        try {
-          abortController = new AbortController();
-          const response = await fetch(request, {
-            signal: abortController.signal,
-          });
-          if (response.headers.has("Live-Navigation-External-Redirect")) {
-            window.location.assign(
-              response.headers.get("Live-Navigation-External-Redirect")
-            );
-            return;
-          }
-          const responseText = await response.text();
-          const responseURL = new URL(response.url);
-          responseURL.hash = requestURL.hash;
-          if (
-            (isGet ||
-              window.location.origin !== responseURL.origin ||
-              window.location.pathname !== responseURL.pathname ||
-              window.location.search !== responseURL.search) &&
-            !(event instanceof PopStateEvent)
-          )
-            window.history.pushState(undefined, "", responseURL.href);
-          leafac.loadDocument(responseText, detail);
-          if (window.location.hash.trim() !== "")
-            document
-              .getElementById(window.location.hash.slice(1))
-              ?.scrollIntoView();
-        } catch (error) {
-          if (error.name !== "AbortError") {
-            console.error(error);
-            if (isGet && !(event instanceof PopStateEvent))
-              window.history.pushState(undefined, "", requestURL.href);
-            (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
-              appendTo: body,
-              trigger: "manual",
-              hideOnClick: false,
-              theme: "error",
-              arrow: false,
-              interactive: true,
-              content:
-                "You appear to be offline. Please check your internet connection and try reloading the page.",
-            });
-            body.liveNavigationErrorTooltip.show();
-            window.onnavigateerror?.();
-          }
+        ) ||
+        window.onbeforenavigate?.() === false
+      )
+        return;
+      body.setAttribute("live-navigating", "true");
+      try {
+        abortController = new AbortController();
+        const response = await fetch(request, {
+          signal: abortController.signal,
+        });
+        if (response.headers.has("Live-Navigation-External-Redirect")) {
+          window.location.assign(
+            response.headers.get("Live-Navigation-External-Redirect")
+          );
+          return;
         }
-        previousLocation = { ...window.location };
+        const responseText = await response.text();
+        const responseURL = new URL(response.url);
+        responseURL.hash = requestURL.hash;
+        if (
+          (isGet ||
+            window.location.origin !== responseURL.origin ||
+            window.location.pathname !== responseURL.pathname ||
+            window.location.search !== responseURL.search) &&
+          !(event instanceof PopStateEvent)
+        )
+          window.history.pushState(undefined, "", responseURL.href);
+        leafac.loadDocument(responseText, detail);
+        if (window.location.hash.trim() !== "")
+          document
+            .getElementById(window.location.hash.slice(1))
+            ?.scrollIntoView();
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error(error);
+          if (isGet && !(event instanceof PopStateEvent))
+            window.history.pushState(undefined, "", requestURL.href);
+          (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content:
+              "You appear to be offline. Please check your internet connection and try reloading the page.",
+          });
+          body.liveNavigationErrorTooltip.show();
+          window.onnavigateerror?.();
+        }
       }
+      previousLocation = { ...window.location };
       body.removeAttribute("live-navigating");
     };
 
