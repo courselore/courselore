@@ -298,8 +298,8 @@ export default async (app: Courselore): Promise<void> => {
           },
           { addQueryPrefix: true }
         );
-        element.setAttribute("href", url.href);
         if (messageReference === undefined) {
+          element.setAttribute("href", url.href);
           element.textContent = `#${conversation.reference}`;
           continue;
         }
@@ -310,6 +310,7 @@ export default async (app: Courselore): Promise<void> => {
           messageReference,
         });
         if (message === undefined) continue;
+        element.setAttribute("href", url.href);
         element.textContent = `#${conversation.reference}/${message.reference}`;
       }
 
