@@ -385,17 +385,17 @@ export default async (app: Courselore): Promise<void> => {
                   }>(
                     sql`
                       SELECT "enrollments"."id",
-                              "users"."id" AS "userId",
-                              "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                              "users"."reference" AS "userReference",
-                              "users"."email" AS "userEmail",
-                              "users"."name" AS "userName",
-                              "users"."avatar" AS "userAvatar",
-                              "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
-                              "users"."biographySource" AS "userBiographySource",
-                              "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                              "enrollments"."reference",
-                              "enrollments"."courseRole"
+                             "users"."id" AS "userId",
+                             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                             "users"."reference" AS "userReference",
+                             "users"."email" AS "userEmail",
+                             "users"."name" AS "userName",
+                             "users"."avatar" AS "userAvatar",
+                             "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
+                             "users"."biographySource" AS "userBiographySource",
+                             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                             "enrollments"."reference",
+                             "enrollments"."courseRole"
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE "enrollments"."course" = ${
@@ -455,12 +455,8 @@ export default async (app: Courselore): Promise<void> => {
                   href="https://${app.locals.options.host}/courses/${res.locals
                     .course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
-                    {
-                      conversations: req.query.conversations,
-                    },
-                    {
-                      addQueryPrefix: true,
-                    }
+                    { conversations: req.query.conversations },
+                    { addQueryPrefix: true }
                   )}"
                   >${match}</a
                 >`;
@@ -478,13 +474,9 @@ export default async (app: Courselore): Promise<void> => {
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
                     conversations: req.query.conversations,
-                    messages: {
-                      messageReference: message.reference,
-                    },
+                    messages: { messageReference: message.reference },
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 >${match}</a
               >`;
