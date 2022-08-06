@@ -845,6 +845,7 @@ const leafac = {
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error();
+        document.querySelector("body").isModified = false;
         window.location.reload();
       } catch {}
     }
