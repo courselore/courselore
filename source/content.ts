@@ -49,6 +49,7 @@ export type ContentPreprocessedPartial = (contentSource: string) => {
 export type ContentPartial = ({
   req,
   res,
+  id,
   contentPreprocessed,
   search,
 }: {
@@ -63,6 +64,7 @@ export type ContentPartial = ({
     any,
     BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
+  id?: string;
   contentPreprocessed: HTML;
   search?: string | string[] | undefined;
 }) => {
@@ -152,6 +154,7 @@ export default async (app: Courselore): Promise<void> => {
   app.locals.partials.content = ({
     req,
     res,
+    id = Math.random().toString(36).slice(2),
     contentPreprocessed,
     search = undefined,
   }) => {
@@ -213,13 +216,12 @@ export default async (app: Courselore): Promise<void> => {
       }
     }
 
-    const namespace = Math.random().toString(36).slice(2);
     for (const element of contentElement.querySelectorAll("[id]"))
-      element.id += `--${namespace}`;
+      element.id += `--${id}`;
     for (const element of contentElement.querySelectorAll("[href]")) {
       let href = element.getAttribute("href")!;
       if (href.startsWith("#")) {
-        href = `#user-content-${href.slice(1)}--${namespace}`;
+        href = `#user-content-${href.slice(1)}--${id}`;
         element.setAttribute("href", href);
       }
 
