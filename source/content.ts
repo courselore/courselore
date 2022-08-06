@@ -217,11 +217,11 @@ export default async (app: Courselore): Promise<void> => {
     }
 
     for (const element of contentElement.querySelectorAll("[id]"))
-      element.id += `--${id}`;
+      element.id = `${id}--${element.id}`;
     for (const element of contentElement.querySelectorAll("[href]")) {
       let href = element.getAttribute("href")!;
       if (href.startsWith("#")) {
-        href = `#user-content-${href.slice(1)}--${id}`;
+        href = `#${id}--user-content-${href.slice(1)}`;
         element.setAttribute("href", href);
       }
 
