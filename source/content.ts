@@ -16,7 +16,6 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize, {
   defaultSchema as rehypeSanitizeDefaultSchema,
 } from "rehype-sanitize";
-import deepMerge from "deepmerge";
 import rehypeKatex from "rehype-katex";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
@@ -109,16 +108,25 @@ export default async (app: Courselore): Promise<void> => {
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeRaw)
-      .use(
-        rehypeSanitize,
-        deepMerge(rehypeSanitizeDefaultSchema, {
-          attributes: {
-            code: ["className"],
-            span: [["className", "math", "math-inline"]],
-            div: [["className", "math", "math-display"]],
-          },
-        })
-      )
+      .use(rehypeSanitize, {
+        ...rehypeSanitizeDefaultSchema,
+        clobber: [],
+        attributes: {
+          ...rehypeSanitizeDefaultSchema.attributes,
+          div: [
+            ...(rehypeSanitizeDefaultSchema.attributes?.div ?? []),
+            ["className", "math", "math-display"],
+          ],
+          span: [
+            ...(rehypeSanitizeDefaultSchema.attributes?.span ?? []),
+            ["className", "math", "math-inline"],
+          ],
+          code: [
+            ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
+            "className",
+          ],
+        },
+      })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(rehypeShiki, {
         highlighter: {
@@ -217,11 +225,13 @@ export default async (app: Courselore): Promise<void> => {
     }
 
     for (const element of contentElement.querySelectorAll("[id]"))
-      element.id = `${id}--${element.id}`;
+      element.setAttribute("id", `${id}--${element.getAttribute("id")}`);
+    for (const element of contentElement.querySelectorAll("[name]"))
+      element.setAttribute("name", `${id}--${element.getAttribute("name")}`);
     for (const element of contentElement.querySelectorAll("[href]")) {
       let href = element.getAttribute("href")!;
       if (href.startsWith("#")) {
-        href = `#${id}--user-content-${href.slice(1)}`;
+        href = `#${id}--${href.slice(1)}`;
         element.setAttribute("href", href);
       }
 
