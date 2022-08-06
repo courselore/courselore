@@ -319,171 +319,168 @@ export default async (app: Courselore): Promise<void> => {
         if (node.hasChildNodes())
           for (const childNode of node.childNodes) processTree(childNode);
         function processNode() {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (
-                node.textContent === null ||
-                parentElement === null ||
-                parentElement.closest("a, code, .mention, .reference") !== null
-              )
-                return;
-              let newNodeHTML = html`${node.textContent}`;
+          if (node.nodeType !== node.TEXT_NODE) return;
+          const parentElement = node.parentElement;
+          if (
+            node.textContent === null ||
+            parentElement === null ||
+            parentElement.closest("a, code, .mention, .reference") !== null
+          )
+            return;
+          let newNodeHTML = html`${node.textContent}`;
 
-              newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
-                (match, mention) => {
-                  mention = mention.toLowerCase();
-                  let mentionHTML: HTML;
-                  switch (mention) {
-                    case "everyone":
-                    case "staff":
-                    case "students":
-                      mentions!.add(mention);
-                      mentionHTML = html`<span
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Mention ${mention} in the conversation",
-                          });
-                        `}"
-                        >@${lodash.capitalize(mention)}</span
-                      >`;
-                      break;
-                    case "anonymous":
-                      mentionHTML = html`@$${app.locals.partials.user({
-                        req,
-                        res,
-                        avatar: false,
-                      })}`;
-                      break;
-                    default:
-                      const enrollmentReference = mention.split("--")[0];
-                      const enrollmentRow = app.locals.database.get<{
-                        id: number;
-                        userId: number;
-                        userLastSeenOnlineAt: string;
-                        userReference: string;
-                        userEmail: string;
-                        userName: string;
-                        userAvatar: string | null;
-                        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                        userBiographySource: string | null;
-                        userBiographyPreprocessed: HTML | null;
-                        reference: string;
-                        courseRole: CourseRole;
-                      }>(
-                        sql`
-                          SELECT "enrollments"."id",
-                                  "users"."id" AS "userId",
-                                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                  "users"."reference" AS "userReference",
-                                  "users"."email" AS "userEmail",
-                                  "users"."name" AS "userName",
-                                  "users"."avatar" AS "userAvatar",
-                                  "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
-                                  "users"."biographySource" AS "userBiographySource",
-                                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                  "enrollments"."reference",
-                                  "enrollments"."courseRole"
-                          FROM "enrollments"
-                          JOIN "users" ON "enrollments"."user" = "users"."id"
-                          WHERE "enrollments"."course" = ${
-                            res.locals.course!.id
-                          } AND
-                                "enrollments"."reference" = ${enrollmentReference}
-                        `
-                      );
-                      if (enrollmentRow === undefined) return match;
-                      const enrollment = {
-                        id: enrollmentRow.id,
-                        user: {
-                          id: enrollmentRow.userId,
-                          lastSeenOnlineAt: enrollmentRow.userLastSeenOnlineAt,
-                          reference: enrollmentRow.userReference,
-                          email: enrollmentRow.userEmail,
-                          name: enrollmentRow.userName,
-                          avatar: enrollmentRow.userAvatar,
-                          avatarlessBackgroundColor:
-                            enrollmentRow.userAvatarlessBackgroundColor,
-                          biographySource: enrollmentRow.userBiographySource,
-                          biographyPreprocessed:
-                            enrollmentRow.userBiographyPreprocessed,
-                        },
-                        reference: enrollmentRow.reference,
-                        courseRole: enrollmentRow.courseRole,
-                      };
-                      mentions!.add(enrollment.reference);
-                      mentionHTML = html`@$${app.locals.partials.user({
-                        req,
-                        res,
-                        enrollment,
-                        avatar: false,
-                      })}`;
-                      if (enrollment.user.id === res.locals.user!.id)
-                        mentionHTML = html`<mark class="mark"
-                          >$${mentionHTML}</mark
-                        >`;
-                      break;
-                  }
-                  return html`<strong class="mention">$${mentionHTML}</strong>`;
-                }
-              );
-
-              newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
-                (match, conversationReference, messageReference) => {
-                  const conversation = app.locals.helpers.getConversation({
-                    req: narrowReq,
-                    res: narrowRes,
-                    conversationReference,
-                  });
-                  if (conversation === undefined) return match;
-                  if (messageReference === undefined)
-                    return html`<a
-                      class="reference"
-                      href="https://${app.locals.options.host}/courses/${res
-                        .locals.course!
-                        .reference}/conversations/${conversation.reference}${qs.stringify(
-                        {
-                          conversations: req.query.conversations,
-                        },
-                        {
-                          addQueryPrefix: true,
-                        }
-                      )}"
-                      >${match}</a
-                    >`;
-                  const message = app.locals.helpers.getMessage({
-                    req: narrowReq,
-                    res: narrowRes,
-                    conversation,
-                    messageReference,
-                  });
-                  if (message === undefined) return match;
-                  return html`<a
-                    class="reference"
-                    href="https://${app.locals.options.host}/courses/${res
-                      .locals.course!
-                      .reference}/conversations/${conversation.reference}${qs.stringify(
-                      {
-                        conversations: req.query.conversations,
-                        messages: {
-                          messageReference: message.reference,
-                        },
-                      },
-                      {
-                        addQueryPrefix: true,
-                      }
-                    )}"
-                    >${match}</a
+          newNodeHTML = newNodeHTML.replace(
+            /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
+            (match, mention) => {
+              mention = mention.toLowerCase();
+              let mentionHTML: HTML;
+              switch (mention) {
+                case "everyone":
+                case "staff":
+                case "students":
+                  mentions!.add(mention);
+                  mentionHTML = html`<span
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: "Mention ${mention} in the conversation",
+                      });
+                    `}"
+                    >@${lodash.capitalize(mention)}</span
                   >`;
-                }
-              );
+                  break;
+                case "anonymous":
+                  mentionHTML = html`@$${app.locals.partials.user({
+                    req,
+                    res,
+                    avatar: false,
+                  })}`;
+                  break;
+                default:
+                  const enrollmentReference = mention.split("--")[0];
+                  const enrollmentRow = app.locals.database.get<{
+                    id: number;
+                    userId: number;
+                    userLastSeenOnlineAt: string;
+                    userReference: string;
+                    userEmail: string;
+                    userName: string;
+                    userAvatar: string | null;
+                    userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                    userBiographySource: string | null;
+                    userBiographyPreprocessed: HTML | null;
+                    reference: string;
+                    courseRole: CourseRole;
+                  }>(
+                    sql`
+                      SELECT "enrollments"."id",
+                              "users"."id" AS "userId",
+                              "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                              "users"."reference" AS "userReference",
+                              "users"."email" AS "userEmail",
+                              "users"."name" AS "userName",
+                              "users"."avatar" AS "userAvatar",
+                              "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
+                              "users"."biographySource" AS "userBiographySource",
+                              "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                              "enrollments"."reference",
+                              "enrollments"."courseRole"
+                      FROM "enrollments"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      WHERE "enrollments"."course" = ${
+                        res.locals.course!.id
+                      } AND
+                            "enrollments"."reference" = ${enrollmentReference}
+                    `
+                  );
+                  if (enrollmentRow === undefined) return match;
+                  const enrollment = {
+                    id: enrollmentRow.id,
+                    user: {
+                      id: enrollmentRow.userId,
+                      lastSeenOnlineAt: enrollmentRow.userLastSeenOnlineAt,
+                      reference: enrollmentRow.userReference,
+                      email: enrollmentRow.userEmail,
+                      name: enrollmentRow.userName,
+                      avatar: enrollmentRow.userAvatar,
+                      avatarlessBackgroundColor:
+                        enrollmentRow.userAvatarlessBackgroundColor,
+                      biographySource: enrollmentRow.userBiographySource,
+                      biographyPreprocessed:
+                        enrollmentRow.userBiographyPreprocessed,
+                    },
+                    reference: enrollmentRow.reference,
+                    courseRole: enrollmentRow.courseRole,
+                  };
+                  mentions!.add(enrollment.reference);
+                  mentionHTML = html`@$${app.locals.partials.user({
+                    req,
+                    res,
+                    enrollment,
+                    avatar: false,
+                  })}`;
+                  if (enrollment.user.id === res.locals.user!.id)
+                    mentionHTML = html`<mark class="mark"
+                      >$${mentionHTML}</mark
+                    >`;
+                  break;
+              }
+              return html`<strong class="mention">$${mentionHTML}</strong>`;
+            }
+          );
 
-              parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
-              break;
-          }
+          newNodeHTML = newNodeHTML.replace(
+            /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
+            (match, conversationReference, messageReference) => {
+              const conversation = app.locals.helpers.getConversation({
+                req: narrowReq,
+                res: narrowRes,
+                conversationReference,
+              });
+              if (conversation === undefined) return match;
+              if (messageReference === undefined)
+                return html`<a
+                  class="reference"
+                  href="https://${app.locals.options.host}/courses/${res.locals
+                    .course!
+                    .reference}/conversations/${conversation.reference}${qs.stringify(
+                    {
+                      conversations: req.query.conversations,
+                    },
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
+                  >${match}</a
+                >`;
+              const message = app.locals.helpers.getMessage({
+                req: narrowReq,
+                res: narrowRes,
+                conversation,
+                messageReference,
+              });
+              if (message === undefined) return match;
+              return html`<a
+                class="reference"
+                href="https://${app.locals.options.host}/courses/${res.locals
+                  .course!
+                  .reference}/conversations/${conversation.reference}${qs.stringify(
+                  {
+                    conversations: req.query.conversations,
+                    messages: {
+                      messageReference: message.reference,
+                    },
+                  },
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
+                >${match}</a
+              >`;
+            }
+          );
+
+          parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
         }
       })(contentElement);
 
@@ -590,21 +587,18 @@ export default async (app: Courselore): Promise<void> => {
         if (node.hasChildNodes())
           for (const childNode of node.childNodes) processTree(childNode);
         function processNode() {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (node.textContent === null || parentElement === null) return;
-              parentElement.replaceChild(
-                JSDOM.fragment(
-                  app.locals.helpers.highlightSearchResult(
-                    html`${node.textContent}`,
-                    search
-                  )
-                ),
-                node
-              );
-              break;
-          }
+          if (node.nodeType !== node.TEXT_NODE) return;
+          const parentElement = node.parentElement;
+          if (node.textContent === null || parentElement === null) return;
+          parentElement.replaceChild(
+            JSDOM.fragment(
+              app.locals.helpers.highlightSearchResult(
+                html`${node.textContent}`,
+                search
+              )
+            ),
+            node
+          );
         }
       })(contentElement);
 
