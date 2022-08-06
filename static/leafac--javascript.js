@@ -15,9 +15,9 @@ const leafac = {
       const detail = { request, previousLocation };
       if (
         isGet &&
-        window.location.origin === requestURL.origin &&
-        window.location.pathname === requestURL.pathname &&
-        window.location.search === requestURL.search
+        previousLocation.origin === requestURL.origin &&
+        previousLocation.pathname === requestURL.pathname &&
+        previousLocation.search === requestURL.search
       ) {
         if (
           window.location.hash !== requestURL.hash &&
