@@ -1250,7 +1250,7 @@ export default async (app: Courselore): Promise<void> => {
     await fs.writeFile(
       new URL("../static/global.css", import.meta.url),
       processCSS(css`
-        [live-navigating] * {
+        [live-navigation] * {
           cursor: wait !important;
         }
 

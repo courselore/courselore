@@ -9,7 +9,7 @@ const leafac = {
       request.headers.set("Live-Navigation", "true");
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
-      else if (body.getAttribute("live-navigating") !== null) return;
+      else if (body.getAttribute("live-navigation") !== null) return;
       const isGet = ["GET", "HEAD"].includes(request.method);
       const requestURL = new URL(request.url);
       const detail = { request, previousLocation };
@@ -39,7 +39,7 @@ const leafac = {
         window.onbeforelivenavigate?.() === false
       )
         return;
-      body.setAttribute("live-navigating", "true");
+      body.setAttribute("live-navigation", "true");
       window.dispatchEvent(new CustomEvent("livenavigate", { detail }));
       try {
         abortController = new AbortController();
@@ -88,7 +88,7 @@ const leafac = {
         }
       }
       previousLocation = { ...window.location };
-      body.removeAttribute("live-navigating");
+      body.removeAttribute("live-navigation");
     };
 
     window.addEventListener("DOMContentLoaded", (event) => {
