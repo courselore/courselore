@@ -40,6 +40,7 @@ const leafac = {
       )
         return;
       body.setAttribute("live-navigating", "true");
+      window.dispatchEvent(new CustomEvent("navigate", { detail }));
       try {
         abortController = new AbortController();
         const response = await fetch(request, {

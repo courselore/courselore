@@ -5381,8 +5381,7 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      window.removeEventListener("navigateself", this.scrollConversation);
-                      this.scrollConversation = () => {
+                      const scroll = () => {
                         if (
                           [undefined, "GET", "HEAD"].includes(event?.detail?.request?.method) &&
                           !event?.detail?.liveUpdate
@@ -5395,7 +5394,11 @@ export default (app: Courselore): void => {
                                   const element = this.querySelector('[key="message--${req.query.messages.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
-                                  element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
+                                  const messageHighlight = element.querySelector(".message--highlight");
+                                  messageHighlight.style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
+                                  messageHighlight.onanimationend = () => {
+                                    messageHighlight.style.animation = "";
+                                  };
                                 `
                               : firstUnreadMessage !== undefined &&
                                 firstUnreadMessage !== messages[0]
@@ -5426,8 +5429,11 @@ export default (app: Courselore): void => {
                             : javascript``
                         }
                       };
-                      window.addEventListener("navigateself", this.scrollConversation);
-                      window.setTimeout(this.scrollConversation);
+                      window.addEventListener("navigateself", scroll);
+                      window.addEventListener("navigate", () => {
+                        window.removeEventListener("navigateself", scroll);
+                      }, { once: true });
+                      window.setTimeout(scroll);
                     `}"
                   >
                     <div
