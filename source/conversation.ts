@@ -1966,6 +1966,7 @@ export default (app: Courselore): void => {
                                   <div
                                     css="${res.locals.css(css`
                                       flex: 1;
+                                      max-width: 100%;
                                     `)}"
                                   >
                                     $${app.locals.partials.conversation({
