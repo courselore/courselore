@@ -335,7 +335,7 @@ const leafac = {
     const body = document.querySelector("body");
     let inLiveNavigation = false;
     window.addEventListener(
-      "beforenavigate",
+      "navigate",
       (event) => {
         event.detail.request.headers.set("Live-Updates-Abort", nonce);
         inLiveNavigation = true;
@@ -348,7 +348,7 @@ const leafac = {
         const abort = () => {
           abortController.abort();
         };
-        window.addEventListener("beforenavigate", abort, { once: true });
+        window.addEventListener("navigate", abort, { once: true });
         let heartbeatTimeout = setTimeout(abort, 50 * 1000);
         const response = await fetch(window.location.href, {
           headers: { "Live-Updates": nonce },
