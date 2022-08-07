@@ -213,7 +213,7 @@ export default async (app: Courselore): Promise<void> => {
               this.scroll(0, 0);
             };
 
-            const body = document.querySelector('[key="main"]'); //document.querySelector("body");
+            const body = document.querySelector('[key="flash-attach-point"]');
 
             ${
               res.locals.user !== undefined &&
@@ -317,6 +317,7 @@ export default async (app: Courselore): Promise<void> => {
                       theme: ${JSON.stringify(flash.theme)},
                       arrow: false,
                       interactive: true,
+                      placement: "bottom",
                       content: ${res.locals.html(
                         html`
                           <div
@@ -593,7 +594,9 @@ export default async (app: Courselore): Promise<void> => {
                 `
               : html``;
           })()}
-
+          <div 
+            key="flash-attach-point"
+          ></div>
           <div
             key="main"
             css="${res.locals.css(css`
