@@ -594,9 +594,7 @@ export default async (app: Courselore): Promise<void> => {
                 `
               : html``;
           })()}
-          <div 
-            key="flash-attach-point"
-          ></div>
+          <div key="flash-attach-point"></div>
           <div
             key="main"
             css="${res.locals.css(css`
