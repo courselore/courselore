@@ -6,9 +6,12 @@ const leafac = {
     let previousLocation = { ...window.location };
 
     const navigate = async ({ request, event }) => {
-      const flashAttachPoint = document.querySelector('[key="flash-attach-point"]');
+      const flashAttachPoint = document.querySelector(
+        '[key="flash-attach-point"]'
+      );
       if (event instanceof PopStateEvent) abortController?.abort();
-      else if (flashAttachPoint.getAttribute("live-navigating") !== null) return;
+      else if (flashAttachPoint.getAttribute("live-navigating") !== null)
+        return;
       flashAttachPoint.setAttribute("live-navigating", "true");
       const detail = { request, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
@@ -35,7 +38,8 @@ const leafac = {
             console.error(error);
             if (isGet && !(event instanceof PopStateEvent))
               window.history.pushState(undefined, "", request.url);
-            (flashAttachPoint.liveNavigationErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+            (flashAttachPoint.liveNavigationErrorTooltip ??=
+              tippy(flashAttachPoint)).setProps({
               appendTo: flashAttachPoint,
               trigger: "manual",
               hideOnClick: false,
@@ -297,7 +301,9 @@ const leafac = {
   },
 
   async liveUpdates(nonce) {
-    const flashAttachPoint = document.querySelector('[key="flash-attach-point"]');
+    const flashAttachPoint = document.querySelector(
+      '[key="flash-attach-point"]'
+    );
     let inLiveNavigation = false;
     window.addEventListener(
       "beforenavigate",
@@ -322,7 +328,8 @@ const leafac = {
         flashAttachPoint.liveUpdatesNetworkErrorTooltip?.hide();
         if (response.status === 422) {
           console.error(response);
-          (flashAttachPoint.liveUpdatesValidationErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+          (flashAttachPoint.liveUpdatesValidationErrorTooltip ??=
+            tippy(flashAttachPoint)).setProps({
             appendTo: flashAttachPoint,
             trigger: "manual",
             hideOnClick: false,
@@ -361,7 +368,8 @@ const leafac = {
       } catch (error) {
         if (inLiveNavigation) return;
         console.error(error);
-        (flashAttachPoint.liveUpdatesNetworkErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+        (flashAttachPoint.liveUpdatesNetworkErrorTooltip ??=
+          tippy(flashAttachPoint)).setProps({
           appendTo: flashAttachPoint,
           trigger: "manual",
           hideOnClick: false,
