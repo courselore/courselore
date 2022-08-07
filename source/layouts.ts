@@ -2632,6 +2632,7 @@ export default async (app: Courselore): Promise<void> => {
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
+                          placement: "bottom",
                           content: ${res.locals.html(
                             html`
                               <div
@@ -2641,6 +2642,9 @@ export default async (app: Courselore): Promise<void> => {
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
+                                  @media (orientation: landscape) {
+                                    max-height: var(--space--60);
+                                  }
                                 `)}"
                               >
                                 <div>
