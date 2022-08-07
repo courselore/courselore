@@ -213,14 +213,14 @@ export default async (app: Courselore): Promise<void> => {
               this.scroll(0, 0);
             };
 
-            const body = document.querySelector('[key="flash-attach-point"]');
+            const flashAttachPoint = document.querySelector('[key="flash-attach-point"]');
 
             ${
               res.locals.user !== undefined &&
               res.locals.user.emailVerifiedAt === null
                 ? javascript`
-                  (body.emailVerificationTooltip ??= tippy(body)).setProps({
-                    appendTo: body,
+                  (flashAttachPoint.emailVerificationTooltip ??= tippy(flashAttachPoint)).setProps({
+                    appendTo: flashAttachPoint,
                     trigger: "manual",
                     hideOnClick: false,
                     theme: "amber",
@@ -300,7 +300,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  body.emailVerificationTooltip.show();
+                  flashAttachPoint.emailVerificationTooltip.show();
                 `
                 : javascript``
             }
@@ -310,8 +310,8 @@ export default async (app: Courselore): Promise<void> => {
               return flash === undefined
                 ? javascript``
                 : javascript`
-                    (body.flash ??= tippy(body)).setProps({
-                      appendTo: body,
+                    (flashAttachPoint.flash ??= tippy(flashAttachPoint)).setProps({
+                      appendTo: flashAttachPoint,
                       trigger: "manual",
                       hideOnClick: false,
                       theme: ${JSON.stringify(flash.theme)},
@@ -370,7 +370,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       )},
                     });
-                    body.flash.show();
+                    flashAttachPoint.flash.show();
                   `;
             })()}
 

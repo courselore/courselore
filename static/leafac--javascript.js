@@ -6,10 +6,10 @@ const leafac = {
     let previousLocation = { ...window.location };
 
     const navigate = async ({ request, event }) => {
-      const body = document.querySelector("body");
+      const flashAttachPoint = document.querySelector('[key="flash-attach-point"]');
       if (event instanceof PopStateEvent) abortController?.abort();
-      else if (body.getAttribute("live-navigating") !== null) return;
-      body.setAttribute("live-navigating", "true");
+      else if (flashAttachPoint.getAttribute("live-navigating") !== null) return;
+      flashAttachPoint.setAttribute("live-navigating", "true");
       const detail = { request, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
       if (
@@ -35,8 +35,8 @@ const leafac = {
             console.error(error);
             if (isGet && !(event instanceof PopStateEvent))
               window.history.pushState(undefined, "", request.url);
-            (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
-              appendTo: body,
+            (flashAttachPoint.liveNavigationErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+              appendTo: flashAttachPoint,
               trigger: "manual",
               hideOnClick: false,
               theme: "error",
@@ -45,13 +45,13 @@ const leafac = {
               content:
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });
-            body.liveNavigationErrorTooltip.show();
+            flashAttachPoint.liveNavigationErrorTooltip.show();
             window.onnavigateerror?.();
           }
         }
         previousLocation = { ...window.location };
       }
-      body.removeAttribute("live-navigating");
+      flashAttachPoint.removeAttribute("live-navigating");
     };
 
     window.addEventListener("DOMContentLoaded", (event) => {
@@ -297,7 +297,7 @@ const leafac = {
   },
 
   async liveUpdates(nonce) {
-    const body = document.querySelector("body");
+    const flashAttachPoint = document.querySelector('[key="flash-attach-point"]');
     let inLiveNavigation = false;
     window.addEventListener(
       "beforenavigate",
@@ -319,11 +319,11 @@ const leafac = {
           headers: { "Live-Updates": nonce },
           signal: abortController.signal,
         });
-        body.liveUpdatesNetworkErrorTooltip?.hide();
+        flashAttachPoint.liveUpdatesNetworkErrorTooltip?.hide();
         if (response.status === 422) {
           console.error(response);
-          (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
-            appendTo: body,
+          (flashAttachPoint.liveUpdatesValidationErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+            appendTo: flashAttachPoint,
             trigger: "manual",
             hideOnClick: false,
             theme: "error",
@@ -332,7 +332,7 @@ const leafac = {
             content:
               "Failed to connect to server. Please try reloading the page.",
           });
-          body.liveUpdatesValidationErrorTooltip.show();
+          flashAttachPoint.liveUpdatesValidationErrorTooltip.show();
           return;
         }
         if (!response.ok) throw new Error();
@@ -361,8 +361,8 @@ const leafac = {
       } catch (error) {
         if (inLiveNavigation) return;
         console.error(error);
-        (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
-          appendTo: body,
+        (flashAttachPoint.liveUpdatesNetworkErrorTooltip ??= tippy(flashAttachPoint)).setProps({
+          appendTo: flashAttachPoint,
           trigger: "manual",
           hideOnClick: false,
           theme: "error",
@@ -370,7 +370,7 @@ const leafac = {
           interactive: true,
           content: "You appear to be offline.",
         });
-        body.liveUpdatesNetworkErrorTooltip.show();
+        flashAttachPoint.liveUpdatesNetworkErrorTooltip.show();
       }
       nonce = Math.random().toString(36).slice(2);
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
