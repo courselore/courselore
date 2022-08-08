@@ -46,6 +46,7 @@ const leafac = {
               theme: "error",
               arrow: false,
               interactive: true,
+              placement: "bottom",
               content:
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });
@@ -336,6 +337,7 @@ const leafac = {
             theme: "error",
             arrow: false,
             interactive: true,
+            placement: "bottom",
             content:
               "Failed to connect to server. Please try reloading the page.",
           });
@@ -376,6 +378,7 @@ const leafac = {
           theme: "error",
           arrow: false,
           interactive: true,
+          placement: "bottom",
           content: "You appear to be offline.",
         });
         flashAttachPoint.liveUpdatesNetworkErrorTooltip.show();

@@ -226,6 +226,7 @@ export default async (app: Courselore): Promise<void> => {
                     theme: "amber",
                     arrow: false,
                     interactive: true,
+                    placement: "bottom",
                     content: ${res.locals.html(
                       html`
                         <form
