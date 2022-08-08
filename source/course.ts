@@ -471,15 +471,16 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.host === app.locals.options.canonicalHost
+            $${app.locals.options.host === app.locals.options.canonicalHost ||
+            true
               ? html`
                   <div
                     css="${res.locals.css(css`
-                      color: var(--color--amber--700);
-                      background-color: var(--color--amber--100);
+                      color: var(--color--green--700);
+                      background-color: var(--color--green--100);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--amber--200);
-                        background-color: var(--color--amber--900);
+                        color: var(--color--green--200);
+                        background-color: var(--color--green--900);
                       }
                       padding: var(--space--4);
                       border-radius: var(--border-radius--lg);
@@ -487,22 +488,22 @@ export default (app: Courselore): void => {
                       gap: var(--space--4);
 
                       .link {
-                        color: var(--color--amber--600);
+                        color: var(--color--green--600);
                         &:hover,
                         &:focus-within {
-                          color: var(--color--amber--500);
+                          color: var(--color--green--500);
                         }
                         &:active {
-                          color: var(--color--amber--700);
+                          color: var(--color--green--700);
                         }
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--amber--100);
+                          color: var(--color--green--100);
                           &:hover,
                           &:focus-within {
-                            color: var(--color--amber--50);
+                            color: var(--color--green--50);
                           }
                           &:active {
-                            color: var(--color--amber--200);
+                            color: var(--color--green--200);
                           }
                         }
                       }
@@ -514,13 +515,13 @@ export default (app: Courselore): void => {
                         line-height: var(--line-height--4xl);
                       `)}"
                     >
-                      <i class="bi bi-exclamation-triangle-fill"></i>
+                      <i class="bi bi-gift-fill"></i>
                     </div>
                     <p>
                       This is the hosted installation of Courselore managed by
-                      the Courselore developers. It’s free for a limited period,
-                      but we may charge for it in the future (you’ll be warned
-                      well in advance). Courselore is
+                      the Courselore developers. Enjoy the initial period of
+                      free hosting, during which you may create courses for
+                      free! Courselore is
                       <a
                         href="https://github.com/courselore/courselore"
                         class="link"
