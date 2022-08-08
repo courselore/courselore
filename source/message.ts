@@ -2,7 +2,7 @@ import express from "express";
 import qs from "qs";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { css } from "@leafac/css";
+import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
 import {
   Courselore,
@@ -1200,7 +1200,7 @@ export default (app: Courselore): void => {
         FROM "messages"
         JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
         JOIN "courses" ON "conversations"."course" = "courses"."id"
-        WHERE "messages"."id" = 1 -- TODO $ {job.message}
+        WHERE "messages"."id" = 2034 -- TODO $ {job.message}
       `
     )!;
     const message = { contentPreprocessed: messageRow.contentPreprocessed };
@@ -1217,10 +1217,18 @@ export default (app: Courselore): void => {
     };
     console.log(
       app.locals.partials.content({
-        req: {} as Parameters<typeof app.locals.partials.content>[0]["req"],
-        res: { locals: { course, html: HTMLForJavaScript() } } as Parameters<
+        req: { query: {} } as Parameters<
           typeof app.locals.partials.content
-        >[0]["res"],
+        >[0]["req"],
+        res: {
+          locals: {
+            css: localCSS(),
+            html: HTMLForJavaScript(),
+            user: {},
+            enrollment: {},
+            course,
+          },
+        } as Parameters<typeof app.locals.partials.content>[0]["res"],
         contentPreprocessed: message.contentPreprocessed,
       })
     );
