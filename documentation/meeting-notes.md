@@ -1,6 +1,18 @@
 # Meeting Notes
 
 <details>
+<summary>2021-08-06</summary>
+
+- Mobile application.
+  - Select server to connect to (and validate that it’s a Courselore server).
+  - Safe area (notch).
+- Email digests.
+  - Decorate content from other people’s perspective.
+  - Fixed issues with `#anchors`.
+
+</details>
+
+<details>
 <summary>2021-07-30</summary>
 
 - Mobile application is under way: Capacitor is setup, and we’re working on the page that lets you select the server. We may have issues getting the application approved by Apple.
