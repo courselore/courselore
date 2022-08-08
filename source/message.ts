@@ -1253,38 +1253,31 @@ export default (app: Courselore): void => {
           return job;
         });
         if (job === undefined) break;
-        const mailOptions = JSON.parse(job.mailOptions);
-        try {
-          const sentMessageInfo = await app.locals.options.sendMail(
-            mailOptions
-          );
-          app.locals.database.run(
-            sql`
-              DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\t\t${
-              sentMessageInfo.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}`
-          );
-        } catch (error: nodemailer.SentMessageInfo) {
-          app.locals.database.run(
-            sql`
-              UPDATE "notificationMessageJobs"
-              SET "startAt" = ${new Date(
-                Date.now() + 5 * 60 * 1000
-              ).toISOString()},
-                  "startedAt" = NULL
-              WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tFAILED\t\t${
-              error.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}\n${error}`
-          );
-        }
+        const message = app.locals.database.get<{
+          contentPreprocessed: string;
+        }>(
+          sql`
+            SELECT "contentPreprocessed"
+            FROM "messages"
+            WHERE "id" = ${job.message}
+          `
+        )!;
+        const contentProcessed = app.locals.partials.content({
+          req,
+          res,
+          contentPreprocessed: message.contentPreprocessed,
+        });
+        // TODO
+        app.locals.database.run(
+          sql`
+            DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+          `
+        );
+        console.log(
+          `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\tmessage = ${
+            job.message
+          }`
+        );
       }
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
