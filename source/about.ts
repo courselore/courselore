@@ -112,7 +112,7 @@ export default (app: Courselore): void => {
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
-                              content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                              content: "Sign up on a Courselore installation managed by the developers of Courselore. Enjoy the initial period of free hosting!",
                             });
                           `}"
                         >
@@ -126,7 +126,7 @@ export default (app: Courselore): void => {
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
-                              content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                              content: "Sign in on a Courselore installation managed by the developers of Courselore. Enjoy the initial period of free hosting!",
                             });
                           `}"
                         >
@@ -820,7 +820,7 @@ export default (app: Courselore): void => {
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
-                        content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                        content: "Sign up on a Courselore installation managed by the developers of Courselore. Enjoy the initial period of free hosting!",
                       });
                     `}"
                   >
@@ -833,7 +833,7 @@ export default (app: Courselore): void => {
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
-                        content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                        content: "Sign in on a Courselore installation managed by the developers of Courselore. Enjoy the initial period of free hosting!",
                       });
                     `}"
                   >
