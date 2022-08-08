@@ -60,7 +60,8 @@ export default (app: Courselore): void => {
       CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
   );
-  (async () => {
+
+  app.once("jobs", async () => {
     while (true) {
       for (const client of app.locals.liveUpdates.database.all<{
         nonce: string;
@@ -84,7 +85,7 @@ export default (app: Courselore): void => {
       }
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
     }
-  })();
+  });
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {

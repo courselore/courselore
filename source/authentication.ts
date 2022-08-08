@@ -219,7 +219,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId });
     },
   };
-  (async () => {
+
+  app.once("jobs", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -231,7 +232,7 @@ export default (app: Courselore): void => {
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
-  })();
+  });
 
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
@@ -661,7 +662,8 @@ export default (app: Courselore): void => {
         : passwordReset.user;
     },
   };
-  (async () => {
+
+  app.once("jobs", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -673,7 +675,7 @@ export default (app: Courselore): void => {
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
-  })();
+  });
 
   app.get<
     {},
@@ -1279,7 +1281,8 @@ export default (app: Courselore): void => {
     );
     app.locals.workers.sendEmail();
   };
-  (async () => {
+
+  app.once("jobs", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -1291,7 +1294,7 @@ export default (app: Courselore): void => {
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
-  })();
+  });
 
   app.post<
     {},

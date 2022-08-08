@@ -38,7 +38,7 @@ export default (app: Courselore): void => {
   };
 
   if (app.locals.options.environment === "production")
-    (async () => {
+    app.once("jobs", async () => {
       while (true) {
         try {
           const latestVersion = (
@@ -64,7 +64,7 @@ export default (app: Courselore): void => {
         }
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
       }
-    })();
+    });
 
   interface IsAdministratorMiddlewareLocals
     extends IsSignedInMiddlewareLocals {}

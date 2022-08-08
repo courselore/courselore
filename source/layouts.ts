@@ -3277,7 +3277,8 @@ export default async (app: Courselore): Promise<void> => {
       return flash;
     },
   };
-  (async () => {
+
+  app.once("jobs", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -3289,5 +3290,5 @@ export default async (app: Courselore): Promise<void> => {
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
-  })();
+  });
 };
