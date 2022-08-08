@@ -1173,7 +1173,7 @@ export default (app: Courselore): void => {
     });
   };
 
-  (async () => {
+  app.once("jobs", async () => {
     while (true) {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
@@ -1181,18 +1181,18 @@ export default (app: Courselore): void => {
           message: number;
         }>(
           sql`
-            SELECT "id", "message"
-            FROM "notificationMessageJobs"
-            WHERE "expiresAt" < ${new Date().toISOString()}
-          `
+              SELECT "id", "message"
+              FROM "notificationMessageJobs"
+              WHERE "expiresAt" < ${new Date().toISOString()}
+            `
         )) {
           app.locals.database.run(
             sql`
-              DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
-            `
+                DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+              `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\nmessage = ${
+            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\tmessage = ${
               job.message
             }`
           );
@@ -1205,22 +1205,22 @@ export default (app: Courselore): void => {
           message: number;
         }>(
           sql`
-            SELECT "id", "message"
-            FROM "notificationMessageJobs"
-            WHERE "startedAt" < ${new Date(
-              Date.now() - 2 * 60 * 1000
-            ).toISOString()}
-          `
+              SELECT "id", "message"
+              FROM "notificationMessageJobs"
+              WHERE "startedAt" < ${new Date(
+                Date.now() - 2 * 60 * 1000
+              ).toISOString()}
+            `
         )) {
           app.locals.database.run(
             sql`
-              UPDATE "notificationMessageJobs"
-              SET "startedAt" = NULL
-              WHERE "id" = ${job.id}
-            `
+                UPDATE "notificationMessageJobs"
+                SET "startedAt" = NULL
+                WHERE "id" = ${job.id}
+              `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\nmessage = ${
+            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\tmessage = ${
               job.message
             }`
           );
@@ -1234,21 +1234,21 @@ export default (app: Courselore): void => {
             message: string;
           }>(
             sql`
-              SELECT "id", "message"
-              FROM "notificationMessageJobs"
-              WHERE "startAt" <= ${new Date().toISOString()} AND
-                    "startedAt" IS NULL
-              ORDER BY "startAt" ASC
-              LIMIT 1
-            `
+                SELECT "id", "message"
+                FROM "notificationMessageJobs"
+                WHERE "startAt" <= ${new Date().toISOString()} AND
+                      "startedAt" IS NULL
+                ORDER BY "startAt" ASC
+                LIMIT 1
+              `
           );
           if (job !== undefined)
             app.locals.database.run(
               sql`
-                UPDATE "notificationMessageJobs"
-                SET "startedAt" = ${new Date().toISOString()}
-                WHERE "id" = ${job.id}
-              `
+                  UPDATE "notificationMessageJobs"
+                  SET "startedAt" = ${new Date().toISOString()}
+                  WHERE "id" = ${job.id}
+                `
             );
           return job;
         });
@@ -1266,21 +1266,21 @@ export default (app: Courselore): void => {
           courseNextConversationReference: number;
         }>(
           sql`
-            SELECT "messages"."contentPreprocessed",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference"
-            FROM "messages"
-            JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
-            JOIN "courses" ON "conversations"."course" = "courses"."id"
-            WHERE "messages"."id" = ${job.message}
-          `
+              SELECT "messages"."contentPreprocessed",
+                     "courses"."id" AS "courseId",
+                     "courses"."reference" AS "courseReference",
+                     "courses"."archivedAt" AS "courseArchivedAt",
+                     "courses"."name" AS "courseName",
+                     "courses"."year" AS "courseYear",
+                     "courses"."term" AS "courseTerm",
+                     "courses"."institution" AS "courseInstitution",
+                     "courses"."code" AS "courseCode",
+                     "courses"."nextConversationReference" AS "courseNextConversationReference"
+              FROM "messages"
+              JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
+              JOIN "courses" ON "conversations"."course" = "courses"."id"
+              WHERE "messages"."id" = ${job.message}
+            `
         )!;
         const message = { contentPreprocessed: messageRow.contentPreprocessed };
         const course = {
@@ -1312,8 +1312,8 @@ export default (app: Courselore): void => {
         // TODO
         app.locals.database.run(
           sql`
-            DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
-          `
+              DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+            `
         );
         console.log(
           `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\tmessage = ${
@@ -1323,7 +1323,7 @@ export default (app: Courselore): void => {
       }
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
-  })();
+  });
 
   // app.locals.database.run(
   //   sql`

@@ -174,6 +174,7 @@ export default async ({
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("listen");
+    app.emit("jobs");
     for (const signal of [
       "exit",
       "SIGHUP",
