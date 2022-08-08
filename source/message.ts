@@ -3,7 +3,7 @@ import qs from "qs";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
-import { javascript } from "@leafac/javascript";
+import { javascript, HTMLForJavaScript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
@@ -1172,6 +1172,59 @@ export default (app: Courselore): void => {
         );
     });
   };
+
+  setTimeout(() => {
+    const messageRow = app.locals.database.get<{
+      contentPreprocessed: string;
+      courseId: number;
+      courseReference: string;
+      courseArchivedAt: string | null;
+      courseName: string;
+      courseYear: string | null;
+      courseTerm: string | null;
+      courseInstitution: string | null;
+      courseCode: string | null;
+      courseNextConversationReference: number;
+    }>(
+      sql`
+        SELECT "messages"."contentPreprocessed",
+               "courses"."id" AS "courseId",
+               "courses"."reference" AS "courseReference",
+               "courses"."archivedAt" AS "courseArchivedAt",
+               "courses"."name" AS "courseName",
+               "courses"."year" AS "courseYear",
+               "courses"."term" AS "courseTerm",
+               "courses"."institution" AS "courseInstitution",
+               "courses"."code" AS "courseCode",
+               "courses"."nextConversationReference" AS "courseNextConversationReference"
+        FROM "messages"
+        JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
+        JOIN "courses" ON "conversations"."course" = "courses"."id"
+        WHERE "messages"."id" = 1 -- TODO $ {job.message}
+      `
+    )!;
+    const message = { contentPreprocessed: messageRow.contentPreprocessed };
+    const course = {
+      id: messageRow.courseId,
+      reference: messageRow.courseReference,
+      archivedAt: messageRow.courseArchivedAt,
+      name: messageRow.courseName,
+      year: messageRow.courseYear,
+      term: messageRow.courseTerm,
+      institution: messageRow.courseInstitution,
+      code: messageRow.courseCode,
+      nextConversationReference: messageRow.courseNextConversationReference,
+    };
+    console.log(
+      app.locals.partials.content({
+        req: {} as Parameters<typeof app.locals.partials.content>[0]["req"],
+        res: { locals: { course, html: HTMLForJavaScript() } } as Parameters<
+          typeof app.locals.partials.content
+        >[0]["res"],
+        contentPreprocessed: message.contentPreprocessed,
+      })
+    );
+  }, 1000);
 
   // (async () => {
   //   while (true) {
