@@ -471,8 +471,7 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.host === app.locals.options.canonicalHost ||
-            true
+            $${app.locals.options.host === app.locals.options.canonicalHost
               ? html`
                   <div
                     css="${res.locals.css(css`
