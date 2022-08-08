@@ -1530,12 +1530,16 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       app.locals.helpers.Session.close({ req, res });
-      res
-        .header(
-          "Clear-Site-Data",
-          `"*", "cache", "cookies", "storage", "executionContexts"`
-        )
-        .redirect(303, `https://${app.locals.options.host}/`);
+      res.header(
+        "Clear-Site-Data",
+        `"*", "cache", "cookies", "storage", "executionContexts"`
+      );
+
+      if (req.cookies.isUsingMobileApp) {
+        req.cookies.mobileAppRedirectUrl = undefined;
+        res.clearCookie("mobileAppRedirectUrl", app.locals.options.cookies);
+        res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
+      } else res.redirect(303, `https://${app.locals.options.host}/`);
     }
   );
 };
