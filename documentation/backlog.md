@@ -1032,6 +1032,8 @@ test("/preview (Text processor)", async () => {
 
 ## Marketing
 
+- Invest more in marketing on spring.
+  - Buy keywords on Google.
 - Homepage:
   - Better printscreens without `lorem ipsum`.
   - Example of design that we like: https://capacitorjs.com
