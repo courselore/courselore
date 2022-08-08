@@ -1173,67 +1173,6 @@ export default (app: Courselore): void => {
     });
   };
 
-  setTimeout(() => {
-    const messageRow = app.locals.database.get<{
-      contentPreprocessed: string;
-      courseId: number;
-      courseReference: string;
-      courseArchivedAt: string | null;
-      courseName: string;
-      courseYear: string | null;
-      courseTerm: string | null;
-      courseInstitution: string | null;
-      courseCode: string | null;
-      courseNextConversationReference: number;
-    }>(
-      sql`
-        SELECT "messages"."contentPreprocessed",
-               "courses"."id" AS "courseId",
-               "courses"."reference" AS "courseReference",
-               "courses"."archivedAt" AS "courseArchivedAt",
-               "courses"."name" AS "courseName",
-               "courses"."year" AS "courseYear",
-               "courses"."term" AS "courseTerm",
-               "courses"."institution" AS "courseInstitution",
-               "courses"."code" AS "courseCode",
-               "courses"."nextConversationReference" AS "courseNextConversationReference"
-        FROM "messages"
-        JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
-        JOIN "courses" ON "conversations"."course" = "courses"."id"
-        WHERE "messages"."id" = 2034 -- TODO $ {job.message}
-      `
-    )!;
-    const message = { contentPreprocessed: messageRow.contentPreprocessed };
-    const course = {
-      id: messageRow.courseId,
-      reference: messageRow.courseReference,
-      archivedAt: messageRow.courseArchivedAt,
-      name: messageRow.courseName,
-      year: messageRow.courseYear,
-      term: messageRow.courseTerm,
-      institution: messageRow.courseInstitution,
-      code: messageRow.courseCode,
-      nextConversationReference: messageRow.courseNextConversationReference,
-    };
-    console.log(
-      app.locals.partials.content({
-        req: { query: {} } as Parameters<
-          typeof app.locals.partials.content
-        >[0]["req"],
-        res: {
-          locals: {
-            css: localCSS(),
-            html: HTMLForJavaScript(),
-            user: {},
-            enrollment: {},
-            course,
-          },
-        } as Parameters<typeof app.locals.partials.content>[0]["res"],
-        contentPreprocessed: message.contentPreprocessed,
-      })
-    );
-  }, 1000);
-
   (async () => {
     while (true) {
       app.locals.database.executeTransaction(() => {
@@ -1314,18 +1253,60 @@ export default (app: Courselore): void => {
           return job;
         });
         if (job === undefined) break;
-        const message = app.locals.database.get<{
+        const messageRow = app.locals.database.get<{
           contentPreprocessed: string;
+          courseId: number;
+          courseReference: string;
+          courseArchivedAt: string | null;
+          courseName: string;
+          courseYear: string | null;
+          courseTerm: string | null;
+          courseInstitution: string | null;
+          courseCode: string | null;
+          courseNextConversationReference: number;
         }>(
           sql`
-            SELECT "contentPreprocessed"
+            SELECT "messages"."contentPreprocessed",
+                   "courses"."id" AS "courseId",
+                   "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
+                   "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference"
             FROM "messages"
-            WHERE "id" = ${job.message}
+            JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
+            JOIN "courses" ON "conversations"."course" = "courses"."id"
+            WHERE "messages"."id" = ${job.message}
           `
         )!;
+        const message = { contentPreprocessed: messageRow.contentPreprocessed };
+        const course = {
+          id: messageRow.courseId,
+          reference: messageRow.courseReference,
+          archivedAt: messageRow.courseArchivedAt,
+          name: messageRow.courseName,
+          year: messageRow.courseYear,
+          term: messageRow.courseTerm,
+          institution: messageRow.courseInstitution,
+          code: messageRow.courseCode,
+          nextConversationReference: messageRow.courseNextConversationReference,
+        };
         const contentProcessed = app.locals.partials.content({
-          req,
-          res,
+          req: { query: {} } as Parameters<
+            typeof app.locals.partials.content
+          >[0]["req"],
+          res: {
+            locals: {
+              css: localCSS(),
+              html: HTMLForJavaScript(),
+              user: {},
+              enrollment: {},
+              course,
+            },
+          } as Parameters<typeof app.locals.partials.content>[0]["res"],
           contentPreprocessed: message.contentPreprocessed,
         });
         // TODO
