@@ -1173,115 +1173,115 @@ export default (app: Courselore): void => {
     });
   };
 
-  (async () => {
-    while (true) {
-      app.locals.database.executeTransaction(() => {
-        for (const job of app.locals.database.all<{
-          id: number;
-          message: number;
-        }>(
-          sql`
-            SELECT "id", "message"
-            FROM "notificationMessageJobs"
-            WHERE "expiresAt" < ${new Date().toISOString()}
-          `
-        )) {
-          app.locals.database.run(
-            sql`
-              DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\nmessage = ${
-              job.message
-            }`
-          );
-        }
-      });
+  // (async () => {
+  //   while (true) {
+  //     app.locals.database.executeTransaction(() => {
+  //       for (const job of app.locals.database.all<{
+  //         id: number;
+  //         message: number;
+  //       }>(
+  //         sql`
+  //           SELECT "id", "message"
+  //           FROM "notificationMessageJobs"
+  //           WHERE "expiresAt" < ${new Date().toISOString()}
+  //         `
+  //       )) {
+  //         app.locals.database.run(
+  //           sql`
+  //             DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+  //           `
+  //         );
+  //         console.log(
+  //           `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\nmessage = ${
+  //             job.message
+  //           }`
+  //         );
+  //       }
+  //     });
 
-      app.locals.database.executeTransaction(() => {
-        for (const job of app.locals.database.all<{
-          id: number;
-          message: number;
-        }>(
-          sql`
-            SELECT "id", "message"
-            FROM "notificationMessageJobs"
-            WHERE "startedAt" < ${new Date(
-              Date.now() - 2 * 60 * 1000
-            ).toISOString()}
-          `
-        )) {
-          app.locals.database.run(
-            sql`
-              UPDATE "notificationMessageJobs"
-              SET "startedAt" = NULL
-              WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\nmessage = ${
-              job.message
-            }`
-          );
-        }
-      });
+  //     app.locals.database.executeTransaction(() => {
+  //       for (const job of app.locals.database.all<{
+  //         id: number;
+  //         message: number;
+  //       }>(
+  //         sql`
+  //           SELECT "id", "message"
+  //           FROM "notificationMessageJobs"
+  //           WHERE "startedAt" < ${new Date(
+  //             Date.now() - 2 * 60 * 1000
+  //           ).toISOString()}
+  //         `
+  //       )) {
+  //         app.locals.database.run(
+  //           sql`
+  //             UPDATE "notificationMessageJobs"
+  //             SET "startedAt" = NULL
+  //             WHERE "id" = ${job.id}
+  //           `
+  //         );
+  //         console.log(
+  //           `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\nmessage = ${
+  //             job.message
+  //           }`
+  //         );
+  //       }
+  //     });
 
-      while (true) {
-        const job = app.locals.database.executeTransaction(() => {
-          const job = app.locals.database.get<{
-            id: number;
-            message: string;
-          }>(
-            sql`
-              SELECT "id", "message"
-              FROM "notificationMessageJobs"
-              WHERE "startAt" <= ${new Date().toISOString()} AND
-                    "startedAt" IS NULL
-              ORDER BY "startAt" ASC
-              LIMIT 1
-            `
-          );
-          if (job !== undefined)
-            app.locals.database.run(
-              sql`
-                UPDATE "notificationMessageJobs"
-                SET "startedAt" = ${new Date().toISOString()}
-                WHERE "id" = ${job.id}
-              `
-            );
-          return job;
-        });
-        if (job === undefined) break;
-        const message = app.locals.database.get<{
-          contentPreprocessed: string;
-        }>(
-          sql`
-            SELECT "contentPreprocessed"
-            FROM "messages"
-            WHERE "id" = ${job.message}
-          `
-        )!;
-        const contentProcessed = app.locals.partials.content({
-          req,
-          res,
-          contentPreprocessed: message.contentPreprocessed,
-        });
-        // TODO
-        app.locals.database.run(
-          sql`
-            DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\tmessage = ${
-            job.message
-          }`
-        );
-      }
-      await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
-    }
-  })();
+  //     while (true) {
+  //       const job = app.locals.database.executeTransaction(() => {
+  //         const job = app.locals.database.get<{
+  //           id: number;
+  //           message: string;
+  //         }>(
+  //           sql`
+  //             SELECT "id", "message"
+  //             FROM "notificationMessageJobs"
+  //             WHERE "startAt" <= ${new Date().toISOString()} AND
+  //                   "startedAt" IS NULL
+  //             ORDER BY "startAt" ASC
+  //             LIMIT 1
+  //           `
+  //         );
+  //         if (job !== undefined)
+  //           app.locals.database.run(
+  //             sql`
+  //               UPDATE "notificationMessageJobs"
+  //               SET "startedAt" = ${new Date().toISOString()}
+  //               WHERE "id" = ${job.id}
+  //             `
+  //           );
+  //         return job;
+  //       });
+  //       if (job === undefined) break;
+  //       const message = app.locals.database.get<{
+  //         contentPreprocessed: string;
+  //       }>(
+  //         sql`
+  //           SELECT "contentPreprocessed"
+  //           FROM "messages"
+  //           WHERE "id" = ${job.message}
+  //         `
+  //       )!;
+  //       const contentProcessed = app.locals.partials.content({
+  //         req,
+  //         res,
+  //         contentPreprocessed: message.contentPreprocessed,
+  //       });
+  //       // TODO
+  //       app.locals.database.run(
+  //         sql`
+  //           DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+  //         `
+  //       );
+  //       console.log(
+  //         `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\tmessage = ${
+  //           job.message
+  //         }`
+  //       );
+  //     }
+  //     await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
+  //   }
+  // })();
 
   // app.locals.database.run(
   //   sql`
