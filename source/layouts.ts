@@ -2460,7 +2460,7 @@ export default async (app: Courselore): Promise<void> => {
                       `)}"
                     >
                       <p>
-                        This is a development installation of Courselore and
+                        This is a demonstration installation of Courselore and
                         must not be used for real courses. Any data may be lost,
                         including users, courses, invitations, conversations,
                         messages, and so forth. Emails aren’t delivered. You may

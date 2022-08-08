@@ -190,8 +190,8 @@ export default (app: Courselore): void => {
                       });
                     `}"
                   >
-                    <i class="bi bi-tools"></i>
-                    Development Installation
+                    <i class="bi bi-easel"></i>
+                    Demonstration Installation
                   </a>
                 </div>
               </div>
@@ -876,7 +876,7 @@ export default (app: Courselore): void => {
                 });
               `}"
             >
-              <i class="bi bi-file-earmark-code-fill"></i>
+              <i class="bi bi-file-earmark-code"></i>
               Source Code
             </a>
             <a
@@ -889,8 +889,8 @@ export default (app: Courselore): void => {
                 });
               `}"
             >
-              <i class="bi bi-tools"></i>
-              Development Installation
+              <i class="bi bi-easel"></i>
+              Demonstration Installation
             </a>
           </div>
         `,

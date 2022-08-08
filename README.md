@@ -10,7 +10,7 @@
 </p>
 <h3 align="center">
 <a href="https://courselore.org">Hosted Installation</a> ·
-<a href="https://try.courselore.org">Development Installation</a> ·
+<a href="https://try.courselore.org">Demonstration Installation</a> ·
 <a href="https://courselore.org/courses/8537410611/invitations/3667859788">Meta Courselore</a>
 </h3>
 
