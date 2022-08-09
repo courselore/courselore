@@ -3813,7 +3813,7 @@ export default (app: Courselore): void => {
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const conversationRow = app.locals.database.get<{
+      const conversation = app.locals.database.get<{
         id: number;
         reference: string;
         type: ConversationType;
@@ -3856,7 +3856,7 @@ export default (app: Courselore): void => {
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
               ${new Date().toISOString()},
-              ${conversationRow.id},
+              ${conversation.id},
               ${
                 res.locals.tags.find(
                   (existingTag) => existingTag.reference === tagReference
@@ -3875,6 +3875,7 @@ export default (app: Courselore): void => {
         //   processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
+          reference: string;
         }>(
           sql`
             INSERT INTO "messages" (
@@ -3889,7 +3890,7 @@ export default (app: Courselore): void => {
             )
             VALUES (
               ${new Date().toISOString()},
-              ${conversationRow.id},
+              ${conversation.id},
               ${"1"},
               ${res.locals.enrollment.id},
               ${
@@ -3912,7 +3913,20 @@ export default (app: Courselore): void => {
             )
           `
         );
-        app.locals.mailers.notifications({ req, res, messageId: message.id });
+        app.locals.mailers.notifications({
+          req,
+          res,
+          message: app.locals.helpers.getMessage({
+            req,
+            res,
+            conversation: app.locals.helpers.getConversation({
+              req,
+              res,
+              conversationReference: conversation.reference,
+            })!,
+            messageReference: message.reference,
+          })!,
+        });
       }
 
       if (
@@ -3932,7 +3946,7 @@ export default (app: Courselore): void => {
         303,
         `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
-        }/conversations/${conversationRow.reference}${qs.stringify(
+        }/conversations/${conversation.reference}${qs.stringify(
           {
             conversations: req.query.conversations,
           },

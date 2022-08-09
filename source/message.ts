@@ -571,7 +571,7 @@ export default (app: Courselore): void => {
           res.locals.conversation.nextMessageReference - 1
         ),
       });
-      let message: { id: number };
+      let message: { id: number; reference: string };
       if (
         res.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
@@ -592,7 +592,7 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        message = app.locals.database.get<{ id: number }>(
+        message = app.locals.database.get<{ id: number; reference: string }>(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
@@ -641,6 +641,7 @@ export default (app: Courselore): void => {
         );
         message = app.locals.database.get<{
           id: number;
+          reference: string;
         }>(
           sql`
             INSERT INTO "messages" (
@@ -681,7 +682,16 @@ export default (app: Courselore): void => {
           `
         );
       }
-      app.locals.mailers.notifications({ req, res, messageId: message.id });
+      app.locals.mailers.notifications({
+        req,
+        res,
+        message: app.locals.helpers.getMessage({
+          req,
+          res,
+          conversation: res.locals.conversation,
+          messageReference: message.reference,
+        })!,
+      });
 
       res.redirect(
         303,
@@ -819,7 +829,7 @@ export default (app: Courselore): void => {
         app.locals.mailers.notifications({
           req,
           res,
-          messageId: res.locals.message.id,
+          message: res.locals.message,
         });
       }
 
@@ -1132,35 +1142,35 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.mailers.notifications = ({ req, res, messageId }) => {
+  app.locals.mailers.notifications = ({ req, res, message }) => {
     app.locals.database.executeTransaction(() => {
-      //   app.locals.database.run(
-      //     sql`
-      //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-      //       VALUES (
-      //         ${new Date().toISOString()},
-      //         ${message.id},
-      //         ${res.locals.enrollment.id}
-      //       )
-      //     `
-      //   );
-      //   if (message.authorEnrollment !== "no-longer-enrolled")
-      //     app.locals.database.run(
-      //       sql`
-      //         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-      //         VALUES (
-      //           ${new Date().toISOString()},
-      //           ${message.id},
-      //           ${message.authorEnrollment.id}
-      //         )
-      //       `
-      //     );
+      app.locals.database.run(
+        sql`
+          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+          VALUES (
+            ${new Date().toISOString()},
+            ${message.id},
+            ${res.locals.enrollment.id}
+          )
+        `
+      );
+      if (message.authorEnrollment !== "no-longer-enrolled")
+        app.locals.database.run(
+          sql`
+            INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${message.authorEnrollment.id}
+            )
+          `
+        );
 
       const job = app.locals.database.get<{ id: number }>(
         sql`
           SELECT "id"
           FROM "notificationMessageJobs"
-          WHERE "message" = ${messageId} AND
+          WHERE "message" = ${message.id} AND
                 "startedAt" IS NULL
         `
       );
@@ -1177,7 +1187,7 @@ export default (app: Courselore): void => {
               ${new Date().toISOString()},
               ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
-              ${messageId}
+              ${message.id}
             )
           `
         );
