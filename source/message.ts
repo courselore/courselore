@@ -1301,15 +1301,15 @@ export default (app: Courselore): void => {
         }>(
           sql`
             SELECT "messages"."contentPreprocessed",
-                    "courses"."id" AS "courseId",
-                    "courses"."reference" AS "courseReference",
-                    "courses"."archivedAt" AS "courseArchivedAt",
-                    "courses"."name" AS "courseName",
-                    "courses"."year" AS "courseYear",
-                    "courses"."term" AS "courseTerm",
-                    "courses"."institution" AS "courseInstitution",
-                    "courses"."code" AS "courseCode",
-                    "courses"."nextConversationReference" AS "courseNextConversationReference"
+                   "courses"."id" AS "courseId",
+                   "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
+                   "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
