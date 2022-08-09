@@ -1293,6 +1293,7 @@ export default (app: Courselore): void => {
           id: number;
           contentPreprocessed: string;
           conversationId: number;
+          conversationReference: string;
           conversationStaffOnlyAt: string | null;
           courseId: number;
           courseReference: string;
@@ -1308,6 +1309,7 @@ export default (app: Courselore): void => {
             SELECT "messages"."id",
                    "messages"."contentPreprocessed",
                    "conversations"."id" AS "conversationId",
+                   "conversations"."reference" AS "conversationReference",
                    "conversations"."staffOnlyAt" AS "conversationStaffOnlyAt",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
@@ -1330,6 +1332,7 @@ export default (app: Courselore): void => {
         };
         const conversation = {
           id: messageRow.conversationId,
+          reference: messageRow.conversationReference,
           staffOnlyAt: messageRow.conversationStaffOnlyAt,
         };
         const course = {
@@ -1442,6 +1445,85 @@ export default (app: Courselore): void => {
           `
         );
 
+        // const inReplyTo = `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`;
+        // for (const enrollment of enrollments) {
+        //   app.locals.database.run(
+        //     sql`
+        //       INSERT INTO "sendEmailJobs" (
+        //         "createdAt",
+        //         "startAt",
+        //         "expiresAt",
+        //         "mailOptions"
+        //       )
+        //       VALUES (
+        //         ${new Date().toISOString()},
+        //         ${new Date().toISOString()},
+        //         ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+        //         ${JSON.stringify({
+        //           from: {
+        //             name: `${app.locals.options.sendMail.defaults.from.name} · ${course.name}`,
+        //             address: app.locals.options.sendMail.defaults.from.address,
+        //           },
+        //           to: enrollment.userEmail,
+        //           inReplyTo,
+        //           references: inReplyTo,
+        //           subject: `${conversation.title} · ${course.name} · Courselore`,
+        //           html: html`
+        //             <p>
+        //               <a
+        //                 href="https://${app.locals.options.host}/courses/${res
+        //                   .locals.course
+        //                   .reference}/conversations/${conversation.reference}${qs.stringify(
+        //                   { messages: { messageReference: message.reference } },
+        //                   {
+        //                     addQueryPrefix: true,
+        //                   }
+        //                 )}"
+        //                 >${message.authorEnrollment === "no-longer-enrolled"
+        //                   ? "Someone who is no longer enrolled"
+        //                   : message.anonymousAt !== null
+        //                   ? `Anonymous ${
+        //                       enrollment.courseRole === "staff"
+        //                         ? `(${message.authorEnrollment.user.name})`
+        //                         : ""
+        //                     }`
+        //                   : message.authorEnrollment.user.name}
+        //                 says</a
+        //               >:
+        //             </p>
+
+        //             <hr />
+
+        //             $${message.contentPreprocessed}
+
+        //             <hr />
+
+        //             <p>
+        //               <small>
+        //                 <a
+        //                   href="https://${app.locals.options
+        //                     .host}/settings/notifications-preferences"
+        //                   >Change Notifications Preferences</a
+        //                 >
+        //               </small>
+        //             </p>
+        //           `,
+        //         })}
+        //       )
+        //     `
+        //   );
+        //   app.locals.database.run(
+        //     sql`
+        //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+        //       VALUES (
+        //         ${new Date().toISOString()},
+        //         ${message.id},
+        //         ${enrollment.id}
+        //       )
+        //     `
+        //   );
+        // }
+
         app.locals.database.run(
           sql`
             DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
@@ -1453,90 +1535,8 @@ export default (app: Courselore): void => {
           }`
         );
       }
+
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
   });
-
-  // app.locals.database.executeTransaction(() => {
-  //   const inReplyTo = `courses/${res.locals.course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`;
-  //   for (const enrollment of enrollments) {
-  //     app.locals.database.run(
-  //       sql`
-  //         INSERT INTO "sendEmailJobs" (
-  //           "createdAt",
-  //           "startAt",
-  //           "expiresAt",
-  //           "mailOptions"
-  //         )
-  //         VALUES (
-  //           ${new Date().toISOString()},
-  //           ${new Date().toISOString()},
-  //           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-  //           ${JSON.stringify({
-  //             from: {
-  //               name: `${app.locals.options.sendMail.defaults.from.name} · ${res.locals.course.name}`,
-  //               address: app.locals.options.sendMail.defaults.from.address,
-  //             },
-  //             to: enrollment.userEmail,
-  //             inReplyTo,
-  //             references: inReplyTo,
-  //             subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
-  //             html: html`
-  //               <p>
-  //                 <a
-  //                   href="https://${app.locals.options.host}/courses/${res
-  //                     .locals.course
-  //                     .reference}/conversations/${conversation.reference}${qs.stringify(
-  //                     { messages: { messageReference: message.reference } },
-  //                     {
-  //                       addQueryPrefix: true,
-  //                     }
-  //                   )}"
-  //                   >${message.authorEnrollment === "no-longer-enrolled"
-  //                     ? "Someone who is no longer enrolled"
-  //                     : message.anonymousAt !== null
-  //                     ? `Anonymous ${
-  //                         enrollment.courseRole === "staff"
-  //                           ? `(${message.authorEnrollment.user.name})`
-  //                           : ""
-  //                       }`
-  //                     : message.authorEnrollment.user.name}
-  //                   says</a
-  //                 >:
-  //               </p>
-
-  //               <hr />
-
-  //               $${message.contentPreprocessed}
-
-  //               <hr />
-
-  //               <p>
-  //                 <small>
-  //                   <a
-  //                     href="https://${app.locals.options
-  //                       .host}/settings/notifications-preferences"
-  //                     >Change Notifications Preferences</a
-  //                   >
-  //                 </small>
-  //               </p>
-  //             `,
-  //           })}
-  //         )
-  //       `
-  //     );
-  //     app.locals.database.run(
-  //       sql`
-  //         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-  //         VALUES (
-  //           ${new Date().toISOString()},
-  //           ${message.id},
-  //           ${enrollment.id}
-  //         )
-  //       `
-  //     );
-  //   }
-  // });
-
-  // app.locals.workers.sendEmail();
 };
