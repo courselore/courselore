@@ -155,27 +155,28 @@ export default (app: Courselore): void => {
                       placeholder="https://example-server.org"
                       class="input--text secondary"
                       onload="${javascript`
-                        (this.dropdown ??= tippy(this)).setProps({
-                          trigger: "click",
-                          interactive: true,
-                          content: ${res.locals.html(
-                            html`
-                              <div class="dropdown--menu">
-                                <label class="secondary">
-                                  Previous selection
-                                </label>
-                                <label
-                                  class="dropdown--menu--item button button--transparent"
-                                  onload="${javascript`
-                                    this.textContent = window.localStorage.getItem('selection');
-                                    this.onclick = () => document.querySelector('[key="url-input-box"]').value = this.textContent;
-                                  `}"
-                                >
-                                </label>
-                              </div>
-                            `
-                          )},
-                        });
+                        if (window.localStorage.getItem('selection') !== undefined && window.localStorage.getItem('selection') !== "")
+                          (this.dropdown ??= tippy(this)).setProps({
+                            trigger: "click",
+                            interactive: true,
+                            content: ${res.locals.html(
+                              html`
+                                <div class="dropdown--menu">
+                                  <label class="secondary">
+                                    Previous selection
+                                  </label>
+                                  <label
+                                    class="dropdown--menu--item button button--transparent"
+                                    onload="${javascript`
+                                      this.textContent = window.localStorage.getItem('selection');
+                                      this.onclick = () => document.querySelector('[key="url-input-box"]').value = this.textContent;
+                                    `}"
+                                  >
+                                  </label>
+                                </div>
+                              `
+                            )},
+                          });
                       `}"
                     />
                     <button
