@@ -1131,7 +1131,29 @@ export default (app: Courselore): void => {
   );
 
   app.locals.mailers.notifications = ({ req, res, messageId }) => {
-    app.locals.database.executeTransaction(() => {
+    // app.locals.database.executeTransaction(() => {
+    //   app.locals.database.run(
+    //     sql`
+    //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+    //       VALUES (
+    //         ${new Date().toISOString()},
+    //         ${message.id},
+    //         ${res.locals.enrollment.id}
+    //       )
+    //     `
+    //   );
+    //   if (message.authorEnrollment !== "no-longer-enrolled")
+    //     app.locals.database.run(
+    //       sql`
+    //         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+    //         VALUES (
+    //           ${new Date().toISOString()},
+    //           ${message.id},
+    //           ${message.authorEnrollment.id}
+    //         )
+    //       `
+    //     );
+
       const job = app.locals.database.get<{ id: number }>(
         sql`
           SELECT "id"
@@ -1324,28 +1346,6 @@ export default (app: Courselore): void => {
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
   });
-
-  // app.locals.database.run(
-  //   sql`
-  //     INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-  //     VALUES (
-  //       ${new Date().toISOString()},
-  //       ${message.id},
-  //       ${res.locals.enrollment.id}
-  //     )
-  //   `
-  // );
-  // if (message.authorEnrollment !== "no-longer-enrolled")
-  //   app.locals.database.run(
-  //     sql`
-  //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-  //       VALUES (
-  //         ${new Date().toISOString()},
-  //         ${message.id},
-  //         ${message.authorEnrollment.id}
-  //       )
-  //     `
-  //   );
 
   // app.locals.database.executeTransaction(() => {
   //   const enrollments = app.locals.database.all<{
