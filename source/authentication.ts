@@ -1536,8 +1536,8 @@ export default (app: Courselore): void => {
       );
 
       if (req.cookies.isUsingMobileApp) {
-        req.cookies.mobileAppRedirectUrl = undefined;
-        res.clearCookie("mobileAppRedirectUrl", app.locals.options.cookies);
+        req.cookies.mobileAppRedirectUser = undefined;
+        res.clearCookie("mobileAppRedirectUser", app.locals.options.cookies);
         res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
       } else res.redirect(303, `https://${app.locals.options.host}/`);
     }

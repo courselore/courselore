@@ -18,8 +18,8 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
   (req, res, next) => {
     // Currently bypasses cookies for testing
     if (false) {
-      //req.cookies.mobileAppRedirectUrl !== undefined
-      res.redirect(303, req.cookies.mobileAppURedirectUrl);
+      //req.cookies.mobileAppRedirectUser
+      res.redirect(303, req.cookies.mobileAppSelectedUrl);
       return;
     }
     next();
@@ -154,7 +154,7 @@ export default (app: Courselore): void => {
                       placeholder="https://example-server.org"
                       class="input--text secondary"
                       onload="${javascript`
-                        if (window.localStorage.getItem('selection') !== undefined && window.localStorage.getItem('selection') !== "")
+                        if (${req.cookies.mobileAppSelectedUrl !== undefined})
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
@@ -167,7 +167,7 @@ export default (app: Courselore): void => {
                                   <label
                                     class="dropdown--menu--item button button--transparent"
                                     onload="${javascript`
-                                      this.textContent = window.localStorage.getItem('selection');
+                                      this.textContent = ${req.cookies.mobileAppSelectedUrl};
                                       this.onclick = () => document.querySelector('[key="url-input-box"]').value = this.textContent;
                                     `}"
                                   >
@@ -178,14 +178,7 @@ export default (app: Courselore): void => {
                           });
                       `}"
                     />
-                    <button
-                      class="button button--blue heading--display"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          window.localStorage.setItem('selection', document.querySelector('[key="url-input-box"]').value);
-                        };
-                      `}"
-                    >
+                    <button class="button button--blue heading--display">
                       Go
                     </button>
                   </form>
@@ -221,8 +214,13 @@ export default (app: Courselore): void => {
         return;
       }
 
-      req.cookies.mobileAppRedirectUrl = req.body.href;
-      res.cookie("mobileAppRedirectUrl", req.body.href, {
+      req.cookies.mobileAppSelectedUrl = req.body.href;
+      res.cookie("mobileAppSelectedUrl", req.body.href, {
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Session.maxAge,
+      });
+      req.cookies.mobileAppRedirectUser = "true";
+      res.cookie("mobileAppRedirectUser", "true", {
         ...app.locals.options.cookies,
         maxAge: app.locals.helpers.Session.maxAge,
       });
