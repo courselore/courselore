@@ -2643,9 +2643,9 @@ export default async (app: Courselore): Promise<void> => {
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
-                                  @media (orientation: landscape) {
-                                    max-height: var(--space--60);
-                                  }
+                                  ${req.cookies.isUsingMobileApp
+                                    ? "@media (orientation: landscape) { max-height: var(--space--60); }"
+                                    : ""}
                                 `)}"
                               >
                                 <div>

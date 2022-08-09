@@ -16,7 +16,6 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
   IsUsingMobileAppMiddlewareLocals
 >[] = [
   (req, res, next) => {
-    req.cookies.mobileAppRedirectUrl = undefined;
     // Currently bypasses cookies for testing
     if (false) {
       //req.cookies.mobileAppRedirectUrl !== undefined
