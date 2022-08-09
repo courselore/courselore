@@ -105,11 +105,13 @@ export type CourseLiveUpdater = ({
 export type NotificationsMailer = ({
   req,
   res,
-  messageId,
+  message,
 }: {
   req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-  messageId: number;
+  message: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
 }) => void;
 
 export default (app: Courselore): void => {
