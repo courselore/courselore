@@ -4,8 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module">
+      import { Browser } from "@capacitor/browser";
+      window.Browser = Browser;
+    </script>
     <script>
-      window.location.href = "https://eliots-orp-koobcam.local/mobile-app";
+      window.Browser.open({ url: "https://try.courselore.org" });
+      //window.location.href = "https://eliots-orp-koobcam.local/mobile-app";
     </script>
   </head>
 </html>
