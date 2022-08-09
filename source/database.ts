@@ -1007,6 +1007,7 @@ export default async (app: Courselore): Promise<void> => {
             "biographyPreprocessed" TEXT NULL,
             "systemRole" TEXT NOT NULL,
             "emailNotificationsForAllMessages" TEXT NOT NULL,
+            "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
             "emailNotificationsForMentionsAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL
@@ -1077,6 +1078,7 @@ export default async (app: Courselore): Promise<void> => {
               "biographyPreprocessed",
               "systemRole",
               "emailNotificationsForAllMessages",
+              "emailNotificationsForAllMessagesDigestDeliveredAt",
               "emailNotificationsForMentionsAt",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
               "emailNotificationsForMessagesInConversationsYouStartedAt" 
@@ -1105,6 +1107,17 @@ export default async (app: Courselore): Promise<void> => {
                   ? "hourly-digests"
                   : user.emailNotificationsDigestsFrequency === "daily"
                   ? "daily-digests"
+                  : null
+              },
+              ${
+                user.emailNotificationsForAllMessagesAt === null
+                  ? null
+                  : user.emailNotificationsDigestsFrequency === null
+                  ? null
+                  : user.emailNotificationsDigestsFrequency === "hourly"
+                  ? new Date().toISOString()
+                  : user.emailNotificationsDigestsFrequency === "daily"
+                  ? new Date().toISOString()
                   : null
               },
               ${user.emailNotificationsForMentionsAt},
@@ -1146,20 +1159,20 @@ export default async (app: Courselore): Promise<void> => {
       CREATE INDEX "notificationMessageJobsStartedAtIndex" ON "notificationMessageJobs" ("startedAt");
       CREATE INDEX "notificationMessageJobsExpiresAtIndex" ON "notificationMessageJobs" ("expiresAt");
 
-      CREATE TABLE "notificationDigestJobs" (
+      CREATE TABLE "notificationDigestMessages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "startAt" TEXT NOT NULL,
-        "startedAt" TEXT NULL,
-        "expiresAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        "contentProcessed" TEXT NOT NULL,
-        UNIQUE ("message", "enrollment")
+        UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
-      CREATE INDEX "notificationDigestJobsStartAtIndex" ON "notificationDigestJobs" ("startAt");
+
+      CREATE TABLE "notificationDigestJobs" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "startedAt" TEXT NOT NULL,
+        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
+      );
       CREATE INDEX "notificationDigestJobsStartedAtIndex" ON "notificationDigestJobs" ("startedAt");
-      CREATE INDEX "notificationDigestJobsExpiresAtIndex" ON "notificationDigestJobs" ("expiresAt");
+      CREATE INDEX "notificationDigestJobsUserIndex" ON "notificationDigestJobs" ("user");
     `
   );
   app.once("close", () => {
