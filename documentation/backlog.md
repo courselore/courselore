@@ -133,6 +133,7 @@
       - Currently we schedule emails to be delivered (including the content of said emails) in the request/response cycle, so rendering content for every person would take too long. Wait to implement this when we finish implement other features in this section, which may introduce an intermediary job to schedule emails that will be outside the request/response cycle.
       - The content renderer currently relies on `{req, res}` to determine things like `res.locals.user`. It needs to support passing arbitrary users in.
       - Mathematics are rendered incorrectly.
+- Reprocess existing content, because of new DOM Clobbering strategy.
 
 ---
 
@@ -383,6 +384,7 @@ new Notification('Example');
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filter by date.
+- `@mentions` are awkward in search results, because they take in account the original `@<enrollment-reference>--<name-slug>` instead of the rendered person’s name.
 
 ## Content Editor
 
