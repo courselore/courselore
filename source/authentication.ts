@@ -5,6 +5,7 @@ import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import got from "got";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
@@ -1528,18 +1529,25 @@ export default (app: Courselore): void => {
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
     ...app.locals.middlewares.isSignedIn,
-    (req, res) => {
+    asyncHandler(async (req, res) => {
       app.locals.helpers.Session.close({ req, res });
       res.header(
         "Clear-Site-Data",
         `"*", "cache", "cookies", "storage", "executionContexts"`
       );
 
-      if (req.cookies.isUsingMobileApp) {
+      let serverOnline = true;
+      try {
+        await got(`https://${app.locals.options.host}/mobile-app`);
+      } catch (error) {
+        serverOnline = false;
+      }
+
+      if (req.cookies.isUsingMobileApp && serverOnline) {
         req.cookies.mobileAppRedirectUser = undefined;
         res.clearCookie("mobileAppRedirectUser", app.locals.options.cookies);
         res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
       } else res.redirect(303, `https://${app.locals.options.host}/`);
-    }
+    })
   );
 };

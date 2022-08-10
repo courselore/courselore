@@ -6,27 +6,46 @@ import { javascript } from "@leafac/javascript";
 import got from "got";
 import { Courselore, BaseMiddlewareLocals } from "./index.js";
 
-// TODO: This middleware is needed only on courselore.org, for /mobile-app
-interface IsUsingMobileAppMiddlewareLocals extends BaseMiddlewareLocals {}
-const isUsingMobileAppMiddleware: express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  IsUsingMobileAppMiddlewareLocals
->[] = [
-  (req, res, next) => {
-    // Currently bypasses cookies for testing
-    if (false) {
-      //req.cookies.mobileAppRedirectUser
-      res.redirect(303, req.cookies.mobileAppSelectedUrl);
-      return;
-    }
-    next();
-  },
-];
-
 export default (app: Courselore): void => {
+  // TODO: This middleware is needed only on courselore.org, for /mobile-app
+  interface IsUsingMobileAppMiddlewareLocals extends BaseMiddlewareLocals {}
+  const isUsingMobileAppMiddleware: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    IsUsingMobileAppMiddlewareLocals
+  >[] = [
+    asyncHandler(async (req, res, next) => {
+      if (req.cookies.mobileAppRedirectUser) {
+        let serverOnline = true;
+        try {
+          await got(req.cookies.mobileAppSelectedUrl);
+        } catch (error) {
+          serverOnline = false;
+        }
+
+        if (!serverOnline) {
+          req.cookies.mobileAppRedirectUser = undefined;
+          res.clearCookie("mobileAppRedirectUser", app.locals.options.cookies);
+          res.redirect(
+            303,
+            `https://${
+              app.locals.options.host
+            }/mobile-app/invalid-url/${encodeURIComponent(
+              req.cookies.mobileAppSelectedUrl
+            )}`
+          );
+          return;
+        }
+
+        res.redirect(303, req.cookies.mobileAppSelectedUrlzw);
+        return;
+      }
+      next();
+    }),
+  ];
+
   // TODO: This route should be on courselore.org only
   app.get<
     { invalidUrl?: string },
@@ -168,18 +187,42 @@ export default (app: Courselore): void => {
                             document.querySelector('[key="url-input"]').hidden = false;
                             (this.invalid ??= tippy(this)).setProps({
                               theme: "error",
+                              interactive: true,
                               trigger: "manual",
-                              content: ${res.locals.html(
-                                html`
-                                  <label>
-                                    The URL you entered could not be validated
-                                    as being for a Courselore installation. If
-                                    you think this is a mistake, contact your
-                                    instructor or your institution's system
-                                    administrator.
-                                  </label>
-                                `
-                              )},
+                              content: ${
+                                req.params.invalidUrl ===
+                                req.cookies.mobileAppSelectedUrl
+                                  ? res.locals.html(html`
+                                      <label>
+                                        The Courselore app was unable to connect
+                                        to the selected Courselore installation.
+                                        Please try again later, or contact your
+                                        course staff if the problem persists.
+                                      </label>
+                                    `)
+                                  : res.locals.html(
+                                      html`
+                                        <label>
+                                          The URL you entered could not be
+                                          validated as being for a Courselore
+                                          installation, or the installation may
+                                          be offline.
+                                          <br /><br />
+                                          If you think this is a mistake, please
+                                          contact your course staff or the
+                                          system administrator at
+                                          <a
+                                            href="${app.locals.partials
+                                              .reportIssueHref}"
+                                            target="_blank"
+                                            class="link"
+                                            >${app.locals.options
+                                              .administratorEmail}</a
+                                          >.
+                                        </label>
+                                      `
+                                    )
+                              },
                             });
                             this.invalid.show();
                             this.value = decodedUrl;
