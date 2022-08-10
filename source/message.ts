@@ -1170,7 +1170,7 @@ export default (app: Courselore): void => {
       const job = app.locals.database.get<{ id: number }>(
         sql`
           SELECT "id"
-          FROM "notificationMessageJobs"
+          FROM "emailNotificationMessageJobs"
           WHERE "message" = ${message.id} AND
                 "startedAt" IS NULL
         `
@@ -1178,7 +1178,7 @@ export default (app: Courselore): void => {
       if (job === undefined)
         app.locals.database.run(
           sql`
-            INSERT INTO "notificationMessageJobs" (
+            INSERT INTO "emailNotificationMessageJobs" (
               "createdAt",
               "startAt",
               "expiresAt",
@@ -1195,7 +1195,7 @@ export default (app: Courselore): void => {
       else
         app.locals.database.run(
           sql`
-            UPDATE "notificationMessageJobs"
+            UPDATE "emailNotificationMessageJobs"
             SET "startAt" = ${new Date(
               Date.now() + 5 * 60 * 1000
             ).toISOString()},
@@ -1217,17 +1217,17 @@ export default (app: Courselore): void => {
         }>(
           sql`
             SELECT "id", "message"
-            FROM "notificationMessageJobs"
+            FROM "emailNotificationMessageJobs"
             WHERE "expiresAt" < ${new Date().toISOString()}
           `
         )) {
           app.locals.database.run(
             sql`
-              DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+              DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
             `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tEXPIRED\tmessage = ${
+            `${new Date().toISOString()}\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
               job.message
             }`
           );
@@ -1241,7 +1241,7 @@ export default (app: Courselore): void => {
         }>(
           sql`
             SELECT "id", "message"
-            FROM "notificationMessageJobs"
+            FROM "emailNotificationMessageJobs"
             WHERE "startedAt" < ${new Date(
               Date.now() - 2 * 60 * 1000
             ).toISOString()}
@@ -1249,13 +1249,13 @@ export default (app: Courselore): void => {
         )) {
           app.locals.database.run(
             sql`
-              UPDATE "notificationMessageJobs"
+              UPDATE "emailNotificationMessageJobs"
               SET "startedAt" = NULL
               WHERE "id" = ${job.id}
             `
           );
           console.log(
-            `${new Date().toISOString()}\tnotificationMessageJobs\tTIMED OUT\tmessage = ${
+            `${new Date().toISOString()}\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
               job.message
             }`
           );
@@ -1270,7 +1270,7 @@ export default (app: Courselore): void => {
           }>(
             sql`
               SELECT "id", "message"
-              FROM "notificationMessageJobs"
+              FROM "emailNotificationMessageJobs"
               WHERE "startAt" <= ${new Date().toISOString()} AND
                     "startedAt" IS NULL
               ORDER BY "startAt" ASC
@@ -1280,7 +1280,7 @@ export default (app: Courselore): void => {
           if (job !== undefined)
             app.locals.database.run(
               sql`
-                UPDATE "notificationMessageJobs"
+                UPDATE "emailNotificationMessageJobs"
                 SET "startedAt" = ${new Date().toISOString()}
                 WHERE "id" = ${job.id}
               `
@@ -1534,11 +1534,11 @@ export default (app: Courselore): void => {
 
         app.locals.database.run(
           sql`
-            DELETE FROM "notificationMessageJobs" WHERE "id" = ${job.id}
+            DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
           `
         );
         console.log(
-          `${new Date().toISOString()}\tnotificationMessageJobs\tSUCCEEDED\tmessage = ${
+          `${new Date().toISOString()}\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
             job.message
           }`
         );

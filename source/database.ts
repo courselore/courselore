@@ -1151,7 +1151,7 @@ export default async (app: Courselore): Promise<void> => {
     },
 
     sql`
-      CREATE TABLE "notificationMessageJobs" (
+      CREATE TABLE "emailNotificationMessageJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "startAt" TEXT NOT NULL,
@@ -1159,24 +1159,24 @@ export default async (app: Courselore): Promise<void> => {
         "expiresAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
       );
-      CREATE INDEX "notificationMessageJobsStartAtIndex" ON "notificationMessageJobs" ("startAt");
-      CREATE INDEX "notificationMessageJobsStartedAtIndex" ON "notificationMessageJobs" ("startedAt");
-      CREATE INDEX "notificationMessageJobsExpiresAtIndex" ON "notificationMessageJobs" ("expiresAt");
+      CREATE INDEX "emailNotificationMessageJobsStartAtIndex" ON "emailNotificationMessageJobs" ("startAt");
+      CREATE INDEX "emailNotificationMessageJobsStartedAtIndex" ON "emailNotificationMessageJobs" ("startedAt");
+      CREATE INDEX "emailNotificationMessageJobsExpiresAtIndex" ON "emailNotificationMessageJobs" ("expiresAt");
 
-      CREATE TABLE "notificationDigestMessages" (
+      CREATE TABLE "emailNotificationDigestMessages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
 
-      CREATE TABLE "notificationDigestJobs" (
+      CREATE TABLE "emailNotificationDigestJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "startedAt" TEXT NOT NULL,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
-      CREATE INDEX "notificationDigestJobsStartedAtIndex" ON "notificationDigestJobs" ("startedAt");
-      CREATE INDEX "notificationDigestJobsUserIndex" ON "notificationDigestJobs" ("user");
+      CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
+      CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
     `
   );
   app.once("close", () => {
