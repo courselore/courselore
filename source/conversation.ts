@@ -3913,7 +3913,7 @@ export default (app: Courselore): void => {
             )
           `
         );
-        app.locals.mailers.notifications({
+        app.locals.mailers.emailNotifications({
           req,
           res,
           message: app.locals.helpers.getMessage({

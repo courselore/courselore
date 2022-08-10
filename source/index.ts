@@ -95,7 +95,7 @@ import message, {
   GetMessageHelper,
   MayEditMessageHelper,
   MayEndorseMessageHelper,
-  NotificationsMailer,
+  EmailNotificationsMailer,
 } from "./message.js";
 
 import content, {
@@ -178,7 +178,7 @@ export interface Courselore extends express.Express {
     };
     mailers: {
       emailVerification: EmailVerificationMailer;
-      notifications: NotificationsMailer;
+      emailNotifications: EmailNotificationsMailer;
     };
     workers: {
       sendEmail: SendEmailWorker;

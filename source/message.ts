@@ -103,7 +103,7 @@ export type CourseLiveUpdater = ({
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
 }) => Promise<void>;
 
-export type NotificationsMailer = ({
+export type EmailNotificationsMailer = ({
   req,
   res,
   message,
@@ -683,7 +683,7 @@ export default (app: Courselore): void => {
           `
         );
       }
-      app.locals.mailers.notifications({
+      app.locals.mailers.emailNotifications({
         req,
         res,
         message: app.locals.helpers.getMessage({
@@ -827,7 +827,7 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        app.locals.mailers.notifications({
+        app.locals.mailers.emailNotifications({
           req,
           res,
           message: res.locals.message,
@@ -1143,7 +1143,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.mailers.notifications = ({ req, res, message }) => {
+  app.locals.mailers.emailNotifications = ({ req, res, message }) => {
     app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
