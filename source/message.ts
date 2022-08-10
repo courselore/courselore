@@ -1147,7 +1147,7 @@ export default (app: Courselore): void => {
     app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
-          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+          INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
           VALUES (
             ${new Date().toISOString()},
             ${message.id},
@@ -1158,7 +1158,7 @@ export default (app: Courselore): void => {
       if (message.authorEnrollment !== "no-longer-enrolled")
         app.locals.database.run(
           sql`
-            INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+            INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
@@ -1380,10 +1380,10 @@ export default (app: Courselore): void => {
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id" AND
                             "users"."emailVerifiedAt" IS NOT NULL
-            LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-                                                  "notificationDeliveries"."message" = ${
-                                                    message.id
-                                                  }
+            LEFT JOIN "emailNotificationDeliveries" ON "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                                                       "emailNotificationDeliveries"."message" = ${
+                                                         message.id
+                                                       }
             $${
               conversation.staffOnlyAt !== null
                 ? sql`
@@ -1393,7 +1393,7 @@ export default (app: Courselore): void => {
                 : sql``
             }
             WHERE "enrollments"."course" = ${course.id} AND
-                  "notificationDeliveries"."id" IS NULL
+                  "emailNotificationDeliveries"."id" IS NULL
                   $${
                     conversation.staffOnlyAt !== null
                       ? sql`
@@ -1516,7 +1516,7 @@ export default (app: Courselore): void => {
               //
               //   app.locals.database.run(
               //     sql`
-              //       INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+              //       INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
               //       VALUES (
               //         ${new Date().toISOString()},
               //         ${message.id},
