@@ -133,6 +133,7 @@
       - Currently we schedule emails to be delivered (including the content of said emails) in the request/response cycle, so rendering content for every person would take too long. Wait to implement this when we finish implement other features in this section, which may introduce an intermediary job to schedule emails that will be outside the request/response cycle.
       - The content renderer currently relies on `{req, res}` to determine things like `res.locals.user`. It needs to support passing arbitrary users in.
       - Mathematics are rendered incorrectly.
+
 - Reprocess existing content, because of new DOM Clobbering strategy.
 
 ---
@@ -404,6 +405,7 @@ new Notification('Example');
 
 ## Content Processor
 
+- Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
 - Lists of links are block but should be inline (look for “You can reach Michael at” in example text).
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
