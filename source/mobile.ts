@@ -261,7 +261,7 @@ export default (app: Courselore): void => {
       res.redirect(303, `${req.body.href}/mobile-app/entrypoint`);
     })
   );
-  
+
   // TODO: This route should be on all Courselore instances
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/information", (req, res) => {
     res.send({ platform: "Courselore", version: app.locals.options.version });
