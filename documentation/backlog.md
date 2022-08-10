@@ -489,6 +489,7 @@ new Notification('Example');
 
 ## Native Mobile & Desktop Applications
 
+- `NODE_EXTRA_CA_CERTS=".../Application Support/Caddy/pki/authorities/local/root.crt"`
 - PWA: https://checkvist.com/auth/mobile
 - Desktop: Electron.
 
