@@ -1151,6 +1151,8 @@ export default async (app: Courselore): Promise<void> => {
     },
 
     sql`
+      ALTER TABLE "notificationDeliveries" RENAME TO "emailNotificationDeliveries";
+
       CREATE TABLE "emailNotificationMessageJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
