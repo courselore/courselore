@@ -1015,7 +1015,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       const hour = new Date();
-      hour.setUTCHours(0, 0, 0);
+      hour.setUTCMinutes(0, 0, 0);
       const day = new Date();
       day.setUTCHours(0, 0, 0, 0);
       for (const user of app.locals.database.all<{
@@ -1119,9 +1119,9 @@ export default async (app: Courselore): Promise<void> => {
                   : user.emailNotificationsDigestsFrequency === null
                   ? null
                   : user.emailNotificationsDigestsFrequency === "hourly"
-                  ? hour
+                  ? hour.toISOString()
                   : user.emailNotificationsDigestsFrequency === "daily"
-                  ? day
+                  ? day.toISOString()
                   : null
               },
               ${user.emailNotificationsForMentionsAt},
