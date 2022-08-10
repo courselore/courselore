@@ -28,8 +28,14 @@ const isUsingMobileAppMiddleware: express.RequestHandler<
 
 export default (app: Courselore): void => {
   // TODO: This route should be on courselore.org only
-  app.get<{}, any, {}, {}, IsUsingMobileAppMiddlewareLocals>(
-    "/mobile-app",
+  app.get<
+    { invalidUrl?: string },
+    any,
+    {},
+    {},
+    IsUsingMobileAppMiddlewareLocals
+  >(
+    "/mobile-app(/invalid-url/:invalidUrl)?",
     ...isUsingMobileAppMiddleware,
     (req, res) => {
       res.send(
@@ -154,6 +160,32 @@ export default (app: Courselore): void => {
                       placeholder="https://example-server.org"
                       class="input--text secondary"
                       onload="${javascript`
+                        if (${req.params.invalidUrl !== undefined}) {
+                          const decodedUrl = "${decodeURIComponent(
+                            req.params.invalidUrl!
+                          )}";
+                          if (decodedUrl !== undefined) {
+                            document.querySelector('[key="url-input"]').hidden = false;
+                            (this.invalid ??= tippy(this)).setProps({
+                              theme: "error",
+                              trigger: "manual",
+                              content: ${res.locals.html(
+                                html`
+                                  <label>
+                                    The URL you entered could not be validated
+                                    as being for a Courselore installation. If
+                                    you think this is a mistake, contact your
+                                    instructor or your institution's system
+                                    administrator.
+                                  </label>
+                                `
+                              )},
+                            });
+                            this.invalid.show();
+                            this.value = decodedUrl;
+                          }
+                        }
+  
                         if (${req.cookies.mobileAppSelectedUrl !== undefined})
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
@@ -167,7 +199,7 @@ export default (app: Courselore): void => {
                                   <label
                                     class="dropdown--menu--item button button--transparent"
                                     onload="${javascript`
-                                      this.textContent = ${req.cookies.mobileAppSelectedUrl};
+                                      this.textContent = "${req.cookies.mobileAppSelectedUrl}";
                                       this.onclick = () => document.querySelector('[key="url-input-box"]').value = this.textContent;
                                     `}"
                                   >
@@ -209,7 +241,9 @@ export default (app: Courselore): void => {
       if (!isValidUrl) {
         res.redirect(
           303,
-          `https://${app.locals.options.host}/mobile-app/invalid-selection`
+          `https://${
+            app.locals.options.host
+          }/mobile-app/invalid-url/${encodeURIComponent(req.body.href)}`
         );
         return;
       }
@@ -227,80 +261,7 @@ export default (app: Courselore): void => {
       res.redirect(303, `${req.body.href}/mobile-app/entrypoint`);
     })
   );
-
-  // TODO: This route should be on courselore.org only
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-    "/mobile-app/invalid-selection",
-    (req, res) => {
-      res.send(
-        app.locals.layouts.base({
-          req,
-          res,
-          head: html` <title>Invalid Selection · Courselore</title> `,
-          body: html`
-            <div
-              key="layout--box"
-              css="${res.locals.css(css`
-                min-width: 100%;
-                min-height: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              `)}"
-            >
-              <div
-                css="${res.locals.css(css`
-                  display: flex;
-                  gap: var(--space--10);
-                  padding: var(--space--10);
-                  flex-direction: column;
-                `)}"
-              >
-                <h3
-                  class="heading--display"
-                  css="${res.locals.css(css`
-                    font-size: var(--font-size--lg);
-                    line-height: var(--line-height--lg);
-                    font-weight: var(--font-weight--bold);
-                  `)}"
-                >
-                  The URL you entered could not be validated as being for a
-                  Courselore installation, and is not currently supported by the
-                  Courselore app.
-                </h3>
-                <h3
-                  class="heading--display"
-                  css="${res.locals.css(css`
-                    font-size: var(--font-size--lg);
-                    line-height: var(--line-height--lg);
-                    font-weight: var(--font-weight--bold);
-                  `)}"
-                >
-                  Try to submit the URL again, ensuring there are no typos. If
-                  the problem persists, contact your instructor or your
-                  institution's system administrator.
-                </h3>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                    justify-content: center;
-                  `)}"
-                >
-                  <a
-                    class="button button--blue heading--display"
-                    href="https://${app.locals.options.host}/mobile-app"
-                  >
-                    Go back
-                  </a>
-                </div>
-              </div>
-            </div>
-          `,
-        })
-      );
-    }
-  );
-
+  
   // TODO: This route should be on all Courselore instances
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/information", (req, res) => {
     res.send({ platform: "Courselore", version: app.locals.options.version });
