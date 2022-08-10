@@ -2638,14 +2638,11 @@ export default async (app: Courselore): Promise<void> => {
                             html`
                               <div
                                 css="${res.locals.css(css`
-                                  max-height: var(--space--80);
+                                  max-height: min(var(--space--80), 60vh);
                                   overflow: auto;
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
-                                  ${req.cookies.isUsingMobileApp
-                                    ? "@media (orientation: landscape) { max-height: var(--space--60); }"
-                                    : ""}
                                 `)}"
                               >
                                 <div>
