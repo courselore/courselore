@@ -963,19 +963,19 @@ export default (app: Courselore): void => {
               </a>
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
-                  .course.reference}/settings/exam-periods"
+                  .course.reference}/settings/exam-period"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/exam-periods"
+                  "/settings/exam-period"
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${req.path.endsWith("/settings/exam-periods")
+                  class="bi ${req.path.endsWith("/settings/exam-period")
                     ? "bi-hourglass-split"
                     : "bi-hourglass-split"}"
                 ></i>
-                Exam Periods
+                Exam Period
               </a>
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
@@ -1408,7 +1408,7 @@ export default (app: Courselore): void => {
     {},
     IsCourseStaffMiddlewareLocals
   >(
-    "/courses/:courseReference/settings/exam-periods",
+    "/courses/:courseReference/settings/exam-period",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
@@ -1429,9 +1429,9 @@ export default (app: Courselore): void => {
               Exam Periods
             </h2>
             <form
-              method="POST"
+              method="PATCH"
               action="https://${app.locals.options.host}/courses/${res.locals
-                .course.reference}/settings/exam-periods"
+                .course.reference}/settings/exam-period"
               css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
@@ -1451,10 +1451,16 @@ export default (app: Courselore): void => {
                 <label class="label">
                   <p class="label--text">Start</p>
                   <input
+                    key="exam-start-date"
                     type="text"
-                    name=""
-                    value="${new Date().toISOString()}"
+                    name="examStart"
+                    value="${res.locals.course.examStart === null
+                      ? new Date().toISOString()
+                      : res.locals.course.examStart}"
                     required
+                    ${res.locals.course.examStart === null
+                      ? html``
+                      : html`disabled`}
                     autocomplete="off"
                     class="input--text"
                     onload="${javascript`
@@ -1472,11 +1478,14 @@ export default (app: Courselore): void => {
                   <p class="label--text">End</p>
                   <input
                     type="text"
-                    name=""
-                    value="${new Date(
-                      new Date().getTime() + 86400000
-                    ).toISOString()}"
+                    name="examEnd"
+                    value="${res.locals.course.examEnd === null
+                      ? new Date(new Date().getTime() + 86400000).toISOString()
+                      : res.locals.course.examEnd}"
                     required
+                    ${res.locals.course.examEnd === null
+                      ? html``
+                      : html`disabled`}
                     autocomplete="off"
                     class="input--text"
                     onload="${javascript`
@@ -1486,6 +1495,7 @@ export default (app: Courselore): void => {
                         const error = leafac.validateLocalizedDateTime(this);
                         if (typeof error === "string") return error;
                         if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                        if (new Date(this.value).getTime() <= new Date(document.querySelector('[key="exam-start-date"]').value).getTime()) return "Must come after the starting date.";
                       };
                     `}"
                   />
@@ -1494,42 +1504,60 @@ export default (app: Courselore): void => {
               <div
                 css="${res.locals.css(css`
                   display: flex;
-                  gap: var(--space--2);
-                  align-items: baseline;
                 `)}"
               >
-                <button class="button button--blue">
-                  <i class="bi bi-calendar-plus-fill"></i>
-                  Schedule Exam Period
-                </button>
-                <button
-                  type="button"
-                  class="button button--tight button--tight--inline button--transparent"
-                  css="${res.locals.css(css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                  `)}"
-                  onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      interactive: true,
-                      content: ${res.locals.html(html`
-                        <div
+                $${res.locals.course.examEnd === null &&
+                res.locals.course.examStart === null
+                  ? html`
+                      <input type="hidden" name="cancelExam" value="false" />
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                        `)}"
+                      >
+                        <button class="button button--blue">
+                          <i class="bi bi-calendar-plus-fill"></i>
+                          Schedule Exam Period
+                        </button>
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
                           css="${res.locals.css(css`
-                            padding: var(--space--2);
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
                           `)}"
+                          onload="${javascript`
+                            (this.tooltip ??= tippy(this)).setProps({
+                              trigger: "click",
+                              interactive: true,
+                              content: ${res.locals.html(html`
+                                <div
+                                  css="${res.locals.css(css`
+                                    padding: var(--space--2);
+                                  `)}"
+                                >
+                                  During an exam period, the course will be
+                                  read-only to students. They may continue to
+                                  read existing conversations, but may no longer
+                                  ask questions, send messages, and so forth.
+                                </div>
+                              `)},
+                            });
+                          `}"
                         >
-                          During an exam period, the course will be read-only to
-                          students. They may continue to read existing
-                          conversations, but may no longer ask questions, send
-                          messages, and so forth.
-                        </div>
-                      `)},
-                    });
-                  `}"
-                >
-                  <i class="bi bi-info-circle"></i>
-                </button>
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                      </div>
+                    `
+                  : html`
+                      <input type="hidden" name="cancelExam" value="true" />
+                      <button class="button button--rose">
+                        <i class="bi bi-trash-fill"></i>
+                        Cancel Exam Period
+                      </button>
+                    `}
               </div>
             </form>
           `,
@@ -1538,13 +1566,89 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.post<
+  app.patch<
     { courseReference: string },
     HTML,
-    {},
+    {
+      examStart: string;
+      examEnd: string;
+      cancelExam: "true" | "false";
+    },
     {},
     IsCourseStaffMiddlewareLocals
-  >("/courses/:courseReference/settings/exam-periods", (req, res, next) => {});
+  >(
+    "/courses/:courseReference/settings/exam-period",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res, next) => {
+      if (typeof req.body.cancelExam !== "string") return next("validation");
+
+      if (req.body.cancelExam === "true") {
+        app.locals.database.run(
+          sql`
+            UPDATE "courses"
+            SET "examStart" = NULL
+            WHERE "id" = ${res.locals.course.id}
+          `
+        );
+        app.locals.database.run(
+          sql`
+            UPDATE "courses"
+            SET "examEnd" = NULL
+            WHERE "id" = ${res.locals.course.id}
+          `
+        );
+
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html` Exam period canceled successfully. `,
+        });
+
+        res.redirect(
+          303,
+          `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/exam-period`
+        );
+        return;
+      }
+
+      if (
+        typeof req.body.examStart !== "string" ||
+        typeof req.body.examEnd !== "string" ||
+        !app.locals.helpers.isDate(req.body.examStart) ||
+        !app.locals.helpers.isDate(req.body.examEnd) ||
+        new Date(req.body.examEnd).getTime() <=
+          new Date(req.body.examStart).getTime()
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`
+          UPDATE "courses"
+          SET "examStart" = ${req.body.examStart}
+          WHERE "id" = ${res.locals.course.id}
+        `
+      );
+      app.locals.database.run(
+        sql`
+          UPDATE "courses"
+          SET "examEnd" = ${req.body.examEnd}
+          WHERE "id" = ${res.locals.course.id}
+        `
+      );
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "green",
+        content: html` Exam period scheduled successfully. `,
+      });
+
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/exam-period`
+      );
+    }
+  );
 
   app.get<
     { courseReference: string },
