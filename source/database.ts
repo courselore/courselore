@@ -1178,7 +1178,7 @@ export default async (app: Courselore): Promise<void> => {
     sql`
       ALTER TABLE "courses" ADD COLUMN "examStart" TEXT NULL;
       ALTER TABLE "courses" ADD COLUMN "examEnd" TEXT NULL;
-    `,
+    `
   );
   app.once("close", () => {
     app.locals.database.close();
