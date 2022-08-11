@@ -1,8 +1,9 @@
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { processCSS, css, localCSS } from "@leafac/css";
+import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import got from "got";
 import dedent from "dedent";
 import qs from "qs";
 import fs from "fs-extra";
@@ -13,6 +14,7 @@ import {
   IsSignedInMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
+import { asyncHandler } from "@leafac/express-async-handler";
 
 export type BaseLayout = ({
   req,
@@ -528,6 +530,28 @@ export default async (app: Courselore): Promise<void> => {
                     Demonstration Mode
                   </button>
                 </div>
+              `;
+
+            if (
+              req.cookies.isUsingMobileApp &&
+              res.locals.user === undefined &&
+              !req.path.endsWith("/mobile-app")
+            )
+              headerMeta += html`
+                <form
+                  method="PATCH"
+                  action="https://${app.locals.options.host}/configure-app"
+                >
+                  <input
+                    type="hidden"
+                    name="_csrf"
+                    value="${req.csrfToken()}"
+                  />
+                  <button class="button button--transparent">
+                    <i class="bi bi-sliders"></i>
+                    Configure app
+                  </button>
+                </form>
               `;
 
             if (app.locals.options.environment !== "production")
@@ -1218,6 +1242,23 @@ export default async (app: Courselore): Promise<void> => {
       </html>
     `;
   };
+
+  app.patch<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/configure-app",
+    asyncHandler(async (req, res) => {
+      let serverOnline = true;
+      try {
+        await got(`https://${app.locals.options.host}/mobile-app`);
+      } catch (error) {
+        serverOnline = false;
+      }
+      if (serverOnline) {
+        req.cookies.mobileAppRedirectUser = undefined;
+        res.clearCookie("mobileAppRedirectUser", app.locals.options.cookies);
+        res.redirect(303, `https://${app.locals.options.host}/mobile-app`);
+      } else res.redirect(303, `https://${app.locals.options.host}/`);
+    })
+  );
 
   if (app.locals.options.environment !== "production")
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(

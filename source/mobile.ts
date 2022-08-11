@@ -196,8 +196,17 @@ export default (app: Courselore): void => {
                                       <label>
                                         The Courselore app was unable to connect
                                         to the selected Courselore installation.
-                                        Please try again later, or contact your
-                                        course staff if the problem persists.
+                                        Please try again later, or if the
+                                        problem persists, contact your course
+                                        staff or system administrator at
+                                        <a
+                                          href="${app.locals.partials
+                                            .reportIssueHref}"
+                                          target="_blank"
+                                          class="link"
+                                          >${app.locals.options
+                                            .administratorEmail}</a
+                                        >.
                                       </label>
                                     `)
                                   : res.locals.html(
