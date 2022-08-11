@@ -1173,7 +1173,12 @@ export default async (app: Courselore): Promise<void> => {
       );
       CREATE INDEX "notificationDigestJobsStartedAtIndex" ON "notificationDigestJobs" ("startedAt");
       CREATE INDEX "notificationDigestJobsUserIndex" ON "notificationDigestJobs" ("user");
-    `
+    `,
+
+    sql`
+      ALTER TABLE "courses" ADD COLUMN "examStart" TEXT NULL;
+      ALTER TABLE "courses" ADD COLUMN "examEnd" TEXT NULL;
+    `,
   );
   app.once("close", () => {
     app.locals.database.close();

@@ -963,6 +963,22 @@ export default (app: Courselore): void => {
               </a>
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
+                  .course.reference}/settings/exam-periods"
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
+                  "/settings/exam-periods"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i
+                  class="bi ${req.path.endsWith("/settings/exam-periods")
+                    ? "bi-hourglass-split"
+                    : "bi-hourglass-split"}"
+                ></i>
+                Exam Periods
+              </a>
+              <a
+                href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/tags"
@@ -1384,6 +1400,151 @@ export default (app: Courselore): void => {
       app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/exam-periods",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res) => {
+      res.send(
+        courseSettingsLayout({
+          req,
+          res,
+          head: html`
+            <title>
+              Exam Periods · Course Settings · ${res.locals.course.name} ·
+              Courselore
+            </title>
+          `,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-hourglass-split"></i>
+              Exam Periods
+            </h2>
+            <form
+              method="POST"
+              action="https://${app.locals.options.host}/courses/${res.locals
+                .course.reference}/settings/exam-periods"
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  gap: var(--space--2);
+                  & > * {
+                    flex: 1;
+                  }
+                `)}"
+              >
+                <label class="label">
+                  <p class="label--text">Start</p>
+                  <input
+                    type="text"
+                    name=""
+                    value="${new Date().toISOString()}"
+                    required
+                    autocomplete="off"
+                    class="input--text"
+                    onload="${javascript`
+                      this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+
+                      this.onvalidate = (event) => {
+                        const error = leafac.validateLocalizedDateTime(this);
+                        if (typeof error === "string") return error;
+                        if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                      };
+                    `}"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">End</p>
+                  <input
+                    type="text"
+                    name=""
+                    value="${new Date(
+                      new Date().getTime() + 86400000
+                    ).toISOString()}"
+                    required
+                    autocomplete="off"
+                    class="input--text"
+                    onload="${javascript`
+                      this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+
+                      this.onvalidate = (event) => {
+                        const error = leafac.validateLocalizedDateTime(this);
+                        if (typeof error === "string") return error;
+                        if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                      };
+                    `}"
+                  />
+                </label>
+              </div>
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  gap: var(--space--2);
+                  align-items: baseline;
+                `)}"
+              >
+                <button class="button button--blue">
+                  <i class="bi bi-calendar-plus-fill"></i>
+                  Schedule Exam Period
+                </button>
+                <button
+                  type="button"
+                  class="button button--tight button--tight--inline button--transparent"
+                  css="${res.locals.css(css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  `)}"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      trigger: "click",
+                      interactive: true,
+                      content: ${res.locals.html(html`
+                        <div
+                          css="${res.locals.css(css`
+                            padding: var(--space--2);
+                          `)}"
+                        >
+                          During an exam period, the course will be read-only to
+                          students. They may continue to read existing
+                          conversations, but may no longer ask questions, send
+                          messages, and so forth.
+                        </div>
+                      `)},
+                    });
+                  `}"
+                >
+                  <i class="bi bi-info-circle"></i>
+                </button>
+              </div>
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >("/courses/:courseReference/settings/exam-periods", (req, res, next) => {});
 
   app.get<
     { courseReference: string },
@@ -3235,6 +3396,8 @@ export default (app: Courselore): void => {
         id: number;
         reference: string;
         archivedAt: string | null;
+        examStart: string | null;
+        examEnd: string | null;
         name: string;
         year: string | null;
         term: string | null;
@@ -3263,6 +3426,8 @@ export default (app: Courselore): void => {
         courseId: number;
         courseReference: string;
         courseArchivedAt: string | null;
+        courseExamStart: string | null;
+        courseExamEnd: string | null;
         courseName: string;
         courseYear: string | null;
         courseTerm: string | null;
@@ -3281,6 +3446,8 @@ export default (app: Courselore): void => {
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
                  "courses"."archivedAt" AS "courseArchivedAt",
+                 "courses"."examStart" AS "courseExamStart",
+                 "courses"."examEnd" AS "courseExamEnd",
                  "courses"."name" AS "courseName",
                  "courses"."year" AS "courseYear",
                  "courses"."term" AS "courseTerm",
@@ -3306,6 +3473,8 @@ export default (app: Courselore): void => {
           id: invitation.courseId,
           reference: invitation.courseReference,
           archivedAt: invitation.courseArchivedAt,
+          examStart: invitation.courseExamStart,
+          examEnd: invitation.courseExamEnd,
           name: invitation.courseName,
           year: invitation.courseYear,
           term: invitation.courseTerm,

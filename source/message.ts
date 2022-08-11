@@ -1298,6 +1298,8 @@ export default (app: Courselore): void => {
           courseId: number;
           courseReference: string;
           courseArchivedAt: string | null;
+          courseExamStart: string | null;
+          courseExamEnd: string | null;
           courseName: string;
           courseYear: string | null;
           courseTerm: string | null;
@@ -1314,6 +1316,8 @@ export default (app: Courselore): void => {
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."archivedAt" AS "courseArchivedAt",
+                   "courses"."examStart" AS "courseExamStart",
+                   "courses"."examEnd" AS "courseExamEnd",
                    "courses"."name" AS "courseName",
                    "courses"."year" AS "courseYear",
                    "courses"."term" AS "courseTerm",
@@ -1339,6 +1343,8 @@ export default (app: Courselore): void => {
           id: messageRow.courseId,
           reference: messageRow.courseReference,
           archivedAt: messageRow.courseArchivedAt,
+          examStart: messageRow.courseExamStart,
+          examEnd: messageRow.courseExamEnd,
           name: messageRow.courseName,
           year: messageRow.courseYear,
           term: messageRow.courseTerm,
