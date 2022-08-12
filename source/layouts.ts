@@ -2651,6 +2651,30 @@ export default async (app: Courselore): Promise<void> => {
                                         </div>
                                       `
                                     : html``}
+                                  $${res.locals.course.examStart !== null &&
+                                  res.locals.course.examEnd !== null &&
+                                  new Date().getTime() >=
+                                    new Date(
+                                      res.locals.course.examStart
+                                    ).getTime() &&
+                                  new Date().getTime() <=
+                                    new Date(
+                                      res.locals.course.examEnd
+                                    ).getTime()
+                                    ? html`
+                                        <div
+                                          css="${res.locals.css(css`
+                                            padding: var(--space--0)
+                                              var(--space--2) var(--space--1);
+                                            margin-top: var(--space---2);
+                                          `)}"
+                                        >
+                                          $${app.locals.partials.courseInExamPeriod(
+                                            { req, res }
+                                          )}
+                                        </div>
+                                      `
+                                    : html``}
                                   <div class="dropdown--menu">
                                     <a
                                       href="https://${app.locals.options
@@ -2716,6 +2740,19 @@ export default async (app: Courselore): Promise<void> => {
                       $${res.locals.course.archivedAt !== null
                         ? html`
                             $${app.locals.partials.courseArchived({ req, res })}
+                          `
+                        : html``}
+                      $${res.locals.course.examStart !== null &&
+                      res.locals.course.examEnd !== null &&
+                      new Date().getTime() >=
+                        new Date(res.locals.course.examStart).getTime() &&
+                      new Date().getTime() <=
+                        new Date(res.locals.course.examEnd).getTime()
+                        ? html`
+                            $${app.locals.partials.courseInExamPeriod({
+                              req,
+                              res,
+                            })}
                           `
                         : html``}
                       <i class="bi bi-chevron-down"></i>

@@ -72,6 +72,14 @@ export type CourseArchivedPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
+export type CourseInExamPeriodPartial = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+}) => HTML;
+
 export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
@@ -91,6 +99,7 @@ export interface IsEnrolledInCourseMiddlewareLocals
     staffOnlyAt: string | null;
   }[];
   actionAllowedOnArchivedCourse?: boolean;
+  actionAllowedDuringExamPeriod?: boolean;
 }
 
 export type IsCourseStaffMiddleware = express.RequestHandler<
@@ -203,6 +212,16 @@ export default (app: Courselore): void => {
           $${course.archivedAt !== null
             ? html`
                 <div>$${app.locals.partials.courseArchived({ req, res })}</div>
+              `
+            : html``}
+          $${course.examStart !== null &&
+          course.examEnd !== null &&
+          new Date().getTime() >= new Date(course.examStart).getTime() &&
+          new Date().getTime() <= new Date(course.examEnd).getTime()
+            ? html`
+                <div>
+                  $${app.locals.partials.courseInExamPeriod({ req, res })}
+                </div>
               `
             : html``}
         </div>
@@ -324,6 +343,27 @@ export default (app: Courselore): void => {
     >
       <i class="bi bi-archive-fill"></i>
       Archived
+    </div>
+  `;
+
+  app.locals.partials.courseInExamPeriod = ({ req, res }) => html`
+    <div
+      class="strong text--rose"
+      css="${res.locals.css(css`
+        font-size: var(--font-size--2xs);
+        line-height: var(--line-height--2xs);
+        display: inline-flex;
+        gap: var(--space--1);
+      `)}"
+      onload="${javascript`
+        (this.tooltip ??= tippy(this)).setProps({
+          touch: false,
+          content: "This course is currently in an exam period, which means it’s read-only to students. They may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+        });
+      `}"
+    >
+      <i class="bi bi-hourglass-split"></i>
+      Exam In Progress
     </div>
   `;
 
@@ -804,6 +844,31 @@ export default (app: Courselore): void => {
         );
       }
 
+      if (
+        res.locals.course.examStart !== null &&
+        res.locals.course.examEnd !== null &&
+        new Date().getTime() >=
+          new Date(res.locals.course.examStart).getTime() &&
+        new Date().getTime() <= new Date(res.locals.course.examEnd).getTime() &&
+        !["GET", "HEAD"].includes(req.method) &&
+        res.locals.actionAllowedDuringExamPeriod !== true &&
+        res.locals.enrollment.courseRole !== "staff"
+      ) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is in an exam period,
+            which means it’s read-only.
+          `,
+        });
+        return res.redirect(
+          303,
+          `https://${app.locals.options.host}/courses/${res.locals.course.reference}`
+        );
+      }
+
       next();
     },
   ];
@@ -811,7 +876,35 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isCourseStaff = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      if (res.locals.enrollment.courseRole === "staff") return next();
+      if (res.locals.enrollment.courseRole === "staff") {
+        const examEndDate = app.locals.database.get<{ examEnd: string }>(
+          sql`
+            SELECT "examEnd"
+            FROM "courses"
+            WHERE "id" = ${res.locals.course.id}
+          `
+        )!.examEnd;
+        if (
+          examEndDate !== null &&
+          new Date().getTime() > new Date(examEndDate).getTime()
+        ) {
+          app.locals.database.run(
+            sql`
+              UPDATE "courses"
+              SET "examStart" = NULL
+              WHERE "id" = ${res.locals.course.id}
+            `
+          );
+          app.locals.database.run(
+            sql`
+              UPDATE "courses"
+              SET "examEnd" = NULL
+              WHERE "id" = ${res.locals.course.id}
+            `
+          );
+        }
+        return next();
+      }
       next("route");
     },
   ];
@@ -1578,6 +1671,12 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/exam-period",
+    (req, res, next) => {
+      res.locals.actionAllowedDuringExamPeriod =
+        typeof req.body.examStart === "string" &&
+        typeof req.body.examEnd === "string";
+      next();
+    },
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (typeof req.body.cancelExam !== "string") return next("validation");

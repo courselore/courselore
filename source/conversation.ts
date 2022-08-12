@@ -2673,6 +2673,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (req, res, next) => {
       res.locals.actionAllowedOnArchivedCourse = true;
+      res.locals.actionAllowedDuringExamPeriod = true;
       next();
     },
     ...app.locals.middlewares.isEnrolledInCourse,

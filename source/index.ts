@@ -65,6 +65,7 @@ import course, {
   CoursePartial,
   CoursesPartial,
   CourseArchivedPartial,
+  CourseInExamPeriodPartial,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
 } from "./course.js";
@@ -156,6 +157,7 @@ export interface Courselore extends express.Express {
       course: CoursePartial;
       courses: CoursesPartial;
       courseArchived: CourseArchivedPartial;
+      courseInExamPeriod: CourseInExamPeriodPartial;
       conversation: ConversationPartial;
       contentPreprocessed: ContentPreprocessedPartial;
       content: ContentPartial;
