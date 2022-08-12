@@ -1294,6 +1294,7 @@ export default (app: Courselore): void => {
           conversationId: number;
           conversationReference: string;
           conversationStaffOnlyAt: string | null;
+          conversationTitle: string;
           courseId: number;
           courseReference: string;
           courseArchivedAt: string | null;
@@ -1310,6 +1311,7 @@ export default (app: Courselore): void => {
                    "conversations"."id" AS "conversationId",
                    "conversations"."reference" AS "conversationReference",
                    "conversations"."staffOnlyAt" AS "conversationStaffOnlyAt",
+                   "conversations"."title" AS "conversationTitle",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."archivedAt" AS "courseArchivedAt",
@@ -1334,6 +1336,7 @@ export default (app: Courselore): void => {
           id: messageRow.conversationId,
           reference: messageRow.conversationReference,
           staffOnlyAt: messageRow.conversationStaffOnlyAt,
+          title: messageRow.conversationTitle,
         };
         const course = {
           id: messageRow.courseId,
