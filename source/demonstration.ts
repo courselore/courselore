@@ -43,6 +43,17 @@ export default (app: Courselore): void => {
       const isEmailNotificationsForMessagesInConversationsYouStarted =
         isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
         (!isEmailNotificationsForNone && Math.random() < 0.8);
+      const isEmailNotificationsForAllMessages =
+        isEmailNotificationsForMentions &&
+        isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+        isEmailNotificationsForMessagesInConversationsYouStarted &&
+        Math.random() < 0.3
+          ? lodash.sample(userEmailNotificationsForAllMessageses)
+          : "none";
+      const hour = new Date();
+      hour.setUTCMinutes(0, 0, 0);
+      const day = new Date();
+      day.setUTCHours(0, 0, 0, 0);
       return app.locals.database.get<{
         id: number;
         email: string;
@@ -64,6 +75,7 @@ export default (app: Courselore): void => {
             "biographyPreprocessed",
             "systemRole",
             "emailNotificationsForAllMessages",
+            "emailNotificationsForAllMessagesDigestDeliveredAt",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
             "emailNotificationsForMessagesInConversationsYouStartedAt"
@@ -105,13 +117,13 @@ export default (app: Courselore): void => {
                 ? "staff"
                 : "none"
             },
+            ${isEmailNotificationsForAllMessages},
             ${
-              isEmailNotificationsForMentions &&
-              isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-              isEmailNotificationsForMessagesInConversationsYouStarted &&
-              Math.random() < 0.3
-                ? lodash.sample(userEmailNotificationsForAllMessageses)
-                : "none"
+              isEmailNotificationsForAllMessages === "hourly-digests"
+                ? hour.toISOString()
+                : isEmailNotificationsForAllMessages === "daily-digests"
+                ? day.toISOString()
+                : null
             },
             ${
               isEmailNotificationsForMentions ? new Date().toISOString() : null

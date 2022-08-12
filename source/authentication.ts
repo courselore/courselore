@@ -90,6 +90,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     biographyPreprocessed: HTML | null;
     systemRole: SystemRole;
     emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+    emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
     emailNotificationsForMentionsAt: string | null;
     emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
       | string
@@ -261,6 +262,7 @@ export default (app: Courselore): void => {
         biographyPreprocessed: HTML | null;
         systemRole: SystemRole;
         emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+        emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
           | string
@@ -281,6 +283,7 @@ export default (app: Courselore): void => {
                  "biographyPreprocessed",
                  "systemRole",
                  "emailNotificationsForAllMessages",
+                 "emailNotificationsForAllMessagesDigestDeliveredAt",
                  "emailNotificationsForMentionsAt",
                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
                  "emailNotificationsForMessagesInConversationsYouStartedAt"
@@ -1358,6 +1361,7 @@ export default (app: Courselore): void => {
             "avatarlessBackgroundColor",
             "systemRole",
             "emailNotificationsForAllMessages",
+            "emailNotificationsForAllMessagesDigestDeliveredAt",
             "emailNotificationsForMentionsAt",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
             "emailNotificationsForMessagesInConversationsYouStartedAt"
@@ -1383,6 +1387,7 @@ export default (app: Courselore): void => {
                 : "none"
             },
             ${"none"},
+            ${null},
             ${new Date().toISOString()},
             ${new Date().toISOString()},
             ${new Date().toISOString()}
