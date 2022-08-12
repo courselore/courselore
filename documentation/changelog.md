@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 4.0.2
+
+**2022-08-12 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Changed the communication about the period of free hosting.
+
 ## 4.0.1
 
 **2022-08-12 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**

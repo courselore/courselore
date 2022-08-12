@@ -471,69 +471,6 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.host === app.locals.options.canonicalHost
-              ? html`
-                  <div
-                    css="${res.locals.css(css`
-                      color: var(--color--green--700);
-                      background-color: var(--color--green--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--green--200);
-                        background-color: var(--color--green--900);
-                      }
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      gap: var(--space--4);
-
-                      .link {
-                        color: var(--color--green--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--green--500);
-                        }
-                        &:active {
-                          color: var(--color--green--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--green--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--green--50);
-                          }
-                          &:active {
-                            color: var(--color--green--200);
-                          }
-                        }
-                      }
-                    `)}"
-                  >
-                    <div
-                      css="${res.locals.css(css`
-                        font-size: var(--font-size--4xl);
-                        line-height: var(--line-height--4xl);
-                      `)}"
-                    >
-                      <i class="bi bi-gift-fill"></i>
-                    </div>
-                    <p>
-                      This is the hosted installation of Courselore managed by
-                      the Courselore developers. Enjoy the initial period of
-                      free hosting, during which you may create courses for
-                      free! Courselore is
-                      <a
-                        href="https://github.com/courselore/courselore"
-                        class="link"
-                        >open source</a
-                      >
-                      and you may install it on your own server, an option that
-                      will be free forever and guarantees maximum privacy &
-                      control.
-                    </p>
-                  </div>
-                `
-              : html``}
-
             <form
               method="POST"
               action="https://${app.locals.options.host}/courses"
