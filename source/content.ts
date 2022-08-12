@@ -352,7 +352,7 @@ export default async (app: Courselore): Promise<void> => {
                 case "everyone":
                 case "staff":
                 case "students":
-                  mentions!.add(mention);
+                  mentions.add(mention);
                   mentionHTML = html`<span
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -426,7 +426,7 @@ export default async (app: Courselore): Promise<void> => {
                     reference: enrollmentRow.reference,
                     courseRole: enrollmentRow.courseRole,
                   };
-                  mentions!.add(enrollment.reference);
+                  mentions.add(enrollment.reference);
                   mentionHTML = html`@$${app.locals.partials.user({
                     req,
                     res,
