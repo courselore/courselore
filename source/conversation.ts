@@ -6931,6 +6931,7 @@ export default (app: Courselore): void => {
                                                 id: `message--${message.reference}`,
                                                 contentPreprocessed:
                                                   message.contentPreprocessed,
+                                                decorate: true,
                                                 search:
                                                   typeof req.query.conversations
                                                     ?.search === "string" &&
@@ -6939,7 +6940,6 @@ export default (app: Courselore): void => {
                                                     ? req.query.conversations
                                                         .search
                                                     : undefined,
-                                                decorate: true,
                                               }).contentProcessed}
                                             </div>
                                           </div>

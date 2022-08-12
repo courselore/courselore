@@ -50,8 +50,8 @@ export type ContentPartial = ({
   res,
   id,
   contentPreprocessed,
-  search,
   decorate,
+  search,
 }: {
   req: express.Request<
     {},
@@ -66,8 +66,8 @@ export type ContentPartial = ({
   >;
   id?: string;
   contentPreprocessed: HTML;
-  search?: string | string[] | undefined;
   decorate?: boolean;
+  search?: string | string[] | undefined;
 }) => {
   contentProcessed: HTML;
   mentions: Set<string>;
@@ -166,8 +166,8 @@ export default async (app: Courselore): Promise<void> => {
     res,
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
-    search = undefined,
     decorate = false,
+    search = undefined,
   }) => {
     const contentElement = JSDOM.fragment(html`
       <div key="content" class="content">$${contentPreprocessed}</div>
