@@ -1171,6 +1171,7 @@ export default async (app: Courselore): Promise<void> => {
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
+      CREATE INDEX "emailNotificationDigestMessagesEnrollmentIndex" ON "emailNotificationDigestMessages" ("enrollment");
 
       CREATE TABLE "emailNotificationDigestJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
