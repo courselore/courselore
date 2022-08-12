@@ -207,103 +207,13 @@ export default async (app: Courselore): Promise<void> => {
               this.scroll(0, 0);
             };
 
-            const body = document.querySelector("body");
-
-            ${
-              res.locals.user !== undefined &&
-              res.locals.user.emailVerifiedAt === null
-                ? javascript`
-                  (body.emailVerificationTooltip ??= tippy(body)).setProps({
-                    appendTo: body,
-                    trigger: "manual",
-                    hideOnClick: false,
-                    theme: "amber",
-                    arrow: false,
-                    interactive: true,
-                    content: ${res.locals.html(
-                      html`
-                        <form
-                          method="POST"
-                          action="https://${app.locals.options
-                            .host}/resend-verification-email${qs.stringify(
-                            {
-                              redirect: req.originalUrl,
-                            },
-                            { addQueryPrefix: true }
-                          )}"
-                        >
-                          <input
-                            type="hidden"
-                            name="_csrf"
-                            value="${req.csrfToken()}"
-                          />
-                          Please verify your email by following the link sent to
-                          ${res.locals.user.email}.<br />
-                          Didn’t receive the email? Already checked your spam
-                          folder?
-                          <button class="link">Resend</button>.
-                        </form>
-                        $${app.locals.options.demonstration
-                          ? (() => {
-                              let emailVerification = app.locals.database.get<{
-                                nonce: string;
-                              }>(
-                                sql`
-                                  SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
-                                `
-                              );
-                              if (emailVerification === undefined) {
-                                app.locals.mailers.emailVerification({
-                                  req,
-                                  res,
-                                  userId: res.locals.user.id,
-                                  userEmail: res.locals.user.email,
-                                });
-                                emailVerification = app.locals.database.get<{
-                                  nonce: string;
-                                }>(
-                                  sql`
-                                    SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
-                                  `
-                                )!;
-                              }
-                              return html`
-                                <p
-                                  css="${res.locals.css(css`
-                                    font-weight: var(--font-weight--bold);
-                                  `)}"
-                                >
-                                  This Courselore installation is running in
-                                  demonstration mode and doesn’t send emails.
-                                  Verify your email by
-                                  <a
-                                    href="https://${app.locals.options
-                                      .host}/email-verification/${emailVerification.nonce}${qs.stringify(
-                                      {
-                                        redirect: req.originalUrl,
-                                      },
-                                      { addQueryPrefix: true }
-                                    )}"
-                                    class="link"
-                                    >clicking here</a
-                                  >.
-                                </p>
-                              `;
-                            })()
-                          : html``}
-                      `
-                    )},
-                  });
-                  body.emailVerificationTooltip.show();
-                `
-                : javascript``
-            }
-
             ${(() => {
               const flash = app.locals.helpers.Flash.get({ req, res });
               return flash === undefined
                 ? javascript``
                 : javascript`
+                    const body = document.querySelector("body");
+
                     (body.flash ??= tippy(body)).setProps({
                       appendTo: body,
                       trigger: "manual",
@@ -581,6 +491,123 @@ export default async (app: Courselore): Promise<void> => {
                 `
               : html``;
           })()}
+          $${res.locals.user !== undefined &&
+          res.locals.user.emailVerifiedAt === null
+            ? html`
+                <div
+                  css="${res.locals.css(css`
+                    color: var(--color--amber--700);
+                    background-color: var(--color--amber--100);
+                    border-bottom: var(--border-width--1) solid
+                      var(--color--amber--200);
+                    .link {
+                      color: var(--color--amber--600);
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--amber--500);
+                      }
+                      &:active {
+                        color: var(--color--amber--700);
+                      }
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--amber--200);
+                      background-color: var(--color--amber--900);
+                      border-color: var(--color--amber--800);
+                      .link {
+                        color: var(--color--amber--100);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--amber--50);
+                        }
+                        &:active {
+                          color: var(--color--amber--200);
+                        }
+                      }
+                    }
+                    padding: var(--space--1) var(--space--4);
+                    display: flex;
+                    justify-content: center;
+                  `)}"
+                >
+                  <div
+                    css="${res.locals.css(css`
+                      max-width: var(--width--prose);
+                      text-align: center;
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `)}"
+                  >
+                    <form
+                      method="POST"
+                      action="https://${app.locals.options
+                        .host}/resend-verification-email${qs.stringify(
+                        { redirect: req.originalUrl },
+                        { addQueryPrefix: true }
+                      )}"
+                    >
+                      <input
+                        type="hidden"
+                        name="_csrf"
+                        value="${req.csrfToken()}"
+                      />
+                      Please verify your email by following the link sent to
+                      ${res.locals.user.email}.<br />
+                      Didn’t receive the email? Already checked your spam
+                      folder?
+                      <button class="link">Resend</button>.
+                    </form>
+                    $${app.locals.options.demonstration
+                      ? (() => {
+                          let emailVerification = app.locals.database.get<{
+                            nonce: string;
+                          }>(
+                            sql`
+                              SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
+                            `
+                          );
+                          if (emailVerification === undefined) {
+                            app.locals.mailers.emailVerification({
+                              req,
+                              res,
+                              userId: res.locals.user.id,
+                              userEmail: res.locals.user.email,
+                            });
+                            emailVerification = app.locals.database.get<{
+                              nonce: string;
+                            }>(
+                              sql`
+                                SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
+                              `
+                            )!;
+                          }
+                          return html`
+                            <p
+                              css="${res.locals.css(css`
+                                font-weight: var(--font-weight--bold);
+                              `)}"
+                            >
+                              This Courselore installation is running in
+                              demonstration mode and doesn’t send emails. Verify
+                              your email by
+                              <a
+                                href="https://${app.locals.options
+                                  .host}/email-verification/${emailVerification.nonce}${qs.stringify(
+                                  { redirect: req.originalUrl },
+                                  { addQueryPrefix: true }
+                                )}"
+                                class="link"
+                                >clicking here</a
+                              >.
+                            </p>
+                          `;
+                        })()
+                      : html``}
+                  </div>
+                </div>
+              `
+            : html``}
 
           <div
             key="main"
