@@ -2657,7 +2657,7 @@ export default async (app: Courselore): Promise<void> => {
                                     new Date(
                                       res.locals.course.examStart
                                     ).getTime() &&
-                                  new Date().getTime() <=
+                                  new Date().getTime() <
                                     new Date(
                                       res.locals.course.examEnd
                                     ).getTime()
@@ -2746,7 +2746,7 @@ export default async (app: Courselore): Promise<void> => {
                       res.locals.course.examEnd !== null &&
                       new Date().getTime() >=
                         new Date(res.locals.course.examStart).getTime() &&
-                      new Date().getTime() <=
+                      new Date().getTime() <
                         new Date(res.locals.course.examEnd).getTime()
                         ? html`
                             $${app.locals.partials.courseInExamPeriod({

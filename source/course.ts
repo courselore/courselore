@@ -217,7 +217,7 @@ export default (app: Courselore): void => {
           $${course.examStart !== null &&
           course.examEnd !== null &&
           new Date().getTime() >= new Date(course.examStart).getTime() &&
-          new Date().getTime() <= new Date(course.examEnd).getTime()
+          new Date().getTime() < new Date(course.examEnd).getTime()
             ? html`
                 <div>
                   $${app.locals.partials.courseInExamPeriod({ req, res })}
@@ -849,7 +849,7 @@ export default (app: Courselore): void => {
         res.locals.course.examEnd !== null &&
         new Date().getTime() >=
           new Date(res.locals.course.examStart).getTime() &&
-        new Date().getTime() <= new Date(res.locals.course.examEnd).getTime() &&
+        new Date().getTime() < new Date(res.locals.course.examEnd).getTime() &&
         !["GET", "HEAD"].includes(req.method) &&
         res.locals.actionAllowedDuringExamPeriod !== true &&
         res.locals.enrollment.courseRole !== "staff"
@@ -886,7 +886,7 @@ export default (app: Courselore): void => {
         )!.examEnd;
         if (
           examEndDate !== null &&
-          new Date().getTime() > new Date(examEndDate).getTime()
+          new Date().getTime() >= new Date(examEndDate).getTime()
         ) {
           app.locals.database.run(
             sql`
@@ -1645,11 +1645,46 @@ export default (app: Courselore): void => {
                       </div>
                     `
                   : html`
-                      <input type="hidden" name="cancelExam" value="true" />
-                      <button class="button button--rose">
-                        <i class="bi bi-trash-fill"></i>
-                        Cancel Exam Period
-                      </button>
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `)}"
+                      >
+                        <div>
+                          <input type="hidden" name="cancelExam" value="true" />
+                          <button class="button button--rose">
+                            <i class="bi bi-trash-fill"></i>
+                            Cancel Exam Period
+                          </button>
+                        </div>
+                        $${new Date().getTime() >
+                        new Date(res.locals.course.examStart!).getTime()
+                          ? html`
+                              <div
+                                class="secondary"
+                                css="${res.locals.css(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                `)}"
+                              >
+                                <span>
+                                  Exam period is active and ends
+                                  <time
+                                    datetime="${new Date(
+                                      res.locals.course.examEnd!
+                                    ).toISOString()}"
+                                    onload="${javascript`
+                                    leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                  `}"
+                                  ></time
+                                  >.
+                                </span>
+                              </div>
+                            `
+                          : html``}
+                      </div>
                     `}
               </div>
             </form>
