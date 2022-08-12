@@ -1360,6 +1360,7 @@ export default (app: Courselore): void => {
             },
           } as Parameters<typeof app.locals.partials.content>[0]["res"],
           contentPreprocessed: message.contentPreprocessed,
+          decorate: true,
         });
 
         const enrollments = app.locals.database.all<{

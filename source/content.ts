@@ -51,6 +51,7 @@ export type ContentPartial = ({
   id,
   contentPreprocessed,
   search,
+  decorate,
 }: {
   req: express.Request<
     {},
@@ -66,6 +67,7 @@ export type ContentPartial = ({
   id?: string;
   contentPreprocessed: HTML;
   search?: string | string[] | undefined;
+  decorate?: boolean;
 }) => {
   contentProcessed: HTML;
   mentions: Set<string>;
@@ -165,6 +167,7 @@ export default async (app: Courselore): Promise<void> => {
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
     search = undefined,
+    decorate = false,
   }) => {
     const contentElement = JSDOM.fragment(html`
       <div key="content" class="content">$${contentPreprocessed}</div>
@@ -269,7 +272,7 @@ export default async (app: Courselore): Promise<void> => {
         );
     }
 
-    if (res.locals.course !== undefined) {
+    if (decorate && res.locals.course !== undefined) {
       const narrowReq = req as express.Request<
         {},
         any,
@@ -2781,6 +2784,7 @@ ${contentSource}</textarea
             contentPreprocessed: app.locals.partials.contentPreprocessed(
               req.body.content
             ).contentPreprocessed,
+            decorate: true,
           }).contentProcessed,
         })
       );

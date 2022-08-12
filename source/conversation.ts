@@ -6939,6 +6939,7 @@ export default (app: Courselore): void => {
                                                     ? req.query.conversations
                                                         .search
                                                     : undefined,
+                                                decorate: true,
                                               }).contentProcessed}
                                             </div>
                                           </div>
