@@ -1304,6 +1304,7 @@ export default (app: Courselore): void => {
           courseInstitution: string | null;
           courseCode: string | null;
           courseNextConversationReference: number;
+          reference: string;
           contentPreprocessed: string;
         }>(
           sql`
@@ -1321,6 +1322,7 @@ export default (app: Courselore): void => {
                    "courses"."institution" AS "courseInstitution",
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "messages"."reference",
                    "messages"."contentPreprocessed"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
@@ -1330,6 +1332,7 @@ export default (app: Courselore): void => {
         )!;
         const message = {
           id: messageRow.id,
+          reference: messageRow.reference,
           contentPreprocessed: messageRow.contentPreprocessed,
         };
         const conversation = {
@@ -1482,9 +1485,8 @@ export default (app: Courselore): void => {
                   html: html`
                     <p>
                       <a
-                        href="https://${app.locals.options.host}/courses/${res
-                          .locals.course
-                          .reference}/conversations/${conversation.reference}${qs.stringify(
+                        href="https://${app.locals.options
+                          .host}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
                           {
                             messages: {
                               messageReference: message.reference,
