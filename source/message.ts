@@ -1291,7 +1291,6 @@ export default (app: Courselore): void => {
 
         const messageRow = app.locals.database.get<{
           id: number;
-          contentPreprocessed: string;
           conversationId: number;
           conversationReference: string;
           conversationStaffOnlyAt: string | null;
@@ -1304,10 +1303,10 @@ export default (app: Courselore): void => {
           courseInstitution: string | null;
           courseCode: string | null;
           courseNextConversationReference: number;
+          contentPreprocessed: string;
         }>(
           sql`
             SELECT "messages"."id",
-                   "messages"."contentPreprocessed",
                    "conversations"."id" AS "conversationId",
                    "conversations"."reference" AS "conversationReference",
                    "conversations"."staffOnlyAt" AS "conversationStaffOnlyAt",
@@ -1319,7 +1318,8 @@ export default (app: Courselore): void => {
                    "courses"."term" AS "courseTerm",
                    "courses"."institution" AS "courseInstitution",
                    "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference"
+                   "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "messages"."contentPreprocessed"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
