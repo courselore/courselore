@@ -1335,7 +1335,7 @@ export default (app: Courselore): void => {
           `https://${app.locals.options.host}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
-              invitation: req.query.invitation,
+              invitation: { ...req.query.invitation, email: req.body.email },
             },
             {
               addQueryPrefix: true,
