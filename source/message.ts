@@ -1305,6 +1305,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
+          authorUserName: string | null;
           anonymousAt: string | null;
           contentPreprocessed: string;
         }>(
@@ -1324,17 +1325,28 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "messages"."reference",
+                   "authorUser"."name" AS "authorUserName",
                    "messages"."anonymousAt",
                    "messages"."contentPreprocessed"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
             WHERE "messages"."id" = ${job.message}
           `
         )!;
         const message = {
           id: messageRow.id,
           reference: messageRow.reference,
+          authorEnrollment:
+            messageRow.authorUserName !== null
+              ? {
+                  user: {
+                    name: messageRow.authorUserName,
+                  },
+                }
+              : ("no-longer-enrolled" as const),
           anonymousAt: messageRow.anonymousAt,
           contentPreprocessed: messageRow.contentPreprocessed,
         };
