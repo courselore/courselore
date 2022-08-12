@@ -495,6 +495,7 @@ export default async (app: Courselore): Promise<void> => {
           res.locals.user.emailVerifiedAt === null
             ? html`
                 <div
+                  key="email-verification"
                   css="${res.locals.css(css`
                     color: var(--color--amber--700);
                     background-color: var(--color--amber--100);
