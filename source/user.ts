@@ -1357,6 +1357,8 @@ export default (app: Courselore): void => {
                 </div>
 
                 <div
+                  hidden
+                  TODO
                   css="${res.locals.css(css`
                     margin-left: var(--space--10);
                     display: flex;
@@ -1626,7 +1628,7 @@ export default (app: Courselore): void => {
           SET "emailNotificationsForAllMessages" = ${
             req.body.isEmailNotificationsForAllMessages === undefined
               ? "none"
-              : req.body.emailNotificationsForAllMessages
+              : "instant" /* TODO req.body.emailNotificationsForAllMessages */
           },
               "emailNotificationsForMentionsAt" = ${
                 req.body.isEmailNotificationsForMentions === "on"
