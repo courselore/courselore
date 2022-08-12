@@ -1305,6 +1305,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
+          anonymousAt: string | null;
           contentPreprocessed: string;
         }>(
           sql`
@@ -1323,6 +1324,7 @@ export default (app: Courselore): void => {
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "messages"."reference",
+                   "messages"."anonymousAt",
                    "messages"."contentPreprocessed"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
@@ -1333,6 +1335,7 @@ export default (app: Courselore): void => {
         const message = {
           id: messageRow.id,
           reference: messageRow.reference,
+          anonymousAt: messageRow.anonymousAt,
           contentPreprocessed: messageRow.contentPreprocessed,
         };
         const conversation = {
