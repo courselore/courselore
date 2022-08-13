@@ -1216,17 +1216,104 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
 
-      for (const conversation of app.locals.database.all<{}>(
+      for (const conversation of app.locals.database.all<{
+        id: number;
+        createdAt: string;
+        updatedAt: string | null;
+        course: number;
+        reference: string;
+        authorEnrollment: number | null;
+        anonymousAt: string | null;
+        type: string;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+        title: string;
+        titleSearch: string;
+        nextMessageReference: number;
+        resolvedAt: string | null;
+      }>(
         sql`
-          SELECT
+          SELECT "id",
+                 "createdAt",
+                 "updatedAt",
+                 "course",
+                 "reference",
+                 "authorEnrollment",
+                 "anonymousAt",
+                 "type",
+                 "pinnedAt",
+                 "staffOnlyAt",
+                 "title",
+                 "titleSearch",
+                 "nextMessageReference",
+                 "resolvedAt"
           FROM "conversations"
         `
       )) {
         app.locals.database.run(
           sql`
-            INSERT INTO "new_conversations" () VALUES ()
+            INSERT INTO "new_conversations" (
+              "id",
+              "createdAt",
+              "updatedAt",
+              "course",
+              "reference",
+              "authorEnrollment",
+              "participants",
+              "anonymousAt",
+              "type",
+              "pinnedAt",
+              "resolvedAt",
+              "title",
+              "titleSearch",
+              "nextMessageReference"
+            ) VALUES (
+              ${conversation.id},
+              ${conversation.createdAt},
+              ${conversation.updatedAt},
+              ${conversation.course},
+              ${conversation.reference},
+              ${conversation.authorEnrollment},
+              ${conversation.staffOnlyAt === null ? "everyone" : "staff"},
+              ${conversation.anonymousAt},
+              ${conversation.type},
+              ${conversation.pinnedAt},
+              ${conversation.resolvedAt},
+              ${conversation.title},
+              ${conversation.titleSearch},
+              ${conversation.nextMessageReference}
+            )
           `
         );
+        if (conversation.staffOnlyAt !== null)
+          for (const enrollment of app.locals.database.all<{ id: number }>(
+            sql`
+              SELECT "id"
+              FROM "enrollments"
+              LEFT JOIN "conversations" ON "enrollments"."id" = "conversations"."authorEnrollment" AND
+                                           "conversations"."id" = ${conversation.id}
+              LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                      "messages"."conversation" = ${conversation.id}
+              WHERE "enrollments"."role" = 'student' AND (
+                      "conversations"."id" IS NOT NULL OR
+                      "messages"."id" IS NOT NULL
+                    )
+            `
+          ))
+            app.locals.database.run(
+              sql`
+                INSERT INTO "conversationParticipants" (
+                  "createdAt",
+                  "conversation",
+                  "enrollment"
+                )
+                VALUES (
+                  ${new Date().toISOString},
+                  ${conversation.id},
+                  ${enrollment.id}
+                )
+              `
+            );
       }
 
       app.locals.database.execute(
