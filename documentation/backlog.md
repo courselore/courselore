@@ -68,18 +68,14 @@
 
 ## Better Email Notifications
 
-- Digests.
-  - Database schema.
-  - Reenable on interface (`TODO`)
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
+- Don’t send notifications when the person is online and/or has seen the message.
 - “Important staff announcements”
   - They have two consequences:
     - They send emails to everyone, because it isn’t possible to opt out of receiving them.
     - They send emails immediately, even to people who otherwise would receive digests.
   - Change New Conversation page.
     - When you select this option, check “Pin” in the form
-  - Store this into conversation
+  - Store this in conversation database table
   - Show these conversations differently on sidebar
 - Email contents:
 
@@ -129,10 +125,7 @@
         </style>
         ```
 
-    - Complications:
-      - Currently we schedule emails to be delivered (including the content of said emails) in the request/response cycle, so rendering content for every person would take too long. Wait to implement this when we finish implement other features in this section, which may introduce an intermediary job to schedule emails that will be outside the request/response cycle.
-      - The content renderer currently relies on `{req, res}` to determine things like `res.locals.user`. It needs to support passing arbitrary users in.
-      - Mathematics are rendered incorrectly.
+  - Mathematics are rendered incorrectly.
 
 - Reprocess existing content, because of new DOM Clobbering strategy.
 
