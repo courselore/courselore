@@ -1288,7 +1288,7 @@ export default async (app: Courselore): Promise<void> => {
         if (conversation.staffOnlyAt !== null)
           for (const enrollment of app.locals.database.all<{ id: number }>(
             sql`
-              SELECT "id"
+              SELECT "enrollments"."id"
               FROM "enrollments"
               LEFT JOIN "conversations" ON "enrollments"."id" = "conversations"."authorEnrollment" AND
                                            "conversations"."id" = ${conversation.id}
