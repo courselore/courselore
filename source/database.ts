@@ -1180,7 +1180,93 @@ export default async (app: Courselore): Promise<void> => {
       );
       CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
       CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
-    `
+    `,
+
+    () => {
+      app.locals.database.execute(
+        sql`
+          CREATE TABLE "new_conversations" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "updatedAt" TEXT NULL,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "participants" TEXT NOT NULL,
+            "anonymousAt" TEXT NULL,
+            "type" TEXT NOT NULL,
+            "pinnedAt" TEXT NULL,
+            "resolvedAt" TEXT NULL,
+            "title" TEXT NOT NULL,
+            "titleSearch" TEXT NOT NULL,
+            "nextMessageReference" INTEGER NOT NULL,
+            UNIQUE ("course", "reference")
+          );
+
+          CREATE TABLE "conversationParticipants" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+            "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+            UNIQUE ("conversation", "enrollment")
+          );
+          
+          CREATE INDEX "conversationParticipantsConversationIndex" ON "conversationParticipants" ("conversation");
+          CREATE INDEX "conversationParticipantsEnrollmentIndex" ON "conversationParticipants" ("enrollment");
+        `
+      );
+
+      for (const conversation of app.locals.database.all<{}>(
+        sql`
+          SELECT
+          FROM "conversations"
+        `
+      )) {
+        app.locals.database.run(
+          sql`
+            INSERT INTO "new_conversations" () VALUES ()
+          `
+        );
+      }
+
+      app.locals.database.execute(
+        sql`
+          DROP TABLE "conversations";
+          ALTER TABLE "new_conversations" RENAME TO "conversations";
+          CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
+          CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
+            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+          END;
+          CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+          END;
+          CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
+            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+          END;
+          CREATE INDEX "conversationsParticipantsIndex" ON "conversations" ("participants");
+          CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
+          CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
+          CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
+          CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
+            content = "conversations",
+            content_rowid = "id",
+            "titleSearch",
+            tokenize = 'porter'
+          );
+          CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
+            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+          END;
+          CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+          END;
+          CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
+            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+          END;
+        `
+      );
+    }
   );
   app.once("close", () => {
     app.locals.database.close();
