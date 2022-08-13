@@ -1294,7 +1294,7 @@ export default async (app: Courselore): Promise<void> => {
                                            "conversations"."id" = ${conversation.id}
               LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
                                       "messages"."conversation" = ${conversation.id}
-              WHERE "enrollments"."role" = 'student' AND (
+              WHERE "enrollments"."courseRole" = 'student' AND (
                       "conversations"."id" IS NOT NULL OR
                       "messages"."id" IS NOT NULL
                     )
@@ -1309,7 +1309,7 @@ export default async (app: Courselore): Promise<void> => {
                   "enrollment"
                 )
                 VALUES (
-                  ${new Date().toISOString},
+                  ${new Date().toISOString()},
                   ${conversation.id},
                   ${enrollment.id}
                 )
@@ -1336,12 +1336,6 @@ export default async (app: Courselore): Promise<void> => {
           CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
           CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
           CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
-          CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
-            content = "conversations",
-            content_rowid = "id",
-            "titleSearch",
-            tokenize = 'porter'
-          );
           CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
             INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
           END;
