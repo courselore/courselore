@@ -1298,6 +1298,7 @@ export default async (app: Courselore): Promise<void> => {
                       "conversations"."id" IS NOT NULL OR
                       "messages"."id" IS NOT NULL
                     )
+              GROUP BY "enrollments"."id"
             `
           ))
             app.locals.database.run(
