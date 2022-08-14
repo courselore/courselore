@@ -2961,6 +2961,114 @@ export default (app: Courselore): void => {
                 class="input--text"
               />
 
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  gap: var(--space--4);
+                  flex-direction: column;
+                `)}"
+              >
+                <div
+                  css="${res.locals.css(css`
+                    display: flex;
+                  `)}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <input
+                      type="checkbox"
+                      name=""
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                    />
+                    <span
+                      onload="${javascript`
+                        this.onclick = () => {
+                          document.querySelector('[key="poll-setup"]').hidden = false;
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-bar-chart"></i>
+                      Include Poll
+                    </span>
+                    <span
+                      class="text--blue"
+                      onload="${javascript`
+                        (this.tooltip ??= tippy(this)).setProps({
+                          touch: false,
+                          content: "Remove poll",
+                        });
+
+                        this.onclick = () => {
+                          document.querySelector('[key="poll-setup"]').hidden = true;
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-bar-chart-fill"></i>
+                      Include Poll
+                    </span>
+                  </label>
+                </div>
+
+                <div
+                  key="poll-setup"
+                  hidden
+                  css="${res.locals.css(css`
+                    display: flex;
+                    padding: var(--space--4);
+                    gap: var(--space--4);
+                    flex-direction: column;
+                    border-radius: var(--border-radius--lg);
+                    background-color: var(--color--gray--medium--100);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--800);
+                    }
+                  `)}"
+                >
+                  <label class="label">
+                    <p class="label--text">Poll title</p>
+                    <input
+                      type="text"
+                      name="pollTitle"
+                      placeholder="Title..."
+                      required
+                      class="input--text"
+                    />
+                  </label>
+                  <hr class="separator" />
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                      padding: var(--space--4);
+                      gap: var(--space--4);
+                      flex-direction: column;
+                    `)}"
+                  >
+                    <label class="label">
+                      <p class="label--text">Option 1</p>
+                      <input
+                        type="text"
+                        name="pollTitle"
+                        placeholder="Description..."
+                        required
+                        class="input--text"
+                      />
+                    </label>
+                    <hr class="separator" />
+                  </div>
+                  <label
+                    class="button button--inline button--transparent"
+                    css="${res.locals.css(css`
+                      display: flex;
+                      align-self: center;
+                    `)}"
+                  >
+                    <i class="bi bi-plus-circle"></i>
+                    Add option
+                  </label>
+                </div>
+              </div>
+
               $${app.locals.partials.contentEditor({
                 req,
                 res,

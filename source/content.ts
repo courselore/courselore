@@ -792,26 +792,6 @@ export default async (app: Courselore): Promise<void> => {
                   Preview
                 </span>
               </label>
-              <label>
-                <input
-                  type="radio"
-                  name=""
-                  class="content-editor--button--write visually-hidden"
-                  onload="${javascript`
-                    this.isModified = false;
-
-                    this.onclick = () => {
-                      this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
-                      this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
-                      this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
-                    };
-                  `}"
-                />
-                <span class="button button--transparent">
-                  <i class="bi bi-bar-chart-steps"></i>
-                  Create Poll
-                </span>
-              </label>
             </div>
           `}
       <div
