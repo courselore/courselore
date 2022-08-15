@@ -1,6 +1,29 @@
 # Meeting Notes
 
 <details>
+<summary>2021-08-13</summary>
+
+- Mobile application:
+  - Cookies to detect mobile application as opposed to the browser.
+  - Redirection flows.
+- Digests:
+  - Deployed new email notifications infrastructure with delay between receiving a message and sending its notifications.
+  - We haven’t deployed digests because we’re still dealing with edge cases, for example, what happens when you’re receiving digests and switch to immediate notifications.
+- Participants:
+  - Most of the infrastructure is in place. Still dealing with interactions between this feature and other features, for example, search, email notifications, the `@mentions` widget and so forth.
+- Polls:
+  - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
+  - Support multiple answers.
+  - Students may see aggregate results.
+  - Staff may see individual votes.
+  - Allow for closing a poll.
+- Zach’s comments:
+  - DMs.
+  - SAML (for spring).
+
+</details>
+
+<details>
 <summary>2021-08-06</summary>
 
 - Mobile application.

@@ -7,13 +7,18 @@
   - Notifications API & Push API
   - Mobile & desktop applications
 - Granular access control to conversations.
-- SAML.
 - Minimal integration with Learning Management Systems (identity, not grades).
 - Performance:
   - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
 - Smaller things:
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
+    - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
+    - Support multiple answers.
+    - Students may see aggregate results.
+    - Staff may see individual votes.
+    - Allow for closing a poll.
+    - Perhaps don’t include poll in replies?
 - Communicate that we’re in a free hosting period for now:
 
 ```javascript
@@ -85,6 +90,11 @@
 
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
 - 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
+
+## Spring
+
+- SAML
+  - Register our application with Hopkins to allow access to SAML.
 
 ## Administrative Interface
 
