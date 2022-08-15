@@ -111,6 +111,11 @@ export default async (app: Courselore): Promise<void> => {
       .use(rehypeSanitize, {
         ...rehypeSanitizeDefaultSchema,
         clobber: [],
+        tagNames: [
+          ...(rehypeSanitizeDefaultSchema.tagNames ?? []),
+          "courselore-poll",
+          "courselore-poll-option",
+        ],
         attributes: {
           ...rehypeSanitizeDefaultSchema.attributes,
           div: [
@@ -125,6 +130,8 @@ export default async (app: Courselore): Promise<void> => {
             ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
             "className",
           ],
+          "courselore-poll": ["options", "closed"],
+          "courselore-poll-option": ["votes"],
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
@@ -582,6 +589,118 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
       }
+
+      for (const elementPoll of contentElement.querySelectorAll(
+        "courselore-poll"
+      )) {
+        elementPoll.outerHTML = html`
+          <div
+            key="poll"
+            css="${res.locals.css(css`
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
+              border-radius: var(--border-radius--lg);
+              padding: var(--space--4);
+            `)}"
+          >
+            <div key="vote">
+              $${[
+                ...elementPoll.querySelectorAll("courselore-poll-option"),
+              ].map(
+                (elementOption) => html`
+                  <form
+                    method=""
+                    action=""
+                    css="${res.locals.css(css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `)}"
+                  >
+                    <i class="bi bi-caret-right-fill"></i>
+                    <button
+                      class="button button--tight button--tight--inline button--transparent strong"
+                      $${elementPoll.getAttribute("closed") === "true"
+                        ? html`disabled`
+                        : html``}
+                    >
+                      ${elementOption.innerHTML}
+                    </button>
+                  </form>
+                `
+              )}
+            </div>
+
+            <div key="results" hidden>
+              $${[
+                ...elementPoll.querySelectorAll("courselore-poll-option"),
+              ].map(
+                (elementOption) => html`
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                      flex-direction: row;
+                      gap: var(--space--2);
+                    `)}"
+                  >
+                    <i class="bi bi-caret-right-fill"></i>
+                    <label class="strong">
+                      ${elementOption.innerHTML} &nbsp-&nbsp
+                      ${JSON.parse(elementOption.getAttribute("votes") ?? "[]")
+                        .length}
+                      votes
+                    </label>
+                  </div>
+                `
+              )}
+            </div>
+
+            <hr class="separator" />
+
+            <div
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: row;
+                gap: var(--space--2);
+              `)}"
+            >
+              <button
+                class="button button--blue"
+                onload="${javascript`
+                  this.onclick = () => {
+                    this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
+                    this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
+                    this.hidden = true;
+                  };
+                `}"
+              >
+                <i class="bi bi-eye-fill"></i>
+                Show Results
+              </button>
+
+              <form method="" action="">
+                $${res.locals.enrollment?.courseRole ===
+                "staff" /* TODO: CHECK THAT YOU CAN CLOSE THE POLL */
+                  ? elementPoll.getAttribute("closed") === "true"
+                    ? html`
+                        <button class="button button--blue">
+                          <i class="bi bi-unlock-fill"></i>
+                          Open Poll
+                        </button>
+                      `
+                    : html`
+                        <button class="button button--rose">
+                          <i class="bi bi-lock-fill"></i>
+                          Close Poll
+                        </button>
+                      `
+                  : html``}
+              </form>
+            </div>
+          </div>
+        `;
+      }
     }
 
     if (search !== undefined)
@@ -862,6 +981,49 @@ export default async (app: Courselore): Promise<void> => {
                 `}"
               >
                 <i class="bi bi-info-circle"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                onload="${javascript`
+                  (this.tooltip ??= tippy(this)).setProps({
+                    touch: false,
+                    content: ${res.locals.html(
+                      html`
+                        Add Poll
+                        <span class="keyboard-shortcut">
+                          (<span
+                            onload="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+P</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            onload="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>P</span
+                          >)
+                        </span>
+                      `
+                    )},
+                  });
+
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+            
+                  this.onclick = () => {
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll options='single' closed='false'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
+                    textarea.focus();
+                  };
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
+                `}"
+              >
+                <i class="bi bi-bar-chart"></i>
+                Poll
               </button>
             </div>
             <div>

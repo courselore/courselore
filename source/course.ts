@@ -876,35 +876,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isCourseStaff = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      if (res.locals.enrollment.courseRole === "staff") {
-        const examEndDate = app.locals.database.get<{ examEnd: string }>(
-          sql`
-            SELECT "examEnd"
-            FROM "courses"
-            WHERE "id" = ${res.locals.course.id}
-          `
-        )!.examEnd;
-        if (
-          examEndDate !== null &&
-          new Date().getTime() >= new Date(examEndDate).getTime()
-        ) {
-          app.locals.database.run(
-            sql`
-              UPDATE "courses"
-              SET "examStart" = NULL
-              WHERE "id" = ${res.locals.course.id}
-            `
-          );
-          app.locals.database.run(
-            sql`
-              UPDATE "courses"
-              SET "examEnd" = NULL
-              WHERE "id" = ${res.locals.course.id}
-            `
-          );
-        }
-        return next();
-      }
+      if (res.locals.enrollment.courseRole === "staff") return next();
       next("route");
     },
   ];
@@ -1547,13 +1519,21 @@ export default (app: Courselore): void => {
                     key="exam-start-date"
                     type="text"
                     name="examStart"
-                    value="${res.locals.course.examStart === null
-                      ? new Date().toISOString()
-                      : res.locals.course.examStart}"
+                    value="${res.locals.course.examEnd !== null &&
+                    res.locals.course.examStart !== null &&
+                    new Date().getTime() <
+                      new Date(res.locals.course.examEnd).getTime()
+                      ? res.locals.course.examStart
+                      : new Date(
+                          new Date().getTime() + 60 * 1000
+                        ).toISOString()}"
                     required
-                    ${res.locals.course.examStart === null
-                      ? html``
-                      : html`disabled`}
+                    ${res.locals.course.examEnd !== null &&
+                    res.locals.course.examStart !== null &&
+                    new Date().getTime() <
+                      new Date(res.locals.course.examEnd).getTime()
+                      ? html`disabled`
+                      : html``}
                     autocomplete="off"
                     class="input--text"
                     onload="${javascript`
@@ -1572,13 +1552,21 @@ export default (app: Courselore): void => {
                   <input
                     type="text"
                     name="examEnd"
-                    value="${res.locals.course.examEnd === null
-                      ? new Date(new Date().getTime() + 86400000).toISOString()
-                      : res.locals.course.examEnd}"
+                    value="${res.locals.course.examEnd !== null &&
+                    res.locals.course.examStart !== null &&
+                    new Date().getTime() <
+                      new Date(res.locals.course.examEnd).getTime()
+                      ? res.locals.course.examEnd
+                      : new Date(
+                          new Date().getTime() + 24 * 60 * 60 * 1000 + 60 * 1000
+                        ).toISOString()}"
                     required
-                    ${res.locals.course.examEnd === null
-                      ? html``
-                      : html`disabled`}
+                    ${res.locals.course.examEnd !== null &&
+                    res.locals.course.examStart !== null &&
+                    new Date().getTime() <
+                      new Date(res.locals.course.examEnd).getTime()
+                      ? html`disabled`
+                      : html``}
                     autocomplete="off"
                     class="input--text"
                     onload="${javascript`
@@ -1599,52 +1587,11 @@ export default (app: Courselore): void => {
                   display: flex;
                 `)}"
               >
-                $${res.locals.course.examEnd === null &&
-                res.locals.course.examStart === null
+                $${res.locals.course.examEnd !== null &&
+                res.locals.course.examStart !== null &&
+                new Date().getTime() <
+                  new Date(res.locals.course.examEnd).getTime()
                   ? html`
-                      <input type="hidden" name="cancelExam" value="false" />
-                      <div
-                        css="${res.locals.css(css`
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: baseline;
-                        `)}"
-                      >
-                        <button class="button button--blue">
-                          <i class="bi bi-calendar-plus-fill"></i>
-                          Schedule Exam Period
-                        </button>
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          css="${res.locals.css(css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                          `)}"
-                          onload="${javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              trigger: "click",
-                              interactive: true,
-                              content: ${res.locals.html(html`
-                                <div
-                                  css="${res.locals.css(css`
-                                    padding: var(--space--2);
-                                  `)}"
-                                >
-                                  During an exam period, the course will be
-                                  read-only to students. They may continue to
-                                  read existing conversations, but may no longer
-                                  ask questions, send messages, and so forth.
-                                </div>
-                              `)},
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                      </div>
-                    `
-                  : html`
                       <div
                         css="${res.locals.css(css`
                           display: flex;
@@ -1684,6 +1631,49 @@ export default (app: Courselore): void => {
                               </div>
                             `
                           : html``}
+                      </div>
+                    `
+                  : html`
+                      <input type="hidden" name="cancelExam" value="false" />
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                        `)}"
+                      >
+                        <button class="button button--blue">
+                          <i class="bi bi-calendar-plus-fill"></i>
+                          Schedule Exam Period
+                        </button>
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          css="${res.locals.css(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `)}"
+                          onload="${javascript`
+                        (this.tooltip ??= tippy(this)).setProps({
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.html(html`
+                            <div
+                              css="${res.locals.css(css`
+                                padding: var(--space--2);
+                              `)}"
+                            >
+                              During an exam period, the course will be
+                              read-only to students. They may continue to read
+                              existing conversations, but may no longer ask
+                              questions, send messages, and so forth.
+                            </div>
+                          `)},
+                        });
+                      `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
                       </div>
                     `}
               </div>
