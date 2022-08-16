@@ -1102,7 +1102,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           : Math.random() < 0.75
           ? conversationParticipantses[0]
           : lodash.sample(conversationParticipantses)!;
-        const customParticipantEnrollments =
+        const customParticipantEnrollments = lodash.uniq(
           participants === "everyone"
             ? []
             : participants === "staff"
@@ -1119,8 +1119,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
                 ...(Math.random() < 0.5 ? [enrollment] : []),
               ]
-            : [];
-        const participantEnrollments = [
+            : []
+        );
+        const participantEnrollments = lodash.uniq([
           ...(participants === "everyone"
             ? enrollments
             : participants === "staff"
@@ -1129,7 +1130,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             ? []
             : []),
           ...customParticipantEnrollments,
-        ];
+        ]);
         const conversationAuthorEnrollment = lodash.sample(
           participantEnrollments
         )!;
