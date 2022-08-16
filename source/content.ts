@@ -130,7 +130,7 @@ export default async (app: Courselore): Promise<void> => {
             ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
             "className",
           ],
-          "courselore-poll": ["options", "closed"],
+          "courselore-poll": ["options", "closed", "closes-at"],
           "courselore-poll-option": ["votes"],
         },
       })
@@ -618,15 +618,23 @@ export default async (app: Courselore): Promise<void> => {
                       gap: var(--space--2);
                     `)}"
                   >
-                    <i class="bi bi-caret-right-fill"></i>
-                    <button
-                      class="button button--tight button--tight--inline button--transparent strong"
-                      $${elementPoll.getAttribute("closed") === "true"
-                        ? html`disabled`
-                        : html``}
+                    $${elementPoll.getAttribute("closed") === "true"
+                      ? html`<i class="bi bi-caret-right"></i>`
+                      : html`<i class="bi bi-caret-right-fill"></i>`}
+                    <div
+                      css="${res.locals.css(css`
+                        padding-left: var(--space--1);
+                      `)}"
                     >
-                      ${elementOption.innerHTML}
-                    </button>
+                      <button
+                        class="button button--tight button--tight--inline button--transparent strong"
+                        $${elementPoll.getAttribute("closed") === "true"
+                          ? html`disabled`
+                          : html``}
+                      >
+                        ${elementOption.innerHTML}
+                      </button>
+                    </div>
                   </form>
                 `
               )}
@@ -645,12 +653,50 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     <i class="bi bi-caret-right-fill"></i>
-                    <label class="strong">
-                      ${elementOption.innerHTML} &nbsp-&nbsp
-                      ${JSON.parse(elementOption.getAttribute("votes") ?? "[]")
-                        .length}
-                      votes
-                    </label>
+                    <div
+                      css="${res.locals.css(css`
+                        width: ${(
+                          100 *
+                          (JSON.parse(
+                            elementOption.getAttribute("votes") ?? "[]"
+                          ).length /
+                            [
+                              ...elementPoll.querySelectorAll(
+                                "courselore-poll-option"
+                              ),
+                            ]
+                              .map(
+                                (element) =>
+                                  JSON.parse(
+                                    element.getAttribute("votes") ?? "[]"
+                                  ).length
+                              )
+                              .reduce(
+                                (partialSum, value) => partialSum + value,
+                                0
+                              ))
+                        ).toString()}%;
+                        border-radius: var(--border-radius--md);
+                        background-color: var(--color--gray--medium--200);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--gray--medium--700);
+                        }
+                      `)}"
+                    >
+                      <label
+                        class="strong"
+                        css="${res.locals.css(css`
+                          position: absolute;
+                          padding-left: var(--space--1);
+                        `)}"
+                      >
+                        ${elementOption.innerHTML} &nbsp-&nbsp
+                        ${JSON.parse(
+                          elementOption.getAttribute("votes") ?? "[]"
+                        ).length}
+                        votes
+                      </label>
+                    </div>
                   </div>
                 `
               )}
@@ -662,41 +708,84 @@ export default async (app: Courselore): Promise<void> => {
               css="${res.locals.css(css`
                 display: flex;
                 flex-direction: row;
-                gap: var(--space--2);
+                row-gap: var(--space--2);
               `)}"
             >
-              <button
-                class="button button--blue"
-                onload="${javascript`
-                  this.onclick = () => {
-                    this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
-                    this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
-                    this.hidden = true;
-                  };
-                `}"
+              <label
+                class="button button--tight button--tight--inline button--transparent"
               >
-                <i class="bi bi-eye-fill"></i>
-                Show Results
-              </button>
+                <input
+                  type="checkbox"
+                  name="showResults"
+                  value="true"
+                  class="visually-hidden input--radio-or-checkbox--multilabel"
+                  onload="${javascript`
+                    this.onchange = () => {
+                      if (this.checked) {
+                        this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
+                        this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
+                      } else {
+                        this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = false;
+                        this.closest('[key="poll"]').querySelector('[key="results"]').hidden = true;
+                      }
+                    };
+                  `}"
+                />
+                <span>
+                  <i class="bi bi-eye"></i>
+                  Show Results
+                </span>
+                <span>
+                  <i class="bi bi-eye-slash"></i>
+                  Hide Results
+                </span>
+              </label>
 
               <form method="" action="">
-                $${res.locals.enrollment?.courseRole ===
-                "staff" /* TODO: CHECK THAT YOU CAN CLOSE THE POLL */
-                  ? elementPoll.getAttribute("closed") === "true"
-                    ? html`
-                        <button class="button button--blue">
-                          <i class="bi bi-unlock-fill"></i>
-                          Open Poll
-                        </button>
-                      `
-                    : html`
-                        <button class="button button--rose">
-                          <i class="bi bi-lock-fill"></i>
+                $${res.locals.enrollment?.courseRole === "staff"
+                  ? html`
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="pollClosed"
+                          value="true"
+                          $${elementPoll.getAttribute("closed") === "true"
+                            ? html`checked`
+                            : html``}
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                        />
+                        <span class="text--rose">
+                          <i class="bi bi-lock"></i>
                           Close Poll
-                        </button>
-                      `
+                        </span>
+                        <span class="text--sky">
+                          <i class="bi bi-unlock"></i>
+                          Open Poll
+                        </span>
+                      </label>
+                    `
                   : html``}
               </form>
+
+              $${elementPoll.getAttribute("closed") === "true"
+                ? html`<label class="secondary"> Poll is closed </label>`
+                : elementPoll.getAttribute("closes-at") !== null
+                ? html`
+                    <label class="secondary">
+                      Poll closes
+                      <time
+                        datetime="${new Date(
+                          elementPoll.getAttribute("closes-at")!
+                        ).toISOString()}"
+                        onload="${javascript`
+                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                        `}"
+                      ></time
+                    ></label>
+                  `
+                : html``}
             </div>
           </div>
         `;
@@ -992,7 +1081,7 @@ export default async (app: Courselore): Promise<void> => {
                     touch: false,
                     content: ${res.locals.html(
                       html`
-                        Add Poll
+                        Poll
                         <span class="keyboard-shortcut">
                           (<span
                             onload="${javascript`
@@ -1015,15 +1104,16 @@ export default async (app: Courselore): Promise<void> => {
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
             
                   this.onclick = () => {
-                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll options='single' closed='false'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll options='single' closed='false' closes-at='${new Date(
+                      new Date().getTime() + 7 * 24 * 60 * 60 * 1000
+                    ).toISOString()}'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
                     textarea.focus();
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
                 `}"
               >
-                <i class="bi bi-bar-chart"></i>
-                Poll
+                <i class="bi bi-bar-chart-fill"></i>
               </button>
             </div>
             <div>
