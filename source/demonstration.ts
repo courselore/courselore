@@ -16,6 +16,8 @@ import {
   CourseRole,
   courseRoles,
   enrollmentAccentColors,
+  ConversationParticipants,
+  conversationParticipantses,
   ConversationType,
   conversationTypes,
 } from "./index.js";
@@ -323,6 +325,9 @@ export default (app: Courselore): void => {
       ];
       const staff = enrollments.filter(
         (enrollment) => enrollment.courseRole === "staff"
+      );
+      const students = enrollments.filter(
+        (enrollment) => enrollment.courseRole === "student"
       );
 
       const tags: { id: number }[] = [
@@ -1088,15 +1093,56 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         conversationReference < course.nextConversationReference;
         conversationReference++
       ) {
-        const conversationCreatedAt =
-          conversationCreatedAts[conversationReference - 1];
         const isExampleOfAllFeaturesInRichTextMessages =
           conversationReference === 1;
+        const conversationCreatedAt =
+          conversationCreatedAts[conversationReference - 1];
+        const participants = isExampleOfAllFeaturesInRichTextMessages
+          ? conversationParticipantses[0]
+          : Math.random() < 0.75
+          ? conversationParticipantses[0]
+          : lodash.sample(conversationParticipantses)!;
+        const customParticipantEnrollments =
+          participants === "everyone"
+            ? []
+            : participants === "staff"
+            ? [
+                ...lodash.sampleSize(students, lodash.random(0, 10)),
+                ...(enrollment.courseRole === "staff"
+                  ? []
+                  : Math.random() < 0.5
+                  ? [enrollment]
+                  : []),
+              ]
+            : participants === "custom"
+            ? [
+                ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
+                ...(Math.random() < 0.5 ? [enrollment] : []),
+              ]
+            : [];
+        const participantEnrollments = [
+          ...(participants === "everyone"
+            ? enrollments
+            : participants === "staff"
+            ? staff
+            : participants === "custom"
+            ? []
+            : []),
+          ...customParticipantEnrollments,
+        ];
+        const conversationAuthorEnrollment = lodash.sample(
+          participantEnrollments
+        )!;
         const type = isExampleOfAllFeaturesInRichTextMessages
           ? conversationTypes[1]
           : conversationTypes[
               Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
             ];
+        const title = isExampleOfAllFeaturesInRichTextMessages
+          ? `Example of All Features in Rich-Text Messages`
+          : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
+              type === "question" ? "?" : ""
+            }`;
         const nextMessageReference = isExampleOfAllFeaturesInRichTextMessages
           ? 2
           : type === "chat"
@@ -1118,18 +1164,12 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               )
             ).toISOString()
           );
-        const title = isExampleOfAllFeaturesInRichTextMessages
-          ? `Example of All Features in Rich-Text Messages`
-          : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
-              type === "question" ? "?" : ""
-            }`;
-        const conversationAuthorEnrollment = lodash.sample(enrollments)!;
         const conversation = app.locals.database.get<{
           id: number;
           authorEnrollment: number | null;
+          participants: ConversationParticipants;
           anonymousAt: string | null;
           type: ConversationType;
-          staffOnlyAt: string | null;
           title: string;
         }>(
           sql`
@@ -1139,11 +1179,11 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               "course",
               "reference",
               "authorEnrollment",
+              "participants",
               "anonymousAt",      
               "type",
               "resolvedAt",
               "pinnedAt",
-              "staffOnlyAt",
               "title",
               "titleSearch",
               "nextMessageReference"
@@ -1154,6 +1194,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ${course.id},
               ${String(conversationReference)},
               ${conversationAuthorEnrollment.id},
+              ${participants},
               ${
                 conversationAuthorEnrollment.courseRole !== "staff" &&
                 Math.random() < 0.5
@@ -1173,13 +1214,6 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   ? new Date().toISOString()
                   : null
               },
-              ${
-                isExampleOfAllFeaturesInRichTextMessages
-                  ? null
-                  : Math.random() < 0.25
-                  ? new Date().toISOString()
-                  : null
-              },
               ${title},
               ${html`${title}`},
               ${nextMessageReference}
@@ -1187,6 +1221,18 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             RETURNING *
           `
         )!;
+
+        for (const enrollment of customParticipantEnrollments)
+          app.locals.database.run(
+            sql`
+              INSERT INTO "conversationParticipants" ("createdAt", "conversation", "enrollment")
+              VALUES (
+                ${new Date().toISOString()},
+                ${conversation.id},
+                ${enrollment.id}
+              )
+            `
+          );
 
         app.locals.database.run(
           sql`
@@ -1205,6 +1251,12 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           messageReference++
         ) {
           const messageCreatedAt = messageCreatedAts[messageReference - 1];
+          const messageAuthorEnrollment =
+            messageReference === 1
+              ? conversationAuthorEnrollment
+              : Math.random() < 0.05
+              ? null
+              : lodash.sample(participantEnrollments)!;
           const contentSource = isExampleOfAllFeaturesInRichTextMessages
             ? exampleOfAllFeaturesInRichTextMessages
             : type === "chat" && Math.random() < 0.9
@@ -1216,12 +1268,6 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 .join("\n\n");
           const contentPreprocessed =
             app.locals.partials.contentPreprocessed(contentSource);
-          const messageAuthorEnrollment =
-            messageReference === 1
-              ? conversationAuthorEnrollment
-              : Math.random() < 0.05
-              ? null
-              : lodash.sample(enrollments)!;
           const message = app.locals.database.get<{ id: number }>(
             sql`
               INSERT INTO "messages" (
@@ -1272,12 +1318,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             `
           )!;
 
-          const readers =
-            conversation.staffOnlyAt === null ? enrollments : staff;
           let readingCreatedAt = messageCreatedAt;
           for (const enrollment of lodash.sampleSize(
-            readers,
-            lodash.random(1, readers.length)
+            participantEnrollments,
+            lodash.random(1, participantEnrollments.length)
           )) {
             readingCreatedAt = new Date(
               Math.min(
@@ -1299,7 +1343,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           }
 
           for (const enrollment of lodash.sampleSize(
-            staff,
+            lodash.intersection(staff, participantEnrollments),
             Math.random() < 0.8 ? 0 : lodash.random(2)
           ))
             app.locals.database.run(
@@ -1314,7 +1358,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             );
 
           for (const enrollment of lodash.sampleSize(
-            enrollments,
+            participantEnrollments,
             Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
               ? 0
               : lodash.random(5)

@@ -18,6 +18,14 @@ import {
   IsCourseStaffMiddlewareLocals,
 } from "./index.js";
 
+export type ConversationParticipants =
+  typeof conversationParticipantses[number];
+export const conversationParticipantses = [
+  "everyone",
+  "staff",
+  "custom",
+] as const;
+
 export type ConversationType = typeof conversationTypes[number];
 export const conversationTypes = ["question", "note", "chat"] as const;
 

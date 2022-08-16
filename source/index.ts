@@ -84,6 +84,8 @@ import conversation, {
   IsConversationAccessibleMiddleware,
 } from "./conversation.js";
 export {
+  ConversationParticipants,
+  conversationParticipantses,
   ConversationType,
   conversationTypes,
   AuthorEnrollment,
