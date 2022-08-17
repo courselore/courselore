@@ -1133,6 +1133,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             : []),
           ...customParticipantEnrollments,
         ]);
+        const thereExistsMultipleStudentParticipants =
+          lodash.intersection(participantEnrollments, students).length > 1;
         const conversationAuthorEnrollment = lodash.sample(
           participantEnrollments
         )!;
@@ -1199,7 +1201,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ${conversationAuthorEnrollment.id},
               ${participants},
               ${
-                conversationAuthorEnrollment.courseRole !== "staff" &&
+                conversationAuthorEnrollment.courseRole === "student" &&
+                thereExistsMultipleStudentParticipants &&
                 Math.random() < 0.5
                   ? new Date().toISOString()
                   : null
@@ -1307,7 +1310,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 ${
                   messageReference === 1
                     ? conversation.anonymousAt
-                    : messageAuthorEnrollment?.courseRole !== "staff" &&
+                    : messageAuthorEnrollment?.courseRole === "student" &&
+                      thereExistsMultipleStudentParticipants &&
                       Math.random() < 0.5
                     ? new Date().toISOString()
                     : null
