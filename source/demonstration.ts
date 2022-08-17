@@ -1100,9 +1100,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         const conversationCreatedAt =
           conversationCreatedAts[conversationReference - 1];
         const participants = isExampleOfAllFeaturesInRichTextMessages
-          ? conversationParticipantses[0]
-          : Math.random() < 0.75
-          ? conversationParticipantses[0]
+          ? "everyone"
+          : Math.random() < 0.5
+          ? "everyone"
           : lodash.sample(conversationParticipantses)!;
         const customParticipantEnrollments = lodash.uniq(
           participants === "everyone"
@@ -1230,7 +1230,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         for (const enrollment of customParticipantEnrollments)
           app.locals.database.run(
             sql`
-              INSERT INTO "conversationParticipants" ("createdAt", "conversation", "enrollment")
+              INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
                 ${new Date().toISOString()},
                 ${conversation.id},
