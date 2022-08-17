@@ -2219,8 +2219,8 @@ export default (app: Courselore): void => {
                 <button
                   class="button--create-invitation button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-person-plus-fill"></i>
-                  Create Invitation
+                  <i class="bi bi-link"></i>
+                  Create Invitation Link
                 </button>
                 <button
                   class="button--send-invitation-emails button button--full-width-on-small-screen button--blue"
