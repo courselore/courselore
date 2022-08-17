@@ -143,11 +143,11 @@ export type GetConversationHelper = ({
       updatedAt: string | null;
       reference: string;
       authorEnrollment: AuthorEnrollment;
+      participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
       resolvedAt: string | null;
       pinnedAt: string | null;
-      staffOnlyAt: string | null;
       title: string;
       titleSearch: string;
       nextMessageReference: number;
@@ -2432,11 +2432,11 @@ export default (app: Courselore): void => {
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentCourseRole: CourseRole | null;
+      participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
       resolvedAt: string | null;
       pinnedAt: string | null;
-      staffOnlyAt: string | null;
       title: string;
       titleSearch: string;
       nextMessageReference: number;
@@ -2458,11 +2458,11 @@ export default (app: Courselore): void => {
                "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
+               "conversations"."participants",
                "conversations"."anonymousAt",
                "conversations"."type",
                "conversations"."resolvedAt",
                "conversations"."pinnedAt",
-               "conversations"."staffOnlyAt",
                "conversations"."title",
                "conversations"."titleSearch",
                "conversations"."nextMessageReference"
@@ -2527,11 +2527,11 @@ export default (app: Courselore): void => {
               courseRole: conversationRow.authorEnrollmentCourseRole,
             }
           : ("no-longer-enrolled" as const),
+      participants: conversationRow.participants,
       anonymousAt: conversationRow.anonymousAt,
       type: conversationRow.type,
       resolvedAt: conversationRow.resolvedAt,
       pinnedAt: conversationRow.pinnedAt,
-      staffOnlyAt: conversationRow.staffOnlyAt,
       title: conversationRow.title,
       titleSearch: conversationRow.titleSearch,
       nextMessageReference: conversationRow.nextMessageReference,
