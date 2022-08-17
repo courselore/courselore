@@ -609,7 +609,7 @@ export default async (app: Courselore): Promise<void> => {
               $${[
                 ...elementPoll.querySelectorAll("courselore-poll-option"),
               ].map(
-                (elementOption) => html`
+                (elementOption, index) => html`
                   <form
                     method=""
                     action=""
@@ -618,6 +618,12 @@ export default async (app: Courselore): Promise<void> => {
                       gap: var(--space--2);
                     `)}"
                   >
+                    <input
+                      type="hidden"
+                      name="_csrf"
+                      value="${req.csrfToken()}"
+                    />
+                    <input type="hidden" name="" value="${index.toString()}" />
                     $${elementPoll.getAttribute("closed") === "true"
                       ? html`<i class="bi bi-caret-right"></i>`
                       : html`<i class="bi bi-caret-right-fill"></i>`}
@@ -746,9 +752,14 @@ export default async (app: Courselore): Promise<void> => {
                 </span>
               </label>
 
-              <form method="" action="">
-                $${res.locals.enrollment?.courseRole === "staff"
-                  ? html`
+              $${res.locals.enrollment?.courseRole === "staff"
+                ? html`
+                    <form method="" action="">
+                      <input
+                        type="hidden"
+                        name="_csrf"
+                        value="${req.csrfToken()}"
+                      />
                       <label
                         class="button button--tight button--tight--inline button--transparent"
                       >
@@ -770,10 +781,9 @@ export default async (app: Courselore): Promise<void> => {
                           Open Poll
                         </span>
                       </label>
-                    `
-                  : html``}
-              </form>
-
+                    </form>
+                  `
+                : html``}
               $${elementPoll.getAttribute("closed") === "true"
                 ? html`<label class="secondary"> Poll is closed </label>`
                 : elementPoll.getAttribute("closes-at") !== null
