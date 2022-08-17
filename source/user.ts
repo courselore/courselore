@@ -13,10 +13,21 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  Enrollment,
   IsEnrolledInCourseMiddlewareLocals,
-  AuthorEnrollment,
-  AuthorEnrollmentUser,
 } from "./index.js";
+
+export interface User {
+  id: number;
+  lastSeenOnlineAt: string;
+  reference: string;
+  email: string;
+  name: string;
+  avatar: string | null;
+  avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+  biographySource: string | null;
+  biographyPreprocessed: HTML | null;
+}
 
 export type UserAvatarlessBackgroundColor =
   typeof userAvatarlessBackgroundColors[number];
@@ -72,8 +83,8 @@ export type UserPartial = ({
     any,
     BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
-  enrollment?: AuthorEnrollment;
-  user?: AuthorEnrollmentUser | "no-longer-enrolled";
+  enrollment?: Enrollment;
+  user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";
   avatar?: boolean;
   decorate?: boolean;

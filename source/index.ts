@@ -55,6 +55,7 @@ import about, { AboutHandler } from "./about.js";
 
 import user, { UserPartial } from "./user.js";
 export {
+  User,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotificationsForAllMessages,
@@ -69,6 +70,7 @@ import course, {
   IsCourseStaffMiddleware,
 } from "./course.js";
 export {
+  Enrollment,
   CourseRole,
   courseRoles,
   EnrollmentAccentColor,
@@ -88,8 +90,6 @@ export {
   conversationParticipantses,
   ConversationType,
   conversationTypes,
-  AuthorEnrollment,
-  AuthorEnrollmentUser,
   IsConversationAccessibleMiddlewareLocals,
 } from "./conversation.js";
 

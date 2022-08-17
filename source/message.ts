@@ -8,10 +8,10 @@ import {
   Courselore,
   UserAvatarlessBackgroundColor,
   UserEmailNotificationsForAllMessages,
+  Enrollment,
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
-  AuthorEnrollment,
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
@@ -33,7 +33,7 @@ export type GetMessageHelper = ({
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollment: AuthorEnrollment;
+      authorEnrollment: Enrollment;
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
@@ -43,15 +43,15 @@ export type GetMessageHelper = ({
       readings: {
         id: number;
         createdAt: string;
-        enrollment: AuthorEnrollment;
+        enrollment: Enrollment;
       }[];
       endorsements: {
         id: number;
-        enrollment: AuthorEnrollment;
+        enrollment: Enrollment;
       }[];
       likes: {
         id: number;
-        enrollment: AuthorEnrollment;
+        enrollment: Enrollment;
       }[];
     }
   | undefined;

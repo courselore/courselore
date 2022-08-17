@@ -13,6 +13,7 @@ import {
   Courselore,
   LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
+  Enrollment,
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -28,26 +29,6 @@ export const conversationParticipantses = [
 
 export type ConversationType = typeof conversationTypes[number];
 export const conversationTypes = ["question", "note", "chat"] as const;
-
-export type AuthorEnrollment =
-  | {
-      id: number;
-      user: AuthorEnrollmentUser;
-      reference: string;
-      courseRole: CourseRole;
-    }
-  | "no-longer-enrolled";
-export type AuthorEnrollmentUser = {
-  id: number;
-  lastSeenOnlineAt: string;
-  reference: string;
-  email: string;
-  name: string;
-  avatar: string | null;
-  avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-  biographySource: string | null;
-  biographyPreprocessed: HTML | null;
-};
 
 export type ConversationLayout = ({
   req,
@@ -142,7 +123,7 @@ export type GetConversationHelper = ({
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollment: AuthorEnrollment;
+      authorEnrollment: Enrollment;
       participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
@@ -164,7 +145,7 @@ export type GetConversationHelper = ({
       readingsCount: number;
       endorsements: {
         id: number;
-        enrollment: AuthorEnrollment;
+        enrollment: Enrollment;
       }[];
     }
   | undefined;

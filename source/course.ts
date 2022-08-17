@@ -15,8 +15,18 @@ import {
   LiveUpdatesMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  User,
   UserAvatarlessBackgroundColor,
 } from "./index.js";
+
+export type Enrollment =
+  | {
+      id: number;
+      user: User;
+      reference: string;
+      courseRole: CourseRole;
+    }
+  | "no-longer-enrolled";
 
 export type CourseRole = typeof courseRoles[number];
 export const courseRoles = ["student", "staff"] as const;
