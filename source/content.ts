@@ -720,6 +720,11 @@ export default async (app: Courselore): Promise<void> => {
                   value="true"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   onload="${javascript`
+                    if (${elementPoll.getAttribute("closed") === "true"}) {
+                      this.checked = true;
+                      this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
+                      this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
+                    }
                     this.onchange = () => {
                       if (this.checked) {
                         this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
