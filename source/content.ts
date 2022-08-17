@@ -782,7 +782,7 @@ export default async (app: Courselore): Promise<void> => {
                       >
                         <input
                           type="checkbox"
-                          name="pollClosed"
+                          name="closePoll"
                           value="true"
                           $${elementPoll.getAttribute("closed") === "true" ||
                           (elementPoll.getAttribute("closes-at") !== null &&
