@@ -624,7 +624,12 @@ export default async (app: Courselore): Promise<void> => {
                       value="${"TODO: csrf token here"}"
                     />
                     <input type="hidden" name="" value="${index.toString()}" />
-                    $${elementPoll.getAttribute("closed") === "true"
+                    $${elementPoll.getAttribute("closed") === "true" ||
+                    (elementPoll.getAttribute("closes-at") !== null &&
+                      new Date().getTime() >=
+                        new Date(
+                          elementPoll.getAttribute("closes-at")!
+                        ).getTime())
                       ? html`<i class="bi bi-caret-right"></i>`
                       : html`<i class="bi bi-caret-right-fill"></i>`}
                     <div
@@ -634,7 +639,12 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <button
                         class="button button--tight button--tight--inline button--transparent strong"
-                        $${elementPoll.getAttribute("closed") === "true"
+                        $${elementPoll.getAttribute("closed") === "true" ||
+                        (elementPoll.getAttribute("closes-at") !== null &&
+                          new Date().getTime() >=
+                            new Date(
+                              elementPoll.getAttribute("closes-at")!
+                            ).getTime())
                           ? html`disabled`
                           : html``}
                       >
@@ -726,7 +736,14 @@ export default async (app: Courselore): Promise<void> => {
                   value="true"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   onload="${javascript`
-                    if (${elementPoll.getAttribute("closed") === "true"}) {
+                    if (${
+                      elementPoll.getAttribute("closed") === "true" ||
+                      (elementPoll.getAttribute("closes-at") !== null &&
+                        new Date().getTime() >=
+                          new Date(
+                            elementPoll.getAttribute("closes-at")!
+                          ).getTime())
+                    }) {
                       this.checked = true;
                       this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
                       this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
@@ -767,7 +784,12 @@ export default async (app: Courselore): Promise<void> => {
                           type="checkbox"
                           name="pollClosed"
                           value="true"
-                          $${elementPoll.getAttribute("closed") === "true"
+                          $${elementPoll.getAttribute("closed") === "true" ||
+                          (elementPoll.getAttribute("closes-at") !== null &&
+                            new Date().getTime() >=
+                              new Date(
+                                elementPoll.getAttribute("closes-at")!
+                              ).getTime())
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -784,7 +806,10 @@ export default async (app: Courselore): Promise<void> => {
                     </form>
                   `
                 : html``}
-              $${elementPoll.getAttribute("closed") === "true"
+              $${elementPoll.getAttribute("closed") === "true" ||
+              (elementPoll.getAttribute("closes-at") !== null &&
+                new Date().getTime() >=
+                  new Date(elementPoll.getAttribute("closes-at")!).getTime())
                 ? html`<label class="secondary"> Poll is closed </label>`
                 : elementPoll.getAttribute("closes-at") !== null
                 ? html`

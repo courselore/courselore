@@ -424,6 +424,32 @@ Message non-existent permanent link turned reference: <https://${
 
 ---
 
+# Polls
+
+What is your favorite fruit?
+
+<courselore-poll options='single' closed='false'>
+
+<courselore-poll-option votes='["1", "1"]'>
+Apple
+</courselore-poll-option>
+
+<courselore-poll-option votes='["1", "1", "1", "1", "1"]'>
+Banana
+</courselore-poll-option>
+
+<courselore-poll-option votes='["1", "1", "1"]'>
+Kiwi
+</courselore-poll-option>
+
+<courselore-poll-option votes='["1"]'>
+Durian
+</courselore-poll-option>
+
+</courselore-poll>
+
+---
+
 # \`#anchors\`
 
 <p id="destination">Destination</p>
