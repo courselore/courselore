@@ -1146,7 +1146,7 @@ export default async (app: Courselore): Promise<void> => {
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll options='single' closed='false' closes-at='${new Date(
                       new Date().getTime() + 7 * 24 * 60 * 60 * 1000
-                    ).toISOString()}'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
+                    ).toDateString()}'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
                     textarea.focus();
                   };
 
