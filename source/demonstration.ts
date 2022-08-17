@@ -50,7 +50,7 @@ export default (app: Courselore): void => {
         isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
         isEmailNotificationsForMessagesInConversationsYouStarted &&
         Math.random() < 0.3
-          ? lodash.sample(userEmailNotificationsForAllMessageses)
+          ? lodash.sample(userEmailNotificationsForAllMessageses)!
           : "none";
       const hour = new Date();
       hour.setUTCMinutes(0, 0, 0);
@@ -104,7 +104,7 @@ export default (app: Courselore): void => {
                   }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                 : null
             },
-            ${lodash.sample(userAvatarlessBackgroundColors)},
+            ${lodash.sample(userAvatarlessBackgroundColors)!},
             ${biographySource},
             ${
               app.locals.partials.contentPreprocessed(biographySource)
@@ -1135,9 +1135,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         ]);
         const thereExistsMultipleStudentParticipants =
           lodash.intersection(participantEnrollments, students).length > 1;
-        const conversationAuthorEnrollment = lodash.sample(
-          participantEnrollments
-        )!;
+        const conversationAuthorEnrollment =
+          Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
         const type = isExampleOfAllFeaturesInRichTextMessages
           ? conversationTypes[1]
           : conversationTypes[
@@ -1198,10 +1197,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ${messageCreatedAts[messageCreatedAts.length - 1]},
               ${course.id},
               ${String(conversationReference)},
-              ${conversationAuthorEnrollment.id},
+              ${conversationAuthorEnrollment?.id},
               ${participants},
               ${
-                conversationAuthorEnrollment.courseRole === "student" &&
+                conversationAuthorEnrollment?.courseRole === "student" &&
                 thereExistsMultipleStudentParticipants &&
                 Math.random() < 0.5
                   ? new Date().toISOString()
