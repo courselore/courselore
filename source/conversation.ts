@@ -2452,27 +2452,22 @@ export default (app: Courselore): void => {
         FROM "conversations"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        $${
-          res.locals.enrollment.courseRole !== "staff"
-            ? sql`
-                LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
-                                        "messages"."authorEnrollment" = ${res.locals.enrollment.id}
-              `
-            : sql``
-        }
         WHERE "conversations"."course" = ${res.locals.course.id} AND
-              "conversations"."reference" = ${conversationReference}
-              $${
-                res.locals.enrollment.courseRole !== "staff"
-                  ? sql`
-                      AND (
-                        "conversations"."staffOnlyAt" IS NULL OR
-                        "messages"."id" IS NOT NULL
-                      )
-                    `
-                  : sql``
-              }
-        GROUP BY "conversations"."id"
+              "conversations"."reference" = ${conversationReference} AND (
+                "conversations"."participants" = 'everyone' OR (
+                  "conversations"."participants" = 'staff' AND
+                  $${
+                    res.locals.enrollment.courseRole === "staff"
+                      ? sql`TRUE`
+                      : sql`FALSE`
+                  }
+                ) OR (
+                  SELECT TRUE
+                  FROM "conversationCustomParticipants"
+                  WHERE "conversation" = "conversations"."id" AND 
+                        "enrollments" = ${res.locals.enrollment.id}
+                )
+              )
       `
     );
     if (conversationRow === undefined) return undefined;
