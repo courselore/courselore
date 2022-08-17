@@ -113,7 +113,9 @@ export default (app: Courselore): void => {
             ${
               app.locals.options.host === app.locals.options.tryHost
                 ? "none"
-                : userIndex === 0 || Math.random() < 0.1
+                : userIndex === 0
+                ? "administrator"
+                : Math.random() < 0.1
                 ? "administrator"
                 : Math.random() < 0.3
                 ? "staff"
@@ -1107,17 +1109,17 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             ? []
             : participants === "staff"
             ? [
-                ...lodash.sampleSize(students, lodash.random(0, 10)),
                 ...(enrollment.courseRole === "staff"
                   ? []
                   : Math.random() < 0.5
                   ? [enrollment]
                   : []),
+                ...lodash.sampleSize(students, lodash.random(0, 10)),
               ]
             : participants === "custom"
             ? [
-                ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
                 ...(Math.random() < 0.5 ? [enrollment] : []),
+                ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
               ]
             : []
         );
