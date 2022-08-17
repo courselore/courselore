@@ -621,7 +621,7 @@ export default async (app: Courselore): Promise<void> => {
                     <input
                       type="hidden"
                       name="_csrf"
-                      value="${req.csrfToken()}"
+                      value="${"TODO: csrf token here"}"
                     />
                     <input type="hidden" name="" value="${index.toString()}" />
                     $${elementPoll.getAttribute("closed") === "true"
@@ -758,7 +758,7 @@ export default async (app: Courselore): Promise<void> => {
                       <input
                         type="hidden"
                         name="_csrf"
-                        value="${req.csrfToken()}"
+                        value="${"TODO: csrf token here"}"
                       />
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -2951,6 +2951,22 @@ ${contentSource}</textarea
       );
     }
   );
+
+  // app.patch<
+  //   {
+  //     courseReference: string;
+  //     conversationReference: string;
+  //     messageReference: string;
+  //   },
+  //   any,
+  //   {},
+  //   {},
+  //   MessageExistsMiddlewareLocals
+  // >(
+  //   "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/close-poll",
+  //   ...messageExistsMiddleware,
+  //   (req, res, next) => {}
+  // );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/attachments",
