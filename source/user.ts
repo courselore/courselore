@@ -13,7 +13,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-  Enrollment,
+  MaybeEnrollment,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
 
@@ -83,7 +83,7 @@ export type UserPartial = ({
     any,
     BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
-  enrollment?: Enrollment;
+  enrollment?: MaybeEnrollment;
   user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";
   avatar?: boolean;

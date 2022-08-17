@@ -14,6 +14,7 @@ import {
   LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   Enrollment,
+  MaybeEnrollment,
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -123,7 +124,7 @@ export type GetConversationHelper = ({
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollment: Enrollment;
+      authorEnrollment: MaybeEnrollment;
       participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
@@ -132,6 +133,7 @@ export type GetConversationHelper = ({
       title: string;
       titleSearch: string;
       nextMessageReference: number;
+      customParticipants: Enrollment[];
       taggings: {
         id: number;
         tag: {
@@ -145,7 +147,7 @@ export type GetConversationHelper = ({
       readingsCount: number;
       endorsements: {
         id: number;
-        enrollment: Enrollment;
+        enrollment: MaybeEnrollment;
       }[];
     }
   | undefined;
@@ -2518,6 +2520,59 @@ export default (app: Courselore): void => {
       nextMessageReference: conversationRow.nextMessageReference,
     };
 
+    const customParticipants = app.locals.database
+      .all<{
+        enrollmentId: number | null;
+        userId: number | null;
+        userLastSeenOnlineAt: string | null;
+        userReference: string;
+        userEmail: string | null;
+        userName: string | null;
+        userAvatar: string | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userBiographySource: string | null;
+        userBiographyPreprocessed: HTML | null;
+        enrollmentReference: string | null;
+        enrollmentCourseRole: CourseRole | null;
+      }>(
+        sql`
+        SELECT "enrollments"."id" AS "enrollmentId",
+               "users"."id" AS "userId",
+               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+               "users"."reference" AS "userReference",
+               "users"."email" AS "userEmail",
+               "users"."name" AS "userName",
+               "users"."avatar" AS "userAvatar",
+               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+               "users"."biographySource" AS "userBiographySource",
+               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+               "enrollments"."reference" AS "enrollmentReference",
+               "enrollments"."courseRole" AS "enrollmentCourseRole"
+        FROM "conversationCustomParticipants"
+        JOIN "enrollments" ON "conversationCustomParticipants"."enrollment" = "enrollments"."id"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "conversation" = ${conversation.id}
+        ORDER BY "conversationCustomParticipants"."id" ASC
+      `
+      )
+      .map((customParticipant) => ({
+        id: customParticipant.enrollmentId,
+        user: {
+          id: customParticipant.userId,
+          lastSeenOnlineAt: customParticipant.userLastSeenOnlineAt,
+          reference: customParticipant.userReference,
+          email: customParticipant.userEmail,
+          name: customParticipant.userName,
+          avatar: customParticipant.userAvatar,
+          avatarlessBackgroundColor:
+            customParticipant.userAvatarlessBackgroundColor,
+          biographySource: customParticipant.userBiographySource,
+          biographyPreprocessed: customParticipant.userBiographyPreprocessed,
+        },
+        reference: customParticipant.enrollmentReference,
+        courseRole: customParticipant.enrollmentCourseRole,
+      }));
+
     const taggings = app.locals.database
       .all<{
         id: number;
@@ -2645,6 +2700,7 @@ export default (app: Courselore): void => {
 
     return {
       ...conversation,
+      customParticipants,
       taggings,
       messagesCount,
       readingsCount,

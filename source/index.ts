@@ -71,6 +71,7 @@ import course, {
 } from "./course.js";
 export {
   Enrollment,
+  MaybeEnrollment,
   CourseRole,
   courseRoles,
   EnrollmentAccentColor,

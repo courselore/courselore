@@ -19,14 +19,14 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.js";
 
-export type Enrollment =
-  | {
-      id: number;
-      user: User;
-      reference: string;
-      courseRole: CourseRole;
-    }
-  | "no-longer-enrolled";
+export interface Enrollment {
+  id: number;
+  user: User;
+  reference: string;
+  courseRole: CourseRole;
+}
+
+export type MaybeEnrollment = Enrollment | "no-longer-enrolled";
 
 export type CourseRole = typeof courseRoles[number];
 export const courseRoles = ["student", "staff"] as const;
