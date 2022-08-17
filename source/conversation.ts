@@ -2522,18 +2522,18 @@ export default (app: Courselore): void => {
 
     const customParticipants = app.locals.database
       .all<{
-        enrollmentId: number | null;
-        userId: number | null;
-        userLastSeenOnlineAt: string | null;
+        enrollmentId: number;
+        userId: number;
+        userLastSeenOnlineAt: string;
         userReference: string;
-        userEmail: string | null;
-        userName: string | null;
+        userEmail: string;
+        userName: string;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
-        enrollmentReference: string | null;
-        enrollmentCourseRole: CourseRole | null;
+        enrollmentReference: string;
+        enrollmentCourseRole: CourseRole;
       }>(
         sql`
         SELECT "enrollments"."id" AS "enrollmentId",
