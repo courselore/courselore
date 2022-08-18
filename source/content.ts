@@ -621,7 +621,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "reference" = ${elementPoll.getAttribute("reference")}
           `
         )!;
-
+        // TODO: Valid SQL?
         const messagePollsOptions = app.locals.database.all<{
           id: number;
           reference: string;
@@ -630,9 +630,13 @@ export default async (app: Courselore): Promise<void> => {
           contentSourcePreprocessed: string;
         }>(
           sql`
-            SELECT *
+            SELECT "id",
+                   "reference",
+                   "messagePoll",
+                   "contentSource",
+                   "contentSourcePreprocessed"
             FROM "messagePollsOptions"
-            WHERE "messagePoll" = ${messagePoll.reference}
+            WHERE "messagePoll" = ${messagePoll.id}
           `
         );
 
@@ -721,7 +725,7 @@ export default async (app: Courselore): Promise<void> => {
                             sql`
                               SELECT COUNT(*) AS "count"
                               FROM "messagePollsVotes"
-                              WHERE "messagePollOption" = ${messagePollsOption.reference}
+                              WHERE "messagePollOption" = ${messagePollsOption.id}
                             `
                           )!.count /
                             messagePollsOptions
@@ -733,7 +737,7 @@ export default async (app: Courselore): Promise<void> => {
                                     sql`
                                       SELECT COUNT(*) AS "count"
                                       FROM "messagePollsVotes"
-                                      WHERE "messagePollOption" = ${option.reference}
+                                      WHERE "messagePollOption" = ${option.id}
                                     `
                                   )!.count
                               )
@@ -765,7 +769,7 @@ export default async (app: Courselore): Promise<void> => {
                             sql`
                             SELECT COUNT(*) AS "count"
                             FROM "messagePollsVotes"
-                            WHERE "messagePollOption" = ${messagePollsOption.reference}
+                            WHERE "messagePollOption" = ${messagePollsOption.id}
                           `
                           )!
                           .count.toString()}

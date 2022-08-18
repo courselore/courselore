@@ -873,17 +873,81 @@ export default (app: Courselore): void => {
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (
-        /*
-          Poll is closed
-          Single/multiple vote
-          Already voted on this option
-          Integrity of the poll…
-        */
-        false
+        typeof req.params.pollReference !== "string" ||
+        typeof req.params.optionReference !== "string"
       )
         return next("validation");
 
-      // TODO: Vote
+      const messagePoll = app.locals.database.get<{
+        id: number;
+        reference: string;
+        maxOptions: string;
+        closesAt: string;
+        createdAt: string;
+        course: number;
+      }>(
+        sql`
+          SELECT "id",
+                  "reference",
+                  "maxOptions",
+                  "closesAt",
+                  "createdAt",
+                  "course"
+          FROM "messagePolls"
+          WHERE "reference" = ${req.params.pollReference}
+        `
+      );
+
+      if (
+        messagePoll === undefined ||
+        (messagePoll.closesAt !== null &&
+          new Date().getTime() >= new Date(messagePoll.closesAt).getTime()) ||
+        messagePoll.course !== res.locals.course.id
+      )
+        return next("validation");
+
+      const messagePollOption = app.locals.database.get<{
+        id: number;
+        reference: string;
+        messagePoll: number;
+        contentSource: string;
+        contentSourcePreprocessed: string;
+      }>(
+        sql`
+          SELECT "id",
+                 "reference",
+                 "messagePoll",
+                 "contentSource",
+                 "contentSourcePreprocessed"
+          FROM "messagePollsOptions"
+          WHERE "messagePoll" = ${messagePoll.reference}
+        `
+      );
+
+      if (messagePollOption === undefined) return next("validation");
+
+      const messagePollVote = app.locals.database.get<{
+        id: number;
+        messagePollOption: number;
+        enrollment: number;
+      }>(
+        sql`
+          SELECT "id",
+                 "messagePollOption",
+                 "enrollment"
+          FROM "messagePollsVotes"
+          WHERE "messagePollOption" = ${messagePollOption.id} AND "enrollment" = ${res.locals.enrollment.id}
+        `
+      );
+
+      /*
+        TODO:
+          Single/multiple vote
+          Already voted on this option (if already voted, undo vote)
+      */
+      if (false) return next("validation");
+
+      // TODO: Cast vote
 
       res.redirect(
         303,
