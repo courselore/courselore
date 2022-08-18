@@ -1178,6 +1178,32 @@ export default async (app: Courselore): Promise<void> => {
     sql`
       ALTER TABLE "courses" ADD COLUMN "examStart" TEXT NULL;
       ALTER TABLE "courses" ADD COLUMN "examEnd" TEXT NULL;
+    `,
+
+    sql`
+      CREATE TABLE "messagePolls" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "reference" TEXT NOT NULL,
+        "maxOptions" TEXT NOT NULL,
+        "closesAt" TEXT NULL,
+        "createdAt" TEXT NULL,
+        "course" INTEGER NOT NULL REFERENCES "course" ON DELETE CASCADE
+      );
+      
+      CREATE TABLE "messagePollsOptions" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "reference" TEXT NOT NULL,
+        "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
+        "contentSource" TEXT NOT NULL,
+        "contentSourcePreprocessed" TEXT NOT NULL
+      );
+      
+      CREATE TABLE "messagePollsVotes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollsOptions" ON DELETE CASCADE,
+        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        UNIQUE ("messagePollOption", "enrollment")
+      );
     `
   );
   app.once("close", () => {

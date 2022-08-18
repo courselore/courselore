@@ -853,6 +853,55 @@ export default (app: Courselore): void => {
     }
   );
 
+  app.post<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+      pollReference: string;
+      optionReference: string;
+    },
+    any,
+    {},
+    {
+      conversations?: object;
+      messages?: object;
+    },
+    MessageExistsMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference/options/:optionReference",
+    ...messageExistsMiddleware,
+    (req, res, next) => {
+      if (
+        /*
+          Poll is closed
+          Single/multiple vote
+          Already voted on this option
+          Integrity of the poll…
+        */
+        false
+      )
+        return next("validation");
+
+      // TODO: Vote
+
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            conversations: req.query.conversations,
+            messages: req.query.messages,
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
+
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
+    }
+  );
+
   app.delete<
     {
       courseReference: string;
@@ -1353,7 +1402,7 @@ export default (app: Courselore): void => {
           nextConversationReference: messageRow.courseNextConversationReference,
         };
         const contentProcessed = app.locals.partials.content({
-          req: { query: {} } as Parameters<
+          req: { query: {}, csrfToken: () => "" } as Parameters<
             typeof app.locals.partials.content
           >[0]["req"],
           res: {

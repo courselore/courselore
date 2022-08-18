@@ -1733,6 +1733,9 @@ export default (app: Courselore): void => {
           303,
           `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/exam-period`
         );
+
+        app.locals.helpers.liveUpdatesDispatch({ req, res });
+
         return;
       }
 
@@ -1771,6 +1774,8 @@ export default (app: Courselore): void => {
         303,
         `https://${app.locals.options.host}/courses/${res.locals.course.reference}/settings/exam-period`
       );
+
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 

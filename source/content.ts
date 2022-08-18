@@ -58,11 +58,15 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   id?: string;
   contentPreprocessed: HTML;
@@ -595,9 +599,47 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
 
-      for (const [elementPoll, pollIndex] of [
-        ...contentElement.querySelectorAll("courselore-poll"),
-      ].map((element, index) => [element, index] as const)) {
+      for (const elementPoll of contentElement.querySelectorAll(
+        "courselore-poll"
+      )) {
+        const messagePoll = app.locals.database.get<{
+          id: number;
+          reference: string;
+          maxOptions: string;
+          closesAt: string;
+          createdAt: string;
+          course: number;
+        }>(
+          sql`
+            SELECT "id",
+                   "reference",
+                   "maxOptions",
+                   "closesAt",
+                   "createdAt",
+                   "course"
+            FROM "messagePolls"
+            WHERE "reference" = ${elementPoll.getAttribute("reference")}
+          `
+        )!;
+
+        const messagePollsOptions = app.locals.database.all<{
+          id: number;
+          reference: string;
+          messagePoll: number;
+          contentSource: string;
+          contentSourcePreprocessed: string;
+        }>(
+          sql`
+            SELECT *
+            FROM "messagePollsOptions"
+            WHERE "messagePoll" = ${messagePoll.reference}
+          `
+        );
+
+        const pollClosed =
+          messagePoll.closesAt !== null &&
+          new Date().getTime() >= new Date(messagePoll.closesAt).getTime();
+
         elementPoll.outerHTML = html`
           <div
             key="poll"
@@ -611,19 +653,20 @@ export default async (app: Courselore): Promise<void> => {
             `)}"
           >
             <div key="vote">
-              $${[
-                ...elementPoll.querySelectorAll("courselore-poll-option"),
-              ].map(
-                (elementOption, optionIndex) => html`
+              $${messagePollsOptions.map(
+                (messagePollsOption) => html`
                   <form
-                    $${message !== undefined && res.locals.course !== undefined
+                    $${res.locals.course !== undefined &&
+                    res.locals.conversation !== undefined &&
+                    message !== undefined
                       ? html`
                           method="POST"
                           action="https://${app.locals.options
                             .host}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
                             .reference}/messages/${message.reference}/polls/${String(
-                            pollIndex
-                          )}/options/${String(optionIndex)}"
+                            messagePoll.reference
+                          )}/options/${messagePollsOption.reference}"
                         `
                       : html``}
                     css="${res.locals.css(css`
@@ -634,14 +677,9 @@ export default async (app: Courselore): Promise<void> => {
                     <input
                       type="hidden"
                       name="_csrf"
-                      value="${"TODO: csrf token here"}"
+                      value="${req.csrfToken()}"
                     />
-                    $${elementPoll.getAttribute("closed") === "true" ||
-                    (elementPoll.getAttribute("closes-at") !== null &&
-                      new Date().getTime() >=
-                        new Date(
-                          elementPoll.getAttribute("closes-at")!
-                        ).getTime())
+                    $${pollClosed
                       ? html`<i class="bi bi-caret-right"></i>`
                       : html`<i class="bi bi-caret-right-fill"></i>`}
                     <div
@@ -652,16 +690,9 @@ export default async (app: Courselore): Promise<void> => {
                       <button
                         class="button button--tight button--tight--inline button--transparent strong"
                         $${message === undefined ? html`disabled` : html``}
-                        $${elementPoll.getAttribute("closed") === "true" ||
-                        (elementPoll.getAttribute("closes-at") !== null &&
-                          new Date().getTime() >=
-                            new Date(
-                              elementPoll.getAttribute("closes-at")!
-                            ).getTime())
-                          ? html`disabled`
-                          : html``}
+                        $${pollClosed ? html`disabled` : html``}
                       >
-                        ${elementOption.innerHTML}
+                        ${messagePollsOption.contentSourcePreprocessed}
                       </button>
                     </div>
                   </form>
@@ -670,10 +701,8 @@ export default async (app: Courselore): Promise<void> => {
             </div>
 
             <div key="results" hidden>
-              $${[
-                ...elementPoll.querySelectorAll("courselore-poll-option"),
-              ].map(
-                (elementOption) => html`
+              $${messagePollsOptions.map(
+                (messagePollsOption) => html`
                   <div
                     css="${res.locals.css(css`
                       display: flex;
@@ -686,19 +715,27 @@ export default async (app: Courselore): Promise<void> => {
                       css="${res.locals.css(css`
                         width: ${(
                           100 *
-                          (JSON.parse(
-                            elementOption.getAttribute("votes") ?? "[]"
-                          ).length /
-                            [
-                              ...elementPoll.querySelectorAll(
-                                "courselore-poll-option"
-                              ),
-                            ]
+                          (app.locals.database.get<{
+                            count: number;
+                          }>(
+                            sql`
+                              SELECT COUNT(*) AS "count"
+                              FROM "messagePollsVotes"
+                              WHERE "messagePollOption" = ${messagePollsOption.reference}
+                            `
+                          )!.count /
+                            messagePollsOptions
                               .map(
-                                (element) =>
-                                  JSON.parse(
-                                    element.getAttribute("votes") ?? "[]"
-                                  ).length
+                                (option) =>
+                                  app.locals.database.get<{
+                                    count: number;
+                                  }>(
+                                    sql`
+                                      SELECT COUNT(*) AS "count"
+                                      FROM "messagePollsVotes"
+                                      WHERE "messagePollOption" = ${option.reference}
+                                    `
+                                  )!.count
                               )
                               .reduce(
                                 (partialSum, value) => partialSum + value,
@@ -719,10 +756,19 @@ export default async (app: Courselore): Promise<void> => {
                           padding-left: var(--space--1);
                         `)}"
                       >
-                        ${elementOption.innerHTML} &nbsp-&nbsp
-                        ${JSON.parse(
-                          elementOption.getAttribute("votes") ?? "[]"
-                        ).length}
+                        ${messagePollsOption.contentSourcePreprocessed}
+                        &nbsp-&nbsp
+                        ${app.locals.database
+                          .get<{
+                            count: number;
+                          }>(
+                            sql`
+                            SELECT COUNT(*) AS "count"
+                            FROM "messagePollsVotes"
+                            WHERE "messagePollOption" = ${messagePollsOption.reference}
+                          `
+                          )!
+                          .count.toString()}
                         votes
                       </label>
                     </div>
@@ -749,14 +795,7 @@ export default async (app: Courselore): Promise<void> => {
                   value="true"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   onload="${javascript`
-                    if (${
-                      elementPoll.getAttribute("closed") === "true" ||
-                      (elementPoll.getAttribute("closes-at") !== null &&
-                        new Date().getTime() >=
-                          new Date(
-                            elementPoll.getAttribute("closes-at")!
-                          ).getTime())
-                    }) {
+                    if (${pollClosed}) {
                       this.checked = true;
                       this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
                       this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
@@ -782,8 +821,9 @@ export default async (app: Courselore): Promise<void> => {
                 </span>
               </label>
 
-              $${message !== undefined &&
-              res.locals.course !== undefined &&
+              $${res.locals.course !== undefined &&
+              res.locals.conversation !== undefined &&
+              message !== undefined &&
               app.locals.helpers.mayEditMessage({
                 req: req as any /* TODO */,
                 res: res as any /* TODO */,
@@ -793,15 +833,14 @@ export default async (app: Courselore): Promise<void> => {
                     <form
                       method="PATCH"
                       action="https://${app.locals.options.host}/courses/${res
-                        .locals.course
-                        .reference}/messages/${message.reference}/polls/${String(
-                        pollIndex
-                      )}"
+                        .locals.course.reference}/conversations/${res.locals
+                        .conversation
+                        .reference}/messages/${message.reference}/polls/${messagePoll.reference}"
                     >
                       <input
                         type="hidden"
                         name="_csrf"
-                        value="${"TODO: csrf token here"}"
+                        value="${req.csrfToken()}"
                       />
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -810,14 +849,7 @@ export default async (app: Courselore): Promise<void> => {
                           type="checkbox"
                           name="closePoll"
                           value="true"
-                          $${elementPoll.getAttribute("closed") === "true" ||
-                          (elementPoll.getAttribute("closes-at") !== null &&
-                            new Date().getTime() >=
-                              new Date(
-                                elementPoll.getAttribute("closes-at")!
-                              ).getTime())
-                            ? html`checked`
-                            : html``}
+                          $${pollClosed ? html`checked` : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                         />
                         <span class="text--rose">
@@ -832,18 +864,15 @@ export default async (app: Courselore): Promise<void> => {
                     </form>
                   `
                 : html``}
-              $${elementPoll.getAttribute("closed") === "true" ||
-              (elementPoll.getAttribute("closes-at") !== null &&
-                new Date().getTime() >=
-                  new Date(elementPoll.getAttribute("closes-at")!).getTime())
+              $${pollClosed
                 ? html`<label class="secondary"> Poll is closed </label>`
-                : elementPoll.getAttribute("closes-at") !== null
+                : messagePoll.closesAt !== null
                 ? html`
                     <label class="secondary">
                       Poll closes
                       <time
                         datetime="${new Date(
-                          elementPoll.getAttribute("closes-at")!
+                          messagePoll.closesAt
                         ).toISOString()}"
                         onload="${javascript`
                           leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -1170,9 +1199,7 @@ export default async (app: Courselore): Promise<void> => {
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
             
                   this.onclick = () => {
-                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll options='single' closed='false' closes-at='${new Date(
-                      new Date().getTime() + 7 * 24 * 60 * 60 * 1000
-                    ).toDateString()}'>\\n\\n<courselore-poll-option votes='[]'>\\nOption 1\\n</courselore-poll-option>\\n\\n<courselore-poll-option votes='[]'>\\nOption 2\\n</courselore-poll-option>\\n\\n", "</courselore-poll>\\n\\n");
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll reference='${"1234567890"}'></courselore-poll>", "\\n\\n");
                     textarea.focus();
                   };
 
@@ -3002,22 +3029,6 @@ ${contentSource}</textarea
       );
     }
   );
-
-  // app.patch<
-  //   {
-  //     courseReference: string;
-  //     conversationReference: string;
-  //     messageReference: string;
-  //   },
-  //   any,
-  //   {},
-  //   {},
-  //   MessageExistsMiddlewareLocals
-  // >(
-  //   "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/close-poll",
-  //   ...messageExistsMiddleware,
-  //   (req, res, next) => {}
-  // );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/attachments",
