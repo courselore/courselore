@@ -50,6 +50,7 @@ export type ContentPartial = ({
   res,
   id,
   contentPreprocessed,
+  message,
   search,
 }: {
   req: express.Request<
@@ -65,6 +66,9 @@ export type ContentPartial = ({
   >;
   id?: string;
   contentPreprocessed: HTML;
+  message?: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
   search?: string | string[] | undefined;
 }) => {
   contentProcessed: HTML;
@@ -171,6 +175,7 @@ export default async (app: Courselore): Promise<void> => {
     res,
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
+    message = undefined,
     search = undefined,
   }) => {
     const contentElement = JSDOM.fragment(html`
@@ -590,9 +595,9 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
 
-      for (const elementPoll of contentElement.querySelectorAll(
-        "courselore-poll"
-      )) {
+      for (const [elementPoll, pollIndex] of [
+        ...contentElement.querySelectorAll("courselore-poll"),
+      ].map((element, index) => [element, index] as const)) {
         elementPoll.outerHTML = html`
           <div
             key="poll"
@@ -609,10 +614,18 @@ export default async (app: Courselore): Promise<void> => {
               $${[
                 ...elementPoll.querySelectorAll("courselore-poll-option"),
               ].map(
-                (elementOption, index) => html`
+                (elementOption, optionIndex) => html`
                   <form
-                    method=""
-                    action=""
+                    $${message !== undefined && res.locals.course !== undefined
+                      ? html`
+                          method="POST"
+                          action="https://${app.locals.options
+                            .host}/courses/${res.locals.course
+                            .reference}/messages/${message.reference}/polls/${String(
+                            pollIndex
+                          )}/options/${String(optionIndex)}"
+                        `
+                      : html``}
                     css="${res.locals.css(css`
                       display: flex;
                       gap: var(--space--2);
@@ -623,7 +636,6 @@ export default async (app: Courselore): Promise<void> => {
                       name="_csrf"
                       value="${"TODO: csrf token here"}"
                     />
-                    <input type="hidden" name="" value="${index.toString()}" />
                     $${elementPoll.getAttribute("closed") === "true" ||
                     (elementPoll.getAttribute("closes-at") !== null &&
                       new Date().getTime() >=
@@ -639,6 +651,7 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <button
                         class="button button--tight button--tight--inline button--transparent strong"
+                        $${message === undefined ? html`disabled` : html``}
                         $${elementPoll.getAttribute("closed") === "true" ||
                         (elementPoll.getAttribute("closes-at") !== null &&
                           new Date().getTime() >=
@@ -769,9 +782,22 @@ export default async (app: Courselore): Promise<void> => {
                 </span>
               </label>
 
-              $${res.locals.enrollment?.courseRole === "staff"
+              $${message !== undefined &&
+              res.locals.course !== undefined &&
+              app.locals.helpers.mayEditMessage({
+                req: req as any /* TODO */,
+                res: res as any /* TODO */,
+                message,
+              })
                 ? html`
-                    <form method="" action="">
+                    <form
+                      method="PATCH"
+                      action="https://${app.locals.options.host}/courses/${res
+                        .locals.course
+                        .reference}/messages/${message.reference}/polls/${String(
+                        pollIndex
+                      )}"
+                    >
                       <input
                         type="hidden"
                         name="_csrf"
