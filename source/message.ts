@@ -992,6 +992,26 @@ export default (app: Courselore): void => {
     }
   );
 
+  app.patch<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+      pollReference: string;
+    },
+    any,
+    {},
+    {
+      conversations?: object;
+      messages?: object;
+    },
+    MessageExistsMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference",
+    ...messageExistsMiddleware,
+    (req, res, next) => {}
+  );
+
   app.delete<
     {
       courseReference: string;

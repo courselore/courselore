@@ -3255,7 +3255,7 @@ ${contentSource}</textarea
   // app.post<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>(
   //   "/content-editor/poll",
   //   ...app.locals.middlewares.isEnrolledInCourse,
-  //   (req, res) => {}
+  //   (req, res, next) => {}
   // );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
