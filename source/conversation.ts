@@ -3811,23 +3811,28 @@ export default (app: Courselore): void => {
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
           ((req.body.type !== "chat" && req.body.tagsReferences.length === 0) ||
+            req.body.tagsReferences.some(
+              (tagReference) => typeof tagReference !== "string"
+            ) ||
             req.body.tagsReferences.length !==
               new Set(req.body.tagsReferences).size ||
-            req.body.tagsReferences.some(
-              (tagReference) =>
-                typeof tagReference !== "string" ||
-                !res.locals.tags.some(
-                  (existingTag) => tagReference === existingTag.reference
-                )
-            ))) ||
+            req.body.tagsReferences.length !==
+              lodash.intersection(
+                req.body.tagsReferences,
+                res.locals.tags.map((tag) => tag.reference)
+              ).length)) ||
         !["everyone", "staff", undefined].includes(req.body.participants) ||
         (req.body.participants !== "everyone" &&
           (!Array.isArray(req.body.customParticipantsReferences) ||
             (req.body.customParticipantsReferences.length === 0 &&
               req.body.participants === undefined) ||
             (req.body.customParticipantsReferences.length !== 0 &&
-              (req.body.customParticipantsReferences.length !==
-                new Set(req.body.customParticipantsReferences).size ||
+              (req.body.customParticipantsReferences.some(
+                (customParticipantReference) =>
+                  typeof customParticipantReference !== "string"
+              ) ||
+                req.body.customParticipantsReferences.length !==
+                  new Set(req.body.customParticipantsReferences).size ||
                 req.body.customParticipantsReferences.length !==
                   app.locals.database.get<{ count: number }>(
                     sql`
