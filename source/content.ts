@@ -602,6 +602,7 @@ export default async (app: Courselore): Promise<void> => {
       for (const elementPoll of contentElement.querySelectorAll(
         "courselore-poll"
       )) {
+        // TODO: Check that these database queries are successful?
         const messagePoll = app.locals.database.get<{
           id: number;
           reference: string;
@@ -621,7 +622,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "reference" = ${elementPoll.getAttribute("reference")}
           `
         )!;
-        // TODO: Valid SQL?
+
         const messagePollsOptions = app.locals.database.all<{
           id: number;
           reference: string;
@@ -1196,6 +1197,57 @@ export default async (app: Courselore): Promise<void> => {
                             ><i class="bi bi-command"></i>P</span
                           >)
                         </span>
+                      `
+                    )},
+                  });
+
+                  (this.dropdown ??= tippy(this)).setProps({
+                    trigger: "click",
+                    interactive: true,
+                    content: ${res.locals.html(
+                      html`
+                        <div
+                          css="${res.locals.css(css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                            padding: var(--space--2);
+                          `)}"
+                        >
+                          <div>
+                            <p class="label--text">Closes at</p>
+                            <input type="text" class="input--text" />
+                          </div>
+                          <hr class="separator" />
+                          <div
+                            key="options"
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `)}"
+                          >
+                            <div>
+                              <p class="label--text">Option 1</p>
+                              <input type="text" class="input--text" />
+                            </div>
+                            <div>
+                              <p class="label--text">Option 2</p>
+                              <input type="text" class="input--text" />
+                            </div>
+                          </div>
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-plus-circle"></i>
+                            New Option
+                          </label>
+                          <button
+                            class="button button--tight button--tight--inline button--blue"
+                          >
+                            Add Poll
+                          </button>
+                        </div>
                       `
                     )},
                   });

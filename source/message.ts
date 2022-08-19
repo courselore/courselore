@@ -920,7 +920,7 @@ export default (app: Courselore): void => {
                  "contentSource",
                  "contentSourcePreprocessed"
           FROM "messagePollsOptions"
-          WHERE "messagePoll" = ${messagePoll.reference}
+          WHERE "messagePoll" = ${messagePoll.id} AND "reference" = ${req.params.optionReference}
         `
       );
 
@@ -940,14 +940,40 @@ export default (app: Courselore): void => {
         `
       );
 
-      /*
-        TODO:
-          Single/multiple vote
-          Already voted on this option (if already voted, undo vote)
-      */
-      if (false) return next("validation");
+      const pollVotes = app.locals.database.get<{ count: number }>(
+        sql`
+          SELECT COUNT(*) AS "count"
+          FROM "messagePollsVotes"
+          JOIN "messagePollOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollOptions"."id"
+          WHERE "messagePollOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment.id}
+        `
+      )!.count;
 
-      // TODO: Cast vote
+      if (
+        messagePoll.maxOptions === "single" &&
+        pollVotes === 1 &&
+        messagePollVote === undefined
+      )
+        return next("validation");
+
+      if (messagePollVote === undefined) {
+        app.locals.database.run(
+          sql`
+            INSERT INTO "messagePollsVotes" ("messagePollOption", "enrollment")
+            VALUES (
+              ${messagePollOption.id},
+              ${res.locals.enrollment.id}
+            )
+          `
+        );
+      } else {
+        app.locals.database.run(
+          sql`
+            DELETE FROM "messagePollsVotes" 
+            WHERE "messagePollOption" = ${messagePollOption.id} AND "enrollment" = ${res.locals.enrollment.id}
+          `
+        );
+      }
 
       res.redirect(
         303,
