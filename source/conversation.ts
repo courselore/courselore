@@ -3650,7 +3650,8 @@ export default (app: Courselore): void => {
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      isStaffOnly?: "on";
+      participants?: "everyone" | "staff" | undefined;
+      customParticipants?: string[];
       shouldNotify?: "on";
       isPinned?: "on";
       isDraft?: "true";
