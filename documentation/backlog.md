@@ -388,6 +388,20 @@ new Notification('Example');
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
+## Deleting Entities
+
+- Users
+- Courses
+- Enrollments even if you’re the last staff
+
+---
+
+- Require password
+  - Extract middleware
+  - Use middleware in
+    - Change email
+    - Change password
+
 ## Users
 
 - Improvements to the workflow for when you change your email:
