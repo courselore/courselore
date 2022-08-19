@@ -3654,8 +3654,8 @@ export default (app: Courselore): void => {
       customParticipants?: string[];
       shouldNotify?: "on";
       isPinned?: "on";
-      isDraft?: "true";
       isAnonymous?: "on";
+      isDraft?: "true";
       conversationDraftReference?: string;
     },
     { conversations?: object },
@@ -3796,17 +3796,10 @@ export default (app: Courselore): void => {
       }
 
       req.body.tagsReferences ??= [];
+      req.body.customParticipants ??= [];
       if (
         typeof req.body.type !== "string" ||
         !conversationTypes.includes(req.body.type) ||
-        ![undefined, "on"].includes(req.body.shouldNotify) ||
-        (req.body.shouldNotify === "on" &&
-          (res.locals.enrollment.courseRole !== "staff" ||
-            req.body.type !== "note")) ||
-        ![undefined, "on"].includes(req.body.isPinned) ||
-        (req.body.isPinned === "on" &&
-          res.locals.enrollment.courseRole !== "staff") ||
-        ![undefined, "on"].includes(req.body.isStaffOnly) ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
         (req.body.type !== "chat" &&
@@ -3827,6 +3820,15 @@ export default (app: Courselore): void => {
                   (existingTag) => tagReference === existingTag.reference
                 )
             ))) ||
+        // TODO
+        ![undefined, "on"].includes(req.body.shouldNotify) ||
+        (req.body.shouldNotify === "on" &&
+          (res.locals.enrollment.courseRole !== "staff" ||
+            req.body.type !== "note")) ||
+        ![undefined, "on"].includes(req.body.isPinned) ||
+        (req.body.isPinned === "on" &&
+          res.locals.enrollment.courseRole !== "staff") ||
+        ![undefined, "on"].includes(req.body.isStaffOnly) ||
         ![undefined, "on"].includes(req.body.isAnonymous) ||
         (req.body.isAnonymous === "on" &&
           (res.locals.enrollment.courseRole === "staff" ||
