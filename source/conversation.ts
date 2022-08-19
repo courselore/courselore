@@ -3651,7 +3651,7 @@ export default (app: Courselore): void => {
       content?: string;
       tagsReferences?: string[];
       participants?: "everyone" | "staff" | undefined;
-      customParticipants?: string[];
+      customParticipantsReferences?: string[];
       shouldNotify?: "on";
       isPinned?: "on";
       isAnonymous?: "on";
@@ -3811,8 +3811,8 @@ export default (app: Courselore): void => {
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
           ((req.body.type !== "chat" && req.body.tagsReferences.length === 0) ||
-            new Set(req.body.tagsReferences).size <
-              req.body.tagsReferences.length ||
+            req.body.tagsReferences.length !==
+              new Set(req.body.tagsReferences).size ||
             req.body.tagsReferences.some(
               (tagReference) =>
                 typeof tagReference !== "string" ||
@@ -3820,7 +3820,23 @@ export default (app: Courselore): void => {
                   (existingTag) => tagReference === existingTag.reference
                 )
             ))) ||
-        // TODO
+        !["everyone", "staff", undefined].includes(req.body.participants) ||
+        (req.body.participants !== "everyone" &&
+          (!Array.isArray(req.body.customParticipantsReferences) ||
+            (req.body.customParticipantsReferences.length === 0 &&
+              req.body.participants === undefined) ||
+            (req.body.customParticipantsReferences.length !== 0 &&
+              (req.body.customParticipantsReferences.length !==
+                new Set(req.body.customParticipantsReferences).size ||
+                req.body.customParticipantsReferences.length !==
+                  app.locals.database.get<{ count: number }>(
+                    sql`
+                      SELECT COUNT(*) AS "count"
+                      FROM "enrollments"
+                      WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                            "reference" IN ${req.body.customParticipantsReferences}
+                    `
+                  )!.count)))) ||
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
@@ -3828,11 +3844,9 @@ export default (app: Courselore): void => {
         ![undefined, "on"].includes(req.body.isPinned) ||
         (req.body.isPinned === "on" &&
           res.locals.enrollment.courseRole !== "staff") ||
-        ![undefined, "on"].includes(req.body.isStaffOnly) ||
         ![undefined, "on"].includes(req.body.isAnonymous) ||
         (req.body.isAnonymous === "on" &&
-          (res.locals.enrollment.courseRole === "staff" ||
-            req.body.isStaffOnly === "on"))
+          res.locals.enrollment.courseRole === "staff")
       )
         return next("validation");
 
