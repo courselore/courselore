@@ -359,15 +359,18 @@ export default (app: Courselore): void => {
                                  "tags"."reference" IN ${filters.tagsReferences}
                 `
           }
-          $${
-            res.locals.enrollment.courseRole !== "staff"
-              ? sql`
-                  LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
-                                          "messages"."authorEnrollment" = ${res.locals.enrollment.id}
-                `
-              : sql``
-          }
-          WHERE "conversations"."course" = ${res.locals.course.id}
+          WHERE "conversations"."course" = ${res.locals.course.id} AND (
+            "conversations"."participants" = 'everyone' $${
+              res.locals.enrollment.courseRole === "staff"
+                ? sql`OR "conversations"."participants" = 'staff'`
+                : sql``
+            } OR (
+              SELECT TRUE
+              FROM "conversationCustomParticipants"
+              WHERE "conversation" = "conversations"."id" AND 
+                    "enrollments" = ${res.locals.enrollment.id}
+            )
+          )
           $${
             search === undefined
               ? sql``
@@ -428,16 +431,6 @@ export default (app: Courselore): void => {
                     filters.isStaffOnly === "true" ? sql`NOT` : sql``
                   } NULL
                 `
-          }
-          $${
-            res.locals.enrollment.courseRole !== "staff"
-              ? sql`
-                  AND (
-                    "conversations"."staffOnlyAt" IS NULL OR
-                    "messages"."id" IS NOT NULL
-                  )
-                `
-              : sql``
           }
           GROUP BY "conversations"."id"
           ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
