@@ -1206,19 +1206,125 @@ export default async (app: Courselore): Promise<void> => {
                     interactive: true,
                     content: ${res.locals.html(
                       html`
-                        <div
+                        <form
+                          method="POST"
+                          action="https://${app.locals.options.host}/"
                           css="${res.locals.css(css`
                             display: flex;
                             flex-direction: column;
-                            gap: var(--space--4);
+                            gap: var(--space--3);
                             padding: var(--space--2);
+                            max-height: var(--space--80);
+                            overflow: auto;
                           `)}"
                         >
-                          <div>
-                            <p class="label--text">Closes at</p>
-                            <input type="text" class="input--text" />
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
+                          <div
+                            class="label"
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--1);
+                              align-items: baseline;
+                            `)}"
+                          >
+                            <p class="label--text">Number of votes</p>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="maxOptions"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <span
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set to Multiple Votes",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-check2"></i>
+                                Single
+                              </span>
+                              <span
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set to Single Vote",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-check2-all"></i>
+                                Multiple
+                              </span>
+                            </label>
                           </div>
+                          <div
+                            class="label"
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--1);
+                            `)}"
+                          >
+                            <div
+                              css="${res.locals.css(css`
+                                display: flex;
+                                align-items: center;
+                                gap: var(--space--1);
+                              `)}"
+                            >
+                              <p class="label--text">Closes at</p>
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                css="${res.locals.css(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                `)}"
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${res.locals.html(html`
+                                      <div
+                                        css="${res.locals.css(css`
+                                          padding: var(--space--2);
+                                        `)}"
+                                      >
+                                        Date by which the poll will close. If
+                                        left blank, the poll will not close
+                                        automatically.
+                                      </div>
+                                    `)},
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-info-circle"></i>
+                              </button>
+                            </div>
+                            <input
+                              type="text"
+                              class="input--text"
+                              value="${new Date(
+                                new Date().getTime() + 7 * 24 * 60 * 60 * 1000
+                              ).toISOString()}"
+                              placeholder="No close date"
+                              autocomplete="off"
+                              onload="${javascript`
+                                this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+                              `}"
+                            />
+                          </div>
+
                           <hr class="separator" />
+
                           <div
                             key="options"
                             css="${res.locals.css(css`
@@ -1226,18 +1332,78 @@ export default async (app: Courselore): Promise<void> => {
                               flex-direction: column;
                               gap: var(--space--2);
                             `)}"
-                          >
-                            <div>
-                              <p class="label--text">Option 1</p>
-                              <input type="text" class="input--text" />
-                            </div>
-                            <div>
-                              <p class="label--text">Option 2</p>
-                              <input type="text" class="input--text" />
-                            </div>
-                          </div>
+                          ></div>
                           <label
                             class="button button--tight button--tight--inline button--transparent"
+                            onload="${javascript`
+                              const newOptionPartial = ${res.locals.html(
+                                html`
+                                  <div
+                                    class="label"
+                                    css="${res.locals.css(css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--1);
+                                    `)}"
+                                  >
+                                    <p class="label--text">Option X</p>
+                                    <div
+                                      css="${res.locals.css(css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                        align-items: center;
+                                      `)}"
+                                    >
+                                      <input
+                                        type="text"
+                                        name="optionX"
+                                        required
+                                        placeholder="Description..."
+                                        class="input--text"
+                                      />
+                                      <label
+                                        class="button button--tight button--tight--inline button--transparent"
+                                        onloadpartial="${javascript`
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            theme: "rose",
+                                            touch: false,
+                                            content: "Remove Option",
+                                          });
+
+                                          this.onclick = (event) => {
+                                            if ([...this.closest('[key="options"]').children].filter((option) => !option.hidden).length === 2)
+                                              return "Must have at least two options.";
+                                            const option = this.closest(".label");
+                                            option.replaceChildren();
+                                            option.hidden = true;
+                                          };
+                                        `}"
+                                      >
+                                        <i class="bi bi-x-lg"></i>
+                                      </label>
+                                    </div>
+                                  </div>
+                                `
+                              )};
+                              newOptionPartial.remove();
+
+                              const addNewOption = () => {
+                                const newOption = newOptionPartial.firstElementChild.cloneNode(true);
+                                this.closest("form").querySelector('[key="options"]').insertAdjacentElement("beforeend", newOption);
+                                for (const element of newOption.querySelectorAll("[onloadpartial]"))
+                                  new Function(element.getAttribute("onloadpartial")).call(element);
+                              };
+
+                              addNewOption();
+                              addNewOption();
+
+                              this.onclick = addNewOption;
+
+                              this.onvalidate = (event) => {
+                                if ([...this.closest("form").querySelector('[key="options"]').children].filter((option) => !option.hidden).length < 2)
+                                  return "Please add at least two options.";
+                              }; 
+                            `}"
                           >
                             <i class="bi bi-plus-circle"></i>
                             New Option
@@ -1247,17 +1413,17 @@ export default async (app: Courselore): Promise<void> => {
                           >
                             Add Poll
                           </button>
-                        </div>
+                        </form>
                       `
                     )},
                   });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
             
-                  this.onclick = () => {
-                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll reference='${"1234567890"}'></courselore-poll>", "\\n\\n");
-                    textarea.focus();
-                  };
+                  // this.onclick = () => {
+                  //   textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll reference='${"1234567890"}'></courselore-poll>", "\\n\\n");
+                  //   textarea.focus();
+                  // };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
                 `}"
@@ -3085,6 +3251,12 @@ ${contentSource}</textarea
       );
     }
   );
+
+  // app.post<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>(
+  //   "/content-editor/poll",
+  //   ...app.locals.middlewares.isEnrolledInCourse,
+  //   (req, res) => {}
+  // );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/attachments",

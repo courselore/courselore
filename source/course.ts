@@ -1654,23 +1654,23 @@ export default (app: Courselore): void => {
                             line-height: var(--line-height--xs);
                           `)}"
                           onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          trigger: "click",
-                          interactive: true,
-                          content: ${res.locals.html(html`
-                            <div
-                              css="${res.locals.css(css`
-                                padding: var(--space--2);
-                              `)}"
-                            >
-                              During an exam period, the course will be
-                              read-only to students. They may continue to read
-                              existing conversations, but may no longer ask
-                              questions, send messages, and so forth.
-                            </div>
-                          `)},
-                        });
-                      `}"
+                            (this.tooltip ??= tippy(this)).setProps({
+                              trigger: "click",
+                              interactive: true,
+                              content: ${res.locals.html(html`
+                                <div
+                                  css="${res.locals.css(css`
+                                    padding: var(--space--2);
+                                  `)}"
+                                >
+                                  During an exam period, the course will be
+                                  read-only to students. They may continue to
+                                  read existing conversations, but may no longer
+                                  ask questions, send messages, and so forth.
+                                </div>
+                              `)},
+                            });
+                          `}"
                         >
                           <i class="bi bi-info-circle"></i>
                         </button>
