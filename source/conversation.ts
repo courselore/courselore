@@ -3647,14 +3647,14 @@ export default (app: Courselore): void => {
     HTML,
     {
       type?: ConversationType;
-      shouldNotify?: "on";
-      isPinned?: "on";
-      isStaffOnly?: "on";
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      isAnonymous?: "on";
+      isStaffOnly?: "on";
+      shouldNotify?: "on";
+      isPinned?: "on";
       isDraft?: "true";
+      isAnonymous?: "on";
       conversationDraftReference?: string;
     },
     { conversations?: object },
