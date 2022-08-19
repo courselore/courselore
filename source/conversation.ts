@@ -3796,7 +3796,7 @@ export default (app: Courselore): void => {
       }
 
       req.body.tagsReferences ??= [];
-      req.body.customParticipants ??= [];
+      req.body.customParticipantsReferences ??= [];
       if (
         typeof req.body.type !== "string" ||
         !conversationTypes.includes(req.body.type) ||
