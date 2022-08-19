@@ -3867,6 +3867,7 @@ export default (app: Courselore): void => {
           WHERE "id" = ${res.locals.course.id}
         `
       );
+
       const conversation = app.locals.database.get<{
         id: number;
         reference: string;
@@ -3880,10 +3881,10 @@ export default (app: Courselore): void => {
             "course",
             "reference",
             "authorEnrollment",
+            "participants",
             "anonymousAt",
             "type",
             "pinnedAt",
-            "staffOnlyAt",
             "title",
             "titleSearch",
             "nextMessageReference"
@@ -3893,10 +3894,10 @@ export default (app: Courselore): void => {
             ${res.locals.course.id},
             ${String(res.locals.course.nextConversationReference)},
             ${res.locals.enrollment.id},
+            ${req.body.participants ?? "custom"},
             ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
             ${req.body.type},
             ${req.body.isPinned === "on" ? new Date().toISOString() : null},
-            ${req.body.isStaffOnly === "on" ? new Date().toISOString() : null},
             ${req.body.title},
             ${html`${req.body.title}`},
             ${hasMessage ? 2 : 1}
@@ -3904,6 +3905,7 @@ export default (app: Courselore): void => {
           RETURNING *
         `
       )!;
+
       for (const tagReference of req.body.tagsReferences)
         app.locals.database.run(
           sql`
