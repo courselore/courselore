@@ -3841,7 +3841,11 @@ export default (app: Courselore): void => {
                       WHERE "enrollments"."course" = ${res.locals.course.id} AND
                             "reference" IN ${req.body.customParticipantsReferences}
                     `
-                  )!.count)))) ||
+                  )!.count))))
+      )
+        return next("validation");
+
+      if (
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
