@@ -701,14 +701,18 @@ export default (app: Courselore): void => {
         sql`
           SELECT COUNT(*) AS "count"
           FROM "conversations"
-          WHERE "course" = ${res.locals.course.id}
-          $${
-            res.locals.enrollment.courseRole !== "staff"
-              ? sql`
-                  AND "conversations"."staffOnlyAt" IS NULL
-                `
-              : sql``
-          }
+          WHERE "course" = ${res.locals.course.id} AND (
+            "conversations"."participants" = 'everyone' $${
+              res.locals.enrollment.courseRole === "staff"
+                ? sql`OR "conversations"."participants" = 'staff'`
+                : sql``
+            } OR (
+              SELECT TRUE
+              FROM "conversationCustomParticipants"
+              WHERE "conversation" = "conversations"."id" AND 
+                    "enrollments" = ${res.locals.enrollment.id}
+            )
+          )
         `
       )!.count;
 

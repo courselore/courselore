@@ -2454,14 +2454,11 @@ export default (app: Courselore): void => {
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         WHERE "conversations"."course" = ${res.locals.course.id} AND
               "conversations"."reference" = ${conversationReference} AND (
-                "conversations"."participants" = 'everyone' OR (
-                  "conversations"."participants" = 'staff' AND
-                  $${
-                    res.locals.enrollment.courseRole === "staff"
-                      ? sql`TRUE`
-                      : sql`FALSE`
-                  }
-                ) OR (
+                "conversations"."participants" = 'everyone' $${
+                  res.locals.enrollment.courseRole === "staff"
+                    ? sql`OR "conversations"."participants" = 'staff'`
+                    : sql``
+                } OR (
                   SELECT TRUE
                   FROM "conversationCustomParticipants"
                   WHERE "conversation" = "conversations"."id" AND 
