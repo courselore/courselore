@@ -3826,26 +3826,38 @@ export default (app: Courselore): void => {
           (!Array.isArray(req.body.customParticipantsReferences) ||
             (req.body.customParticipantsReferences.length === 0 &&
               req.body.participants === undefined) ||
-            (req.body.customParticipantsReferences.length !== 0 &&
-              (req.body.customParticipantsReferences.some(
-                (customParticipantReference) =>
-                  typeof customParticipantReference !== "string"
-              ) ||
-                req.body.customParticipantsReferences.length !==
-                  new Set(req.body.customParticipantsReferences).size ||
-                req.body.customParticipantsReferences.length !==
-                  app.locals.database.get<{ count: number }>(
-                    sql`
-                      SELECT COUNT(*) AS "count"
-                      FROM "enrollments"
-                      WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                            "reference" IN ${req.body.customParticipantsReferences}
-                    `
-                  )!.count))))
+            req.body.customParticipantsReferences.some(
+              (customParticipantReference) =>
+                typeof customParticipantReference !== "string"
+            ) ||
+            req.body.customParticipantsReferences.length !==
+              new Set(req.body.customParticipantsReferences).size))
       )
         return next("validation");
 
+      if (req.body.participants !== "everyone")
+        req.body.customParticipantsReferences.push(
+          res.locals.enrollment.reference
+        );
+      const customParticipants =
+        req.body.participants !== "everyone"
+          ? app.locals.database.all<{
+              id: number;
+              courseRole: CourseRole;
+            }>(
+              sql`
+                SELECT "id", "courseRole"
+                FROM "enrollments"
+                WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                      "reference" IN ${req.body.customParticipantsReferences}
+              `
+            )
+          : [];
+
       if (
+        (req.body.participants !== "everyone" &&
+          req.body.customParticipantsReferences.length !==
+            customParticipants.length) ||
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
@@ -3875,6 +3887,7 @@ export default (app: Courselore): void => {
       const conversation = app.locals.database.get<{
         id: number;
         reference: string;
+        participants: ConversationParticipants;
         type: ConversationType;
         staffOnlyAt: string | null;
         title: string;
@@ -3909,6 +3922,23 @@ export default (app: Courselore): void => {
           RETURNING *
         `
       )!;
+
+      for (const customParticipant of customParticipants)
+        if (
+          (conversation.participants === "staff" &&
+            customParticipant.courseRole !== "staff") ||
+          conversation.participants === "custom"
+        )
+          app.locals.database.run(
+            sql`
+              INSERT INTO "customParticipants" ("createdAt", "conversation", "enrollment")
+              VALUES (
+                ${new Date().toISOString()},
+                ${conversation.id},
+                ${customParticipant.id}
+              )
+            `
+          );
 
       for (const tagReference of req.body.tagsReferences)
         app.locals.database.run(
