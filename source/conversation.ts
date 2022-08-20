@@ -2187,14 +2187,6 @@ export default (app: Courselore): void => {
               </div>
             `
           : html``}
-        $${conversation.staffOnlyAt !== null
-          ? html`
-              <div class="text--sky">
-                <i class="bi bi-mortarboard-fill"></i>
-                Visible by Staff Only
-              </div>
-            `
-          : html``}
       </div>
 
       <h3 class="strong">
@@ -3666,117 +3658,117 @@ export default (app: Courselore): void => {
     (req, res, next) => {
       if (req.body.isDraft === "true") {
         // TODO: Conversation drafts: Validate inputs
-        let conversationDraft =
-          typeof req.body.conversationDraftReference === "string" &&
-          req.body.conversationDraftReference.match(/^[0-9]+$/)
-            ? app.locals.database.get<{
-                reference: string;
-              }>(
-                sql`
-                  SELECT "reference"
-                  FROM "conversationDrafts"
-                  WHERE "course" = ${res.locals.course.id} AND
-                        "reference" = ${req.body.conversationDraftReference} AND
-                        "authorEnrollment" = ${res.locals.enrollment.id}
-                `
-              )
-            : undefined;
-        if (conversationDraft === undefined)
-          conversationDraft = app.locals.database.get<{
-            reference: string;
-          }>(
-            sql`
-              INSERT INTO "conversationDrafts" (
-                "createdAt",
-                "course",
-                "reference",
-                "authorEnrollment",
-                "type",
-                "isPinned",
-                "isStaffOnly",
-                "title",
-                "content",
-                "tagsReferences"
-              )
-              VALUES (
-                ${new Date().toISOString()},
-                ${res.locals.course.id},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${res.locals.enrollment.id},
-                ${
-                  typeof req.body.type === "string" &&
-                  req.body.type.trim() !== ""
-                    ? req.body.type
-                    : null
-                },
-                ${req.body.isPinned === "on" ? "true" : null},
-                ${req.body.isStaffOnly === "on" ? "true" : null},
-                ${
-                  typeof req.body.title === "string" &&
-                  req.body.title.trim() !== ""
-                    ? req.body.title
-                    : null
-                },
-                ${
-                  typeof req.body.content === "string" &&
-                  req.body.content.trim() !== ""
-                    ? req.body.content
-                    : null
-                },
-                ${
-                  Array.isArray(req.body.tagsReferences) &&
-                  req.body.tagsReferences.every(
-                    (tagReference) =>
-                      typeof tagReference === "string" &&
-                      tagReference.trim() !== ""
-                  )
-                    ? JSON.stringify(req.body.tagsReferences)
-                    : null
-                }
-              )
-              RETURNING *
-            `
-          )!;
-        else
-          app.locals.database.run(
-            sql`
-              UPDATE "conversationDrafts"
-              SET "updatedAt" = ${new Date().toISOString()},
-                  "type" = ${
-                    typeof req.body.type === "string" &&
-                    req.body.type.trim() !== ""
-                      ? req.body.type
-                      : null
-                  },
-                  "isPinned" = ${req.body.isPinned === "on" ? "true" : null},
-                  "isStaffOnly" = ${
-                    req.body.isStaffOnly === "on" ? "true" : null
-                  },
-                  "title" = ${
-                    typeof req.body.title === "string" &&
-                    req.body.title.trim() !== ""
-                      ? req.body.title
-                      : null
-                  },
-                  "content" = ${
-                    typeof req.body.content === "string" &&
-                    req.body.content.trim() !== ""
-                      ? req.body.content
-                      : null
-                  },
-                  "tagsReferences" = ${
-                    Array.isArray(req.body.tagsReferences) &&
-                    req.body.tagsReferences.every(
-                      (tagReference) =>
-                        typeof tagReference === "string" &&
-                        tagReference.trim() !== ""
-                    )
-                      ? JSON.stringify(req.body.tagsReferences)
-                      : null
-                  }
-              WHERE "reference" = ${conversationDraft.reference}
-            `
-          );
+        // let conversationDraft =
+        //   typeof req.body.conversationDraftReference === "string" &&
+        //   req.body.conversationDraftReference.match(/^[0-9]+$/)
+        //     ? app.locals.database.get<{
+        //         reference: string;
+        //       }>(
+        //         sql`
+        //           SELECT "reference"
+        //           FROM "conversationDrafts"
+        //           WHERE "course" = ${res.locals.course.id} AND
+        //                 "reference" = ${req.body.conversationDraftReference} AND
+        //                 "authorEnrollment" = ${res.locals.enrollment.id}
+        //         `
+        //       )
+        //     : undefined;
+        // if (conversationDraft === undefined)
+        //   conversationDraft = app.locals.database.get<{
+        //     reference: string;
+        //   }>(
+        //     sql`
+        //       INSERT INTO "conversationDrafts" (
+        //         "createdAt",
+        //         "course",
+        //         "reference",
+        //         "authorEnrollment",
+        //         "type",
+        //         "isPinned",
+        //         "isStaffOnly",
+        //         "title",
+        //         "content",
+        //         "tagsReferences"
+        //       )
+        //       VALUES (
+        //         ${new Date().toISOString()},
+        //         ${res.locals.course.id},
+        //         ${cryptoRandomString({ length: 10, type: "numeric" })},
+        //         ${res.locals.enrollment.id},
+        //         ${
+        //           typeof req.body.type === "string" &&
+        //           req.body.type.trim() !== ""
+        //             ? req.body.type
+        //             : null
+        //         },
+        //         ${req.body.isPinned === "on" ? "true" : null},
+        //         ${req.body.isStaffOnly === "on" ? "true" : null},
+        //         ${
+        //           typeof req.body.title === "string" &&
+        //           req.body.title.trim() !== ""
+        //             ? req.body.title
+        //             : null
+        //         },
+        //         ${
+        //           typeof req.body.content === "string" &&
+        //           req.body.content.trim() !== ""
+        //             ? req.body.content
+        //             : null
+        //         },
+        //         ${
+        //           Array.isArray(req.body.tagsReferences) &&
+        //           req.body.tagsReferences.every(
+        //             (tagReference) =>
+        //               typeof tagReference === "string" &&
+        //               tagReference.trim() !== ""
+        //           )
+        //             ? JSON.stringify(req.body.tagsReferences)
+        //             : null
+        //         }
+        //       )
+        //       RETURNING *
+        //     `
+        //   )!;
+        // else
+        //   app.locals.database.run(
+        //     sql`
+        //       UPDATE "conversationDrafts"
+        //       SET "updatedAt" = ${new Date().toISOString()},
+        //           "type" = ${
+        //             typeof req.body.type === "string" &&
+        //             req.body.type.trim() !== ""
+        //               ? req.body.type
+        //               : null
+        //           },
+        //           "isPinned" = ${req.body.isPinned === "on" ? "true" : null},
+        //           "isStaffOnly" = ${
+        //             req.body.isStaffOnly === "on" ? "true" : null
+        //           },
+        //           "title" = ${
+        //             typeof req.body.title === "string" &&
+        //             req.body.title.trim() !== ""
+        //               ? req.body.title
+        //               : null
+        //           },
+        //           "content" = ${
+        //             typeof req.body.content === "string" &&
+        //             req.body.content.trim() !== ""
+        //               ? req.body.content
+        //               : null
+        //           },
+        //           "tagsReferences" = ${
+        //             Array.isArray(req.body.tagsReferences) &&
+        //             req.body.tagsReferences.every(
+        //               (tagReference) =>
+        //                 typeof tagReference === "string" &&
+        //                 tagReference.trim() !== ""
+        //             )
+        //               ? JSON.stringify(req.body.tagsReferences)
+        //               : null
+        //           }
+        //       WHERE "reference" = ${conversationDraft.reference}
+        //     `
+        //   );
         return res.redirect(
           303,
           `https://${app.locals.options.host}/courses/${
@@ -3785,7 +3777,7 @@ export default (app: Courselore): void => {
             {
               conversations: req.query.conversations,
               newConversation: {
-                conversationDraftReference: conversationDraft.reference,
+                // conversationDraftReference: conversationDraft.reference,
               },
             },
             {
@@ -4638,159 +4630,6 @@ export default (app: Courselore): void => {
                               <div class="text--amber">
                                 <i class="bi bi-pin-fill"></i>
                                 Pinned
-                              </div>
-                            `
-                          : html``}
-                        $${res.locals.enrollment.courseRole === "staff"
-                          ? html`
-                              <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
-                                  .locals.conversation.staffOnlyAt === null
-                                  ? ""
-                                  : "text--sky"}"
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as ${
-                                      res.locals.conversation.staffOnlyAt ===
-                                      null
-                                        ? "Visible by Staff Only"
-                                        : "Visible by Everyone"
-                                    }",
-                                  });
-                                  
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${res.locals.html(
-                                      html`
-                                        <form
-                                          method="PATCH"
-                                          action="https://${app.locals.options
-                                            .host}/courses/${res.locals.course
-                                            .reference}/conversations/${res
-                                            .locals.conversation
-                                            .reference}${qs.stringify(
-                                            {
-                                              conversations:
-                                                req.query.conversations,
-                                              messages: req.query.messages,
-                                            },
-                                            {
-                                              addQueryPrefix: true,
-                                            }
-                                          )}"
-                                          css="${res.locals.css(css`
-                                            padding: var(--space--2);
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--4);
-                                          `)}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          $${res.locals.conversation
-                                            .staffOnlyAt === null
-                                            ? html`
-                                                <input
-                                                  key="isStaffOnly--true"
-                                                  type="hidden"
-                                                  name="isStaffOnly"
-                                                  value="true"
-                                                />
-                                                <p>
-                                                  Are you sure you want to set
-                                                  this conversation as Visible
-                                                  by Staff Only?
-                                                </p>
-                                                <p>
-                                                  <strong
-                                                    css="${res.locals.css(css`
-                                                      font-weight: var(
-                                                        --font-weight--bold
-                                                      );
-                                                    `)}"
-                                                  >
-                                                    Students who already
-                                                    participated in the
-                                                    conversation will continue
-                                                    to have access to it.
-                                                  </strong>
-                                                </p>
-                                                <button
-                                                  class="button button--rose"
-                                                >
-                                                  <i
-                                                    class="bi bi-mortarboard-fill"
-                                                  ></i>
-                                                  Set as Visible by Staff Only
-                                                </button>
-                                              `
-                                            : html`
-                                                <input
-                                                  key="isStaffOnly--false"
-                                                  type="hidden"
-                                                  name="isStaffOnly"
-                                                  value="false"
-                                                />
-                                                <p>
-                                                  Are you sure you want to set
-                                                  this conversation as Visible
-                                                  by Everyone?
-                                                </p>
-                                                <p>
-                                                  <strong
-                                                    css="${res.locals.css(css`
-                                                      font-weight: var(
-                                                        --font-weight--bold
-                                                      );
-                                                    `)}"
-                                                  >
-                                                    Ensure that people involved
-                                                    in the conversation consent
-                                                    to having their messages
-                                                    visible by everyone.
-                                                  </strong>
-                                                </p>
-                                                <button
-                                                  class="button button--rose"
-                                                >
-                                                  <i class="bi bi-eye-fill"></i>
-                                                  Set as Visible by Everyone
-                                                </button>
-                                              `}
-                                        </form>
-                                      `
-                                    )},
-                                  });
-                                `}"
-                              >
-                                $${res.locals.conversation.staffOnlyAt === null
-                                  ? html`
-                                      <i class="bi bi-eye"></i>
-                                      Visible by Everyone
-                                    `
-                                  : html`
-                                      <i class="bi bi-mortarboard-fill"></i>
-                                      Visible by Staff Only
-                                    `}
-                              </button>
-                            `
-                          : res.locals.conversation.staffOnlyAt !== null
-                          ? html`
-                              <div
-                                class="text--sky"
-                                css="${res.locals.css(css`
-                                  display: flex;
-                                  gap: var(--space--1);
-                                `)}"
-                              >
-                                <i class="bi bi-mortarboard-fill"></i>
-                                Visible by Staff Only
                               </div>
                             `
                           : html``}
@@ -6133,11 +5972,7 @@ export default (app: Courselore): void => {
                                                               .enrollment.id &&
                                                           res.locals.enrollment
                                                             .courseRole ===
-                                                            "student" &&
-                                                          res.locals
-                                                            .conversation
-                                                            .staffOnlyAt ===
-                                                            null
+                                                            "student"
                                                             ? html`
                                                                 <form
                                                                   method="PATCH"
@@ -7751,8 +7586,7 @@ export default (app: Courselore): void => {
                       : html``}
                   </div>
 
-                  $${res.locals.enrollment.courseRole === "staff" ||
-                  res.locals.conversation.staffOnlyAt !== null
+                  $${res.locals.enrollment.courseRole === "staff"
                     ? html``
                     : html`
                         <div class="label">
