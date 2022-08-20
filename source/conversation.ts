@@ -195,6 +195,42 @@ export default (app: Courselore): void => {
     chat: "text--cyan",
   };
 
+  const conversationParticipantsIcon: {
+    [conversationParticipants in ConversationParticipants]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    everyone: {
+      regular: html`<i class="bi bi-people"></i>`,
+      fill: html`<i class="bi bi-people-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+    selected: {
+      regular: html`<i class="bi bi-door-closed"></i>`,
+      fill: html`<i class="bi bi-door-closed-fill"></i>`,
+    },
+  };
+
+  const conversationParticipantsTextColor: {
+    [conversationParticipants in ConversationParticipants]: string;
+  } = {
+    everyone: "text--green",
+    staff: "text--sky",
+    selected: "text--rose",
+  };
+
+  const conversationParticipantsLabel: {
+    [conversationParticipants in ConversationParticipants]: string;
+  } = {
+    everyone: html`Everyone`,
+    staff: html`Staff`,
+    selected: html`Selected People`,
+  };
+
   app.locals.layouts.conversation = ({
     req,
     res,
@@ -2173,6 +2209,20 @@ export default (app: Courselore): void => {
                   `}
             `
           : html``}
+        <div
+          class="${conversationParticipantsTextColor[
+            conversation.participants
+          ]}"
+          onload="${javascript`
+            (this.tooltip ??= tippy(this)).setProps({
+              touch: false,
+              content: "Participants",
+            });
+          `}"
+        >
+          $${conversationParticipantsIcon[conversation.participants].fill}
+          $${conversationParticipantsLabel[conversation.participants]}
+        </div>
         $${conversation.pinnedAt !== null
           ? html`
               <div
