@@ -3809,7 +3809,9 @@ export default (app: Courselore): void => {
           req.body.content !== undefined &&
           typeof req.body.content !== "string") ||
         !Array.isArray(req.body.tagsReferences) ||
-        (res.locals.tags.length > 0 &&
+        (res.locals.tags.length === 0 &&
+          req.body.tagsReferences.length !== 0) ||
+        (res.locals.tags.length !== 0 &&
           ((req.body.type !== "chat" && req.body.tagsReferences.length === 0) ||
             req.body.tagsReferences.some(
               (tagReference) => typeof tagReference !== "string"
@@ -3822,23 +3824,21 @@ export default (app: Courselore): void => {
                 res.locals.tags.map((tag) => tag.reference)
               ).length)) ||
         !["everyone", "staff", undefined].includes(req.body.participants) ||
-        (req.body.participants !== "everyone" &&
-          (!Array.isArray(req.body.customParticipantsReferences) ||
-            (req.body.customParticipantsReferences.length === 0 &&
-              req.body.participants === undefined) ||
-            req.body.customParticipantsReferences.some(
-              (customParticipantReference) =>
-                typeof customParticipantReference !== "string"
-            ) ||
-            req.body.customParticipantsReferences.length !==
-              new Set(req.body.customParticipantsReferences).size))
+        !Array.isArray(req.body.customParticipantsReferences) ||
+        (req.body.customParticipantsReferences.length === 0 &&
+          req.body.participants === undefined) ||
+        req.body.customParticipantsReferences.some(
+          (customParticipantReference) =>
+            typeof customParticipantReference !== "string"
+        ) ||
+        req.body.customParticipantsReferences.length !==
+          new Set(req.body.customParticipantsReferences).size
       )
         return next("validation");
 
-      if (req.body.participants !== "everyone")
-        req.body.customParticipantsReferences.push(
-          res.locals.enrollment.reference
-        );
+      req.body.customParticipantsReferences.push(
+        res.locals.enrollment.reference
+      );
       const customParticipants =
         req.body.participants !== "everyone"
           ? app.locals.database.all<{
@@ -3889,7 +3889,6 @@ export default (app: Courselore): void => {
         reference: string;
         participants: ConversationParticipants;
         type: ConversationType;
-        staffOnlyAt: string | null;
         title: string;
       }>(
         sql`
