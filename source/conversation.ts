@@ -7908,10 +7908,11 @@ export default (app: Courselore): void => {
     { courseReference: string; conversationReference: string },
     HTML,
     {
+      participants?: "everyone" | "staff" | undefined;
+      customParticipantsReferences?: string[];
       type?: ConversationType;
-      isResolved?: "true" | "false";
       isPinned?: "true" | "false";
-      isStaffOnly?: "true" | "false";
+      isResolved?: "true" | "false";
       title?: string;
     },
     {
