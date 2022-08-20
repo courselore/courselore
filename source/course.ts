@@ -710,7 +710,9 @@ export default (app: Courselore): void => {
               SELECT TRUE
               FROM "conversationSelectedParticipants"
               WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationSelectedParticipants"."enrollment" = ${res.locals.enrollment.id}
+                    "conversationSelectedParticipants"."enrollment" = ${
+                      res.locals.enrollment.id
+                    }
             )
           )
         `
