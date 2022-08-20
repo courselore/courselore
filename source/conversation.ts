@@ -7924,6 +7924,29 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
     (req, res, next) => {
+      if (typeof req.body.isStaffOnly === "string")
+        if (
+          !["true", "false"].includes(req.body.isStaffOnly) ||
+          res.locals.enrollment.courseRole !== "staff" ||
+          (req.body.isStaffOnly === "true" &&
+            res.locals.conversation.staffOnlyAt !== null) ||
+          (req.body.isStaffOnly === "false" &&
+            res.locals.conversation.staffOnlyAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "staffOnlyAt" = ${
+                req.body.isStaffOnly === "true"
+                  ? new Date().toISOString()
+                  : null
+              }
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+
       if (typeof req.body.type === "string")
         if (!conversationTypes.includes(req.body.type))
           return next("validation");
@@ -7932,28 +7955,6 @@ export default (app: Courselore): void => {
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
-              WHERE "id" = ${res.locals.conversation.id}
-            `
-          );
-
-      if (typeof req.body.isResolved === "string")
-        if (
-          res.locals.conversation.type !== "question" ||
-          !["true", "false"].includes(req.body.isResolved) ||
-          res.locals.enrollment.courseRole !== "staff" ||
-          (req.body.isResolved === "true" &&
-            res.locals.conversation.resolvedAt !== null) ||
-          (req.body.isResolved === "false" &&
-            res.locals.conversation.resolvedAt === null)
-        )
-          return next("validation");
-        else
-          app.locals.database.run(
-            sql`
-              UPDATE "conversations"
-              SET "resolvedAt" = ${
-                req.body.isResolved === "true" ? new Date().toISOString() : null
-              }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
@@ -7979,24 +7980,23 @@ export default (app: Courselore): void => {
             `
           );
 
-      if (typeof req.body.isStaffOnly === "string")
+      if (typeof req.body.isResolved === "string")
         if (
-          !["true", "false"].includes(req.body.isStaffOnly) ||
+          res.locals.conversation.type !== "question" ||
+          !["true", "false"].includes(req.body.isResolved) ||
           res.locals.enrollment.courseRole !== "staff" ||
-          (req.body.isStaffOnly === "true" &&
-            res.locals.conversation.staffOnlyAt !== null) ||
-          (req.body.isStaffOnly === "false" &&
-            res.locals.conversation.staffOnlyAt === null)
+          (req.body.isResolved === "true" &&
+            res.locals.conversation.resolvedAt !== null) ||
+          (req.body.isResolved === "false" &&
+            res.locals.conversation.resolvedAt === null)
         )
           return next("validation");
         else
           app.locals.database.run(
             sql`
               UPDATE "conversations"
-              SET "staffOnlyAt" = ${
-                req.body.isStaffOnly === "true"
-                  ? new Date().toISOString()
-                  : null
+              SET "resolvedAt" = ${
+                req.body.isResolved === "true" ? new Date().toISOString() : null
               }
               WHERE "id" = ${res.locals.conversation.id}
             `
