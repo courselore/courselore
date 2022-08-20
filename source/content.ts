@@ -2193,18 +2193,24 @@ ${contentSource}</textarea
                                             { prefix: true }
                                           )}
             $${
-              res.locals.conversation !== undefined &&
-              res.locals.conversation.staffOnlyAt !== null
+              res.locals.conversation !== undefined
                 ? sql`
-                    WHERE "enrollments"."courseRole" = ${"staff"} OR
-                          EXISTS(
-                            SELECT TRUE
-                            FROM "messages"
-                            WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
-                                  "messages"."conversation" = ${
-                                    res.locals.conversation.id
-                                  }
-                          )
+                    WHERE EXISTS(
+                      SELECT TRUE
+                      FROM "conversations"
+                      WHERE "conversations"."id" = ${res.locals.conversation.id} AND (
+                              "conversations"."participants" = 'everyone' OR (
+                                "conversations"."participants" = 'staff' AND
+                                "enrollments"."courseRole" = 'staff'
+                              ) OR
+                              EXISTS(
+                                SELECT TRUE
+                                FROM "conversationCustomParticipants"
+                                WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
+                                      "conversationCustomParticipants"."enrollment" = "enrollments"."id"
+                              )
+                            )
+                    )
                   `
                 : sql``
             }
