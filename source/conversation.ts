@@ -368,7 +368,9 @@ export default (app: Courselore): void => {
               SELECT TRUE
               FROM "conversationCustomParticipants"
               WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationCustomParticipants"."enrollment" = ${res.locals.enrollment.id}
+                    "conversationCustomParticipants"."enrollment" = ${
+                      res.locals.enrollment.id
+                    }
             )
           )
           $${
@@ -2447,7 +2449,9 @@ export default (app: Courselore): void => {
                   SELECT TRUE
                   FROM "conversationCustomParticipants"
                   WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                        "conversationCustomParticipants"."enrollment" = ${res.locals.enrollment.id}
+                        "conversationCustomParticipants"."enrollment" = ${
+                          res.locals.enrollment.id
+                        }
                 )
               )
       `
@@ -3159,67 +3163,6 @@ export default (app: Courselore): void => {
                   row-gap: var(--space--4);
                 `)}"
               >
-                <div
-                  class="label"
-                  css="${res.locals.css(css`
-                    width: var(--space--40);
-                  `)}"
-                >
-                  <p class="label--text">Visibility</p>
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                    `)}"
-                  >
-                    <label
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <input
-                        type="checkbox"
-                        name="isStaffOnly"
-                        $${conversationDraft?.isStaffOnly === "true" ||
-                        (conversationDraft === undefined &&
-                          req.query.newConversation?.isStaffOnly === "true")
-                          ? html`checked`
-                          : html``}
-                        class="visually-hidden input--radio-or-checkbox--multilabel"
-                        onload="${javascript`
-                          this.onchange = () => {
-                            const anonymity = this.closest("form").querySelector('[key="anonymity"]');
-                            if (anonymity === null) return;
-                            anonymity.hidden = this.checked;
-                            for (const element of anonymity.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = this.checked;
-                          };
-                        `}"
-                      />
-                      <span
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Set as Visible by Staff Only",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-eye"></i>
-                        Visible by Everyone
-                      </span>
-                      <span
-                        class="text--sky"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Set as Visible by Everyone",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-mortarboard-fill"></i>
-                        Visible by Staff Only
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
                 $${res.locals.enrollment.courseRole === "staff"
                   ? html`
                       <div TODO hidden>
