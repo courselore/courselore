@@ -2205,9 +2205,9 @@ ${contentSource}</textarea
                               ) OR
                               EXISTS(
                                 SELECT TRUE
-                                FROM "conversationCustomParticipants"
-                                WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                                      "conversationCustomParticipants"."enrollment" = "enrollments"."id"
+                                FROM "conversationSelectedParticipants"
+                                WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
                               )
                             )
                     )

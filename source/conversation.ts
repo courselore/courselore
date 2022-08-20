@@ -25,7 +25,7 @@ export type ConversationParticipants =
 export const conversationParticipantses = [
   "everyone",
   "staff",
-  "custom",
+  "selected",
 ] as const;
 
 export type ConversationType = typeof conversationTypes[number];
@@ -133,7 +133,7 @@ export type GetConversationHelper = ({
       title: string;
       titleSearch: string;
       nextMessageReference: number;
-      customParticipants: Enrollment[];
+      selectedParticipants: Enrollment[];
       taggings: {
         id: number;
         tag: {
@@ -366,9 +366,9 @@ export default (app: Courselore): void => {
                 : sql``
             } OR (
               SELECT TRUE
-              FROM "conversationCustomParticipants"
-              WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationCustomParticipants"."enrollment" = ${
+              FROM "conversationSelectedParticipants"
+              WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                    "conversationSelectedParticipants"."enrollment" = ${
                       res.locals.enrollment.id
                     }
             )
@@ -2447,9 +2447,9 @@ export default (app: Courselore): void => {
                     : sql``
                 } OR (
                   SELECT TRUE
-                  FROM "conversationCustomParticipants"
-                  WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                        "conversationCustomParticipants"."enrollment" = ${
+                  FROM "conversationSelectedParticipants"
+                  WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                        "conversationSelectedParticipants"."enrollment" = ${
                           res.locals.enrollment.id
                         }
                 )
@@ -2501,7 +2501,7 @@ export default (app: Courselore): void => {
       nextMessageReference: conversationRow.nextMessageReference,
     };
 
-    const customParticipants = app.locals.database
+    const selectedParticipants = app.locals.database
       .all<{
         enrollmentId: number;
         userId: number;
@@ -2529,29 +2529,29 @@ export default (app: Courselore): void => {
                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                "enrollments"."reference" AS "enrollmentReference",
                "enrollments"."courseRole" AS "enrollmentCourseRole"
-        FROM "conversationCustomParticipants"
-        JOIN "enrollments" ON "conversationCustomParticipants"."enrollment" = "enrollments"."id"
+        FROM "conversationSelectedParticipants"
+        JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
         JOIN "users" ON "enrollments"."user" = "users"."id"
         WHERE "conversation" = ${conversation.id}
-        ORDER BY "conversationCustomParticipants"."id" ASC
+        ORDER BY "conversationSelectedParticipants"."id" ASC
       `
       )
-      .map((customParticipant) => ({
-        id: customParticipant.enrollmentId,
+      .map((selectedParticipant) => ({
+        id: selectedParticipant.enrollmentId,
         user: {
-          id: customParticipant.userId,
-          lastSeenOnlineAt: customParticipant.userLastSeenOnlineAt,
-          reference: customParticipant.userReference,
-          email: customParticipant.userEmail,
-          name: customParticipant.userName,
-          avatar: customParticipant.userAvatar,
+          id: selectedParticipant.userId,
+          lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
+          reference: selectedParticipant.userReference,
+          email: selectedParticipant.userEmail,
+          name: selectedParticipant.userName,
+          avatar: selectedParticipant.userAvatar,
           avatarlessBackgroundColor:
-            customParticipant.userAvatarlessBackgroundColor,
-          biographySource: customParticipant.userBiographySource,
-          biographyPreprocessed: customParticipant.userBiographyPreprocessed,
+            selectedParticipant.userAvatarlessBackgroundColor,
+          biographySource: selectedParticipant.userBiographySource,
+          biographyPreprocessed: selectedParticipant.userBiographyPreprocessed,
         },
-        reference: customParticipant.enrollmentReference,
-        courseRole: customParticipant.enrollmentCourseRole,
+        reference: selectedParticipant.enrollmentReference,
+        courseRole: selectedParticipant.enrollmentCourseRole,
       }));
 
     const taggings = app.locals.database
@@ -2681,7 +2681,7 @@ export default (app: Courselore): void => {
 
     return {
       ...conversation,
-      customParticipants,
+      selectedParticipants,
       taggings,
       messagesCount,
       readingsCount,
@@ -3205,7 +3205,7 @@ export default (app: Courselore): void => {
                                 class="dropdown--menu--item button button--transparent"
                                 onload="${javascript`
                                   this.onclick = () => {
-                                    this.closest("form").querySelector('[name="participants"][value="custom"]').checked = true;
+                                    this.closest("form").querySelector('[name="participants"][value="selected"]').checked = true;
                                     this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
                                     this.classList.add("button--blue");
                                     tippy.hideAll();
@@ -3251,7 +3251,7 @@ export default (app: Courselore): void => {
                     <input
                       type="radio"
                       name="participants"
-                      value="custom"
+                      value="selected"
                       class="visually-hidden input--radio-as-select"
                     />
                     <div
@@ -3696,7 +3696,7 @@ export default (app: Courselore): void => {
       content?: string;
       tagsReferences?: string[];
       participants?: "everyone" | "staff" | undefined;
-      customParticipantsReferences?: string[];
+      selectedParticipantsReferences?: string[];
       shouldNotify?: "on";
       isPinned?: "on";
       isAnonymous?: "on";
@@ -3841,7 +3841,7 @@ export default (app: Courselore): void => {
       }
 
       req.body.tagsReferences ??= [];
-      req.body.customParticipantsReferences ??= [];
+      req.body.selectedParticipantsReferences ??= [];
       if (
         typeof req.body.type !== "string" ||
         !conversationTypes.includes(req.body.type) ||
@@ -3869,22 +3869,22 @@ export default (app: Courselore): void => {
                 res.locals.tags.map((tag) => tag.reference)
               ).length)) ||
         !["everyone", "staff", undefined].includes(req.body.participants) ||
-        !Array.isArray(req.body.customParticipantsReferences) ||
-        (req.body.customParticipantsReferences.length === 0 &&
+        !Array.isArray(req.body.selectedParticipantsReferences) ||
+        (req.body.selectedParticipantsReferences.length === 0 &&
           req.body.participants === undefined) ||
-        req.body.customParticipantsReferences.some(
-          (customParticipantReference) =>
-            typeof customParticipantReference !== "string"
+        req.body.selectedParticipantsReferences.some(
+          (selectedParticipantReference) =>
+            typeof selectedParticipantReference !== "string"
         ) ||
-        req.body.customParticipantsReferences.length !==
-          new Set(req.body.customParticipantsReferences).size
+        req.body.selectedParticipantsReferences.length !==
+          new Set(req.body.selectedParticipantsReferences).size
       )
         return next("validation");
 
-      req.body.customParticipantsReferences.push(
+      req.body.selectedParticipantsReferences.push(
         res.locals.enrollment.reference
       );
-      const customParticipants =
+      const selectedParticipants =
         req.body.participants !== "everyone"
           ? app.locals.database.all<{
               id: number;
@@ -3894,15 +3894,15 @@ export default (app: Courselore): void => {
                 SELECT "id", "courseRole"
                 FROM "enrollments"
                 WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                      "reference" IN ${req.body.customParticipantsReferences}
+                      "reference" IN ${req.body.selectedParticipantsReferences}
               `
             )
           : [];
 
       if (
         (req.body.participants !== "everyone" &&
-          req.body.customParticipantsReferences.length !==
-            customParticipants.length) ||
+          req.body.selectedParticipantsReferences.length !==
+            selectedParticipants.length) ||
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
@@ -3955,7 +3955,7 @@ export default (app: Courselore): void => {
             ${res.locals.course.id},
             ${String(res.locals.course.nextConversationReference)},
             ${res.locals.enrollment.id},
-            ${req.body.participants ?? "custom"},
+            ${req.body.participants ?? "selected"},
             ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
             ${req.body.type},
             ${req.body.isPinned === "on" ? new Date().toISOString() : null},
@@ -3967,19 +3967,19 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      for (const customParticipant of customParticipants)
+      for (const selectedParticipant of selectedParticipants)
         if (
           (conversation.participants === "staff" &&
-            customParticipant.courseRole !== "staff") ||
-          conversation.participants === "custom"
+            selectedParticipant.courseRole !== "staff") ||
+          conversation.participants === "selected"
         )
           app.locals.database.run(
             sql`
-              INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
+              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
                 ${new Date().toISOString()},
                 ${conversation.id},
-                ${customParticipant.id}
+                ${selectedParticipant.id}
               )
             `
           );
@@ -7796,7 +7796,7 @@ export default (app: Courselore): void => {
     HTML,
     {
       participants?: "everyone" | "staff" | undefined;
-      customParticipantsReferences?: string[];
+      selectedParticipantsReferences?: string[];
       type?: ConversationType;
       isPinned?: "true" | "false";
       isResolved?: "true" | "false";
@@ -7813,27 +7813,27 @@ export default (app: Courselore): void => {
     (req, res, next) => {
       if (
         typeof req.body.participants === "string" ||
-        Array.isArray(req.body.customParticipantsReferences)
+        Array.isArray(req.body.selectedParticipantsReferences)
       ) {
-        req.body.customParticipantsReferences ??= [];
+        req.body.selectedParticipantsReferences ??= [];
         if (
           !["everyone", "staff", undefined].includes(req.body.participants) ||
-          !Array.isArray(req.body.customParticipantsReferences) ||
-          (req.body.customParticipantsReferences.length === 0 &&
+          !Array.isArray(req.body.selectedParticipantsReferences) ||
+          (req.body.selectedParticipantsReferences.length === 0 &&
             req.body.participants === undefined) ||
-          req.body.customParticipantsReferences.some(
-            (customParticipantReference) =>
-              typeof customParticipantReference !== "string"
+          req.body.selectedParticipantsReferences.some(
+            (selectedParticipantReference) =>
+              typeof selectedParticipantReference !== "string"
           ) ||
-          req.body.customParticipantsReferences.length !==
-            new Set(req.body.customParticipantsReferences).size
+          req.body.selectedParticipantsReferences.length !==
+            new Set(req.body.selectedParticipantsReferences).size
         )
           return next("validation");
 
-        req.body.customParticipantsReferences.push(
+        req.body.selectedParticipantsReferences.push(
           res.locals.enrollment.reference
         );
-        const customParticipants =
+        const selectedParticipants =
           req.body.participants !== "everyone"
             ? app.locals.database.all<{
                 id: number;
@@ -7843,47 +7843,47 @@ export default (app: Courselore): void => {
                   SELECT "id", "courseRole"
                   FROM "enrollments"
                   WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                        "reference" IN ${req.body.customParticipantsReferences}
+                        "reference" IN ${req.body.selectedParticipantsReferences}
                 `
               )
             : [];
 
         if (
           req.body.participants !== "everyone" &&
-          req.body.customParticipantsReferences.length !==
-            customParticipants.length
+          req.body.selectedParticipantsReferences.length !==
+            selectedParticipants.length
         )
           return next("validation");
 
         app.locals.database.run(
           sql`
             UPDATE "conversations"
-            SET "participants" = ${req.body.participants ?? "custom"}
+            SET "participants" = ${req.body.participants ?? "selected"}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
         app.locals.database.run(
           sql`
-            DELETE FROM "conversationCustomParticipants"
+            DELETE FROM "conversationSelectedParticipants"
             WHERE "conversation" = ${res.locals.conversation} AND
-                  "enrollment" NOT IN ${customParticipants.map(
-                    (customParticipant) => customParticipant.id
+                  "enrollment" NOT IN ${selectedParticipants.map(
+                    (selectedParticipant) => selectedParticipant.id
                   )}
           `
         );
-        for (const customParticipant of customParticipants)
+        for (const selectedParticipant of selectedParticipants)
           if (
             (res.locals.conversation.participants === "staff" &&
-              customParticipant.courseRole !== "staff") ||
-            res.locals.conversation.participants === "custom"
+              selectedParticipant.courseRole !== "staff") ||
+            res.locals.conversation.participants === "selected"
           )
             app.locals.database.run(
               sql`
-                INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
+                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
                 VALUES (
                   ${new Date().toISOString()},
                   ${res.locals.conversation.id},
-                  ${customParticipant.id}
+                  ${selectedParticipant.id}
                 )
               `
             );

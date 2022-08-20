@@ -708,9 +708,9 @@ export default (app: Courselore): void => {
                 : sql``
             } OR (
               SELECT TRUE
-              FROM "conversationCustomParticipants"
-              WHERE "conversationCustomParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationCustomParticipants"."enrollment" = ${res.locals.enrollment.id}
+              FROM "conversationSelectedParticipants"
+              WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                    "conversationSelectedParticipants"."enrollment" = ${res.locals.enrollment.id}
             )
           )
         `

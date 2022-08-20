@@ -1104,7 +1104,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           : Math.random() < 0.5
           ? "everyone"
           : lodash.sample(conversationParticipantses)!;
-        const customParticipantEnrollments = lodash.uniq(
+        const selectedParticipantEnrollments = lodash.uniq(
           participants === "everyone"
             ? []
             : participants === "staff"
@@ -1116,7 +1116,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   : []),
                 ...lodash.sampleSize(students, lodash.random(0, 10)),
               ]
-            : participants === "custom"
+            : participants === "selected"
             ? [
                 ...(Math.random() < 0.5 ? [enrollment] : []),
                 ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
@@ -1128,10 +1128,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             ? enrollments
             : participants === "staff"
             ? staff
-            : participants === "custom"
+            : participants === "selected"
             ? []
             : []),
-          ...customParticipantEnrollments,
+          ...selectedParticipantEnrollments,
         ]);
         const thereExistsMultipleStudentParticipants =
           lodash.intersection(participantEnrollments, students).length > 1;
@@ -1227,10 +1227,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           `
         )!;
 
-        for (const enrollment of customParticipantEnrollments)
+        for (const enrollment of selectedParticipantEnrollments)
           app.locals.database.run(
             sql`
-              INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
+              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
                 ${new Date().toISOString()},
                 ${conversation.id},

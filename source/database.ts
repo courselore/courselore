@@ -1203,7 +1203,7 @@ export default async (app: Courselore): Promise<void> => {
             UNIQUE ("course", "reference")
           );
 
-          CREATE TABLE "conversationCustomParticipants" (
+          CREATE TABLE "conversationSelectedParticipants" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
@@ -1211,8 +1211,8 @@ export default async (app: Courselore): Promise<void> => {
             UNIQUE ("conversation", "enrollment") ON CONFLICT IGNORE
           );
           
-          CREATE INDEX "conversationCustomParticipantsConversationIndex" ON "conversationCustomParticipants" ("conversation");
-          CREATE INDEX "conversationCustomParticipantsEnrollmentIndex" ON "conversationCustomParticipants" ("enrollment");
+          CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
+          CREATE INDEX "conversationSelectedParticipantsEnrollmentIndex" ON "conversationSelectedParticipants" ("enrollment");
         `
       );
 
@@ -1303,7 +1303,7 @@ export default async (app: Courselore): Promise<void> => {
           ))
             app.locals.database.run(
               sql`
-                INSERT INTO "conversationCustomParticipants" (
+                INSERT INTO "conversationSelectedParticipants" (
                   "createdAt",
                   "conversation",
                   "enrollment"
