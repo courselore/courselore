@@ -3695,7 +3695,7 @@ export default (app: Courselore): void => {
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      participants?: "everyone" | "staff" | undefined;
+      participants?: ConversationParticipants;
       selectedParticipantsReferences?: string[];
       shouldNotify?: "on";
       isPinned?: "on";
@@ -3868,10 +3868,11 @@ export default (app: Courselore): void => {
                 req.body.tagsReferences,
                 res.locals.tags.map((tag) => tag.reference)
               ).length)) ||
-        !["everyone", "staff", undefined].includes(req.body.participants) ||
+        typeof req.body.participants !== "string" ||
+        !conversationParticipantses.includes(req.body.participants) ||
         !Array.isArray(req.body.selectedParticipantsReferences) ||
         (req.body.selectedParticipantsReferences.length === 0 &&
-          req.body.participants === undefined) ||
+          req.body.participants === "selected") ||
         req.body.selectedParticipantsReferences.some(
           (selectedParticipantReference) =>
             typeof selectedParticipantReference !== "string"
@@ -3955,7 +3956,7 @@ export default (app: Courselore): void => {
             ${res.locals.course.id},
             ${String(res.locals.course.nextConversationReference)},
             ${res.locals.enrollment.id},
-            ${req.body.participants ?? "selected"},
+            ${req.body.participants},
             ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
             ${req.body.type},
             ${req.body.isPinned === "on" ? new Date().toISOString() : null},
@@ -7795,7 +7796,7 @@ export default (app: Courselore): void => {
     { courseReference: string; conversationReference: string },
     HTML,
     {
-      participants?: "everyone" | "staff" | undefined;
+      participants?: ConversationParticipants;
       selectedParticipantsReferences?: string[];
       type?: ConversationType;
       isPinned?: "true" | "false";
@@ -7811,16 +7812,13 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
     (req, res, next) => {
-      if (
-        typeof req.body.participants === "string" ||
-        Array.isArray(req.body.selectedParticipantsReferences)
-      ) {
+      if (typeof req.body.participants === "string") {
         req.body.selectedParticipantsReferences ??= [];
         if (
-          !["everyone", "staff", undefined].includes(req.body.participants) ||
+          !conversationParticipantses.includes(req.body.participants) ||
           !Array.isArray(req.body.selectedParticipantsReferences) ||
           (req.body.selectedParticipantsReferences.length === 0 &&
-            req.body.participants === undefined) ||
+            req.body.participants === "selected") ||
           req.body.selectedParticipantsReferences.some(
             (selectedParticipantReference) =>
               typeof selectedParticipantReference !== "string"
@@ -7858,14 +7856,14 @@ export default (app: Courselore): void => {
         app.locals.database.run(
           sql`
             UPDATE "conversations"
-            SET "participants" = ${req.body.participants ?? "selected"}
+            SET "participants" = ${req.body.participants}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
         app.locals.database.run(
           sql`
             DELETE FROM "conversationSelectedParticipants"
-            WHERE "conversation" = ${res.locals.conversation} AND
+            WHERE "conversation" = ${res.locals.conversation.id} AND
                   "enrollment" NOT IN ${selectedParticipants.map(
                     (selectedParticipant) => selectedParticipant.id
                   )}
