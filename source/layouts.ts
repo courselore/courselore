@@ -1527,6 +1527,12 @@ export default async (app: Courselore): Promise<void> => {
           }
         }
 
+        .input--radio-as-select {
+          &:not(:checked) + * {
+            display: none;
+          }
+        }
+
         .button {
           padding: var(--space--1) var(--space--4);
           border-radius: var(--border-radius--md);
