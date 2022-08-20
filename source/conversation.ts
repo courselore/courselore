@@ -3220,97 +3220,66 @@ export default (app: Courselore): void => {
                         content: ${res.locals.html(
                           html`
                             <div class="dropdown--menu">
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--blue"
-                                onload="${javascript`
-                                  this.onclick = () => {
-                                    this.closest("form").querySelector('[name="participants"][value="everyone"]').checked = true;
-                                    this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                    this.classList.add("button--blue");
-                                    tippy.hideAll();
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-people"></i>
-                                Everyone
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                onload="${javascript`
-                                  this.onclick = () => {
-                                    this.closest("form").querySelector('[name="participants"][value="staff"]').checked = true;
-                                    this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                    this.classList.add("button--blue");
-                                    tippy.hideAll();
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-mortarboard"></i>
-                                Staff
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                onload="${javascript`
-                                  this.onclick = () => {
-                                    this.closest("form").querySelector('[name="participants"][value="selected"]').checked = true;
-                                    this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                    this.classList.add("button--blue");
-                                    tippy.hideAll();
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-door-closed"></i>
-                                Selected People
-                              </button>
+                              $${conversationParticipantses.map(
+                                (conversationParticipants) => html`
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button ${conversationParticipants ===
+                                    "everyone"
+                                      ? html`button--blue`
+                                      : html`button--transparent`} ${conversationParticipantsTextColor[
+                                      conversationParticipants
+                                    ]}"
+                                    onload="${javascript`
+                                      this.onclick = () => {
+                                        this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+                                        this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
+                                        this.classList.add("button--blue");
+                                        tippy.hideAll();
+                                      };
+                                    `}"
+                                  >
+                                    $${conversationParticipantsIcon[
+                                      conversationParticipants
+                                    ].fill}
+                                    $${conversationParticipantsLabel[
+                                      conversationParticipants
+                                    ]}
+                                  </button>
+                                `
+                              )}
                             </div>
                           `
                         )},
                       });
                     `}"
                   >
-                    <input
-                      type="radio"
-                      name="participants"
-                      value="everyone"
-                      checked
-                      class="visually-hidden input--radio-as-select"
-                    />
-                    <div
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-people"></i>
-                      Everyone
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
-                    <input
-                      type="radio"
-                      name="participants"
-                      value="staff"
-                      class="visually-hidden input--radio-as-select"
-                    />
-                    <div
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-mortarboard"></i>
-                      Staff
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
-                    <input
-                      type="radio"
-                      name="participants"
-                      value="selected"
-                      class="visually-hidden input--radio-as-select"
-                    />
-                    <div
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-door-closed"></i>
-                      Selected People
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
+                    $${conversationParticipantses.map(
+                      (conversationParticipants) => html`
+                        <input
+                          type="radio"
+                          name="participants"
+                          value="${conversationParticipants}"
+                          $${conversationParticipants === "everyone"
+                            ? html`checked`
+                            : html``}
+                          class="visually-hidden input--radio-as-select"
+                        />
+                        <div
+                          class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
+                            conversationParticipants
+                          ]}"
+                        >
+                          $${conversationParticipantsIcon[
+                            conversationParticipants
+                          ].fill}
+                          $${conversationParticipantsLabel[
+                            conversationParticipants
+                          ]}
+                          <i class="bi bi-chevron-down"></i>
+                        </div>
+                      `
+                    )}
                   </div>
                 </div>
               </div>
