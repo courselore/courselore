@@ -559,8 +559,7 @@ export default (app: Courselore): void => {
         req.body.content.trim() === "" ||
         ![undefined, "on"].includes(req.body.isAnonymous) ||
         (req.body.isAnonymous === "on" &&
-          (res.locals.enrollment.courseRole === "staff" ||
-            res.locals.conversation.staffOnlyAt !== null))
+          res.locals.enrollment.courseRole === "staff")
       )
         return next("validation");
 
@@ -770,7 +769,6 @@ export default (app: Courselore): void => {
           !["true", "false"].includes(req.body.isAnonymous) ||
           res.locals.message.authorEnrollment === "no-longer-enrolled" ||
           res.locals.message.authorEnrollment.courseRole === "staff" ||
-          res.locals.conversation.staffOnlyAt !== null ||
           (req.body.isAnonymous === "true" &&
             res.locals.message.anonymousAt !== null) ||
           (req.body.isAnonymous === "false" &&
