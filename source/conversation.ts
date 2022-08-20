@@ -3930,7 +3930,7 @@ export default (app: Courselore): void => {
         )
           app.locals.database.run(
             sql`
-              INSERT INTO "customParticipants" ("createdAt", "conversation", "enrollment")
+              INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
                 ${new Date().toISOString()},
                 ${conversation.id},
@@ -7924,28 +7924,83 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
     (req, res, next) => {
-      if (typeof req.body.isStaffOnly === "string")
+      if (
+        typeof req.body.participants === "string" ||
+        Array.isArray(req.body.customParticipantsReferences)
+      ) {
+        req.body.customParticipantsReferences ??= [];
         if (
-          !["true", "false"].includes(req.body.isStaffOnly) ||
-          res.locals.enrollment.courseRole !== "staff" ||
-          (req.body.isStaffOnly === "true" &&
-            res.locals.conversation.staffOnlyAt !== null) ||
-          (req.body.isStaffOnly === "false" &&
-            res.locals.conversation.staffOnlyAt === null)
+          !["everyone", "staff", undefined].includes(req.body.participants) ||
+          !Array.isArray(req.body.customParticipantsReferences) ||
+          (req.body.customParticipantsReferences.length === 0 &&
+            req.body.participants === undefined) ||
+          req.body.customParticipantsReferences.some(
+            (customParticipantReference) =>
+              typeof customParticipantReference !== "string"
+          ) ||
+          req.body.customParticipantsReferences.length !==
+            new Set(req.body.customParticipantsReferences).size
         )
           return next("validation");
-        else
-          app.locals.database.run(
-            sql`
-              UPDATE "conversations"
-              SET "staffOnlyAt" = ${
-                req.body.isStaffOnly === "true"
-                  ? new Date().toISOString()
-                  : null
-              }
-              WHERE "id" = ${res.locals.conversation.id}
-            `
-          );
+
+        req.body.customParticipantsReferences.push(
+          res.locals.enrollment.reference
+        );
+        const customParticipants =
+          req.body.participants !== "everyone"
+            ? app.locals.database.all<{
+                id: number;
+                courseRole: CourseRole;
+              }>(
+                sql`
+                  SELECT "id", "courseRole"
+                  FROM "enrollments"
+                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                        "reference" IN ${req.body.customParticipantsReferences}
+                `
+              )
+            : [];
+
+        if (
+          req.body.participants !== "everyone" &&
+          req.body.customParticipantsReferences.length !==
+            customParticipants.length
+        )
+          return next("validation");
+
+        app.locals.database.run(
+          sql`
+            UPDATE "conversations"
+            SET "participants" = ${req.body.participants ?? "custom"}
+            WHERE "id" = ${res.locals.conversation.id}
+          `
+        );
+        app.locals.database.run(
+          sql`
+            DELETE FROM "conversationCustomParticipants"
+            WHERE "conversation" = ${res.locals.conversation} AND
+                  "enrollment" NOT IN ${customParticipants.map(
+                    (customParticipant) => customParticipant.id
+                  )}
+          `
+        );
+        for (const customParticipant of customParticipants)
+          if (
+            (res.locals.conversation.participants === "staff" &&
+              customParticipant.courseRole !== "staff") ||
+            res.locals.conversation.participants === "custom"
+          )
+            app.locals.database.run(
+              sql`
+                INSERT INTO "conversationCustomParticipants" ("createdAt", "conversation", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${res.locals.conversation.id},
+                  ${customParticipant.id}
+                )
+              `
+            );
+      }
 
       if (typeof req.body.type === "string")
         if (!conversationTypes.includes(req.body.type))

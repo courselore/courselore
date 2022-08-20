@@ -1208,7 +1208,7 @@ export default async (app: Courselore): Promise<void> => {
             "createdAt" TEXT NOT NULL,
             "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
             "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-            UNIQUE ("conversation", "enrollment")
+            UNIQUE ("conversation", "enrollment") ON CONFLICT IGNORE
           );
           
           CREATE INDEX "conversationCustomParticipantsConversationIndex" ON "conversationCustomParticipants" ("conversation");
