@@ -1007,9 +1007,66 @@ export default (app: Courselore): void => {
     },
     MessageExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference",
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference/close-open",
     ...messageExistsMiddleware,
-    (req, res, next) => {}
+    (req, res, next) => {
+      if (typeof req.params.pollReference !== "string")
+        return next("validation");
+
+      const messagePoll = app.locals.database.get<{
+        id: number;
+        reference: string;
+        maxOptions: string;
+        closesAt: string;
+        createdAt: string;
+        course: number;
+      }>(
+        sql`
+            SELECT "id",
+                    "reference",
+                    "maxOptions",
+                    "closesAt",
+                    "createdAt",
+                    "course"
+            FROM "messagePolls"
+            WHERE "reference" = ${req.params.pollReference}
+          `
+      );
+
+      if (messagePoll === undefined) return next("validation");
+
+      if (
+        messagePoll.closesAt !== null &&
+        new Date().getTime() >= new Date(messagePoll.closesAt).getTime()
+      ) {
+        app.locals.database.run(sql`
+          UPDATE "messagePolls"
+          SET "closesAt" = NULL
+          WHERE "reference" = ${messagePoll.reference}
+        `);
+      } else {
+        app.locals.database.run(sql`
+          UPDATE "messagePolls"
+          SET "closesAt" = ${new Date().toISOString()}
+          WHERE "reference" = ${messagePoll.reference}
+        `);
+      }
+
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            conversations: req.query.conversations,
+            messages: req.query.messages,
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
+
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
+    }
   );
 
   app.delete<

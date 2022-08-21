@@ -122,7 +122,6 @@ export default async (app: Courselore): Promise<void> => {
         tagNames: [
           ...(rehypeSanitizeDefaultSchema.tagNames ?? []),
           "courselore-poll",
-          "courselore-poll-option",
         ],
         attributes: {
           ...rehypeSanitizeDefaultSchema.attributes,
@@ -138,8 +137,7 @@ export default async (app: Courselore): Promise<void> => {
             ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
             "className",
           ],
-          "courselore-poll": ["options", "closed", "closes-at"],
-          "courselore-poll-option": ["votes"],
+          "courselore-poll": ["reference"],
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
@@ -3252,11 +3250,32 @@ ${contentSource}</textarea
     }
   );
 
-  // app.post<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>(
-  //   "/content-editor/poll",
-  //   ...app.locals.middlewares.isEnrolledInCourse,
-  //   (req, res, next) => {}
-  // );
+  // TODO: Adding new poll patch
+  app.post<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/content-editor/:courseReference/polls",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res, next) => {
+      app.locals.database.run(sql`
+        INSERT INTO "messagePolls" ("reference", "maxOptions", "closesAt", "createdAt", "course")
+        VALUES (
+          ${},
+          ${},
+          ${},
+          ${},
+          ${}
+        )
+      `);
+    
+      // TODO: See image attachment patch below.
+
+    }
+  );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/attachments",
