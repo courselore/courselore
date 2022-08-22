@@ -639,6 +639,33 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
 
+        const canVote =
+          app.locals.database.get<{ count: number }>(
+            sql`
+            SELECT COUNT(*) AS "count"
+            FROM "messagePollsVotes"
+            JOIN "messagePollsOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollsOptions"."id"
+            WHERE "messagePollsOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment?.id}
+          `
+          )!.count !== 1 || messagePoll.maxOptions === "multiple";
+
+        const optionHasVote = messagePollsOptions.map(
+          (messagePollsOption) =>
+            app.locals.database.get<{
+              id: number;
+              messagePollOption: number;
+              enrollment: number;
+            }>(
+              sql`
+                SELECT "id",
+                       "messagePollOption",
+                       "enrollment"
+                FROM "messagePollsVotes"
+                WHERE "messagePollOption" = ${messagePollsOption.id} AND "enrollment" = ${res.locals.enrollment?.id}
+              `
+            ) !== undefined
+        );
+
         const pollClosed =
           messagePoll.closesAt !== null &&
           new Date().getTime() >= new Date(messagePoll.closesAt).getTime();
@@ -655,9 +682,9 @@ export default async (app: Courselore): Promise<void> => {
               padding: var(--space--4);
             `)}"
           >
-            <div key="vote">
+            <div key="options">
               $${messagePollsOptions.map(
-                (messagePollsOption) => html`
+                (messagePollsOption, index) => html`
                   <form
                     $${res.locals.course !== undefined &&
                     res.locals.conversation !== undefined &&
@@ -682,7 +709,7 @@ export default async (app: Courselore): Promise<void> => {
                       name="_csrf"
                       value="${req.csrfToken()}"
                     />
-                    $${pollClosed
+                    $${pollClosed || (!canVote && !optionHasVote[index])
                       ? html`<i class="bi bi-caret-right"></i>`
                       : html`<i class="bi bi-caret-right-fill"></i>`}
                     <div
@@ -692,10 +719,16 @@ export default async (app: Courselore): Promise<void> => {
                     >
                       <button
                         class="button button--tight button--tight--inline button--transparent strong"
-                        $${message === undefined ? html`disabled` : html``}
-                        $${pollClosed ? html`disabled` : html``}
+                        $${message === undefined ||
+                        pollClosed ||
+                        (!canVote && !optionHasVote[index])
+                          ? html`disabled`
+                          : html``}
                       >
                         ${messagePollsOption.contentSource}
+                        $${optionHasVote[index]
+                          ? html`<i class="bi bi-check2"></i>`
+                          : html``}
                       </button>
                     </div>
                   </form>
@@ -799,15 +832,16 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     if (${pollClosed}) {
                       this.checked = true;
-                      this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
+                      this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
                       this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
                     }
                     this.onchange = () => {
+                      this.isModified = false;
                       if (this.checked) {
-                        this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = true;
+                        this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
                         this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
                       } else {
-                        this.closest('[key="poll"]').querySelector('[key="vote"]').hidden = false;
+                        this.closest('[key="poll"]').querySelector('[key="options"]').hidden = false;
                         this.closest('[key="poll"]').querySelector('[key="results"]').hidden = true;
                       }
                     };
@@ -880,6 +914,20 @@ export default async (app: Courselore): Promise<void> => {
                         `}"
                       ></time
                     ></label>
+                  `
+                : html``}
+              $${messagePoll.maxOptions === "multiple"
+                ? html`
+                    <label
+                      class="secondary"
+                      css="${res.locals.css(css`
+                        display: flex;
+                        gap: var(--space--1);
+                      `)}"
+                    >
+                      <i class="bi bi-check2-all"></i>
+                      Multiple Choice
+                    </label>
                   `
                 : html``}
             </div>
@@ -1381,9 +1429,11 @@ export default async (app: Courselore): Promise<void> => {
                                           });
 
                                           this.onclick = (event) => {
-                                            const option = this.closest(".label");
-                                            option.replaceChildren();
-                                            option.hidden = true;
+                                            this.closest('[key="option"]').remove();
+
+                                            let i = 1;
+                                            for (const child of document.querySelector('[key="options"]').children)
+                                              child.querySelector("p").textContent = "Option " + (i++); 
                                           };
                                         `}"
                                       >
