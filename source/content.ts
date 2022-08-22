@@ -600,12 +600,12 @@ export default async (app: Courselore): Promise<void> => {
       for (const elementPoll of contentElement.querySelectorAll(
         "courselore-poll"
       )) {
-        // TODO: Check that these database queries are successful?
+        // TODO: Check that these database queries are successful???
         const messagePoll = app.locals.database.get<{
           id: number;
           reference: string;
-          maxOptions: string;
-          closesAt: string;
+          maxOptions: "single" | "multiple";
+          closesAt: string | null;
           createdAt: string;
           course: number;
         }>(
@@ -844,13 +844,12 @@ export default async (app: Courselore): Promise<void> => {
                         name="_csrf"
                         value="${req.csrfToken()}"
                       />
-                      <label
+                      <button
                         class="button button--tight button--tight--inline button--transparent"
                       >
                         <input
                           type="checkbox"
                           name="closePoll"
-                          value="true"
                           $${pollClosed ? html`checked` : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                         />
@@ -862,7 +861,7 @@ export default async (app: Courselore): Promise<void> => {
                           <i class="bi bi-unlock"></i>
                           Open Poll
                         </span>
-                      </label>
+                      </button>
                     </form>
                   `
                 : html``}
@@ -1426,10 +1425,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-
-                  this.onclick = () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--polls").click();
-                  };
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -3289,7 +3284,7 @@ ${contentSource}</textarea
         VALUES (
           ${pollReference},
           ${req.body.multipleOptions === "true" ? "multiple" : "single"},
-          ${req.body.closesAt},
+          ${req.body.closesAt.trim() === "" ? null : req.body.closesAt},
           ${new Date().toISOString()},
           ${res.locals.course.id}
         )
@@ -3298,8 +3293,8 @@ ${contentSource}</textarea
       const messagePoll = app.locals.database.get<{
         id: number;
         reference: string;
-        maxOptions: string;
-        closesAt: string;
+        maxOptions: "single" | "multiple";
+        closesAt: string | null;
         createdAt: string;
         course: number;
       }>(

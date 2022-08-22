@@ -881,8 +881,8 @@ export default (app: Courselore): void => {
       const messagePoll = app.locals.database.get<{
         id: number;
         reference: string;
-        maxOptions: string;
-        closesAt: string;
+        maxOptions: "single" | "multiple";
+        closesAt: string | null;
         createdAt: string;
         course: number;
       }>(
@@ -944,8 +944,8 @@ export default (app: Courselore): void => {
         sql`
           SELECT COUNT(*) AS "count"
           FROM "messagePollsVotes"
-          JOIN "messagePollOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollOptions"."id"
-          WHERE "messagePollOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment.id}
+          JOIN "messagePollsOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollsOptions"."id"
+          WHERE "messagePollsOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment.id}
         `
       )!.count;
 
@@ -1007,7 +1007,7 @@ export default (app: Courselore): void => {
     },
     MessageExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference/close-open",
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/polls/:pollReference",
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (typeof req.params.pollReference !== "string")
@@ -1016,8 +1016,8 @@ export default (app: Courselore): void => {
       const messagePoll = app.locals.database.get<{
         id: number;
         reference: string;
-        maxOptions: string;
-        closesAt: string;
+        maxOptions: "single" | "multiple";
+        closesAt: string | null;
         createdAt: string;
         course: number;
       }>(
@@ -1033,7 +1033,15 @@ export default (app: Courselore): void => {
           `
       );
 
-      if (messagePoll === undefined) return next("validation");
+      if (
+        messagePoll === undefined ||
+        !app.locals.helpers.mayEditMessage({
+          req: req as any /* TODO */,
+          res: res as any /* TODO */,
+          message: res.locals.message,
+        })
+      )
+        return next("validation");
 
       if (
         messagePoll.closesAt !== null &&
