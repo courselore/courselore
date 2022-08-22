@@ -1187,7 +1187,7 @@ export default async (app: Courselore): Promise<void> => {
         "maxOptions" TEXT NOT NULL,
         "closesAt" TEXT NULL,
         "createdAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "course" ON DELETE CASCADE
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE
       );
       
       CREATE TABLE "messagePollsOptions" (

@@ -695,7 +695,7 @@ export default async (app: Courselore): Promise<void> => {
                         $${message === undefined ? html`disabled` : html``}
                         $${pollClosed ? html`disabled` : html``}
                       >
-                        ${messagePollsOption.contentSourcePreprocessed}
+                        ${messagePollsOption.contentSource}
                       </button>
                     </div>
                   </form>
@@ -759,8 +759,7 @@ export default async (app: Courselore): Promise<void> => {
                           padding-left: var(--space--1);
                         `)}"
                       >
-                        ${messagePollsOption.contentSourcePreprocessed}
-                        &nbsp-&nbsp
+                        ${messagePollsOption.contentSource} &nbsp-&nbsp
                         ${app.locals.database
                           .get<{
                             count: number;
@@ -1206,7 +1205,9 @@ export default async (app: Courselore): Promise<void> => {
                       html`
                         <form
                           method="POST"
-                          action="https://${app.locals.options.host}/"
+                          action="https://${app.locals.options
+                            .host}/content-editor/${res.locals.course!
+                            .reference}/polls"
                           css="${res.locals.css(css`
                             display: flex;
                             flex-direction: column;
@@ -1236,7 +1237,8 @@ export default async (app: Courselore): Promise<void> => {
                             >
                               <input
                                 type="checkbox"
-                                name="maxOptions"
+                                name="multipleOptions"
+                                value="true"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
@@ -1309,12 +1311,13 @@ export default async (app: Courselore): Promise<void> => {
                             </div>
                             <input
                               type="text"
-                              class="input--text"
+                              name="closesAt"
                               value="${new Date(
                                 new Date().getTime() + 7 * 24 * 60 * 60 * 1000
                               ).toISOString()}"
                               placeholder="No close date"
                               autocomplete="off"
+                              class="input--text"
                               onload="${javascript`
                                 this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
                               `}"
@@ -1337,6 +1340,7 @@ export default async (app: Courselore): Promise<void> => {
                               const newOptionPartial = ${res.locals.html(
                                 html`
                                   <div
+                                    key="option"
                                     class="label"
                                     css="${res.locals.css(css`
                                       display: flex;
@@ -1344,7 +1348,7 @@ export default async (app: Courselore): Promise<void> => {
                                       gap: var(--space--1);
                                     `)}"
                                   >
-                                    <p class="label--text">Option X</p>
+                                    <p class="label--text"></p>
                                     <div
                                       css="${res.locals.css(css`
                                         display: flex;
@@ -1354,10 +1358,19 @@ export default async (app: Courselore): Promise<void> => {
                                     >
                                       <input
                                         type="text"
-                                        name="optionX"
                                         required
+                                        autocomplete="off"
                                         placeholder="Description..."
+                                        disabled
                                         class="input--text"
+                                        onloadpartial="${javascript`
+                                          this.isModified = true;
+                                          this.disabled = false;
+
+                                          const optionNumber = this.closest('[key="options"]').children.length;
+                                          this.name = "options[" + optionNumber + "]";
+                                          this.closest('[key="option"]').querySelector("p").textContent = "Option " + optionNumber;
+                                        `}"
                                       />
                                       <label
                                         class="button button--tight button--tight--inline button--transparent"
@@ -1369,8 +1382,6 @@ export default async (app: Courselore): Promise<void> => {
                                           });
 
                                           this.onclick = (event) => {
-                                            if ([...this.closest('[key="options"]').children].filter((option) => !option.hidden).length === 2)
-                                              return "Must have at least two options.";
                                             const option = this.closest(".label");
                                             option.replaceChildren();
                                             option.hidden = true;
@@ -1416,12 +1427,11 @@ export default async (app: Courselore): Promise<void> => {
                     )},
                   });
 
+                  this.onclick = () => {
+                    this.closest(".content-editor").querySelector(".content-editor--write--polls").click();
+                  };
+
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-            
-                  // this.onclick = () => {
-                  //   textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<courselore-poll reference='${"1234567890"}'></courselore-poll>", "\\n\\n");
-                  //   textarea.focus();
-                  // };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
                 `}"
@@ -3250,30 +3260,76 @@ ${contentSource}</textarea
     }
   );
 
-  // TODO: Adding new poll patch
   app.post<
     { courseReference: string },
     any,
-    {},
+    {
+      multipleOptions: string;
+      closesAt: string;
+      options: string[];
+    },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/content-editor/:courseReference/polls",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
+      if (
+        typeof req.body.closesAt !== "string" ||
+        !Array.isArray(req.body.options) ||
+        req.body.options.length < 2 ||
+        req.body.options.some((option) => typeof option !== "string")
+      )
+        return next("validation");
+
+      const pollReference = cryptoRandomString({ length: 10, type: "numeric" });
+
       app.locals.database.run(sql`
         INSERT INTO "messagePolls" ("reference", "maxOptions", "closesAt", "createdAt", "course")
         VALUES (
-          ${},
-          ${},
-          ${},
-          ${},
-          ${}
+          ${pollReference},
+          ${req.body.multipleOptions === "true" ? "multiple" : "single"},
+          ${req.body.closesAt},
+          ${new Date().toISOString()},
+          ${res.locals.course.id}
         )
       `);
-    
-      // TODO: See image attachment patch below.
 
+      const messagePoll = app.locals.database.get<{
+        id: number;
+        reference: string;
+        maxOptions: string;
+        closesAt: string;
+        createdAt: string;
+        course: number;
+      }>(
+        sql`
+            SELECT "id",
+                    "reference",
+                    "maxOptions",
+                    "closesAt",
+                    "createdAt",
+                    "course"
+            FROM "messagePolls"
+            WHERE "reference" = ${pollReference}
+          `
+      )!;
+
+      for (const option of req.body.options) {
+        app.locals.database.run(sql`
+          INSERT INTO "messagePollsOptions" ("reference", "messagePoll", "contentSource", "contentSourcePreprocessed")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${messagePoll.id},
+            ${option},
+            ${""}
+          )
+        `);
+      }
+
+      res.send(
+        `\n\n<courselore-poll reference="${pollReference}"></courselore-poll>`
+      );
     }
   );
 
