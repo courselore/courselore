@@ -52,6 +52,7 @@ export type ContentPartial = ({
   contentPreprocessed,
   message,
   search,
+  polls,
 }: {
   req: express.Request<
     {},
@@ -74,6 +75,7 @@ export type ContentPartial = ({
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
   search?: string | string[] | undefined;
+  polls?: boolean;
 }) => {
   contentProcessed: HTML;
   mentions: Set<string>;
@@ -179,6 +181,7 @@ export default async (app: Courselore): Promise<void> => {
     contentPreprocessed,
     message = undefined,
     search = undefined,
+    polls = true,
   }) => {
     const contentElement = JSDOM.fragment(html`
       <div key="content" class="content">$${contentPreprocessed}</div>
@@ -597,353 +600,369 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
 
-      for (const elementPoll of contentElement.querySelectorAll(
-        "courselore-poll"
-      )) {
-        const messagePoll = app.locals.database.get<{
-          id: number;
-          reference: string;
-          maxOptions: "single" | "multiple";
-          closesAt: string | null;
-          createdAt: string;
-          course: number;
-        }>(
-          sql`
-            SELECT "id",
-                   "reference",
-                   "maxOptions",
-                   "closesAt",
-                   "createdAt",
-                   "course"
-            FROM "messagePolls"
-            WHERE "reference" = ${elementPoll.getAttribute("reference")} AND
-                  "course" = ${res.locals.course.id}
-          `
-        );
-        if (messagePoll === undefined) {
-          elementPoll.outerHTML = html`
-            <p class="text--rose">Poll not found.</p>
-          `;
-          continue;
-        }
-
-        const messagePollsOptions = app.locals.database.all<{
-          id: number;
-          reference: string;
-          messagePoll: number;
-          contentSource: string;
-          contentSourcePreprocessed: string;
-        }>(
-          sql`
-            SELECT "id",
-                   "reference",
-                   "messagePoll",
-                   "contentSource",
-                   "contentSourcePreprocessed"
-            FROM "messagePollsOptions"
-            WHERE "messagePoll" = ${messagePoll.id}
-          `
-        );
-
-        const canVote =
-          app.locals.database.get<{ count: number }>(
+      const elementPolls = [
+        ...contentElement.querySelectorAll("courselore-poll"),
+      ];
+      if (polls) {
+        for (let pollIndex = 0; pollIndex < elementPolls.length; pollIndex++) {
+          const elementPoll = elementPolls[pollIndex];
+          const messagePoll = app.locals.database.get<{
+            id: number;
+            reference: string;
+            maxOptions: "single" | "multiple";
+            closesAt: string | null;
+            createdAt: string;
+            course: number;
+          }>(
             sql`
-            SELECT COUNT(*) AS "count"
-            FROM "messagePollsVotes"
-            JOIN "messagePollsOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollsOptions"."id"
-            WHERE "messagePollsOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment?.id}
-          `
-          )!.count !== 1 || messagePoll.maxOptions === "multiple";
+              SELECT "id",
+                    "reference",
+                    "maxOptions",
+                    "closesAt",
+                    "createdAt",
+                    "course"
+              FROM "messagePolls"
+              WHERE "reference" = ${elementPoll.getAttribute("reference")} AND
+                    "course" = ${res.locals.course.id}
+            `
+          );
+          if (messagePoll === undefined) {
+            elementPoll.outerHTML = html`
+              <p class="text--rose">Poll not found.</p>
+            `;
+            continue;
+          }
 
-        const optionHasVote = messagePollsOptions.map(
-          (messagePollsOption) =>
-            app.locals.database.get<{
-              id: number;
-              messagePollOption: number;
-              enrollment: number;
-            }>(
+          const messagePollsOptions = app.locals.database.all<{
+            id: number;
+            reference: string;
+            messagePoll: number;
+            contentSource: string;
+            contentSourcePreprocessed: string;
+          }>(
+            sql`
+              SELECT "id",
+                    "reference",
+                    "messagePoll",
+                    "contentSource",
+                    "contentSourcePreprocessed"
+              FROM "messagePollsOptions"
+              WHERE "messagePoll" = ${messagePoll.id}
+            `
+          );
+
+          const canVote =
+            app.locals.database.get<{ count: number }>(
               sql`
-                SELECT "id",
-                       "messagePollOption",
-                       "enrollment"
-                FROM "messagePollsVotes"
-                WHERE "messagePollOption" = ${messagePollsOption.id} AND "enrollment" = ${res.locals.enrollment?.id}
-              `
-            ) !== undefined
-        );
+              SELECT COUNT(*) AS "count"
+              FROM "messagePollsVotes"
+              JOIN "messagePollsOptions" ON "messagePollsVotes"."messagePollOption" = "messagePollsOptions"."id"
+              WHERE "messagePollsOptions"."messagePoll" = ${messagePoll.id} AND "messagePollsVotes"."enrollment" = ${res.locals.enrollment?.id}
+            `
+            )!.count !== 1 || messagePoll.maxOptions === "multiple";
 
-        const pollClosed =
-          messagePoll.closesAt !== null &&
-          new Date().getTime() >= new Date(messagePoll.closesAt).getTime();
-
-        elementPoll.outerHTML = html`
-          <div
-            key="poll"
-            css="${res.locals.css(css`
-              background-color: var(--color--gray--medium--100);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
-              }
-              border-radius: var(--border-radius--lg);
-              padding: var(--space--4);
-            `)}"
-          >
-            <div key="options">
-              $${messagePollsOptions.map(
-                (messagePollsOption, index) => html`
-                  <form
-                    $${res.locals.course !== undefined &&
-                    res.locals.conversation !== undefined &&
-                    message !== undefined
-                      ? html`
-                          method="POST"
-                          action="https://${app.locals.options
-                            .host}/courses/${res.locals.course
-                            .reference}/conversations/${res.locals.conversation
-                            .reference}/messages/${message.reference}/polls/${String(
-                            messagePoll.reference
-                          )}/options/${messagePollsOption.reference}"
-                        `
-                      : html``}
-                    css="${res.locals.css(css`
-                      display: flex;
-                      gap: var(--space--2);
-                    `)}"
-                  >
-                    <input
-                      type="hidden"
-                      name="_csrf"
-                      value="${req.csrfToken()}"
-                    />
-                    $${pollClosed || (!canVote && !optionHasVote[index])
-                      ? html`<i class="bi bi-caret-right"></i>`
-                      : html`<i class="bi bi-caret-right-fill"></i>`}
-                    <div
-                      css="${res.locals.css(css`
-                        padding-left: var(--space--1);
-                      `)}"
-                    >
-                      <button
-                        class="button button--tight button--tight--inline button--transparent strong"
-                        $${message === undefined ||
-                        pollClosed ||
-                        (!canVote && !optionHasVote[index])
-                          ? html`disabled`
-                          : html``}
-                      >
-                        $${app.locals.partials.content({
-                          req,
-                          res,
-                          contentPreprocessed:
-                            messagePollsOption.contentSourcePreprocessed,
-                        }).contentProcessed}
-                        $${optionHasVote[index]
-                          ? html`<i class="bi bi-check2"></i>`
-                          : html``}
-                      </button>
-                    </div>
-                  </form>
+          const optionHasVote = messagePollsOptions.map(
+            (messagePollsOption) =>
+              app.locals.database.get<{
+                id: number;
+                messagePollOption: number;
+                enrollment: number;
+              }>(
+                sql`
+                  SELECT "id",
+                        "messagePollOption",
+                        "enrollment"
+                  FROM "messagePollsVotes"
+                  WHERE "messagePollOption" = ${messagePollsOption.id} AND "enrollment" = ${res.locals.enrollment?.id}
                 `
-              )}
-            </div>
+              ) !== undefined
+          );
 
-            <div key="results" hidden>
-              $${messagePollsOptions.map(
-                (messagePollsOption) => html`
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                      flex-direction: row;
-                      gap: var(--space--2);
-                    `)}"
-                  >
-                    <i class="bi bi-caret-right-fill"></i>
-                    <div
-                      css="${res.locals.css(css`
-                        width: ${(
-                          100 *
-                          (app.locals.database.get<{
-                            count: number;
-                          }>(
-                            sql`
-                              SELECT COUNT(*) AS "count"
-                              FROM "messagePollsVotes"
-                              WHERE "messagePollOption" = ${messagePollsOption.id}
-                            `
-                          )!.count /
-                            messagePollsOptions
-                              .map(
-                                (option) =>
-                                  app.locals.database.get<{
-                                    count: number;
-                                  }>(
-                                    sql`
-                                      SELECT COUNT(*) AS "count"
-                                      FROM "messagePollsVotes"
-                                      WHERE "messagePollOption" = ${option.id}
-                                    `
-                                  )!.count
-                              )
-                              .reduce(
-                                (partialSum, value) => partialSum + value,
-                                0
-                              ))
-                        ).toString()}%;
-                        border-radius: var(--border-radius--md);
-                        background-color: var(--color--gray--medium--200);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--gray--medium--700);
-                        }
-                      `)}"
-                    >
-                      <label
-                        class="strong"
-                        css="${res.locals.css(css`
-                          position: absolute;
-                          padding-left: var(--space--1);
-                        `)}"
-                      >
-                        ${messagePollsOption.contentSource} &nbsp-&nbsp
-                        ${app.locals.database
-                          .get<{
-                            count: number;
-                          }>(
-                            sql`
-                            SELECT COUNT(*) AS "count"
-                            FROM "messagePollsVotes"
-                            WHERE "messagePollOption" = ${messagePollsOption.id}
-                          `
-                          )!
-                          .count.toString()}
-                        votes
-                      </label>
-                    </div>
-                  </div>
-                `
-              )}
-            </div>
+          const pollClosed =
+            messagePoll.closesAt !== null &&
+            new Date().getTime() >= new Date(messagePoll.closesAt).getTime();
 
-            <hr class="separator" />
-
+          elementPoll.outerHTML = html`
             <div
+              key="poll"
               css="${res.locals.css(css`
-                display: flex;
-                flex-direction: row;
-                row-gap: var(--space--2);
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                border-radius: var(--border-radius--lg);
+                padding: var(--space--4);
               `)}"
             >
-              <label
-                class="button button--tight button--tight--inline button--transparent"
-              >
-                <input
-                  type="checkbox"
-                  name="showResults"
-                  value="true"
-                  class="visually-hidden input--radio-or-checkbox--multilabel"
-                  onload="${javascript`
-                    if (${pollClosed}) {
-                      this.checked = true;
-                      this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
-                      this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
-                    }
-                    this.onchange = () => {
-                      this.isModified = false;
-                      if (this.checked) {
-                        this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
-                        this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
-                      } else {
-                        this.closest('[key="poll"]').querySelector('[key="options"]').hidden = false;
-                        this.closest('[key="poll"]').querySelector('[key="results"]').hidden = true;
-                      }
-                    };
-                  `}"
-                />
-                <span>
-                  <i class="bi bi-eye"></i>
-                  Show Results
-                </span>
-                <span>
-                  <i class="bi bi-eye-slash"></i>
-                  Hide Results
-                </span>
-              </label>
-
-              $${res.locals.course !== undefined &&
-              res.locals.conversation !== undefined &&
-              message !== undefined &&
-              app.locals.helpers.mayEditMessage({
-                req: req as any /* TODO */,
-                res: res as any /* TODO */,
-                message,
-              })
-                ? html`
+              <div key="options">
+                $${messagePollsOptions.map(
+                  (messagePollsOption, index) => html`
                     <form
-                      method="PATCH"
-                      action="https://${app.locals.options.host}/courses/${res
-                        .locals.course.reference}/conversations/${res.locals
-                        .conversation
-                        .reference}/messages/${message.reference}/polls/${messagePoll.reference}"
+                      $${res.locals.course !== undefined &&
+                      res.locals.conversation !== undefined &&
+                      message !== undefined
+                        ? html`
+                            method="POST"
+                            action="https://${app.locals.options
+                              .host}/courses/${res.locals.course
+                              .reference}/conversations/${res.locals
+                              .conversation
+                              .reference}/messages/${message.reference}/polls/${String(
+                              messagePoll.reference
+                            )}/options/${messagePollsOption.reference}"
+                          `
+                        : html``}
+                      css="${res.locals.css(css`
+                        display: flex;
+                        gap: var(--space--2);
+                      `)}"
                     >
                       <input
                         type="hidden"
                         name="_csrf"
                         value="${req.csrfToken()}"
                       />
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
+                      $${pollClosed || (!canVote && !optionHasVote[index])
+                        ? html`<i class="bi bi-caret-right"></i>`
+                        : html`<i class="bi bi-caret-right-fill"></i>`}
+                      <div
+                        css="${res.locals.css(css`
+                          padding-left: var(--space--1);
+                        `)}"
                       >
-                        <input
-                          type="checkbox"
-                          name="closePoll"
-                          $${pollClosed ? html`checked` : html``}
-                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                        />
-                        <span class="text--rose">
-                          <i class="bi bi-lock"></i>
-                          Close Poll
-                        </span>
-                        <span class="text--sky">
-                          <i class="bi bi-unlock"></i>
-                          Open Poll
-                        </span>
-                      </button>
+                        <button
+                          class="button button--tight button--tight--inline button--transparent strong"
+                          $${message === undefined ||
+                          pollClosed ||
+                          (!canVote && !optionHasVote[index])
+                            ? html`disabled`
+                            : html``}
+                        >
+                          $${app.locals.partials.content({
+                            req,
+                            res,
+                            id: `${id}--${pollIndex}--${index}`,
+                            contentPreprocessed:
+                              messagePollsOption.contentSourcePreprocessed,
+                            message,
+                            polls: false,
+                          }).contentProcessed}
+                          $${optionHasVote[index]
+                            ? html`<i class="bi bi-check2"></i>`
+                            : html``}
+                        </button>
+                      </div>
                     </form>
                   `
-                : html``}
-              $${pollClosed
-                ? html`<label class="secondary"> Poll is closed </label>`
-                : messagePoll.closesAt !== null
-                ? html`
-                    <label class="secondary">
-                      Poll closes
-                      <time
-                        datetime="${new Date(
-                          messagePoll.closesAt
-                        ).toISOString()}"
-                        onload="${javascript`
-                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                        `}"
-                      ></time
-                    ></label>
-                  `
-                : html``}
-              $${messagePoll.maxOptions === "multiple"
-                ? html`
-                    <label
-                      class="secondary"
+                )}
+              </div>
+
+              <div key="results" hidden>
+                $${messagePollsOptions.map(
+                  (messagePollsOption) => html`
+                    <div
                       css="${res.locals.css(css`
                         display: flex;
-                        gap: var(--space--1);
+                        flex-direction: row;
+                        gap: var(--space--2);
                       `)}"
                     >
-                      <i class="bi bi-check2-all"></i>
-                      Multiple Choice
-                    </label>
+                      <i class="bi bi-caret-right-fill"></i>
+                      <div
+                        css="${res.locals.css(css`
+                          width: ${(
+                            100 *
+                            (app.locals.database.get<{
+                              count: number;
+                            }>(
+                              sql`
+                                SELECT COUNT(*) AS "count"
+                                FROM "messagePollsVotes"
+                                WHERE "messagePollOption" = ${messagePollsOption.id}
+                              `
+                            )!.count /
+                              messagePollsOptions
+                                .map(
+                                  (option) =>
+                                    app.locals.database.get<{
+                                      count: number;
+                                    }>(
+                                      sql`
+                                        SELECT COUNT(*) AS "count"
+                                        FROM "messagePollsVotes"
+                                        WHERE "messagePollOption" = ${option.id}
+                                      `
+                                    )!.count
+                                )
+                                .reduce(
+                                  (partialSum, value) => partialSum + value,
+                                  0
+                                ))
+                          ).toString()}%;
+                          border-radius: var(--border-radius--md);
+                          background-color: var(--color--gray--medium--200);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--gray--medium--700);
+                          }
+                        `)}"
+                      >
+                        <label
+                          class="strong"
+                          css="${res.locals.css(css`
+                            position: absolute;
+                            padding-left: var(--space--1);
+                          `)}"
+                        >
+                          ${messagePollsOption.contentSource} &nbsp-&nbsp
+                          ${app.locals.database
+                            .get<{
+                              count: number;
+                            }>(
+                              sql`
+                              SELECT COUNT(*) AS "count"
+                              FROM "messagePollsVotes"
+                              WHERE "messagePollOption" = ${messagePollsOption.id}
+                            `
+                            )!
+                            .count.toString()}
+                          votes
+                        </label>
+                      </div>
+                    </div>
                   `
-                : html``}
+                )}
+              </div>
+
+              <hr class="separator" />
+
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-direction: row;
+                  row-gap: var(--space--2);
+                `)}"
+              >
+                <label
+                  class="button button--tight button--tight--inline button--transparent"
+                >
+                  <input
+                    type="checkbox"
+                    name="showResults"
+                    value="true"
+                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                    onload="${javascript`
+                      if (${pollClosed}) {
+                        this.checked = true;
+                        this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
+                        this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
+                      }
+                      this.onchange = () => {
+                        this.isModified = false;
+                        if (this.checked) {
+                          this.closest('[key="poll"]').querySelector('[key="options"]').hidden = true;
+                          this.closest('[key="poll"]').querySelector('[key="results"]').hidden = false;
+                        } else {
+                          this.closest('[key="poll"]').querySelector('[key="options"]').hidden = false;
+                          this.closest('[key="poll"]').querySelector('[key="results"]').hidden = true;
+                        }
+                      };
+                    `}"
+                  />
+                  <span>
+                    <i class="bi bi-eye"></i>
+                    Show Results
+                  </span>
+                  <span>
+                    <i class="bi bi-eye-slash"></i>
+                    Hide Results
+                  </span>
+                </label>
+
+                $${res.locals.course !== undefined &&
+                res.locals.conversation !== undefined &&
+                message !== undefined &&
+                app.locals.helpers.mayEditMessage({
+                  req: req as any /* TODO */,
+                  res: res as any /* TODO */,
+                  message,
+                })
+                  ? html`
+                      <form
+                        method="PATCH"
+                        action="https://${app.locals.options.host}/courses/${res
+                          .locals.course.reference}/conversations/${res.locals
+                          .conversation
+                          .reference}/messages/${message.reference}/polls/${messagePoll.reference}"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="closePoll"
+                            $${pollClosed ? html`checked` : html``}
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span class="text--rose">
+                            <i class="bi bi-lock"></i>
+                            Close Poll
+                          </span>
+                          <span class="text--sky">
+                            <i class="bi bi-unlock"></i>
+                            Open Poll
+                          </span>
+                        </button>
+                      </form>
+                    `
+                  : html``}
+                $${pollClosed
+                  ? html`<label class="secondary"> Poll is closed </label>`
+                  : messagePoll.closesAt !== null
+                  ? html`
+                      <label class="secondary">
+                        Poll closes
+                        <time
+                          datetime="${new Date(
+                            messagePoll.closesAt
+                          ).toISOString()}"
+                          onload="${javascript`
+                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                          `}"
+                        ></time
+                      ></label>
+                    `
+                  : html``}
+                $${messagePoll.maxOptions === "multiple"
+                  ? html`
+                      <label
+                        class="secondary"
+                        css="${res.locals.css(css`
+                          display: flex;
+                          gap: var(--space--1);
+                        `)}"
+                      >
+                        <i class="bi bi-check2-all"></i>
+                        Multiple Choice
+                      </label>
+                    `
+                  : html``}
+              </div>
             </div>
-          </div>
-        `;
+          `;
+        }
+      } else {
+        for (const element of elementPolls)
+          element.outerHTML = html`
+            <p class="text--rose">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              You cannot put a poll within a poll…
+            </p>
+          `;
       }
     }
 
