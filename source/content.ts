@@ -600,7 +600,6 @@ export default async (app: Courselore): Promise<void> => {
       for (const elementPoll of contentElement.querySelectorAll(
         "courselore-poll"
       )) {
-        // TODO: Check that these database queries are successful???
         const messagePoll = app.locals.database.get<{
           id: number;
           reference: string;
@@ -619,7 +618,13 @@ export default async (app: Courselore): Promise<void> => {
             FROM "messagePolls"
             WHERE "reference" = ${elementPoll.getAttribute("reference")}
           `
-        )!;
+        );
+        if (messagePoll === undefined) {
+          elementPoll.outerHTML = html`
+            <p class="text--rose">Poll not found.</p>
+          `;
+          continue;
+        }
 
         const messagePollsOptions = app.locals.database.all<{
           id: number;
