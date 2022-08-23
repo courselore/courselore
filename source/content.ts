@@ -616,7 +616,8 @@ export default async (app: Courselore): Promise<void> => {
                    "createdAt",
                    "course"
             FROM "messagePolls"
-            WHERE "reference" = ${elementPoll.getAttribute("reference")}
+            WHERE "reference" = ${elementPoll.getAttribute("reference")} AND
+                  "course" = ${res.locals.course.id}
           `
         );
         if (messagePoll === undefined) {
