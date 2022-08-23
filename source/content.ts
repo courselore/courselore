@@ -88,6 +88,7 @@ export type ContentEditorPartial = ({
   contentSource,
   required,
   compact,
+  polls,
 }: {
   req: express.Request<
     {},
@@ -108,6 +109,7 @@ export type ContentEditorPartial = ({
   contentSource?: string;
   required?: boolean;
   compact?: boolean;
+  polls?: boolean;
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
@@ -1027,6 +1029,7 @@ export default async (app: Courselore): Promise<void> => {
     contentSource = "",
     required = true,
     compact = false,
+    polls = true,
   }) => html`
     <div
       key="content-editor"
@@ -1246,292 +1249,302 @@ export default async (app: Courselore): Promise<void> => {
                 <i class="bi bi-info-circle"></i>
               </button>
             </div>
-            <div>
-              <button
-                type="button"
-                class="button button--tight button--transparent"
-                onload="${javascript`
-                  (this.tooltip ??= tippy(this)).setProps({
-                    touch: false,
-                    content: ${res.locals.html(
-                      html`
-                        Poll
-                        <span class="keyboard-shortcut">
-                          (<span
-                            onload="${javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `}"
-                            >Ctrl+Alt+P</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            onload="${javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>P</span
-                          >)
-                        </span>
-                      `
-                    )},
-                  });
-
-                  (this.dropdown ??= tippy(this)).setProps({
-                    trigger: "click",
-                    interactive: true,
-                    content: ${res.locals.html(
-                      html`
-                        <form
-                          method="POST"
-                          action="https://${app.locals.options
-                            .host}/content-editor/${res.locals.course!
-                            .reference}/polls"
-                          css="${res.locals.css(css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--3);
-                            padding: var(--space--2);
-                            max-height: var(--space--80);
-                            overflow: auto;
-                          `)}"
-                          onload="${javascript`
-                            this.onsubmit = async (event) => {
-                              event.preventDefault();
-                              const response = await fetch(this.action, {
-                                method: this.method,
-                                body: new URLSearchParams(new FormData(this)),
-                              });
-                              if (!response.ok) {
-                                // TODO: Do something.
-                                return;
-                              }
-                              tippy.hideAll();
-                              this.reset();
-                              const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                              textFieldEdit.wrapSelection(textarea, await response.text(), "");
-                              textarea.focus();
-                            };
-                          `}"
-                        >
-                          <input
-                            type="hidden"
-                            name="_csrf"
-                            value="${req.csrfToken()}"
-                          />
-                          <div
-                            class="label"
-                            css="${res.locals.css(css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--1);
-                              align-items: baseline;
-                            `)}"
-                          >
-                            <p class="label--text">Number of votes</p>
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="multipleOptions"
-                                value="true"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set to Multiple Votes",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-check2"></i>
-                                Single
+            $${polls
+              ? html`
+                  <div>
+                    <button
+                      type="button"
+                      class="button button--tight button--transparent"
+                      onload="${javascript`
+                        (this.tooltip ??= tippy(this)).setProps({
+                          touch: false,
+                          content: ${res.locals.html(
+                            html`
+                              Poll
+                              <span class="keyboard-shortcut">
+                                (<span
+                                  onload="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+P</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  onload="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-command"></i>P</span
+                                >)
                               </span>
-                              <span
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set to Single Vote",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-check2-all"></i>
-                                Multiple
-                              </span>
-                            </label>
-                          </div>
-                          <div
-                            class="label"
-                            css="${res.locals.css(css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--1);
-                            `)}"
-                          >
-                            <div
-                              css="${res.locals.css(css`
-                                display: flex;
-                                align-items: center;
-                                gap: var(--space--1);
-                              `)}"
-                            >
-                              <p class="label--text">Closes at</p>
-                              <button
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
-                                css="${res.locals.css(css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                `)}"
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${res.locals.html(html`
-                                      <div
-                                        css="${res.locals.css(css`
-                                          padding: var(--space--2);
-                                        `)}"
-                                      >
-                                        Date by which the poll will close. If
-                                        left blank, the poll will not close
-                                        automatically.
-                                      </div>
-                                    `)},
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-info-circle"></i>
-                              </button>
-                            </div>
-                            <input
-                              type="text"
-                              name="closesAt"
-                              value="${new Date(
-                                new Date().getTime() + 7 * 24 * 60 * 60 * 1000
-                              ).toISOString()}"
-                              placeholder="No close date"
-                              autocomplete="off"
-                              class="input--text"
-                              onload="${javascript`
-                                this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
-                              `}"
-                            />
-                          </div>
+                            `
+                          )},
+                        });
 
-                          <hr class="separator" />
-
-                          <div
-                            key="options"
-                            css="${res.locals.css(css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
-                            `)}"
-                          ></div>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
-                              const newOptionPartial = ${res.locals.html(
-                                html`
-                                  <div
-                                    key="option"
-                                    class="label"
+                        (this.dropdown ??= tippy(this)).setProps({
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.html(
+                            res.locals.course === undefined
+                              ? html`
+                                  TODO: Write something that will show up on the
+                                  home page to market that polls exist.
+                                `
+                              : html`
+                                  <form
+                                    method="POST"
+                                    action="https://${app.locals.options
+                                      .host}/content-editor/${res.locals.course
+                                      .reference}/polls"
                                     css="${res.locals.css(css`
                                       display: flex;
                                       flex-direction: column;
-                                      gap: var(--space--1);
+                                      gap: var(--space--3);
+                                      padding: var(--space--2);
+                                      max-height: var(--space--80);
+                                      overflow: auto;
                                     `)}"
+                                    onload="${javascript`
+                                      this.onsubmit = async (event) => {
+                                        event.preventDefault();
+                                        const response = await fetch(this.action, {
+                                          method: this.method,
+                                          body: new URLSearchParams(new FormData(this)),
+                                        });
+                                        if (!response.ok) {
+                                          // TODO: Do something.
+                                          return;
+                                        }
+                                        tippy.hideAll();
+                                        this.reset();
+                                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                                        textFieldEdit.wrapSelection(textarea, await response.text(), "");
+                                        textarea.focus();
+                                      };
+                                    `}"
                                   >
-                                    <p class="label--text"></p>
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
                                     <div
+                                      class="label"
                                       css="${res.locals.css(css`
                                         display: flex;
-                                        gap: var(--space--2);
-                                        align-items: center;
+                                        flex-direction: column;
+                                        gap: var(--space--1);
+                                        align-items: baseline;
                                       `)}"
                                     >
-                                      <input
-                                        type="text"
-                                        required
-                                        autocomplete="off"
-                                        placeholder="Description..."
-                                        disabled
-                                        class="input--text"
-                                        onloadpartial="${javascript`
-                                          this.isModified = true;
-                                          this.disabled = false;
-
-                                          const optionNumber = this.closest('[key="options"]').children.length;
-                                          this.name = "options[" + optionNumber + "]";
-                                          this.closest('[key="option"]').querySelector("p").textContent = "Option " + optionNumber;
-                                        `}"
-                                      />
+                                      <p class="label--text">Number of votes</p>
                                       <label
                                         class="button button--tight button--tight--inline button--transparent"
-                                        onloadpartial="${javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            theme: "rose",
-                                            touch: false,
-                                            content: "Remove Option",
-                                          });
-
-                                          this.onclick = (event) => {
-                                            this.closest('[key="option"]').remove();
-
-                                            let i = 1;
-                                            for (const child of document.querySelector('[key="options"]').children)
-                                              child.querySelector("p").textContent = "Option " + (i++); 
-                                          };
-                                        `}"
                                       >
-                                        <i class="bi bi-x-lg"></i>
+                                        <input
+                                          type="checkbox"
+                                          name="multipleOptions"
+                                          value="true"
+                                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                                        />
+                                        <span
+                                          onload="${javascript`
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              touch: false,
+                                              content: "Set to Multiple Votes",
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-check2"></i>
+                                          Single
+                                        </span>
+                                        <span
+                                          onload="${javascript`
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              touch: false,
+                                              content: "Set to Single Vote",
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-check2-all"></i>
+                                          Multiple
+                                        </span>
                                       </label>
                                     </div>
-                                  </div>
+                                    <div
+                                      class="label"
+                                      css="${res.locals.css(css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--1);
+                                      `)}"
+                                    >
+                                      <div
+                                        css="${res.locals.css(css`
+                                          display: flex;
+                                          align-items: center;
+                                          gap: var(--space--1);
+                                        `)}"
+                                      >
+                                        <p class="label--text">Closes at</p>
+                                        <button
+                                          type="button"
+                                          class="button button--tight button--tight--inline button--transparent"
+                                          css="${res.locals.css(css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                          `)}"
+                                          onload="${javascript`
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              trigger: "click",
+                                              interactive: true,
+                                              content: ${res.locals.html(html`
+                                                <div
+                                                  css="${res.locals.css(css`
+                                                    padding: var(--space--2);
+                                                  `)}"
+                                                >
+                                                  Date by which the poll will
+                                                  close. If left blank, the poll
+                                                  will not close automatically.
+                                                </div>
+                                              `)},
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-info-circle"></i>
+                                        </button>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        name="closesAt"
+                                        value="${new Date(
+                                          new Date().getTime() +
+                                            7 * 24 * 60 * 60 * 1000
+                                        ).toISOString()}"
+                                        placeholder="No close date"
+                                        autocomplete="off"
+                                        class="input--text"
+                                        onload="${javascript`
+                                          this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+                                        `}"
+                                      />
+                                    </div>
+
+                                    <hr class="separator" />
+
+                                    <div
+                                      key="options"
+                                      css="${res.locals.css(css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `)}"
+                                    ></div>
+                                    <label
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      onload="${javascript`
+                                        const newOptionPartial = ${res.locals.html(
+                                          html`
+                                            <div
+                                              key="option"
+                                              class="label"
+                                              css="${res.locals.css(css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--1);
+                                              `)}"
+                                            >
+                                              <p class="label--text"></p>
+                                              <div
+                                                css="${res.locals.css(css`
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                  align-items: center;
+                                                `)}"
+                                              >
+                                                <input
+                                                  type="text"
+                                                  required
+                                                  autocomplete="off"
+                                                  placeholder="Description..."
+                                                  disabled
+                                                  class="input--text"
+                                                  onloadpartial="${javascript`
+                                                    this.isModified = true;
+                                                    this.disabled = false;
+
+                                                    const optionNumber = this.closest('[key="options"]').children.length;
+                                                    this.name = "options[" + optionNumber + "]";
+                                                    this.closest('[key="option"]').querySelector("p").textContent = "Option " + optionNumber;
+                                                  `}"
+                                                />
+                                                <label
+                                                  class="button button--tight button--tight--inline button--transparent"
+                                                  onloadpartial="${javascript`
+                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                      theme: "rose",
+                                                      touch: false,
+                                                      content: "Remove Option",
+                                                    });
+
+                                                    this.onclick = (event) => {
+                                                      this.closest('[key="option"]').remove();
+
+                                                      let i = 1;
+                                                      for (const child of document.querySelector('[key="options"]').children)
+                                                        child.querySelector("p").textContent = "Option " + (i++); 
+                                                    };
+                                                  `}"
+                                                >
+                                                  <i class="bi bi-x-lg"></i>
+                                                </label>
+                                              </div>
+                                            </div>
+                                          `
+                                        )};
+                                        newOptionPartial.remove();
+
+                                        const addNewOption = () => {
+                                          const newOption = newOptionPartial.firstElementChild.cloneNode(true);
+                                          this.closest("form").querySelector('[key="options"]').insertAdjacentElement("beforeend", newOption);
+                                          for (const element of newOption.querySelectorAll("[onloadpartial]"))
+                                            new Function(element.getAttribute("onloadpartial")).call(element);
+                                        };
+
+                                        addNewOption();
+                                        addNewOption();
+
+                                        this.onclick = addNewOption;
+
+                                        this.onvalidate = (event) => {
+                                          if ([...this.closest("form").querySelector('[key="options"]').children].filter((option) => !option.hidden).length < 2)
+                                            return "Please add at least two options.";
+                                        }; 
+                                      `}"
+                                    >
+                                      <i class="bi bi-plus-circle"></i>
+                                      New Option
+                                    </label>
+                                    <button
+                                      class="button button--tight button--tight--inline button--blue"
+                                    >
+                                      Add Poll
+                                    </button>
+                                  </form>
                                 `
-                              )};
-                              newOptionPartial.remove();
+                          )},
+                        });
 
-                              const addNewOption = () => {
-                                const newOption = newOptionPartial.firstElementChild.cloneNode(true);
-                                this.closest("form").querySelector('[key="options"]').insertAdjacentElement("beforeend", newOption);
-                                for (const element of newOption.querySelectorAll("[onloadpartial]"))
-                                  new Function(element.getAttribute("onloadpartial")).call(element);
-                              };
+                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                              addNewOption();
-                              addNewOption();
-
-                              this.onclick = addNewOption;
-
-                              this.onvalidate = (event) => {
-                                if ([...this.closest("form").querySelector('[key="options"]').children].filter((option) => !option.hidden).length < 2)
-                                  return "Please add at least two options.";
-                              }; 
-                            `}"
-                          >
-                            <i class="bi bi-plus-circle"></i>
-                            New Option
-                          </label>
-                          <button
-                            class="button button--tight button--tight--inline button--blue"
-                          >
-                            Add Poll
-                          </button>
-                        </form>
-                      `
-                    )},
-                  });
-
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-
-                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
-                `}"
-              >
-                <i class="bi bi-bar-chart-fill"></i>
-              </button>
-            </div>
+                        (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
+                      `}"
+                    >
+                      <i class="bi bi-bar-chart-fill"></i>
+                    </button>
+                  </div>
+                `
+              : html``}
             <div>
               <button
                 type="button"

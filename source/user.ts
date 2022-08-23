@@ -931,6 +931,7 @@ export default (app: Courselore): void => {
                   name: "biography",
                   contentSource: res.locals.user.biographySource ?? "",
                   required: false,
+                  polls: false,
                 })}
               </div>
 
