@@ -962,7 +962,11 @@ export default async (app: Courselore): Promise<void> => {
           element.outerHTML = html`
             <p class="text--rose">
               <i class="bi bi-exclamation-triangle-fill"></i>
-              You cannot put a poll within a poll…
+              A poll cannot be within another poll. For an example of this
+              issue, see:
+              <a href="" target="_blank" class="link"
+                >${`https://${app.locals.options.host}/`}</a
+              >
             </p>
           `;
       }
@@ -1286,8 +1290,16 @@ export default async (app: Courselore): Promise<void> => {
                           content: ${res.locals.html(
                             res.locals.course === undefined
                               ? html`
-                                  TODO: Write something that will show up on the
-                                  home page to market that polls exist.
+                                  The poll feature is only available when signed
+                                  in and enrolled in a course. You can
+                                  experiment with Courselore and with polls at
+                                  <a
+                                    href="https://try.courselore.org"
+                                    target="_blank"
+                                    class="link"
+                                  >
+                                    https://try.courselore.org </a
+                                  >.
                                 `
                               : html`
                                   <form
@@ -1295,6 +1307,7 @@ export default async (app: Courselore): Promise<void> => {
                                     action="https://${app.locals.options
                                       .host}/content-editor/${res.locals.course
                                       .reference}/polls"
+                                    novalidate
                                     css="${res.locals.css(css`
                                       display: flex;
                                       flex-direction: column;
@@ -1311,7 +1324,7 @@ export default async (app: Courselore): Promise<void> => {
                                           body: new URLSearchParams(new FormData(this)),
                                         });
                                         if (!response.ok) {
-                                          // TODO: Do something.
+                                          this.closest("form").querySelector('[key="add-poll"]').error.show();
                                           return;
                                         }
                                         tippy.hideAll();
@@ -1526,7 +1539,30 @@ export default async (app: Courselore): Promise<void> => {
                                       New Option
                                     </label>
                                     <button
+                                      key="add-poll"
                                       class="button button--tight button--tight--inline button--blue"
+                                      onload="${javascript`
+                                        (this.error ??= tippy(this)).setProps({
+                                          theme: "rose",
+                                          trigger: "manual",
+                                          content: ${res.locals.html(html`
+                                            <p>
+                                              There was an issue generating the
+                                              poll. If the problem persists,
+                                              please report it to the system
+                                              administrator at
+                                              <a
+                                                href="${app.locals.partials
+                                                  .reportIssueHref}"
+                                                target="_blank"
+                                                class="link"
+                                                >${app.locals.options
+                                                  .administratorEmail}</a
+                                              >.
+                                            </p>
+                                          `)},
+                                        });
+                                      `}"
                                     >
                                       Add Poll
                                     </button>
