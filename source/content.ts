@@ -884,8 +884,8 @@ export default async (app: Courselore): Promise<void> => {
                 res.locals.conversation !== undefined &&
                 message !== undefined &&
                 app.locals.helpers.mayEditMessage({
-                  req: req as any /* TODO */,
-                  res: res as any /* TODO */,
+                  req: req as any,
+                  res: res as any,
                   message,
                 })
                   ? html`
@@ -3455,7 +3455,9 @@ ${contentSource}</textarea
             FROM "messagePolls"
             WHERE "reference" = ${pollReference}
           `
-      )!;
+      );
+
+      if (messagePoll === undefined) return next("validation");
 
       for (const option of req.body.options) {
         const optionPreprocessed =

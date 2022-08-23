@@ -1036,8 +1036,8 @@ export default (app: Courselore): void => {
       if (
         messagePoll === undefined ||
         !app.locals.helpers.mayEditMessage({
-          req: req as any /* TODO */,
-          res: res as any /* TODO */,
+          req: req as any,
+          res: res as any,
           message: res.locals.message,
         })
       )
