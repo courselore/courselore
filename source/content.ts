@@ -1293,6 +1293,24 @@ export default async (app: Courselore): Promise<void> => {
                             max-height: var(--space--80);
                             overflow: auto;
                           `)}"
+                          onload="${javascript`
+                            this.onsubmit = async (event) => {
+                              event.preventDefault();
+                              const response = await fetch(this.action, {
+                                method: this.method,
+                                body: new URLSearchParams(new FormData(this)),
+                              });
+                              if (!response.ok) {
+                                // TODO: Do something.
+                                return;
+                              }
+                              tippy.hideAll();
+                              this.reset();
+                              const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                              textFieldEdit.wrapSelection(textarea, await response.text(), "");
+                              textarea.focus();
+                            };
+                          `}"
                         >
                           <input
                             type="hidden"
