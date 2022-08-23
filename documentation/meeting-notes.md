@@ -1,6 +1,22 @@
 # Meeting Notes
 
 <details>
+<summary>2021-08-20</summary>
+
+- DMs: Almost finished, only missing user interface. Most of the work was dealing with how DMs interact with other features, for example, anonymity and email notifications.
+- Lock Course (Exam Period): Done. Not merged.
+- Polls: Explored the idea of holding the results in the message, but landed on the concept of having polls as external objects, like images.
+- Other topics:
+  - Administrative interface should show the active courses.
+  - Import from Piazza: Announcement messages.
+  - Apply filters right away, don’t have an “Apply Filter” button.
+  - **Superpins**, that would be useful for administrative pages with PDFs, zips, and other course material. But let’s not have a dedicated “course resources” feature.
+  - Chats should be “Selected People” by default.
+  - On course lock, students may ask private questions.
+
+</details>
+
+<details>
 <summary>2021-08-13</summary>
 
 - Mobile application:

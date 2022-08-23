@@ -129,7 +129,7 @@
   - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
 - Graph of use over time:
   - Number of users
-  - Number of active courses
+  - Number of **active** courses (where an **active** course is a course that has seen recent activity, for example, a new conversation).
   - Activity on conversations
     - It’d be nice for the course staff to also have access to that
 - Low-level information:
