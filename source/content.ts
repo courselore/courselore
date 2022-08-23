@@ -731,7 +731,12 @@ export default async (app: Courselore): Promise<void> => {
                           ? html`disabled`
                           : html``}
                       >
-                        ${messagePollsOption.contentSource}
+                        $${app.locals.partials.content({
+                          req,
+                          res,
+                          contentPreprocessed:
+                            messagePollsOption.contentSourcePreprocessed,
+                        }).contentProcessed}
                         $${optionHasVote[index]
                           ? html`<i class="bi bi-check2"></i>`
                           : html``}
@@ -3367,13 +3372,15 @@ ${contentSource}</textarea
       )!;
 
       for (const option of req.body.options) {
+        const optionPreprocessed =
+          app.locals.partials.contentPreprocessed(option);
         app.locals.database.run(sql`
           INSERT INTO "messagePollsOptions" ("reference", "messagePoll", "contentSource", "contentSourcePreprocessed")
           VALUES (
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${messagePoll.id},
             ${option},
-            ${""}
+            ${optionPreprocessed.contentPreprocessed}
           )
         `);
       }
