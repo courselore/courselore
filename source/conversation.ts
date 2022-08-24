@@ -3225,10 +3225,19 @@ export default (app: Courselore): void => {
                                 (conversationParticipants) => html`
                                   <button
                                     type="button"
-                                    class="dropdown--menu--item button ${conversationParticipants ===
-                                    "everyone"
+                                    class="dropdown--menu--item button button--transparent ${req
+                                      .query.newConversation?.participants ===
+                                      conversationParticipants ||
+                                    (req.query.newConversation?.participants ===
+                                      undefined &&
+                                      ((req.params.type === "chat" &&
+                                        conversationParticipants ===
+                                          "selected") ||
+                                        (req.params.type !== "chat" &&
+                                          conversationParticipants ===
+                                            "everyone")))
                                       ? html`button--blue`
-                                      : html`button--transparent`} ${conversationParticipantsTextColor[
+                                      : html``} ${conversationParticipantsTextColor[
                                       conversationParticipants
                                     ]}"
                                     onload="${javascript`
