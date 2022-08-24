@@ -2814,12 +2814,13 @@ export default (app: Courselore): void => {
       newConversation?: {
         conversationDraftReference?: string;
         type?: string;
-        shouldNotify?: "true";
-        isPinned?: "true";
-        isStaffOnly?: "true";
         title?: string;
         content?: string;
         tagsReferences?: string[];
+        participants?: ConversationParticipants;
+        selectedParticipants?: string[];
+        shouldNotify?: "true";
+        isPinned?: "true";
       };
     },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
@@ -2942,11 +2943,11 @@ export default (app: Courselore): void => {
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
               <div
-                class="label"
                 $${typeof req.params.type === "string" &&
                 conversationTypes.includes(req.params.type)
                   ? html`hidden`
                   : html``}
+                class="label"
               >
                 <p class="label--text">Type</p>
                 <div
@@ -3048,8 +3049,8 @@ export default (app: Courselore): void => {
                       req.query.newConversation.content.trim() !== ""
                     ? req.query.newConversation.content
                     : undefined,
-                // TODO: Drafts
                 required:
+                  // TODO: Drafts
                   (typeof req.params.type === "string" &&
                     ["question", "note"].includes(req.params.type)) ||
                   (req.params.type === undefined &&
