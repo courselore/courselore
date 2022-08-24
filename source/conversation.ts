@@ -3368,16 +3368,46 @@ export default (app: Courselore): void => {
                         row-gap: var(--space--4);
                       `)}"
                     >
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <i class="bi bi-person-plus"></i>
+                        Add Participant
+                      </button>
                       $${enrollments.map(
                         (enrollment) => html`
-                          <div>
-                            $${app.locals.partials.user({
-                              req,
-                              res,
-                              enrollment,
-                              user: enrollment.user,
-                              tooltip: false,
-                            })}
+                          <div
+                            $${req.query.newConversation?.selectedParticipants?.includes(
+                              enrollment.reference
+                            )
+                              ? html``
+                              : html`hidden`}
+                          >
+                            <input
+                              type="hidden"
+                              name="selectedParticipantsReferences[]"
+                              value="${enrollment.reference}"
+                              $${req.query.newConversation?.selectedParticipants?.includes(
+                                enrollment.reference
+                              )
+                                ? html``
+                                : html`disabled`}
+                              class="visually-hidden"
+                            />
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              $${app.locals.partials.user({
+                                req,
+                                res,
+                                enrollment,
+                                user: enrollment.user,
+                                tooltip: false,
+                                size: "xs",
+                              })}
+                            </button>
                           </div>
                         `
                       )}
