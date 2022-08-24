@@ -3299,15 +3299,91 @@ export default (app: Courselore): void => {
                     )}
                   </div>
                 </div>
-                <div
-                  $${req.query.newConversation?.participants === "everyone" ||
-                  (req.query.newConversation?.participants === undefined &&
-                    req.params.type !== "chat")
-                    ? html`hidden`
-                    : html``}
-                >
-                  SELECTED PEOPLE
-                </div>
+                $${(() => {
+                  const enrollments = app.locals.database
+                    .all<{
+                      id: number;
+                      userId: number;
+                      userLastSeenOnlineAt: string;
+                      userReference: string;
+                      userEmail: string;
+                      userName: string;
+                      userAvatar: string | null;
+                      userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                      userBiographySource: string | null;
+                      userBiographyPreprocessed: HTML | null;
+                      reference: string;
+                      courseRole: CourseRole;
+                    }>(
+                      sql`
+                        SELECT "enrollments"."id",
+                               "users"."id" AS "userId",
+                               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                               "users"."reference" AS "userReference",
+                               "users"."email" AS "userEmail",
+                               "users"."name" AS "userName",
+                               "users"."avatar" AS "userAvatar",
+                               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                               "users"."biographySource" AS "userBiographySource",
+                               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                               "enrollments"."reference",
+                               "enrollments"."courseRole"
+                        FROM "enrollments"
+                        JOIN "users" ON "enrollments"."user" = "users"."id"
+                        WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                              "enrollments"."id" != ${res.locals.enrollment.id}
+                        ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+                      `
+                    )
+                    .map((enrollment) => ({
+                      id: enrollment.id,
+                      user: {
+                        id: enrollment.userId,
+                        lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+                        reference: enrollment.userReference,
+                        email: enrollment.userEmail,
+                        name: enrollment.userName,
+                        avatar: enrollment.userAvatar,
+                        avatarlessBackgroundColor:
+                          enrollment.userAvatarlessBackgroundColor,
+                        biographySource: enrollment.userBiographySource,
+                        biographyPreprocessed:
+                          enrollment.userBiographyPreprocessed,
+                      },
+                      reference: enrollment.reference,
+                      courseRole: enrollment.courseRole,
+                    }));
+                  return html`
+                    <div
+                      $${req.query.newConversation?.participants ===
+                        "everyone" ||
+                      (req.query.newConversation?.participants === undefined &&
+                        req.params.type !== "chat")
+                        ? html`hidden`
+                        : html``}
+                      css="${res.locals.css(css`
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--8);
+                        row-gap: var(--space--4);
+                      `)}"
+                    >
+                      $${enrollments.map(
+                        (enrollment) => html`
+                          <div>
+                            $${app.locals.partials.user({
+                              req,
+                              res,
+                              enrollment,
+                              user: enrollment.user,
+                              tooltip: false,
+                            })}
+                          </div>
+                        `
+                      )}
+                    </div>
+                  `;
+                })()}
               </div>
 
               <div
