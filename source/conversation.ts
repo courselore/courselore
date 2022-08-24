@@ -3437,7 +3437,6 @@ export default (app: Courselore): void => {
                     `
                   : html`
                       <div
-                        key="anonymity"
                         class="label"
                         css="${res.locals.css(css`
                           width: var(--space--60);
