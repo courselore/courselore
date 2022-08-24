@@ -1527,7 +1527,7 @@ export default async (app: Courselore): Promise<void> => {
           }
         }
 
-        .input--radio-as-select {
+        .input--visible-when-checked {
           &:not(:checked) + * {
             display: none;
           }

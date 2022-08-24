@@ -319,7 +319,7 @@
             display: none;
           }
 
-        .input--radio-as-select:not(:checked) + * {
+        .input--visible-when-checked:not(:checked) + * {
             display: none;
           }
 

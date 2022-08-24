@@ -3280,7 +3280,7 @@ export default (app: Courselore): void => {
                                 conversationParticipants === "everyone")))
                             ? html`checked`
                             : html``}
-                          class="visually-hidden input--radio-as-select"
+                          class="visually-hidden input--visible-when-checked"
                         />
                         <div
                           class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
