@@ -3261,7 +3261,14 @@ export default (app: Courselore): void => {
                           type="radio"
                           name="participants"
                           value="${conversationParticipants}"
-                          $${conversationParticipants === "everyone"
+                          $${req.query.newConversation?.participants ===
+                            conversationParticipants ||
+                          (req.query.newConversation?.participants ===
+                            undefined &&
+                            ((req.params.type === "chat" &&
+                              conversationParticipants === "selected") ||
+                              (req.params.type !== "chat" &&
+                                conversationParticipants === "everyone")))
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-as-select"
