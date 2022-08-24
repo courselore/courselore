@@ -3299,6 +3299,15 @@ export default (app: Courselore): void => {
                     )}
                   </div>
                 </div>
+                <div
+                  $${req.query.newConversation?.participants === "everyone" ||
+                  (req.query.newConversation?.participants === undefined &&
+                    req.params.type !== "chat")
+                    ? html`hidden`
+                    : html``}
+                >
+                  SELECTED PEOPLE
+                </div>
               </div>
 
               <div
