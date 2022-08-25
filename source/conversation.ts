@@ -3287,79 +3287,94 @@ export default (app: Courselore): void => {
                                 <div class="dropdown--menu">
                                   $${conversationParticipantses.map(
                                     (conversationParticipants) => html`
-                                      <button
-                                        type="button"
-                                        class="dropdown--menu--item button button--transparent ${req
-                                          .query.newConversation
-                                          ?.participants ===
-                                          conversationParticipants ||
-                                        (req.query.newConversation
-                                          ?.participants === undefined &&
-                                          ((req.params.type === "chat" &&
-                                            conversationParticipants ===
-                                              "selected") ||
-                                            (req.params.type !== "chat" &&
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="participants--dropdown--participants"
+                                          $${req.query.newConversation
+                                            ?.participants ===
+                                            conversationParticipants ||
+                                          (req.query.newConversation
+                                            ?.participants === undefined &&
+                                            ((req.params.type === "chat" &&
                                               conversationParticipants ===
-                                                "everyone")))
-                                          ? html`button--blue`
-                                          : html``} ${conversationParticipantsTextColor[
-                                          conversationParticipants
-                                        ]}"
-                                        onload="${javascript`
-                                          this.onclick = () => {
-                                            this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+                                                "selected") ||
+                                              (req.params.type !== "chat" &&
+                                                conversationParticipants ===
+                                                  "everyone")))
+                                            ? html`checked`
+                                            : html``}
+                                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                                          onload="${javascript`
+                                            this.onchange = () => {
+                                              this.isModified = false;
 
-                                            this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                            this.classList.add("button--blue");
+                                              this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
 
-                                            ${
-                                              conversationParticipants ===
-                                              "everyone"
-                                                ? javascript`
-                                                    const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
-                                                    selectedParticipants.hidden = true;
+                                              ${
+                                                conversationParticipants ===
+                                                "everyone"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = true;
 
-                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                      element.disabled = true;
-                                                  `
-                                                : conversationParticipants ===
-                                                  "staff"
-                                                ? javascript`
-                                                    const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
-                                                    selectedParticipants.hidden = false;
+                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                        element.disabled = true;
+                                                    `
+                                                  : conversationParticipants ===
+                                                    "staff"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = false;
 
-                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                      element.hidden = true;
+                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                        element.hidden = true;
 
-                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                      element.disabled = element.matches('[data-enrollment-course-role="staff"]');
-                                                  `
-                                                : conversationParticipants ===
-                                                  "selected"
-                                                ? javascript`
-                                                    const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
-                                                    selectedParticipants.hidden = false;
+                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                        element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                    `
+                                                  : conversationParticipants ===
+                                                    "selected"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = false;
 
-                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                      element.hidden = false;
+                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                        element.hidden = false;
 
-                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                      element.disabled = false;
-                                                  `
-                                                : javascript``
-                                            }
+                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                        element.disabled = false;
+                                                    `
+                                                  : javascript``
+                                              }
 
-                                              
-                                          };
-                                        `}"
-                                      >
-                                        $${conversationParticipantsIcon[
-                                          conversationParticipants
-                                        ].fill}
-                                        $${conversationParticipantsLabel[
-                                          conversationParticipants
-                                        ]}
-                                      </button>
+                                                
+                                            };
+                                          `}"
+                                        />
+                                        <span
+                                          class="dropdown--menu--item button button--transparent ${conversationParticipantsTextColor[
+                                            conversationParticipants
+                                          ]}"
+                                        >
+                                          $${conversationParticipantsIcon[
+                                            conversationParticipants
+                                          ].fill}
+                                          $${conversationParticipantsLabel[
+                                            conversationParticipants
+                                          ]}
+                                        </span>
+                                        <span
+                                          class="dropdown--menu--item button button--blue"
+                                        >
+                                          $${conversationParticipantsIcon[
+                                            conversationParticipants
+                                          ].fill}
+                                          $${conversationParticipantsLabel[
+                                            conversationParticipants
+                                          ]}
+                                        </span>
+                                      </label>
                                     `
                                   )}
                                 </div>
