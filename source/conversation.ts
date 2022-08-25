@@ -3279,7 +3279,7 @@ export default (app: Courselore): void => {
                             content: ${res.locals.html(
                               html`
                                 <div
-                                  key="participants"
+                                  key="participants--dropdown"
                                   css="${res.locals.css(css`
                                     display: flex;
                                     flex-direction: column;
@@ -3318,13 +3318,13 @@ export default (app: Courselore): void => {
                                                 conversationParticipants ===
                                                 "everyone"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                       selectedParticipants.hidden = true;
                                                     `
                                                   : conversationParticipants ===
                                                     "staff"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                       selectedParticipants.hidden = false;
                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                         element.hidden = true;
@@ -3332,7 +3332,7 @@ export default (app: Courselore): void => {
                                                   : conversationParticipants ===
                                                     "selected"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                       selectedParticipants.hidden = false;
                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                         element.hidden = false;
