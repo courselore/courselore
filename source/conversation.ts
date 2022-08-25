@@ -3311,7 +3311,6 @@ export default (app: Courselore): void => {
                                               this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
                                               this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
                                               this.classList.add("button--blue");
-                                              tippy.hideAll();
                                             };
                                           `}"
                                         >
