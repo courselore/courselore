@@ -3328,7 +3328,7 @@ export default (app: Courselore): void => {
 
                                   <div
                                     key="selected-participants"
-                                    ${(typeof req.query.newConversation
+                                    $${(typeof req.query.newConversation
                                       ?.participants === "string" &&
                                       ["staff", "selected"].includes(
                                         req.query.newConversation.participants
@@ -3398,6 +3398,16 @@ export default (app: Courselore): void => {
                             )
                               ? html`checked`
                               : html``}
+                            $${(typeof req.query.newConversation
+                              ?.participants === "string" &&
+                              ["staff", "selected"].includes(
+                                req.query.newConversation.participants
+                              )) ||
+                            (req.query.newConversation?.participants ===
+                              undefined &&
+                              req.params.type === "chat")
+                              ? html``
+                              : html`disabled`}
                             class="visually-hidden input--visible-when-checked"
                           />
                           <button
