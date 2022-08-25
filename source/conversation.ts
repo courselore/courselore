@@ -3318,31 +3318,38 @@ export default (app: Courselore): void => {
                                                 ? javascript`
                                                     const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                     selectedParticipants.hidden = true;
+
+                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                      element.disabled = true;
                                                   `
                                                 : conversationParticipants ===
                                                   "staff"
                                                 ? javascript`
                                                     const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                     selectedParticipants.hidden = false;
+
                                                     for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                       element.hidden = true;
+
+                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                      element.disabled = element.matches('[data-enrollment-course-role="staff"]');
                                                   `
                                                 : conversationParticipants ===
                                                   "selected"
                                                 ? javascript`
                                                     const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
                                                     selectedParticipants.hidden = false;
+
                                                     for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                       element.hidden = false;
+
+                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                      element.disabled = false;
                                                   `
                                                 : javascript``
                                             }
 
-                                            for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                              element.disabled = ${JSON.stringify(
-                                                conversationParticipants ===
-                                                  "everyone"
-                                              )};
+                                              
                                           };
                                         `}"
                                       >
@@ -3481,6 +3488,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="selectedParticipantsReferences[]"
                             value="${enrollment.reference}"
+                            data-enrollment-course-role="${enrollment.courseRole}"
                             $${req.query.newConversation?.selectedParticipants?.includes(
                               enrollment.reference
                             )
