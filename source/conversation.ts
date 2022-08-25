@@ -3344,7 +3344,42 @@ export default (app: Courselore): void => {
                                       gap: var(--space--2);
                                     `)}"
                                   >
-                                    SELECTED PARTICIPANTS
+                                    <hr class="separator" />
+
+                                    <div
+                                      class="dropdown--menu"
+                                      css="${res.locals.css(css`
+                                        max-height: var(--space--40);
+                                        overflow: auto;
+                                      `)}"
+                                    >
+                                      $${enrollments.map(
+                                        (enrollment) => html`
+                                          <button
+                                            type="button"
+                                            class="dropdown--menu--item button button--transparent ${req.query.newConversation?.selectedParticipants?.includes(
+                                              enrollment.reference
+                                            )
+                                              ? "button--blue"
+                                              : ""}"
+                                            onload="${javascript`
+                                            this.onclick = () => {
+                                              // TODO
+                                            };
+                                          `}"
+                                          >
+                                            $${app.locals.partials.user({
+                                              req,
+                                              res,
+                                              enrollment,
+                                              user: enrollment.user,
+                                              tooltip: false,
+                                              size: "xs",
+                                            })}
+                                          </button>
+                                        `
+                                      )}
+                                    </div>
                                   </div>
                                 </div>
                               `
