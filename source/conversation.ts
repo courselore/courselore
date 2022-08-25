@@ -3440,6 +3440,7 @@ export default (app: Courselore): void => {
                               </div>
                             `
                           )};
+
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
@@ -3464,6 +3465,19 @@ export default (app: Courselore): void => {
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--visible-when-enabled-and-checked"
+                              onload="${javascript`
+                                ${
+                                  conversationParticipants === "selected"
+                                    ? javascript`
+                                        this.onvalidate = () => {
+                                          if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
+                                            return "Please select at least one other participant.";
+                                        };
+                                      `
+                                    : javascript``
+                                }
+                                
+                              `}"
                             />
                             <div
                               class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
