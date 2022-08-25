@@ -3339,6 +3339,12 @@ export default (app: Courselore): void => {
                                                     `
                                                   : javascript``
                                               }
+
+                                              for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                element.disabled = ${JSON.stringify(
+                                                  conversationParticipants ===
+                                                    "everyone"
+                                                )};
                                             };
                                           `}"
                                         >
@@ -3382,24 +3388,35 @@ export default (app: Courselore): void => {
                                     >
                                       $${enrollments.map(
                                         (enrollment) => html`
-                                          <button
-                                            type="button"
+                                          <label
                                             data-enrollment-course-role="${enrollment.courseRole}"
-                                            $${req.query.newConversation
-                                              ?.participants === "staff"
-                                              ? html`hidden`
-                                              : html``}
                                             class="dropdown--menu--item button button--transparent ${req.query.newConversation?.selectedParticipants?.includes(
                                               enrollment.reference
                                             )
                                               ? "button--blue"
                                               : ""}"
-                                            onload="${javascript`
-                                              this.onclick = () => {
-                                                // TODO
-                                              };
-                                            `}"
                                           >
+                                            <input
+                                              type="checkbox"
+                                              $${req.query.newConversation?.selectedParticipants?.includes(
+                                                enrollment.reference
+                                              )
+                                                ? html`checked`
+                                                : html``}
+                                              $${req.query.newConversation
+                                                ?.participants === "staff"
+                                                ? html`hidden`
+                                                : html``}
+                                              class="visually-hidden"
+                                              onload="${javascript`
+                                                this.isModified = false;
+
+                                                this.onchange = () => {
+                                                  this.closest("label").classList[this.checked ? "add" : "remove"]("button--blue");
+                                                  this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+                                                };
+                                              `}"
+                                            />
                                             $${app.locals.partials.user({
                                               req,
                                               res,
@@ -3408,7 +3425,7 @@ export default (app: Courselore): void => {
                                               tooltip: false,
                                               size: "xs",
                                             })}
-                                          </button>
+                                          </label>
                                         `
                                       )}
                                     </div>
