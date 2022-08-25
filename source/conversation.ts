@@ -3278,45 +3278,74 @@ export default (app: Courselore): void => {
                             interactive: true,
                             content: ${res.locals.html(
                               html`
-                                <div class="dropdown--menu">
-                                  $${conversationParticipantses.map(
-                                    (conversationParticipants) => html`
-                                      <button
-                                        type="button"
-                                        class="dropdown--menu--item button button--transparent ${req
-                                          .query.newConversation
-                                          ?.participants ===
-                                          conversationParticipants ||
-                                        (req.query.newConversation
-                                          ?.participants === undefined &&
-                                          ((req.params.type === "chat" &&
-                                            conversationParticipants ===
-                                              "selected") ||
-                                            (req.params.type !== "chat" &&
+                                <div
+                                  css="${res.locals.css(css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `)}"
+                                >
+                                  <div class="dropdown--menu">
+                                    $${conversationParticipantses.map(
+                                      (conversationParticipants) => html`
+                                        <button
+                                          type="button"
+                                          class="dropdown--menu--item button button--transparent ${req
+                                            .query.newConversation
+                                            ?.participants ===
+                                            conversationParticipants ||
+                                          (req.query.newConversation
+                                            ?.participants === undefined &&
+                                            ((req.params.type === "chat" &&
                                               conversationParticipants ===
-                                                "everyone")))
-                                          ? html`button--blue`
-                                          : html``} ${conversationParticipantsTextColor[
-                                          conversationParticipants
-                                        ]}"
-                                        onload="${javascript`
-                                          this.onclick = () => {
-                                            this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-                                            this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                            this.classList.add("button--blue");
-                                            tippy.hideAll();
-                                          };
-                                        `}"
-                                      >
-                                        $${conversationParticipantsIcon[
-                                          conversationParticipants
-                                        ].fill}
-                                        $${conversationParticipantsLabel[
-                                          conversationParticipants
-                                        ]}
-                                      </button>
-                                    `
-                                  )}
+                                                "selected") ||
+                                              (req.params.type !== "chat" &&
+                                                conversationParticipants ===
+                                                  "everyone")))
+                                            ? html`button--blue`
+                                            : html``} ${conversationParticipantsTextColor[
+                                            conversationParticipants
+                                          ]}"
+                                          onload="${javascript`
+                                            this.onclick = () => {
+                                              this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+                                              this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
+                                              this.classList.add("button--blue");
+                                              tippy.hideAll();
+                                            };
+                                          `}"
+                                        >
+                                          $${conversationParticipantsIcon[
+                                            conversationParticipants
+                                          ].fill}
+                                          $${conversationParticipantsLabel[
+                                            conversationParticipants
+                                          ]}
+                                        </button>
+                                      `
+                                    )}
+                                  </div>
+
+                                  <div
+                                    key="selected-participants"
+                                    ${(typeof req.query.newConversation
+                                      ?.participants === "string" &&
+                                      ["staff", "selected"].includes(
+                                        req.query.newConversation.participants
+                                      )) ||
+                                    (req.query.newConversation?.participants ===
+                                      undefined &&
+                                      req.params.type === "chat")
+                                      ? html``
+                                      : html`hidden`}
+                                    css="${res.locals.css(css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `)}"
+                                  >
+                                    SELECTED PARTICIPANTS
+                                  </div>
                                 </div>
                               `
                             )},
