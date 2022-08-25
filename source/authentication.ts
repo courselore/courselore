@@ -986,7 +986,7 @@ export default (app: Courselore): void => {
                 required
                 class="input--text"
                 onload="${javascript`
-                    this.onvalidate = (event) => {
+                    this.onvalidate = () => {
                       if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                         return "Password & Password Confirmation don’t match.";
                     };
@@ -1152,7 +1152,7 @@ export default (app: Courselore): void => {
                 required
                 class="input--text"
                 onload="${javascript`
-                  this.onvalidate = (event) => {
+                  this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };

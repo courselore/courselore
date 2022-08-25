@@ -1796,7 +1796,7 @@ export default (app: Courselore): void => {
                           new Function(element.getAttribute("onloadpartial")).call(element);
                       };
 
-                      this.onvalidate = (event) => {
+                      this.onvalidate = () => {
                         if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
                           return "Please add at least one tag.";
                       };
@@ -2083,7 +2083,7 @@ export default (app: Courselore): void => {
                     height: var(--space--32);
                   `)}"
                   onload="${javascript`
-                    this.onvalidate = (event) => {
+                    this.onvalidate = () => {
                       const emails = [];
                       for (let email of this.value.split(${/[,\n]/})) {
                         email = email.trim();
@@ -2222,7 +2222,7 @@ export default (app: Courselore): void => {
                   onload="${javascript`
                     this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
-                    this.onvalidate = (event) => {
+                    this.onvalidate = () => {
                       const error = leafac.validateLocalizedDateTime(this);
                       if (typeof error === "string") return error;
                       if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
@@ -2670,7 +2670,7 @@ export default (app: Courselore): void => {
                                         onload="${javascript`
                                           this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
-                                          this.onvalidate = (event) => {
+                                          this.onvalidate = () => {
                                             const error = leafac.validateLocalizedDateTime(this);
                                             if (typeof error === "string") return error;
                                             if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
