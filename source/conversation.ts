@@ -3368,7 +3368,7 @@ export default (app: Courselore): void => {
                                     conversationParticipants === "everyone")))
                                 ? html`checked`
                                 : html``}
-                              class="visually-hidden input--visible-when-checked"
+                              class="visually-hidden input--visible-when-enabled-and-checked"
                             />
                             <div
                               class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
@@ -3408,7 +3408,7 @@ export default (app: Courselore): void => {
                               req.params.type === "chat")
                               ? html``
                               : html`disabled`}
-                            class="visually-hidden input--visible-when-checked"
+                            class="visually-hidden input--visible-when-enabled-and-checked"
                           />
                           <button
                             type="button"

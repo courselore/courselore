@@ -1527,7 +1527,7 @@ export default async (app: Courselore): Promise<void> => {
           }
         }
 
-        .input--visible-when-checked {
+        .input--visible-when-enabled-and-checked {
           &:not(:checked) + * {
             display: none;
           }
