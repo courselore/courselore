@@ -3279,6 +3279,7 @@ export default (app: Courselore): void => {
                             content: ${res.locals.html(
                               html`
                                 <div
+                                  key="participants"
                                   css="${res.locals.css(css`
                                     display: flex;
                                     flex-direction: column;
@@ -3309,8 +3310,35 @@ export default (app: Courselore): void => {
                                           onload="${javascript`
                                             this.onclick = () => {
                                               this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+
                                               this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
                                               this.classList.add("button--blue");
+
+                                              ${
+                                                conversationParticipants ===
+                                                "everyone"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = true;
+                                                    `
+                                                  : conversationParticipants ===
+                                                    "staff"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = false;
+                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                        element.hidden = true;
+                                                    `
+                                                  : conversationParticipants ===
+                                                    "selected"
+                                                  ? javascript`
+                                                      const selectedParticipants = this.closest('[key="participants"]').querySelector('[key="selected-participants"]');
+                                                      selectedParticipants.hidden = false;
+                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                        element.hidden = false;
+                                                    `
+                                                  : javascript``
+                                              }
                                             };
                                           `}"
                                         >
