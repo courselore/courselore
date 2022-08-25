@@ -3356,16 +3356,21 @@ export default (app: Courselore): void => {
                                         (enrollment) => html`
                                           <button
                                             type="button"
+                                            data-enrollment-course-role="${enrollment.courseRole}"
+                                            $${req.query.newConversation
+                                              ?.participants === "staff"
+                                              ? html`hidden`
+                                              : html``}
                                             class="dropdown--menu--item button button--transparent ${req.query.newConversation?.selectedParticipants?.includes(
                                               enrollment.reference
                                             )
                                               ? "button--blue"
                                               : ""}"
                                             onload="${javascript`
-                                            this.onclick = () => {
-                                              // TODO
-                                            };
-                                          `}"
+                                              this.onclick = () => {
+                                                // TODO
+                                              };
+                                            `}"
                                           >
                                             $${app.locals.partials.user({
                                               req,
