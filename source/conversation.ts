@@ -3382,7 +3382,57 @@ export default (app: Courselore): void => {
                                     gap: var(--space--2);
                                   `)}"
                                 >
-                                  <hr class="separator" />
+                                  <hr class="dropdown--separator" />
+
+                                  <div
+                                    css="${res.locals.css(css`
+                                      padding: var(--space--0) var(--space--2);
+                                    `)}"
+                                  >
+                                    <label
+                                      css="${res.locals.css(css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                        align-items: baseline;
+                                      `)}"
+                                    >
+                                      <i class="bi bi-funnel"></i>
+                                      <input
+                                        type="text"
+                                        class="input--text"
+                                        placeholder="Filter…"
+                                        onload="${javascript`
+                                          this.isModified = false;
+
+                                          this.oninput = () => {
+                                            const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                            for (const enrollment of document.querySelectorAll(".enrollment")) {
+                                              let enrollmentHidden = filterPhrases.length > 0;
+                                              for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                                                const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                const filterablePhrasesElementChildren = [];
+                                                for (const filterablePhrase of filterablePhrases) {
+                                                  let filterablePhraseElement;
+                                                  if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                    filterablePhraseElement = document.createElement("mark");
+                                                    filterablePhraseElement.classList.add("mark");
+                                                    enrollmentHidden = false;
+                                                  } else
+                                                    filterablePhraseElement = document.createElement("span");
+                                                  filterablePhraseElement.textContent = filterablePhrase;
+                                                  filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                }
+                                                filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                              }
+                                              enrollment.hidden = enrollmentHidden;
+                                            }
+                                          };
+                                        `}"
+                                      />
+                                    </label>
+                                  </div>
+
+                                  <hr class="dropdown--separator" />
 
                                   <div
                                     class="dropdown--menu"
@@ -3396,6 +3446,11 @@ export default (app: Courselore): void => {
                                         <label
                                           data-enrollment-course-role="${enrollment.courseRole}"
                                           data-enrollment-reference="${enrollment.reference}"
+                                          data-filterable-phrases="${JSON.stringify(
+                                            app.locals.helpers.splitFilterablePhrases(
+                                              enrollment.user.name
+                                            )
+                                          )}"
                                           class="dropdown--menu--item button button--transparent ${req.query.newConversation?.selectedParticipants?.includes(
                                             enrollment.reference
                                           )
@@ -3408,10 +3463,6 @@ export default (app: Courselore): void => {
                                               enrollment.reference
                                             )
                                               ? html`checked`
-                                              : html``}
-                                            $${req.query.newConversation
-                                              ?.participants === "staff"
-                                              ? html`hidden`
                                               : html``}
                                             class="visually-hidden"
                                             onload="${javascript`
