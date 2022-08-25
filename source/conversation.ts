@@ -3423,6 +3423,7 @@ export default (app: Courselore): void => {
                                             user: enrollment.user,
                                             tooltip: false,
                                             size: "xs",
+                                            bold: false,
                                           })}
                                         </label>
                                       `
@@ -3516,6 +3517,7 @@ export default (app: Courselore): void => {
                               user: enrollment.user,
                               tooltip: false,
                               size: "xs",
+                              bold: false,
                             })}
                           </button>
                         `

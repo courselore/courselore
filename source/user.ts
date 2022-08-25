@@ -71,6 +71,7 @@ export type UserPartial = ({
   name,
   tooltip,
   size,
+  bold,
 }: {
   req: express.Request<
     {},
@@ -91,6 +92,7 @@ export type UserPartial = ({
   name?: boolean | string;
   tooltip?: boolean;
   size?: "xs" | "sm" | "xl";
+  bold?: boolean;
 }) => HTML;
 
 export default (app: Courselore): void => {
@@ -109,6 +111,7 @@ export default (app: Courselore): void => {
     name = true,
     tooltip = name !== false,
     size = "sm",
+    bold = true,
   }) => {
     let userAvatar: HTML | undefined;
     let userName: HTML | undefined;
@@ -307,7 +310,11 @@ export default (app: Courselore): void => {
       if (name !== false)
         userName = html`<span
           css="${res.locals.css(css`
-            font-weight: var(--font-weight--bold);
+            ${bold
+              ? css`
+                  font-weight: var(--font-weight--bold);
+                `
+              : css``}
           `)}"
           >$${name === true
             ? html`${user === "no-longer-enrolled"
@@ -547,7 +554,11 @@ export default (app: Courselore): void => {
       if (name !== false)
         anonymousName = html`<span
           css="${res.locals.css(css`
-            font-weight: var(--font-weight--bold);
+            ${bold
+              ? css`
+                  font-weight: var(--font-weight--bold);
+                `
+              : css``}
           `)}"
           >Anonymous</span
         >`;

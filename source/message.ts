@@ -512,6 +512,7 @@ export default (app: Courselore): void => {
                       res,
                       enrollment: reading.enrollment,
                       size: "xs",
+                      bold: false,
                     })}
                      
                     <span

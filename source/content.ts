@@ -2271,6 +2271,7 @@ ${contentSource}</textarea
                         name: enrollment.user.nameSearchResultHighlight,
                         tooltip: false,
                         size: "xs",
+                        bold: false,
                       })}
                     </button>
                   `
