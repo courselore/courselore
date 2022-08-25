@@ -3205,162 +3205,65 @@ export default (app: Courselore): void => {
                       </div>
                     </div>
                   `}
+              $${(() => {
+                const enrollments = app.locals.database
+                  .all<{
+                    id: number;
+                    userId: number;
+                    userLastSeenOnlineAt: string;
+                    userReference: string;
+                    userEmail: string;
+                    userName: string;
+                    userAvatar: string | null;
+                    userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                    userBiographySource: string | null;
+                    userBiographyPreprocessed: HTML | null;
+                    reference: string;
+                    courseRole: CourseRole;
+                  }>(
+                    sql`
+                          SELECT "enrollments"."id",
+                                 "users"."id" AS "userId",
+                                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                 "users"."reference" AS "userReference",
+                                 "users"."email" AS "userEmail",
+                                 "users"."name" AS "userName",
+                                 "users"."avatar" AS "userAvatar",
+                                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                                 "users"."biographySource" AS "userBiographySource",
+                                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                                 "enrollments"."reference",
+                                 "enrollments"."courseRole"
+                          FROM "enrollments"
+                          JOIN "users" ON "enrollments"."user" = "users"."id"
+                          WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                                "enrollments"."id" != ${res.locals.enrollment.id}
+                          ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+                        `
+                  )
+                  .map((enrollment) => ({
+                    id: enrollment.id,
+                    user: {
+                      id: enrollment.userId,
+                      lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+                      reference: enrollment.userReference,
+                      email: enrollment.userEmail,
+                      name: enrollment.userName,
+                      avatar: enrollment.userAvatar,
+                      avatarlessBackgroundColor:
+                        enrollment.userAvatarlessBackgroundColor,
+                      biographySource: enrollment.userBiographySource,
+                      biographyPreprocessed:
+                        enrollment.userBiographyPreprocessed,
+                    },
+                    reference: enrollment.reference,
+                    courseRole: enrollment.courseRole,
+                  }));
 
-              <div class="label">
-                <div class="label--text">Participants</div>
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <div
-                    onload="${javascript`
-                      (this.dropdown ??= tippy(this)).setProps({
-                        trigger: "click",
-                        interactive: true,
-                        content: ${res.locals.html(
-                          html`
-                            <div class="dropdown--menu">
-                              $${conversationParticipantses.map(
-                                (conversationParticipants) => html`
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent ${req
-                                      .query.newConversation?.participants ===
-                                      conversationParticipants ||
-                                    (req.query.newConversation?.participants ===
-                                      undefined &&
-                                      ((req.params.type === "chat" &&
-                                        conversationParticipants ===
-                                          "selected") ||
-                                        (req.params.type !== "chat" &&
-                                          conversationParticipants ===
-                                            "everyone")))
-                                      ? html`button--blue`
-                                      : html``} ${conversationParticipantsTextColor[
-                                      conversationParticipants
-                                    ]}"
-                                    onload="${javascript`
-                                      this.onclick = () => {
-                                        this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-                                        this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
-                                        this.classList.add("button--blue");
-                                        tippy.hideAll();
-                                      };
-                                    `}"
-                                  >
-                                    $${conversationParticipantsIcon[
-                                      conversationParticipants
-                                    ].fill}
-                                    $${conversationParticipantsLabel[
-                                      conversationParticipants
-                                    ]}
-                                  </button>
-                                `
-                              )}
-                            </div>
-                          `
-                        )},
-                      });
-                    `}"
-                  >
-                    $${conversationParticipantses.map(
-                      (conversationParticipants) => html`
-                        <input
-                          type="radio"
-                          name="participants"
-                          value="${conversationParticipants}"
-                          $${req.query.newConversation?.participants ===
-                            conversationParticipants ||
-                          (req.query.newConversation?.participants ===
-                            undefined &&
-                            ((req.params.type === "chat" &&
-                              conversationParticipants === "selected") ||
-                              (req.params.type !== "chat" &&
-                                conversationParticipants === "everyone")))
-                            ? html`checked`
-                            : html``}
-                          class="visually-hidden input--visible-when-checked"
-                        />
-                        <div
-                          class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
-                            conversationParticipants
-                          ]}"
-                        >
-                          $${conversationParticipantsIcon[
-                            conversationParticipants
-                          ].fill}
-                          $${conversationParticipantsLabel[
-                            conversationParticipants
-                          ]}
-                          <i class="bi bi-chevron-down"></i>
-                        </div>
-                      `
-                    )}
-                  </div>
-                </div>
-                $${(() => {
-                  const enrollments = app.locals.database
-                    .all<{
-                      id: number;
-                      userId: number;
-                      userLastSeenOnlineAt: string;
-                      userReference: string;
-                      userEmail: string;
-                      userName: string;
-                      userAvatar: string | null;
-                      userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                      userBiographySource: string | null;
-                      userBiographyPreprocessed: HTML | null;
-                      reference: string;
-                      courseRole: CourseRole;
-                    }>(
-                      sql`
-                        SELECT "enrollments"."id",
-                               "users"."id" AS "userId",
-                               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                               "users"."reference" AS "userReference",
-                               "users"."email" AS "userEmail",
-                               "users"."name" AS "userName",
-                               "users"."avatar" AS "userAvatar",
-                               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                               "users"."biographySource" AS "userBiographySource",
-                               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                               "enrollments"."reference",
-                               "enrollments"."courseRole"
-                        FROM "enrollments"
-                        JOIN "users" ON "enrollments"."user" = "users"."id"
-                        WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                              "enrollments"."id" != ${res.locals.enrollment.id}
-                        ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
-                      `
-                    )
-                    .map((enrollment) => ({
-                      id: enrollment.id,
-                      user: {
-                        id: enrollment.userId,
-                        lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-                        reference: enrollment.userReference,
-                        email: enrollment.userEmail,
-                        name: enrollment.userName,
-                        avatar: enrollment.userAvatar,
-                        avatarlessBackgroundColor:
-                          enrollment.userAvatarlessBackgroundColor,
-                        biographySource: enrollment.userBiographySource,
-                        biographyPreprocessed:
-                          enrollment.userBiographyPreprocessed,
-                      },
-                      reference: enrollment.reference,
-                      courseRole: enrollment.courseRole,
-                    }));
-                  return html`
+                return html`
+                  <div class="label">
+                    <div class="label--text">Participants</div>
                     <div
-                      $${req.query.newConversation?.participants ===
-                        "everyone" ||
-                      (req.query.newConversation?.participants === undefined &&
-                        req.params.type !== "chat")
-                        ? html`hidden`
-                        : html``}
                       css="${res.locals.css(css`
                         display: flex;
                         flex-wrap: wrap;
@@ -3368,13 +3271,93 @@ export default (app: Courselore): void => {
                         row-gap: var(--space--4);
                       `)}"
                     >
-                      <button
-                        type="button"
-                        class="button button--tight button--tight--inline button--transparent"
+                      <div
+                        onload="${javascript`
+                          (this.dropdown ??= tippy(this)).setProps({
+                            trigger: "click",
+                            interactive: true,
+                            content: ${res.locals.html(
+                              html`
+                                <div class="dropdown--menu">
+                                  $${conversationParticipantses.map(
+                                    (conversationParticipants) => html`
+                                      <button
+                                        type="button"
+                                        class="dropdown--menu--item button button--transparent ${req
+                                          .query.newConversation
+                                          ?.participants ===
+                                          conversationParticipants ||
+                                        (req.query.newConversation
+                                          ?.participants === undefined &&
+                                          ((req.params.type === "chat" &&
+                                            conversationParticipants ===
+                                              "selected") ||
+                                            (req.params.type !== "chat" &&
+                                              conversationParticipants ===
+                                                "everyone")))
+                                          ? html`button--blue`
+                                          : html``} ${conversationParticipantsTextColor[
+                                          conversationParticipants
+                                        ]}"
+                                        onload="${javascript`
+                                          this.onclick = () => {
+                                            this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+                                            this.closest(".dropdown--menu").querySelector(".button--blue").classList.remove("button--blue");
+                                            this.classList.add("button--blue");
+                                            tippy.hideAll();
+                                          };
+                                        `}"
+                                      >
+                                        $${conversationParticipantsIcon[
+                                          conversationParticipants
+                                        ].fill}
+                                        $${conversationParticipantsLabel[
+                                          conversationParticipants
+                                        ]}
+                                      </button>
+                                    `
+                                  )}
+                                </div>
+                              `
+                            )},
+                          });
+                        `}"
                       >
-                        <i class="bi bi-person-plus"></i>
-                        Add Participant
-                      </button>
+                        $${conversationParticipantses.map(
+                          (conversationParticipants) => html`
+                            <input
+                              type="radio"
+                              name="participants"
+                              value="${conversationParticipants}"
+                              $${req.query.newConversation?.participants ===
+                                conversationParticipants ||
+                              (req.query.newConversation?.participants ===
+                                undefined &&
+                                ((req.params.type === "chat" &&
+                                  conversationParticipants === "selected") ||
+                                  (req.params.type !== "chat" &&
+                                    conversationParticipants === "everyone")))
+                                ? html`checked`
+                                : html``}
+                              class="visually-hidden input--visible-when-checked"
+                            />
+                            <div
+                              class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
+                                conversationParticipants
+                              ]}"
+                            >
+                              $${conversationParticipantsIcon[
+                                conversationParticipants
+                              ].fill}
+                              $${conversationParticipantsLabel[
+                                conversationParticipants
+                              ]}
+                              <i class="bi bi-chevron-down"></i>
+                            </div>
+                          `
+                        )}
+                      </div>
+
                       $${enrollments.map(
                         (enrollment) => html`
                           <input
@@ -3391,6 +3374,12 @@ export default (app: Courselore): void => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
+                            onload="${javascript`
+                              this.onclick = () => {
+                                this.previousElementSibling.checked = false;
+                                // TODO: Remove ‘button--blue’ in dropdown menu
+                              };
+                            `}"
                           >
                             $${app.locals.partials.user({
                               req,
@@ -3404,9 +3393,9 @@ export default (app: Courselore): void => {
                         `
                       )}
                     </div>
-                  `;
-                })()}
-              </div>
+                  </div>
+                `;
+              })()}
 
               <div
                 css="${res.locals.css(css`
