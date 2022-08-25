@@ -319,7 +319,8 @@
             display: none;
           }
 
-        .input--visible-when-enabled-and-checked:not(:checked) + * {
+        .input--visible-when-enabled-and-checked[disabled] + *,
+          .input--visible-when-enabled-and-checked:not(:checked) + * {
             display: none;
           }
 
