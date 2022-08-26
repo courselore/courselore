@@ -3468,6 +3468,11 @@ export default (app: Courselore): void => {
                                                 enrollment.user.name
                                               )
                                             )}"
+                                            $${req.query.newConversation
+                                              ?.participants === "staff" &&
+                                            enrollment.courseRole === "staff"
+                                              ? html`hidden`
+                                              : html``}
                                           >
                                             <input
                                               type="checkbox"
