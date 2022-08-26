@@ -309,25 +309,27 @@ export default (app: Courselore): void => {
 
       if (name !== false)
         userName = html`<span
-          css="${res.locals.css(css`
-            ${bold
-              ? css`
-                  font-weight: var(--font-weight--bold);
+          ><span
+            css="${res.locals.css(css`
+              ${bold
+                ? css`
+                    font-weight: var(--font-weight--bold);
+                  `
+                : css``}
+            `)}"
+            $${name === true && user !== "no-longer-enrolled"
+              ? html`
+                  data-filterable-phrases="${JSON.stringify(
+                    app.locals.helpers.splitFilterablePhrases(user.name)
+                  )}"
                 `
-              : css``}
-          `)}"
-          $${name === true && user !== "no-longer-enrolled"
-            ? html`
-                data-filterable-phrases="${JSON.stringify(
-                  app.locals.helpers.splitFilterablePhrases(user.name)
-                )}"
-              `
-            : html``}
-          >$${name === true
-            ? html`${user === "no-longer-enrolled"
-                ? "No Longer Enrolled"
-                : user.name}`
-            : name}$${enrollment !== undefined &&
+              : html``}
+            >$${name === true
+              ? html`${user === "no-longer-enrolled"
+                  ? "No Longer Enrolled"
+                  : user.name}`
+              : name}</span
+          >$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
           enrollment.courseRole === "staff"
             ? html`<span
