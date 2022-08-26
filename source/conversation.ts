@@ -3294,6 +3294,7 @@ export default (app: Courselore): void => {
                                           <input
                                             type="radio"
                                             name="participants--dropdown--participants"
+                                            value="${conversationParticipants}"
                                             $${req.query.newConversation
                                               ?.participants ===
                                               conversationParticipants ||
@@ -3424,7 +3425,11 @@ export default (app: Courselore): void => {
   
                                             this.oninput = () => {
                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                              for (const selectedParticipant of this.closest('[key="participants--dropdown"]').querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                              const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                              const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                                if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                  continue;
                                                 let selectedParticipantHidden = filterPhrases.length > 0;
                                                 for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
                                                   const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
