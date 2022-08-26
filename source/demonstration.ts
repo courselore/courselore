@@ -1116,7 +1116,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   : []),
                 ...lodash.sampleSize(students, lodash.random(0, 10)),
               ]
-            : participants === "selected"
+            : participants === "selected-people"
             ? [
                 ...(Math.random() < 0.5 ? [enrollment] : []),
                 ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
@@ -1128,7 +1128,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             ? enrollments
             : participants === "staff"
             ? staff
-            : participants === "selected"
+            : participants === "selected-people"
             ? []
             : []),
           ...selectedParticipantEnrollments,

@@ -25,7 +25,7 @@ export type ConversationParticipants =
 export const conversationParticipantses = [
   "everyone",
   "staff",
-  "selected",
+  "selected-people",
 ] as const;
 
 export type ConversationType = typeof conversationTypes[number];
@@ -209,7 +209,7 @@ export default (app: Courselore): void => {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
-    selected: {
+    "selected-people": {
       regular: html`<i class="bi bi-door-closed"></i>`,
       fill: html`<i class="bi bi-door-closed-fill"></i>`,
     },
@@ -220,7 +220,7 @@ export default (app: Courselore): void => {
   } = {
     everyone: "text--green",
     staff: "text--sky",
-    selected: "text--rose",
+    "selected-people": "text--rose",
   };
 
   const conversationParticipantsLabel: {
@@ -228,7 +228,7 @@ export default (app: Courselore): void => {
   } = {
     everyone: html`Everyone`,
     staff: html`Staff`,
-    selected: html`Selected People`,
+    "selected-people": html`Selected People`,
   };
 
   app.locals.layouts.conversation = ({
@@ -3302,7 +3302,7 @@ export default (app: Courselore): void => {
                                               ?.participants === undefined &&
                                               ((req.params.type === "chat" &&
                                                 conversationParticipants ===
-                                                  "selected") ||
+                                                  "selected-people") ||
                                                 (req.params.type !== "chat" &&
                                                   conversationParticipants ===
                                                     "everyone")))
@@ -3343,7 +3343,7 @@ export default (app: Courselore): void => {
                                                           element.disabled = element.matches('[data-enrollment-course-role="staff"]');
                                                       `
                                                     : conversationParticipants ===
-                                                      "selected"
+                                                      "selected-people"
                                                     ? javascript`
                                                         const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                         const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
@@ -3395,7 +3395,7 @@ export default (app: Courselore): void => {
                                     key="participants--dropdown--selected-participants"
                                     $${(typeof req.query.newConversation
                                       ?.participants === "string" &&
-                                      ["staff", "selected"].includes(
+                                      ["staff", "selected-people"].includes(
                                         req.query.newConversation.participants
                                       )) ||
                                     (req.query.newConversation?.participants ===
@@ -3572,7 +3572,8 @@ export default (app: Courselore): void => {
                               (req.query.newConversation?.participants ===
                                 undefined &&
                                 ((req.params.type === "chat" &&
-                                  conversationParticipants === "selected") ||
+                                  conversationParticipants ===
+                                    "selected-people") ||
                                   (req.params.type !== "chat" &&
                                     conversationParticipants === "everyone")))
                                 ? html`checked`
@@ -3582,7 +3583,7 @@ export default (app: Courselore): void => {
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               onload="${javascript`
                                 ${
-                                  conversationParticipants === "selected"
+                                  conversationParticipants === "selected-people"
                                     ? javascript`
                                         this.onvalidate = () => {
                                           if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
@@ -3626,7 +3627,7 @@ export default (app: Courselore): void => {
                               : html``}
                             $${(typeof req.query.newConversation
                               ?.participants === "string" &&
-                              ["staff", "selected"].includes(
+                              ["staff", "selected-people"].includes(
                                 req.query.newConversation.participants
                               )) ||
                             (req.query.newConversation?.participants ===
@@ -4271,7 +4272,7 @@ export default (app: Courselore): void => {
         !conversationParticipantses.includes(req.body.participants) ||
         !Array.isArray(req.body.selectedParticipantsReferences) ||
         (req.body.selectedParticipantsReferences.length === 0 &&
-          req.body.participants === "selected") ||
+          req.body.participants === "selected-people") ||
         req.body.selectedParticipantsReferences.some(
           (selectedParticipantReference) =>
             typeof selectedParticipantReference !== "string"
@@ -4371,7 +4372,7 @@ export default (app: Courselore): void => {
         if (
           (conversation.participants === "staff" &&
             selectedParticipant.courseRole !== "staff") ||
-          conversation.participants === "selected"
+          conversation.participants === "selected-people"
         )
           app.locals.database.run(
             sql`
@@ -8217,7 +8218,7 @@ export default (app: Courselore): void => {
           !conversationParticipantses.includes(req.body.participants) ||
           !Array.isArray(req.body.selectedParticipantsReferences) ||
           (req.body.selectedParticipantsReferences.length === 0 &&
-            req.body.participants === "selected") ||
+            req.body.participants === "selected-people") ||
           req.body.selectedParticipantsReferences.some(
             (selectedParticipantReference) =>
               typeof selectedParticipantReference !== "string"
@@ -8272,7 +8273,7 @@ export default (app: Courselore): void => {
           if (
             (res.locals.conversation.participants === "staff" &&
               selectedParticipant.courseRole !== "staff") ||
-            res.locals.conversation.participants === "selected"
+            res.locals.conversation.participants === "selected-people"
           )
             app.locals.database.run(
               sql`
