@@ -316,6 +316,13 @@ export default (app: Courselore): void => {
                 `
               : css``}
           `)}"
+          $${name === true && user !== "no-longer-enrolled"
+            ? html`
+                data-filterable-phrases="${JSON.stringify(
+                  app.locals.helpers.splitFilterablePhrases(user.name)
+                )}"
+              `
+            : html``}
           >$${name === true
             ? html`${user === "no-longer-enrolled"
                 ? "No Longer Enrolled"

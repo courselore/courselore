@@ -3424,7 +3424,7 @@ export default (app: Courselore): void => {
   
                                             this.oninput = () => {
                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                              for (const selectedParticipant of this.closest("participants--dropdown").querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                              for (const selectedParticipant of this.closest('[key="participants--dropdown"]').querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
                                                 let selectedParticipantHidden = filterPhrases.length > 0;
                                                 for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
                                                   const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
@@ -3455,7 +3455,7 @@ export default (app: Courselore): void => {
                                     <div
                                       class="dropdown--menu"
                                       css="${res.locals.css(css`
-                                        max-height: var(--space--40);
+                                        height: var(--space--40);
                                         overflow: auto;
                                       `)}"
                                     >
