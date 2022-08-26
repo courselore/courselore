@@ -3424,9 +3424,9 @@ export default (app: Courselore): void => {
   
                                             this.oninput = () => {
                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                              for (const enrollment of document.querySelectorAll(".enrollment")) {
-                                                let enrollmentHidden = filterPhrases.length > 0;
-                                                for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                                              for (const selectedParticipant of this.closest("participants--dropdown").querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                                let selectedParticipantHidden = filterPhrases.length > 0;
+                                                for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
                                                   const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
                                                   const filterablePhrasesElementChildren = [];
                                                   for (const filterablePhrase of filterablePhrases) {
@@ -3434,7 +3434,7 @@ export default (app: Courselore): void => {
                                                     if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
                                                       filterablePhraseElement = document.createElement("mark");
                                                       filterablePhraseElement.classList.add("mark");
-                                                      enrollmentHidden = false;
+                                                      selectedParticipantHidden = false;
                                                     } else
                                                       filterablePhraseElement = document.createElement("span");
                                                     filterablePhraseElement.textContent = filterablePhrase;
@@ -3442,7 +3442,7 @@ export default (app: Courselore): void => {
                                                   }
                                                   filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                                                 }
-                                                enrollment.hidden = enrollmentHidden;
+                                                selectedParticipant.hidden = selectedParticipantHidden;
                                               }
                                             };
                                           `}"
@@ -3462,12 +3462,8 @@ export default (app: Courselore): void => {
                                       $${enrollments.map(
                                         (enrollment) => html`
                                           <label
+                                            key="participants--dropdown--selected-participant"
                                             data-enrollment-course-role="${enrollment.courseRole}"
-                                            data-filterable-phrases="${JSON.stringify(
-                                              app.locals.helpers.splitFilterablePhrases(
-                                                enrollment.user.name
-                                              )
-                                            )}"
                                             $${req.query.newConversation
                                               ?.participants === "staff" &&
                                             enrollment.courseRole === "staff"
