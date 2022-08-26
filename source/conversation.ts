@@ -3302,14 +3302,14 @@ export default (app: Courselore): void => {
 
                                               this.onchange = () => {  
                                                 this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+
+                                                const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
   
                                                 ${
                                                   conversationParticipants ===
                                                   "everyone"
                                                     ? javascript`
-                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-                                                        
                                                         selectedParticipants.hidden = true;
   
                                                         for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
@@ -3318,9 +3318,6 @@ export default (app: Courselore): void => {
                                                     : conversationParticipants ===
                                                       "staff"
                                                     ? javascript`
-                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-                                                        
                                                         selectedParticipants.hidden = false;
   
                                                         for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3333,9 +3330,6 @@ export default (app: Courselore): void => {
                                                     : conversationParticipants ===
                                                       "selected-people"
                                                     ? javascript`
-                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-                                                        
                                                         selectedParticipants.hidden = false;
   
                                                         for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3347,8 +3341,6 @@ export default (app: Courselore): void => {
                                                       `
                                                     : javascript``
                                                 }
-  
-                                                  
                                               };
                                             `}"
                                           />
