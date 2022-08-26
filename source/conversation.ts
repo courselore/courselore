@@ -3488,7 +3488,6 @@ export default (app: Courselore): void => {
                                                 this.isModified = false;
   
                                                 this.onchange = () => {
-                                                  this.closest("label").classList[this.checked ? "add" : "remove"]("button--blue");
                                                   this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
                                                 };
                                               `}"
@@ -3608,9 +3607,8 @@ export default (app: Courselore): void => {
                             onload="${javascript`
                               this.onclick = () => {
                                 this.previousElementSibling.checked = false;
-                                const dropdownLabel = this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[data-enrollment-reference="${enrollment.reference}"]');
-                                dropdownLabel.classList.remove("button--blue");
-                                dropdownLabel.querySelector("input").checked = false;
+
+                                this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
                               };
                             `}"
                           >
