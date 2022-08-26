@@ -3391,61 +3391,6 @@ export default (app: Courselore): void => {
                                   >
                                     <hr class="dropdown--separator" />
 
-                                    <div
-                                      css="${res.locals.css(css`
-                                        padding: var(--space--0) var(--space--2);
-                                      `)}"
-                                    >
-                                      <label
-                                        css="${res.locals.css(css`
-                                          display: flex;
-                                          gap: var(--space--2);
-                                          align-items: baseline;
-                                        `)}"
-                                      >
-                                        <i class="bi bi-funnel"></i>
-                                        <input
-                                          key="participants--dropdown--selected-participants--filter"
-                                          type="text"
-                                          class="input--text"
-                                          placeholder="Filter…"
-                                          onload="${javascript`
-                                            this.isModified = false;
-  
-                                            this.oninput = () => {
-                                              const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                              const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                              const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
-                                                if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
-                                                  continue;
-                                                let selectedParticipantHidden = filterPhrases.length > 0;
-                                                for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                  const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                  const filterablePhrasesElementChildren = [];
-                                                  for (const filterablePhrase of filterablePhrases) {
-                                                    let filterablePhraseElement;
-                                                    if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                      filterablePhraseElement = document.createElement("mark");
-                                                      filterablePhraseElement.classList.add("mark");
-                                                      selectedParticipantHidden = false;
-                                                    } else
-                                                      filterablePhraseElement = document.createElement("span");
-                                                    filterablePhraseElement.textContent = filterablePhrase;
-                                                    filterablePhrasesElementChildren.push(filterablePhraseElement);
-                                                  }
-                                                  filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
-                                                }
-                                                selectedParticipant.hidden = selectedParticipantHidden;
-                                              }
-                                            };
-                                          `}"
-                                        />
-                                      </label>
-                                    </div>
-
-                                    <hr class="dropdown--separator" />
-
                                     $${res.locals.courseEnrollmentsCount === 1
                                       ? html`
                                           <p
@@ -3461,6 +3406,62 @@ export default (app: Courselore): void => {
                                           </p>
                                         `
                                       : html`
+                                          <div
+                                            css="${res.locals.css(css`
+                                              padding: var(--space--0)
+                                                var(--space--2);
+                                            `)}"
+                                          >
+                                            <label
+                                              css="${res.locals.css(css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                                align-items: baseline;
+                                              `)}"
+                                            >
+                                              <i class="bi bi-funnel"></i>
+                                              <input
+                                                key="participants--dropdown--selected-participants--filter"
+                                                type="text"
+                                                class="input--text"
+                                                placeholder="Filter…"
+                                                onload="${javascript`
+                                                  this.isModified = false;
+
+                                                  this.oninput = () => {
+                                                    const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                    const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                    const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                                      if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                        continue;
+                                                      let selectedParticipantHidden = filterPhrases.length > 0;
+                                                      for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                        const filterablePhrasesElementChildren = [];
+                                                        for (const filterablePhrase of filterablePhrases) {
+                                                          let filterablePhraseElement;
+                                                          if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                            filterablePhraseElement = document.createElement("mark");
+                                                            filterablePhraseElement.classList.add("mark");
+                                                            selectedParticipantHidden = false;
+                                                          } else
+                                                            filterablePhraseElement = document.createElement("span");
+                                                          filterablePhraseElement.textContent = filterablePhrase;
+                                                          filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                        }
+                                                        filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                      }
+                                                      selectedParticipant.hidden = selectedParticipantHidden;
+                                                    }
+                                                  };
+                                                `}"
+                                              />
+                                            </label>
+                                          </div>
+
+                                          <hr class="dropdown--separator" />
+
                                           <div
                                             class="dropdown--menu"
                                             css="${res.locals.css(css`
