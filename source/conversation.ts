@@ -3545,6 +3545,7 @@ export default (app: Courselore): void => {
                                     conversationParticipants === "everyone")))
                                 ? html`checked`
                                 : html``}
+                              required
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               onload="${javascript`
                                 ${
