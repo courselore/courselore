@@ -3499,11 +3499,7 @@ export default (app: Courselore): void => {
                                             })}
                                           </span>
                                           <span
-                                            class="dropdown--menu--item button ${req.query.newConversation?.selectedParticipants?.includes(
-                                              enrollment.reference
-                                            )
-                                              ? "button--blue"
-                                              : ""}"
+                                            class="dropdown--menu--item button button--blue"
                                           >
                                             $${app.locals.partials.user({
                                               req,
