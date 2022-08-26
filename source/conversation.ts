@@ -196,23 +196,11 @@ export default (app: Courselore): void => {
   };
 
   const conversationParticipantsIcon: {
-    [conversationParticipants in ConversationParticipants]: {
-      regular: HTML;
-      fill: HTML;
-    };
+    [conversationParticipants in ConversationParticipants]: HTML;
   } = {
-    everyone: {
-      regular: html`<i class="bi bi-people"></i>`,
-      fill: html`<i class="bi bi-people-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
-    "selected-people": {
-      regular: html`<i class="bi bi-door-closed"></i>`,
-      fill: html`<i class="bi bi-door-closed-fill"></i>`,
-    },
+    everyone: html`<i class="bi bi-people-fill"></i>`,
+    staff: html`<i class="bi bi-mortarboard-fill"></i>`,
+    "selected-people": html`<i class="bi bi-door-closed-fill"></i>`,
   };
 
   const conversationParticipantsTextColor: {
@@ -2220,7 +2208,7 @@ export default (app: Courselore): void => {
             });
           `}"
         >
-          $${conversationParticipantsIcon[conversation.participants].fill}
+          $${conversationParticipantsIcon[conversation.participants]}
           $${conversationParticipantsLabel[conversation.participants]}
         </div>
         $${conversation.pinnedAt !== null
@@ -3371,7 +3359,7 @@ export default (app: Courselore): void => {
                                           >
                                             $${conversationParticipantsIcon[
                                               conversationParticipants
-                                            ].fill}
+                                            ]}
                                             $${conversationParticipantsLabel[
                                               conversationParticipants
                                             ]}
@@ -3381,7 +3369,7 @@ export default (app: Courselore): void => {
                                           >
                                             $${conversationParticipantsIcon[
                                               conversationParticipants
-                                            ].fill}
+                                            ]}
                                             $${conversationParticipantsLabel[
                                               conversationParticipants
                                             ]}
@@ -3603,7 +3591,7 @@ export default (app: Courselore): void => {
                             >
                               $${conversationParticipantsIcon[
                                 conversationParticipants
-                              ].fill}
+                              ]}
                               $${conversationParticipantsLabel[
                                 conversationParticipants
                               ]}
