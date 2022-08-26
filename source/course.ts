@@ -93,6 +93,7 @@ export interface IsEnrolledInCourseMiddlewareLocals
   extends IsSignedInMiddlewareLocals {
   enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
   course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+  courseEnrollmentsCount: number;
   conversationsCount: number;
   tags: {
     id: number;
@@ -694,6 +695,16 @@ export default (app: Courselore): void => {
       if (enrollment === undefined) return next("route");
       res.locals.enrollment = enrollment;
       res.locals.course = enrollment.course;
+
+      res.locals.courseEnrollmentsCount = app.locals.database.get<{
+        count: number;
+      }>(
+        sql`
+          SELECT COUNT(*) AS "count"
+          FROM "enrollments"
+          WHERE "course" = ${res.locals.course.id}
+        `
+      )!.count;
 
       res.locals.conversationsCount = app.locals.database.get<{
         count: number;

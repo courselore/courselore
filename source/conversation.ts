@@ -3466,72 +3466,94 @@ export default (app: Courselore): void => {
 
                                     <hr class="dropdown--separator" />
 
-                                    <div
-                                      class="dropdown--menu"
-                                      css="${res.locals.css(css`
-                                        height: var(--space--40);
-                                        overflow: auto;
-                                      `)}"
-                                    >
-                                      $${enrollments.map(
-                                        (enrollment) => html`
-                                          <label
-                                            key="participants--dropdown--selected-participant"
-                                            data-enrollment-course-role="${enrollment.courseRole}"
-                                            $${req.query.newConversation
-                                              ?.participants === "staff" &&
-                                            enrollment.courseRole === "staff"
-                                              ? html`hidden`
-                                              : html``}
+                                    $${res.locals.courseEnrollmentsCount === 1
+                                      ? html`
+                                          <p
+                                            class="secondary"
+                                            css="${res.locals.css(css`
+                                              padding: var(--space--0)
+                                                var(--space--2) var(--space--2);
+                                            `)}"
                                           >
-                                            <input
-                                              type="checkbox"
-                                              name="participants--dropdown--selected-participants[]"
-                                              value="${enrollment.reference}"
-                                              $${req.query.newConversation?.selectedParticipants?.includes(
-                                                enrollment.reference
-                                              )
-                                                ? html`checked`
-                                                : html``}
-                                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                                              onload="${javascript`
-                                                this.isModified = false;
-  
-                                                this.onchange = () => {
-                                                  this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
-                                                };
-                                              `}"
-                                            />
-                                            <span
-                                              class="dropdown--menu--item button button--transparent"
-                                            >
-                                              $${app.locals.partials.user({
-                                                req,
-                                                res,
-                                                enrollment,
-                                                user: enrollment.user,
-                                                tooltip: false,
-                                                size: "xs",
-                                                bold: false,
-                                              })}
-                                            </span>
-                                            <span
-                                              class="dropdown--menu--item button button--blue"
-                                            >
-                                              $${app.locals.partials.user({
-                                                req,
-                                                res,
-                                                enrollment,
-                                                user: enrollment.user,
-                                                tooltip: false,
-                                                size: "xs",
-                                                bold: false,
-                                              })}
-                                            </span>
-                                          </label>
+                                            Once there are more people enrolled
+                                            in the course you’ll be able to
+                                            select participants.
+                                          </p>
                                         `
-                                      )}
-                                    </div>
+                                      : html`
+                                          <div
+                                            class="dropdown--menu"
+                                            css="${res.locals.css(css`
+                                              height: var(--space--40);
+                                              overflow: auto;
+                                            `)}"
+                                          >
+                                            $${enrollments.map(
+                                              (enrollment) => html`
+                                                <label
+                                                  key="participants--dropdown--selected-participant"
+                                                  data-enrollment-course-role="${enrollment.courseRole}"
+                                                  $${req.query.newConversation
+                                                    ?.participants ===
+                                                    "staff" &&
+                                                  enrollment.courseRole ===
+                                                    "staff"
+                                                    ? html`hidden`
+                                                    : html``}
+                                                >
+                                                  <input
+                                                    type="checkbox"
+                                                    name="participants--dropdown--selected-participants[]"
+                                                    value="${enrollment.reference}"
+                                                    $${req.query.newConversation?.selectedParticipants?.includes(
+                                                      enrollment.reference
+                                                    )
+                                                      ? html`checked`
+                                                      : html``}
+                                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                    onload="${javascript`
+                                                      this.isModified = false;
+
+                                                      this.onchange = () => {
+                                                        this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+                                                      };
+                                                    `}"
+                                                  />
+                                                  <span
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    $${app.locals.partials.user(
+                                                      {
+                                                        req,
+                                                        res,
+                                                        enrollment,
+                                                        user: enrollment.user,
+                                                        tooltip: false,
+                                                        size: "xs",
+                                                        bold: false,
+                                                      }
+                                                    )}
+                                                  </span>
+                                                  <span
+                                                    class="dropdown--menu--item button button--blue"
+                                                  >
+                                                    $${app.locals.partials.user(
+                                                      {
+                                                        req,
+                                                        res,
+                                                        enrollment,
+                                                        user: enrollment.user,
+                                                        tooltip: false,
+                                                        size: "xs",
+                                                        bold: false,
+                                                      }
+                                                    )}
+                                                  </span>
+                                                </label>
+                                              `
+                                            )}
+                                          </div>
+                                        `}
                                   </div>
                                 </div>
                               `
