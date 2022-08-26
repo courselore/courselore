@@ -3606,11 +3606,11 @@ export default (app: Courselore): void => {
                             )
                               ? html`checked`
                               : html``}
-                            $${(typeof req.query.newConversation
-                              ?.participants === "string" &&
-                              ["staff", "selected-people"].includes(
-                                req.query.newConversation.participants
-                              )) ||
+                            $${(req.query.newConversation?.participants ===
+                              "staff" &&
+                              enrollment.courseRole !== "staff") ||
+                            req.query.newConversation?.participants ===
+                              "selected-people" ||
                             (req.query.newConversation?.participants ===
                               undefined &&
                               req.params.type === "chat")
