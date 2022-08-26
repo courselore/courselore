@@ -315,18 +315,18 @@ export default (app: Courselore): void => {
       }>(
         sql`
           SELECT "conversations"."reference"
-                  $${
-                    search === undefined
-                      ? sql``
-                      : sql`
-                          ,
-                          "conversationTitleSearchResult"."highlight" AS "conversationTitleSearchResultHighlight",
-                          "messageAuthorUserNameSearchResult"."messageReference" AS "messageAuthorUserNameSearchResultMessageReference",
-                          "messageAuthorUserNameSearchResult"."highlight" AS "messageAuthorUserNameSearchResultHighlight",
-                          "messageContentSearchResult"."messageReference" AS "messageContentSearchResultMessageReference",
-                          "messageContentSearchResult"."snippet" AS "messageContentSearchResultSnippet"
-                        `
-                  }
+                 $${
+                   search === undefined
+                     ? sql``
+                     : sql`
+                         ,
+                         "conversationTitleSearchResult"."highlight" AS "conversationTitleSearchResultHighlight",
+                         "messageAuthorUserNameSearchResult"."messageReference" AS "messageAuthorUserNameSearchResultMessageReference",
+                         "messageAuthorUserNameSearchResult"."highlight" AS "messageAuthorUserNameSearchResultHighlight",
+                         "messageContentSearchResult"."messageReference" AS "messageContentSearchResultMessageReference",
+                         "messageContentSearchResult"."snippet" AS "messageContentSearchResultSnippet"
+                       `
+                 }
           FROM "conversations"
           $${
             search === undefined
