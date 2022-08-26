@@ -3315,7 +3315,7 @@ export default (app: Courselore): void => {
                                                 conversationParticipants ===
                                                 "everyone"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
                                                       selectedParticipants.hidden = true;
 
                                                       for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
@@ -3324,7 +3324,7 @@ export default (app: Courselore): void => {
                                                   : conversationParticipants ===
                                                     "staff"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
                                                       selectedParticipants.hidden = false;
 
                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3336,7 +3336,7 @@ export default (app: Courselore): void => {
                                                   : conversationParticipants ===
                                                     "selected"
                                                   ? javascript`
-                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="selected-participants"]');
+                                                      const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
                                                       selectedParticipants.hidden = false;
 
                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3380,7 +3380,7 @@ export default (app: Courselore): void => {
                                 </div>
 
                                 <div
-                                  key="selected-participants"
+                                  key="participants--dropdown--selected-participants"
                                   $${(typeof req.query.newConversation
                                     ?.participants === "string" &&
                                     ["staff", "selected"].includes(
@@ -3460,26 +3460,22 @@ export default (app: Courselore): void => {
                                       (enrollment) => html`
                                         <label
                                           data-enrollment-course-role="${enrollment.courseRole}"
-                                          data-enrollment-reference="${enrollment.reference}"
                                           data-filterable-phrases="${JSON.stringify(
                                             app.locals.helpers.splitFilterablePhrases(
                                               enrollment.user.name
                                             )
                                           )}"
-                                          class="dropdown--menu--item button button--transparent ${req.query.newConversation?.selectedParticipants?.includes(
-                                            enrollment.reference
-                                          )
-                                            ? "button--blue"
-                                            : ""}"
                                         >
                                           <input
                                             type="checkbox"
+                                            name="participants--dropdown--selected-participants[]"
+                                            value="${enrollment.reference}"
                                             $${req.query.newConversation?.selectedParticipants?.includes(
                                               enrollment.reference
                                             )
                                               ? html`checked`
                                               : html``}
-                                            class="visually-hidden"
+                                            class="visually-hidden input--radio-or-checkbox--multilabel"
                                             onload="${javascript`
                                               this.isModified = false;
 
@@ -3489,15 +3485,36 @@ export default (app: Courselore): void => {
                                               };
                                             `}"
                                           />
-                                          $${app.locals.partials.user({
-                                            req,
-                                            res,
-                                            enrollment,
-                                            user: enrollment.user,
-                                            tooltip: false,
-                                            size: "xs",
-                                            bold: false,
-                                          })}
+                                          <span
+                                            class="dropdown--menu--item button button--transparent"
+                                          >
+                                            $${app.locals.partials.user({
+                                              req,
+                                              res,
+                                              enrollment,
+                                              user: enrollment.user,
+                                              tooltip: false,
+                                              size: "xs",
+                                              bold: false,
+                                            })}
+                                          </span>
+                                          <span
+                                            class="dropdown--menu--item button ${req.query.newConversation?.selectedParticipants?.includes(
+                                              enrollment.reference
+                                            )
+                                              ? "button--blue"
+                                              : ""}"
+                                          >
+                                            $${app.locals.partials.user({
+                                              req,
+                                              res,
+                                              enrollment,
+                                              user: enrollment.user,
+                                              tooltip: false,
+                                              size: "xs",
+                                              bold: false,
+                                            })}
+                                          </span>
                                         </label>
                                       `
                                     )}
