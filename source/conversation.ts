@@ -3546,6 +3546,7 @@ export default (app: Courselore): void => {
                                 ? html`checked`
                                 : html``}
                               required
+                              tabindex="-1"
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               onload="${javascript`
                                 ${
@@ -3561,7 +3562,8 @@ export default (app: Courselore): void => {
                                 
                               `}"
                             />
-                            <div
+                            <button
+                              type="button"
                               class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
                                 conversationParticipants
                               ]}"
@@ -3573,7 +3575,7 @@ export default (app: Courselore): void => {
                                 conversationParticipants
                               ]}
                               <i class="bi bi-chevron-down"></i>
-                            </div>
+                            </button>
                           `
                         )}
                       </div>
@@ -3600,6 +3602,7 @@ export default (app: Courselore): void => {
                               req.params.type === "chat")
                               ? html``
                               : html`disabled`}
+                            tabindex="-1"
                             class="visually-hidden input--visible-when-enabled-and-checked"
                           />
                           <button
