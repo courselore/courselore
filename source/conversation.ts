@@ -3309,9 +3309,9 @@ export default (app: Courselore): void => {
                                               : html``}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
                                             onload="${javascript`
-                                              this.onchange = () => {
-                                                this.isModified = false;
-  
+                                              this.isModified = false;
+
+                                              this.onchange = () => {  
                                                 this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
   
                                                 ${
