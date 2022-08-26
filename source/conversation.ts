@@ -3319,7 +3319,9 @@ export default (app: Courselore): void => {
                                                   conversationParticipants ===
                                                   "everyone"
                                                     ? javascript`
-                                                        const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        
                                                         selectedParticipants.hidden = true;
   
                                                         for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
@@ -3328,11 +3330,14 @@ export default (app: Courselore): void => {
                                                     : conversationParticipants ===
                                                       "staff"
                                                     ? javascript`
-                                                        const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        
                                                         selectedParticipants.hidden = false;
   
                                                         for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                           element.hidden = true;
+                                                        participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
                                                         for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                           element.disabled = element.matches('[data-enrollment-course-role="staff"]');
@@ -3340,11 +3345,14 @@ export default (app: Courselore): void => {
                                                     : conversationParticipants ===
                                                       "selected"
                                                     ? javascript`
-                                                        const selectedParticipants = this.closest('[key="participants--dropdown"]').querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+                                                        
                                                         selectedParticipants.hidden = false;
   
                                                         for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                           element.hidden = false;
+                                                        participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
                                                         for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                           element.disabled = false;
@@ -3417,6 +3425,7 @@ export default (app: Courselore): void => {
                                       >
                                         <i class="bi bi-funnel"></i>
                                         <input
+                                          key="participants--dropdown--selected-participants--filter"
                                           type="text"
                                           class="input--text"
                                           placeholder="Filter…"
