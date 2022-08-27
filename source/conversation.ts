@@ -5825,6 +5825,7 @@ export default (app: Courselore): void => {
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
+                                      placement: "bottom",
                                       content: ${res.locals.html(
                                         html`
                                           <div
