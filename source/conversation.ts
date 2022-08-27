@@ -4256,8 +4256,10 @@ export default (app: Courselore): void => {
         typeof req.body.participants !== "string" ||
         !conversationParticipantses.includes(req.body.participants) ||
         !Array.isArray(req.body.selectedParticipantsReferences) ||
-        (req.body.selectedParticipantsReferences.length === 0 &&
-          req.body.participants === "selected-people") ||
+        (req.body.participants === "everyone" &&
+          req.body.selectedParticipantsReferences.length > 0) ||
+        (req.body.participants === "selected-people" &&
+          req.body.selectedParticipantsReferences.length === 0) ||
         req.body.selectedParticipantsReferences.some(
           (selectedParticipantReference) =>
             typeof selectedParticipantReference !== "string"
@@ -4267,12 +4269,18 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      req.body.selectedParticipantsReferences.push(
-        res.locals.enrollment.reference
-      );
+      if (
+        (req.body.participants === "staff" &&
+          res.locals.enrollment.courseRole !== "staff") ||
+        req.body.participants === "selected-people"
+      )
+        req.body.selectedParticipantsReferences.push(
+          res.locals.enrollment.reference
+        );
       const selectedParticipants =
-        req.body.participants !== "everyone"
-          ? app.locals.database.all<{
+        req.body.selectedParticipantsReferences.length === 0
+          ? []
+          : app.locals.database.all<{
               id: number;
               courseRole: CourseRole;
             }>(
@@ -4282,13 +4290,15 @@ export default (app: Courselore): void => {
                 WHERE "enrollments"."course" = ${res.locals.course.id} AND
                       "reference" IN ${req.body.selectedParticipantsReferences}
               `
-            )
-          : [];
+            );
 
       if (
-        (req.body.participants !== "everyone" &&
-          req.body.selectedParticipantsReferences.length !==
-            selectedParticipants.length) ||
+        req.body.selectedParticipantsReferences.length !==
+          selectedParticipants.length ||
+        (req.body.participants === "staff" &&
+          selectedParticipants.some(
+            (selectedParticipant) => selectedParticipant.courseRole === "staff"
+          )) ||
         ![undefined, "on"].includes(req.body.shouldNotify) ||
         (req.body.shouldNotify === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
@@ -4354,21 +4364,16 @@ export default (app: Courselore): void => {
       )!;
 
       for (const selectedParticipant of selectedParticipants)
-        if (
-          (conversation.participants === "staff" &&
-            selectedParticipant.courseRole !== "staff") ||
-          conversation.participants === "selected-people"
-        )
-          app.locals.database.run(
-            sql`
-              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
-              VALUES (
-                ${new Date().toISOString()},
-                ${conversation.id},
-                ${selectedParticipant.id}
-              )
-            `
-          );
+        app.locals.database.run(
+          sql`
+            INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${conversation.id},
+              ${selectedParticipant.id}
+            )
+          `
+        );
 
       for (const tagReference of req.body.tagsReferences)
         app.locals.database.run(
@@ -8772,8 +8777,10 @@ export default (app: Courselore): void => {
         if (
           !conversationParticipantses.includes(req.body.participants) ||
           !Array.isArray(req.body.selectedParticipantsReferences) ||
-          (req.body.selectedParticipantsReferences.length === 0 &&
-            req.body.participants === "selected-people") ||
+          (req.body.participants === "everyone" &&
+            req.body.selectedParticipantsReferences.length > 0) ||
+          (req.body.participants === "selected-people" &&
+            req.body.selectedParticipantsReferences.length === 0) ||
           req.body.selectedParticipantsReferences.some(
             (selectedParticipantReference) =>
               typeof selectedParticipantReference !== "string"
@@ -8783,12 +8790,18 @@ export default (app: Courselore): void => {
         )
           return next("validation");
 
-        req.body.selectedParticipantsReferences.push(
-          res.locals.enrollment.reference
-        );
+        if (
+          (req.body.participants === "staff" &&
+            res.locals.enrollment.courseRole !== "staff") ||
+          req.body.participants === "selected-people"
+        )
+          req.body.selectedParticipantsReferences.push(
+            res.locals.enrollment.reference
+          );
         const selectedParticipants =
-          req.body.participants !== "everyone"
-            ? app.locals.database.all<{
+          req.body.selectedParticipantsReferences.length === 0
+            ? []
+            : app.locals.database.all<{
                 id: number;
                 courseRole: CourseRole;
               }>(
@@ -8798,13 +8811,16 @@ export default (app: Courselore): void => {
                   WHERE "enrollments"."course" = ${res.locals.course.id} AND
                         "reference" IN ${req.body.selectedParticipantsReferences}
                 `
-              )
-            : [];
+              );
 
         if (
-          req.body.participants !== "everyone" &&
           req.body.selectedParticipantsReferences.length !==
-            selectedParticipants.length
+            selectedParticipants.length ||
+          (req.body.participants === "staff" &&
+            selectedParticipants.some(
+              (selectedParticipant) =>
+                selectedParticipant.courseRole === "staff"
+            ))
         )
           return next("validation");
 
@@ -8825,21 +8841,16 @@ export default (app: Courselore): void => {
           `
         );
         for (const selectedParticipant of selectedParticipants)
-          if (
-            (res.locals.conversation.participants === "staff" &&
-              selectedParticipant.courseRole !== "staff") ||
-            res.locals.conversation.participants === "selected-people"
-          )
-            app.locals.database.run(
-              sql`
-                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${res.locals.conversation.id},
-                  ${selectedParticipant.id}
-                )
-              `
-            );
+          app.locals.database.run(
+            sql`
+              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+              VALUES (
+                ${new Date().toISOString()},
+                ${res.locals.conversation.id},
+                ${selectedParticipant.id}
+              )
+            `
+          );
       }
 
       if (typeof req.body.type === "string")
