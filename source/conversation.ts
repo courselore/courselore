@@ -2761,8 +2761,8 @@ export default (app: Courselore): void => {
                   } OR EXISTS(
                     SELECT TRUE
                     FROM "conversationSelectedParticipants"
-                    WHERE "conversations"."id" = "conversationSelectedParticipants"."conversation" AND
-                          "enrollments"."id" = ${res.locals.enrollment.id}
+                    WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
+                          "conversationSelectedParticipants"."enrollment" = ${res.locals.enrollment.id}
                   )
                 )
           ORDER BY "messages"."id" ASC
