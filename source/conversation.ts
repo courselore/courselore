@@ -2750,20 +2750,21 @@ export default (app: Courselore): void => {
                                   "readings"."enrollment" = ${
                                     res.locals.enrollment.id
                                   }
-          WHERE "readings"."id" IS NULL
-                $${
-                  res.locals.enrollment.courseRole === "staff"
-                    ? sql``
-                    : sql`
-                        AND "conversations"."staffOnlyAt" IS NULL OR
-                        EXISTS(
-                          SELECT TRUE
-                          FROM "messages"
-                          WHERE "messages"."authorEnrollment" = ${res.locals.enrollment.id} AND
-                                "messages"."conversation" = "conversations"."id"
-                        )
-                      `
-                }
+          WHERE "readings"."id" IS NULL AND (
+                  "conversations"."participants" = 'everyone' $${
+                    res.locals.enrollment.courseRole === "staff"
+                      ? sql`
+                          OR "conversations"."participants" = 'staff'
+                        `
+                      : sql`
+                    `
+                  } OR EXISTS(
+                    SELECT TRUE
+                    FROM "conversationSelectedParticipants"
+                    WHERE "conversations"."id" = "conversationSelectedParticipants"."conversation" AND
+                          "enrollments"."id" = ${res.locals.enrollment.id}
+                  )
+                )
           ORDER BY "messages"."id" ASC
         `
       );
