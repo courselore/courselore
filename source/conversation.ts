@@ -3429,7 +3429,7 @@ export default (app: Courselore): void => {
                                                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                     const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                     const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
                                                       if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
                                                         continue;
                                                       let selectedParticipantHidden = filterPhrases.length > 0;
@@ -3469,7 +3469,7 @@ export default (app: Courselore): void => {
                                             $${enrollments.map(
                                               (enrollment) => html`
                                                 <label
-                                                  key="participants--dropdown--selected-participant"
+                                                  key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
                                                   data-enrollment-course-role="${enrollment.courseRole}"
                                                   $${req.query.newConversation
                                                     ?.participants ===
@@ -3594,6 +3594,7 @@ export default (app: Courselore): void => {
                       $${enrollments.map(
                         (enrollment) => html`
                           <input
+                            key="selected-participants--input--${enrollment.reference}"
                             type="checkbox"
                             name="selectedParticipantsReferences[]"
                             value="${enrollment.reference}"
@@ -3617,6 +3618,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--visible-when-enabled-and-checked"
                           />
                           <button
+                            key="selected-participants--button--${enrollment.reference}"
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
@@ -5981,7 +5983,7 @@ export default (app: Courselore): void => {
                                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                               const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                               const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
                                                                 if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
                                                                   continue;
                                                                 let selectedParticipantHidden = filterPhrases.length > 0;
@@ -6025,7 +6027,7 @@ export default (app: Courselore): void => {
                                                       $${enrollments.map(
                                                         (enrollment) => html`
                                                           <label
-                                                            key="participants--dropdown--selected-participant"
+                                                            key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
                                                             data-enrollment-course-role="${enrollment.courseRole}"
                                                             $${res.locals
                                                               .conversation
@@ -6154,6 +6156,7 @@ export default (app: Courselore): void => {
                                 $${enrollments.map(
                                   (enrollment) => html`
                                     <input
+                                      key="selected-participants--input--${enrollment.reference}"
                                       type="checkbox"
                                       name="selectedParticipantsReferences[]"
                                       value="${enrollment.reference}"
@@ -6176,6 +6179,7 @@ export default (app: Courselore): void => {
                                       class="visually-hidden input--visible-when-enabled-and-checked"
                                     />
                                     <button
+                                      key="selected-participants--button--${enrollment.reference}"
                                       type="button"
                                       class="button button--tight button--tight--inline button--transparent"
                                       onload="${javascript`
