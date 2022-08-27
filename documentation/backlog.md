@@ -367,8 +367,18 @@ new Notification('Example');
 </button>
 ```
 
-## Granular Access Control
+## Conversation Participants
 
+- Conversation partial should have a dropdown to show selected participants (similar to “Views”, except that you’d long-hover over it, like user tooltip).
+- Client-side filters like **Course Settings > Enrollments**, **Administration > Users**, Conversation Participants, and so forth:
+  - Extract and DRY.
+  - Treat more elegantly the case in which the filter removed all entries.
+- More elegant treatment of edge cases:
+  - You’re the only staff member
+  - You’re the only enrollment
+  - There are no students
+- When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
+- Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
