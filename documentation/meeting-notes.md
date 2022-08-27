@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-08-27</summary>
+
+- Conversation participants deployed.
+- Finished things off with Eliot: Polls are mostly fleshed out.
+- Password reset issue reported by Ali.
+
+</details>
+
+<details>
 <summary>2021-08-20</summary>
 
 - DMs: Almost finished, only missing user interface. Most of the work was dealing with how DMs interact with other features, for example, anonymity and email notifications.
