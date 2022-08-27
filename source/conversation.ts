@@ -2552,24 +2552,25 @@ export default (app: Courselore): void => {
         enrollmentCourseRole: CourseRole;
       }>(
         sql`
-        SELECT "enrollments"."id" AS "enrollmentId",
-               "users"."id" AS "userId",
-               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-               "users"."reference" AS "userReference",
-               "users"."email" AS "userEmail",
-               "users"."name" AS "userName",
-               "users"."avatar" AS "userAvatar",
-               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-               "users"."biographySource" AS "userBiographySource",
-               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-               "enrollments"."reference" AS "enrollmentReference",
-               "enrollments"."courseRole" AS "enrollmentCourseRole"
-        FROM "conversationSelectedParticipants"
-        JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "conversation" = ${conversation.id}
-        ORDER BY "conversationSelectedParticipants"."id" ASC
-      `
+          SELECT "enrollments"."id" AS "enrollmentId",
+                 "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."reference" AS "userReference",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                 "users"."biographySource" AS "userBiographySource",
+                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."courseRole" AS "enrollmentCourseRole"
+          FROM "conversationSelectedParticipants"
+          JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "conversation" = ${conversation.id} AND
+                "enrollments"."id" != ${res.locals.enrollment.id}
+          ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+        `
       )
       .map((selectedParticipant) => ({
         id: selectedParticipant.enrollmentId,
