@@ -12,6 +12,7 @@ import {
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
+  ConversationParticipants,
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
@@ -1291,9 +1292,6 @@ export default (app: Courselore): void => {
         const messageRow = app.locals.database.get<{
           id: number;
           conversationId: number;
-          conversationReference: string;
-          conversationStaffOnlyAt: string | null;
-          conversationTitle: string;
           courseId: number;
           courseReference: string;
           courseArchivedAt: string | null;
@@ -1303,6 +1301,9 @@ export default (app: Courselore): void => {
           courseInstitution: string | null;
           courseCode: string | null;
           courseNextConversationReference: number;
+          conversationReference: string;
+          conversationParticipants: ConversationParticipants;
+          conversationTitle: string;
           reference: string;
           authorUserName: string | null;
           anonymousAt: string | null;
@@ -1311,9 +1312,6 @@ export default (app: Courselore): void => {
           sql`
             SELECT "messages"."id",
                    "conversations"."id" AS "conversationId",
-                   "conversations"."reference" AS "conversationReference",
-                   "conversations"."staffOnlyAt" AS "conversationStaffOnlyAt",
-                   "conversations"."title" AS "conversationTitle",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."archivedAt" AS "courseArchivedAt",
@@ -1323,6 +1321,9 @@ export default (app: Courselore): void => {
                    "courses"."institution" AS "courseInstitution",
                    "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "conversations"."reference" AS "conversationReference",
+                   "conversations"."participants" AS "conversationParticipants",
+                   "conversations"."title" AS "conversationTitle",
                    "messages"."reference",
                    "authorUser"."name" AS "authorUserName",
                    "messages"."anonymousAt",
@@ -1352,7 +1353,7 @@ export default (app: Courselore): void => {
         const conversation = {
           id: messageRow.conversationId,
           reference: messageRow.conversationReference,
-          staffOnlyAt: messageRow.conversationStaffOnlyAt,
+          participants: messageRow.conversationParticipants,
           title: messageRow.conversationTitle,
         };
         const course = {
@@ -1401,51 +1402,62 @@ export default (app: Courselore): void => {
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id" AND
                             "users"."emailVerifiedAt" IS NOT NULL
-            LEFT JOIN "emailNotificationDeliveries" ON "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
-                                                       "emailNotificationDeliveries"."message" = ${
-                                                         message.id
-                                                       }
-            $${
-              conversation.staffOnlyAt !== null
-                ? sql`
-                    LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                            "messages"."conversation" = ${conversation.id}
-                  `
-                : sql``
-            }
             WHERE "enrollments"."course" = ${course.id} AND
-                  "emailNotificationDeliveries"."id" IS NULL
-                  $${
-                    conversation.staffOnlyAt !== null
+                  NOT EXISTS(
+                    SELECT TRUE
+                    FROM "emailNotificationDeliveries"
+                    WHERE "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                          "emailNotificationDeliveries"."message" = ${
+                            message.id
+                          }
+                  ) $${
+                    conversation.participants === "everyone"
+                      ? sql``
+                      : conversation.participants === "staff"
                       ? sql`
-                        AND (
-                          "enrollments"."courseRole" = 'staff' OR
-                          "messages"."id" IS NOT NULL
-                        )
-                      `
+                          AND (
+                            "enrollments"."courseRole" = 'staff' OR EXISTS(
+                              SELECT TRUE
+                              FROM "conversationSelectedParticipants"
+                              WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                                    "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                            )
+                          )
+                        `
+                      : conversation.participants === "selected-people"
+                      ? sql`
+                          AND EXISTS(
+                            SELECT TRUE
+                            FROM "conversationSelectedParticipants"
+                            WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                                  "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                          )
+                        `
                       : sql``
                   } AND (
                     "users"."emailNotificationsForAllMessages" != 'none' OR (
-                      "users"."emailNotificationsForMentionsAt" IS NOT NULL AND (
+                      "users"."emailNotificationsForMentionsAt" IS NOT NULL
                         $${
                           contentProcessed.mentions.has("everyone")
-                            ? sql`TRUE`
-                            : sql`FALSE`
-                        } OR
-                        $${
-                          contentProcessed.mentions.has("staff")
-                            ? sql`"enrollments"."courseRole" = 'staff'`
-                            : sql`FALSE`
-                        } OR
-                        $${
-                          contentProcessed.mentions.has("students")
-                            ? sql`"enrollments"."courseRole" = 'student'`
-                            : sql`FALSE`
-                        } OR
-                        "enrollments"."reference" IN ${
-                          contentProcessed.mentions
+                            ? sql``
+                            : contentProcessed.mentions.has("staff")
+                            ? sql`
+                                AND (
+                                  "enrollments"."courseRole" = 'staff' OR
+                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                )
+                              `
+                            : contentProcessed.mentions.has("students")
+                            ? sql`
+                                AND (
+                                  "enrollments"."courseRole" = 'student' OR
+                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                )
+                              `
+                            : sql`
+                                AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                              `
                         }
-                      )
                     ) OR (
                       "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND (
                         SELECT TRUE
@@ -1462,7 +1474,6 @@ export default (app: Courselore): void => {
                       )
                     )
                   )
-            GROUP BY "enrollments"."id"
           `
         );
 
