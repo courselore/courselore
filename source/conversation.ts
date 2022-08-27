@@ -5712,81 +5712,90 @@ export default (app: Courselore): void => {
                           `
                         : html``;
                     })()}
+                    $${mayEditConversation({ req, res })
+                      ? (() => {
+                          const enrollments = app.locals.database
+                            .all<{
+                              id: number;
+                              userId: number;
+                              userLastSeenOnlineAt: string;
+                              userReference: string;
+                              userEmail: string;
+                              userName: string;
+                              userAvatar: string | null;
+                              userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                              userBiographySource: string | null;
+                              userBiographyPreprocessed: HTML | null;
+                              reference: string;
+                              courseRole: CourseRole;
+                            }>(
+                              sql`
+                                SELECT "enrollments"."id",
+                                       "users"."id" AS "userId",
+                                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                       "users"."reference" AS "userReference",
+                                       "users"."email" AS "userEmail",
+                                       "users"."name" AS "userName",
+                                       "users"."avatar" AS "userAvatar",
+                                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                                       "users"."biographySource" AS "userBiographySource",
+                                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                                       "enrollments"."reference",
+                                       "enrollments"."courseRole"
+                                FROM "enrollments"
+                                JOIN "users" ON "enrollments"."user" = "users"."id"
+                                WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                                      "enrollments"."id" != ${res.locals.enrollment.id}
+                                ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+                              `
+                            )
+                            .map((enrollment) => ({
+                              id: enrollment.id,
+                              user: {
+                                id: enrollment.userId,
+                                lastSeenOnlineAt:
+                                  enrollment.userLastSeenOnlineAt,
+                                reference: enrollment.userReference,
+                                email: enrollment.userEmail,
+                                name: enrollment.userName,
+                                avatar: enrollment.userAvatar,
+                                avatarlessBackgroundColor:
+                                  enrollment.userAvatarlessBackgroundColor,
+                                biographySource: enrollment.userBiographySource,
+                                biographyPreprocessed:
+                                  enrollment.userBiographyPreprocessed,
+                              },
+                              reference: enrollment.reference,
+                              courseRole: enrollment.courseRole,
+                            }));
 
-                    <div
-                      css="${res.locals.css(css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        display: flex;
-                        flex-wrap: wrap;
-                        column-gap: var(--space--8);
-                        row-gap: var(--space--1);
-
-                        & > * {
-                          display: flex;
-                          gap: var(--space--1);
-                        }
-                      `)}"
-                    >
-                      $${mayEditConversation({ req, res })
-                        ? (() => {
-                            const enrollments = app.locals.database
-                              .all<{
-                                id: number;
-                                userId: number;
-                                userLastSeenOnlineAt: string;
-                                userReference: string;
-                                userEmail: string;
-                                userName: string;
-                                userAvatar: string | null;
-                                userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                                userBiographySource: string | null;
-                                userBiographyPreprocessed: HTML | null;
-                                reference: string;
-                                courseRole: CourseRole;
-                              }>(
-                                sql`
-                                  SELECT "enrollments"."id",
-                                         "users"."id" AS "userId",
-                                         "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                         "users"."reference" AS "userReference",
-                                         "users"."email" AS "userEmail",
-                                         "users"."name" AS "userName",
-                                         "users"."avatar" AS "userAvatar",
-                                         "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                                         "users"."biographySource" AS "userBiographySource",
-                                         "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                         "enrollments"."reference",
-                                         "enrollments"."courseRole"
-                                  FROM "enrollments"
-                                  JOIN "users" ON "enrollments"."user" = "users"."id"
-                                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                                        "enrollments"."id" != ${res.locals.enrollment.id}
-                                  ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
-                                `
-                              )
-                              .map((enrollment) => ({
-                                id: enrollment.id,
-                                user: {
-                                  id: enrollment.userId,
-                                  lastSeenOnlineAt:
-                                    enrollment.userLastSeenOnlineAt,
-                                  reference: enrollment.userReference,
-                                  email: enrollment.userEmail,
-                                  name: enrollment.userName,
-                                  avatar: enrollment.userAvatar,
-                                  avatarlessBackgroundColor:
-                                    enrollment.userAvatarlessBackgroundColor,
-                                  biographySource:
-                                    enrollment.userBiographySource,
-                                  biographyPreprocessed:
-                                    enrollment.userBiographyPreprocessed,
+                          return html`
+                            <form
+                              method="PATCH"
+                              action="https://${app.locals.options
+                                .host}/courses/${res.locals.course
+                                .reference}/conversations/${res.locals
+                                .conversation.reference}${qs.stringify(
+                                {
+                                  conversations: req.query.conversations,
+                                  messages: req.query.messages,
                                 },
-                                reference: enrollment.reference,
-                                courseRole: enrollment.courseRole,
-                              }));
+                                { addQueryPrefix: true }
+                              )}"
+                              css="${res.locals.css(css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--8);
+                                row-gap: var(--space--1);
 
-                            return html`
+                                & > * {
+                                  display: flex;
+                                  gap: var(--space--1);
+                                }
+                              `)}"
+                            >
                               <div
                                 key="participants"
                                 onload="${javascript`
@@ -6133,6 +6142,7 @@ export default (app: Courselore): void => {
                                   `
                                 )}
                               </div>
+
                               $${enrollments.map(
                                 (enrollment) => html`
                                   <input
@@ -6181,9 +6191,25 @@ export default (app: Courselore): void => {
                                   </button>
                                 `
                               )}
-                            `;
-                          })()
-                        : html`
+                            </form>
+                          `;
+                        })()
+                      : html`
+                          <div
+                            css="${res.locals.css(css`
+                              font-size: var(--font-size--xs);
+                              line-height: var(--line-height--xs);
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--8);
+                              row-gap: var(--space--1);
+
+                              & > * {
+                                display: flex;
+                                gap: var(--space--1);
+                              }
+                            `)}"
+                          >
                             <div
                               class="${conversationParticipantsTextColor[
                                 res.locals.conversation.participants
@@ -6223,9 +6249,8 @@ export default (app: Courselore): void => {
                                   )}
                                 `
                               : html``}
-                          `}
-                    </div>
-
+                          </div>
+                        `}
                     $${res.locals.conversation.type === "chat"
                       ? html`
                           <button
