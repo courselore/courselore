@@ -3397,9 +3397,9 @@ export default (app: Courselore): void => {
                                                 var(--space--2) var(--space--2);
                                             `)}"
                                           >
-                                            Once there are more people enrolled
-                                            in the course you’ll be able to
-                                            select participants.
+                                            You may select participants when
+                                            there are more people enrolled in
+                                            the course.
                                           </p>
                                         `
                                       : html`
@@ -5932,10 +5932,9 @@ export default (app: Courselore): void => {
                                                         var(--space--2);
                                                     `)}"
                                                   >
-                                                    Once there are more people
-                                                    enrolled in the course
-                                                    you’ll be able to select
-                                                    participants.
+                                                    You may select participants
+                                                    when there are more people
+                                                    enrolled in the course.
                                                   </p>
                                                 `
                                               : html`
