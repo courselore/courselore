@@ -10,9 +10,9 @@
 
 ## Unreleased
 
-## 4.0.3
+## 4.0.4
 
-**2022-08-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+**2022-08-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 - Introduced the notion of **conversation participants** which allows for more control over who’s part of a conversation and enables workflows such as **Direct Messages**.
 
