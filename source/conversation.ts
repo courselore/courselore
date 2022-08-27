@@ -3565,7 +3565,7 @@ export default (app: Courselore): void => {
                                     ? javascript`
                                         this.onvalidate = () => {
                                           if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                            return "Please select at least one other participant.";
+                                            return "Please select at least one participant.";
                                         };
                                       `
                                     : javascript``
@@ -6117,7 +6117,7 @@ export default (app: Courselore): void => {
                                             ? javascript`
                                                 this.onvalidate = () => {
                                                   if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                                    return "Please select at least one other participant.";
+                                                    return "Please select at least one participant.";
                                                 };
                                               `
                                             : javascript``
