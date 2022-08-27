@@ -5786,412 +5786,448 @@ export default (app: Courselore): void => {
                                 courseRole: enrollment.courseRole,
                               }));
 
-                            return html`
-                              <div
-                                key="participants"
-                                onload="${javascript`
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${res.locals.html(
-                                      html`
-                                        <div
-                                          key="participants--dropdown"
-                                          css="${res.locals.css(css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `)}"
-                                        >
-                                          <div class="dropdown--menu">
-                                            $${conversationParticipantses.map(
-                                              (
-                                                conversationParticipants
-                                              ) => html`
-                                                <label>
-                                                  <input
-                                                    type="radio"
-                                                    name="participants--dropdown--participants"
-                                                    value="${conversationParticipants}"
-                                                    $${req.query.newConversation
-                                                      ?.participants ===
-                                                      conversationParticipants ||
-                                                    (req.query.newConversation
-                                                      ?.participants ===
-                                                      undefined &&
-                                                      ((req.params.type ===
-                                                        "chat" &&
-                                                        conversationParticipants ===
-                                                          "selected-people") ||
-                                                        (req.params.type !==
-                                                          "chat" &&
-                                                          conversationParticipants ===
-                                                            "everyone")))
-                                                      ? html`checked`
-                                                      : html``}
-                                                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    onload="${javascript`
-                                                      this.isModified = false;
-        
-                                                      this.onchange = () => {  
-                                                        this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-        
-                                                        const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                        const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-          
-                                                        ${
-                                                          conversationParticipants ===
-                                                          "everyone"
-                                                            ? javascript`
-                                                                selectedParticipants.hidden = true;
-          
-                                                                for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                  element.disabled = true;
-                                                              `
-                                                            : conversationParticipants ===
-                                                              "staff"
-                                                            ? javascript`
-                                                                selectedParticipants.hidden = false;
-          
-                                                                for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                  element.hidden = true;
-                                                                participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-          
-                                                                for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                  element.disabled = element.matches('[data-enrollment-course-role="staff"]');
-                                                              `
-                                                            : conversationParticipants ===
-                                                              "selected-people"
-                                                            ? javascript`
-                                                                selectedParticipants.hidden = false;
-          
-                                                                for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                  element.hidden = false;
-                                                                participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-          
-                                                                for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                  element.disabled = false;
-                                                              `
-                                                            : javascript``
-                                                        }
-                                                      };
-                                                    `}"
-                                                  />
-                                                  <span
-                                                    class="dropdown--menu--item button button--transparent ${conversationParticipantsTextColor[
-                                                      conversationParticipants
-                                                    ]}"
-                                                  >
-                                                    $${conversationParticipantsIcon[
-                                                      conversationParticipants
-                                                    ].fill}
-                                                    $${conversationParticipantsLabel[
-                                                      conversationParticipants
-                                                    ]}
-                                                  </span>
-                                                  <span
-                                                    class="dropdown--menu--item button button--blue"
-                                                  >
-                                                    $${conversationParticipantsIcon[
-                                                      conversationParticipants
-                                                    ].fill}
-                                                    $${conversationParticipantsLabel[
-                                                      conversationParticipants
-                                                    ]}
-                                                  </span>
-                                                </label>
-                                              `
-                                            )}
-                                          </div>
+                            return html`TODO`;
 
-                                          <div
-                                            key="participants--dropdown--selected-participants"
-                                            $${(typeof req.query.newConversation
-                                              ?.participants === "string" &&
-                                              [
-                                                "staff",
-                                                "selected-people",
-                                              ].includes(
-                                                req.query.newConversation
-                                                  .participants
-                                              )) ||
-                                            (req.query.newConversation
-                                              ?.participants === undefined &&
-                                              req.params.type === "chat")
-                                              ? html``
-                                              : html`hidden`}
-                                            css="${res.locals.css(css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
-                                            `)}"
-                                          >
-                                            <hr class="dropdown--separator" />
+                            // return html`
+                            //   <div
+                            //     key="participants"
+                            //     onload="${javascript`
+                            //       (this.dropdown ??= tippy(this)).setProps({
+                            //         trigger: "click",
+                            //         interactive: true,
+                            //         content: ${res.locals.html(
+                            //           html`
+                            //             <div
+                            //               key="participants--dropdown"
+                            //               css="${res.locals.css(css`
+                            //                 display: flex;
+                            //                 flex-direction: column;
+                            //                 gap: var(--space--2);
+                            //               `)}"
+                            //             >
+                            //               <div class="dropdown--menu">
+                            //                 $${conversationParticipantses.map(
+                            //                   (
+                            //                     conversationParticipants
+                            //                   ) => html`
+                            //                     <label>
+                            //                       <input
+                            //                         type="radio"
+                            //                         name="participants--dropdown--participants"
+                            //                         value="${conversationParticipants}"
+                            //                         $${req.query.newConversation
+                            //                           ?.participants ===
+                            //                           conversationParticipants ||
+                            //                         (req.query.newConversation
+                            //                           ?.participants ===
+                            //                           undefined &&
+                            //                           ((req.params.type ===
+                            //                             "chat" &&
+                            //                             conversationParticipants ===
+                            //                               "selected-people") ||
+                            //                             (req.params.type !==
+                            //                               "chat" &&
+                            //                               conversationParticipants ===
+                            //                                 "everyone")))
+                            //                           ? html`checked`
+                            //                           : html``}
+                            //                         class="visually-hidden input--radio-or-checkbox--multilabel"
+                            //                         onload="${javascript`
+                            //                           this.isModified = false;
 
-                                            $${res.locals
-                                              .courseEnrollmentsCount === 1
-                                              ? html`
-                                                  <p
-                                                    class="secondary"
-                                                    css="${res.locals.css(css`
-                                                      padding: var(--space--0)
-                                                        var(--space--2)
-                                                        var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    Once there are more people
-                                                    enrolled in the course
-                                                    you’ll be able to select
-                                                    participants.
-                                                  </p>
-                                                `
-                                              : html`
-                                                  <div
-                                                    css="${res.locals.css(css`
-                                                      padding: var(--space--0)
-                                                        var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <label
-                                                      css="${res.locals.css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        align-items: baseline;
-                                                      `)}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-funnel"
-                                                      ></i>
-                                                      <input
-                                                        key="participants--dropdown--selected-participants--filter"
-                                                        type="text"
-                                                        class="input--text"
-                                                        placeholder="Filter…"
-                                                        onload="${javascript`
-                                                          this.isModified = false;
-        
-                                                          this.oninput = () => {
-                                                            const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                            const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                            const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                            for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
-                                                              if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
-                                                                continue;
-                                                              let selectedParticipantHidden = filterPhrases.length > 0;
-                                                              for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                                const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                                const filterablePhrasesElementChildren = [];
-                                                                for (const filterablePhrase of filterablePhrases) {
-                                                                  let filterablePhraseElement;
-                                                                  if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                                    filterablePhraseElement = document.createElement("mark");
-                                                                    filterablePhraseElement.classList.add("mark");
-                                                                    selectedParticipantHidden = false;
-                                                                  } else
-                                                                    filterablePhraseElement = document.createElement("span");
-                                                                  filterablePhraseElement.textContent = filterablePhrase;
-                                                                  filterablePhrasesElementChildren.push(filterablePhraseElement);
-                                                                }
-                                                                filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
-                                                              }
-                                                              selectedParticipant.hidden = selectedParticipantHidden;
-                                                            }
-                                                          };
-                                                        `}"
-                                                      />
-                                                    </label>
-                                                  </div>
+                            //                           this.onchange = () => {
+                            //                             this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
 
-                                                  <hr
-                                                    class="dropdown--separator"
-                                                  />
+                            //                             const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                            //                             const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
 
-                                                  <div
-                                                    class="dropdown--menu"
-                                                    css="${res.locals.css(css`
-                                                      height: var(--space--40);
-                                                      overflow: auto;
-                                                    `)}"
-                                                  >
-                                                    $${enrollments.map(
-                                                      (enrollment) => html`
-                                                        <label
-                                                          key="participants--dropdown--selected-participant"
-                                                          data-enrollment-course-role="${enrollment.courseRole}"
-                                                          $${req.query
-                                                            .newConversation
-                                                            ?.participants ===
-                                                            "staff" &&
-                                                          enrollment.courseRole ===
-                                                            "staff"
-                                                            ? html`hidden`
-                                                            : html``}
-                                                        >
-                                                          <input
-                                                            type="checkbox"
-                                                            name="participants--dropdown--selected-participants[]"
-                                                            value="${enrollment.reference}"
-                                                            $${req.query.newConversation?.selectedParticipants?.includes(
-                                                              enrollment.reference
-                                                            )
-                                                              ? html`checked`
-                                                              : html``}
-                                                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                            onload="${javascript`
-                                                              this.isModified = false;
-        
-                                                              this.onchange = () => {
-                                                                this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
-                                                              };
-                                                            `}"
-                                                          />
-                                                          <span
-                                                            class="dropdown--menu--item button button--transparent"
-                                                          >
-                                                            $${app.locals.partials.user(
-                                                              {
-                                                                req,
-                                                                res,
-                                                                enrollment,
-                                                                user: enrollment.user,
-                                                                tooltip: false,
-                                                                size: "xs",
-                                                                bold: false,
-                                                              }
-                                                            )}
-                                                          </span>
-                                                          <span
-                                                            class="dropdown--menu--item button button--blue"
-                                                          >
-                                                            $${app.locals.partials.user(
-                                                              {
-                                                                req,
-                                                                res,
-                                                                enrollment,
-                                                                user: enrollment.user,
-                                                                tooltip: false,
-                                                                size: "xs",
-                                                                bold: false,
-                                                              }
-                                                            )}
-                                                          </span>
-                                                        </label>
-                                                      `
-                                                    )}
-                                                  </div>
-                                                `}
-                                          </div>
-                                        </div>
-                                      `
-                                    )},
-                                  });
-                                `}"
-                              >
-                                $${conversationParticipantses.map(
-                                  (conversationParticipants) => html`
-                                    <input
-                                      type="radio"
-                                      name="participants"
-                                      value="${conversationParticipants}"
-                                      $${req.query.newConversation
-                                        ?.participants ===
-                                        conversationParticipants ||
-                                      (req.query.newConversation
-                                        ?.participants === undefined &&
-                                        ((req.params.type === "chat" &&
-                                          conversationParticipants ===
-                                            "selected-people") ||
-                                          (req.params.type !== "chat" &&
-                                            conversationParticipants ===
-                                              "everyone")))
-                                        ? html`checked`
-                                        : html``}
-                                      required
-                                      tabindex="-1"
-                                      class="visually-hidden input--visible-when-enabled-and-checked"
-                                      onload="${javascript`
-                                        ${
-                                          conversationParticipants ===
-                                          "selected-people"
-                                            ? javascript`
-                                                this.onvalidate = () => {
-                                                  if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                                    return "Please select at least one other participant.";
-                                                };
-                                              `
-                                            : javascript``
-                                        }
-                                        
-                                      `}"
-                                    />
-                                    <button
-                                      type="button"
-                                      class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
-                                        conversationParticipants
-                                      ]}"
-                                    >
-                                      $${conversationParticipantsIcon[
-                                        conversationParticipants
-                                      ].fill}
-                                      $${conversationParticipantsLabel[
-                                        conversationParticipants
-                                      ]}
-                                      <i class="bi bi-chevron-down"></i>
-                                    </button>
-                                  `
-                                )}
-                              </div>
-                              $${enrollments.map(
-                                (enrollment) => html`
-                                  <input
-                                    type="checkbox"
-                                    name="selectedParticipantsReferences[]"
-                                    value="${enrollment.reference}"
-                                    data-enrollment-course-role="${enrollment.courseRole}"
-                                    $${req.query.newConversation?.selectedParticipants?.includes(
-                                      enrollment.reference
-                                    )
-                                      ? html`checked`
-                                      : html``}
-                                    $${(req.query.newConversation
-                                      ?.participants === "staff" &&
-                                      enrollment.courseRole !== "staff") ||
-                                    req.query.newConversation?.participants ===
-                                      "selected-people" ||
-                                    (req.query.newConversation?.participants ===
-                                      undefined &&
-                                      req.params.type === "chat")
-                                      ? html``
-                                      : html`disabled`}
-                                    tabindex="-1"
-                                    class="visually-hidden input--visible-when-enabled-and-checked"
-                                  />
-                                  <button
-                                    type="button"
-                                    class="button button--tight button--tight--inline button--transparent"
-                                    onload="${javascript`
-                                      this.onclick = () => {
-                                        this.previousElementSibling.checked = false;
-                              
-                                        this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
-                                      };
-                                    `}"
-                                  >
-                                    $${app.locals.partials.user({
-                                      req,
-                                      res,
-                                      enrollment,
-                                      user: enrollment.user,
-                                      tooltip: false,
-                                      size: "xs",
-                                      bold: false,
-                                    })}
-                                  </button>
-                                `
-                              )}
-                            `;
+                            //                             ${
+                            //                               conversationParticipants ===
+                            //                               "everyone"
+                            //                                 ? javascript`
+                            //                                     selectedParticipants.hidden = true;
+
+                            //                                     for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                            //                                       element.disabled = true;
+                            //                                   `
+                            //                                 : conversationParticipants ===
+                            //                                   "staff"
+                            //                                 ? javascript`
+                            //                                     selectedParticipants.hidden = false;
+
+                            //                                     for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                            //                                       element.hidden = true;
+                            //                                     participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+
+                            //                                     for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                            //                                       element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                            //                                   `
+                            //                                 : conversationParticipants ===
+                            //                                   "selected-people"
+                            //                                 ? javascript`
+                            //                                     selectedParticipants.hidden = false;
+
+                            //                                     for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                            //                                       element.hidden = false;
+                            //                                     participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+
+                            //                                     for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                            //                                       element.disabled = false;
+                            //                                   `
+                            //                                 : javascript``
+                            //                             }
+                            //                           };
+                            //                         `}"
+                            //                       />
+                            //                       <span
+                            //                         class="dropdown--menu--item button button--transparent ${conversationParticipantsTextColor[
+                            //                           conversationParticipants
+                            //                         ]}"
+                            //                       >
+                            //                         $${conversationParticipantsIcon[
+                            //                           conversationParticipants
+                            //                         ].fill}
+                            //                         $${conversationParticipantsLabel[
+                            //                           conversationParticipants
+                            //                         ]}
+                            //                       </span>
+                            //                       <span
+                            //                         class="dropdown--menu--item button button--blue"
+                            //                       >
+                            //                         $${conversationParticipantsIcon[
+                            //                           conversationParticipants
+                            //                         ].fill}
+                            //                         $${conversationParticipantsLabel[
+                            //                           conversationParticipants
+                            //                         ]}
+                            //                       </span>
+                            //                     </label>
+                            //                   `
+                            //                 )}
+                            //               </div>
+
+                            //               <div
+                            //                 key="participants--dropdown--selected-participants"
+                            //                 $${(typeof req.query.newConversation
+                            //                   ?.participants === "string" &&
+                            //                   [
+                            //                     "staff",
+                            //                     "selected-people",
+                            //                   ].includes(
+                            //                     req.query.newConversation
+                            //                       .participants
+                            //                   )) ||
+                            //                 (req.query.newConversation
+                            //                   ?.participants === undefined &&
+                            //                   req.params.type === "chat")
+                            //                   ? html``
+                            //                   : html`hidden`}
+                            //                 css="${res.locals.css(css`
+                            //                   display: flex;
+                            //                   flex-direction: column;
+                            //                   gap: var(--space--2);
+                            //                 `)}"
+                            //               >
+                            //                 <hr class="dropdown--separator" />
+
+                            //                 $${res.locals
+                            //                   .courseEnrollmentsCount === 1
+                            //                   ? html`
+                            //                       <p
+                            //                         class="secondary"
+                            //                         css="${res.locals.css(css`
+                            //                           padding: var(--space--0)
+                            //                             var(--space--2)
+                            //                             var(--space--2);
+                            //                         `)}"
+                            //                       >
+                            //                         Once there are more people
+                            //                         enrolled in the course
+                            //                         you’ll be able to select
+                            //                         participants.
+                            //                       </p>
+                            //                     `
+                            //                   : html`
+                            //                       <div
+                            //                         css="${res.locals.css(css`
+                            //                           padding: var(--space--0)
+                            //                             var(--space--2);
+                            //                         `)}"
+                            //                       >
+                            //                         <label
+                            //                           css="${res.locals.css(css`
+                            //                             display: flex;
+                            //                             gap: var(--space--2);
+                            //                             align-items: baseline;
+                            //                           `)}"
+                            //                         >
+                            //                           <i
+                            //                             class="bi bi-funnel"
+                            //                           ></i>
+                            //                           <input
+                            //                             key="participants--dropdown--selected-participants--filter"
+                            //                             type="text"
+                            //                             class="input--text"
+                            //                             placeholder="Filter…"
+                            //                             onload="${javascript`
+                            //                               this.isModified = false;
+
+                            //                               this.oninput = () => {
+                            //                                 const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                            //                                 const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                            //                                 const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                            //                                 for (const selectedParticipant of participantsDropdown.querySelectorAll('[key="participants--dropdown--selected-participant"]')) {
+                            //                                   if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                            //                                     continue;
+                            //                                   let selectedParticipantHidden = filterPhrases.length > 0;
+                            //                                   for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                            //                                     const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                            //                                     const filterablePhrasesElementChildren = [];
+                            //                                     for (const filterablePhrase of filterablePhrases) {
+                            //                                       let filterablePhraseElement;
+                            //                                       if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                            //                                         filterablePhraseElement = document.createElement("mark");
+                            //                                         filterablePhraseElement.classList.add("mark");
+                            //                                         selectedParticipantHidden = false;
+                            //                                       } else
+                            //                                         filterablePhraseElement = document.createElement("span");
+                            //                                       filterablePhraseElement.textContent = filterablePhrase;
+                            //                                       filterablePhrasesElementChildren.push(filterablePhraseElement);
+                            //                                     }
+                            //                                     filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                            //                                   }
+                            //                                   selectedParticipant.hidden = selectedParticipantHidden;
+                            //                                 }
+                            //                               };
+                            //                             `}"
+                            //                           />
+                            //                         </label>
+                            //                       </div>
+
+                            //                       <hr
+                            //                         class="dropdown--separator"
+                            //                       />
+
+                            //                       <div
+                            //                         class="dropdown--menu"
+                            //                         css="${res.locals.css(css`
+                            //                           height: var(--space--40);
+                            //                           overflow: auto;
+                            //                         `)}"
+                            //                       >
+                            //                         $${enrollments.map(
+                            //                           (enrollment) => html`
+                            //                             <label
+                            //                               key="participants--dropdown--selected-participant"
+                            //                               data-enrollment-course-role="${enrollment.courseRole}"
+                            //                               $${req.query
+                            //                                 .newConversation
+                            //                                 ?.participants ===
+                            //                                 "staff" &&
+                            //                               enrollment.courseRole ===
+                            //                                 "staff"
+                            //                                 ? html`hidden`
+                            //                                 : html``}
+                            //                             >
+                            //                               <input
+                            //                                 type="checkbox"
+                            //                                 name="participants--dropdown--selected-participants[]"
+                            //                                 value="${enrollment.reference}"
+                            //                                 $${req.query.newConversation?.selectedParticipants?.includes(
+                            //                                   enrollment.reference
+                            //                                 )
+                            //                                   ? html`checked`
+                            //                                   : html``}
+                            //                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                            //                                 onload="${javascript`
+                            //                                   this.isModified = false;
+
+                            //                                   this.onchange = () => {
+                            //                                     this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+                            //                                   };
+                            //                                 `}"
+                            //                               />
+                            //                               <span
+                            //                                 class="dropdown--menu--item button button--transparent"
+                            //                               >
+                            //                                 $${app.locals.partials.user(
+                            //                                   {
+                            //                                     req,
+                            //                                     res,
+                            //                                     enrollment,
+                            //                                     user: enrollment.user,
+                            //                                     tooltip: false,
+                            //                                     size: "xs",
+                            //                                     bold: false,
+                            //                                   }
+                            //                                 )}
+                            //                               </span>
+                            //                               <span
+                            //                                 class="dropdown--menu--item button button--blue"
+                            //                               >
+                            //                                 $${app.locals.partials.user(
+                            //                                   {
+                            //                                     req,
+                            //                                     res,
+                            //                                     enrollment,
+                            //                                     user: enrollment.user,
+                            //                                     tooltip: false,
+                            //                                     size: "xs",
+                            //                                     bold: false,
+                            //                                   }
+                            //                                 )}
+                            //                               </span>
+                            //                             </label>
+                            //                           `
+                            //                         )}
+                            //                       </div>
+                            //                     `}
+                            //               </div>
+                            //             </div>
+                            //           `
+                            //         )},
+                            //       });
+                            //     `}"
+                            //   >
+                            //     $${conversationParticipantses.map(
+                            //       (conversationParticipants) => html`
+                            //         <input
+                            //           type="radio"
+                            //           name="participants"
+                            //           value="${conversationParticipants}"
+                            //           $${req.query.newConversation
+                            //             ?.participants ===
+                            //             conversationParticipants ||
+                            //           (req.query.newConversation
+                            //             ?.participants === undefined &&
+                            //             ((req.params.type === "chat" &&
+                            //               conversationParticipants ===
+                            //                 "selected-people") ||
+                            //               (req.params.type !== "chat" &&
+                            //                 conversationParticipants ===
+                            //                   "everyone")))
+                            //             ? html`checked`
+                            //             : html``}
+                            //           required
+                            //           tabindex="-1"
+                            //           class="visually-hidden input--visible-when-enabled-and-checked"
+                            //           onload="${javascript`
+                            //             ${
+                            //               conversationParticipants ===
+                            //               "selected-people"
+                            //                 ? javascript`
+                            //                     this.onvalidate = () => {
+                            //                       if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
+                            //                         return "Please select at least one other participant.";
+                            //                     };
+                            //                   `
+                            //                 : javascript``
+                            //             }
+
+                            //           `}"
+                            //         />
+                            //         <button
+                            //           type="button"
+                            //           class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
+                            //             conversationParticipants
+                            //           ]}"
+                            //         >
+                            //           $${conversationParticipantsIcon[
+                            //             conversationParticipants
+                            //           ].fill}
+                            //           $${conversationParticipantsLabel[
+                            //             conversationParticipants
+                            //           ]}
+                            //           <i class="bi bi-chevron-down"></i>
+                            //         </button>
+                            //       `
+                            //     )}
+                            //   </div>
+                            //   $${enrollments.map(
+                            //     (enrollment) => html`
+                            //       <input
+                            //         type="checkbox"
+                            //         name="selectedParticipantsReferences[]"
+                            //         value="${enrollment.reference}"
+                            //         data-enrollment-course-role="${enrollment.courseRole}"
+                            //         $${req.query.newConversation?.selectedParticipants?.includes(
+                            //           enrollment.reference
+                            //         )
+                            //           ? html`checked`
+                            //           : html``}
+                            //         $${(req.query.newConversation
+                            //           ?.participants === "staff" &&
+                            //           enrollment.courseRole !== "staff") ||
+                            //         req.query.newConversation?.participants ===
+                            //           "selected-people" ||
+                            //         (req.query.newConversation?.participants ===
+                            //           undefined &&
+                            //           req.params.type === "chat")
+                            //           ? html``
+                            //           : html`disabled`}
+                            //         tabindex="-1"
+                            //         class="visually-hidden input--visible-when-enabled-and-checked"
+                            //       />
+                            //       <button
+                            //         type="button"
+                            //         class="button button--tight button--tight--inline button--transparent"
+                            //         onload="${javascript`
+                            //           this.onclick = () => {
+                            //             this.previousElementSibling.checked = false;
+
+                            //             this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
+                            //           };
+                            //         `}"
+                            //       >
+                            //         $${app.locals.partials.user({
+                            //           req,
+                            //           res,
+                            //           enrollment,
+                            //           user: enrollment.user,
+                            //           tooltip: false,
+                            //           size: "xs",
+                            //           bold: false,
+                            //         })}
+                            //       </button>
+                            //     `
+                            //   )}
+                            // `;
                           })()
-                        : html``}
+                        : html`
+                            <div
+                              class="${conversationParticipantsTextColor[
+                                res.locals.conversation.participants
+                              ]}"
+                            >
+                              $${conversationParticipantsIcon[
+                                res.locals.conversation.participants
+                              ].fill}
+                              $${conversationParticipantsLabel[
+                                res.locals.conversation.participants
+                              ]}
+                            </div>
+
+                            $${["staff", "selected-participants"].includes(
+                              res.locals.conversation.participants
+                            )
+                              ? html`
+                                  $${res.locals.conversation.selectedParticipants.map(
+                                    (selectedParticipant) => html`
+                                      <div>
+                                        $${app.locals.partials.user({
+                                          req,
+                                          res,
+                                          enrollment: selectedParticipant,
+                                          user: selectedParticipant.user,
+                                          size: "xs",
+                                          bold: false,
+                                        })}
+                                      </div>
+                                    `
+                                  )}
+                                `
+                              : html``}
+                          `}
                     </div>
 
                     $${res.locals.conversation.type === "chat"
