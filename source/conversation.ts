@@ -6010,9 +6010,9 @@ export default (app: Courselore): void => {
                                                         <label
                                                           key="participants--dropdown--selected-participant"
                                                           data-enrollment-course-role="${enrollment.courseRole}"
-                                                          $${req.query
-                                                            .newConversation
-                                                            ?.participants ===
+                                                          $${res.locals
+                                                            .conversation
+                                                            .participants ===
                                                             "staff" &&
                                                           enrollment.courseRole ===
                                                             "staff"
@@ -6023,9 +6023,13 @@ export default (app: Courselore): void => {
                                                             type="checkbox"
                                                             name="participants--dropdown--selected-participants[]"
                                                             value="${enrollment.reference}"
-                                                            $${req.query.newConversation?.selectedParticipants?.includes(
-                                                              enrollment.reference
-                                                            )
+                                                            $${res.locals.conversation.selectedParticipants.find(
+                                                              (
+                                                                selectedParticipant
+                                                              ) =>
+                                                                selectedParticipant.id ===
+                                                                enrollment.id
+                                                            ) !== undefined
                                                               ? html`checked`
                                                               : html``}
                                                             class="visually-hidden input--radio-or-checkbox--multilabel"
