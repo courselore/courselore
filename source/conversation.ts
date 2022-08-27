@@ -6150,19 +6150,17 @@ export default (app: Courselore): void => {
                                     name="selectedParticipantsReferences[]"
                                     value="${enrollment.reference}"
                                     data-enrollment-course-role="${enrollment.courseRole}"
-                                    $${req.query.newConversation?.selectedParticipants?.includes(
-                                      enrollment.reference
-                                    )
+                                    $${res.locals.conversation.selectedParticipants.find(
+                                      (selectedParticipant) =>
+                                        selectedParticipant.id === enrollment.id
+                                    ) !== undefined
                                       ? html`checked`
                                       : html``}
-                                    $${(req.query.newConversation
-                                      ?.participants === "staff" &&
+                                    $${(res.locals.conversation.participants ===
+                                      "staff" &&
                                       enrollment.courseRole !== "staff") ||
-                                    req.query.newConversation?.participants ===
-                                      "selected-people" ||
-                                    (req.query.newConversation?.participants ===
-                                      undefined &&
-                                      req.params.type === "chat")
+                                    res.locals.conversation.participants ===
+                                      "selected-people"
                                       ? html``
                                       : html`disabled`}
                                     tabindex="-1"
