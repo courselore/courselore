@@ -3620,6 +3620,11 @@ export default (app: Courselore): void => {
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
+                              (this.tooltip ??= tippy(this)).setProps({
+                                touch: false,
+                                content: "Remove Participant",
+                              });
+
                               this.onclick = () => {
                                 this.previousElementSibling.checked = false;
 
@@ -6156,6 +6161,11 @@ export default (app: Courselore): void => {
                                     type="button"
                                     class="button button--tight button--tight--inline button--transparent"
                                     onload="${javascript`
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        touch: false,
+                                        content: "Remove Participant",
+                                      });
+
                                       this.onclick = () => {
                                         this.previousElementSibling.checked = false;
 
