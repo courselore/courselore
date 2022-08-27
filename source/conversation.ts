@@ -5883,6 +5883,8 @@ export default (app: Courselore): void => {
                                                                 `
                                                               : javascript``
                                                           }
+
+                                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                         };
                                                       `}"
                                                     />
@@ -6053,6 +6055,8 @@ export default (app: Courselore): void => {
 
                                                                 this.onchange = () => {
                                                                   this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+
+                                                                  this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                                 };
                                                               `}"
                                                             />
@@ -6184,6 +6188,8 @@ export default (app: Courselore): void => {
                                           this.previousElementSibling.checked = false;
 
                                           this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
+
+                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                         };
                                       `}"
                                     >
