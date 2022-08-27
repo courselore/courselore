@@ -5791,11 +5791,6 @@ export default (app: Courselore): void => {
                                 flex-wrap: wrap;
                                 column-gap: var(--space--8);
                                 row-gap: var(--space--1);
-
-                                & > * {
-                                  display: flex;
-                                  gap: var(--space--1);
-                                }
                               `)}"
                             >
                               <div
