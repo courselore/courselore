@@ -5785,7 +5785,9 @@ export default (app: Courselore): void => {
                               css="${res.locals.css(css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
-                                max-height: var(--space--20);
+                                max-height: var(--space--24);
+                                padding: var(--space--1);
+                                margin: var(--space---1);
                                 overflow: auto;
                                 display: flex;
                                 flex-wrap: wrap;
@@ -6181,7 +6183,9 @@ export default (app: Courselore): void => {
                             css="${res.locals.css(css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
-                              max-height: var(--space--20);
+                              max-height: var(--space--24);
+                              padding: var(--space--1);
+                              margin: var(--space---1);
                               overflow: auto;
                               display: flex;
                               flex-wrap: wrap;
