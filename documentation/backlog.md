@@ -369,10 +369,8 @@ new Notification('Example');
 
 ## Granular Access Control
 
-- Only chats must have this feature, other kinds of conversation don’t necessarily need it.
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
-- Chats with only a few people.
 - Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
 - Whispers:
   - Similar to Discourse
