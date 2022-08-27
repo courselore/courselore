@@ -6198,6 +6198,12 @@ export default (app: Courselore): void => {
                               class="${conversationParticipantsTextColor[
                                 res.locals.conversation.participants
                               ]}"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Participants",
+                                });
+                              `}"
                             >
                               $${conversationParticipantsIcon[
                                 res.locals.conversation.participants
@@ -6207,7 +6213,7 @@ export default (app: Courselore): void => {
                               ]}
                             </div>
 
-                            $${["staff", "selected-participants"].includes(
+                            $${["staff", "selected-people"].includes(
                               res.locals.conversation.participants
                             )
                               ? html`
