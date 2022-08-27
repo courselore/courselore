@@ -5822,20 +5822,9 @@ export default (app: Courselore): void => {
                                                     type="radio"
                                                     name="participants--dropdown--participants"
                                                     value="${conversationParticipants}"
-                                                    $${req.query.newConversation
-                                                      ?.participants ===
-                                                      conversationParticipants ||
-                                                    (req.query.newConversation
-                                                      ?.participants ===
-                                                      undefined &&
-                                                      ((req.params.type ===
-                                                        "chat" &&
-                                                        conversationParticipants ===
-                                                          "selected-people") ||
-                                                        (req.params.type !==
-                                                          "chat" &&
-                                                          conversationParticipants ===
-                                                            "everyone")))
+                                                    $${res.locals.conversation
+                                                      .participants ===
+                                                    conversationParticipants
                                                       ? html`checked`
                                                       : html``}
                                                     class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -5915,18 +5904,13 @@ export default (app: Courselore): void => {
 
                                           <div
                                             key="participants--dropdown--selected-participants"
-                                            $${(typeof req.query.newConversation
-                                              ?.participants === "string" &&
-                                              [
-                                                "staff",
-                                                "selected-people",
-                                              ].includes(
-                                                req.query.newConversation
-                                                  .participants
-                                              )) ||
-                                            (req.query.newConversation
-                                              ?.participants === undefined &&
-                                              req.params.type === "chat")
+                                            $${[
+                                              "staff",
+                                              "selected-people",
+                                            ].includes(
+                                              res.locals.conversation
+                                                .participants
+                                            )
                                               ? html``
                                               : html`hidden`}
                                             css="${res.locals.css(css`
