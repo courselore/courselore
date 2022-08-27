@@ -5802,6 +5802,11 @@ export default (app: Courselore): void => {
                                 gap: var(--space--2);
                               `)}"
                             >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
                               <div
                                 css="${res.locals.css(css`
                                   max-height: var(--space--24);
