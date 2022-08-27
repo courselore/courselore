@@ -6203,6 +6203,7 @@ export default (app: Courselore): void => {
 
                               <div
                                 key="submit"
+                                hidden
                                 css="${res.locals.css(
                                   css`
                                     display: flex;
@@ -6210,8 +6211,8 @@ export default (app: Courselore): void => {
                                 )}"
                               >
                                 <button class="button button--blue">
-                                  <i class="bi bi-pencil-fill"></i> Update
-                                  Participants
+                                  <i class="bi bi-pencil-fill"></i>
+                                  Update Participants
                                 </button>
                               </div>
                             </form>
