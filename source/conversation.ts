@@ -52,8 +52,8 @@ export type ConversationLayout = ({
           isUnread?: "true" | "false";
           types?: ConversationType[];
           isResolved?: "true" | "false";
+          participantses?: ConversationParticipants[];
           isPinned?: "true" | "false";
-          isStaffOnly?: "true" | "false";
           tagsReferences?: string[];
         };
       };
@@ -196,11 +196,23 @@ export default (app: Courselore): void => {
   };
 
   const conversationParticipantsIcon: {
-    [conversationParticipants in ConversationParticipants]: HTML;
+    [conversationParticipants in ConversationParticipants]: {
+      regular: HTML;
+      fill: HTML;
+    };
   } = {
-    everyone: html`<i class="bi bi-people-fill"></i>`,
-    staff: html`<i class="bi bi-mortarboard-fill"></i>`,
-    "selected-people": html`<i class="bi bi-door-closed-fill"></i>`,
+    everyone: {
+      regular: html`<i class="bi bi-people"></i>`,
+      fill: html`<i class="bi bi-people-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+    "selected-people": {
+      regular: html`<i class="bi bi-door-closed"></i>`,
+      fill: html`<i class="bi bi-door-closed-fill"></i>`,
+    },
   };
 
   const conversationParticipantsTextColor: {
@@ -267,16 +279,17 @@ export default (app: Courselore): void => {
         ["true", "false"].includes(req.query.conversations.filters.isResolved)
       )
         filters.isResolved = req.query.conversations.filters.isResolved;
+      // TODO
+      // if (
+      //   typeof req.query.conversations.filters.isStaffOnly === "string" &&
+      //   ["true", "false"].includes(req.query.conversations.filters.isStaffOnly)
+      // )
+      //   filters.isStaffOnly = req.query.conversations.filters.isStaffOnly;
       if (
         typeof req.query.conversations.filters.isPinned === "string" &&
         ["true", "false"].includes(req.query.conversations.filters.isPinned)
       )
         filters.isPinned = req.query.conversations.filters.isPinned;
-      if (
-        typeof req.query.conversations.filters.isStaffOnly === "string" &&
-        ["true", "false"].includes(req.query.conversations.filters.isStaffOnly)
-      )
-        filters.isStaffOnly = req.query.conversations.filters.isStaffOnly;
       if (Array.isArray(req.query.conversations.filters.tagsReferences)) {
         const tagsReferences = [
           ...new Set(
@@ -1541,6 +1554,62 @@ export default (app: Courselore): void => {
                         </div>
 
                         <div class="label">
+                          <p class="label--text">Participants</p>
+                          <div
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            $${conversationParticipantses.map(
+                              (conversationParticipants) => html`
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="conversations[filters][participantses][]"
+                                    value="${conversationParticipants}"
+                                    $${req.query.conversations?.filters?.participantses?.includes(
+                                      conversationParticipants
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    $${Object.keys(filters).length > 0 &&
+                                    filters.isQuick !== "true"
+                                      ? html``
+                                      : html`disabled`}
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  />
+                                  <span>
+                                    $${conversationParticipantsIcon[
+                                      conversationParticipants
+                                    ].regular}
+                                    $${conversationParticipantsLabel[
+                                      conversationParticipants
+                                    ]}
+                                  </span>
+                                  <span
+                                    class="${conversationParticipantsTextColor[
+                                      conversationParticipants
+                                    ]}"
+                                  >
+                                    $${conversationParticipantsIcon[
+                                      conversationParticipants
+                                    ].fill}
+                                    $${conversationParticipantsLabel[
+                                      conversationParticipants
+                                    ]}
+                                  </span>
+                                </label>
+                              `
+                            )}
+                          </div>
+                        </div>
+
+                        <div class="label">
                           <div class="label--text">
                             Pin
                             <button
@@ -1624,81 +1693,6 @@ export default (app: Courselore): void => {
                               <span class="text--amber">
                                 <i class="bi bi-pin-angle-fill"></i>
                                 Unpinned
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-
-                        <div class="label">
-                          <p class="label--text">Visibility</p>
-                          <div
-                            css="${res.locals.css(css`
-                              display: flex;
-                              flex-wrap: wrap;
-                              column-gap: var(--space--6);
-                              row-gap: var(--space--2);
-                            `)}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="conversations[filters][isStaffOnly]"
-                                value="false"
-                                $${req.query.conversations?.filters
-                                  ?.isStaffOnly === "false"
-                                  ? html`checked`
-                                  : html``}
-                                $${Object.keys(filters).length > 0 &&
-                                filters.isQuick !== "true"
-                                  ? html``
-                                  : html`disabled`}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="true"]').checked = false;
-                                  };
-                                `}"
-                              />
-                              <span>
-                                <i class="bi bi-eye"></i>
-                                Visible by Everyone
-                              </span>
-                              <span class="text--sky">
-                                <i class="bi bi-eye-fill"></i>
-                                Visible by Everyone
-                              </span>
-                            </label>
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="conversations[filters][isStaffOnly]"
-                                value="true"
-                                $${req.query.conversations?.filters
-                                  ?.isStaffOnly === "true"
-                                  ? html`checked`
-                                  : html``}
-                                $${Object.keys(filters).length > 0 &&
-                                filters.isQuick !== "true"
-                                  ? html``
-                                  : html`disabled`}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="false"]').checked = false;
-                                  };
-                                `}"
-                              />
-                              <span>
-                                <i class="bi bi-mortarboard"></i>
-                                Visible by Staff Only
-                              </span>
-                              <span class="text--sky">
-                                <i class="bi bi-mortarboard-fill"></i>
-                                Visible by Staff Only
                               </span>
                             </label>
                           </div>
@@ -2208,7 +2202,7 @@ export default (app: Courselore): void => {
             });
           `}"
         >
-          $${conversationParticipantsIcon[conversation.participants]}
+          $${conversationParticipantsIcon[conversation.participants].fill}
           $${conversationParticipantsLabel[conversation.participants]}
         </div>
         $${conversation.pinnedAt !== null
@@ -3351,7 +3345,7 @@ export default (app: Courselore): void => {
                                           >
                                             $${conversationParticipantsIcon[
                                               conversationParticipants
-                                            ]}
+                                            ].fill}
                                             $${conversationParticipantsLabel[
                                               conversationParticipants
                                             ]}
@@ -3361,7 +3355,7 @@ export default (app: Courselore): void => {
                                           >
                                             $${conversationParticipantsIcon[
                                               conversationParticipants
-                                            ]}
+                                            ].fill}
                                             $${conversationParticipantsLabel[
                                               conversationParticipants
                                             ]}
@@ -3584,7 +3578,7 @@ export default (app: Courselore): void => {
                             >
                               $${conversationParticipantsIcon[
                                 conversationParticipants
-                              ]}
+                              ].fill}
                               $${conversationParticipantsLabel[
                                 conversationParticipants
                               ]}
