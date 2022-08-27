@@ -250,8 +250,8 @@ export default (app: Courselore): void => {
       isUnread?: "true" | "false";
       types?: ConversationType[];
       isResolved?: "true" | "false";
+      participantses?: ConversationParticipants[];
       isPinned?: "true" | "false";
-      isStaffOnly?: "true" | "false";
       tagsReferences?: string[];
     } = {};
     if (
@@ -279,12 +279,17 @@ export default (app: Courselore): void => {
         ["true", "false"].includes(req.query.conversations.filters.isResolved)
       )
         filters.isResolved = req.query.conversations.filters.isResolved;
-      // TODO
-      // if (
-      //   typeof req.query.conversations.filters.isStaffOnly === "string" &&
-      //   ["true", "false"].includes(req.query.conversations.filters.isStaffOnly)
-      // )
-      //   filters.isStaffOnly = req.query.conversations.filters.isStaffOnly;
+      if (Array.isArray(req.query.conversations.filters.participantses)) {
+        const participantses = [
+          ...new Set(
+            req.query.conversations.filters.participantses.filter(
+              (conversationParticipants) =>
+                conversationParticipantses.includes(conversationParticipants)
+            )
+          ),
+        ];
+        if (participantses.length > 0) filters.participantses = participantses;
+      }
       if (
         typeof req.query.conversations.filters.isPinned === "string" &&
         ["true", "false"].includes(req.query.conversations.filters.isPinned)
@@ -454,20 +459,18 @@ export default (app: Courselore): void => {
                 `
           }
           $${
+            filters.participantses === undefined
+              ? sql``
+              : sql`
+                  AND "conversations"."participants" IN ${filters.participantses}
+                `
+          }
+          $${
             filters.isPinned === undefined
               ? sql``
               : sql`
                   AND "conversations"."pinnedAt" IS $${
                     filters.isPinned === "true" ? sql`NOT` : sql``
-                  } NULL
-                `
-          }
-          $${
-            filters.isStaffOnly === undefined
-              ? sql``
-              : sql`
-                  AND "conversations"."staffOnlyAt" IS $${
-                    filters.isStaffOnly === "true" ? sql`NOT` : sql``
                   } NULL
                 `
           }
