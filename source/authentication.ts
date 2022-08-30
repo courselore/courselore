@@ -647,22 +647,19 @@ export default (app: Courselore): void => {
     },
 
     get(nonce: string): number | undefined {
-      const passwordReset = app.locals.database.get<{
+      return app.locals.database.get<{
         createdAt: string;
         user: number;
       }>(
-        sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${nonce}`
-      );
-      app.locals.database.run(
         sql`
-          DELETE FROM "passwordResets" WHERE "nonce" = ${nonce}
+          SELECT "createdAt", "user"
+          FROM "passwordResets"
+          WHERE "nonce" = ${nonce} AND
+                "createdAt" > ${new Date(
+                  Date.now() - PasswordReset.maxAge
+                ).toISOString()}
         `
-      );
-      return passwordReset === undefined ||
-        new Date(passwordReset.createdAt).getTime() <
-          Date.now() - PasswordReset.maxAge
-        ? undefined
-        : passwordReset.user;
+      )?.user;
     },
   };
 
@@ -705,9 +702,7 @@ export default (app: Courselore): void => {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
               },
-              {
-                addQueryPrefix: true,
-              }
+              { addQueryPrefix: true }
             )}"
             novalidate
             css="${res.locals.css(css`
@@ -731,8 +726,8 @@ export default (app: Courselore): void => {
                 autofocus
                 class="input--text"
                 onload="${javascript`
-                    this.isModified = false;
-                  `}"
+                  this.isModified = false;
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -755,9 +750,7 @@ export default (app: Courselore): void => {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 class="link"
                 >Sign up</a
@@ -771,9 +764,7 @@ export default (app: Courselore): void => {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 class="link"
                 >Sign in</a
@@ -829,9 +820,7 @@ export default (app: Courselore): void => {
         redirect: req.query.redirect,
         invitation: req.query.invitation,
       },
-      {
-        addQueryPrefix: true,
-      }
+      { addQueryPrefix: true }
     )}`;
     app.locals.database.run(
       sql`
@@ -893,9 +882,7 @@ export default (app: Courselore): void => {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
               },
-              {
-                addQueryPrefix: true,
-              }
+              { addQueryPrefix: true }
             )}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
@@ -951,10 +938,8 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.options
-              .host}/reset-password/${PasswordReset.create(
-              userId
-            )}${qs.stringify(
+            action="https://${app.locals.options.host}/reset-password/${req
+              .params.passwordResetNonce}${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -986,11 +971,11 @@ export default (app: Courselore): void => {
                 required
                 class="input--text"
                 onload="${javascript`
-                    this.onvalidate = () => {
-                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                        return "Password & Password Confirmation don’t match.";
-                    };
-                  `}"
+                  this.onvalidate = () => {
+                    if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                      return "Password & Password Confirmation don’t match.";
+                  };
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -1035,13 +1020,14 @@ export default (app: Courselore): void => {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
             },
-            {
-              addQueryPrefix: true,
-            }
+            { addQueryPrefix: true }
           )}`
         );
       }
 
+      app.locals.database.run(
+        sql`DELETE FROM "passwordResets" WHERE "user" = ${userId}`
+      );
       app.locals.database.run(
         sql`
           UPDATE "users"
@@ -1051,7 +1037,7 @@ export default (app: Courselore): void => {
           )}
           WHERE "id" = ${userId}
         `
-      )!;
+      );
       app.locals.helpers.Session.closeAllAndReopen({ req, res, userId });
       app.locals.helpers.Flash.set({
         req,
