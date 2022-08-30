@@ -10,6 +10,16 @@
 
 ## Unreleased
 
+## 4.0.5
+
+**2022-08-30 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- **Fixed an issue that prevented users of Microsoft Outlook from resetting their passwords.**
+
+  It used to be the case that Courselore would mark a password reset link as used as soon as it was visited. This is a very strict security policy. But it appears that Microsoft Outlook visits links included in emails before showing them to the user—perhaps in attempt to verify the safety of following those links. Naturally, this marked the password reset link as used before the user had a chance of visiting it.
+
+  To fix this issue, we relaxed the security policy and only mark a password reset link as used when the user has finished resetting their password.
+
 ## 4.0.4
 
 **2022-08-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
