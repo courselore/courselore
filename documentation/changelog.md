@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Pinning a conversation now bumps it to the top of the sidebar. <https://courselore.org/courses/8537410611/conversations/42>
+
 ## 4.0.5
 
 **2022-08-30 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
