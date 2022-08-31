@@ -8889,9 +8889,16 @@ export default (app: Courselore): void => {
           app.locals.database.run(
             sql`
               UPDATE "conversations"
-              SET "pinnedAt" = ${
-                req.body.isPinned === "true" ? new Date().toISOString() : null
+              SET $${
+                req.body.isPinned === "true"
+                  ? sql`"updatedAt" = ${new Date().toISOString()},`
+                  : sql``
               }
+                  "pinnedAt" = ${
+                    req.body.isPinned === "true"
+                      ? new Date().toISOString()
+                      : null
+                  }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
