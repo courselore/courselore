@@ -704,7 +704,7 @@ export default (app: Courselore): void => {
                 display: flex;
                 gap: var(--space--14);
                 flex-direction: column;
-                & > * {
+                & > a {
                   display: flex;
                   gap: var(--space--4);
                   align-items: center;
@@ -775,6 +775,19 @@ export default (app: Courselore): void => {
                   </span>
                 </p>
               </a>
+
+              <h3
+                class="secondary"
+                css="${res.locals.css(css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                  text-align: center;
+                  margin-bottom: var(--space---12);
+                `)}"
+              >
+                Alumni
+              </h3>
 
               <a
                 href="https://github.com/ejasmith"
