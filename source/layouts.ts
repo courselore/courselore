@@ -748,6 +748,7 @@ export default async (app: Courselore): Promise<void> => {
 
                                         - Courselore Version: ${app.locals.options.version}
                                       `,
+                                      tagsReferences: ["9676584193"],
                                     },
                                   },
                                   { addQueryPrefix: true }
