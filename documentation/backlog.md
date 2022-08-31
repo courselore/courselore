@@ -266,6 +266,9 @@
 - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
 - When editing, and trying to send empty message, propose to delete (like Discord does).
 - When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
+- When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari. Perhaps consider using other approaches to autosizing?
+  - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+  - https://github.com/fregante/fit-textarea **Use v2**.
 
 **New Conversation**
 
@@ -291,6 +294,7 @@
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
+- The “Manage Tags” on “New Conversation” could happen inline, instead of taking you to course settings.
 
 ## Quality-of-Life Features
 
@@ -708,7 +712,6 @@ const { app, BrowserWindow } = require("electron");
     - It complicates the implementation.
     - It uses more memory on the client side.
   - Make sure to clear cache on sign-out or the back button will reveal private information.
-- Scroll to `#anchored` element.
 - The submission of a form resets the state of the rest of the page.
   - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
     - Another example: When performing any simple form submission, for example, “Like”, the “NEW” message separator goes away. But maybe that’s a good thing: Once you interacted with the page, you probably already read the new messages, so it maybe it’s better for that separator to go away.
