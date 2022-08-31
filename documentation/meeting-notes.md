@@ -6,6 +6,8 @@
 - Conversation participants deployed.
 - Finished things off with Eliot: Polls are mostly fleshed out.
 - Password reset issue reported by Ali.
+- We started discussing the notion of reusable posts across semesters.
+- SAML is a priority for spring, so we should start now, because it will take some time to cut through the red tape.
 
 </details>
 
