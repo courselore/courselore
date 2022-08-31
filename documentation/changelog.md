@@ -14,6 +14,7 @@
 - Changed the color of “Participants: Selected People” from rose (which may communicate “pay attention”) to purple (which is more neutral).
 - Changed the color of the labels “New:” and “Quick Filters:” on the sidebar to stand out more.
 - Changed the **Report an Issue > Meta Courselore** button on the footer to pre-fill tag.
+- Changed the “From” on email notifications to be, for example, “Principles of Programming Languages · Courselore” instead of “Courselore · Principles of Programming Languages”.
 
 ## 4.0.5
 
