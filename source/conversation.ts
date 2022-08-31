@@ -756,7 +756,7 @@ export default (app: Courselore): void => {
                     `)}"
                   >
                     <div
-                      class="strong secondary"
+                      class="strong"
                       css="${res.locals.css(css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
@@ -851,7 +851,7 @@ export default (app: Courselore): void => {
                     `)}"
                   >
                     <div
-                      class="strong secondary"
+                      class="strong"
                       css="${res.locals.css(css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
