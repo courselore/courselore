@@ -13,6 +13,7 @@
 - Pinning a conversation now bumps it to the top of the sidebar. <https://courselore.org/courses/8537410611/conversations/42>
 - Changed the color of “Participants: Selected People” from rose (which may communicate “pay attention”) to purple (which is more neutral).
 - Changed the color of the labels “New:” and “Quick Filters:” on the sidebar to stand out more.
+- Changed the **Report an Issue > Meta Courselore** button on the footer to pre-fill tag.
 
 ## 4.0.5
 
