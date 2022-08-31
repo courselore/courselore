@@ -220,7 +220,7 @@ export default (app: Courselore): void => {
   } = {
     everyone: "text--green",
     staff: "text--sky",
-    "selected-people": "text--rose",
+    "selected-people": "text--purple",
   };
 
   const conversationParticipantsLabel: {
