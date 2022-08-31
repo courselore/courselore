@@ -10,10 +10,14 @@
 
 ## Unreleased
 
-- Pinning a conversation now bumps it to the top of the sidebar. <https://courselore.org/courses/8537410611/conversations/42>
+## 4.0.6
+
+**2022-08-31 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Changed the act of pinning of a conversation to bump the conversation to the top of the sidebar. <https://courselore.org/courses/8537410611/conversations/42>
 - Changed the color of “Participants: Selected People” from rose (which may communicate “pay attention”) to purple (which is more neutral).
 - Changed the color of the labels “New:” and “Quick Filters:” on the sidebar to stand out more.
-- Changed the **Report an Issue > Meta Courselore** button on the footer to pre-fill tag.
+- Changed the **Report an Issue > Meta Courselore** button on the footer to pre-fill the tag.
 - Changed the “From” on email notifications to be, for example, “Principles of Programming Languages · Courselore” instead of “Courselore · Principles of Programming Languages”.
 
 ## 4.0.5
