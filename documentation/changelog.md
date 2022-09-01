@@ -10,9 +10,9 @@
 
 ## Unreleased
 
-## 4.0.7
+## 4.0.8
 
-**2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.7) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+**2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.8) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
 
 - Changed the rendering of `~example~` to show up as-is, instead of doing a ~~strikethrough~~. The strikethrough is still achievable with two `~~`: `~~example~~`. The old behavior was equivalent to GitHub’s, while the new one is equivalent to Discord’s & Reddit’s. <https://courselore.org/courses/8537410611/conversations/48>
 - Added toolbar button in content editor for strikethrough.
