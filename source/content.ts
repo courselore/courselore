@@ -106,7 +106,7 @@ export default async (app: Courselore): Promise<void> => {
   app.locals.partials.contentPreprocessed = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
-      .use(remarkGfm)
+      .use(remarkGfm, { singleTilde: false })
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeRaw)
