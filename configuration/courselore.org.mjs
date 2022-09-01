@@ -45,7 +45,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
 
       https://meta.courselore.org, https://meta.courselore.com {
         import common
-        redir https://courselore.org/courses/8537410611/invitations/3667859788{query} 307
+        redir https://courselore.org/courses/8537410611/invitations/3667859788?{query} 307
         handle_errors {
           import common
         }
