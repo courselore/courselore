@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Changed the rendering of `~example~` to show up as-is, instead of doing a ~~strikethrough~~. The strikethrough is still achievable with two `~~`: `~~example~~`. The old behavior was equivalent to GitHub’s, while the new one is equivalent to Discord & Reddit’s. <https://courselore.org/courses/8537410611/conversations/48>
+
 ## 4.0.6
 
 **2022-08-31 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
