@@ -1535,15 +1535,16 @@
             }
 
         .content u {
-            -webkit-text-decoration: underline var(--color--gray--medium--300);
-                    text-decoration: underline var(--color--gray--medium--300);
+            text-decoration: underline;
+            -webkit-text-decoration-color: var(--color--gray--medium--300);
+                    text-decoration-color: var(--color--gray--medium--300);
           }
 
         @media (prefers-color-scheme: dark) {
 
         .content u {
-              -webkit-text-decoration: underline var(--color--gray--medium--500);
-                      text-decoration: underline var(--color--gray--medium--500)
+              -webkit-text-decoration-color: var(--color--gray--medium--500);
+                      text-decoration-color: var(--color--gray--medium--500)
           }
             }
 

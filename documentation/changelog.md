@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 4.0.9
+
+**2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.9) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Fixed the newly-introduced underlines in Safari.
+
 ## 4.0.8
 
 **2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.8) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
