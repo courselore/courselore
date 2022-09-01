@@ -203,8 +203,6 @@
 
   - Mathematics are rendered incorrectly.
 
-- Reprocess existing content, because of new DOM Clobbering strategy.
-
 ---
 
 **Good to Have**
@@ -524,9 +522,6 @@ new Notification('Example');
 - Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
-- Add a job to re-preprocess content:
-  - Messages
-  - Biographies
 - Sanitize allowlist of attributes to prevent abuse (for example, `<code class="some-class-that-exists-in-the-system">`)
 
 ## Pagination
