@@ -34,5 +34,22 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       "www.courselore.com",
     ],
     hstsPreload: true,
+    caddyExtraConfiguration: `
+      http://meta.courselore.org, http://meta.courselore.com {
+        import common
+        redir https://{host}{uri} 308
+        handle_errors {
+          import common
+        }
+      }
+
+      https://meta.courselore.org, https://meta.courselore.com {
+        import common
+        redir https://courselore.org/courses/8537410611/invitations/3667859788{query} 307
+        handle_errors {
+          import common
+        }
+      }
+    `
   });
 };

@@ -7,6 +7,7 @@ export default async ({
   sendMail,
   alternativeHosts = [],
   hstsPreload = false,
+  caddyExtraConfiguration = "",
   environment = "production",
   demonstration = false,
 }) => {
@@ -94,6 +95,8 @@ export default async ({
                 `
               : ``
           }
+
+          ${caddyExtraConfiguration}
           
           https://${host} {
             route {
