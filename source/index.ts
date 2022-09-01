@@ -217,8 +217,7 @@ export default async (options: Options): Promise<Courselore> => {
       )
     ).version,
     canonicalHost: "courselore.org",
-    metaCourseloreInvitation:
-      "https://meta.courselore.org",
+    metaCourseloreInvitation: "https://meta.courselore.org",
     tryHost: "try.courselore.org",
   } as any;
   app.locals.handlers = {} as any;
