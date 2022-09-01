@@ -613,6 +613,12 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i
 
 ---
 
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u
+
+<p>You could use this element to highlight <u>speling</u> mistakes, so the writer can <u>corect</u> them.</p>
+
+---
+
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong
 
 <p>... the most important rule, the rule you can never forget, no matter how much he cries, no matter how much he begs: <strong>never feed him after midnight</strong>.</p>

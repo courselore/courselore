@@ -113,6 +113,7 @@ export default async (app: Courselore): Promise<void> => {
       .use(rehypeSanitize, {
         ...rehypeSanitizeDefaultSchema,
         clobber: [],
+        tagNames: [...(rehypeSanitizeDefaultSchema.tagNames ?? []), "u"],
         attributes: {
           ...rehypeSanitizeDefaultSchema.attributes,
           div: [
@@ -1067,6 +1068,85 @@ export default async (app: Courselore): Promise<void> => {
                 `}"
               >
                 <i class="bi bi-type-italic"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                onload="${javascript`
+                  (this.tooltip ??= tippy(this)).setProps({
+                    touch: false,
+                    content: ${res.locals.html(
+                      html`
+                        Underline
+                        <span class="keyboard-shortcut">
+                          (<span
+                            onload="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+U</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            onload="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-command"></i>U</span
+                          >)
+                        </span>
+                      `
+                    )},
+                  });
+
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  this.onclick = () => {
+                    textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
+                    textarea.focus();
+                  };
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+u", () => { this.click(); return false; });
+                `}"
+              >
+                <i class="bi bi-type-underline"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                onload="${javascript`
+                  (this.tooltip ??= tippy(this)).setProps({
+                    touch: false,
+                    content: ${res.locals.html(
+                      html`
+                        Strikethrough
+                        <span class="keyboard-shortcut">
+                          (<span
+                            onload="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+S</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            onload="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>S</span
+                          >)
+                        </span>
+                      `
+                    )},
+                  });
+
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  this.onclick = () => {
+                    textFieldEdit.wrapSelection(textarea, "~~");
+                    textarea.focus();
+                  };
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+s", () => { this.click(); return false; });
+                `}"
+              >
+                <i class="bi bi-type-strikethrough"></i>
               </button>
               <button
                 type="button"

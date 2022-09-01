@@ -1534,6 +1534,19 @@
           }
             }
 
+        .content u {
+            -webkit-text-decoration: underline var(--color--gray--medium--300);
+                    text-decoration: underline var(--color--gray--medium--300);
+          }
+
+        @media (prefers-color-scheme: dark) {
+
+        .content u {
+              -webkit-text-decoration: underline var(--color--gray--medium--500);
+                      text-decoration: underline var(--color--gray--medium--500)
+          }
+            }
+
         .content a {
             text-decoration: underline;
             color: var(--color--blue--600);

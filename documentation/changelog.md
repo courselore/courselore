@@ -11,6 +11,8 @@
 ## Unreleased
 
 - Changed the rendering of `~example~` to show up as-is, instead of doing a ~~strikethrough~~. The strikethrough is still achievable with two `~~`: `~~example~~`. The old behavior was equivalent to GitHub’s, while the new one is equivalent to Discord & Reddit’s. <https://courselore.org/courses/8537410611/conversations/48>
+- Added toolbar button in content editor for strikethrough.
+- Added support for underline in the content editor with `<u></u>`.
 
 ## 4.0.6
 

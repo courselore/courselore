@@ -2103,6 +2103,13 @@ export default async (app: Courselore): Promise<void> => {
             }
           }
 
+          u {
+            text-decoration: underline var(--color--gray--medium--300);
+            @media (prefers-color-scheme: dark) {
+              text-decoration: underline var(--color--gray--medium--500);
+            }
+          }
+
           a {
             text-decoration: underline;
             color: var(--color--blue--600);
