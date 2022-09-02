@@ -1,58 +1,66 @@
 // This file is here for now because it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
 const leafac = {
-  async liveConnection({
+  liveConnection({
     version,
     url,
     newVersionMessage = "There has been update. Please reload the page.",
     offlineMessage = "Failed to connect to server. Please check your internet connection and try reloading the page.",
   }) {
-    const body = document.querySelector("body");
-    while (true) {
-      try {
-        const abortController = new AbortController();
-        const abort = () => {
-          abortController.abort();
-        };
-        let heartbeatTimeout = setTimeout(abort, 50 * 1000);
-        const response = await fetch(url, { signal: abortController.signal });
-        if (!response.ok) throw new Error();
-        body.liveConnectionOfflineTooltip?.hide();
-        if (response.headers.get("Version") !== version) {
-          (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
-            appendTo: body,
-            trigger: "manual",
-            hideOnClick: false,
-            theme: "error",
-            arrow: false,
-            interactive: true,
-            content: newVersionMessage,
-            showOnCreate: true,
-          });
-          abort();
-          return;
-        }
-        const responseBodyReader = response.body.getReader();
+    window.addEventListener(
+      "DOMContentLoaded",
+      async () => {
+        const body = document.querySelector("body");
         while (true) {
-          const chunk = (await responseBodyReader.read()).value;
-          if (chunk === undefined) break;
-          clearTimeout(heartbeatTimeout);
-          heartbeatTimeout = setTimeout(abort, 50 * 1000);
+          try {
+            const abortController = new AbortController();
+            const abort = () => {
+              abortController.abort();
+            };
+            let heartbeatTimeout = setTimeout(abort, 50 * 1000);
+            const response = await fetch(url, {
+              signal: abortController.signal,
+            });
+            if (!response.ok) throw new Error();
+            body.liveConnectionOfflineTooltip?.hide();
+            if (response.headers.get("Version") !== version) {
+              (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
+                appendTo: body,
+                trigger: "manual",
+                hideOnClick: false,
+                theme: "error",
+                arrow: false,
+                interactive: true,
+                content: newVersionMessage,
+                showOnCreate: true,
+              });
+              abort();
+              return;
+            }
+            const responseBodyReader = response.body.getReader();
+            while (true) {
+              const chunk = (await responseBodyReader.read()).value;
+              if (chunk === undefined) break;
+              clearTimeout(heartbeatTimeout);
+              heartbeatTimeout = setTimeout(abort, 50 * 1000);
+            }
+          } catch {
+            (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
+              appendTo: body,
+              trigger: "manual",
+              hideOnClick: false,
+              theme: "error",
+              arrow: false,
+              interactive: true,
+              content: offlineMessage,
+            });
+            body.liveConnectionOfflineTooltip.show();
+          }
+          await new Promise((resolve) => setTimeout(resolve, 200));
         }
-      } catch {
-        (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: offlineMessage,
-        });
-        body.liveConnectionOfflineTooltip.show();
-      }
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
+      },
+      { once: true }
+    );
   },
 
   liveNavigation(host) {
