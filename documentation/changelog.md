@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Fixed an issue in which administrators of `courselore.org` could see a prompt to update to a new version even when running the latest version because of a race condition between publishing the new version to GitHub Releases and deploying to `courselore.org`.
+
 ## 4.0.9
 
 **2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.9) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
