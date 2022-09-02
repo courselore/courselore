@@ -1208,6 +1208,12 @@ export default async (app: Courselore): Promise<void> => {
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
+            leafac.liveConnection(
+              $${JSON.stringify(app.locals.options.version)},
+              $${JSON.stringify(
+                `https://${app.locals.options.host}/live-connection`
+              )}
+            );
             leafac.liveNavigation($${JSON.stringify(app.locals.options.host)});
             $${app.locals.options.environment === "development"
               ? javascript`
