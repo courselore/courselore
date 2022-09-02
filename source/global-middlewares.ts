@@ -56,6 +56,21 @@ export default (app: Courselore): void => {
     })
   );
 
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/live-connection",
+    (req, res) => {
+      res.header("Version", app.locals.options.version);
+      let heartbeatTimeout: NodeJS.Timeout;
+      (function heartbeat() {
+        res.write("\n");
+        heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+      })();
+      res.once("close", () => {
+        clearTimeout(heartbeatTimeout);
+      });
+    }
+  );
+
   if (app.locals.options.environment === "development")
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
