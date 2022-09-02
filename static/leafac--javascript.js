@@ -34,8 +34,8 @@ const leafac = {
                 arrow: false,
                 interactive: true,
                 content: newVersionMessage,
-                showOnCreate: true,
               });
+              body.liveConnectionNewVersionTooltip.show();
               abort();
               return;
             }
