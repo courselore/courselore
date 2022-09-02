@@ -70,19 +70,4 @@ export default (app: Courselore): void => {
       });
     }
   );
-
-  if (app.locals.options.environment === "development")
-    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/live-reload",
-      (req, res) => {
-        let heartbeatTimeout: NodeJS.Timeout;
-        (function heartbeat() {
-          res.write("\n");
-          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
-        })();
-        res.once("close", () => {
-          clearTimeout(heartbeatTimeout);
-        });
-      }
-    );
 };

@@ -1217,15 +1217,11 @@ export default async (app: Courselore): Promise<void> => {
                 "Courselore has been updated. Please reload the page.",
               offlineMessage:
                 "Failed to connect to Courselore server. Please check your internet connection and try reloading the page.",
+              liveReload: $${JSON.stringify(
+                app.locals.options.environment === "development"
+              )},
             });
             leafac.liveNavigation($${JSON.stringify(app.locals.options.host)});
-            $${app.locals.options.environment === "development"
-              ? javascript`
-                  leafac.liveReload(${JSON.stringify(
-                    `https://${app.locals.options.host}/live-reload`
-                  )});
-                `
-              : javascript``};
           </script>
 
           <meta

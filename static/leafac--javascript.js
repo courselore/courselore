@@ -6,6 +6,7 @@ const leafac = {
     url,
     newVersionMessage = "There has been update. Please reload the page.",
     offlineMessage = "Failed to connect to server. Please check your internet connection and try reloading the page.",
+    liveReload = false,
   }) {
     window.addEventListener(
       "DOMContentLoaded",
@@ -64,6 +65,34 @@ const leafac = {
       { once: true }
     );
   },
+
+  // async liveReload(url) {
+  //   try {
+  //     const abortController = new AbortController();
+  //     const abort = () => {
+  //       abortController.abort();
+  //     };
+  //     let heartbeatTimeout = setTimeout(abort, 50 * 1000);
+  //     const response = await fetch(url, { signal: abortController.signal });
+  //     if (!response.ok) throw new Error();
+  //     const responseBodyReader = response.body.getReader();
+  //     while (true) {
+  //       const chunk = (await responseBodyReader.read()).value;
+  //       if (chunk === undefined) break;
+  //       clearTimeout(heartbeatTimeout);
+  //       heartbeatTimeout = setTimeout(abort, 50 * 1000);
+  //     }
+  //   } catch {}
+  //   while (true) {
+  //     await new Promise((resolve) => setTimeout(resolve, 200));
+  //     try {
+  //       const response = await fetch(url);
+  //       if (!response.ok) throw new Error();
+  //       document.querySelector("body").isModified = false;
+  //       window.location.reload();
+  //     } catch {}
+  //   }
+  // },
 
   liveNavigation(host) {
     let abortController;
@@ -886,34 +915,6 @@ const leafac = {
 
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
-
-  async liveReload(url) {
-    try {
-      const abortController = new AbortController();
-      const abort = () => {
-        abortController.abort();
-      };
-      let heartbeatTimeout = setTimeout(abort, 50 * 1000);
-      const response = await fetch(url, { signal: abortController.signal });
-      if (!response.ok) throw new Error();
-      const responseBodyReader = response.body.getReader();
-      while (true) {
-        const chunk = (await responseBodyReader.read()).value;
-        if (chunk === undefined) break;
-        clearTimeout(heartbeatTimeout);
-        heartbeatTimeout = setTimeout(abort, 50 * 1000);
-      }
-    } catch {}
-    while (true) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error();
-        document.querySelector("body").isModified = false;
-        window.location.reload();
-      } catch {}
-    }
-  },
 
   regExps: {
     email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
