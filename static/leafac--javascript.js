@@ -21,9 +21,10 @@ const leafac = {
             const response = await fetch(url, {
               signal: abortController.signal,
             });
-            if (!response.ok) throw new Error();
+            if (!response.ok) throw new Error("Response isn’t OK");
             body.liveConnectionOfflineTooltip?.hide();
             if (response.headers.get("Version") !== version) {
+              console.error("NEW VERSION");
               (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
                 appendTo: body,
                 trigger: "manual",
@@ -44,7 +45,8 @@ const leafac = {
               clearTimeout(heartbeatTimeout);
               heartbeatTimeout = setTimeout(abort, 50 * 1000);
             }
-          } catch {
+          } catch (error) {
+            console.error(error);
             (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
               appendTo: body,
               trigger: "manual",
@@ -56,7 +58,7 @@ const leafac = {
             });
             body.liveConnectionOfflineTooltip.show();
           }
-          await new Promise((resolve) => setTimeout(resolve, 200));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       },
       { once: true }
