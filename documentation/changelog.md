@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Fixed an issue in which administrators of `courselore.org` could see a prompt to update to a new version even when running the latest version because of a race condition between publishing the new version to GitHub Releases and deploying to `courselore.org`.
+- Added a check in browsers for the server version: When the server is updated, people are notified that they must reload the page.
 
 ## 4.0.9
 
