@@ -161,17 +161,18 @@ const leafac = {
           console.error(error);
           if (isGet && !(event instanceof PopStateEvent))
             window.history.pushState(undefined, "", requestURL.href);
-          (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
-            appendTo: body,
-            trigger: "manual",
-            hideOnClick: false,
-            theme: "error",
-            arrow: false,
-            interactive: true,
-            content:
-              "You appear to be offline. Please check your internet connection and try reloading the page.",
-          });
-          body.liveNavigationErrorTooltip.show();
+          // TODO
+          // (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
+          //   appendTo: body,
+          //   trigger: "manual",
+          //   hideOnClick: false,
+          //   theme: "error",
+          //   arrow: false,
+          //   interactive: true,
+          //   content:
+          //     "You appear to be offline. Please check your internet connection and try reloading the page.",
+          // });
+          // body.liveNavigationErrorTooltip.show();
           window.onlivenavigateerror?.();
         }
       }
@@ -445,17 +446,18 @@ const leafac = {
         body.liveUpdatesNetworkErrorTooltip?.hide();
         if (response.status === 422) {
           console.error(response);
-          (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
-            appendTo: body,
-            trigger: "manual",
-            hideOnClick: false,
-            theme: "error",
-            arrow: false,
-            interactive: true,
-            content:
-              "Failed to connect to server. Please try reloading the page.",
-          });
-          body.liveUpdatesValidationErrorTooltip.show();
+          // TODO
+          // (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
+          //   appendTo: body,
+          //   trigger: "manual",
+          //   hideOnClick: false,
+          //   theme: "error",
+          //   arrow: false,
+          //   interactive: true,
+          //   content:
+          //     "Failed to connect to server. Please try reloading the page.",
+          // });
+          // body.liveUpdatesValidationErrorTooltip.show();
           return;
         }
         if (!response.ok) throw new Error();
@@ -484,16 +486,17 @@ const leafac = {
       } catch (error) {
         if (inLiveNavigation) return;
         console.error(error);
-        (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: "You appear to be offline.",
-        });
-        body.liveUpdatesNetworkErrorTooltip.show();
+        // TODO
+        // (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
+        //   appendTo: body,
+        //   trigger: "manual",
+        //   hideOnClick: false,
+        //   theme: "error",
+        //   arrow: false,
+        //   interactive: true,
+        //   content: "You appear to be offline.",
+        // });
+        // body.liveUpdatesNetworkErrorTooltip.show();
       }
       nonce = Math.random().toString(36).slice(2);
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
