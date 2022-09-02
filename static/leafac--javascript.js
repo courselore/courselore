@@ -12,6 +12,7 @@ const leafac = {
       "DOMContentLoaded",
       async () => {
         const body = document.querySelector("body");
+        let shouldLiveReloadOnNextConnection = false;
         while (true) {
           try {
             const abortController = new AbortController();
@@ -23,6 +24,12 @@ const leafac = {
               signal: abortController.signal,
             });
             if (!response.ok) throw new Error("Response isn’t OK");
+            if (shouldLiveReloadOnNextConnection) {
+              abort();
+              document.querySelector("body").isModified = false;
+              window.location.reload();
+              return;
+            }
             body.liveConnectionOfflineTooltip?.hide();
             if (response.headers.get("Version") !== version) {
               console.error("NEW VERSION");
@@ -55,44 +62,19 @@ const leafac = {
               theme: "error",
               arrow: false,
               interactive: true,
-              content: offlineMessage,
+              content: liveReload ? "Live reloading…" : offlineMessage,
             });
             body.liveConnectionOfflineTooltip.show();
+            shouldLiveReloadOnNextConnection = liveReload;
           }
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) =>
+            setTimeout(resolve, liveReload ? 200 : 1000)
+          );
         }
       },
       { once: true }
     );
   },
-
-  // async liveReload(url) {
-  //   try {
-  //     const abortController = new AbortController();
-  //     const abort = () => {
-  //       abortController.abort();
-  //     };
-  //     let heartbeatTimeout = setTimeout(abort, 50 * 1000);
-  //     const response = await fetch(url, { signal: abortController.signal });
-  //     if (!response.ok) throw new Error();
-  //     const responseBodyReader = response.body.getReader();
-  //     while (true) {
-  //       const chunk = (await responseBodyReader.read()).value;
-  //       if (chunk === undefined) break;
-  //       clearTimeout(heartbeatTimeout);
-  //       heartbeatTimeout = setTimeout(abort, 50 * 1000);
-  //     }
-  //   } catch {}
-  //   while (true) {
-  //     await new Promise((resolve) => setTimeout(resolve, 200));
-  //     try {
-  //       const response = await fetch(url);
-  //       if (!response.ok) throw new Error();
-  //       document.querySelector("body").isModified = false;
-  //       window.location.reload();
-  //     } catch {}
-  //   }
-  // },
 
   liveNavigation(host) {
     let abortController;
