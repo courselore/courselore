@@ -1216,7 +1216,7 @@ export default async (app: Courselore): Promise<void> => {
               newVersionMessage:
                 "Courselore has been updated. Please reload the page.",
               offlineMessage:
-                "Failed to connect to Courselore server. Please check your internet connection and try reloading the page.",
+                "Failed to connect to the Courselore server. Please check your internet connection and try reloading the page.",
               liveReload: $${JSON.stringify(
                 app.locals.options.environment === "development"
               )},
