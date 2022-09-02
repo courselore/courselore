@@ -5,6 +5,7 @@ import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
 import got from "got";
 import lodash from "lodash";
+import semver from "semver";
 import {
   Courselore,
   IsSignedInMiddlewareLocals,
@@ -45,8 +46,8 @@ export default (app: Courselore): void => {
             (await got(
               "https://api.github.com/repos/courselore/courselore/releases/latest"
             ).json()) as { tag_name: string }
-          ).tag_name.replace(/^v/, "");
-          if (latestVersion !== app.locals.options.version) {
+          ).tag_name;
+          if (semver.gt(latestVersion, app.locals.options.version)) {
             app.locals.options.latestVersion = latestVersion;
             console.log(
               `${new Date().toISOString()}\tUPDATE CHECK\tNew version available: ${
