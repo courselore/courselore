@@ -1491,6 +1491,7 @@ export default (app: Courselore): void => {
         );
 
         for (const enrollment of enrollments) {
+          // TODO: Better email notifications
           // switch (enrollment.userEmailNotificationsForAllMessages) {
           //   case "instant":
           //     break;
