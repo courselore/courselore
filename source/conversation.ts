@@ -8997,7 +8997,7 @@ export default (app: Courselore): void => {
             res.locals.conversation.announcementAt === null)
         )
           return next("validation");
-        else
+        else {
           app.locals.database.run(
             sql`
               UPDATE "conversations"
@@ -9014,6 +9014,17 @@ export default (app: Courselore): void => {
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
+          if (req.body.isAnnouncement === "true") {
+            const message = app.locals.helpers.getMessage({
+              req,
+              res,
+              conversation: res.locals.conversation,
+              messageReference: "1",
+            });
+            if (message !== undefined)
+              app.locals.mailers.emailNotifications({ req, res, message });
+          }
+        }
 
       if (typeof req.body.isPinned === "string")
         if (
