@@ -5038,6 +5038,86 @@ export default (app: Courselore): void => {
                                   `}
                             `
                           : html``}
+                        $${res.locals.conversation.type === "note"
+                          ? html`
+                              $${res.locals.enrollment.courseRole === "staff"
+                                ? html`
+                                    <form
+                                      method="PATCH"
+                                      action="https://${app.locals.options
+                                        .host}/courses/${res.locals.course
+                                        .reference}/conversations/${res.locals
+                                        .conversation.reference}${qs.stringify(
+                                        {
+                                          conversations:
+                                            req.query.conversations,
+                                          messages: req.query.messages,
+                                        },
+                                        { addQueryPrefix: true }
+                                      )}"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      $${res.locals.conversation
+                                        .announcementAt === null
+                                        ? html`
+                                            <input
+                                              key="isAnnouncement--true"
+                                              type="hidden"
+                                              name="isAnnouncement"
+                                              value="true"
+                                            />
+                                            <button
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                              onload="${javascript`
+                                                (this.tooltip ??= tippy(this)).setProps({
+                                                  touch: false,
+                                                  content: "Set as Announcement",
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-megaphone"></i>
+                                              Not an Announcement
+                                            </button>
+                                          `
+                                        : html`
+                                            <input
+                                              key="isAnnouncement--false"
+                                              type="hidden"
+                                              name="isAnnouncement"
+                                              value="false"
+                                            />
+                                            <button
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
+                                              onload="${javascript`
+                                                (this.tooltip ??= tippy(this)).setProps({
+                                                  touch: false,
+                                                  content: "Set as Not an Announcement",
+                                                });
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-megaphone-fill"
+                                              ></i>
+                                              Announcement
+                                            </button>
+                                          `}
+                                    </form>
+                                  `
+                                : res.locals.conversation.announcementAt !==
+                                  null
+                                ? html`
+                                    <div class="text--orange">
+                                      <i class="bi bi-megaphone-fill"></i>
+                                      Announcement
+                                    </div>
+                                  `
+                                : html``}
+                            `
+                          : html``}
                         $${res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <form
@@ -8799,6 +8879,7 @@ export default (app: Courselore): void => {
       participants?: ConversationParticipants;
       selectedParticipantsReferences?: string[];
       type?: ConversationType;
+      isAnnouncement?: "true" | "false";
       isPinned?: "true" | "false";
       isResolved?: "true" | "false";
       title?: string;
@@ -8901,6 +8982,35 @@ export default (app: Courselore): void => {
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+
+      if (typeof req.body.isAnnouncement === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnnouncement) ||
+          res.locals.enrollment.courseRole !== "staff" ||
+          res.locals.conversation.type !== "note" ||
+          (req.body.isAnnouncement === "true" &&
+            res.locals.conversation.announcementAt !== null) ||
+          (req.body.isAnnouncement === "false" &&
+            res.locals.conversation.announcementAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "conversations"
+              SET $${
+                req.body.isAnnouncement === "true"
+                  ? sql`"updatedAt" = ${new Date().toISOString()},`
+                  : sql``
+              }
+                  "announcementAt" = ${
+                    req.body.isAnnouncement === "true"
+                      ? new Date().toISOString()
+                      : null
+                  }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
