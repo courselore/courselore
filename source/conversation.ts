@@ -52,6 +52,7 @@ export type ConversationLayout = ({
           isUnread?: "true" | "false";
           types?: ConversationType[];
           isResolved?: "true" | "false";
+          isAnnouncement?: "true" | "false";
           participantses?: ConversationParticipants[];
           isPinned?: "true" | "false";
           tagsReferences?: string[];
@@ -251,6 +252,7 @@ export default (app: Courselore): void => {
       isUnread?: "true" | "false";
       types?: ConversationType[];
       isResolved?: "true" | "false";
+      isAnnouncement?: "true" | "false";
       participantses?: ConversationParticipants[];
       isPinned?: "true" | "false";
       tagsReferences?: string[];
@@ -280,6 +282,14 @@ export default (app: Courselore): void => {
         ["true", "false"].includes(req.query.conversations.filters.isResolved)
       )
         filters.isResolved = req.query.conversations.filters.isResolved;
+      if (
+        filters.types?.includes("note") &&
+        typeof req.query.conversations.filters.isAnnouncement === "string" &&
+        ["true", "false"].includes(
+          req.query.conversations.filters.isAnnouncement
+        )
+      )
+        filters.isAnnouncement = req.query.conversations.filters.isAnnouncement;
       if (Array.isArray(req.query.conversations.filters.participantses)) {
         const participantses = [
           ...new Set(
@@ -454,9 +464,30 @@ export default (app: Courselore): void => {
             filters.isResolved === undefined
               ? sql``
               : sql`
-                  AND "conversations"."resolvedAt" IS $${
-                    filters.isResolved === "true" ? sql`NOT` : sql``
-                  } NULL
+                  AND (
+                    (
+                      "conversations"."type" = 'question' AND
+                      "conversations"."resolvedAt" IS $${
+                        filters.isResolved === "true" ? sql`NOT` : sql``
+                      } NULL
+                    ) OR
+                    "conversations"."type" != 'question'
+                  )
+                `
+          }
+          $${
+            filters.isAnnouncement === undefined
+              ? sql``
+              : sql`
+                  AND (
+                    (
+                      "conversations"."type" = 'note' AND
+                      "conversations"."announcementAt" IS $${
+                        filters.isAnnouncement === "true" ? sql`NOT` : sql``
+                      } NULL
+                    ) OR
+                    "conversations"."type" != 'note'
+                  )
                 `
           }
           $${
@@ -860,55 +891,6 @@ export default (app: Courselore): void => {
                     >
                       Quick Filters:
                     </div>
-                    $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
-                      {
-                        isQuick: "true",
-                        isUnread: "true",
-                      }
-                    )
-                      ? html`
-                          <a
-                            href="https://${app.locals.options
-                              .host}${req.path}${qs.stringify(
-                              {
-                                conversations: {
-                                  filters: {
-                                    isQuick: "true",
-                                    isUnread: "true",
-                                  },
-                                },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <i class="bi bi-eyeglasses"></i>
-                            Unread
-                          </a>
-                        `
-                      : html`
-                          <a
-                            href="https://${app.locals.options
-                              .host}${req.path}${qs.stringify(
-                              {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent text--blue"
-                          >
-                            <i class="bi bi-eyeglasses"></i>
-                            Unread
-                          </a>
-                        `}
                     $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
@@ -965,7 +947,58 @@ export default (app: Courselore): void => {
                                 </a>
                               `}
                         `
+                      : html``}
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        isQuick: "true",
+                        types: ["note"],
+                        isAnnouncement: "true",
+                      }
+                    )
+                      ? html`
+                          <a
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    isQuick: "true",
+                                    types: ["note"],
+                                    isAnnouncement: "true",
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-megaphone"></i>
+                            Announcements
+                          </a>
+                        `
                       : html`
+                          <a
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--orange"
+                          >
+                            <i class="bi bi-megaphone-fill"></i>
+                            Announcements
+                          </a>
+                        `}
+                    $${res.locals.enrollment.courseRole === "student"
+                      ? html`
                           $${!util.isDeepStrictEqual(
                             req.query.conversations?.filters,
                             {
@@ -1017,56 +1050,8 @@ export default (app: Courselore): void => {
                                   Questions
                                 </a>
                               `}
-                        `}
-                    $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
-                      {
-                        isQuick: "true",
-                        types: ["note"],
-                      }
-                    )
-                      ? html`
-                          <a
-                            href="https://${app.locals.options
-                              .host}${req.path}${qs.stringify(
-                              {
-                                conversations: {
-                                  filters: {
-                                    isQuick: "true",
-                                    types: ["note"],
-                                  },
-                                },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <i class="bi bi-sticky"></i>
-                            Notes
-                          </a>
                         `
-                      : html`
-                          <a
-                            href="https://${app.locals.options
-                              .host}${req.path}${qs.stringify(
-                              {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent text--fuchsia"
-                          >
-                            <i class="bi bi-sticky-fill"></i>
-                            Notes
-                          </a>
-                        `}
+                      : html``}
                     $${!util.isDeepStrictEqual(
                       req.query.conversations?.filters,
                       {
@@ -1114,6 +1099,55 @@ export default (app: Courselore): void => {
                           >
                             <i class="bi bi-chat-text-fill"></i>
                             Chats
+                          </a>
+                        `}
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        isQuick: "true",
+                        isUnread: "true",
+                      }
+                    )
+                      ? html`
+                          <a
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    isQuick: "true",
+                                    isUnread: "true",
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="https://${app.locals.options
+                              .host}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--blue"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
                           </a>
                         `}
                   </div>
@@ -1452,6 +1486,14 @@ export default (app: Courselore): void => {
                                                   element.checked = false;
                                               };
                                             `
+                                          : conversationType === "note"
+                                          ? javascript`
+                                              this.onchange = () => {
+                                                if (this.checked) return;
+                                                for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isAnnouncement]"]'))
+                                                  element.checked = false;
+                                              };
+                                            `
                                           : javascript``
                                       }
                                     `}"
@@ -1552,6 +1594,87 @@ export default (app: Courselore): void => {
                               <span class="text--emerald">
                                 <i class="bi bi-patch-check-fill"></i>
                                 Resolved
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="label">
+                          <p class="label--text">Announcement</p>
+                          <div
+                            css="${res.locals.css(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isAnnouncement]"
+                                value="false"
+                                $${req.query.conversations?.filters
+                                  ?.isAnnouncement === "false"
+                                  ? html`checked`
+                                  : html``}
+                                $${Object.keys(filters).length > 0 &&
+                                filters.isQuick !== "true"
+                                  ? html``
+                                  : html`disabled`}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (!this.checked) return;
+                                    const form = this.closest("form");
+                                    form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
+                                    form.querySelector('[name="conversations[filters][isAnnouncement]"][value="true"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-sticky"></i>
+                                Not an Announcement
+                              </span>
+                              <span class="text--orange">
+                                <i class="bi bi-sticky-fill"></i>
+                                Not an Announcement
+                              </span>
+                            </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isAnnouncement]"
+                                value="true"
+                                $${req.query.conversations?.filters
+                                  ?.isAnnouncement === "true"
+                                  ? html`checked`
+                                  : html``}
+                                $${Object.keys(filters).length > 0 &&
+                                filters.isQuick !== "true"
+                                  ? html``
+                                  : html`disabled`}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (!this.checked) return;
+                                    const form = this.closest("form");
+                                    form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
+                                    form.querySelector('[name="conversations[filters][isAnnouncement]"][value="false"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-megaphone"></i>
+                                Announcement
+                              </span>
+                              <span class="text--orange">
+                                <i class="bi bi-megaphone-fill"></i>
+                                Announcement
                               </span>
                             </label>
                           </div>
