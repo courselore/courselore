@@ -951,6 +951,17 @@
             }
               }
           
+            .text--orange {
+              color: var(--color--orange--600);
+            }
+          
+            @media (prefers-color-scheme: dark) {
+          
+            .text--orange {
+                color: var(--color--orange--500)
+            }
+              }
+          
 
         .mark {
           color: var(--color--amber--700);

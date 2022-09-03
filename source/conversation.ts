@@ -2808,7 +2808,7 @@ export default (app: Courselore): void => {
         tagsReferences?: string[];
         participants?: ConversationParticipants;
         selectedParticipants?: string[];
-        shouldNotify?: "true";
+        isAnnouncement?: "true";
         isPinned?: "true";
       };
     },
@@ -2977,7 +2977,7 @@ export default (app: Courselore): void => {
                               ${
                                 res.locals.enrollment.courseRole === "staff"
                                   ? javascript`
-                                      const notification = form.querySelector('[key="new-conversation--notification"]');
+                                      const notification = form.querySelector('[key="new-conversation--announcement"]');
                                       notification.hidden = ${JSON.stringify(
                                         conversationType !== "note"
                                       )};
@@ -3665,77 +3665,94 @@ export default (app: Courselore): void => {
               >
                 $${res.locals.enrollment.courseRole === "staff"
                   ? html`
-                      <div TODO hidden>
+                      <div
+                        key="new-conversation--announcement"
+                        $${req.params.type === "note" ||
+                        (req.params.type === undefined &&
+                          (conversationDraft?.type === "note" ||
+                            (conversationDraft === undefined &&
+                              req.query.newConversation?.type === "note")))
+                          ? html``
+                          : html`hidden`}
+                        class="label"
+                        css="${res.locals.css(css`
+                          width: var(--space--44);
+                        `)}"
+                      >
+                        <div class="label--text">
+                          Announcement
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            onload="${javascript`
+                              (this.tooltip ??= tippy(this)).setProps({
+                                trigger: "click",
+                                content: "People receive immediate email notifications for announcements.",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
                         <div
-                          key="new-conversation--notification"
-                          $${req.params.type === "note" ||
-                          (req.params.type === undefined &&
-                            (conversationDraft?.type === "note" ||
-                              (conversationDraft === undefined &&
-                                req.query.newConversation?.type === "note")))
-                            ? html``
-                            : html`hidden`}
-                          class="label"
                           css="${res.locals.css(css`
-                            width: var(--space--28);
+                            display: flex;
                           `)}"
                         >
-                          <div class="label--text">Notification</div>
-                          <div
-                            css="${res.locals.css(css`
-                              display: flex;
-                            `)}"
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
+                            <input
+                              type="checkbox"
+                              name="isAnnouncement"
+                              $${req.params.type === "note" ||
+                              (req.params.type === undefined &&
+                                (conversationDraft?.type === "note" ||
+                                  (conversationDraft === undefined &&
+                                    req.query.newConversation?.type ===
+                                      "note")))
+                                ? html``
+                                : html`disabled`}
+                              $${(
+                                conversationDraft as any
+                              ) /* TODO: Conversation drafts */
+                                ?.isAnnouncement === "true" ||
+                              (conversationDraft === undefined &&
+                                req.query.newConversation?.isAnnouncement ===
+                                  "true")
+                                ? html`checked`
+                                : html``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                              onload="${javascript`
+                                this.onchange = () => {
+                                  if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
+                                };
+                              `}"
+                            />
+                            <span
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Set as Announcement",
+                                });
+                              `}"
                             >
-                              <input
-                                type="checkbox"
-                                name="shouldNotify"
-                                $${req.params.type === "note" ||
-                                (req.params.type === undefined &&
-                                  (conversationDraft?.type === "note" ||
-                                    (conversationDraft === undefined &&
-                                      req.query.newConversation?.type ===
-                                        "note")))
-                                  ? html``
-                                  : html`disabled`}
-                                $${(
-                                  conversationDraft as any
-                                ) /* TODO: Conversation drafts */
-                                  ?.shouldNotify === "true" ||
-                                (conversationDraft === undefined &&
-                                  req.query.newConversation?.shouldNotify ===
-                                    "true")
-                                  ? html`checked`
-                                  : html``}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Notify",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-bell-slash"></i>
-                                Don’t Notify
-                              </span>
-                              <span
-                                class="text--blue"
-                                onload="${javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Don’t Notify",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-bell-fill"></i>
-                                Notify
-                              </span>
-                            </label>
-                          </div>
+                              <i class="bi bi-megaphone"></i>
+                              Not an Announcement
+                            </span>
+                            <span
+                              class="text--orange"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Set as Not an Announcement",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-megaphone-fill"></i>
+                              Announcement
+                            </span>
+                          </label>
                         </div>
                       </div>
 

@@ -1348,7 +1348,11 @@ export default async (app: Courselore): Promise<void> => {
           END;
         `
       );
-    }
+    },
+
+    sql`
+      ALTER TABLE "conversations" ADD COLUMN "announcementAt" TEXT NULL;
+    `
   );
   app.once("close", () => {
     app.locals.database.close();

@@ -1777,6 +1777,7 @@ export default async (app: Courselore): Promise<void> => {
           "fuchsia",
           "cyan",
           "purple",
+          "orange",
         ].map(
           (color) => css`
             .text--${color} {

@@ -1569,7 +1569,7 @@ export default (app: Courselore): void => {
                     class="button button--tight button--tight--inline disabled"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
-                        content: "You always receive email notifications for important staff announcements.",
+                        content: "You always receive email notifications for staff announcements.",
                       });
                     `}"
                   >
@@ -1579,7 +1579,7 @@ export default (app: Courselore): void => {
                       checked
                       class="input--checkbox"
                     />
-                    Important staff announcements
+                    Staff announcements
                   </label>
                 </div>
               </div>
