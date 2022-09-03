@@ -62,7 +62,7 @@ const leafac = {
               theme: "error",
               arrow: false,
               interactive: true,
-              content: liveReload ? "Live reloading…" : offlineMessage,
+              content: liveReload ? "Live-Reloading…" : offlineMessage,
             });
             body.liveConnectionOfflineTooltip.show();
             shouldLiveReloadOnNextConnection = liveReload;
