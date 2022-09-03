@@ -1520,7 +1520,7 @@ export default (app: Courselore): void => {
                   to: enrollment.userEmail,
                   inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`,
                   references: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.host}`,
-                  subject: `${conversation.title} · ${course.name} · Courselore`,
+                  subject: conversation.title,
                   html: html`
                     <p>
                       <a
