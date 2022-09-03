@@ -13,6 +13,7 @@ import {
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
   ConversationParticipants,
+  ConversationType,
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
@@ -1303,6 +1304,8 @@ export default (app: Courselore): void => {
           courseNextConversationReference: number;
           conversationReference: string;
           conversationParticipants: ConversationParticipants;
+          conversationType: ConversationType;
+          conversationAnnouncementAt: string | null;
           conversationTitle: string;
           reference: string;
           authorUserName: string | null;
@@ -1323,6 +1326,8 @@ export default (app: Courselore): void => {
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "conversations"."reference" AS "conversationReference",
                    "conversations"."participants" AS "conversationParticipants",
+                   "conversations"."type" AS "conversationType",
+                   "conversations"."announcementAt" AS "conversationAnnouncementAt",
                    "conversations"."title" AS "conversationTitle",
                    "messages"."reference",
                    "authorUser"."name" AS "authorUserName",
@@ -1354,6 +1359,8 @@ export default (app: Courselore): void => {
           id: messageRow.conversationId,
           reference: messageRow.conversationReference,
           participants: messageRow.conversationParticipants,
+          type: messageRow.conversationType,
+          announcementAt: messageRow.conversationAnnouncementAt,
           title: messageRow.conversationTitle,
         };
         const course = {
@@ -1434,7 +1441,11 @@ export default (app: Courselore): void => {
                           )
                         `
                       : sql``
-                  } AND (
+                  } $${
+            conversation.type === "note" && conversation.announcementAt !== null
+              ? sql``
+              : sql`
+                  AND (
                     "users"."emailNotificationsForAllMessages" != 'none' OR (
                       "users"."emailNotificationsForMentionsAt" IS NOT NULL
                         $${
@@ -1474,6 +1485,8 @@ export default (app: Courselore): void => {
                       )
                     )
                   )
+                `
+          }
           `
         );
 
