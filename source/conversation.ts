@@ -4103,7 +4103,7 @@ export default (app: Courselore): void => {
       tagsReferences?: string[];
       participants?: ConversationParticipants;
       selectedParticipantsReferences?: string[];
-      shouldNotify?: "on";
+      isAnnouncement?: "on";
       isPinned?: "on";
       isAnonymous?: "on";
       isDraft?: "true";
@@ -4320,8 +4320,8 @@ export default (app: Courselore): void => {
           selectedParticipants.some(
             (selectedParticipant) => selectedParticipant.courseRole === "staff"
           )) ||
-        ![undefined, "on"].includes(req.body.shouldNotify) ||
-        (req.body.shouldNotify === "on" &&
+        ![undefined, "on"].includes(req.body.isAnnouncement) ||
+        (req.body.isAnnouncement === "on" &&
           (res.locals.enrollment.courseRole !== "staff" ||
             req.body.type !== "note")) ||
         ![undefined, "on"].includes(req.body.isPinned) ||
@@ -4362,6 +4362,7 @@ export default (app: Courselore): void => {
             "participants",
             "anonymousAt",
             "type",
+            "announcementAt",
             "pinnedAt",
             "title",
             "titleSearch",
@@ -4375,6 +4376,9 @@ export default (app: Courselore): void => {
             ${req.body.participants},
             ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
             ${req.body.type},
+            ${
+              req.body.isAnnouncement === "on" ? new Date().toISOString() : null
+            },
             ${req.body.isPinned === "on" ? new Date().toISOString() : null},
             ${req.body.title},
             ${html`${req.body.title}`},
@@ -4416,9 +4420,6 @@ export default (app: Courselore): void => {
         const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content!
         );
-        // TODO: Better email notifications
-        // if (req.body.shouldNotify === "on")
-        //   processedContent.mentions!.add("everyone");
         const message = app.locals.database.get<{
           id: number;
           reference: string;
