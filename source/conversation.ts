@@ -129,6 +129,7 @@ export type GetConversationHelper = ({
       anonymousAt: string | null;
       type: ConversationType;
       resolvedAt: string | null;
+      announcementAt: string | null;
       pinnedAt: string | null;
       title: string;
       titleSearch: string;
@@ -2194,6 +2195,14 @@ export default (app: Courselore): void => {
                   `}
             `
           : html``}
+        $${conversation.type === "note" && conversation.announcementAt !== null
+          ? html`
+              <div class="text--orange">
+                <i class="bi bi-megaphone-fill"></i>
+                Announcement
+              </div>
+            `
+          : html``}
         <div
           class="${conversationParticipantsTextColor[
             conversation.participants
@@ -2441,6 +2450,7 @@ export default (app: Courselore): void => {
       anonymousAt: string | null;
       type: ConversationType;
       resolvedAt: string | null;
+      announcementAt: string | null;
       pinnedAt: string | null;
       title: string;
       titleSearch: string;
@@ -2467,6 +2477,7 @@ export default (app: Courselore): void => {
                "conversations"."anonymousAt",
                "conversations"."type",
                "conversations"."resolvedAt",
+               "conversations"."announcementAt",
                "conversations"."pinnedAt",
                "conversations"."title",
                "conversations"."titleSearch",
@@ -2530,6 +2541,7 @@ export default (app: Courselore): void => {
       anonymousAt: conversationRow.anonymousAt,
       type: conversationRow.type,
       resolvedAt: conversationRow.resolvedAt,
+      announcementAt: conversationRow.announcementAt,
       pinnedAt: conversationRow.pinnedAt,
       title: conversationRow.title,
       titleSearch: conversationRow.titleSearch,
