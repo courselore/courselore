@@ -10,10 +10,15 @@
 
 ## Unreleased
 
+## 4.0.10
+
+**2022-09-03 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Added the notion of **Announcements**, which are a qualification on conversations of type **Note**. Announcements may only be created by staff, and they send everyone immediate email notifications that can’t be opted-out. (Note for Courselore users from spring 2022: These new **Announcements** are similar to our old notion of **Announcement**, but now they’re a qualification on conversations of type **Note** instead of being a type of conversation in of themselves.)
 - Improved a subtle edge case on filters: Before, if you selected **Types: Question & Note**, and **Question Resolved: Resolved**, we would not include **Notes** in the filter results; now we do.
 - Added a check in browsers for the server version: When the server is updated, people are notified that they must reload the page.
 - Improved the detection that a user is offline: Before we would only detect that the user was offline when they tried to perform an action (for example, visit a link, submit a form, and so forth), or if they were on a page with live-updates (for example, a conversation page) and the live-updates connection to the server was broken. Now we keep a dedicated connection to the server at all times, and we’re able to detect when the user goes offline much faster and more reliably.
+- Changed the subjects on email notifications: Before it was, for example, “When is Assignment 3 due? · Principles of Programming Languages · Courselore”; now it’s just the title of the conversation, for example, “When is Assignment 3 due?”. (Note that the course name & the server name, for example, “Principles of Programming Languages · Courselore”, are already part of the “From”.)
 - Fixed an issue in which administrators of `courselore.org` could see a prompt to update to a new version even when running the latest version because of a race condition between publishing the new version to GitHub Releases and deploying to `courselore.org`.
 
 ## 4.0.9
