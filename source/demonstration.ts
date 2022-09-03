@@ -1188,9 +1188,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               "reference",
               "authorEnrollment",
               "participants",
-              "anonymousAt",      
+              "anonymousAt",
               "type",
               "resolvedAt",
+              "announcementAt",
               "pinnedAt",
               "title",
               "titleSearch",
@@ -1212,6 +1213,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ${type},
               ${
                 type === "question" && Math.random() < 0.75
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                conversationAuthorEnrollment?.courseRole === "staff" &&
+                type === "note" &&
+                Math.random() < 0.5
                   ? new Date().toISOString()
                   : null
               },
