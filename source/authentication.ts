@@ -131,6 +131,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     accentColor: EnrollmentAccentColor;
   }[];
   mayCreateCourses: boolean;
+  actionAllowedToUserWithUnverifiedEmail?: boolean;
 }
 
 export type EmailVerificationMailer = ({
@@ -292,7 +293,10 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      if (res.locals.user.emailVerifiedAt === null)
+      if (
+        res.locals.actionAllowedToUserWithUnverifiedEmail !== true &&
+        res.locals.user.emailVerifiedAt === null
+      )
         return res.send(
           app.locals.layouts.box({
             req,
@@ -1601,6 +1605,10 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/email-verification/:emailVerificationNonce",
+    (req, res, next) => {
+      res.locals.actionAllowedToUserWithUnverifiedEmail = true;
+      next();
+    },
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       const emailVerification = app.locals.database.get<{ user: number }>(
