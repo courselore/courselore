@@ -1213,7 +1213,7 @@ export default (app: Courselore): void => {
     {},
     any,
     { email?: string; currentPassword?: string; newPassword?: string },
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals
   >(
     "/settings/email-and-password",
@@ -1245,7 +1245,12 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.host}/settings/email-and-password`
+          `https://${app.locals.options.host}${
+            typeof req.query.redirect === "string" &&
+            req.query.redirect.trim() !== ""
+              ? req.query.redirect
+              : "/settings/email-and-password"
+          }`
         );
       }
 
@@ -1267,7 +1272,12 @@ export default (app: Courselore): void => {
           });
           return res.redirect(
             303,
-            `https://${app.locals.options.host}/settings/email-and-password`
+            `https://${app.locals.options.host}${
+              typeof req.query.redirect === "string" &&
+              req.query.redirect.trim() !== ""
+                ? req.query.redirect
+                : "/settings/email-and-password"
+            }`
           );
         }
 
@@ -1325,7 +1335,12 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.host}/settings/email-and-password`
+        `https://${app.locals.options.host}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/settings/email-and-password"
+        }`
       );
     })
   );
