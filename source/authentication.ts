@@ -332,15 +332,58 @@ export default (app: Courselore): void => {
                   class="link"
                   onload="${javascript`
                     this.onclick = () => {
-                      document.querySelector('[key="change-email-address"]').hidden = false;
+                      document.querySelector('[key="update-email"]').hidden = false;
                     };
                 `}"
                 >
-                  Change email address
+                  Update email
                 </button>
               </p>
 
-              <form key="change-email-address" hidden>HELLO</form>
+              <form
+                key="update-email"
+                method="PATCH"
+                action="https://${app.locals.options
+                  .host}/settings/email-and-password"
+                hidden
+                novalidate
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `)}"
+              >
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+                <label class="label">
+                  <p class="label--text">Password</p>
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    required
+                    class="input--text"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Email</p>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@educational-institution.edu"
+                    value="${res.locals.user.email}"
+                    required
+                    class="input--text"
+                  />
+                </label>
+
+                <div>
+                  <button
+                    class="button button--full-width-on-small-screen button--blue"
+                  >
+                    <i class="bi bi-pencil-fill"></i>
+                    Update Email
+                  </button>
+                </div>
+              </form>
 
               $${app.locals.options.demonstration
                 ? (() => {
