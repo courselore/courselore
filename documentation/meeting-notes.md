@@ -1,6 +1,19 @@
 # Meeting Notes
 
 <details>
+<summary>2021-09-03</summary>
+
+- Brought back the concept of “Announcements”.
+- Fixed issue with password reset links & Outlook.
+- Several quality-of-life features.
+- Other topics:
+  - A student didn’t get an email notification for a reply to their question. Could it be because they didn’t verify their email? (Let’s lock the system further if you didn’t verify your email.) Could it be one of the emails didn’t get relayed, mostly because of wrong domains? Keep an eye out…
+  - In the near future, let’s implement a notion of “importing” conversations from other courses to allow for reuse, but let’s **not** put too much structure into the continuity of the courses across semester—let’s let it be more freeform.
+  - Get rid of horizontal scrolling. In the content editor toolbar in particular, but in the rest of the application in general as well…
+
+</details>
+
+<details>
 <summary>2021-08-27</summary>
 
 - Conversation participants deployed.
