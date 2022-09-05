@@ -140,7 +140,13 @@ export type EmailVerificationMailer = ({
   userId,
   userEmail,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    { redirect?: string },
+    BaseMiddlewareLocals
+  >;
   res: express.Response<any, BaseMiddlewareLocals>;
   userId: number;
   userEmail: string;
@@ -1397,7 +1403,10 @@ export default (app: Courselore): void => {
 
     const link = `https://${app.locals.options.host}/email-verification/${
       emailVerification.nonce
-    }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
+    }${qs.stringify(
+      { redirect: req.query.redirect ?? req.originalUrl },
+      { addQueryPrefix: true }
+    )}`;
     app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
