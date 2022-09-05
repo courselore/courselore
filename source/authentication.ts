@@ -76,6 +76,7 @@ export type IsSignedInMiddleware = express.RequestHandler<
   IsSignedInMiddlewareLocals
 >[];
 export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
+  actionAllowedToUserWithUnverifiedEmail?: boolean;
   user: {
     id: number;
     lastSeenOnlineAt: string;
@@ -131,7 +132,6 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     accentColor: EnrollmentAccentColor;
   }[];
   mayCreateCourses: boolean;
-  actionAllowedToUserWithUnverifiedEmail?: boolean;
 }
 
 export type EmailVerificationMailer = ({
@@ -246,6 +246,10 @@ export default (app: Courselore): void => {
 
   app.locals.middlewares.isSignedIn = [
     (req, res, next) => {
+      const actionAllowedToUserWithUnverifiedEmail =
+        res.locals.actionAllowedToUserWithUnverifiedEmail;
+      delete res.locals.actionAllowedToUserWithUnverifiedEmail;
+
       const userId = app.locals.helpers.Session.get({ req, res });
       if (userId === undefined) return next("route");
 
@@ -294,7 +298,7 @@ export default (app: Courselore): void => {
       )!;
 
       if (
-        res.locals.actionAllowedToUserWithUnverifiedEmail !== true &&
+        actionAllowedToUserWithUnverifiedEmail !== true &&
         res.locals.user.emailVerifiedAt === null
       )
         return res.send(
