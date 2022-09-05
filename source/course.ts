@@ -91,6 +91,7 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
 >[];
 export interface IsEnrolledInCourseMiddlewareLocals
   extends IsSignedInMiddlewareLocals {
+  actionAllowedOnArchivedCourse?: boolean;
   enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
   course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
   courseEnrollmentsCount: number;
@@ -101,7 +102,6 @@ export interface IsEnrolledInCourseMiddlewareLocals
     name: string;
     staffOnlyAt: string | null;
   }[];
-  actionAllowedOnArchivedCourse?: boolean;
 }
 
 export type IsCourseStaffMiddleware = express.RequestHandler<
@@ -688,6 +688,10 @@ export default (app: Courselore): void => {
   app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
+      const actionAllowedOnArchivedCourse =
+        res.locals.actionAllowedOnArchivedCourse;
+      delete res.locals.actionAllowedOnArchivedCourse;
+
       const enrollment = res.locals.enrollments.find(
         (enrollment) =>
           enrollment.course.reference === req.params.courseReference
@@ -751,7 +755,7 @@ export default (app: Courselore): void => {
       if (
         res.locals.course.archivedAt !== null &&
         !["GET", "HEAD"].includes(req.method) &&
-        res.locals.actionAllowedOnArchivedCourse !== true
+        actionAllowedOnArchivedCourse !== true
       ) {
         app.locals.helpers.Flash.set({
           req,
@@ -1259,7 +1263,12 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/settings/course-information",
     (req, res, next) => {
       res.locals.actionAllowedOnArchivedCourse =
-        typeof req.body.isArchived === "string";
+        typeof req.body.isArchived === "string" &&
+        req.body.name === undefined &&
+        req.body.year === undefined &&
+        req.body.term === undefined &&
+        req.body.institution === undefined &&
+        req.body.code === undefined;
       next();
     },
     ...app.locals.middlewares.isCourseStaff,
