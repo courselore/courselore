@@ -292,6 +292,107 @@ export default (app: Courselore): void => {
         `
       )!;
 
+      if (res.locals.user.emailVerifiedAt === null)
+        return res.send(
+          app.locals.layouts.box({
+            req,
+            res,
+            head: html` <title>Email Verification · Courselore</title> `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-person-check-fill"></i>
+                Email Verification
+              </h2>
+
+              <p>
+                Please verify your email by following the link sent to
+                <span class="strong">${res.locals.user.email}</span>
+              </p>
+
+              <hr class="separator" />
+
+              <form
+                method="POST"
+                action="https://${app.locals.options
+                  .host}/resend-verification-email${qs.stringify(
+                  { redirect: req.originalUrl },
+                  { addQueryPrefix: true }
+                )}"
+              >
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+                Didn’t receive the email? Already checked your spam folder?
+                <button class="link">Resend</button>
+              </form>
+
+              <hr class="separator" />
+
+              <p>
+                Have the wrong email address?
+                <button
+                  class="link"
+                  onload="${javascript`
+                    this.onclick = () => {
+                      document.querySelector('[key="change-email-address"]').hidden = false;
+                    };
+                `}"
+                >
+                  Change email address
+                </button>
+              </p>
+
+              <form key="change-email-address" hidden>HELLO</form>
+
+              $${app.locals.options.demonstration
+                ? (() => {
+                    let emailVerification = app.locals.database.get<{
+                      nonce: string;
+                    }>(
+                      sql`
+                        SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
+                      `
+                    );
+                    if (emailVerification === undefined) {
+                      app.locals.mailers.emailVerification({
+                        req,
+                        res,
+                        userId: res.locals.user.id,
+                        userEmail: res.locals.user.email,
+                      });
+                      emailVerification = app.locals.database.get<{
+                        nonce: string;
+                      }>(
+                        sql`
+                          SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${res.locals.user.id}
+                        `
+                      )!;
+                    }
+                    return html`
+                      <hr class="separator" />
+
+                      <p
+                        css="${res.locals.css(css`
+                          font-weight: var(--font-weight--bold);
+                        `)}"
+                      >
+                        This Courselore installation is running in demonstration
+                        mode and doesn’t send emails.
+                        <a
+                          href="https://${app.locals.options
+                            .host}/email-verification/${emailVerification.nonce}${qs.stringify(
+                            { redirect: req.originalUrl },
+                            { addQueryPrefix: true }
+                          )}"
+                          class="link"
+                          >Verify email</a
+                        >
+                      </p>
+                    `;
+                  })()
+                : html``}
+            `,
+          })
+        );
+
       res.locals.invitations = app.locals.database
         .all<{
           id: number;
