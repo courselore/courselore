@@ -344,7 +344,10 @@ export default (app: Courselore): void => {
                 key="update-email"
                 method="PATCH"
                 action="https://${app.locals.options
-                  .host}/settings/email-and-password"
+                  .host}/settings/email-and-password${qs.stringify(
+                  { redirect: req.originalUrl },
+                  { addQueryPrefix: true }
+                )}"
                 hidden
                 novalidate
                 css="${res.locals.css(css`
