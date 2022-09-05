@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Locked down the application to users who haven’t verified their emails. Previously, they could do almost everything, including enrolling on courses, starting conversations, and so forth. One of the few restrictions was that they wouldn’t receive email notifications. Now, we require email verification to do almost anything.
+
 ## 4.0.10
 
 **2022-09-03 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
