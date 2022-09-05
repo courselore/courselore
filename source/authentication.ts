@@ -1558,6 +1558,10 @@ export default (app: Courselore): void => {
 
   app.post<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "/resend-verification-email",
+    (req, res, next) => {
+      res.locals.actionAllowedToUserWithUnverifiedEmail = true;
+      next();
+    },
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       if (res.locals.user.emailVerifiedAt !== null) {

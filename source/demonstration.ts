@@ -1423,6 +1423,10 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/demonstration-data",
+    (req, res, next) => {
+      res.locals.actionAllowedToUserWithUnverifiedEmail = true;
+      next();
+    },
     ...app.locals.middlewares.isSignedIn,
     handler
   );

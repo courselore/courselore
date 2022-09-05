@@ -1217,6 +1217,12 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/settings/email-and-password",
+    (req, res, next) => {
+      res.locals.actionAllowedToUserWithUnverifiedEmail =
+        typeof req.body.email === "string" &&
+        req.body.newPassword === undefined;
+      next();
+    },
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (
