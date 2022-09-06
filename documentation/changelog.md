@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+## 4.0.11
+
+**2022-09-06 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- **Fixed a security issue in which redirects would allow an attacker to create a link that looked legitimate but would redirect away from the application.** For example, `https://courselore.org/sign-in?redirect=.example.com/attack` would redirect to `https://courselore.org.example.com/attack`, which could be under the attacker’s control. This could have been used for scams & phishing. As far as we know the issue has **not** been explored in real attacks, but system administrators must update as soon as possible.
 - Locked down the application to users who haven’t verified their emails. Previously, they could do almost everything, including enrolling on courses, starting conversations, and so forth. One of the few restrictions was that they wouldn’t receive email notifications. Now, we require email verification to do almost anything.
 
 ## 4.0.10
