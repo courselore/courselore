@@ -1252,7 +1252,7 @@ export default (app: Courselore): void => {
                               action="https://${app.locals.options
                                 .host}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
-                                { redirect: req.originalUrl },
+                                { redirect: req.originalUrl.slice(1) },
                                 { addQueryPrefix: true }
                               )}"
                             >

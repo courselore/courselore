@@ -16,9 +16,7 @@ export default (app: Courselore): void => {
       res.redirect(
         303,
         `https://${app.locals.options.host}/sign-in${qs.stringify(
-          {
-            redirect: req.originalUrl,
-          },
+          { redirect: req.originalUrl.slice(1) },
           { addQueryPrefix: true }
         )}`
       );

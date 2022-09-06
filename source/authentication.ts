@@ -329,7 +329,7 @@ export default (app: Courselore): void => {
                 method="POST"
                 action="https://${app.locals.options
                   .host}/resend-verification-email${qs.stringify(
-                  { redirect: req.originalUrl },
+                  { redirect: req.originalUrl.slice(1) },
                   { addQueryPrefix: true }
                 )}"
               >
@@ -359,7 +359,7 @@ export default (app: Courselore): void => {
                 method="PATCH"
                 action="https://${app.locals.options
                   .host}/settings/email-and-password${qs.stringify(
-                  { redirect: req.originalUrl },
+                  { redirect: req.originalUrl.slice(1) },
                   { addQueryPrefix: true }
                 )}"
                 hidden
@@ -439,7 +439,7 @@ export default (app: Courselore): void => {
                         <a
                           href="https://${app.locals.options
                             .host}/email-verification/${emailVerification.nonce}${qs.stringify(
-                            { redirect: req.originalUrl },
+                            { redirect: req.originalUrl.slice(1) },
                             { addQueryPrefix: true }
                           )}"
                           class="link"
@@ -1404,7 +1404,7 @@ export default (app: Courselore): void => {
     const link = `https://${app.locals.options.host}/email-verification/${
       emailVerification.nonce
     }${qs.stringify(
-      { redirect: req.query.redirect ?? req.originalUrl },
+      { redirect: req.query.redirect ?? req.originalUrl.slice(1) },
       { addQueryPrefix: true }
     )}`;
     app.locals.database.run(

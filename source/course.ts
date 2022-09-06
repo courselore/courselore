@@ -4527,7 +4527,7 @@ export default (app: Courselore): void => {
                       href="https://${app.locals.options
                         .host}/sign-up${qs.stringify(
                         {
-                          redirect: req.originalUrl,
+                          redirect: req.originalUrl.slice(1),
                           invitation: {
                             email: res.locals.invitation.email ?? undefined,
                             name: res.locals.invitation.name ?? undefined,
@@ -4548,7 +4548,7 @@ export default (app: Courselore): void => {
                       href="https://${app.locals.options
                         .host}/sign-in${qs.stringify(
                         {
-                          redirect: req.originalUrl,
+                          redirect: req.originalUrl.slice(1),
                           invitation: {
                             email: res.locals.invitation.email ?? undefined,
                             name: res.locals.invitation.name ?? undefined,
