@@ -1456,14 +1456,14 @@ export default (app: Courselore): void => {
                               `
                         }
                     ) OR (
-                      "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND (
+                      "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
                         SELECT TRUE
                         FROM "messages"
                         WHERE "conversation" = ${conversation.id} AND
                               "authorEnrollment" = "enrollments"."id"
                       )
                     ) OR (
-                      "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND (
+                      "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
                         SELECT TRUE
                         FROM "conversations"
                         WHERE "id" = ${conversation.id} AND

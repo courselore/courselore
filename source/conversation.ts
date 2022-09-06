@@ -417,7 +417,7 @@ export default (app: Courselore): void => {
               res.locals.enrollment.courseRole === "staff"
                 ? sql`OR "conversations"."participants" = 'staff'`
                 : sql``
-            } OR (
+            } OR EXISTS(
               SELECT TRUE
               FROM "conversationSelectedParticipants"
               WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
@@ -2588,7 +2588,7 @@ export default (app: Courselore): void => {
                   res.locals.enrollment.courseRole === "staff"
                     ? sql`OR "conversations"."participants" = 'staff'`
                     : sql``
-                } OR (
+                } OR EXISTS(
                   SELECT TRUE
                   FROM "conversationSelectedParticipants"
                   WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 

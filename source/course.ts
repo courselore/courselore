@@ -721,7 +721,7 @@ export default (app: Courselore): void => {
               res.locals.enrollment.courseRole === "staff"
                 ? sql`OR "conversations"."participants" = 'staff'`
                 : sql``
-            } OR (
+            } OR EXISTS(
               SELECT TRUE
               FROM "conversationSelectedParticipants"
               WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
@@ -4497,15 +4497,13 @@ export default (app: Courselore): void => {
                 const hasInvitationEmail = res.locals.invitation.email !== null;
                 const invitationUserExists =
                   hasInvitationEmail &&
-                  app.locals.database.get<{ exists: number }>(
+                  app.locals.database.get<{}>(
                     sql`
-                      SELECT EXISTS(
-                        SELECT TRUE
-                        FROM "users"
-                        WHERE "email" = ${res.locals.invitation.email}
-                      ) AS "exists"
+                      SELECT TRUE
+                      FROM "users"
+                      WHERE "email" = ${res.locals.invitation.email}
                     `
-                  )!.exists === 1;
+                  ) !== undefined;
 
                 if (!hasInvitationEmail || !invitationUserExists)
                   buttons += html`
