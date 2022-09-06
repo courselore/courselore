@@ -4245,14 +4245,10 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
-      if (
-        typeof req.query.redirect === "string" &&
-        req.query.redirect.trim() !== "" &&
-        req.query.redirect.startsWith("/")
-      )
+      if (typeof req.query.redirect === "string")
         res.redirect(
           303,
-          `https://${app.locals.options.host}/courses/${res.locals.course.reference}${req.query.redirect}`
+          `https://${app.locals.options.host}/courses/${res.locals.course.reference}/${req.query.redirect}`
         );
       const link = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
@@ -4393,9 +4389,7 @@ export default (app: Courselore): void => {
               action="https://${app.locals.options.host}/courses/${res.locals
                 .invitation.course.reference}/invitations/${res.locals
                 .invitation.reference}${qs.stringify(
-                {
-                  redirect: req.query.redirect,
-                },
+                { redirect: req.query.redirect },
                 {
                   addQueryPrefix: true,
                 }
@@ -4455,13 +4449,7 @@ export default (app: Courselore): void => {
         303,
         `https://${app.locals.options.host}/courses/${
           res.locals.invitation.course.reference
-        }${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== "" &&
-          req.query.redirect.startsWith("/")
-            ? req.query.redirect
-            : "/"
-        }`
+        }/${typeof req.query.redirect === "string" ? req.query.redirect : ""}`
       );
     }
   );

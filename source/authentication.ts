@@ -718,11 +718,8 @@ export default (app: Courselore): void => {
       (req, res) => {
         res.redirect(
           303,
-          `https://${app.locals.options.host}${
-            typeof req.query.redirect === "string" &&
-            req.query.redirect.trim() !== ""
-              ? req.query.redirect
-              : "/"
+          `https://${app.locals.options.host}/${
+            typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
       }
@@ -775,11 +772,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     })
@@ -1208,11 +1202,8 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     })
@@ -1362,11 +1353,8 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     }
@@ -1555,11 +1543,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     })
@@ -1582,11 +1567,8 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.host}${
-            typeof req.query.redirect === "string" &&
-            req.query.redirect.trim() !== ""
-              ? req.query.redirect
-              : "/"
+          `https://${app.locals.options.host}/${
+            typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
       }
@@ -1604,11 +1586,8 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     }
@@ -1653,11 +1632,8 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.host}${
-            typeof req.query.redirect === "string" &&
-            req.query.redirect.trim() !== ""
-              ? req.query.redirect
-              : "/"
+          `https://${app.locals.options.host}/${
+            typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
       }
@@ -1676,11 +1652,8 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     }

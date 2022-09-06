@@ -27,13 +27,10 @@ export default (app: Courselore): void => {
     "*",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      if (
-        typeof req.query.redirect === "string" &&
-        req.query.redirect.trim() !== ""
-      )
+      if (typeof req.query.redirect === "string")
         return res.redirect(
           303,
-          `https://${app.locals.options.host}${req.query.redirect}`
+          `https://${app.locals.options.host}/${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({

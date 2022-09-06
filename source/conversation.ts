@@ -2919,11 +2919,8 @@ export default (app: Courselore): void => {
         );
       res.redirect(
         303,
-        `https://${app.locals.options.host}${
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : "/"
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     }

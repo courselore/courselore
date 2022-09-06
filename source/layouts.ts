@@ -606,7 +606,7 @@ export default async (app: Courselore): Promise<void> => {
                             href="${app.locals.options
                               .metaCourseloreInvitation}${qs.stringify(
                               {
-                                redirect: `/conversations/new/question${qs.stringify(
+                                redirect: `conversations/new/question${qs.stringify(
                                   {
                                     newConversation: {
                                       content: dedent`
