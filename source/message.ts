@@ -705,9 +705,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -844,9 +842,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -884,9 +880,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -939,9 +933,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -988,9 +980,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -1087,9 +1077,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -1134,9 +1122,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
