@@ -917,9 +917,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -936,9 +934,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent text--rose"
                                 >
@@ -987,9 +983,7 @@ export default (app: Courselore): void => {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--orange"
                           >
@@ -1021,9 +1015,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -1040,9 +1032,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent text--rose"
                                 >
@@ -1073,9 +1063,7 @@ export default (app: Courselore): void => {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
@@ -1091,9 +1079,7 @@ export default (app: Courselore): void => {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
@@ -1122,9 +1108,7 @@ export default (app: Courselore): void => {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
@@ -1140,9 +1124,7 @@ export default (app: Courselore): void => {
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--blue"
                           >
@@ -1281,9 +1263,7 @@ export default (app: Courselore): void => {
                           messages: req.query.messages,
                           newConversation: req.query.newConversation,
                         },
-                        {
-                          addQueryPrefix: true,
-                        }
+                        { addQueryPrefix: true }
                       )}"
                       novalidate
                       $${search !== undefined ||
@@ -1342,9 +1322,7 @@ export default (app: Courselore): void => {
                                     messages: req.query.messages,
                                     newConversation: req.query.newConversation,
                                   },
-                                  {
-                                    addQueryPrefix: true,
-                                  }
+                                  { addQueryPrefix: true }
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
                                 onload="${javascript`
@@ -1938,9 +1916,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -2186,9 +2162,7 @@ export default (app: Courselore): void => {
                                       newConversation:
                                         req.query.newConversation,
                                     },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
+                                    { addQueryPrefix: true }
                                   )}"
                                   class="button button--transparent"
                                 >
@@ -4371,9 +4345,7 @@ export default (app: Courselore): void => {
                 // conversationDraftReference: conversationDraft.reference,
               },
             },
-            {
-              addQueryPrefix: true,
-            }
+            { addQueryPrefix: true }
           )}`
         );
       }
@@ -4626,12 +4598,8 @@ export default (app: Courselore): void => {
         `https://${app.locals.options.host}/courses/${
           res.locals.course.reference
         }/conversations/${conversation.reference}${qs.stringify(
-          {
-            conversations: req.query.conversations,
-          },
-          {
-            addQueryPrefix: true,
-          }
+          { conversations: req.query.conversations },
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -4990,9 +4958,7 @@ export default (app: Courselore): void => {
                                                       messages:
                                                         req.query.messages,
                                                     },
-                                                    {
-                                                      addQueryPrefix: true,
-                                                    }
+                                                    { addQueryPrefix: true }
                                                   )}"
                                                 >
                                                   <input
@@ -5071,9 +5037,7 @@ export default (app: Courselore): void => {
                                             req.query.conversations,
                                           messages: req.query.messages,
                                         },
-                                        {
-                                          addQueryPrefix: true,
-                                        }
+                                        { addQueryPrefix: true }
                                       )}"
                                     >
                                       <input
@@ -5250,9 +5214,7 @@ export default (app: Courselore): void => {
                                     conversations: req.query.conversations,
                                     messages: req.query.messages,
                                   },
-                                  {
-                                    addQueryPrefix: true,
-                                  }
+                                  { addQueryPrefix: true }
                                 )}"
                               >
                                 <input
@@ -5497,9 +5459,7 @@ export default (app: Courselore): void => {
                                 conversations: req.query.conversations,
                                 messages: req.query.messages,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             novalidate
                             hidden
@@ -5780,9 +5740,7 @@ export default (app: Courselore): void => {
                                                         messages:
                                                           req.query.messages,
                                                       },
-                                                      {
-                                                        addQueryPrefix: true,
-                                                      }
+                                                      { addQueryPrefix: true }
                                                     )}"
                                                   >
                                                     <input
@@ -5879,9 +5837,7 @@ export default (app: Courselore): void => {
                                                         messages:
                                                           req.query.messages,
                                                       },
-                                                      {
-                                                        addQueryPrefix: true,
-                                                      }
+                                                      { addQueryPrefix: true }
                                                     )}"
                                                   >
                                                     <input
@@ -6705,9 +6661,7 @@ export default (app: Courselore): void => {
                                               },
                                             },
                                           },
-                                          {
-                                            addQueryPrefix: true,
-                                          }
+                                          { addQueryPrefix: true }
                                         )}"
                                         class="button button--transparent"
                                       >
@@ -7519,9 +7473,7 @@ export default (app: Courselore): void => {
                                                     messages:
                                                       req.query.messages,
                                                   },
-                                                  {
-                                                    addQueryPrefix: true,
-                                                  }
+                                                  { addQueryPrefix: true }
                                                 )}"
                                               >
                                                 <input
@@ -7626,9 +7578,7 @@ export default (app: Courselore): void => {
                                                     messages:
                                                       req.query.messages,
                                                   },
-                                                  {
-                                                    addQueryPrefix: true,
-                                                  }
+                                                  { addQueryPrefix: true }
                                                 )}"
                                               >
                                                 <input
@@ -8156,9 +8106,7 @@ export default (app: Courselore): void => {
                                                       messages:
                                                         req.query.messages,
                                                     },
-                                                    {
-                                                      addQueryPrefix: true,
-                                                    }
+                                                    { addQueryPrefix: true }
                                                   )}"
                                                 >
                                                   <input
@@ -8315,9 +8263,7 @@ export default (app: Courselore): void => {
                                                     messages:
                                                       req.query.messages,
                                                   },
-                                                  {
-                                                    addQueryPrefix: true,
-                                                  }
+                                                  { addQueryPrefix: true }
                                                 )}"
                                                 novalidate
                                                 hidden
@@ -8474,9 +8420,7 @@ export default (app: Courselore): void => {
                                               },
                                             },
                                           },
-                                          {
-                                            addQueryPrefix: true,
-                                          }
+                                          { addQueryPrefix: true }
                                         )}"
                                         class="button button--transparent"
                                       >
@@ -8643,9 +8587,7 @@ export default (app: Courselore): void => {
                     conversations: req.query.conversations,
                     messages: req.query.messages,
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 novalidate
                 css="${res.locals.css(css`
@@ -9218,9 +9160,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
 
@@ -9260,9 +9200,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
       app.locals.helpers.liveUpdatesDispatch({ req, res });
@@ -9318,9 +9256,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
     }
@@ -9373,9 +9309,7 @@ export default (app: Courselore): void => {
             conversations: req.query.conversations,
             messages: req.query.messages,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
     }

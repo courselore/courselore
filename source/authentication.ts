@@ -602,9 +602,7 @@ export default (app: Courselore): void => {
                   redirect: req.query.redirect,
                   invitation: req.query.invitation,
                 },
-                {
-                  addQueryPrefix: true,
-                }
+                { addQueryPrefix: true }
               )}"
               novalidate
               css="${res.locals.css(css`
@@ -665,9 +663,7 @@ export default (app: Courselore): void => {
                       redirect: req.query.redirect,
                       invitation: req.query.invitation,
                     },
-                    {
-                      addQueryPrefix: true,
-                    }
+                    { addQueryPrefix: true }
                   )}"
                   class="link"
                   >Sign up</a
@@ -682,9 +678,7 @@ export default (app: Courselore): void => {
                       redirect: req.query.redirect,
                       invitation: req.query.invitation,
                     },
-                    {
-                      addQueryPrefix: true,
-                    }
+                    { addQueryPrefix: true }
                   )}"
                   class="link"
                   >Reset password</a
@@ -763,9 +757,7 @@ export default (app: Courselore): void => {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
             },
-            {
-              addQueryPrefix: true,
-            }
+            { addQueryPrefix: true }
           )}`
         );
       }
@@ -961,9 +953,7 @@ export default (app: Courselore): void => {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
     }
@@ -1075,9 +1065,7 @@ export default (app: Courselore): void => {
             redirect: req.query.redirect,
             invitation: req.query.invitation,
           },
-          {
-            addQueryPrefix: true,
-          }
+          { addQueryPrefix: true }
         )}`
       );
     }
@@ -1233,9 +1221,7 @@ export default (app: Courselore): void => {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
               },
-              {
-                addQueryPrefix: true,
-              }
+              { addQueryPrefix: true }
             )}"
             novalidate
             css="${res.locals.css(css`
@@ -1317,9 +1303,7 @@ export default (app: Courselore): void => {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 class="link"
                 >Sign in</a
@@ -1334,9 +1318,7 @@ export default (app: Courselore): void => {
                     redirect: req.query.redirect,
                     invitation: req.query.invitation,
                   },
-                  {
-                    addQueryPrefix: true,
-                  }
+                  { addQueryPrefix: true }
                 )}"
                 class="link"
                 >Reset password</a
@@ -1478,9 +1460,7 @@ export default (app: Courselore): void => {
               redirect: req.query.redirect,
               invitation: { ...req.query.invitation, email: req.body.email },
             },
-            {
-              addQueryPrefix: true,
-            }
+            { addQueryPrefix: true }
           )}`
         );
       }

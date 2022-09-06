@@ -4390,9 +4390,7 @@ export default (app: Courselore): void => {
                 .invitation.course.reference}/invitations/${res.locals
                 .invitation.reference}${qs.stringify(
                 { redirect: req.query.redirect },
-                {
-                  addQueryPrefix: true,
-                }
+                { addQueryPrefix: true }
               )}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />

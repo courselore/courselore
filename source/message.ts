@@ -1517,9 +1517,7 @@ export default (app: Courselore): void => {
                               messageReference: message.reference,
                             },
                           },
-                          {
-                            addQueryPrefix: true,
-                          }
+                          { addQueryPrefix: true }
                         )}"
                         >${message.authorEnrollment === "no-longer-enrolled"
                           ? "Someone who is no longer enrolled"

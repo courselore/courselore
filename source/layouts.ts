@@ -682,9 +682,7 @@ export default async (app: Courselore): Promise<void> => {
                                   - Courselore Version: ${app.locals.options.version}
                                 `,
                               },
-                              {
-                                addQueryPrefix: true,
-                              }
+                              { addQueryPrefix: true }
                             )}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
@@ -3163,9 +3161,7 @@ export default async (app: Courselore): Promise<void> => {
           Courselore Version: ${app.locals.options.version}
         `,
     },
-    {
-      addQueryPrefix: true,
-    }
+    { addQueryPrefix: true }
   )}`;
 
   app.locals.helpers.Flash = {
