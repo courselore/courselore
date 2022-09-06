@@ -117,8 +117,8 @@ export default (app: Courselore): void => {
         <a
           href="https://${app.locals.options
             .host}/administration/system-settings"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administration/system-settings"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/administration\/system-settings\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -128,14 +128,14 @@ export default (app: Courselore): void => {
         </a>
         <a
           href="https://${app.locals.options.host}/administration/users"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/administration/users"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/administration\/users\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/administration/users")
+            class="bi ${req.path.match(/\/administration\/users\/?$/i)
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>

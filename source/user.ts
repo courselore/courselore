@@ -642,8 +642,8 @@ export default (app: Courselore): void => {
       menu: html`
         <a
           href="https://${app.locals.options.host}/settings/profile"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings/profile"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/settings\/profile\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -653,14 +653,14 @@ export default (app: Courselore): void => {
         </a>
         <a
           href="https://${app.locals.options.host}/settings/email-and-password"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings/email-and-password"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/settings\/email-and-password\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/settings/email-and-password")
+            class="bi ${req.path.match(/\/settings\/email-and-password\/?$/i)
               ? "bi-key-fill"
               : "bi-key"}"
           ></i>
@@ -668,14 +668,14 @@ export default (app: Courselore): void => {
         </a>
         <a
           href="https://${app.locals.options.host}/settings/notifications"
-          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings/notifications"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/settings\/notifications\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.endsWith("/settings/notifications")
+            class="bi ${req.path.match(/\/settings\/notifications\/?$/i)
               ? "bi-bell-fill"
               : "bi-bell"}"
           ></i>

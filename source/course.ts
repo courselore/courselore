@@ -920,8 +920,8 @@ export default (app: Courselore): void => {
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/course-information"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/course-information"
+                class="dropdown--menu--item menu-box--item button ${req.path.match(
+                  /\/settings\/course-information\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -932,14 +932,14 @@ export default (app: Courselore): void => {
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/tags"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/tags"
+                class="dropdown--menu--item menu-box--item button ${req.path.match(
+                  /\/settings\/tags\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${req.path.endsWith("/settings/tags")
+                  class="bi ${req.path.match(/\/settings\/tags\/?$/i)
                     ? "bi-tags-fill"
                     : "bi-tags"}"
                 ></i>
@@ -948,14 +948,14 @@ export default (app: Courselore): void => {
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/invitations"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/invitations"
+                class="dropdown--menu--item menu-box--item button ${req.path.match(
+                  /\/settings\/invitations\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${req.path.endsWith("/settings/invitations")
+                  class="bi ${req.path.match(/\/settings\/invitations\/?$/i)
                     ? "bi-person-plus-fill"
                     : "bi-person-plus"}"
                 ></i>
@@ -964,14 +964,14 @@ export default (app: Courselore): void => {
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/enrollments"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/enrollments"
+                class="dropdown--menu--item menu-box--item button ${req.path.match(
+                  /\/settings\/enrollments\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${req.path.endsWith("/settings/enrollments")
+                  class="bi ${req.path.match(/\/settings\/enrollments\/?$/i)
                     ? "bi-people-fill"
                     : "bi-people"}"
                 ></i>
@@ -980,14 +980,14 @@ export default (app: Courselore): void => {
               <a
                 href="https://${app.locals.options.host}/courses/${res.locals
                   .course.reference}/settings/your-enrollment"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/your-enrollment"
+                class="dropdown--menu--item menu-box--item button ${req.path.match(
+                  /\/settings\/your-enrollment\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${req.path.endsWith("/settings/your-enrollment")
+                  class="bi ${req.path.match(/\/settings\/your-enrollment\/?$/i)
                     ? "bi-person-fill"
                     : "bi-person"}"
                 ></i>
