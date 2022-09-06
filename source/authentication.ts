@@ -981,7 +981,7 @@ export default (app: Courselore): void => {
           ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: user.email,
-            subject: "Courselore · Password Reset Link",
+            subject: "Password Reset Link",
             html: html`
               <p><a href="${link}" target="_blank">${link}</a></p>
               <p>

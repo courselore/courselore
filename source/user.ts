@@ -1287,6 +1287,46 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.user.id}
           `
         );
+        app.locals.database.run(
+          sql`
+            INSERT INTO "sendEmailJobs" (
+              "createdAt",
+              "startAt",
+              "expiresAt",
+              "mailOptions"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date().toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${JSON.stringify({
+                to: res.locals.user.email,
+                subject: "Your Email Has Been Updated",
+                html: html`
+                  <p>
+                    The ‘${res.locals.user.email}’ email address was associated
+                    with a Courselore account that has been updated to use the
+                    ‘${req.body.email}’ email address.
+                  </p>
+
+                  <p>
+                    If you performed this update, then no further action is
+                    required.
+                  </p>
+
+                  <p>
+                    If you did not perform this update, please contact the
+                    system administrator at
+                    <a href="mailto:${app.locals.options.administratorEmail}"
+                      >${app.locals.options.administratorEmail}</a
+                    >
+                    as soon as possible.
+                  </p>
+                `,
+              })}
+            )
+          `
+        );
         app.locals.mailers.emailVerification({
           req,
           res,
