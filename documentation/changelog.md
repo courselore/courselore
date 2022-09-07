@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Changed the following operations to notify the user via email: update email, update password, and reset password. These are important operations that, if performed by an attacker, must be acted on as soon as possible.
+
 ## 4.0.11
 
 **2022-09-06 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
