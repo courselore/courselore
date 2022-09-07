@@ -11,7 +11,8 @@
 ## Unreleased
 
 - Changed the default values of **Announcement** and **Pinned** in **New Note** from unchecked to checked. It appears that most of the time when a staff member creates a note they want it to be an announcement.
-- Added a way for students to set conversations as anonymous. Previously they could only set the first message in the conversation as anonymous—the new behavior is more intuitive.
+- Added a way for staff to change the anonymity of students conversations & messages. Previously only the students themselves could do that.
+- Added a way for people to set conversations as anonymous. Previously they could only set the first message in the conversation as anonymous—the new behavior is more intuitive.
 - Changed the following operations to notify the user via email: update email, update password, and reset password. These are important operations that, if performed by an attacker, must be acted on as soon as possible.
 
 ## 4.0.11
