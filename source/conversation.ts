@@ -5345,9 +5345,8 @@ export default (app: Courselore): void => {
                                       .authorEnrollment !==
                                       "no-longer-enrolled" &&
                                     res.locals.conversation.authorEnrollment
-                                      .id === res.locals.enrollment.id &&
-                                    res.locals.enrollment.courseRole ===
-                                      "student"
+                                      .courseRole === "student" &&
+                                    mayEditConversation({ req, res })
                                       ? html`
                                           <form
                                             method="PATCH"
@@ -5423,14 +5422,24 @@ export default (app: Courselore): void => {
                                                         {
                                                           req,
                                                           res,
-                                                          user: res.locals.user,
+                                                          user: res.locals
+                                                            .conversation
+                                                            .authorEnrollment
+                                                            .user,
                                                           decorate: false,
                                                           name: false,
                                                           size: "xs",
                                                         }
                                                       )}
                                                     </span>
-                                                    Set as Signed by You
+                                                    Set as Signed by
+                                                    ${res.locals.conversation
+                                                      .authorEnrollment.id ===
+                                                    res.locals.enrollment.id
+                                                      ? "You"
+                                                      : res.locals.conversation
+                                                          .authorEnrollment.user
+                                                          .name}
                                                   </button>
                                                 `}
                                           </form>
@@ -9172,7 +9181,9 @@ export default (app: Courselore): void => {
               }
               WHERE "conversation" = ${res.locals.conversation.id} AND
                     "reference" = '1' AND
-                    "authorEnrollment" = ${res.locals.enrollment.id}
+                    "authorEnrollment" = ${
+                      res.locals.conversation.authorEnrollment.id
+                    }
             `
           );
         }
