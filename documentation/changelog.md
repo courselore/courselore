@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Changed the following operations to notify the user via email: update email, update password, and reset password. These are important operations that, if performed by an attacker, must be acted on as soon as possible.
+- Added a way for students to set conversations as anonymous. Previously they could only set the first message in the conversation as anonymous—the new behavior is more intuitive.
 
 ## 4.0.11
 
