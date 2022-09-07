@@ -139,6 +139,7 @@ export type EmailVerificationMailer = ({
   res,
   userId,
   userEmail,
+  welcome,
 }: {
   req: express.Request<
     {},
@@ -150,6 +151,7 @@ export type EmailVerificationMailer = ({
   res: express.Response<any, BaseMiddlewareLocals>;
   userId: number;
   userEmail: string;
+  welcome?: boolean;
 }) => void;
 
 export default (app: Courselore): void => {
@@ -1349,7 +1351,13 @@ export default (app: Courselore): void => {
     parallelism: 1,
   };
 
-  app.locals.mailers.emailVerification = ({ req, res, userId, userEmail }) => {
+  app.locals.mailers.emailVerification = ({
+    req,
+    res,
+    userId,
+    userEmail,
+    welcome = false,
+  }) => {
     const emailVerification = app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
@@ -1391,7 +1399,7 @@ export default (app: Courselore): void => {
           ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: userEmail,
-            subject: "Welcome to Courselore!",
+            subject: welcome ? "Welcome to Courselore!" : "Email Verification",
             html: html`
               <p>
                 Please verify your email:<br />
@@ -1519,6 +1527,7 @@ export default (app: Courselore): void => {
         res,
         userId: user.id,
         userEmail: user.email,
+        welcome: true,
       });
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
