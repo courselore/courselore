@@ -1304,9 +1304,9 @@ export default (app: Courselore): void => {
                 subject: "Your Email Has Been Updated",
                 html: html`
                   <p>
-                    The ‘${res.locals.user.email}’ email address was associated
-                    with a Courselore account that has been updated to use the
-                    ‘${req.body.email}’ email address.
+                    The <code>${res.locals.user.email}</code> email address was
+                    associated with a Courselore account that has been updated
+                    to use the <code>${req.body.email}</code> email address.
                   </p>
 
                   <p>
@@ -1315,7 +1315,7 @@ export default (app: Courselore): void => {
                   </p>
 
                   <p>
-                    If you did not perform this update, please contact the
+                    If you did not perform this update, then please contact the
                     system administrator at
                     <a href="mailto:${app.locals.options.administratorEmail}"
                       >${app.locals.options.administratorEmail}</a
