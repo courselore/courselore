@@ -9036,6 +9036,7 @@ export default (app: Courselore): void => {
     {
       participants?: ConversationParticipants;
       selectedParticipantsReferences?: string[];
+      isAnonymous?: "true" | "false";
       type?: ConversationType;
       isAnnouncement?: "true" | "false";
       isPinned?: "true" | "false";
@@ -9131,6 +9132,44 @@ export default (app: Courselore): void => {
             `
           );
       }
+
+      if (typeof req.body.isAnonymous === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnonymous) ||
+          res.locals.conversation.authorEnrollment === "no-longer-enrolled" ||
+          res.locals.conversation.authorEnrollment.courseRole === "staff" ||
+          (req.body.isAnonymous === "true" &&
+            res.locals.conversation.anonymousAt !== null) ||
+          (req.body.isAnonymous === "false" &&
+            res.locals.conversation.anonymousAt === null)
+        )
+          return next("validation");
+        else {
+          app.locals.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "anonymousAt" = ${
+                req.body.isAnonymous === "true"
+                  ? new Date().toISOString()
+                  : null
+              }
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+          app.locals.database.run(
+            sql`
+              UPDATE "messages"
+              SET "anonymousAt" = ${
+                req.body.isAnonymous === "true"
+                  ? new Date().toISOString()
+                  : null
+              }
+              WHERE "conversation" = ${res.locals.conversation.id} AND
+                    "reference" = '1' AND
+                    "authorEnrollment" = ${res.locals.enrollment.id}
+            `
+          );
+        }
 
       if (typeof req.body.type === "string")
         if (!conversationTypes.includes(req.body.type))
