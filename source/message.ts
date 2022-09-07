@@ -788,7 +788,12 @@ export default (app: Courselore): void => {
               WHERE "id" = ${res.locals.message.id}
             `
           );
-          if (res.locals.message.reference === "1")
+          if (
+            res.locals.message.reference === "1" &&
+            res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
+            res.locals.conversation.authorEnrollment.id ===
+              res.locals.message.authorEnrollment.id
+          )
             app.locals.database.run(
               sql`
                 UPDATE "conversations"

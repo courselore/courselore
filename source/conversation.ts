@@ -7312,12 +7312,15 @@ export default (app: Courselore): void => {
                                                             "no-longer-enrolled" &&
                                                           message
                                                             .authorEnrollment
-                                                            .id ===
-                                                            res.locals
-                                                              .enrollment.id &&
-                                                          res.locals.enrollment
                                                             .courseRole ===
-                                                            "student"
+                                                            "student" &&
+                                                          app.locals.helpers.mayEditMessage(
+                                                            {
+                                                              req,
+                                                              res,
+                                                              message,
+                                                            }
+                                                          )
                                                             ? html`
                                                                 <form
                                                                   method="PATCH"
@@ -7413,8 +7416,8 @@ export default (app: Courselore): void => {
                                                                               {
                                                                                 req,
                                                                                 res,
-                                                                                user: res
-                                                                                  .locals
+                                                                                user: message
+                                                                                  .authorEnrollment
                                                                                   .user,
                                                                                 decorate:
                                                                                   false,
@@ -7425,7 +7428,19 @@ export default (app: Courselore): void => {
                                                                           </span>
                                                                           Set as
                                                                           Signed
-                                                                          by You
+                                                                          by
+                                                                          ${message
+                                                                            .authorEnrollment
+                                                                            .id ===
+                                                                          res
+                                                                            .locals
+                                                                            .enrollment
+                                                                            .id
+                                                                            ? "You"
+                                                                            : message
+                                                                                .authorEnrollment
+                                                                                .user
+                                                                                .name}
                                                                         </button>
                                                                       `}
                                                                 </form>
