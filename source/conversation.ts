@@ -5335,6 +5335,101 @@ export default (app: Courselore): void => {
                                           </button>
                                         `
                                       : html``}
+                                    $${res.locals.conversation
+                                      .authorEnrollment !==
+                                      "no-longer-enrolled" &&
+                                    res.locals.conversation.authorEnrollment
+                                      .id === res.locals.enrollment.id &&
+                                    res.locals.enrollment.courseRole ===
+                                      "student"
+                                      ? html`
+                                          <form
+                                            method="PATCH"
+                                            action="https://${app.locals.options
+                                              .host}/courses/${res.locals.course
+                                              .reference}/conversations/${res
+                                              .locals.conversation
+                                              .reference}${qs.stringify(
+                                              {
+                                                conversations:
+                                                  req.query.conversations,
+                                                messages: req.query.messages,
+                                              },
+                                              { addQueryPrefix: true }
+                                            )}"
+                                            class="dropdown--menu"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="_csrf"
+                                              value="${req.csrfToken()}"
+                                            />
+                                            $${res.locals.conversation
+                                              .anonymousAt === null
+                                              ? html`
+                                                  <input
+                                                    key="isAnonymous--true"
+                                                    type="hidden"
+                                                    name="isAnonymous"
+                                                    value="true"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    <span
+                                                      css="${res.locals.css(css`
+                                                        margin-left: var(
+                                                          --space---0-5
+                                                        );
+                                                      `)}"
+                                                    >
+                                                      $${app.locals.partials.user(
+                                                        {
+                                                          req,
+                                                          res,
+                                                          name: false,
+                                                          size: "xs",
+                                                        }
+                                                      )}
+                                                    </span>
+                                                    Set as Anonymous to Other
+                                                    Students
+                                                  </button>
+                                                `
+                                              : html`
+                                                  <input
+                                                    key="isAnonymous--false"
+                                                    type="hidden"
+                                                    name="isAnonymous"
+                                                    value="false"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    <span
+                                                      css="${res.locals.css(css`
+                                                        margin-left: var(
+                                                          --space---0-5
+                                                        );
+                                                      `)}"
+                                                    >
+                                                      $${app.locals.partials.user(
+                                                        {
+                                                          req,
+                                                          res,
+                                                          user: res.locals.user,
+                                                          decorate: false,
+                                                          name: false,
+                                                          size: "xs",
+                                                        }
+                                                      )}
+                                                    </span>
+                                                    Set as Signed by You
+                                                  </button>
+                                                `}
+                                          </form>
+                                        `
+                                      : html``}
                                     $${res.locals.enrollment.courseRole ===
                                     "staff"
                                       ? html`
