@@ -6998,6 +6998,58 @@ export default (app: Courselore): void => {
                                                                 </form>
                                                               `
                                                             : html``}
+
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            onload="${javascript`
+                                                              this.onclick = () => {
+                                                                const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
+                                                                const newMessage = document.querySelector(".new-message");
+                                                                newMessage.querySelector(".content-editor--button--write")?.click();
+                                                                const element = newMessage.querySelector(".content-editor--write--textarea");
+                                                                textFieldEdit.wrapSelection(
+                                                                  element,
+                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                    message.authorEnrollment ===
+                                                                    "no-longer-enrolled"
+                                                                      ? javascript``
+                                                                      : javascript`
+                                                                        "@${
+                                                                          message.anonymousAt ===
+                                                                          null
+                                                                            ? `${
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .reference
+                                                                              }--${slugify(
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .user
+                                                                                  .name
+                                                                              )}`
+                                                                            : `anonymous`
+                                                                        } · " +
+                                                                      `
+                                                                  } "#" + ${JSON.stringify(
+                                                              res.locals
+                                                                .conversation
+                                                                .reference
+                                                            )} + "/" + ${JSON.stringify(
+                                                              message.reference
+                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                  ""
+                                                                );
+                                                                element.focus();
+                                                                tippy.hideAll();
+                                                              };
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-reply"
+                                                            ></i>
+                                                            Reply
+                                                          </button>
+
                                                           $${res.locals
                                                             .enrollment
                                                             .courseRole ===
@@ -7077,57 +7129,6 @@ export default (app: Courselore): void => {
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
                                                             onload="${javascript`
-                                                              this.onclick = () => {
-                                                                const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
-                                                                const newMessage = document.querySelector(".new-message");
-                                                                newMessage.querySelector(".content-editor--button--write")?.click();
-                                                                const element = newMessage.querySelector(".content-editor--write--textarea");
-                                                                textFieldEdit.wrapSelection(
-                                                                  element,
-                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                    message.authorEnrollment ===
-                                                                    "no-longer-enrolled"
-                                                                      ? javascript``
-                                                                      : javascript`
-                                                                        "@${
-                                                                          message.anonymousAt ===
-                                                                          null
-                                                                            ? `${
-                                                                                message
-                                                                                  .authorEnrollment
-                                                                                  .reference
-                                                                              }--${slugify(
-                                                                                message
-                                                                                  .authorEnrollment
-                                                                                  .user
-                                                                                  .name
-                                                                              )}`
-                                                                            : `anonymous`
-                                                                        } · " +
-                                                                      `
-                                                                  } "#" + ${JSON.stringify(
-                                                              res.locals
-                                                                .conversation
-                                                                .reference
-                                                            )} + "/" + ${JSON.stringify(
-                                                              message.reference
-                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                                  ""
-                                                                );
-                                                                element.focus();
-                                                                tippy.hideAll();
-                                                              };
-                                                            `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-reply"
-                                                            ></i>
-                                                            Reply
-                                                          </button>
-
-                                                          <button
-                                                            class="dropdown--menu--item button button--transparent"
-                                                            onload="${javascript`
                                                               (this.copied ??= tippy(this)).setProps({
                                                                 theme: "green",
                                                                 trigger: "manual",
@@ -7171,6 +7172,32 @@ export default (app: Courselore): void => {
                                                             Permanent Link
                                                           </button>
 
+                                                          $${app.locals.helpers.mayEditMessage(
+                                                            {
+                                                              req,
+                                                              res,
+                                                              message,
+                                                            }
+                                                          )
+                                                            ? html`
+                                                                <button
+                                                                  class="dropdown--menu--item button button--transparent"
+                                                                  onload="${javascript`
+                                                                    this.onclick = () => {
+                                                                      this.closest(".message").querySelector(".message--show").hidden = true;
+                                                                      this.closest(".message").querySelector(".message--edit").hidden = false;
+                                                                      autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
+                                                                      tippy.hideAll();
+                                                                    };
+                                                                  `}"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-pencil"
+                                                                  ></i>
+                                                                  Edit Message
+                                                                </button>
+                                                              `
+                                                            : html``}
                                                           $${message.authorEnrollment !==
                                                             "no-longer-enrolled" &&
                                                           message
@@ -7292,32 +7319,6 @@ export default (app: Courselore): void => {
                                                                         </button>
                                                                       `}
                                                                 </form>
-                                                              `
-                                                            : html``}
-                                                          $${app.locals.helpers.mayEditMessage(
-                                                            {
-                                                              req,
-                                                              res,
-                                                              message,
-                                                            }
-                                                          )
-                                                            ? html`
-                                                                <button
-                                                                  class="dropdown--menu--item button button--transparent"
-                                                                  onload="${javascript`
-                                                                    this.onclick = () => {
-                                                                      this.closest(".message").querySelector(".message--show").hidden = true;
-                                                                      this.closest(".message").querySelector(".message--edit").hidden = false;
-                                                                      autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
-                                                                      tippy.hideAll();
-                                                                    };
-                                                                  `}"
-                                                                >
-                                                                  <i
-                                                                    class="bi bi-pencil"
-                                                                  ></i>
-                                                                  Edit Message
-                                                                </button>
                                                               `
                                                             : html``}
                                                           $${res.locals
