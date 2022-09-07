@@ -1173,7 +1173,7 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`DELETE FROM "passwordResets" WHERE "user" = ${userId}`
       );
-      app.locals.database.run(
+      const user = app.locals.database.get<{ email: string }>(
         sql`
           UPDATE "users"
           SET "password" = ${await argon2.hash(
@@ -1181,8 +1181,49 @@ export default (app: Courselore): void => {
             app.locals.options.argon2
           )}
           WHERE "id" = ${userId}
+          RETURNING *
+        `
+      )!;
+      app.locals.database.run(
+        sql`
+          INSERT INTO "sendEmailJobs" (
+            "createdAt",
+            "startAt",
+            "expiresAt",
+            "mailOptions"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+            ${JSON.stringify({
+              to: user.email,
+              subject: "Your Password Has Been Reset",
+              html: html`
+                <p>
+                  The password for the Courselore account with email address
+                  <code>${user.email}</code> has been reset.
+                </p>
+
+                <p>
+                  If you performed this reset, then no further action is
+                  required.
+                </p>
+
+                <p>
+                  If you did not perform this reset, then please contact the
+                  system administrator at
+                  <a href="mailto:${app.locals.options.administratorEmail}"
+                    >${app.locals.options.administratorEmail}</a
+                  >
+                  as soon as possible.
+                </p>
+              `,
+            })}
+          )
         `
       );
+      app.locals.workers.sendEmail();
       app.locals.helpers.Session.closeAllAndReopen({ req, res, userId });
       app.locals.helpers.Flash.set({
         req,

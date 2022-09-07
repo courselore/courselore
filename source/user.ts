@@ -1358,6 +1358,46 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.user.id}
           `
         );
+        app.locals.database.run(
+          sql`
+            INSERT INTO "sendEmailJobs" (
+              "createdAt",
+              "startAt",
+              "expiresAt",
+              "mailOptions"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date().toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${JSON.stringify({
+                to: res.locals.user.email,
+                subject: "Your Password Has Been Updated",
+                html: html`
+                  <p>
+                    The password for the Courselore account with email address
+                    <code>${res.locals.user.email}</code> has been updated.
+                  </p>
+
+                  <p>
+                    If you performed this update, then no further action is
+                    required.
+                  </p>
+
+                  <p>
+                    If you did not perform this update, then please contact the
+                    system administrator at
+                    <a href="mailto:${app.locals.options.administratorEmail}"
+                      >${app.locals.options.administratorEmail}</a
+                    >
+                    as soon as possible.
+                  </p>
+                `,
+              })}
+            )
+          `
+        );
+        app.locals.workers.sendEmail();
         app.locals.helpers.Session.closeAllAndReopen({
           req,
           res,
