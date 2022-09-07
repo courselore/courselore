@@ -3824,8 +3824,10 @@ export default (app: Courselore): void => {
                               ) /* TODO: Conversation drafts */
                                 ?.isAnnouncement === "true" ||
                               (conversationDraft === undefined &&
-                                req.query.newConversation?.isAnnouncement ===
-                                  "true")
+                                (req.query.newConversation?.isAnnouncement ===
+                                  "true" ||
+                                  req.query.newConversation?.isAnnouncement ===
+                                    undefined))
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -3896,7 +3898,11 @@ export default (app: Courselore): void => {
                               name="isPinned"
                               $${conversationDraft?.isPinned === "true" ||
                               (conversationDraft === undefined &&
-                                req.query.newConversation?.isPinned === "true")
+                                (req.query.newConversation?.isPinned ===
+                                  "true" ||
+                                  (req.query.newConversation?.isPinned ===
+                                    undefined &&
+                                    req.params.type === "note")))
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
