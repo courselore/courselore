@@ -330,7 +330,7 @@ export default (app: Courselore): void => {
               <form
                 method="POST"
                 action="https://${app.locals.options
-                  .host}/resend-verification-email${qs.stringify(
+                  .host}/resend-email-verification${qs.stringify(
                   { redirect: req.originalUrl.slice(1) },
                   { addQueryPrefix: true }
                 )}"
@@ -1633,7 +1633,7 @@ export default (app: Courselore): void => {
   );
 
   app.post<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
-    "/resend-verification-email",
+    "/resend-email-verification",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;
       next();
