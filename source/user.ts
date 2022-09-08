@@ -1212,7 +1212,7 @@ export default (app: Courselore): void => {
   app.patch<
     {},
     any,
-    { email?: string; currentPassword?: string; newPassword?: string },
+    { currentPassword?: string; email?: string; newPassword?: string },
     { redirect?: string },
     IsSignedInMiddlewareLocals
   >(
