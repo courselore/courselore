@@ -1067,97 +1067,130 @@ export default (app: Courselore): void => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    BaseMiddlewareLocals
-  >("/reset-password/:passwordResetNonce", (req, res) => {
-    const userId = PasswordReset.get(req.params.passwordResetNonce);
-    if (userId === undefined) {
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        theme: "rose",
-        content: html`This password reset link is invalid or expired.`,
-      });
-      return res.redirect(
-        303,
-        `https://${app.locals.options.host}/reset-password${qs.stringify(
-          {
-            redirect: req.query.redirect,
-            invitation: req.query.invitation,
-          },
-          { addQueryPrefix: true }
-        )}`
-      );
-    }
-    res.send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html`
-          <title>
-            Reset Password · Courselore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <form
-            method="POST"
-            action="https://${app.locals.options.host}/reset-password/${req
-              .params.passwordResetNonce}${qs.stringify(
-              {
-                redirect: req.query.redirect,
-                invitation: req.query.invitation,
-              },
-              { addQueryPrefix: true }
-            )}"
-            novalidate
-            css="${res.locals.css(css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `)}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                minlength="8"
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password Confirmation</p>
-              <input
-                type="password"
-                required
-                class="input--text"
-                onload="${javascript`
+    IsSignedOutMiddlewareLocals
+  >(
+    "/reset-password/:passwordResetNonce",
+    ...app.locals.middlewares.isSignedOut,
+    (req, res) => {
+      const userId = PasswordReset.get(req.params.passwordResetNonce);
+      if (userId === undefined) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`This password reset link is invalid or expired.`,
+        });
+        return res.redirect(
+          303,
+          `https://${app.locals.options.host}/reset-password${qs.stringify(
+            {
+              redirect: req.query.redirect,
+              invitation: req.query.invitation,
+            },
+            { addQueryPrefix: true }
+          )}`
+        );
+      }
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · Courselore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="https://${app.locals.options.host}/reset-password/${req
+                .params.passwordResetNonce}${qs.stringify(
+                {
+                  redirect: req.query.redirect,
+                  invitation: req.query.invitation,
+                },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  minlength="8"
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password Confirmation</p>
+                <input
+                  type="password"
+                  required
+                  class="input--text"
+                  onload="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };
                 `}"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-key-fill"></i>
-              Reset Password
-            </button>
-          </form>
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-key-fill"></i>
+                Reset Password
+              </button>
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.get<
+    { passwordResetNonce: string },
+    HTML,
+    {},
+    { redirect?: string; invitation?: object },
+    IsSignedInMiddlewareLocals
+  >(
+    "/reset-password/:passwordResetNonce",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res) => {
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "rose",
+        content: html`
+          You may not use this password reset link because you’re already signed
+          in.
         `,
-      })
-    );
-  });
+      });
+      return res.redirect(
+        303,
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
+        }`
+      );
+    }
+  );
 
   app.post<
     { passwordResetNonce: string },
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    BaseMiddlewareLocals
+    IsSignedOutMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
+    ...app.locals.middlewares.isSignedOut,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.password !== "string" ||
@@ -1172,8 +1205,9 @@ export default (app: Courselore): void => {
           req,
           res,
           theme: "rose",
-          content: html`Something went wrong in your password reset. Please
-          start over.`,
+          content: html`
+            Something went wrong with your password reset. Please start over.
+          `,
         });
         return res.redirect(
           303,
