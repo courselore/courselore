@@ -10,6 +10,9 @@
 
 ## Unreleased
 
+- Disabled the password reset workflow for users who are signed in.
+- Changed the error messages on the authentication workflows (sign-in, sign-up, email verification, password reset, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
+
 ## 4.0.12
 
 **2022-09-07 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.12) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
