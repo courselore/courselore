@@ -1423,6 +1423,7 @@ export default (app: Courselore): void => {
       })
     );
   });
+
   app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "/sign-up",
     ...app.locals.middlewares.isSignedIn,
