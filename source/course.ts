@@ -2990,7 +2990,7 @@ export default (app: Courselore): void => {
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             from: {
-              name: `${app.locals.options.sendMail.defaults.from.name} · ${invitation.course.name}`,
+              name: `${invitation.course.name} · ${app.locals.options.sendMail.defaults.from.name}`,
               address: app.locals.options.sendMail.defaults.from.address,
             },
             to: invitation.email!,
