@@ -1694,22 +1694,27 @@ export default (app: Courselore): void => {
           SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
         `
       );
-      app.locals.database.run(
-        sql`
-          DELETE FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
-        `
-      );
-      if (
-        emailVerification === undefined ||
-        emailVerification.user !== res.locals.user.id
-      ) {
+      if (emailVerification === undefined) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`This email verification link is invalid.`,
+        });
+        return res.redirect(
+          303,
+          `https://${app.locals.options.host}/${
+            typeof req.query.redirect === "string" ? req.query.redirect : ""
+          }`
+        );
+      }
+      if (emailVerification.user !== res.locals.user.id) {
         app.locals.helpers.Flash.set({
           req,
           res,
           theme: "rose",
           content: html`
-            This email verification link is invalid or belongs to a different
-            account.
+            This email verification link belongs to a different account.
           `,
         });
         return res.redirect(
@@ -1719,6 +1724,11 @@ export default (app: Courselore): void => {
           }`
         );
       }
+      app.locals.database.run(
+        sql`
+          DELETE FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
+        `
+      );
       app.locals.database.run(
         sql`
           UPDATE "users"
