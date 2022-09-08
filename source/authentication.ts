@@ -831,8 +831,8 @@ export default (app: Courselore): void => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    BaseMiddlewareLocals
-  >("/reset-password", (req, res) => {
+    IsSignedOutMiddlewareLocals
+  >("/reset-password", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
         req,
@@ -925,125 +925,142 @@ export default (app: Courselore): void => {
     );
   });
 
+  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+    "/reset-password",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res) => {
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/${
+          typeof req.query.redirect === "string" ? req.query.redirect : ""
+        }`
+      );
+    }
+  );
+
   app.post<
     {},
     HTML,
     { email?: string; resend?: "true" },
     { redirect?: string; invitation?: object },
-    BaseMiddlewareLocals
-  >("/reset-password", (req, res, next) => {
-    if (
-      typeof req.body.email !== "string" ||
-      req.body.email.match(app.locals.helpers.emailRegExp) === null
-    )
-      return next("validation");
+    IsSignedOutMiddlewareLocals
+  >(
+    "/reset-password",
+    ...app.locals.middlewares.isSignedOut,
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        req.body.email.match(app.locals.helpers.emailRegExp) === null
+      )
+        return next("validation");
 
-    const user = app.locals.database.get<{ id: number; email: string }>(
-      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
-    );
-    if (user === undefined) {
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        theme: "rose",
-        content: html`Email not found.`,
-      });
-      return res.redirect(
-        303,
-        `https://${app.locals.options.host}/reset-password${qs.stringify(
-          {
-            redirect: req.query.redirect,
-            invitation: req.query.invitation,
-          },
-          { addQueryPrefix: true }
-        )}`
+      const user = app.locals.database.get<{ id: number; email: string }>(
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+      );
+      if (user === undefined) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`Email not found.`,
+        });
+        return res.redirect(
+          303,
+          `https://${app.locals.options.host}/reset-password${qs.stringify(
+            {
+              redirect: req.query.redirect,
+              invitation: req.query.invitation,
+            },
+            { addQueryPrefix: true }
+          )}`
+        );
+      }
+
+      const link = `https://${
+        app.locals.options.host
+      }/reset-password/${PasswordReset.create(user.id)}${qs.stringify(
+        {
+          redirect: req.query.redirect,
+          invitation: req.query.invitation,
+        },
+        { addQueryPrefix: true }
+      )}`;
+      app.locals.database.run(
+        sql`
+          INSERT INTO "sendEmailJobs" (
+            "createdAt",
+            "startAt",
+            "expiresAt",
+            "mailOptions"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+            ${JSON.stringify({
+              to: user.email,
+              subject: "Password Reset Link",
+              html: html`
+                <p><a href="${link}" target="_blank">${link}</a></p>
+                <p>
+                  <small>
+                    This password reset link is valid for ten minutes.<br />
+                    You may ignore this password reset link if you didn’t
+                    request it.
+                  </small>
+                </p>
+              `,
+            })}
+          )
+        `
+      );
+      app.locals.workers.sendEmail();
+      if (req.body.resend === "true")
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html`Email resent.`,
+        });
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · Courselore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <p>
+              To continue resetting your password, please follow the password
+              reset link that was sent to
+              <strong class="strong">${req.body.email}</strong>.
+            </p>
+            <form
+              method="POST"
+              action="https://${app.locals.options
+                .host}/reset-password${qs.stringify(
+                {
+                  redirect: req.query.redirect,
+                  invitation: req.query.invitation,
+                },
+                { addQueryPrefix: true }
+              )}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <input type="hidden" name="email" value="${req.body.email}" />
+              <input type="hidden" name="resend" value="true" />
+              <p>
+                Didn’t receive the email? Already checked your spam folder?
+                <button class="link">Resend</button>.
+              </p>
+            </form>
+          `,
+        })
       );
     }
-
-    const link = `https://${
-      app.locals.options.host
-    }/reset-password/${PasswordReset.create(user.id)}${qs.stringify(
-      {
-        redirect: req.query.redirect,
-        invitation: req.query.invitation,
-      },
-      { addQueryPrefix: true }
-    )}`;
-    app.locals.database.run(
-      sql`
-        INSERT INTO "sendEmailJobs" (
-          "createdAt",
-          "startAt",
-          "expiresAt",
-          "mailOptions"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${new Date().toISOString()},
-          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-          ${JSON.stringify({
-            to: user.email,
-            subject: "Password Reset Link",
-            html: html`
-              <p><a href="${link}" target="_blank">${link}</a></p>
-              <p>
-                <small>
-                  This password reset link is valid for ten minutes.<br />
-                  You may ignore this password reset link if you didn’t request
-                  it.
-                </small>
-              </p>
-            `,
-          })}
-        )
-      `
-    );
-    app.locals.workers.sendEmail();
-    if (req.body.resend === "true")
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        theme: "green",
-        content: html`Email resent.`,
-      });
-    res.send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html`
-          <title>
-            Reset Password · Courselore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <p>
-            To continue resetting your password, please follow the password
-            reset link that was sent to
-            <strong class="strong">${req.body.email}</strong>.
-          </p>
-          <form
-            method="POST"
-            action="https://${app.locals.options
-              .host}/reset-password${qs.stringify(
-              {
-                redirect: req.query.redirect,
-                invitation: req.query.invitation,
-              },
-              { addQueryPrefix: true }
-            )}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <input type="hidden" name="email" value="${req.body.email}" />
-            <input type="hidden" name="resend" value="true" />
-            <p>
-              Didn’t receive the email? Already checked your spam folder?
-              <button class="link">Resend</button>.
-            </p>
-          </form>
-        `,
-      })
-    );
-  });
+  );
 
   app.get<
     { passwordResetNonce: string },
