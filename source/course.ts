@@ -4515,6 +4515,18 @@ export default (app: Courselore): void => {
     HTML,
     {},
     { redirect?: string },
+    IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isInvitationUsableMiddleware
+  );
+
+  app.post<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
