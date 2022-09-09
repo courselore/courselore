@@ -257,10 +257,10 @@ export default (app: Courselore): void => {
             : null;
         const email =
           user !== null
-            ? Math.random() < 0.7
+            ? name !== null || Math.random() < 0.7
               ? user.email
               : null
-            : Math.random() < 0.5
+            : name !== null || Math.random() < 0.5
             ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
                 length: 5,
                 type: "numeric",
@@ -282,7 +282,7 @@ export default (app: Courselore): void => {
               ${new Date().toISOString()},
               ${expiresAt},
               ${
-                user === null || Math.random() < 0.4
+                email === null || Math.random() < 0.4
                   ? null
                   : new Date(
                       (expiresAt === null
