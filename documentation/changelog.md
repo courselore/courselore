@@ -11,7 +11,7 @@
 ## Unreleased
 
 - Disabled the password reset workflow for users who are signed in.
-- Changed the error messages on the authentication workflows (sign-in, sign-up, email verification, password reset, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
+- Changed the error messages on the authentication & invitation workflows (sign-in, sign-up, email verification, password reset, using an invitation, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
 
 ## 4.0.12
 
