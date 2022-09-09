@@ -4257,7 +4257,7 @@ export default (app: Courselore): void => {
                 This invitation is for another email address.
               </p>
               <p>
-                You’re signed in with email address
+                You’re signed in with the email address
                 <code class="code">${res.locals.user.email}</code>, and this
                 invitation is for the email address
                 <code class="code">${res.locals.invitation.email}</code>.
@@ -4349,75 +4349,81 @@ export default (app: Courselore): void => {
                 })}
                 <hr class="separator" />
                 <p class="strong">You’re already enrolled.</p>
-                <p>
-                  You may share this invitation with other people by asking them
-                  to point their phone camera at the following QR Code:
-                </p>
 
-                <div>
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                      gap: var(--space--2);
-                      align-items: baseline;
-                    `)}"
-                  >
-                    <input
-                      type="text"
-                      readonly
-                      value="${link}"
-                      class="input--text"
-                      css="${res.locals.css(css`
-                        flex: 1;
-                      `)}"
-                      onload="${javascript`
-                        this.onfocus = () => {
-                          this.select();
-                        };
-                      `}"
-                    />
-                    <div>
-                      <button
-                        class="button button--tight button--transparent"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Copy Link",
-                          });
+                $${res.locals.invitation.email === null
+                  ? html`
+                      <p>
+                        You may share this invitation with other people by
+                        asking them to point their phone camera at the following
+                        QR Code:
+                      </p>
 
-                          this.onclick = async () => {
-                            await navigator.clipboard.writeText(${JSON.stringify(
-                              link
-                            )});
-                            const stickies = this.querySelector(".stickies");
-                            const check = this.querySelector(".check");
-                            stickies.hidden = true;
-                            check.hidden = false;
-                            await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                            stickies.hidden = false;
-                            check.hidden = true;
-                          };
-                        `}"
-                      >
-                        <span class="stickies">
-                          <i class="bi bi-stickies"></i>
-                        </span>
-                        <span hidden class="check text--green">
-                          <i class="bi bi-check-lg"></i>
-                        </span>
-                      </button>
-                    </div>
-                  </div>
+                      <div>
+                        <div
+                          css="${res.locals.css(css`
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: baseline;
+                          `)}"
+                        >
+                          <input
+                            type="text"
+                            readonly
+                            value="${link}"
+                            class="input--text"
+                            css="${res.locals.css(css`
+                              flex: 1;
+                            `)}"
+                            onload="${javascript`
+                              this.onfocus = () => {
+                                this.select();
+                              };
+                            `}"
+                          />
+                          <div>
+                            <button
+                              class="button button--tight button--transparent"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: false,
+                                  content: "Copy Link",
+                                });
 
-                  $${(
-                    await QRCode.toString(
-                      `https://${app.locals.options.host}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`,
-                      { type: "svg" }
-                    )
-                  )
-                    .replace("#000000", "currentColor")
-                    .replace("#ffffff", "transparent")}
-                </div>
+                                this.onclick = async () => {
+                                  await navigator.clipboard.writeText(${JSON.stringify(
+                                    link
+                                  )});
+                                  const stickies = this.querySelector(".stickies");
+                                  const check = this.querySelector(".check");
+                                  stickies.hidden = true;
+                                  check.hidden = false;
+                                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                  stickies.hidden = false;
+                                  check.hidden = true;
+                                };
+                              `}"
+                            >
+                              <span class="stickies">
+                                <i class="bi bi-stickies"></i>
+                              </span>
+                              <span hidden class="check text--green">
+                                <i class="bi bi-check-lg"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+
+                        $${(
+                          await QRCode.toString(
+                            `https://${app.locals.options.host}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`,
+                            { type: "svg" }
+                          )
+                        )
+                          .replace("#000000", "currentColor")
+                          .replace("#ffffff", "transparent")}
+                      </div>
+                    `
+                  : html``}
 
                 <a
                   href="https://${app.locals.options.host}/courses/${res.locals
@@ -4435,6 +4441,18 @@ export default (app: Courselore): void => {
       next();
     }),
   ];
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    { redirect?: string },
+    IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isInvitationUsableMiddleware
+  );
 
   app.get<
     { courseReference: string; invitationReference: string },
