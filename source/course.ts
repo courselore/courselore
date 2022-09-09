@@ -4222,151 +4222,219 @@ export default (app: Courselore): void => {
     { courseReference: string; invitationReference: string },
     any,
     {},
-    {},
+    { redirect?: string },
     IsInvitationUsableMiddlewareLocals
   >[] = [
     ...invitationExistsMiddleware,
-    (req, res, next) => {
-      if (res.locals.enrollment !== null)
-        return res.send("TODO: ALREADY ENROLLED");
-
+    asyncHandler(async (req, res, next) => {
       if (
         res.locals.invitation.email !== null &&
         res.locals.user !== undefined &&
         res.locals.invitation.email.toLowerCase() !==
           res.locals.user.email.toLowerCase()
       )
-        return res.send("TODO: INVITATION IS FOR SOMEONE ELSE");
+        return res.send(
+          app.locals.layouts.box({
+            req,
+            res,
+            head: html`
+              <title>
+                Invitation · ${res.locals.invitation.course.name} · Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-journal-arrow-down"></i>
+                Invitation
+              </h2>
+              $${app.locals.partials.course({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+              <hr class="separator" />
+              <p class="strong">
+                This invitation is for another email address.
+              </p>
+              <p>
+                You’re signed in with email address
+                <code class="code">${res.locals.user.email}</code>, and this
+                invitation is for the email address
+                <code class="code">${res.locals.invitation.email}</code>.
+              </p>
+            `,
+          })
+        );
 
-      if (res.locals.invitation.usedAt !== null) return res.send("TODO: USED");
+      if (res.locals.invitation.usedAt !== null)
+        return res.send(
+          app.locals.layouts.box({
+            req,
+            res,
+            head: html`
+              <title>
+                Invitation · ${res.locals.invitation.course.name} · Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-journal-arrow-down"></i>
+                Invitation
+              </h2>
+              $${app.locals.partials.course({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+              <hr class="separator" />
+              <p class="strong">This invitation has already been used.</p>
+            `,
+          })
+        );
 
       if (app.locals.helpers.isExpired(res.locals.invitation.expiresAt))
-        return res.send("TODO: EXPIRED");
+        return res.send(
+          app.locals.layouts.box({
+            req,
+            res,
+            head: html`
+              <title>
+                Invitation · ${res.locals.invitation.course.name} · Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-journal-arrow-down"></i>
+                Invitation
+              </h2>
+              $${app.locals.partials.course({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+              <hr class="separator" />
+              <p class="strong">
+                This invitation is expired. Please contact your course staff.
+              </p>
+            `,
+          })
+        );
+
+      if (res.locals.enrollment !== undefined)
+        if (typeof req.query.redirect === "string")
+          return res.redirect(
+            303,
+            `https://${app.locals.options.host}/courses/${res.locals.invitation.course.reference}/${req.query.redirect}`
+          );
+        else {
+          const link = `https://${app.locals.options.host}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`;
+          return res.send(
+            app.locals.layouts.box({
+              req,
+              res,
+              head: html`
+                <title>
+                  Invitation · ${res.locals.invitation.course.name} · Courselore
+                </title>
+              `,
+              body: html`
+                <h2 class="heading">
+                  <i class="bi bi-journal-arrow-down"></i>
+                  Invitation
+                </h2>
+                $${app.locals.partials.course({
+                  req,
+                  res,
+                  course: res.locals.invitation.course,
+                })}
+                <hr class="separator" />
+                <p class="strong">You’re already enrolled.</p>
+                <p>
+                  You may share this invitation with other people by asking them
+                  to point their phone camera at the following QR Code:
+                </p>
+
+                <div>
+                  <div
+                    css="${res.locals.css(css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: baseline;
+                    `)}"
+                  >
+                    <input
+                      type="text"
+                      readonly
+                      value="${link}"
+                      class="input--text"
+                      css="${res.locals.css(css`
+                        flex: 1;
+                      `)}"
+                      onload="${javascript`
+                        this.onfocus = () => {
+                          this.select();
+                        };
+                      `}"
+                    />
+                    <div>
+                      <button
+                        class="button button--tight button--transparent"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            touch: false,
+                            content: "Copy Link",
+                          });
+
+                          this.onclick = async () => {
+                            await navigator.clipboard.writeText(${JSON.stringify(
+                              link
+                            )});
+                            const stickies = this.querySelector(".stickies");
+                            const check = this.querySelector(".check");
+                            stickies.hidden = true;
+                            check.hidden = false;
+                            await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                            stickies.hidden = false;
+                            check.hidden = true;
+                          };
+                        `}"
+                      >
+                        <span class="stickies">
+                          <i class="bi bi-stickies"></i>
+                        </span>
+                        <span hidden class="check text--green">
+                          <i class="bi bi-check-lg"></i>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  $${(
+                    await QRCode.toString(
+                      `https://${app.locals.options.host}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`,
+                      { type: "svg" }
+                    )
+                  )
+                    .replace("#000000", "currentColor")
+                    .replace("#ffffff", "transparent")}
+                </div>
+
+                <a
+                  href="https://${app.locals.options.host}/courses/${res.locals
+                    .invitation.course.reference}"
+                  class="button button--blue"
+                >
+                  Go to ${res.locals.invitation.course.name}
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              `,
+            })
+          );
+        }
 
       next();
-    },
+    }),
   ];
-
-  // TODO
-  // app.get<
-  //   { courseReference: string; invitationReference: string },
-  //   HTML,
-  //   {},
-  //   { redirect?: string },
-  //   IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
-  // >(
-  //   "/courses/:courseReference/invitations/:invitationReference",
-  //   ...app.locals.middlewares.isEnrolledInCourse,
-  //   ...isInvitationUsableMiddleware,
-  //   asyncHandler(async (req, res) => {
-  //     if (typeof req.query.redirect === "string")
-  //       res.redirect(
-  //         303,
-  //         `https://${app.locals.options.host}/courses/${res.locals.course.reference}/${req.query.redirect}`
-  //       );
-  //     const link = `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
-  //     res.send(
-  //       app.locals.layouts.box({
-  //         req,
-  //         res,
-  //         head: html`
-  //           <title>Invitation · ${res.locals.course.name} · Courselore</title>
-  //         `,
-  //         body: html`
-  //           <h2 class="heading">
-  //             <i class="bi bi-journal-arrow-down"></i>
-  //             Invitation
-  //           </h2>
-  //           $${app.locals.partials.course({
-  //             req,
-  //             res,
-  //             course: res.locals.invitation.course,
-  //           })}
-  //           <hr class="separator" />
-  //           <p class="strong">You’re already enrolled.</p>
-  //           <p>
-  //             You may share this invitation with other people by asking them to
-  //             point their phone camera at the following QR Code:
-  //           </p>
-
-  //           <div>
-  //             <div
-  //               css="${res.locals.css(css`
-  //                 display: flex;
-  //                 gap: var(--space--2);
-  //                 align-items: baseline;
-  //               `)}"
-  //             >
-  //               <input
-  //                 type="text"
-  //                 readonly
-  //                 value="${link}"
-  //                 class="input--text"
-  //                 css="${res.locals.css(css`
-  //                   flex: 1;
-  //                 `)}"
-  //                 onload="${javascript`
-  //                   this.onfocus = () => {
-  //                     this.select();
-  //                   };
-  //                 `}"
-  //               />
-  //               <div>
-  //                 <button
-  //                   class="button button--tight button--transparent"
-  //                   onload="${javascript`
-  //                     (this.tooltip ??= tippy(this)).setProps({
-  //                       touch: false,
-  //                       content: "Copy Link",
-  //                     });
-
-  //                     this.onclick = async () => {
-  //                       await navigator.clipboard.writeText(${JSON.stringify(
-  //                         link
-  //                       )});
-  //                       const stickies = this.querySelector(".stickies");
-  //                       const check = this.querySelector(".check");
-  //                       stickies.hidden = true;
-  //                       check.hidden = false;
-  //                       await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-  //                       stickies.hidden = false;
-  //                       check.hidden = true;
-  //                     };
-  //                   `}"
-  //                 >
-  //                   <span class="stickies">
-  //                     <i class="bi bi-stickies"></i>
-  //                   </span>
-  //                   <span hidden class="check text--green">
-  //                     <i class="bi bi-check-lg"></i>
-  //                   </span>
-  //                 </button>
-  //               </div>
-  //             </div>
-
-  //             $${(
-  //               await QRCode.toString(
-  //                 `https://${app.locals.options.host}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
-  //                 { type: "svg" }
-  //               )
-  //             )
-  //               .replace("#000000", "currentColor")
-  //               .replace("#ffffff", "transparent")}
-  //           </div>
-
-  //           <a
-  //             href="https://${app.locals.options.host}/courses/${res.locals
-  //               .course.reference}"
-  //             class="button button--blue"
-  //           >
-  //             Go to ${res.locals.course.name}
-  //             <i class="bi bi-chevron-right"></i>
-  //           </a>
-  //         `,
-  //       })
-  //     );
-  //   })
-  // );
 
   app.get<
     { courseReference: string; invitationReference: string },
