@@ -2313,6 +2313,20 @@ export default (app: Courselore): void => {
         >
           $${conversationParticipantsIcon[conversation.participants].fill}
           $${conversationParticipantsLabel[conversation.participants]}
+          $${conversation.participants === "selected-people" &&
+          conversation.selectedParticipants.length === 1
+            ? html`
+                <div>
+                  ($${app.locals.partials.user({
+                    req,
+                    res,
+                    enrollment: conversation.selectedParticipants[0],
+                    size: "xs",
+                    bold: false,
+                  })})
+                </div>
+              `
+            : html``}
         </div>
         $${conversation.pinnedAt !== null
           ? html`
