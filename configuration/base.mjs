@@ -8,6 +8,7 @@ export default async ({
   alternativeHosts = [],
   hstsPreload = false,
   caddyExtraConfiguration = "",
+  tunnel = false,
   environment = "production",
   demonstration = false,
 }) => {
@@ -70,7 +71,7 @@ export default async ({
             encode zstd gzip
           }
 
-          ${[host, ...alternativeHosts]
+          ${[tunnel ? [] : [host], ...alternativeHosts]
             .map((host) => `http://${host}`)
             .join(", ")} {
             import common
@@ -98,7 +99,7 @@ export default async ({
 
           ${caddyExtraConfiguration}
           
-          https://${host} {
+          http${tunnel ? `` : `s`}://${host} {
             route {
               import common
               route {
