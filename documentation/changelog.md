@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+## 4.0.13
+
+**2022-09-10 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.13) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - **Fixed an issue in which students would have access to the list of people who viewed a message.**
 
   The issue was that URLs of the form `https://courselore.org/courses/5699921211/conversations/32/messages/3/views` were accessible by students (naturally, the user interface wouldn’t show this to students; they’d have to find out about it by some other mean, for example, digging through the Courselore source code).
