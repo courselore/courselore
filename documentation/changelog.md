@@ -10,6 +10,7 @@
 
 ## Unreleased
 
+- When the conversation is “Selected Participants” and it’s actually between two people, show the other person’s name on the sidebar, preventing having to go into the conversation itself.
 - Disabled the password reset workflow for users who are signed in.
 - Changed the error messages on the authentication & invitation workflows (sign-in, sign-up, email verification, password reset, using an invitation, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
 - When updating email, only send an email to the previous address to inform of update if the previous address was verified. This fixes a subtle edge case in which the person mistyped their email and quickly fixed it, but the application would try to send one more email to the incorrect address, adding to the number of bounces and counting negatively towards deliverability.
