@@ -2305,16 +2305,58 @@ export default (app: Courselore): void => {
             conversation.participants
           ]}"
           onload="${javascript`
-            (this.tooltip ??= tippy(this)).setProps({
-              touch: false,
-              content: "Participants",
-            });
+            ${
+              conversation.selectedParticipants.length > 1
+                ? javascript`
+                    const loading = ${res.locals.html(html`
+                      <div
+                        css="${res.locals.css(css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: center;
+                        `)}"
+                      >
+                        $${app.locals.partials.spinner({
+                          req,
+                          res,
+                        })}
+                        Loading…
+                      </div>
+                    `)};
+                    loading.remove();
+                    
+                    const content = ${res.locals.html(html``)};
+                    content.remove();
+                    
+                    (this.tooltip ??= tippy(this)).setProps({
+                      interactive: true,
+                      delay: [1000, null],
+                      touch: ["hold", 1000],
+                      onShow: async () => {
+                        this.tooltip.setContent(loading);
+                        leafac.loadPartial(content, await (await fetch("https://${
+                          app.locals.options.host
+                        }/courses/${
+                    res.locals.course.reference
+                  }/conversations/${
+                    conversation.reference
+                  }/selected-participants")).text());
+                        this.tooltip.setContent(content);
+                      },
+                    });
+                  `
+                : javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: "Participants",
+                    });
+                  `
+            }
           `}"
         >
           $${conversationParticipantsIcon[conversation.participants].fill}
           $${conversationParticipantsLabel[conversation.participants]}
-          $${conversation.participants === "selected-people" &&
-          conversation.selectedParticipants.length === 1
+          $${conversation.selectedParticipants.length === 1
             ? html`
                 <div>
                   ($${app.locals.partials.user({
@@ -2535,6 +2577,70 @@ export default (app: Courselore): void => {
     </div>
   `;
 
+  app.locals.middlewares.isConversationAccessible = [
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res, next) => {
+      const conversation = app.locals.helpers.getConversation({
+        req,
+        res,
+        conversationReference: req.params.conversationReference,
+      });
+      if (conversation === undefined) return next("route");
+      res.locals.conversation = conversation;
+      next();
+    },
+  ];
+
+  app.get<
+    { courseReference: string; conversationReference: string },
+    HTML,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/selected-participants",
+    ...app.locals.middlewares.isConversationAccessible,
+    (req, res, next) => {
+      if (
+        res.locals.conversation.participants === "everyone" ||
+        res.locals.conversation.selectedParticipants.length <= 1
+      )
+        return next("validation");
+
+      res.send(
+        app.locals.layouts.partial({
+          req,
+          res,
+          body: html`
+            <div
+              class="dropdown--menu"
+              css="${res.locals.css(css`
+                max-height: var(--space--56);
+                padding: var(--space--1) var(--space--0);
+                overflow: auto;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${res.locals.conversation.selectedParticipants.map(
+                (selectedParticipant) => html`
+                  <div class="dropdown--menu--item">
+                    $${app.locals.partials.user({
+                      req,
+                      res,
+                      enrollment: selectedParticipant,
+                      size: "xs",
+                      bold: false,
+                    })}
+                  </div>
+                `
+              )}
+            </div>
+          `,
+        })
+      );
+    }
+  );
+
   app.locals.helpers.getConversation = ({
     req,
     res,
@@ -2659,59 +2765,63 @@ export default (app: Courselore): void => {
       nextMessageReference: conversationRow.nextMessageReference,
     };
 
-    const selectedParticipants = app.locals.database
-      .all<{
-        enrollmentId: number;
-        userId: number;
-        userLastSeenOnlineAt: string;
-        userReference: string;
-        userEmail: string;
-        userName: string;
-        userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        userBiographySource: string | null;
-        userBiographyPreprocessed: HTML | null;
-        enrollmentReference: string;
-        enrollmentCourseRole: CourseRole;
-      }>(
-        sql`
-          SELECT "enrollments"."id" AS "enrollmentId",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."reference" AS "userReference",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."courseRole" AS "enrollmentCourseRole"
-          FROM "conversationSelectedParticipants"
-          JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "conversation" = ${conversation.id} AND
-                "enrollments"."id" != ${res.locals.enrollment.id}
-          ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
-        `
-      )
-      .map((selectedParticipant) => ({
-        id: selectedParticipant.enrollmentId,
-        user: {
-          id: selectedParticipant.userId,
-          lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
-          reference: selectedParticipant.userReference,
-          email: selectedParticipant.userEmail,
-          name: selectedParticipant.userName,
-          avatar: selectedParticipant.userAvatar,
-          avatarlessBackgroundColor:
-            selectedParticipant.userAvatarlessBackgroundColor,
-          biographySource: selectedParticipant.userBiographySource,
-          biographyPreprocessed: selectedParticipant.userBiographyPreprocessed,
-        },
-        reference: selectedParticipant.enrollmentReference,
-        courseRole: selectedParticipant.enrollmentCourseRole,
-      }));
+    const selectedParticipants =
+      conversation.participants === "everyone"
+        ? []
+        : app.locals.database
+            .all<{
+              enrollmentId: number;
+              userId: number;
+              userLastSeenOnlineAt: string;
+              userReference: string;
+              userEmail: string;
+              userName: string;
+              userAvatar: string | null;
+              userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+              userBiographySource: string | null;
+              userBiographyPreprocessed: HTML | null;
+              enrollmentReference: string;
+              enrollmentCourseRole: CourseRole;
+            }>(
+              sql`
+                SELECT "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                       "users"."reference" AS "userReference",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "users"."avatar" AS "userAvatar",
+                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                       "users"."biographySource" AS "userBiographySource",
+                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                       "enrollments"."reference" AS "enrollmentReference",
+                       "enrollments"."courseRole" AS "enrollmentCourseRole"
+                FROM "conversationSelectedParticipants"
+                JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "conversation" = ${conversation.id} AND
+                      "enrollments"."id" != ${res.locals.enrollment.id}
+                ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+              `
+            )
+            .map((selectedParticipant) => ({
+              id: selectedParticipant.enrollmentId,
+              user: {
+                id: selectedParticipant.userId,
+                lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
+                reference: selectedParticipant.userReference,
+                email: selectedParticipant.userEmail,
+                name: selectedParticipant.userName,
+                avatar: selectedParticipant.userAvatar,
+                avatarlessBackgroundColor:
+                  selectedParticipant.userAvatarlessBackgroundColor,
+                biographySource: selectedParticipant.userBiographySource,
+                biographyPreprocessed:
+                  selectedParticipant.userBiographyPreprocessed,
+              },
+              reference: selectedParticipant.enrollmentReference,
+              courseRole: selectedParticipant.enrollmentCourseRole,
+            }));
 
     const taggings = app.locals.database
       .all<{
@@ -4670,20 +4780,6 @@ export default (app: Courselore): void => {
       );
     }
   );
-
-  app.locals.middlewares.isConversationAccessible = [
-    ...app.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
-      const conversation = app.locals.helpers.getConversation({
-        req,
-        res,
-        conversationReference: req.params.conversationReference,
-      });
-      if (conversation === undefined) return next("route");
-      res.locals.conversation = conversation;
-      next();
-    },
-  ];
 
   const mayEditConversation = ({
     req,
