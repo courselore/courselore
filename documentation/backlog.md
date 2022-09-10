@@ -446,6 +446,7 @@ new Notification('Example');
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
+- Allow staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
 
 ## Conversations
 
