@@ -18,14 +18,14 @@
 
   There’s an obscure edge case in which this could reveal to other students the identity of the author of an anonymous message:
 
-    - Message 1 (2 views; you and student John Doe).
-    - Message 2 (anonymous).
+  - Message 1 (2 views; you and student John Doe).
+  - Message 2 (anonymous).
 
-    If a student were to query the views of “Message 1” before this fix, they’d see John Doe as the other student, who by the process of elimination must have been the author of “Message 2”.
+  If a student were to query the views of “Message 1” before this fix, they’d see John Doe as the other student, who by the process of elimination must have been the author of “Message 2”.
 
   As far as we know this hasn’t been explored in real-world use of Courselore, but **system administrators must update as soon as possible**.
 
-- When the conversation is “Selected Participants” and it’s actually between two people, show the other person’s name on the sidebar, preventing having to go into the conversation itself.
+- Show conversation participants on the sidebar, preventing having to go into the conversation itself. (If there’s only one other participant, for example, in a chat between two people, show the other person right away; if there are more participants, show a dropdown after hoovering for second.)
 - Disabled the password reset workflow for users who are signed in.
 - Changed the error messages on the authentication & invitation workflows (sign-in, sign-up, email verification, password reset, using an invitation, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
 - When updating email, only send an email to the previous address to inform of update if the previous address was verified. This fixes a subtle edge case in which the person mistyped their email and quickly fixed it, but the application would try to send one more email to the incorrect address, adding to the number of bounces and counting negatively towards deliverability.
