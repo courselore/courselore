@@ -275,4 +275,6 @@ Disadvantages: Slower. Requires an internet connection.
    $ env TUNNEL=497ac574a31cd1.lhrtunnel.link npm run start
    ```
 
+3. Visit the address on the other device.
+
 </details>
