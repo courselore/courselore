@@ -193,32 +193,86 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
 </details>
 
-## Testing on Mobile
+## Sharing the Development Server
 
-You may run Courselore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
+It’s often useful to run Courselore in your development machine and access it from another device. For example, you may access it from your phone to test user interface changes, or let someone in a video-chat access it from the internet to assist in investigating an issue.
 
-1. Establish a network route between your development machine running Courselore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
+To make this work, you must establish a network route between your development machine and the device that will access it. There are two ways of doing this:
 
-   > **iPhone/iPad + Mac Tip:** Connect an iPhone/iPad to a Mac with an USB cable and iOS & macOS will establish a route between them. In macOS you may go to **System Preferences… > Sharing** to find the address you should use in the browser on the iPhone/iPad.
+**Local Area Network (LAN)**
 
-2. Send the root TLS certificate created by [Caddy](https://caddyserver.com) to the phone.
+Recommended for: Accessing Courselore from your phone to test user interface changes.
 
-   > **Example:** In the author’s development machine running macOS the certificate is found at `~/Library/Application Support/Caddy/pki/authorities/local/root.crt`. It’s possible to AirDrop that file to an iPhone/iPad.
+Advantages: Fastest. Works even when you don’t have an internet connection, as long as all the devices are connected to the same LAN/wifi.
 
-   > **Note:** Certificates have a `.crt` extension. **Importantly, `.key` files are not certificates.** These files are signing keys which shouldn’t leave your development machine. Anyone with access to that file could intercept and tamper with your network traffic.
+Disadvantages: Doesn’t work on some LANs. Doesn’t work across the internet, so may not be used to share a server with someone over video-chat.
 
-3. Install & trust the TLS certificate on the phone.
+<details>
+<summary>How to</summary>
 
-   > **Note:** The exact procedure depends on the operating system you’re running, but typically this process occurs in two steps: First **install** the certificate, then **trust** it.
+1. Determine the LAN address of your development machine, which may be a name such as `leafac--mac-mini.local` or an IP address. The exact procedure depends on your operating system and network configuration.
+
+   > **macOS Tip:** Go to **System Preferences… > Sharing** and take note of the name ending in `.local`.
+
+2. Send the root TLS certificate created by [Caddy](https://caddyserver.com) to the other device.
+
+   > **Example:** In macOS the default location of the certificate is `~/Library/Application Support/Caddy/pki/authorities/local/root.crt`. You may AirDrop that file to an iPhone/iPad.
+
+   > **Note:** Certificates have a `.crt` extension. **Importantly, `.key` files are not certificates.** These `.key` files are signing keys which must never leave your development machine, because they would allow for other devices to intercept and tamper with your network traffic.
+
+3. Install & trust the TLS certificate on the other device.
+
+   > **Note:** The exact procedure depends on the operating system, but typically this process occurs in two steps: First **install** the certificate, then **trust** it.
 
    > **iPhone/iPad Tip:** Install the certificate on **Settings > General > VPN & Device Management Certificates**, and trust it on **Settings > General > About > Certificate Trust Settings**.
 
-   > **Windows Tip:** If instead of a phone you’re trying to test Courselore on a secondary Windows machine, install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
+   > **Windows Tip:** Install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
 
-4. Run Courselore with the Local Area Network address by setting the `HOST` environment variable, for example, in macOS and Linux:
+4. Run Courselore with the `HOST` environment variable set to the address determined in step 1, for example, in macOS and Linux:
 
    ```console
-   $ env HOST=leafac.local npm start
+   $ env HOST=leafac--mac-mini.local npm start
    ```
 
-5. Visit the address on the phone.
+5. Visit the address on the other device.
+
+</details>
+
+**Tunnel**
+
+Recommended for: Letting someone in a video-chat access Courselore from the internet to assist in investigating an issue.
+
+Advantages: Works across the internet.
+
+Disadvantages: Slower. Requires an internet connection.
+
+<details>
+<summary>How to</summary>
+
+1. Create the tunnel. If you’re part of the Courselore team, you may request a custom Courselore tunnel address such as `leafac.courselore.org`, otherwise you may use services such as [Localtunnel](https://theboroer.github.io/localtunnel-www/) and [localhost.run](https://localhost.run), for example:
+
+   ```console
+   # Custom Courselore Tunnel Address
+   $ ssh -NR 4001:127.0.0.1:80 root@leafac.courselore.org
+
+   # Localtunnel
+   $ npx localtunnel --port 80
+
+   # localhost.run
+   $ ssh -NR 80:127.0.0.1:80 localhost.run
+   ```
+
+2. Run Courselore with the `TUNNEL` environment variable set to the address given in step 1, for example, in macOS and Linux:
+
+   ```console
+   # Custom Courselore Tunnel Address
+   $ env TUNNEL=leafac.courselore.org npm run start
+
+   # Localtunnel
+   $ env TUNNEL=tough-feet-train-94-60-46-156.loca.lt npm run start
+
+   # localhost.run
+   $ env TUNNEL=497ac574a31cd1.lhrtunnel.link npm run start
+   ```
+
+</details>
