@@ -487,9 +487,10 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    MessageExistsMiddlewareLocals
+    IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
+    ...app.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res) => {
       res.send(
@@ -508,7 +509,7 @@ export default (app: Courselore): void => {
             >
               $${res.locals.message.readings.reverse().map(
                 (reading) => html`
-                  <button class="dropdown--menu--item">
+                  <div class="dropdown--menu--item">
                     $${app.locals.partials.user({
                       req,
                       res,
@@ -531,7 +532,7 @@ export default (app: Courselore): void => {
                         `}"
                       ></time>
                     </span>
-                  </button>
+                  </div>
                 `
               )}
             </div>

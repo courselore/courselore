@@ -10,6 +10,21 @@
 
 ## Unreleased
 
+- **Fixed an issue in which students would have access to the list of people who viewed a message.**
+
+  The issue was that URLs of the form `https://courselore.org/courses/5699921211/conversations/32/messages/3/views` were accessible by students (naturally, the user interface wouldn’t show this to students; they’d have to find out about it by some other mean, for example, digging through the Courselore source code).
+
+  The solution was to restrict access to URLs of this form to staff.
+
+  There’s an obscure edge case in which this could reveal to other students the identity of the author of an anonymous message:
+
+    - Message 1 (2 views; you and student John Doe).
+    - Message 2 (anonymous).
+
+    If a student were to query the views of “Message 1” before this fix, they’d see John Doe as the other student, who by the process of elimination must have been the author of “Message 2”.
+
+  As far as we know this hasn’t been explored in real-world use of Courselore, but **system administrators must update as soon as possible**.
+
 - When the conversation is “Selected Participants” and it’s actually between two people, show the other person’s name on the sidebar, preventing having to go into the conversation itself.
 - Disabled the password reset workflow for users who are signed in.
 - Changed the error messages on the authentication & invitation workflows (sign-in, sign-up, email verification, password reset, using an invitation, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
