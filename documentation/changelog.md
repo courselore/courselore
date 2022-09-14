@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Added a way for people to see who liked a message.
+- Added a counter next to the separator for new messages in conversations you visited before (for example, “3 New”).
 
 ## 4.0.13
 
