@@ -134,6 +134,18 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   mayCreateCourses: boolean;
 }
 
+export type HasPasswordConfirmationMiddleware = express.RequestHandler<
+  {},
+  any,
+  { passwordConfirmation?: string },
+  {},
+  HasPasswordConfirmationMiddlewareLocals
+>[];
+export interface HasPasswordConfirmationMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {
+  redirect?: string;
+}
+
 export type EmailVerificationMailer = ({
   req,
   res,
@@ -577,6 +589,37 @@ export default (app: Courselore): void => {
 
       next();
     },
+  ];
+
+  app.locals.middlewares.hasPasswordConfirmation = [
+    ...app.locals.middlewares.isSignedIn,
+    asyncHandler(async (req, res, next) => {
+      if (
+        typeof req.body.passwordConfirmation !== "string" ||
+        req.body.passwordConfirmation.trim() === ""
+      )
+        return next("validation");
+
+      if (
+        !(await argon2.verify(
+          res.locals.user.password,
+          req.body.passwordConfirmation
+        ))
+      ) {
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "rose",
+          content: html`Incorrect password confirmation.`,
+        });
+        return res.redirect(
+          303,
+          `https://${app.locals.options.host}/${res.locals.redirect ?? ""}`
+        );
+      }
+
+      next();
+    }),
   ];
 
   (() => {

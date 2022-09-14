@@ -36,11 +36,13 @@ import authentication, {
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
+  HasPasswordConfirmationMiddleware,
   EmailVerificationMailer,
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  HasPasswordConfirmationMiddlewareLocals,
 } from "./authentication.js";
 
 import administrator, { AdministrationOptions } from "./administration.js";
@@ -138,6 +140,7 @@ export interface Courselore extends express.Express {
       liveUpdates: LiveUpdatesMiddleware;
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
+      hasPasswordConfirmation: HasPasswordConfirmationMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
       isConversationAccessible: IsConversationAccessibleMiddleware;
