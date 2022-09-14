@@ -398,20 +398,6 @@ new Notification('Example');
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
-## Deleting Entities
-
-- Users
-- Courses
-- Enrollments even if you’re the last staff
-
----
-
-- Require password
-  - Extract middleware
-  - Use middleware in
-    - Change email
-    - Change password
-
 ## Users
 
 - Improvements to the workflow for when you change your email:
@@ -648,6 +634,7 @@ const { app, BrowserWindow } = require("electron");
     - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
     - Purposes of LTI:
       - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
+        - Automatically remove from the course the people who dropped.
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
 
 ## User Interface

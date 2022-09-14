@@ -1,6 +1,28 @@
 # Meeting Notes
 
 <details>
+<summary>2021-09-10</summary>
+
+- No-reply: Let’s keep the administrator email for now, and at some point implement the feature in which you’re able to post a message by replying to the email notification.
+- Don’t notify about messages you saw in real-time. Particularly on chats, in which there are many messages in succession.
+- Edge case: While messages may be anonymous, the participation of a student in the conversation isn’t anonymous, so if there are only two students and one posts anonymously, the other can figure out who it was. But we’re considering that okay.
+- Investigating a double-submit issue that Ali & Earl ran into. Don’t know what’s causing it yet.
+- Locking down the application for people who haven’t verified their email address seems to have worked 😁
+- Fixed security & privacy issues:
+  - Redirects could lead you outside the application.
+  - Students could see who viewed a message, if they knew which URL to query.
+- Improved the error messages in the authentication & invitation workflows.
+- Show participants on sidebar.
+- Let’s continue allowing you to like your own messages, but let’s add a way for you to see who liked a message (and let everyone see that).
+- Let’s postpone the notion of deleting users, courses, and so forth. It’ll come particularly handy when we have LMS integration.
+- Do something about the case in which a student posts “thank you” in reply to an answer to a question, and the question becoming unresolved: perhaps separate buttons.
+- Think about more separation between chats & other types of conversation. Perhaps remove chats for everyone from students?
+- Have a setting to configure the delay on email notifications.
+- The ceiling for improving performance is high.
+
+</details>
+
+<details>
 <summary>2021-09-03</summary>
 
 - Brought back the concept of “Announcements”.
