@@ -13,6 +13,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  HasPasswordConfirmationMiddlewareLocals,
   MaybeEnrollment,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
@@ -1212,47 +1213,23 @@ export default (app: Courselore): void => {
   app.patch<
     {},
     any,
-    { currentPassword?: string; email?: string; newPassword?: string },
+    { passwordConfirmation?: string; email?: string; newPassword?: string },
     { redirect?: string },
-    IsSignedInMiddlewareLocals
+    HasPasswordConfirmationMiddlewareLocals
   >(
     "/settings/email-and-password",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail =
         typeof req.body.email === "string" &&
         req.body.newPassword === undefined;
+      res.locals.redirect =
+        typeof req.query.redirect === "string"
+          ? req.query.redirect
+          : "settings/email-and-password";
       next();
     },
-    ...app.locals.middlewares.isSignedIn,
+    ...app.locals.middlewares.hasPasswordConfirmation,
     asyncHandler(async (req, res, next) => {
-      if (
-        typeof req.body.currentPassword !== "string" ||
-        req.body.currentPassword.trim() === ""
-      )
-        return next("validation");
-
-      if (
-        !(await argon2.verify(
-          res.locals.user.password,
-          req.body.currentPassword
-        ))
-      ) {
-        app.locals.helpers.Flash.set({
-          req,
-          res,
-          theme: "rose",
-          content: html`Incorrect password.`,
-        });
-        return res.redirect(
-          303,
-          `https://${app.locals.options.host}/${
-            typeof req.query.redirect === "string"
-              ? req.query.redirect
-              : "settings/email-and-password"
-          }`
-        );
-      }
-
       if (typeof req.body.email === "string") {
         if (req.body.email.match(app.locals.helpers.emailRegExp) === null)
           return next("validation");
