@@ -8326,68 +8326,93 @@ export default (app: Courselore): void => {
                                               likesCount > 0
                                             )
                                               messageShowFooter += html`
-                                                <form
-                                                  method="${isLiked
-                                                    ? "DELETE"
-                                                    : "POST"}"
-                                                  action="https://${app.locals
-                                                    .options.host}/courses/${res
-                                                    .locals.course
-                                                    .reference}/conversations/${res
-                                                    .locals.conversation
-                                                    .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        req.query.conversations,
-                                                      messages:
-                                                        req.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
+                                                <div
+                                                  css="${res.locals.css(css`
+                                                    display: flex;
+                                                    gap: var(--space--1);
+                                                  `)}"
                                                 >
-                                                  <input
-                                                    type="hidden"
-                                                    name="_csrf"
-                                                    value="${req.csrfToken()}"
-                                                  />
-                                                  <button
-                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                      ? "text--blue"
-                                                      : ""}"
-                                                    $${likesCount === 0
-                                                      ? html``
-                                                      : html`
+                                                  <form
+                                                    method="${isLiked
+                                                      ? "DELETE"
+                                                      : "POST"}"
+                                                    action="https://${app.locals
+                                                      .options
+                                                      .host}/courses/${res
+                                                      .locals.course
+                                                      .reference}/conversations/${res
+                                                      .locals.conversation
+                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          req.query
+                                                            .conversations,
+                                                        messages:
+                                                          req.query.messages,
+                                                      },
+                                                      { addQueryPrefix: true }
+                                                    )}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="_csrf"
+                                                      value="${req.csrfToken()}"
+                                                    />
+                                                    <button
+                                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                        ? "text--blue"
+                                                        : ""}"
+                                                      $${likesCount === 0
+                                                        ? html``
+                                                        : html`
+                                                            onload="${javascript`
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                touch: false,
+                                                                content: ${JSON.stringify(
+                                                                  isLiked
+                                                                    ? "Remove Like"
+                                                                    : "Like"
+                                                                )},
+                                                              });
+                                                            `}"
+                                                          `}
+                                                    >
+                                                      $${isLiked
+                                                        ? html`
+                                                            <i
+                                                              class="bi bi-hand-thumbs-up-fill"
+                                                            ></i>
+                                                          `
+                                                        : html`<i
+                                                            class="bi bi-hand-thumbs-up"
+                                                          ></i>`}
+                                                      $${likesCount === 0
+                                                        ? html`Like`
+                                                        : html``}
+                                                    </button>
+                                                  </form>
+
+                                                  $${likesCount === 0
+                                                    ? html``
+                                                    : html`
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                            ? "text--blue"
+                                                            : ""}"
                                                           onload="${javascript`
                                                             (this.tooltip ??= tippy(this)).setProps({
                                                               touch: false,
-                                                              content: ${JSON.stringify(
-                                                                isLiked
-                                                                  ? "Remove Like"
-                                                                  : "Like"
-                                                              )},
+                                                              content: "See people who liked",
                                                             });
                                                           `}"
-                                                        `}
-                                                  >
-                                                    $${isLiked
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-hand-thumbs-up-fill"
-                                                          ></i>
-                                                        `
-                                                      : html`<i
-                                                          class="bi bi-hand-thumbs-up"
-                                                        ></i>`}
-                                                    $${likesCount === 0
-                                                      ? html`Like`
-                                                      : html`
+                                                        >
                                                           ${likesCount.toString()}
                                                           Like${likesCount === 1
                                                             ? ""
                                                             : "s"}
-                                                        `}
-                                                  </button>
-                                                </form>
+                                                        </button>
+                                                      `}
+                                                </div>
                                               `;
 
                                             if (
