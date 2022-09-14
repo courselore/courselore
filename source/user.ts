@@ -682,6 +682,17 @@ export default (app: Courselore): void => {
           ></i>
           Notifications
         </a>
+        <a
+          href="https://${app.locals.options.host}/settings/account"
+          class="dropdown--menu--item menu-box--item button ${req.path.match(
+            /\/settings\/account\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i class="bi bi-sliders"></i>
+          Account
+        </a>
       `,
       body,
     });
@@ -1714,6 +1725,149 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/settings/notifications",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForAllMessages
+        ) ||
+        (req.body.isEmailNotificationsForAllMessages === undefined &&
+          req.body.emailNotificationsForAllMessages !== undefined) ||
+        (req.body.isEmailNotificationsForAllMessages === "on" &&
+          (typeof req.body.emailNotificationsForAllMessages !== "string" ||
+            !["instant", "hourly-digests", "daily-digests"].includes(
+              req.body.emailNotificationsForAllMessages
+            ))) ||
+        ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
+        ![undefined, "on"].includes(
+          req.body
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+        ) ||
+        ![undefined, "on"].includes(
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+        ) ||
+        (req.body.isEmailNotificationsForAllMessages === "on" &&
+          (req.body.isEmailNotificationsForMentions !== "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+              "on" ||
+            req.body
+              .isEmailNotificationsForMessagesInConversationsYouStarted !==
+              "on")) ||
+        (req.body
+          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+          "on" &&
+          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on")
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`
+          UPDATE "users"
+          SET "emailNotificationsForAllMessages" = ${
+            req.body.isEmailNotificationsForAllMessages === undefined
+              ? "none"
+              : "instant" /* TODO req.body.emailNotificationsForAllMessages */
+          },
+              "emailNotificationsForMentionsAt" = ${
+                req.body.isEmailNotificationsForMentions === "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+                req.body
+                  .isEmailNotificationsForMessagesInConversationsYouStarted ===
+                "on"
+                  ? new Date().toISOString()
+                  : null
+              }
+          WHERE "id" = ${res.locals.user.id}
+       `
+      );
+
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "green",
+        content: html`Notifications updated successfully.`,
+      });
+
+      res.redirect(
+        303,
+        `https://${app.locals.options.host}/settings/notifications`
+      );
+    }
+  );
+
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/settings/account",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res) => {
+      res.send(
+        userSettingsLayout({
+          req,
+          res,
+          head: html`<title>Account · User Settings · Courselore</title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              User Settings ·
+              <i class="bi bi-bell-fill"></i>
+              Account
+            </h2>
+
+            <form
+              method="DELETE"
+              action="https://${app.locals.options.host}/settings/account"
+              novalidate
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--rose"
+                >
+                  <i class="bi bi-person-x-fill"></i>
+                  Remove Your Account
+                </button>
+              </div>
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.delete<
+    {},
+    any,
+    {
+      isEmailNotificationsForAllMessages?: "on";
+      emailNotificationsForAllMessages?:
+        | "instant"
+        | "hourly-digests"
+        | "daily-digests";
+      isEmailNotificationsForMentions?: "on";
+      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
+      isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
+    },
+    {},
+    IsSignedInMiddlewareLocals
+  >(
+    "/settings/account",
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
