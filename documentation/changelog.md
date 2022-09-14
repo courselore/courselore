@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Added a way for people to see who liked a message.
+
 ## 4.0.13
 
 **2022-09-10 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.13) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
