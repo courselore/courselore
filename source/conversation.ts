@@ -6970,6 +6970,12 @@ export default (app: Courselore): void => {
                                               />
                                               <span class="heading text--rose">
                                                 <i class="bi bi-fire"></i>
+                                                ${String(
+                                                  res.locals.conversation
+                                                    .messagesCount -
+                                                    res.locals.conversation
+                                                      .readingsCount
+                                                )}
                                                 New
                                               </span>
                                               <hr
