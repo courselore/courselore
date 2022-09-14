@@ -8404,6 +8404,58 @@ export default (app: Courselore): void => {
                                                               touch: false,
                                                               content: "See people who liked",
                                                             });
+
+                                                            const loading = ${res
+                                                              .locals.html(html`
+                                                              <div
+                                                                css="${res
+                                                                  .locals
+                                                                  .css(css`
+                                                                  display: flex;
+                                                                  gap: var(
+                                                                    --space--2
+                                                                  );
+                                                                  align-items: center;
+                                                                `)}"
+                                                              >
+                                                                $${app.locals.partials.spinner(
+                                                                  {
+                                                                    req,
+                                                                    res,
+                                                                  }
+                                                                )}
+                                                                Loading…
+                                                              </div>
+                                                            `)};
+                                                            loading.remove();
+
+                                                            const content = ${res.locals.html(
+                                                              html``
+                                                            )};
+                                                            content.remove();
+
+                                                            (this.dropdown ??= tippy(this)).setProps({
+                                                              trigger: "click",
+                                                              interactive: true,
+                                                              onShow: async () => {
+                                                                this.dropdown.setContent(loading);
+                                                                leafac.loadPartial(content, await (await fetch("https://${
+                                                                  app.locals
+                                                                    .options
+                                                                    .host
+                                                                }/courses/${
+                                                            res.locals.course
+                                                              .reference
+                                                          }/conversations/${
+                                                            res.locals
+                                                              .conversation
+                                                              .reference
+                                                          }/messages/${
+                                                            message.reference
+                                                          }/likes")).text());
+                                                                this.dropdown.setContent(content);
+                                                              },
+                                                            });
                                                           `}"
                                                         >
                                                           ${likesCount.toString()}

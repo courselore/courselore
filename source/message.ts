@@ -53,6 +53,7 @@ export type GetMessageHelper = ({
       }[];
       likes: {
         id: number;
+        createdAt: string;
         enrollment: MaybeEnrollment;
       }[];
     }
@@ -369,6 +370,7 @@ export default (app: Courselore): void => {
     const likes = app.locals.database
       .all<{
         id: number;
+        createdAt: string;
         enrollmentId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
@@ -384,18 +386,19 @@ export default (app: Courselore): void => {
       }>(
         sql`
           SELECT "likes"."id",
-                "enrollments"."id" AS "enrollmentId",
-                "users"."id" AS "userId",
-                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                "users"."reference" AS "userReference",
-                "users"."email" AS "userEmail",
-                "users"."name" AS "userName",
-                "users"."avatar" AS "userAvatar",
-                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biographySource" AS "userBiographySource",
-                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                "enrollments"."reference" AS "enrollmentReference",
-                "enrollments"."courseRole" AS "enrollmentCourseRole"
+                 "likes"."createdAt",
+                 "enrollments"."id" AS "enrollmentId",
+                 "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."reference" AS "userReference",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                 "users"."biographySource" AS "userBiographySource",
+                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "likes"
           LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
           LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -405,6 +408,7 @@ export default (app: Courselore): void => {
       )
       .map((like) => ({
         id: like.id,
+        createdAt: like.createdAt,
         enrollment:
           like.enrollmentId !== null &&
           like.userId !== null &&
@@ -890,6 +894,70 @@ export default (app: Courselore): void => {
         )}`
       );
       app.locals.helpers.liveUpdatesDispatch({ req, res });
+    }
+  );
+
+  app.get<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals & MessageExistsMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    ...messageExistsMiddleware,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.partial({
+          req,
+          res,
+          body: html`
+            <div
+              class="dropdown--menu"
+              css="${res.locals.css(css`
+                max-height: var(--space--56);
+                padding: var(--space--1) var(--space--0);
+                overflow: auto;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${res.locals.message.likes.reverse().map(
+                (like) => html`
+                  <div class="dropdown--menu--item">
+                    $${app.locals.partials.user({
+                      req,
+                      res,
+                      enrollment: like.enrollment,
+                      size: "xs",
+                      bold: false,
+                    })}
+                     
+                    <span
+                      class="secondary"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `)}"
+                    >
+                      <time
+                        datetime="${new Date(like.createdAt).toISOString()}"
+                        onload="${javascript`
+                          leafac.relativizeDateTimeElement(this, { capitalize: true });
+                        `}"
+                      ></time>
+                    </span>
+                  </div>
+                `
+              )}
+            </div>
+          `,
+        })
+      );
     }
   );
 
