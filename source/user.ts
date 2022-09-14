@@ -1836,9 +1836,38 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
+              <div class="label">
+                <p class="label--text">
+                  Password Confirmation
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        content: "You must confirm your email because this is an important operation that affects your account.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </p>
+                <input
+                  type="password"
+                  name="passwordConfirmation"
+                  required
+                  class="input--text"
+                />
+              </div>
+
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--rose"
+                  onload="${javascript`
+                    this.onclick = () => {
+                      localStorage.clear();
+                    };
+                  `}"
                 >
                   <i class="bi bi-person-x-fill"></i>
                   Remove Your Account
@@ -1851,87 +1880,17 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.delete<
-    {},
-    any,
-    {
-      isEmailNotificationsForAllMessages?: "on";
-      emailNotificationsForAllMessages?:
-        | "instant"
-        | "hourly-digests"
-        | "daily-digests";
-      isEmailNotificationsForMentions?: "on";
-      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated?: "on";
-      isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
-    },
-    {},
-    IsSignedInMiddlewareLocals
-  >(
+  app.delete<{}, any, {}, {}, HasPasswordConfirmationMiddlewareLocals>(
     "/settings/account",
-    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      if (
-        ![undefined, "on"].includes(
-          req.body.isEmailNotificationsForAllMessages
-        ) ||
-        (req.body.isEmailNotificationsForAllMessages === undefined &&
-          req.body.emailNotificationsForAllMessages !== undefined) ||
-        (req.body.isEmailNotificationsForAllMessages === "on" &&
-          (typeof req.body.emailNotificationsForAllMessages !== "string" ||
-            !["instant", "hourly-digests", "daily-digests"].includes(
-              req.body.emailNotificationsForAllMessages
-            ))) ||
-        ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
-        ![undefined, "on"].includes(
-          req.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-        ) ||
-        ![undefined, "on"].includes(
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted
-        ) ||
-        (req.body.isEmailNotificationsForAllMessages === "on" &&
-          (req.body.isEmailNotificationsForMentions !== "on" ||
-            req.body
-              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
-              "on" ||
-            req.body
-              .isEmailNotificationsForMessagesInConversationsYouStarted !==
-              "on")) ||
-        (req.body
-          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-          "on" &&
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
-            "on")
-      )
-        return next("validation");
-
+      res.locals.hasPasswordConfirmationRedirect = "settings/account";
+      next();
+    },
+    ...app.locals.middlewares.hasPasswordConfirmation,
+    (req, res) => {
       app.locals.database.run(
         sql`
-          UPDATE "users"
-          SET "emailNotificationsForAllMessages" = ${
-            req.body.isEmailNotificationsForAllMessages === undefined
-              ? "none"
-              : "instant" /* TODO req.body.emailNotificationsForAllMessages */
-          },
-              "emailNotificationsForMentionsAt" = ${
-                req.body.isEmailNotificationsForMentions === "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
-                req.body
-                  .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-                "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-                req.body
-                  .isEmailNotificationsForMessagesInConversationsYouStarted ===
-                "on"
-                  ? new Date().toISOString()
-                  : null
-              }
+          DELETE FROM "users"
           WHERE "id" = ${res.locals.user.id}
        `
       );
@@ -1940,13 +1899,19 @@ export default (app: Courselore): void => {
         req,
         res,
         theme: "green",
-        content: html`Notifications updated successfully.`,
+        content: html`
+          Account deleted successfully.<br />
+          Thanks for having used Courselore.
+        `,
       });
 
-      res.redirect(
-        303,
-        `https://${app.locals.options.host}/settings/notifications`
-      );
+      app.locals.helpers.Session.close({ req, res });
+      res
+        .header(
+          "Clear-Site-Data",
+          `"*", "cache", "cookies", "storage", "executionContexts"`
+        )
+        .redirect(303, `https://${app.locals.options.host}/`);
     }
   );
 };
