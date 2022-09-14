@@ -1116,15 +1116,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="currentPassword"
-                  required
-                  class="input--text"
-                />
-              </label>
+
               <label class="label">
                 <p class="label--text">Email</p>
                 <input
@@ -1134,8 +1126,37 @@ export default (app: Courselore): void => {
                   value="${res.locals.user.email}"
                   required
                   class="input--text"
+                  onload="${javascript`
+                    this.onvalidate = () => {
+                      if (!leafac.isModified(this))
+                        return "Please provide the email address to which you’d like to update.";
+                    };
+                  `}"
                 />
               </label>
+              <div class="label">
+                <p class="label--text">
+                  Password Confirmation
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        content: "You must confirm your email because this is an important operation that affects your account.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </p>
+                <input
+                  type="password"
+                  name="passwordConfirmation"
+                  required
+                  class="input--text"
+                />
+              </div>
 
               <div>
                 <button
@@ -1165,7 +1186,7 @@ export default (app: Courselore): void => {
                 <p class="label--text">Current Password</p>
                 <input
                   type="password"
-                  name="currentPassword"
+                  name="passwordConfirmation"
                   required
                   class="input--text"
                 />
@@ -1222,7 +1243,7 @@ export default (app: Courselore): void => {
       res.locals.actionAllowedToUserWithUnverifiedEmail =
         typeof req.body.email === "string" &&
         req.body.newPassword === undefined;
-      res.locals.redirect =
+      res.locals.hasPasswordConfirmationRedirect =
         typeof req.query.redirect === "string"
           ? req.query.redirect
           : "settings/email-and-password";

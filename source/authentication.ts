@@ -143,7 +143,7 @@ export type HasPasswordConfirmationMiddleware = express.RequestHandler<
 >[];
 export interface HasPasswordConfirmationMiddlewareLocals
   extends IsSignedInMiddlewareLocals {
-  redirect?: string;
+  hasPasswordConfirmationRedirect?: string;
 }
 
 export type EmailVerificationMailer = ({
@@ -385,15 +385,7 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-                <label class="label">
-                  <p class="label--text">Password</p>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    required
-                    class="input--text"
-                  />
-                </label>
+
                 <label class="label">
                   <p class="label--text">Email</p>
                   <input
@@ -403,8 +395,37 @@ export default (app: Courselore): void => {
                     value="${res.locals.user.email}"
                     required
                     class="input--text"
+                    onload="${javascript`
+                      this.onvalidate = () => {
+                        if (!leafac.isModified(this))
+                          return "Please provide the email address to which you’d like to update.";
+                      };
+                    `}"
                   />
                 </label>
+                <div class="label">
+                  <p class="label--text">
+                    Password Confirmation
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      onload="${javascript`
+                        (this.tooltip ??= tippy(this)).setProps({
+                          trigger: "click",
+                          content: "You must confirm your email because this is an important operation that affects your account.",
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </p>
+                  <input
+                    type="password"
+                    name="passwordConfirmation"
+                    required
+                    class="input--text"
+                  />
+                </div>
 
                 <div>
                   <button
@@ -614,7 +635,9 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.host}/${res.locals.redirect ?? ""}`
+          `https://${app.locals.options.host}/${
+            res.locals.hasPasswordConfirmationRedirect ?? ""
+          }`
         );
       }
 
@@ -1179,11 +1202,11 @@ export default (app: Courselore): void => {
                   required
                   class="input--text"
                   onload="${javascript`
-                  this.onvalidate = () => {
-                    if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                      return "Password & Password Confirmation don’t match.";
-                  };
-                `}"
+                    this.onvalidate = () => {
+                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                        return "Password & Password Confirmation don’t match.";
+                    };
+                  `}"
                 />
               </label>
               <button class="button button--blue">
