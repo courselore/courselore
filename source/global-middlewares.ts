@@ -26,16 +26,12 @@ export default (app: Courselore): void => {
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 
-  app.locals.options.cookies = (() => {
-    const url = new URL(`https://${app.locals.options.host}`);
-    return {
-      domain: url.hostname,
-      httpOnly: true,
-      path: url.pathname,
-      sameSite: "lax",
-      secure: true,
-    };
-  })();
+  app.locals.options.cookies = {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
+  };
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.urlencoded({ extended: true })
