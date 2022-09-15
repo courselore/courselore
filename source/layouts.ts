@@ -3180,24 +3180,24 @@ export default async (app: Courselore): Promise<void> => {
           RETURNING *
         `
       )!;
-      req.cookies.flash = flash.nonce;
-      res.cookie("flash", flash.nonce, {
+      req.cookies["__Host-Flash"] = flash.nonce;
+      res.cookie("__Host-Flash", flash.nonce, {
         ...app.locals.options.cookies,
         maxAge: app.locals.helpers.Flash.maxAge,
       });
     },
 
     get({ req, res }) {
-      if (req.cookies.flash === undefined) return undefined;
+      if (req.cookies["__Host-Flash"] === undefined) return undefined;
       const flash = app.locals.database.get<{
         id: number;
         theme: string;
         content: HTML;
       }>(
-        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies["__Host-Flash"]}`
       );
-      delete req.cookies.flash;
-      res.clearCookie("flash", app.locals.options.cookies);
+      delete req.cookies["__Host-Flash"];
+      res.clearCookie("__Host-Flash", app.locals.options.cookies);
       if (flash === undefined) return undefined;
       app.locals.database.run(
         sql`

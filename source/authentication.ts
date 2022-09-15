@@ -184,20 +184,20 @@ export default (app: Courselore): void => {
           RETURNING *
         `
       )!;
-      req.cookies.session = session.token;
-      res.cookie("session", session.token, {
+      req.cookies["__Host-Session"] = session.token;
+      res.cookie("__Host-Session", session.token, {
         ...app.locals.options.cookies,
         maxAge: app.locals.helpers.Session.maxAge,
       });
     },
 
     get({ req, res }) {
-      if (req.cookies.session === undefined) return undefined;
+      if (req.cookies["__Host-Session"] === undefined) return undefined;
       const session = app.locals.database.get<{
         createdAt: string;
         user: number;
       }>(
-        sql`SELECT "createdAt", "user" FROM "sessions" WHERE "token" = ${req.cookies.session}`
+        sql`SELECT "createdAt", "user" FROM "sessions" WHERE "token" = ${req.cookies["__Host-Session"]}`
       );
       if (
         session === undefined ||
@@ -225,11 +225,11 @@ export default (app: Courselore): void => {
     },
 
     close({ req, res }) {
-      if (req.cookies.session === undefined) return;
-      delete req.cookies.session;
-      res.clearCookie("session", app.locals.options.cookies);
+      if (req.cookies["__Host-Session"] === undefined) return;
+      delete req.cookies["__Host-Session"];
+      res.clearCookie("__Host-Session", app.locals.options.cookies);
       app.locals.database.run(
-        sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
+        sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies["__Host-Session"]}`
       );
     },
 
