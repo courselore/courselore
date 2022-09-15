@@ -226,11 +226,11 @@ export default (app: Courselore): void => {
 
     close({ req, res }) {
       if (req.cookies["__Host-Session"] === undefined) return;
-      delete req.cookies["__Host-Session"];
-      res.clearCookie("__Host-Session", app.locals.options.cookies);
       app.locals.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies["__Host-Session"]}`
       );
+      delete req.cookies["__Host-Session"];
+      res.clearCookie("__Host-Session", app.locals.options.cookies);
     },
 
     closeAllAndReopen({ req, res, userId }) {
