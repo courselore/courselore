@@ -726,7 +726,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
                 css="${res.locals.css(css`
                   display: flex;
@@ -1128,8 +1127,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
               <label class="label">
                 <p class="label--text">Email</p>
                 <input
@@ -1194,7 +1191,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Current Password</p>
                 <input
@@ -1462,8 +1458,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
               <div key="isEmailNotificationsFor" class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
@@ -1836,8 +1830,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
               <div class="label">
                 <p class="label--text">
                   Password Confirmation

@@ -347,7 +347,6 @@ export default (app: Courselore): void => {
                   { addQueryPrefix: true }
                 )}"
               >
-                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
                 Didn’t receive the email? Already checked your spam folder?
                 <button class="link">Resend</button>
               </form>
@@ -384,8 +383,6 @@ export default (app: Courselore): void => {
                   gap: var(--space--4);
                 `)}"
               >
-                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
                 <label class="label">
                   <p class="label--text">Email</p>
                   <input
@@ -679,7 +676,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Email</p>
                 <input
@@ -926,7 +922,6 @@ export default (app: Courselore): void => {
               gap: var(--space--4);
             `)}"
           >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
               <p class="label--text">Email</p>
               <input
@@ -1114,7 +1109,6 @@ export default (app: Courselore): void => {
                 { addQueryPrefix: true }
               )}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <input type="hidden" name="email" value="${req.body.email}" />
               <input type="hidden" name="resend" value="true" />
               <p>
@@ -1184,7 +1178,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Password</p>
                 <input
@@ -1390,7 +1383,6 @@ export default (app: Courselore): void => {
               gap: var(--space--4);
             `)}"
           >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
               <p class="label--text">Name</p>
               <input

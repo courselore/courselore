@@ -1238,11 +1238,6 @@ export default (app: Courselore): void => {
                                 { addQueryPrefix: true }
                               )}"
                             >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
                               <button
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent"
                               >
@@ -3159,8 +3154,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
               <div
                 $${typeof req.params.type === "string" &&
                 conversationTypes.includes(req.params.type)
@@ -5079,11 +5072,6 @@ export default (app: Courselore): void => {
                                                 >
                                                   <input
                                                     type="hidden"
-                                                    name="_csrf"
-                                                    value="${req.csrfToken()}"
-                                                  />
-                                                  <input
-                                                    type="hidden"
                                                     name="type"
                                                     value="${conversationType}"
                                                   />
@@ -5156,11 +5144,6 @@ export default (app: Courselore): void => {
                                         { addQueryPrefix: true }
                                       )}"
                                     >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
                                       $${res.locals.conversation.resolvedAt ===
                                       null
                                         ? html`
@@ -5256,11 +5239,6 @@ export default (app: Courselore): void => {
                                         { addQueryPrefix: true }
                                       )}"
                                     >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
                                       $${res.locals.conversation
                                         .announcementAt === null
                                         ? html`
@@ -5333,11 +5311,6 @@ export default (app: Courselore): void => {
                                   { addQueryPrefix: true }
                                 )}"
                               >
-                                <input
-                                  type="hidden"
-                                  name="_csrf"
-                                  value="${req.csrfToken()}"
-                                />
                                 $${res.locals.conversation.pinnedAt === null
                                   ? html`
                                       <input
@@ -5474,11 +5447,6 @@ export default (app: Courselore): void => {
                                             )}"
                                             class="dropdown--menu"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
                                             $${res.locals.conversation
                                               .anonymousAt === null
                                               ? html`
@@ -5597,11 +5565,6 @@ export default (app: Courselore): void => {
                                                           gap: var(--space--4);
                                                         `)}"
                                                       >
-                                                        <input
-                                                          type="hidden"
-                                                          name="_csrf"
-                                                          value="${req.csrfToken()}"
-                                                        />
                                                         <p>
                                                           Are you sure you want
                                                           to remove this
@@ -5690,11 +5653,6 @@ export default (app: Courselore): void => {
                               align-items: center;
                             `)}"
                           >
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="${req.csrfToken()}"
-                            />
                             <input
                               type="text"
                               name="title"
@@ -5845,11 +5803,6 @@ export default (app: Courselore): void => {
                             >
                               <input
                                 type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <input
-                                type="hidden"
                                 name="reference"
                                 value="${tagging.tag.reference}"
                               />
@@ -5965,11 +5918,6 @@ export default (app: Courselore): void => {
                                                   >
                                                     <input
                                                       type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
-                                                    <input
-                                                      type="hidden"
                                                       name="reference"
                                                       value="${tag.reference}"
                                                     />
@@ -6060,11 +6008,6 @@ export default (app: Courselore): void => {
                                                       { addQueryPrefix: true }
                                                     )}"
                                                   >
-                                                    <input
-                                                      type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
                                                     <input
                                                       type="hidden"
                                                       name="reference"
@@ -6212,11 +6155,6 @@ export default (app: Courselore): void => {
                                 gap: var(--space--2);
                               `)}"
                             >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
                               <div
                                 css="${res.locals.css(css`
                                   max-height: var(--space--24);
@@ -7208,11 +7146,6 @@ export default (app: Courselore): void => {
                                                                     }
                                                                   )}"
                                                                 >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
                                                                   <button
                                                                     class="dropdown--menu--item button button--transparent"
                                                                   >
@@ -7467,11 +7400,6 @@ export default (app: Courselore): void => {
                                                                   )}"
                                                                   class="dropdown--menu"
                                                                 >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
                                                                   $${message.anonymousAt ===
                                                                   null
                                                                     ? html`
@@ -7617,11 +7545,6 @@ export default (app: Courselore): void => {
                                                                                 );
                                                                               `)}"
                                                                             >
-                                                                              <input
-                                                                                type="hidden"
-                                                                                name="_csrf"
-                                                                                value="${req.csrfToken()}"
-                                                                              />
                                                                               <p>
                                                                                 Are
                                                                                 you
@@ -7718,11 +7641,6 @@ export default (app: Courselore): void => {
                                                   { addQueryPrefix: true }
                                                 )}"
                                               >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
                                                 $${message.answerAt === null
                                                   ? html`
                                                       <input
@@ -7823,11 +7741,6 @@ export default (app: Courselore): void => {
                                                   { addQueryPrefix: true }
                                                 )}"
                                               >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
                                                 $${isEndorsed
                                                   ? html`
                                                       <button
@@ -8359,11 +8272,6 @@ export default (app: Courselore): void => {
                                                       { addQueryPrefix: true }
                                                     )}"
                                                   >
-                                                    <input
-                                                      type="hidden"
-                                                      name="_csrf"
-                                                      value="${req.csrfToken()}"
-                                                    />
                                                     <button
                                                       class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
                                                         ? "text--blue"
@@ -8593,11 +8501,6 @@ export default (app: Courselore): void => {
                                                   gap: var(--space--2);
                                                 `)}"
                                               >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
                                                 $${app.locals.partials.contentEditor(
                                                   {
                                                     req,
@@ -8965,12 +8868,6 @@ export default (app: Courselore): void => {
                         `}
                   `)}"
                 >
-                  <input
-                    type="hidden"
-                    name="_csrf"
-                    value="${req.csrfToken()}"
-                  />
-
                   $${res.locals.conversation.type === "question"
                     ? html`
                         <div class="label">

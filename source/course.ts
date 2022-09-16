@@ -492,7 +492,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Name</p>
                 <input
@@ -1036,7 +1035,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Name</p>
                 <input
@@ -1122,8 +1120,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--1);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
               $${res.locals.course.archivedAt === null
                 ? html`
                     <div
@@ -1414,7 +1410,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
                 css="${res.locals.css(css`
                   display: flex;
@@ -1984,7 +1979,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Type</p>
                 <div
@@ -2480,11 +2474,6 @@ export default (app: Courselore): void => {
                                               >
                                                 <input
                                                   type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
-                                                <input
-                                                  type="hidden"
                                                   name="resend"
                                                   value="true"
                                                 />
@@ -2586,11 +2575,6 @@ export default (app: Courselore): void => {
                                                 >
                                                   <input
                                                     type="hidden"
-                                                    name="_csrf"
-                                                    value="${req.csrfToken()}"
-                                                  />
-                                                  <input
-                                                    type="hidden"
                                                     name="courseRole"
                                                     value="${courseRole}"
                                                   />
@@ -2672,11 +2656,6 @@ export default (app: Courselore): void => {
                                       gap: var(--space--2);
                                     `)}"
                                   >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
                                     <div class="dropdown--menu--item">
                                       <input
                                         type="text"
@@ -2710,11 +2689,6 @@ export default (app: Courselore): void => {
                                   <form method="PATCH" action="${action}">
                                     <input
                                       type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <input
-                                      type="hidden"
                                       name="removeExpiration"
                                       value="true"
                                     />
@@ -2728,11 +2702,6 @@ export default (app: Courselore): void => {
                                 `;
                                 const expireForm = html`
                                   <form method="PATCH" action="${action}">
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
                                     <input
                                       type="hidden"
                                       name="expire"
@@ -3692,11 +3661,6 @@ export default (app: Courselore): void => {
                                           >
                                             <input
                                               type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            <input
-                                              type="hidden"
                                               name="courseRole"
                                               value="${courseRole}"
                                             />
@@ -3747,11 +3711,6 @@ export default (app: Courselore): void => {
                                                                   );
                                                                 `)}"
                                                               >
-                                                                <input
-                                                                  type="hidden"
-                                                                  name="_csrf"
-                                                                  value="${req.csrfToken()}"
-                                                                />
                                                                 <input
                                                                   type="hidden"
                                                                   name="courseRole"
@@ -3869,11 +3828,6 @@ export default (app: Courselore): void => {
                                               gap: var(--space--4);
                                             `)}"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
                                             <p>
                                               Are you sure you want to remove
                                               ${isSelf
@@ -4096,7 +4050,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <div class="label--text">
                   Accent Color
@@ -4493,7 +4446,6 @@ export default (app: Courselore): void => {
                 { addQueryPrefix: true }
               )}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
                 class="button button--blue"
                 css="${res.locals.css(css`

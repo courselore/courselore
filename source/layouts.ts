@@ -402,11 +402,6 @@ export default async (app: Courselore): Promise<void> => {
                                 action="https://${app.locals.options
                                   .host}/demonstration-data"
                               >
-                                <input
-                                  type="hidden"
-                                  name="_csrf"
-                                  value="${req.csrfToken()}"
-                                />
                                 <button
                                   class="button button--blue"
                                   css="${res.locals.css(css`
@@ -435,11 +430,6 @@ export default async (app: Courselore): Promise<void> => {
                   method="DELETE"
                   action="https://${app.locals.options.host}/turn-off"
                 >
-                  <input
-                    type="hidden"
-                    name="_csrf"
-                    value="${req.csrfToken()}"
-                  />
                   <button class="button button--transparent">
                     <i class="bi bi-power"></i>
                     Turn off
@@ -2404,11 +2394,6 @@ export default async (app: Courselore): Promise<void> => {
                         action="https://${app.locals.options
                           .host}/demonstration-data"
                       >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
                         <button
                           class="button button--amber"
                           css="${res.locals.css(css`
@@ -2467,11 +2452,6 @@ export default async (app: Courselore): Promise<void> => {
                         action="https://${app.locals.options
                           .host}/demonstration-data"
                       >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
                         <button
                           class="button button--amber"
                           css="${res.locals.css(css`
@@ -2884,11 +2864,6 @@ export default async (app: Courselore): Promise<void> => {
                             method="DELETE"
                             action="https://${app.locals.options.host}/sign-out"
                           >
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="${req.csrfToken()}"
-                            />
                             <button
                               class="dropdown--menu--item button button--transparent"
                               onload="${javascript`

@@ -175,7 +175,6 @@ export default (app: Courselore): void => {
                 gap: var(--space--4);
               `)}"
             >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Users Who May Create Courses</p>
                 <div
@@ -559,11 +558,6 @@ export default (app: Courselore): void => {
                                         >
                                           <input
                                             type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          <input
-                                            type="hidden"
                                             name="role"
                                             value="${systemRole}"
                                           />
@@ -613,11 +607,6 @@ export default (app: Courselore): void => {
                                                                 );
                                                               `)}"
                                                             >
-                                                              <input
-                                                                type="hidden"
-                                                                name="_csrf"
-                                                                value="${req.csrfToken()}"
-                                                              />
                                                               <input
                                                                 type="hidden"
                                                                 name="role"
