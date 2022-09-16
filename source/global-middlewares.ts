@@ -18,14 +18,23 @@ export interface BaseMiddlewareLocals {
 }
 
 export default (app: Courselore): void => {
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
+
+  app.locals.options.cookies = {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
+  };
+
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
 
     if (
-      !["GET", "HEAD", "OPTIONS"].includes(req.method) ||
+      !["GET", "HEAD", "OPTIONS"].includes(req.method) &&
       req.header("CSRF-Protection") !== "true"
-    )
+    ) {
       res.status(403).send(
         app.locals.layouts.box({
           req,
@@ -55,25 +64,18 @@ export default (app: Courselore): void => {
           `,
         })
       );
-    console.log(
-      `${new Date().toISOString()}\tERROR\nCross-Site Request Forgery`
-    );
+      console.log(
+        `${new Date().toISOString()}\tERROR\nCross-Site Request Forgery`
+      );
+    }
 
     next();
   });
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
-
-  app.locals.options.cookies = {
-    path: "/",
-    secure: true,
-    httpOnly: true,
-    sameSite: "lax",
-  };
-
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.urlencoded({ extended: true })
   );
+
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     expressFileUpload({
       createParentPath: true,
