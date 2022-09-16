@@ -10,6 +10,22 @@
 
 ## Unreleased
 
+- **Fixed an issue in which sessions wouldn’t be closed on the server properly on sign-out.**
+
+  The server would clear the session cookie on the browser, so the user would be signed out, but the server didn’t dispose of the session properly, so if the session was compromised the attacker would continue to have access to it even after a sign-out.
+
+  We fixed the issue, so when a user signs out we invalidate the session on the server.
+
+  Even though we have no reports of this issue having been explored by attackers, in an abundance of caution this update invalidates all user sessions. This means that **users will be signed out after this update and will have to sign in again**.
+
+- **Fixed an issue in which cookies set by Courselore would be accessible by subdomains.**
+
+  Courselore was setting cookies with the `Domain` option, which makes cookies accessible by subdomains. This is a security concern for installations running under `sub-domain.example.com` if there’s an untrusted application running at `sub-sub-domain.sub-domain.example.com`, which could read user sessions.
+
+  Now Courselore doesn’t use the `Domain` option, which makes the cookie bound to the exact origin under which Courselore is running.
+
+  Additionally, we now use the `__Host-` prefix on cookies, which should mitigate cookie tossing attacks.
+
 - Added a way for people to see who liked a message.
 - Added a counter next to the separator for new messages in conversations you visited before (for example, “3 New”).
 - Reduced the grace period between a message being sent and its email notifications being delivered from approximately 10 minutes to approximately 2 minutes. We may bring this grace period back up when the email notification digests are more fleshed out, or we may turn this into a user setting.
