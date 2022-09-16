@@ -683,6 +683,8 @@ export default (app: Courselore): void => {
           Notifications
         </a>
         <a
+          hidden
+          TODO
           href="https://${app.locals.options.host}/settings/account"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/account\/?$/i
@@ -1880,6 +1882,8 @@ export default (app: Courselore): void => {
     }
   );
 
+  /*
+  TODO
   app.delete<{}, any, {}, {}, HasPasswordConfirmationMiddlewareLocals>(
     "/settings/account",
     (req, res, next) => {
@@ -1914,4 +1918,5 @@ export default (app: Courselore): void => {
         .redirect(303, `https://${app.locals.options.host}/`);
     }
   );
+  */
 };
