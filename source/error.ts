@@ -59,14 +59,9 @@ export default (app: Courselore): void => {
   );
 
   app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
-    const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
-    const message = isCSRF
-      ? "Cross-Site"
-      : isValidation
-      ? "Validation"
-      : "Server";
-    res.status(isCSRF ? 403 : isValidation ? 422 : 500).send(
+    const message = isValidation ? "Validation" : "Server";
+    res.status(isValidation ? 422 : 500).send(
       app.locals.layouts.box({
         req,
         res,
@@ -76,35 +71,17 @@ export default (app: Courselore): void => {
             <i class="bi bi-bug-fill"></i>
             ${message} Error
           </h2>
-          $${isCSRF
-            ? html`
-                <p>
-                  This request doesn’t appear to have come from Courselore.
-                  Please try again.
-                </p>
-                <p>
-                  If the issue persists, please report to the system
-                  administrator at
-                  <a
-                    href="${app.locals.partials.reportIssueHref}"
-                    target="_blank"
-                    class="link"
-                    >${app.locals.options.administratorEmail}</a
-                  >.
-                </p>
-              `
-            : html`
-                <p>
-                  This is an issue in Courselore, please report to the system
-                  administrator at
-                  <a
-                    href="${app.locals.partials.reportIssueHref}"
-                    target="_blank"
-                    class="link"
-                    >${app.locals.options.administratorEmail}</a
-                  >.
-                </p>
-              `}
+
+          <p>
+            This is an issue in Courselore, please report to the system
+            administrator at
+            <a
+              href="${app.locals.partials.reportIssueHref}"
+              target="_blank"
+              class="link"
+              >${app.locals.options.administratorEmail}</a
+            >.
+          </p>
         `,
       })
     );
