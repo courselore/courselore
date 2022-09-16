@@ -12,6 +12,7 @@
 
 - Added a way for people to see who liked a message.
 - Added a counter next to the separator for new messages in conversations you visited before (for example, “3 New”).
+- Reduced the grace period between a message being sent and its email notifications being delivered from approximately 10 minutes to approximately 2 minutes. We may bring this grace period back up when the email notification digests are more fleshed out, or we may turn this into a user setting.
 
 ## 4.0.13
 
