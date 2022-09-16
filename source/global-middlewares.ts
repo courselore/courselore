@@ -1,7 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
-import csurf from "csurf";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 import { Courselore } from "./index.js";
@@ -40,15 +39,6 @@ export default (app: Courselore): void => {
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
-    })
-  );
-
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    csurf({
-      cookie: {
-        ...app.locals.options.cookies,
-        maxAge: 30 * 24 * 60 * 60,
-      },
     })
   );
 
