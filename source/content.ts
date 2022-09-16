@@ -748,10 +748,8 @@ export default async (app: Courselore): Promise<void> => {
                             }/content-editor/preview`
                           )}, {
                             method: "POST",
-                            body: new URLSearchParams({
-                              _csrf: ${JSON.stringify(req.csrfToken())},
-                              content: textarea.value,
-                            }),
+                            headers: { "CSRF-Protection": "true", },
+                            body: new URLSearchParams({ content: textarea.value, }),
                           })
                         ).text()
                       );
@@ -1783,7 +1781,6 @@ export default async (app: Courselore): Promise<void> => {
                   this.upload = async (fileList) => {
                     if (!checkIsSignedIn()) return;
                     const body = new FormData();
-                    body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
                     tippy.hideAll();
@@ -1793,6 +1790,7 @@ export default async (app: Courselore): Promise<void> => {
                       `https://${app.locals.options.host}/content-editor/attachments`
                     )}, {
                       method: "POST",
+                      headers: { "CSRF-Protection": "true", },
                       body,
                     })).text();
                     textarea.disabled = false;

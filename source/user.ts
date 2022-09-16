@@ -907,9 +907,6 @@ export default (app: Courselore): void => {
 
                       this.upload = async (fileList) => {
                         const body = new FormData();
-                        body.append("_csrf", ${JSON.stringify(
-                          req.csrfToken()
-                        )});
                         body.append("avatar", fileList[0]);
                         this.value = "";
                         tippy.hideAll();
@@ -918,6 +915,7 @@ export default (app: Courselore): void => {
                           app.locals.options.host
                         }/settings/profile/avatar", {
                           method: "POST",
+                          headers: { "CSRF-Protection": "true", },
                           body,
                         });
                         avatarChooser.uploadingIndicator.hide();
