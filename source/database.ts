@@ -1352,6 +1352,10 @@ export default async (app: Courselore): Promise<void> => {
 
     sql`
       ALTER TABLE "conversations" ADD COLUMN "announcementAt" TEXT NULL;
+    `,
+
+    sql`
+      DELETE FROM "sessions";
     `
   );
   app.once("close", () => {
