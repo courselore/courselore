@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+## 4.0.14
+
+**2022-09-16 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.14) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - **Fixed an issue in which sessions wouldn’t be closed on the server properly on sign-out.**
 
   The server would clear the session cookie on the browser, so the user would be signed out, but the server didn’t dispose of the session properly, so if the session was compromised the attacker would continue to have access to it even after a sign-out.
