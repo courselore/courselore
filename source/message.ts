@@ -1247,7 +1247,9 @@ export default (app: Courselore): void => {
             )
             VALUES (
               ${new Date().toISOString()},
-              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${new Date(
+                Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
+              ).toISOString()},
               ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
               ${message.id}
             )
@@ -1258,7 +1260,7 @@ export default (app: Courselore): void => {
           sql`
             UPDATE "emailNotificationMessageJobs"
             SET "startAt" = ${new Date(
-              Date.now() + 5 * 60 * 1000
+              Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
             ).toISOString()},
                 "expiresAt" = ${new Date(
                   Date.now() + 5 * 60 * 60 * 1000
@@ -1650,6 +1652,8 @@ export default (app: Courselore): void => {
           }`
         );
       }
+
+      app.locals.workers.sendEmail();
 
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }
