@@ -6694,7 +6694,7 @@ export default (app: Courselore): void => {
                     onload="${javascript`
                       const scroll = () => {
                         if (
-                          [undefined, "GET", "HEAD"].includes(event?.detail?.request?.method) &&
+                          [undefined, "GET", "HEAD", "OPTIONS"].includes(event?.detail?.request?.method) &&
                           !event?.detail?.liveUpdate
                         ) {
                           ${

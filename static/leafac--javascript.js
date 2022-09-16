@@ -85,7 +85,8 @@ const leafac = {
       const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (body.getAttribute("live-navigation") !== null) return;
-      const isGet = ["GET", "HEAD"].includes(request.method);
+      const isGet = ["GET", "HEAD", "OPTIONS"].includes(request.method);
+      if (!isGet) request.headers.set("CSRF-Protection", "true");
       const requestURL = new URL(request.url);
       const detail = { request, previousLocation };
       if (
@@ -210,7 +211,7 @@ const leafac = {
       event.preventDefault();
       if (event.submitter?.disabled !== undefined)
         event.submitter.disabled = true;
-      const request = ["GET", "HEAD"].includes(method)
+      const request = ["GET", "HEAD", "OPTIONS"].includes(method)
         ? (() => {
             const actionURL = new URL(action);
             for (const [name, value] of body)
