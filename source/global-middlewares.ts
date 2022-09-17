@@ -32,7 +32,7 @@ export default (app: Courselore): void => {
     res.locals.html = HTMLForJavaScript();
 
     if (
-      !["GET", "HEAD", "OPTIONS"].includes(req.method) &&
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
       req.header("CSRF-Protection") !== "true"
     ) {
       res.status(403).send(

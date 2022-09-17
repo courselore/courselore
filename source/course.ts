@@ -753,7 +753,7 @@ export default (app: Courselore): void => {
 
       if (
         res.locals.course.archivedAt !== null &&
-        !["GET", "HEAD", "OPTIONS"].includes(req.method) &&
+        !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
         actionAllowedOnArchivedCourse !== true
       ) {
         app.locals.helpers.Flash.set({

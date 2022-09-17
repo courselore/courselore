@@ -26,7 +26,7 @@ export default (app: Courselore): void => {
             Number(res.getHeader("Content-Length") ?? "0") / 1000
           )}kB\t\t${req.originalUrl}${
             app.locals.options.environment === "development" &&
-            !["GET", "HEAD", "OPTIONS"].includes(req.method)
+            !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method)
               ? `\n${JSON.stringify(req.body, undefined, 2)}`
               : ``
           }`
