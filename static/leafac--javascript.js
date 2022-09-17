@@ -76,7 +76,7 @@ const leafac = {
     );
   },
 
-  liveNavigation(host) {
+  liveNavigation(hostname) {
     let abortController;
     let previousLocation = { ...window.location };
 
@@ -186,7 +186,7 @@ const leafac = {
         event.shiftKey ||
         event.target.isContentEditable ||
         link === null ||
-        !link.href.startsWith(`https://${host}`)
+        !link.href.startsWith(`https://${hostname}`)
       )
         return;
       event.preventDefault();
@@ -209,7 +209,7 @@ const leafac = {
       const submitterName = event.submitter?.getAttribute("name");
       if (typeof submitterName === "string")
         body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
-      if (!action.startsWith(`https://${host}`)) return;
+      if (!action.startsWith(`https://${hostname}`)) return;
       event.preventDefault();
       if (event.submitter?.disabled !== undefined)
         event.submitter.disabled = true;

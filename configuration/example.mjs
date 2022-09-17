@@ -6,7 +6,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
     courseloreImport,
     courseloreImportMetaURL,
 
-    // The main host through which people may access Courselore.
+    // The main hostname through which people may access Courselore.
     hostname: "YOUR-DOMAIN.EDU",
 
     // This email address serves two purposes:

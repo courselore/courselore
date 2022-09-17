@@ -228,10 +228,10 @@ Disadvantages: Doesn’t work on some LANs. Doesn’t work across the internet, 
 
    > **Windows Tip:** Install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
 
-4. Run Courselore with the `HOST` environment variable set to the address determined in step 1, for example, in macOS and Linux:
+4. Run Courselore with the `HOSTNAME` environment variable set to the address determined in step 1, for example, in macOS and Linux:
 
    ```console
-   $ env HOST=leafac--mac-mini.local npm start
+   $ env HOSTNAME=leafac--mac-mini.local npm start
    ```
 
 5. Visit the address on the other device.
