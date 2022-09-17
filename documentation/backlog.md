@@ -824,6 +824,15 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Add synchronizer token as added security against CSRF.
+  - Currently we’re defending from CSRF with a [custom header](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). This is the simplest viable protection, but it’s vulnerable to broken environments that let cross-site requests include custom headers (for example, an old version of Flash).
+  - [Synchronizer tokens](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) are the most secure option.
+    - Communicate the token to the server with the custom header (`CSRF-Protection`), combining the synchronizer token with the custom header approach.
+    - Let the synchronizer tokens be session-wide, not specific per page, so as to not break the browser “Back” button.
+    - Couple the synchronizer token to the user session.
+    - Have pre-sessions with synchronizer tokens for signed out users to protect against login CSRF.
+  - In case the implementation of the synchronizer token doesn’t go well, try to use the [double-submit pattern](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#double-submit-cookie).
+    - It requires a secret known by the server to implement most securely. Note how everything boils down to the server recognizing itself by seeing a secret piece of data that it created.
 - `filenamify` may generate long names in pathological cases in which the extension is long.
 - Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
 - Windows development:
