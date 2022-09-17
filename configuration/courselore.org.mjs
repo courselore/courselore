@@ -28,7 +28,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         },
       },
     },
-    alternativeHosts: [
+    alternativeHostnames: [
       "www.courselore.org",
       "courselore.com",
       "www.courselore.com",
@@ -50,6 +50,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
           import common
         }
       }
-    `
+    `,
   });
 };

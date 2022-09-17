@@ -5,7 +5,9 @@ export default async ({
   administratorEmail,
   dataDirectory,
   sendMail,
+  // DEPRECATED
   alternativeHosts = [],
+  alternativeHostnames = alternativeHosts,
   hstsPreload = false,
   caddyExtraConfiguration = "",
   tunnel = false,
@@ -71,7 +73,7 @@ export default async ({
             encode zstd gzip
           }
 
-          ${[tunnel ? [] : [host], ...alternativeHosts]
+          ${[tunnel ? [] : [host], ...alternativeHostnames]
             .map((host) => `http://${host}`)
             .join(", ")} {
             import common
@@ -82,9 +84,9 @@ export default async ({
           }
 
           ${
-            alternativeHosts.length > 0
+            alternativeHostnames.length > 0
               ? caddyfile`
-                  ${alternativeHosts
+                  ${alternativeHostnames
                     .map((host) => `https://${host}`)
                     .join(", ")} {
                     import common

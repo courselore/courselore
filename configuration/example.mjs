@@ -38,8 +38,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       },
     },
 
-    // [OPTIONAL] Other hosts you’d like to redirect to this Courselore installation.
-    // alternativeHosts: ["WWW.YOUR-DOMAIN.EDU", "..."],
+    // [OPTIONAL] Other hostnames you’d like to redirect to this Courselore installation.
+    // alternativeHostnames: ["WWW.YOUR-DOMAIN.EDU", "..."],
 
     // [OPTIONAL, BUT RECOMMENDED] See https://hstspreload.org/ to learn more.
     // hstsPreload: true,
