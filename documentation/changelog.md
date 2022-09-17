@@ -10,6 +10,18 @@
 
 ## Unreleased
 
+## 4.0.15
+
+**2022-09-17 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.15) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- **Fixed a [security issue](https://fortbridge.co.uk/research/a-csrf-vulnerability-in-the-popular-csurf-package/) related to [CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).**
+
+  The issue could affect Courselore installations running under domains that had untrusted applications running in subdomains, for example, if Courselore was running at `courselore.example.com` and there was an untrusted application running at `untrusted.courselore.example.com`. This situation could lead to cookie tossing, which combined with reading CSRF tokens from query parameters could lead to a successful CSRF attack.
+
+  We have no report of this having been explored by attackers.
+
+  The source of the issue was relying on the [`csurf` package](https://github.com/expressjs/csurf) for CSRF protection. Since the issue has been reported, the `csurf` package was deprecated and now Courselore implements its own CSRF protection using [custom headers](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). In the future we will add [synchronizer tokens](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) as added security against poorly-behaved clients that allow for custom headers in cross-site requests (for example, old versions of Flash & some PDF readers).
+
 ## 4.0.14
 
 **2022-09-16 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.14) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
