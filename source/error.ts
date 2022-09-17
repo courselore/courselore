@@ -15,7 +15,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.host}/sign-in${qs.stringify(
+        `https://${app.locals.options.hostname}/sign-in${qs.stringify(
           { redirect: req.originalUrl.slice(1) },
           { addQueryPrefix: true }
         )}`
@@ -30,7 +30,7 @@ export default (app: Courselore): void => {
       if (typeof req.query.redirect === "string")
         return res.redirect(
           303,
-          `https://${app.locals.options.host}/${req.query.redirect}`
+          `https://${app.locals.options.hostname}/${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({

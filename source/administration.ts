@@ -89,7 +89,7 @@ export default (app: Courselore): void => {
     (res, req) => {
       req.redirect(
         303,
-        `https://${app.locals.options.host}/administration/system-settings`
+        `https://${app.locals.options.hostname}/administration/system-settings`
       );
     }
   );
@@ -116,7 +116,7 @@ export default (app: Courselore): void => {
       menu: html`
         <a
           href="https://${app.locals.options
-            .host}/administration/system-settings"
+            .hostname}/administration/system-settings"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/administration\/system-settings\/?$/i
           )
@@ -127,7 +127,7 @@ export default (app: Courselore): void => {
           System Settings
         </a>
         <a
-          href="https://${app.locals.options.host}/administration/users"
+          href="https://${app.locals.options.hostname}/administration/users"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/administration\/users\/?$/i
           )
@@ -167,7 +167,7 @@ export default (app: Courselore): void => {
             <form
               method="PATCH"
               action="https://${app.locals.options
-                .host}/administration/system-settings"
+                .hostname}/administration/system-settings"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -295,7 +295,7 @@ export default (app: Courselore): void => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.host}/administration/system-settings`
+        `https://${app.locals.options.hostname}/administration/system-settings`
       );
     }
   );
@@ -406,7 +406,7 @@ export default (app: Courselore): void => {
           </label>
 
           $${users.map((user) => {
-            const action = `https://${app.locals.options.host}/users/${user.reference}`;
+            const action = `https://${app.locals.options.hostname}/users/${user.reference}`;
             const isSelf = user.id === res.locals.user.id;
             const isOnlyAdministrator =
               isSelf &&
@@ -744,8 +744,8 @@ export default (app: Courselore): void => {
     res.redirect(
       303,
       isSelf
-        ? `https://${app.locals.options.host}`
-        : `https://${app.locals.options.host}/administration/users`
+        ? `https://${app.locals.options.hostname}`
+        : `https://${app.locals.options.hostname}/administration/users`
     );
   });
 };

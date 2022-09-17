@@ -340,7 +340,7 @@ export default async (app: Courselore): Promise<void> => {
           text.replace(
             new RegExp(
               `(?<=https://${escapeStringRegexp(
-                app.locals.options.host
+                app.locals.options.hostname
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi"
             ),
@@ -462,7 +462,7 @@ export default async (app: Courselore): Promise<void> => {
         text.replace(
           new RegExp(
             `(?<=https://${escapeStringRegexp(
-              app.locals.options.host
+              app.locals.options.hostname
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi"
           ),

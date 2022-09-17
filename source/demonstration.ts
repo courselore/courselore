@@ -100,7 +100,7 @@ export default (app: Courselore): void => {
             ${
               Math.random() < 0.6
                 ? `https://${
-                    app.locals.options.host
+                    app.locals.options.hostname
                   }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                 : null
             },
@@ -111,7 +111,7 @@ export default (app: Courselore): void => {
                 .contentPreprocessed
             },
             ${
-              app.locals.options.host === app.locals.options.tryHost
+              app.locals.options.hostname === app.locals.options.tryHostname
                 ? "none"
                 : userIndex === 0
                 ? "administrator"
@@ -416,11 +416,11 @@ Conversation other: #2
 Conversation non-existent: #14981039481
 
 Conversation permanent link turned reference: <https://${
-        app.locals.options.host
+        app.locals.options.hostname
       }/courses/${course.reference}/conversations/1>
 
 Conversation non-existent permanent link turned reference: <https://${
-        app.locals.options.host
+        app.locals.options.hostname
       }/courses/${course.reference}/conversations/14981039481>
 
 Message self: #1/1
@@ -430,13 +430,13 @@ Message other: #2/1
 Message non-existent: #1/2
 
 Message permanent link turned reference: <https://${
-        app.locals.options.host
+        app.locals.options.hostname
       }/courses/${
         course.reference
       }/conversations/1?messages%5BmessageReference%5D=1>
 
 Message non-existent permanent link turned reference: <https://${
-        app.locals.options.host
+        app.locals.options.hostname
       }/courses/${
         course.reference
       }/conversations/1?messages%5BmessageReference%5D=2>
@@ -1412,7 +1412,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         password is “courselore”.
       `,
     });
-    res.redirect(303, `https://${app.locals.options.host}`);
+    res.redirect(303, `https://${app.locals.options.hostname}`);
   });
 
   app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(

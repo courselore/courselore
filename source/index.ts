@@ -126,9 +126,9 @@ export interface Courselore extends express.Express {
   locals: {
     options: {
       version: string;
-      canonicalHost: string;
+      canonicalHostname: string;
       metaCourseloreInvitation: string;
-      tryHost: string;
+      tryHostname: string;
     } & Options &
       GlobalMiddlewaresOptions &
       AuthenticationOptions &
@@ -194,7 +194,7 @@ export interface Courselore extends express.Express {
 }
 
 export interface Options {
-  host: string;
+  hostname: string;
   administratorEmail: string;
   dataDirectory: string;
   sendMail: ((
@@ -219,9 +219,9 @@ export default async (options: Options): Promise<Courselore> => {
         "utf8"
       )
     ).version,
-    canonicalHost: "courselore.org",
+    canonicalHostname: "courselore.org",
     metaCourseloreInvitation: "https://meta.courselore.org",
-    tryHost: "try.courselore.org",
+    tryHostname: "try.courselore.org",
   } as any;
   app.locals.handlers = {} as any;
   app.locals.middlewares = {} as any;
