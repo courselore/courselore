@@ -1,7 +1,9 @@
 export default async ({
   courseloreImport,
   courseloreImportMetaURL,
+  // DEPRECATED
   host,
+  hostname = host,
   administratorEmail,
   dataDirectory,
   sendMail,
@@ -53,7 +55,7 @@ export default async ({
 
           (common) {
             header Cache-Control no-cache
-            header Content-Security-Policy "default-src https://${host}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+            header Content-Security-Policy "default-src https://${hostname}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
             header Cross-Origin-Embedder-Policy require-corp
             header Cross-Origin-Opener-Policy same-origin
             header Cross-Origin-Resource-Policy same-origin
@@ -73,8 +75,8 @@ export default async ({
             encode zstd gzip
           }
 
-          ${[tunnel ? [] : [host], ...alternativeHostnames]
-            .map((host) => `http://${host}`)
+          ${[tunnel ? [] : [hostname], ...alternativeHostnames]
+            .map((hostname) => `http://${hostname}`)
             .join(", ")} {
             import common
             redir https://{host}{uri} 308
@@ -87,10 +89,10 @@ export default async ({
             alternativeHostnames.length > 0
               ? caddyfile`
                   ${alternativeHostnames
-                    .map((host) => `https://${host}`)
+                    .map((hostname) => `https://${hostname}`)
                     .join(", ")} {
                     import common
-                    redir https://${host}{uri} 307
+                    redir https://${hostname}{uri} 307
                     handle_errors {
                       import common
                     }
@@ -101,7 +103,7 @@ export default async ({
 
           ${caddyExtraConfiguration}
           
-          http${tunnel ? `` : `s`}://${host} {
+          http${tunnel ? `` : `s`}://${hostname} {
             route {
               import common
               route {
@@ -171,7 +173,7 @@ export default async ({
       sendMail.defaults = defaults;
     }
     const app = await courselore({
-      host,
+      hostname,
       administratorEmail,
       dataDirectory,
       sendMail,
