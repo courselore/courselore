@@ -842,8 +842,6 @@ const { app, BrowserWindow } = require("electron");
 - Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
-- Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
-  - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
 - Do things break if you’re trying to run Courselore from a folder that includes spaces & weird characters?
   - Note Caddy’s configuration and the serving of static files.
   - Test development.
