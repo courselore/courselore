@@ -3,7 +3,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
-    host: "try.courselore.org",
+    hostname: "try.courselore.org",
     administratorEmail: "try@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
     sendMail: {
@@ -15,6 +15,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         },
       },
     },
+    alternativeHostnames: ["try.courselore.com"],
     caddyExtraConfiguration: `
       http://leafac.courselore.org {
         redir https://{host}{uri} 308

@@ -3,7 +3,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
-    host: process.env.TUNNEL ?? process.env.HOST ?? "localhost",
+    hostname: process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
     administratorEmail: "development@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
     sendMail: {

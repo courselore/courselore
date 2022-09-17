@@ -10,7 +10,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   (await courseloreImport("../configuration/base.mjs")).default({
     courseloreImport,
     courseloreImportMetaURL,
-    host: "courselore.org",
+    hostname: "courselore.org",
     administratorEmail: "administrator@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
     sendMail: {
