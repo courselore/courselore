@@ -26,6 +26,8 @@ You may use Courselore at [`courselore.org`](https://courselore.org), but you ma
 
   > **Note:** You need access to the DNS configuration for the domain to set records such as “`my-course.educational-institution.edu` maps to the IP address of my server at `159.203.147.228`.”
 
+  > **Note:** You must have a domain or a subdomain dedicated to Courselore—you may not run Courselore under a pathname, for example, `educational-institution.edu/courselore/`. This is necessary for Courselore to manage cookies in the most secure way and not conflict with other applications that could be running under other pathnames.
+
 ## DNS Setup
 
 Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAME` Records for common subdomains, for example, `www`.
