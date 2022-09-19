@@ -1,6 +1,23 @@
 # Meeting Notes
 
 <details>
+<summary>2021-09-17</summary>
+
+- Small quality-of-life improvements:
+  - Show who liked a message.
+  - Reduce the delay between sending a message & triggering its email notifications.
+- Security issues:
+  - Closing user sessions on the server (we had to sign everyone out just in case…).
+  - Cookies & subdomains (it was breaking `try.courselore.org` and could lead to cookie tossing).
+  - CSRF (`csurf` was deprecated).
+- Investigated double-submit issue.
+- Chrome on Android is still crashing 2 times out of 5.
+- Filter by Selected People should allow to choose **which** people.
+- Some operations are slow because live-updates are putting you behind in the queue.
+
+</details>
+
+<details>
 <summary>2021-09-10</summary>
 
 - No-reply: Let’s keep the administrator email for now, and at some point implement the feature in which you’re able to post a message by replying to the email notification.
