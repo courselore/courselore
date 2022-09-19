@@ -54,7 +54,7 @@ export default async ({
           }
 
           (common) {
-            header Cache-Control no-cache
+            header Cache-Control no-store
             header Content-Security-Policy "default-src https://${hostname}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
             header Cross-Origin-Embedder-Policy require-corp
             header Cross-Origin-Opener-Policy same-origin
@@ -113,12 +113,16 @@ export default async ({
                   )
                 )}
                 @file_exists file
-                file_server @file_exists
+                route @file_exists {
+                  header Cache-Control no-cache
+                  file_server
+                }
               }
               route /files/* {
                 root * ${path.resolve(dataDirectory)}
                 @file_exists file
                 route @file_exists {
+                  header Cache-Control "max-age=31536000, immutable"
                   @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
                   header @must_be_downloaded Content-Disposition attachment
                   @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
