@@ -10,6 +10,13 @@
 
 ## Unreleased
 
+```
+// DEPRECATED
+  host,
+// DEPRECATED
+  alternativeHosts = [],
+```
+
 ## 4.0.15
 
 **2022-09-17 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.15) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
