@@ -10,12 +10,80 @@
 
 ## Unreleased
 
-```
-// DEPRECATED
-  host,
-// DEPRECATED
-  alternativeHosts = [],
-```
+## 4.1.0
+
+**2022-09-21 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- **Introduced a backwards-compatible change to the configuration file.**
+
+  We recommend that you take action and update your configuration file, but existing configuration files will continue to work until the next major version (5.0.0).
+
+  We renamed the `host` & `alternativeHosts` configuration fields to `hostname` & `alternativeHostnames` (see [`example.mjs`](/configuration/example.mjs)). This follows [the Node.js naming convention for parts of an URL](https://nodejs.org/dist/latest-v18.x/docs/api/url.html#url-strings-and-url-objects) and reflects the intent that Courselore must be run from the default ports (80 for HTTP & 443 for HTTPS).
+
+- Fixed an issue in which Google Chrome users would see a “validation error” when trying to change the attributes of a conversation, for example, “pinning” a conversation.
+
+  <details>
+  <summary>The Investigation behind This Issue Is Fascinating</summary>
+
+  This was a really difficult issue to fix, because it only occurred under very specific circumstances, and even though we found a solution, we still don’t know what caused the issue in the first place.
+
+  Here’s what we know:
+
+  - The issue only occurred in Google Chrome.
+
+    At one point we thought it could be related to a slightly outdated version of Google Chrome, because that was the version used by the people who reported the issue. The investigation of this hypothesis was troublesome because [installing specific versions of Google Chrome is made difficult on purpose](https://www.chromium.org/getting-involved/download-chromium/#downloading-old-builds-of-chrome-chromium). The idea is to keep everyone on the latest and most secure version, which is a valid consideration, but does complicate things for developers.
+
+    In the end, it turns out that the issue occurred at least from version 102.0.50005.61 to version 105.0.5195.125 (the most recent version at the time of this writing).
+
+  - The issue only occurred on some actions, for example, pinning a conversation or setting a note as an announcement.
+
+    Notably, the issue did **not** occur on similar actions that exercise similar parts of the codebase, for example, setting a message as an answer to a question.
+
+    We still don’t understand why that’s the case.
+
+  - The issue only occurred when accessing Courselore through the internet.
+
+    Importantly, it did **not** occur when accessing Courselore directly from a development machine or via a Local-Area Network (LAN).
+
+    And surprisingly, the issue **did** occur when accessing Courselore from a development machine when going through a tunnel that passes the network traffic through the internet.
+
+    We still don’t understand why that’s the case.
+
+  - The issue only occurred if the conversation page had live-updates enabled.
+
+    Live-updates are the system that shows updates in real-time, for example, updating the page when someone else sends you a message.
+
+    We still don’t understand why that’s the case.
+
+  - By looking at the server logs while the issue was being reproduced, it appears that Google Chrome was sending the same request twice.
+
+    On the first request, the action would be performed, for example, the conversation would be pinned. On the second request, the server would respond with an error message, because the person would be trying to pin a conversation that was already pinned. That’s why the action would be performed successfully, but the user would see an error message.
+
+    We still don’t understand why that’s the case.
+
+  - Surprisingly, looking at the browser logs, Google Chrome only reported sending one request.
+
+    We still don’t understand why that’s the case.
+
+  - Looking at the browser logs to check the requests made by Google Chrome was tricky in the first place, and for some time during the investigation the developers of Courselore couldn’t reproduce the issue locally because of this. It turned out that opening the developer tools disabled the cache (that’s a setting you may turn on and off), and if the cache was disabled then the issue would not occur.
+
+    We still don’t understand why that’s the case.
+
+  This last quirk was a hint at the underlying cause of the issue: Google Chrome was acting weird with respect to caching.
+
+  It used to be the case that Courselore used the [`no-cache` cache control policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#no-cache). This policy allows the browser to use material from the cache, but only after having checked with the server that there isn’t a newer version of that material.
+
+  The `no-cache` cache control policy is a good compromise between being able to use the browser cache to speed things up while avoiding stale resources. Generally, HTML pages are cache misses, because their content changes fast; and assets such as images, fonts, stylesheet, and so forth, are cache hits until Courselore is updated to a new version.
+
+  Perhaps Google Chrome is getting confused about how to handle the “is this resource fresh or can I used the cache?” kind of request.
+
+  In any case, **the solution was to change the cache control policy to [`no-store`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#no-store)**, in which the browser isn’t allowed to use the cache at all—it isn’t even supposed to store pages in the cache in the first place.
+
+  To keep things fast, we apply the `no-store` cache control policy only to HTML pages. Other assets such as images, fonts, stylesheet, and so forth continue to use the `no-cache` cache control policy. Hopefully that won’t cause problems with Google Chrome.
+
+  And to make things even better, now attachments & user avatars use the [`immutable` cache control policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#immutable), which allows the browser to use the cache without checking with the server. That’s possible because users may not change existing attachments & user avatars, even though they may upload new ones.
+
+  </details>
 
 ## 4.0.15
 
