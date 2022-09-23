@@ -206,7 +206,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="/main-screen--light.png"
+                src="https://${app.locals.options.hostname}/cache-busting/${app
+                  .locals.options.version}/main-screen--light.png"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -221,7 +222,8 @@ export default (app: Courselore): void => {
                 `)}"
               />
               <img
-                src="/main-screen--dark.png"
+                src="https://${app.locals.options.hostname}/cache-busting/${app
+                  .locals.options.version}/main-screen--dark.png"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -417,7 +419,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="/main-screen--light-and-dark.png"
+                src="https://${app.locals.options.hostname}/cache-busting/${app
+                  .locals.options.version}/main-screen--light-and-dark.png"
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
@@ -493,7 +496,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="/main-screen--phone--light.jpeg"
+                src="https://${app.locals.options.hostname}/cache-busting/${app
+                  .locals.options.version}/main-screen--phone--light.jpeg"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -508,7 +512,8 @@ export default (app: Courselore): void => {
                 `)}"
               />
               <img
-                src="/main-screen--phone--dark.jpeg"
+                src="https://${app.locals.options.hostname}/cache-busting/${app
+                  .locals.options.version}/main-screen--phone--dark.jpeg"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
