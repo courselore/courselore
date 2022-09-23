@@ -1050,7 +1050,8 @@ export default async (app: Courselore): Promise<void> => {
           />
           <link
             rel="stylesheet"
-            href="https://${app.locals.options.hostname}/global.css"
+            href="https://${app.locals.options.hostname}/cache-busting/${app
+              .locals.options.version}/global.css"
           />
           $${res.locals.css.toString()}
 
@@ -1073,7 +1074,8 @@ export default async (app: Courselore): Promise<void> => {
           <script src="https://${app.locals.options
               .hostname}/node_modules/@leafac/javascript/distribution/browser.js"></script>
           <script src="https://${app.locals.options
-              .hostname}/leafac--javascript.js"></script>
+              .hostname}/cache-busting/${app.locals.options
+              .version}/leafac--javascript.js"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
