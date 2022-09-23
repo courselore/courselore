@@ -113,8 +113,8 @@ export default async ({
           http${tunnel ? `` : `s`}://${hostname} {
             route {
               import common
-              route /cache-busting/v${version}/* {
-                uri strip_prefix /cache-busting/v${version}
+              route /cache-busting/${version}/* {
+                uri strip_prefix /cache-busting/${version}
                 root * ${path.resolve(
                   url.fileURLToPath(
                     new URL("../static/", courseloreImportMetaURL)

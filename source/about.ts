@@ -728,7 +728,9 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="/team/scott-smith.png"
+                  src="https://${app.locals.options
+                    .hostname}/cache-busting/${app.locals.options
+                    .version}/team/scott-smith.png"
                   alt="Dr. Scott Smith"
                   loading="lazy"
                   class="img"
@@ -748,7 +750,9 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="/team/ali-madooei.png"
+                  src="https://${app.locals.options
+                    .hostname}/cache-busting/${app.locals.options
+                    .version}/team/ali-madooei.png"
                   alt="Dr. Ali Madooei"
                   loading="lazy"
                   class="img"
@@ -765,7 +769,9 @@ export default (app: Courselore): void => {
 
               <a href="https://leafac.com" class="button button--transparent">
                 <img
-                  src="/team/leandro-facchinetti.png"
+                  src="https://${app.locals.options
+                    .hostname}/cache-busting/${app.locals.options
+                    .version}/team/leandro-facchinetti.png"
                   alt="Leandro Facchinetti"
                   loading="lazy"
                   class="img"
@@ -797,7 +803,9 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="/team/eliot-smith.png"
+                  src="https://${app.locals.options
+                    .hostname}/cache-busting/${app.locals.options
+                    .version}/team/eliot-smith.png"
                   alt="Eliot Smith"
                   loading="lazy"
                   class="img"
