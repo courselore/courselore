@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Introduced [cache-busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#immutable) to speed up loading of images, stylesheets, and so forth. This completes the treatment of the cache control policy started in Courselore version 4.1.0.
+
 ## 4.1.0
 
 **2022-09-21 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
