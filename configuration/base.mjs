@@ -19,8 +19,15 @@ export default async ({
   if (process.argv[3] === undefined) {
     const path = await courseloreImport("node:path");
     const url = await courseloreImport("node:url");
+    const fs = (await courseloreImport("fs-extra")).default;
     const execa = (await courseloreImport("execa")).execa;
     const caddyfile = (await courseloreImport("dedent")).default;
+    const version = JSON.parse(
+      await fs.readFile(
+        url.fileURLToPath(new URL("../package.json", import.meta.url)),
+        "utf8"
+      )
+    ).version;
 
     const subprocesses = [
       execa(
@@ -106,6 +113,19 @@ export default async ({
           http${tunnel ? `` : `s`}://${hostname} {
             route {
               import common
+              route /cache-busting/v${version}/* {
+                uri strip_prefix /cache-busting/v${version}
+                root * ${path.resolve(
+                  url.fileURLToPath(
+                    new URL("../static/", courseloreImportMetaURL)
+                  )
+                )}
+                @file_exists file
+                route @file_exists {
+                  header Cache-Control "public, max-age=31536000, immutable"
+                  file_server
+                }
+              }
               route {
                 root * ${path.resolve(
                   url.fileURLToPath(
