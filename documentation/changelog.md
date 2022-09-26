@@ -10,6 +10,7 @@
 
 ## Unreleased
 
+- [Added support for HTTP/3 and improved the performance of serving static files, for example, images, stylesheets, attachments, and so forth.](https://github.com/caddyserver/caddy/releases/tag/v2.6.0)
 - Introduced [cache-busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#immutable) to speed up loading of images, stylesheets, and so forth. This completes the treatment of the cache control policy started in Courselore version 4.1.0.
 
 ## 4.1.0
