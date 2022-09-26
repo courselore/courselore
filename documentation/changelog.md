@@ -10,7 +10,7 @@
 
 ## Unreleased
 
-- Fixed an issue in which dragging-and-dropping text (as opposed to a file) into the content editor would result in an error.
+- [Fixed an issue in which dragging-and-dropping text (as opposed to a file) into the content editor would result in an error.](https://courselore.org/courses/8537410611/conversations/47?messages%5BmessageReference%5D=5)
 
 ## 4.1.1
 
