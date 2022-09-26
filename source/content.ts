@@ -1953,6 +1953,10 @@ export default async (app: Courselore): Promise<void> => {
                 this.ondragenter = () => {
                   this.classList.add("drag");
                 };
+                this.ondragleave = () => {
+                  this.classList.remove("drag");
+                };
+
                 this.ondragover = (event) => {
                   event.preventDefault();
                 };
@@ -1961,9 +1965,7 @@ export default async (app: Courselore): Promise<void> => {
                   this.classList.remove("drag");
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.dataTransfer.files);
                 };
-                this.ondragleave = () => {
-                  this.classList.remove("drag");
-                };
+
                 this.onpaste = (event) => {
                   if (event.clipboardData.files.length === 0) return;
                   event.preventDefault();
