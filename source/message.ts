@@ -1504,7 +1504,9 @@ export default (app: Courselore): void => {
                         `
                       : sql``
                   } $${
-            conversation.type === "note" && conversation.announcementAt !== null
+            conversation.type === "note" &&
+            conversation.announcementAt !== null &&
+            message.reference === "1"
               ? sql``
               : sql`
                   AND (
