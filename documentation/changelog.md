@@ -10,6 +10,7 @@
 
 ## Unreleased
 
+- Changed the behavior of messages posted in conversations that are **Announcements**. Before, these messages behaved differently in that they would trigger immediate email notifications. The idea was that these would be follow-ups to the announcement. But in practice it seems that some of these messages are actually from students asking follow-up questions to the announcement. So now these messages are treated normally, and only the original announcement receives the special treatment when it comes to email notifications.
 - [Added support for HTTP/3 and improved the performance of serving static files, for example, images, stylesheets, attachments, and so forth.](https://github.com/caddyserver/caddy/releases/tag/v2.6.0)
 - Introduced [cache-busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#immutable) to speed up loading of images, stylesheets, and so forth. This completes the treatment of the cache control policy started in Courselore version 4.1.0.
 
