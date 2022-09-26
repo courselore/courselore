@@ -767,6 +767,7 @@ export default (app: Courselore): void => {
                     };
 
                     this.ondrop = (event) => {
+                      if (event.dataTransfer.files.length === 0) return;
                       event.preventDefault();
                       this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
                     };
