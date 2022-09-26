@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Fixed an issue in which dragging-and-dropping text (as opposed to a file) into the content editor would result in an error.
+
 ## 4.1.1
 
 **2022-09-26 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
