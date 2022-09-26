@@ -1958,6 +1958,7 @@ export default async (app: Courselore): Promise<void> => {
                 };
 
                 this.ondragover = (event) => {
+                  if (!event.dataTransfer.types.includes("Files")) return;
                   event.preventDefault();
                 };
                 this.ondrop = (event) => {

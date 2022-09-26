@@ -763,6 +763,7 @@ export default (app: Courselore): void => {
                   `)}"
                   onload="${javascript`
                     this.ondragover = (event) => {
+                      if (!event.dataTransfer.types.includes("Files")) return;
                       event.preventDefault();
                     };
 
