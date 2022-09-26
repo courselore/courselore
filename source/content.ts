@@ -1961,8 +1961,9 @@ export default async (app: Courselore): Promise<void> => {
                   event.preventDefault();
                 };
                 this.ondrop = (event) => {
-                  event.preventDefault();
                   this.classList.remove("drag");
+                  if (event.dataTransfer.files.length === 0) return;
+                  event.preventDefault();
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.dataTransfer.files);
                 };
 
