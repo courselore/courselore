@@ -824,7 +824,9 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
-- Let the `"jobs"` run on a different process. Particularly the job that processes messages to generate email notifications.
+- Try other methods for prioritizing the queue for Live-Updates. More specifically, we want to make sure that the person who performed the action will receive feedback before we get the server busy with Live-Updates. Right now we’re simply delaying the Live-Updates by a fixed time.
+  - We could detect that the person has received their feedback and fire Live-Updates right away, instead of waiting for that fixed time, giving faster feedback on Live-Updates.
+  - We could answer the POST/PATCH/PUT with the material of the updated page, instead of redirecting. This is heavy-handed, because it affects many routes. But it saves one roundtrip.
 - Add synchronizer token as added security against CSRF.
   - Currently we’re defending from CSRF with a [custom header](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). This is the simplest viable protection, but it’s vulnerable to broken environments that let cross-site requests include custom headers (for example, an old version of Flash).
   - [Synchronizer tokens](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) are the most secure option.
