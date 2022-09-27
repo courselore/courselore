@@ -122,7 +122,11 @@ export default async ({
                 )}
                 @file_exists file
                 route @file_exists {
-                  header Cache-Control "public, max-age=31536000, immutable"
+                  header Cache-Control "public, ${
+                    environment === "development"
+                      ? "no-cache"
+                      : "max-age=31536000, immutable"
+                  }"
                   file_server
                 }
               }
