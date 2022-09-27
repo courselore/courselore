@@ -236,6 +236,7 @@ export default (app: Courselore): void => {
               "expiresAt" IS NOT NULL
       `
     );
+    await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
     for (const client of app.locals.liveUpdates.database.all<{
       nonce: string;
     }>(
@@ -250,7 +251,8 @@ export default (app: Courselore): void => {
       clientReqRes.res.locals = {
         liveUpdatesNonce: clientReqRes.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
-      await app(clientReqRes.req, clientReqRes.res);
+      app(clientReqRes.req, clientReqRes.res);
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   };
 
