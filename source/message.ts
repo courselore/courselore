@@ -1653,6 +1653,7 @@ export default (app: Courselore): void => {
             job.message
           }`
         );
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       app.locals.workers.sendEmail();
