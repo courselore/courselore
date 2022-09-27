@@ -10,6 +10,11 @@
 
 ## Unreleased
 
+## 4.1.2
+
+**2022-09-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Improved the performance of many actions in the conversations page by prioritizing giving feedback to the person who performed that action over updating the page for other people who are on that conversation (our so-called **Live-Updates**).
 - [Fixed an issue in which dragging-and-dropping text (as opposed to a file) into the content editor would result in an error.](https://courselore.org/courses/8537410611/conversations/47?messages%5BmessageReference%5D=5)
 
 ## 4.1.1
