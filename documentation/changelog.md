@@ -10,6 +10,16 @@
 
 ## Unreleased
 
+## 4.1.3
+
+**2022-09-28 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Fixed a mysterious issue in Firefox that caused people to see an error message: “Failed to connect to the Courselore server.”
+
+  It only occurs when half a dozen seemingly arbitrary specific circumstances align. To the best our knowledge seems to be an issue in Firefox, which isn’t sending requests for calls to `fetch()`.
+
+  The solution is equally vexing: to set `cache: "no-store"` in the call to `fetch()` 🤷
+
 ## 4.1.2
 
 **2022-09-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
