@@ -61,6 +61,7 @@ export default async ({
           }
 
           (common) {
+            header Cache-Control no-store
             header Content-Security-Policy "default-src https://${hostname}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
             header Cross-Origin-Embedder-Policy require-corp
             header Cross-Origin-Opener-Policy same-origin
