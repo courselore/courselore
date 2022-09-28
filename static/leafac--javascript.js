@@ -118,6 +118,7 @@ const leafac = {
       try {
         abortController = new AbortController();
         const response = await fetch(request, {
+          cache: "no-store",
           signal: abortController.signal,
         });
         if (response.headers.has("Live-Navigation-External-Redirect")) {
@@ -425,6 +426,7 @@ const leafac = {
         window.addEventListener("livenavigate", abort, { once: true });
         let heartbeatTimeout = setTimeout(abort, 50 * 1000);
         const response = await fetch(window.location.href, {
+          cache: "no-store",
           headers: { "Live-Updates": nonce },
           signal: abortController.signal,
         });

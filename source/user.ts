@@ -920,6 +920,7 @@ export default (app: Courselore): void => {
                         const response = await fetch("https://${
                           app.locals.options.hostname
                         }/settings/profile/avatar", {
+                          cache: "no-store",
                           method: "POST",
                           headers: { "CSRF-Protection": "true", },
                           body,

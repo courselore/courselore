@@ -2113,7 +2113,7 @@ export default (app: Courselore): void => {
                                                 this.onclick = async (event) => {
                                                   event.preventDefault();
                                                   event.stopImmediatePropagation();
-                                                  await fetch(this.closest("a").getAttribute("href"));
+                                                  await fetch(this.closest("a").getAttribute("href"), { cache: "no-store" });
                                                   this.remove();
                                                 };
                                               `}"
@@ -2335,7 +2335,7 @@ export default (app: Courselore): void => {
                     res.locals.course.reference
                   }/conversations/${
                     conversation.reference
-                  }/selected-participants")).text());
+                  }/selected-participants", { cache: "no-store" })).text());
                         this.tooltip.setContent(content);
                       },
                     });
@@ -7273,7 +7273,7 @@ export default (app: Courselore): void => {
                                                                       .reference
                                                                   }/messages/${
                                                                     message.reference
-                                                                  }/views")).text());
+                                                                  }/views", { cache: "no-store" })).text());
                                                                         this.tooltip.setContent(content);
                                                                       },
                                                                     });
@@ -8371,7 +8371,7 @@ export default (app: Courselore): void => {
                                                               .reference
                                                           }/messages/${
                                                             message.reference
-                                                          }/likes")).text());
+                                                          }/likes", { cache: "no-store" })).text());
                                                                 this.dropdown.setContent(content);
                                                               },
                                                             });
@@ -8437,7 +8437,7 @@ export default (app: Courselore): void => {
                                                       .reference
                                                   }/messages/${
                                                     message.reference
-                                                  }/views")).text());
+                                                  }/views", { cache: "no-store" })).text());
                                                         this.tooltip.setContent(content);
                                                       },
                                                     });

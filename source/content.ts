@@ -749,6 +749,7 @@ export default async (app: Courselore): Promise<void> => {
                                 : `/courses/${res.locals.course.reference}`
                             }/content-editor/preview`
                           )}, {
+                            cache: "no-store",
                             method: "POST",
                             headers: { "CSRF-Protection": "true", },
                             body: new URLSearchParams({ content: textarea.value, }),
@@ -1791,6 +1792,7 @@ export default async (app: Courselore): Promise<void> => {
                     const response = await (await fetch(${JSON.stringify(
                       `https://${app.locals.options.hostname}/content-editor/attachments`
                     )}, {
+                      cache: "no-store",
                       method: "POST",
                       headers: { "CSRF-Protection": "true", },
                       body,
@@ -2124,7 +2126,7 @@ export default async (app: Courselore): Promise<void> => {
                               else
                                 leafac.loadPartial(
                                   searchResults,
-                                  await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
+                                  await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
                                 );
                               const buttons = content.querySelectorAll(".button");
                               for (const button of buttons) button.classList.remove("hover");
