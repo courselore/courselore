@@ -21,6 +21,7 @@ const leafac = {
             };
             let heartbeatTimeout = setTimeout(abort, 50 * 1000);
             const response = await fetch(url, {
+              cache: "no-store",
               signal: abortController.signal,
             });
             if (!response.ok) throw new Error("Response isn’t OK");
