@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 4.1.5
+
+**2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Turned off HTTP/3 to try and solve issues in which Firefox refuses to make requests.
+
 ## 4.1.4
 
 **2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
