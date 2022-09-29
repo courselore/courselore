@@ -69,6 +69,7 @@ export default (app: Courselore): void => {
             DELETE FROM "connectionsMetadata" WHERE "nonce" = ${connectionMetadata.nonce}
           `
         );
+        connections.delete(connectionMetadata.nonce);
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
             connectionMetadata.nonce
@@ -82,6 +83,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
       const nonce = req.header("Live-Updates");
+
       if (nonce === undefined) {
         res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
         connectionsMetadata.run(
@@ -107,8 +109,10 @@ export default (app: Courselore): void => {
         );
         return next();
       }
+
       if (res.locals.liveUpdatesNonce === undefined) {
         res.locals.liveUpdatesNonce = nonce;
+
         const connectionMetadata = connectionsMetadata.get<{
           expiresAt: string | null;
           shouldLiveUpdateOnOpenAt: string | null;
@@ -120,11 +124,12 @@ export default (app: Courselore): void => {
             WHERE "nonce" = ${res.locals.liveUpdatesNonce}
           `
         );
+
         if (
-          connections.has(res.locals.liveUpdatesNonce) ||
           (connectionMetadata !== undefined &&
             (connectionMetadata.expiresAt === null ||
-              req.originalUrl !== connectionMetadata.url))
+              connectionMetadata.url !== req.originalUrl)) ||
+          connections.has(res.locals.liveUpdatesNonce)
         ) {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
@@ -133,46 +138,7 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
-        connections.set(res.locals.liveUpdatesNonce, {
-          req,
-          res,
-        });
-        let heartbeatTimeout: NodeJS.Timeout;
-        (function heartbeat() {
-          res.write("\n");
-          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
-        })();
-        res.once("close", () => {
-          clearTimeout(heartbeatTimeout);
-        });
-        res.setHeader = (name, value) => res;
-        res.send = (body) => {
-          res.write(JSON.stringify(body) + "\n");
-          console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
-              (process.hrtime.bigint() - res.locals.loggingStartTime) /
-              1_000_000n
-            }ms\t\t${Math.floor(Buffer.byteLength(body) / 1000)}kB\t\t${
-              req.originalUrl
-            }`
-          );
-          return res;
-        };
-        res.once("close", () => {
-          connections.delete(res.locals.liveUpdatesNonce!);
-          connectionsMetadata.run(
-            sql`
-              DELETE FROM "connectionsMetadata" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
-          );
-        });
+
         if (connectionMetadata !== undefined) {
           connectionsMetadata.run(
             sql`
@@ -208,8 +174,51 @@ export default (app: Courselore): void => {
             }\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
+
+        let heartbeatTimeout: NodeJS.Timeout;
+        (function heartbeat() {
+          res.write("\n");
+          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+        })();
+        res.once("close", () => {
+          clearTimeout(heartbeatTimeout);
+        });
+        res.setHeader = (name, value) => res;
+        res.send = (body) => {
+          res.write(JSON.stringify(body) + "\n");
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesNonce
+            }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
+              (process.hrtime.bigint() - res.locals.loggingStartTime) /
+              1_000_000n
+            }ms\t\t${Math.floor(Buffer.byteLength(body) / 1000)}kB\t\t${
+              req.originalUrl
+            }`
+          );
+          return res;
+        };
+        res.once("close", () => {
+          connectionsMetadata.run(
+            sql`
+              DELETE FROM "connectionsMetadata" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
+            `
+          );
+          connections.delete(res.locals.liveUpdatesNonce!);
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesNonce
+            }\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+        });
+        connections.set(res.locals.liveUpdatesNonce, {
+          req,
+          res,
+        });
+
         if (connectionMetadata?.shouldLiveUpdateOnOpenAt === null) return;
       }
+
       next();
     },
   ];
@@ -221,6 +230,8 @@ export default (app: Courselore): void => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
+    await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+
     connectionsMetadata.run(
       sql`
         UPDATE "connectionsMetadata"
@@ -229,7 +240,7 @@ export default (app: Courselore): void => {
               "expiresAt" IS NOT NULL
       `
     );
-    await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+
     for (const connectionMetadata of connectionsMetadata.all<{
       nonce: string;
     }>(
@@ -240,7 +251,8 @@ export default (app: Courselore): void => {
               "expiresAt" IS NULL
       `
     )) {
-      const connection = connections.get(connectionMetadata.nonce)!;
+      const connection = connections.get(connectionMetadata.nonce);
+      if (connection === undefined) continue;
       connection.res.locals = {
         liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
@@ -252,14 +264,14 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
     if (nonce === undefined) return next();
-    const connection = connections.get(nonce);
-    connection?.res.end();
-    connections.delete(nonce);
     connectionsMetadata.run(
       sql`
         DELETE FROM "connectionsMetadata" WHERE "nonce" = ${nonce}
       `
     );
+    const connection = connections.get(nonce);
+    connections.delete(nonce);
+    connection?.res.end();
     console.log(
       `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tABORTED\t${
         connection?.req.ip ?? ""
