@@ -26,7 +26,7 @@ export type LiveUpdatesDispatchHelper = ({
 }) => Promise<void>;
 
 export default (app: Courselore): void => {
-  const clients = new Map<
+  const connections = new Map<
     string,
     {
       req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
@@ -121,7 +121,7 @@ export default (app: Courselore): void => {
           `
         );
         if (
-          clients.has(res.locals.liveUpdatesNonce) ||
+          connections.has(res.locals.liveUpdatesNonce) ||
           (client !== undefined &&
             (client.expiresAt === null || req.originalUrl !== client.url))
         ) {
@@ -132,7 +132,7 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
-        clients.set(res.locals.liveUpdatesNonce, {
+        connections.set(res.locals.liveUpdatesNonce, {
           req,
           res,
         });
@@ -160,7 +160,7 @@ export default (app: Courselore): void => {
           return res;
         };
         res.once("close", () => {
-          clients.delete(res.locals.liveUpdatesNonce!);
+          connections.delete(res.locals.liveUpdatesNonce!);
           database.run(
             sql`
               DELETE FROM "clients" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
@@ -239,11 +239,11 @@ export default (app: Courselore): void => {
               "expiresAt" IS NULL
       `
     )) {
-      const clientReqRes = clients.get(client.nonce)!;
-      clientReqRes.res.locals = {
-        liveUpdatesNonce: clientReqRes.res.locals.liveUpdatesNonce,
+      const connection = connections.get(client.nonce)!;
+      connection.res.locals = {
+        liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
-      app(clientReqRes.req, clientReqRes.res);
+      app(connection.req, connection.res);
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
   };
@@ -251,9 +251,9 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
     if (nonce === undefined) return next();
-    const clientReqRes = clients.get(nonce);
-    clientReqRes?.res.end();
-    clients.delete(nonce);
+    const connection = connections.get(nonce);
+    connection?.res.end();
+    connections.delete(nonce);
     database.run(
       sql`
         DELETE FROM "clients" WHERE "nonce" = ${nonce}
@@ -261,8 +261,8 @@ export default (app: Courselore): void => {
     );
     console.log(
       `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tCLIENT\tABORTED\t${
-        clientReqRes?.req.ip ?? ""
-      }\t\t\t${clientReqRes?.req.originalUrl ?? ""}`
+        connection?.req.ip ?? ""
+      }\t\t\t${connection?.req.originalUrl ?? ""}`
     );
     next();
   });
