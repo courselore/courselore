@@ -38,7 +38,7 @@ export default (app: Courselore): void => {
   const connectionsMetadata = new Database("");
   connectionsMetadata.migrate(
     sql`
-      CREATE TABLE "clients" (
+      CREATE TABLE "connectionsMetadata" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "shouldLiveUpdateOnOpenAt" TEXT NULL,
@@ -46,10 +46,10 @@ export default (app: Courselore): void => {
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
-      CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
-      CREATE INDEX "clientsShouldLiveUpdateOnOpenAtIndex" ON "clients" ("shouldLiveUpdateOnOpenAt");
-      CREATE INDEX "clientsNonceIndex" ON "clients" ("nonce");
-      CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
+      CREATE INDEX "connectionsMetadataExpiresAtIndex" ON "connectionsMetadata" ("expiresAt");
+      CREATE INDEX "connectionsMetadataShouldLiveUpdateOnOpenAtIndex" ON "connectionsMetadata" ("shouldLiveUpdateOnOpenAt");
+      CREATE INDEX "connectionsMetadataNonceIndex" ON "connectionsMetadata" ("nonce");
+      CREATE INDEX "connectionsMetadataCourseIndex" ON "connectionsMetadata" ("course");
     `
   );
 
@@ -60,19 +60,19 @@ export default (app: Courselore): void => {
       }>(
         sql`
           SELECT "nonce"
-          FROM "clients"
+          FROM "connectionsMetadata"
           WHERE "expiresAt" < ${new Date().toISOString()}
         `
       )) {
         connectionsMetadata.run(
           sql`
-            DELETE FROM "clients" WHERE "nonce" = ${connectionMetadata.nonce}
+            DELETE FROM "connectionsMetadata" WHERE "nonce" = ${connectionMetadata.nonce}
           `
         );
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
             connectionMetadata.nonce
-          }\tCLIENT\tEXPIRED`
+          }\tEXPIRED`
         );
       }
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
@@ -86,7 +86,7 @@ export default (app: Courselore): void => {
         res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
         connectionsMetadata.run(
           sql`
-            INSERT INTO "clients" (
+            INSERT INTO "connectionsMetadata" (
               "expiresAt",
               "nonce",
               "url",
@@ -103,7 +103,7 @@ export default (app: Courselore): void => {
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
             res.locals.liveUpdatesNonce
-          }\tCLIENT\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
+          }\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
         );
         return next();
       }
@@ -116,7 +116,7 @@ export default (app: Courselore): void => {
         }>(
           sql`
             SELECT "expiresAt", "shouldLiveUpdateOnOpenAt", "url"
-            FROM "clients"
+            FROM "connectionsMetadata"
             WHERE "nonce" = ${res.locals.liveUpdatesNonce}
           `
         );
@@ -129,7 +129,7 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCLIENT\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
           );
           return res.status(422).end();
         }
@@ -164,19 +164,19 @@ export default (app: Courselore): void => {
           connections.delete(res.locals.liveUpdatesNonce!);
           connectionsMetadata.run(
             sql`
-              DELETE FROM "clients" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
+              DELETE FROM "connectionsMetadata" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
           );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         });
         if (connectionMetadata !== undefined) {
           connectionsMetadata.run(
             sql`
-              UPDATE "clients"
+              UPDATE "connectionsMetadata"
               SET "expiresAt" = NULL,
                   "shouldLiveUpdateOnOpenAt" = NULL
               WHERE "nonce" = ${res.locals.liveUpdatesNonce}
@@ -185,12 +185,12 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         } else {
           connectionsMetadata.run(
             sql`
-              INSERT INTO "clients" (
+              INSERT INTO "connectionsMetadata" (
                 "nonce",
                 "url",
                 "course"
@@ -205,7 +205,7 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
         if (connectionMetadata?.shouldLiveUpdateOnOpenAt === null) return;
@@ -223,24 +223,24 @@ export default (app: Courselore): void => {
   }) => {
     connectionsMetadata.run(
       sql`
-        UPDATE "clients"
+        UPDATE "connectionsMetadata"
         SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
         WHERE "course" = ${res.locals.course.id} AND
               "expiresAt" IS NOT NULL
       `
     );
     await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
-    for (const client of connectionsMetadata.all<{
+    for (const connectionMetadata of connectionsMetadata.all<{
       nonce: string;
     }>(
       sql`
         SELECT "nonce"
-        FROM "clients"
+        FROM "connectionsMetadata"
         WHERE "course" = ${res.locals.course.id} AND
               "expiresAt" IS NULL
       `
     )) {
-      const connection = connections.get(client.nonce)!;
+      const connection = connections.get(connectionMetadata.nonce)!;
       connection.res.locals = {
         liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
@@ -257,11 +257,11 @@ export default (app: Courselore): void => {
     connections.delete(nonce);
     connectionsMetadata.run(
       sql`
-        DELETE FROM "clients" WHERE "nonce" = ${nonce}
+        DELETE FROM "connectionsMetadata" WHERE "nonce" = ${nonce}
       `
     );
     console.log(
-      `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tCLIENT\tABORTED\t${
+      `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tABORTED\t${
         connection?.req.ip ?? ""
       }\t\t\t${connection?.req.originalUrl ?? ""}`
     );
