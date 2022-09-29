@@ -35,8 +35,8 @@ export default (app: Courselore): void => {
   >();
 
   // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
-  const database = new Database("");
-  database.migrate(
+  const connectionsMetadata = new Database("");
+  connectionsMetadata.migrate(
     sql`
       CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,7 +55,7 @@ export default (app: Courselore): void => {
 
   app.once("jobs", async () => {
     while (true) {
-      for (const client of database.all<{
+      for (const connectionMetadata of connectionsMetadata.all<{
         nonce: string;
       }>(
         sql`
@@ -64,14 +64,14 @@ export default (app: Courselore): void => {
           WHERE "expiresAt" < ${new Date().toISOString()}
         `
       )) {
-        database.run(
+        connectionsMetadata.run(
           sql`
-            DELETE FROM "clients" WHERE "nonce" = ${client.nonce}
+            DELETE FROM "clients" WHERE "nonce" = ${connectionMetadata.nonce}
           `
         );
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            client.nonce
+            connectionMetadata.nonce
           }\tCLIENT\tEXPIRED`
         );
       }
@@ -84,7 +84,7 @@ export default (app: Courselore): void => {
       const nonce = req.header("Live-Updates");
       if (nonce === undefined) {
         res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
-        database.run(
+        connectionsMetadata.run(
           sql`
             INSERT INTO "clients" (
               "expiresAt",
@@ -109,7 +109,7 @@ export default (app: Courselore): void => {
       }
       if (res.locals.liveUpdatesNonce === undefined) {
         res.locals.liveUpdatesNonce = nonce;
-        const client = database.get<{
+        const connectionMetadata = connectionsMetadata.get<{
           expiresAt: string | null;
           shouldLiveUpdateOnOpenAt: string | null;
           url: string;
@@ -122,8 +122,9 @@ export default (app: Courselore): void => {
         );
         if (
           connections.has(res.locals.liveUpdatesNonce) ||
-          (client !== undefined &&
-            (client.expiresAt === null || req.originalUrl !== client.url))
+          (connectionMetadata !== undefined &&
+            (connectionMetadata.expiresAt === null ||
+              req.originalUrl !== connectionMetadata.url))
         ) {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
@@ -161,7 +162,7 @@ export default (app: Courselore): void => {
         };
         res.once("close", () => {
           connections.delete(res.locals.liveUpdatesNonce!);
-          database.run(
+          connectionsMetadata.run(
             sql`
               DELETE FROM "clients" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
@@ -172,8 +173,8 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         });
-        if (client !== undefined) {
-          database.run(
+        if (connectionMetadata !== undefined) {
+          connectionsMetadata.run(
             sql`
               UPDATE "clients"
               SET "expiresAt" = NULL,
@@ -187,7 +188,7 @@ export default (app: Courselore): void => {
             }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         } else {
-          database.run(
+          connectionsMetadata.run(
             sql`
               INSERT INTO "clients" (
                 "nonce",
@@ -207,7 +208,7 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client?.shouldLiveUpdateOnOpenAt === null) return;
+        if (connectionMetadata?.shouldLiveUpdateOnOpenAt === null) return;
       }
       next();
     },
@@ -220,7 +221,7 @@ export default (app: Courselore): void => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
-    database.run(
+    connectionsMetadata.run(
       sql`
         UPDATE "clients"
         SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
@@ -229,7 +230,7 @@ export default (app: Courselore): void => {
       `
     );
     await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
-    for (const client of database.all<{
+    for (const client of connectionsMetadata.all<{
       nonce: string;
     }>(
       sql`
@@ -254,7 +255,7 @@ export default (app: Courselore): void => {
     const connection = connections.get(nonce);
     connection?.res.end();
     connections.delete(nonce);
-    database.run(
+    connectionsMetadata.run(
       sql`
         DELETE FROM "clients" WHERE "nonce" = ${nonce}
       `
