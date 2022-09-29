@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 4.1.4
+
+**2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Fixed an issue in the treatment of Live-Updates (the technology that updates a page, for example, when a new message is sent to you) that made the server crash.
+
 ## 4.1.3
 
 **2022-09-28 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
