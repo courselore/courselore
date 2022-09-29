@@ -58,6 +58,9 @@ export default async ({
                 ? `email ${administratorEmail}`
                 : `local_certs`
             }
+            servers {
+              protocols h1 h2
+            }
           }
 
           (common) {
