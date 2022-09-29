@@ -26,14 +26,6 @@ export type LiveUpdatesDispatchHelper = ({
 }) => Promise<void>;
 
 export default (app: Courselore): void => {
-  const connections = new Map<
-    string,
-    {
-      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
-    }
-  >();
-
   // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
   const connectionsMetadata = new Database("");
   connectionsMetadata.migrate(
@@ -52,6 +44,14 @@ export default (app: Courselore): void => {
       CREATE INDEX "connectionsMetadataCourseIndex" ON "connectionsMetadata" ("course");
     `
   );
+
+  const connections = new Map<
+    string,
+    {
+      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+    }
+  >();
 
   app.once("jobs", async () => {
     while (true) {
