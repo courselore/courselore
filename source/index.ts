@@ -12,7 +12,6 @@ import globalMiddlewares, {
 export { BaseMiddlewareLocals } from "./global-middlewares.js";
 
 import liveUpdates, {
-  LiveUpdatesLocals,
   LiveUpdatesMiddleware,
   LiveUpdatesDispatchHelper,
 } from "./live-updates.js";
@@ -189,8 +188,7 @@ export interface Courselore extends express.Express {
     workers: {
       sendEmail: SendEmailWorker;
     };
-  } & DatabaseLocals &
-    LiveUpdatesLocals;
+  } & DatabaseLocals;
 }
 
 export interface Options {

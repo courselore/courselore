@@ -6,19 +6,6 @@ import {
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
 
-export interface LiveUpdatesLocals {
-  liveUpdates: {
-    clients: Map<
-      string,
-      {
-        req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-        res: express.Response<any, LiveUpdatesMiddlewareLocals>;
-      }
-    >;
-    database: Database;
-  };
-}
-
 export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
@@ -39,12 +26,17 @@ export type LiveUpdatesDispatchHelper = ({
 }) => Promise<void>;
 
 export default (app: Courselore): void => {
-  app.locals.liveUpdates = {
-    clients: new Map(),
-    // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
-    database: new Database(""),
-  };
-  app.locals.liveUpdates.database.migrate(
+  const clients = new Map<
+    string,
+    {
+      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+    }
+  >();
+
+  // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
+  const database = new Database("");
+  database.migrate(
     sql`
       CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,7 +55,7 @@ export default (app: Courselore): void => {
 
   app.once("jobs", async () => {
     while (true) {
-      for (const client of app.locals.liveUpdates.database.all<{
+      for (const client of database.all<{
         nonce: string;
       }>(
         sql`
@@ -72,7 +64,7 @@ export default (app: Courselore): void => {
           WHERE "expiresAt" < ${new Date().toISOString()}
         `
       )) {
-        app.locals.liveUpdates.database.run(
+        database.run(
           sql`
             DELETE FROM "clients" WHERE "nonce" = ${client.nonce}
           `
@@ -92,7 +84,7 @@ export default (app: Courselore): void => {
       const nonce = req.header("Live-Updates");
       if (nonce === undefined) {
         res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
-        app.locals.liveUpdates.database.run(
+        database.run(
           sql`
             INSERT INTO "clients" (
               "expiresAt",
@@ -117,7 +109,7 @@ export default (app: Courselore): void => {
       }
       if (res.locals.liveUpdatesNonce === undefined) {
         res.locals.liveUpdatesNonce = nonce;
-        const client = app.locals.liveUpdates.database.get<{
+        const client = database.get<{
           expiresAt: string | null;
           shouldLiveUpdateOnOpenAt: string | null;
           url: string;
@@ -129,7 +121,7 @@ export default (app: Courselore): void => {
           `
         );
         if (
-          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesNonce) ||
+          clients.has(res.locals.liveUpdatesNonce) ||
           (client !== undefined &&
             (client.expiresAt === null || req.originalUrl !== client.url))
         ) {
@@ -140,7 +132,7 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
-        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesNonce, {
+        clients.set(res.locals.liveUpdatesNonce, {
           req,
           res,
         });
@@ -168,8 +160,8 @@ export default (app: Courselore): void => {
           return res;
         };
         res.once("close", () => {
-          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesNonce!);
-          app.locals.liveUpdates.database.run(
+          clients.delete(res.locals.liveUpdatesNonce!);
+          database.run(
             sql`
               DELETE FROM "clients" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
@@ -181,7 +173,7 @@ export default (app: Courselore): void => {
           );
         });
         if (client !== undefined) {
-          app.locals.liveUpdates.database.run(
+          database.run(
             sql`
               UPDATE "clients"
               SET "expiresAt" = NULL,
@@ -195,7 +187,7 @@ export default (app: Courselore): void => {
             }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         } else {
-          app.locals.liveUpdates.database.run(
+          database.run(
             sql`
               INSERT INTO "clients" (
                 "nonce",
@@ -228,7 +220,7 @@ export default (app: Courselore): void => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
-    app.locals.liveUpdates.database.run(
+    database.run(
       sql`
         UPDATE "clients"
         SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
@@ -237,7 +229,7 @@ export default (app: Courselore): void => {
       `
     );
     await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
-    for (const client of app.locals.liveUpdates.database.all<{
+    for (const client of database.all<{
       nonce: string;
     }>(
       sql`
@@ -247,7 +239,7 @@ export default (app: Courselore): void => {
               "expiresAt" IS NULL
       `
     )) {
-      const clientReqRes = app.locals.liveUpdates.clients.get(client.nonce)!;
+      const clientReqRes = clients.get(client.nonce)!;
       clientReqRes.res.locals = {
         liveUpdatesNonce: clientReqRes.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
@@ -259,10 +251,10 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
     if (nonce === undefined) return next();
-    const clientReqRes = app.locals.liveUpdates.clients.get(nonce);
+    const clientReqRes = clients.get(nonce);
     clientReqRes?.res.end();
-    app.locals.liveUpdates.clients.delete(nonce);
-    app.locals.liveUpdates.database.run(
+    clients.delete(nonce);
+    database.run(
       sql`
         DELETE FROM "clients" WHERE "nonce" = ${nonce}
       `
