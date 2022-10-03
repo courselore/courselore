@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Fixed an issue that was reducing the size of non-High-DPI images. (<https://courselore.org/courses/8537410611/conversations/58>)
+
 ## 4.1.5
 
 **2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
