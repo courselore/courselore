@@ -1,6 +1,23 @@
 # Meeting Notes
 
 <details>
+<summary>2021-10-02</summary>
+
+- Issues we fixed:
+  - Double submission in Chrome.
+  - Server restarting.
+  - Firefox not connecting to server.
+  - Performance related to priority of Live-Updates.
+- Investigated HTTP/3.
+- Updated Caddy, Node.js, and dependencies.
+- We’re double the size as last semester.
+- Relax offline alerts.
+- Show who’s typing, but hide students from other students.
+
+</details>
+
+
+<details>
 <summary>2021-09-17</summary>
 
 - Small quality-of-life improvements:
