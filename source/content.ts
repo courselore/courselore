@@ -2819,12 +2819,16 @@ ${contentSource}</textarea
           try {
             const image = sharp(attachment.data, { limitInputPixels: false });
             const metadata = await image.metadata();
-            if (metadata.width === undefined) throw new Error();
+            if (typeof metadata.width !== "number") throw new Error();
             const maximumWidth = 1152; /* var(--width--6xl) */
             if (metadata.width <= maximumWidth) {
-              attachmentsContentSources += `[<img src="${href}" alt="${
-                attachment.name
-              }" width="${metadata.width / 2}" />](${href})\n\n`;
+              attachmentsContentSources += `[${
+                typeof metadata.density === "number" && metadata.density >= 120
+                  ? `<img src="${href}" alt="${attachment.name}" width="${
+                      metadata.width / 2
+                    }" />`
+                  : `![${attachment.name}](${href})`
+              }](${href})\n\n`;
               continue;
             }
             const ext = path.extname(attachment.name);
