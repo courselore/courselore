@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+## 4.1.6
+
+**2022-10-04 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Fixed an issue that was reducing the size of non-High-DPI images. (<https://courselore.org/courses/8537410611/conversations/58>)
 - Fixed an issue that was causing Firefox to show “Failed to connect to the Courselore server.” for a moment during reload. (<https://courselore.org/courses/8537410611/conversations/57?messages%5BmessageReference%5D=22>)
 
