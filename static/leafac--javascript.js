@@ -58,8 +58,8 @@ const leafac = {
               heartbeatTimeout = setTimeout(abort, 50 * 1000);
             }
           } catch (error) {
+            console.error(error);
             if (!connected) {
-              console.error(error);
               (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
                 appendTo: body,
                 trigger: "manual",
