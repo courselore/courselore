@@ -12,9 +12,11 @@ const leafac = {
       "DOMContentLoaded",
       async () => {
         const body = document.querySelector("body");
+        let connected;
         let shouldLiveReloadOnNextConnection = false;
         while (true) {
           try {
+            connected = false;
             const abortController = new AbortController();
             const abort = () => {
               abortController.abort();
@@ -25,6 +27,7 @@ const leafac = {
               signal: abortController.signal,
             });
             if (!response.ok) throw new Error("Response isn’t OK");
+            connected = true;
             if (shouldLiveReloadOnNextConnection) {
               abort();
               document.querySelector("body").isModified = false;
@@ -55,18 +58,20 @@ const leafac = {
               heartbeatTimeout = setTimeout(abort, 50 * 1000);
             }
           } catch (error) {
-            console.error(error);
-            (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
-              appendTo: body,
-              trigger: "manual",
-              hideOnClick: false,
-              theme: "error",
-              arrow: false,
-              interactive: true,
-              content: liveReload ? "Live-Reloading…" : offlineMessage,
-            });
-            body.liveConnectionOfflineTooltip.show();
-            shouldLiveReloadOnNextConnection = liveReload;
+            if (!connected) {
+              console.error(error);
+              (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
+                appendTo: body,
+                trigger: "manual",
+                hideOnClick: false,
+                theme: "error",
+                arrow: false,
+                interactive: true,
+                content: liveReload ? "Live-Reloading…" : offlineMessage,
+              });
+              body.liveConnectionOfflineTooltip.show();
+              shouldLiveReloadOnNextConnection = liveReload;
+            }
           }
           await new Promise((resolve) =>
             setTimeout(resolve, liveReload ? 200 : 1000)
