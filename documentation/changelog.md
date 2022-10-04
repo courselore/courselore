@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Fixed an issue that was reducing the size of non-High-DPI images. (<https://courselore.org/courses/8537410611/conversations/58>)
+- Fixed an issue that was causing Firefox to show “Failed to connect to the Courselore server.” for a moment during reload. (<https://courselore.org/courses/8537410611/conversations/57?messages%5BmessageReference%5D=22>)
 
 ## 4.1.5
 
