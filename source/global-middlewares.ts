@@ -87,6 +87,7 @@ export default (app: Courselore): void => {
     "/live-connection",
     (req, res) => {
       res.header("Version", app.locals.options.version);
+      res.contentType("text/plain");
       let heartbeatTimeout: NodeJS.Timeout;
       (function heartbeat() {
         res.write("\n");

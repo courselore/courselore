@@ -175,6 +175,7 @@ export default (app: Courselore): void => {
           );
         }
 
+        res.contentType("application/x-ndjson");
         let heartbeatTimeout: NodeJS.Timeout;
         (function heartbeat() {
           res.write("\n");
