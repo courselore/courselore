@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Fixed the bad interactions between HTTP/3 and Firefox and reenabled HTTP/3.
+
 ## 4.1.6
 
 **2022-10-04 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
