@@ -854,274 +854,12 @@ export default async (app: Courselore): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/100-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/100.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/200-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/200.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/300-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/300.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/400-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/400.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/500-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/500.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/600-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/600.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/700-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/700.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/800-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/800.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/900-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/public-sans/900.css"
-          />
-
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/100.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/200.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/300.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/400.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/500.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/600.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/700.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@fontsource/jetbrains-mono/800.css"
-          />
-
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options.version}/node_modules/katex/dist/katex.min.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options.version}/node_modules/tippy.js/dist/svg-arrow.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options.version}/node_modules/tippy.js/dist/border.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options
-              .version}/node_modules/@leafac/css/distribution/browser.css"
-          />
-          <link
-            rel="stylesheet"
-            href="https://${app.locals.options.hostname}/cache-busting/${app
-              .locals.options.version}/global.css"
+            href="https://${app.locals.options.hostname}/${cssBundle}"
           />
           $${res.locals.css.toString()}
 
           <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/autosize/dist/autosize.min.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/fast-myers-diff/index.umd.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/textarea-caret/index.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/text-field-edit/index.umd.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/node_modules/@leafac/javascript/distribution/browser.js"></script>
-          <script src="https://${app.locals.options
-              .hostname}/cache-busting/${app.locals.options
-              .version}/leafac--javascript.js"></script>
+              .hostname}/${javascriptBundle}"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
@@ -2340,6 +2078,7 @@ export default async (app: Courselore): Promise<void> => {
     );
 
     const esbuild = await import("esbuild");
+
     const esbuildResult = await esbuild.build({
       absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
       entryPoints: ["bundle.js"],
@@ -2359,12 +2098,30 @@ export default async (app: Courselore): Promise<void> => {
       sourcemap: true,
       metafile: true,
     });
+
     for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
       esbuildResult.metafile.outputs
     ))
       if (entryPoint === "bundle.js" && typeof cssBundle === "string")
-        console.log("FOUND");
+        fs.writeFile(
+          new URL("../static/bundle/entrypoints.json", import.meta.url),
+          JSON.stringify(
+            {
+              javascriptBundle,
+              cssBundle,
+            },
+            undefined,
+            2
+          )
+        );
   }
+
+  const { javascriptBundle, cssBundle } = JSON.parse(
+    await fs.readFile(
+      new URL("../static/bundle/entrypoints.json", import.meta.url),
+      "utf8"
+    )
+  );
 
   app.locals.layouts.box = ({ req, res, head, body }) =>
     app.locals.layouts.base({
