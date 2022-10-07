@@ -25,7 +25,7 @@
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
-    "clean": "shx rm -rf ./distribution/ ./node_modules/ ./static/node_modules/",
+    "clean": "shx rm -rf ./distribution/ ./static/bundle/ ./node_modules/ ./static/node_modules/",
     "clean:data": "shx rm -rf ./data/",
     "update": "npm-check-updates --upgrade && (cd static && npm-check-updates --upgrade) && npm install"
   },
