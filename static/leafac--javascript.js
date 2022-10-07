@@ -93,9 +93,7 @@ export function liveNavigation(hostname) {
     const body = document.querySelector("body");
     if (event instanceof PopStateEvent) abortController?.abort();
     else if (body.getAttribute("live-navigation") !== null) return;
-    const isGet = ["GET", "HEAD", "OPTIONS", "TRACE"].includes(
-      request.method
-    );
+    const isGet = ["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method);
     if (!isGet) request.headers.set("CSRF-Protection", "true");
     const requestURL = new URL(request.url);
     const detail = { request, previousLocation };
@@ -145,7 +143,7 @@ export function liveNavigation(hostname) {
         !(event instanceof PopStateEvent)
       )
         window.history.pushState(undefined, "", responseURL.href);
-      leafac.loadDocument(responseText, detail);
+      loadDocument(responseText, detail);
       if (window.location.hash.trim() !== "")
         document
           .getElementById(window.location.hash.slice(1))
@@ -252,11 +250,9 @@ function loadDocument(documentString, detail) {
     for (const element of document.querySelectorAll(`[key="local-css"]`))
       element.remove();
   for (const element of newDocument.querySelectorAll(`[key="local-css"]`))
-    document
-      .querySelector("head")
-      .insertAdjacentElement("beforeend", element);
+    document.querySelector("head").insertAdjacentElement("beforeend", element);
   if (!detail.liveUpdate) tippy.hideAll();
-  leafac.morph(
+  morph(
     document.querySelector("body"),
     newDocument.querySelector("body"),
     detail
@@ -283,8 +279,8 @@ export function loadPartial(parentElement, partialString) {
     `[key="html-for-javascript"]`
   );
   partialHTMLForJavaScript.remove();
-  leafac.morph(parentElement, partialDocument.querySelector("body"));
-  leafac.morph(HTMLForJavaScript, partialHTMLForJavaScript);
+  morph(parentElement, partialDocument.querySelector("body"));
+  morph(HTMLForJavaScript, partialHTMLForJavaScript);
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
   for (const element of [
@@ -336,12 +332,8 @@ function morph(from, to, detail = {}) {
   const toAdd = [];
   const toMorph = [];
   for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
-    const [
-      previousFromStart,
-      previousFromEnd,
-      previousToStart,
-      previousToEnd,
-    ] = diff[diffIndex - 1];
+    const [previousFromStart, previousFromEnd, previousToStart, previousToEnd] =
+      diff[diffIndex - 1];
     const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
     for (
       let nodeIndexOffset = 0;
@@ -377,13 +369,9 @@ function morph(from, to, detail = {}) {
       if (
         attribute === "style" ||
         (detail.liveUpdate &&
-          [
-            "hidden",
-            "value",
-            "checked",
-            "disabled",
-            "indeterminate",
-          ].includes(attribute))
+          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
+            attribute
+          ))
       )
         continue;
       const fromAttribute = from.getAttribute(attribute);
@@ -401,15 +389,14 @@ function morph(from, to, detail = {}) {
             "disabled",
             "indeterminate",
           ])
-            if (from[property] !== to[property])
-              from[property] = to[property];
+            if (from[property] !== to[property]) from[property] = to[property];
           break;
         case "textarea":
           if (from.value !== to.value) from.value = to.value;
           break;
       }
     if (!(detail.liveUpdate && from.partialParentElement === true))
-      leafac.morph(from, to, detail);
+      morph(from, to, detail);
   }
 }
 
@@ -471,7 +458,7 @@ export async function liveUpdates(nonce) {
         if (bufferPart === undefined) continue;
         const bufferPartJSON = JSON.parse(bufferPart);
         if (inLiveNavigation) return;
-        leafac.loadDocument(bufferPartJSON, {
+        loadDocument(bufferPartJSON, {
           previousLocation: { ...window.location },
           liveUpdate: true,
         });
@@ -489,7 +476,7 @@ export function customFormValidation() {
   document.addEventListener(
     "submit",
     (event) => {
-      if (leafac.validate(event.target)) return;
+      if (validate(event.target)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
     },
@@ -498,13 +485,13 @@ export function customFormValidation() {
 }
 
 export function validate(element) {
-  const elementsToValidate = leafac.descendants(element);
+  const elementsToValidate = descendants(element);
   const elementsToReset = new Map();
 
   for (const element of elementsToValidate) {
     if (
       element.closest("[disabled]") !== null ||
-      leafac.ancestors(element).some((element) => element.isValid === true)
+      ancestors(element).some((element) => element.isValid === true)
     )
       continue;
     const valueInputByUser = element.value;
@@ -552,8 +539,7 @@ export function validate(element) {
               : "Please select at least one of these options.";
           break;
         default:
-          if (element.value.trim() === "")
-            return "Please fill out this field.";
+          if (element.value.trim() === "") return "Please fill out this field.";
           break;
       }
 
@@ -569,7 +555,7 @@ export function validate(element) {
     if (
       element.matches(`[type="email"]`) &&
       element.value.trim() !== "" &&
-      element.value.match(leafac.regExps.email) === null
+      element.value.match(regExps.email) === null
     )
       return "Please enter an email address.";
 
@@ -587,24 +573,20 @@ export function warnAboutLosingInputs() {
     isSubmittingForm = true;
   });
   window.onbeforeunload = (event) => {
-    if (
-      isSubmittingForm ||
-      !leafac.isModified(document.querySelector("body"))
-    )
-      return;
+    if (isSubmittingForm || !isModified(document.querySelector("body"))) return;
     event.preventDefault();
     event.returnValue = "";
   };
   window.onbeforelivenavigate = () =>
     isSubmittingForm ||
-    !leafac.isModified(document.querySelector("body")) ||
+    !isModified(document.querySelector("body")) ||
     confirm(
       "Your changes will be lost if you leave this page. Do you wish to continue?"
     );
 }
 
 export function isModified(element) {
-  const elementsToCheck = leafac.descendants(element);
+  const elementsToCheck = descendants(element);
   for (const element of elementsToCheck) {
     if (
       leafac
@@ -613,9 +595,7 @@ export function isModified(element) {
       element.closest("[disabled]") !== null
     )
       continue;
-    if (
-      leafac.ancestors(element).some((element) => element.isModified === true)
-    )
+    if (ancestors(element).some((element) => element.isModified === true))
       return true;
     if (["radio", "checkbox"].includes(element.type)) {
       if (element.checked !== element.defaultChecked) return true;
@@ -644,13 +624,13 @@ export function relativizeDateTimeElement(element, options = {}) {
   const target = options.target ?? element;
   window.clearTimeout(element.relativizeDateTimeElementTimeout);
   (function update() {
-    if (!leafac.isConnected(element)) return;
+    if (!isConnected(element)) return;
     const dateTime = element.getAttribute("datetime");
     (target.relativizeDateTimeElementTooltip ??= tippy(target)).setProps({
       touch: false,
-      content: leafac.formatUTCDateTime(dateTime),
+      content: formatUTCDateTime(dateTime),
     });
-    element.textContent = leafac.relativizeDateTime(dateTime, options);
+    element.textContent = relativizeDateTime(dateTime, options);
     element.relativizeDateTimeElementTimeout = window.setTimeout(
       update,
       10 * 1000
@@ -661,19 +641,14 @@ export function relativizeDateTimeElement(element, options = {}) {
 export function relativizeDateElement(element) {
   window.clearTimeout(element.relativizeDateElementTimeout);
   (function update() {
-    if (!leafac.isConnected(element)) return;
-    element.textContent = leafac.relativizeDate(
-      element.getAttribute("datetime")
-    );
-    element.relativizeDateElementTimeout = window.setTimeout(
-      update,
-      60 * 1000
-    );
+    if (!isConnected(element)) return;
+    element.textContent = relativizeDate(element.getAttribute("datetime"));
+    element.relativizeDateElementTimeout = window.setTimeout(update, 60 * 1000);
   })();
 }
 
 export function validateLocalizedDateTime(element) {
-  const date = leafac.UTCizeDateTime(element.value);
+  const date = UTCizeDateTime(element.value);
   if (date === undefined)
     return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
   element.value = date.toISOString();
@@ -681,7 +656,11 @@ export function validateLocalizedDateTime(element) {
 
 export function relativizeDateTime(
   dateString,
-  { preposition = undefined, dateOnly = true, capitalize = false } = {}
+  {
+    preposition = undefined,
+    dateOnly = true,
+    capitalize: shouldCapitalize = false,
+  } = {}
 ) {
   const difference = new Date(dateString.trim()).getTime() - Date.now();
   const absoluteDifference = Math.abs(difference);
@@ -689,50 +668,44 @@ export function relativizeDateTime(
     absoluteDifference < minute
       ? "just now"
       : absoluteDifference < hour
-      ? relativeTimeFormat.format(
-          Math.trunc(difference / minute),
-          "minutes"
-        )
+      ? relativeTimeFormat.format(Math.trunc(difference / minute), "minutes")
       : absoluteDifference < day
       ? relativeTimeFormat.format(Math.trunc(difference / hour), "hours")
       : absoluteDifference < month
       ? relativeTimeFormat.format(Math.trunc(difference / day), "days")
       : `${preposition === undefined ? "" : `${preposition} `}${
-          dateOnly
-            ? leafac.localizeDate(dateString)
-            : leafac.localizeDateTime(dateString)
+          dateOnly ? localizeDate(dateString) : localizeDateTime(dateString)
         }`;
-  return capitalize
-    ? leafac.capitalize(relativeDateTime)
-    : relativeDateTime;
+  return shouldCapitalize ? capitalize(relativeDateTime) : relativeDateTime;
 }
-  const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
-    localeMatcher: "lookup",
-    numeric: "auto",
-  });
-  const minute = 60 * 1000;
-  const hour = 60 * minute;
-  const day = 24 * hour;
-  const month = 30 * day;
+const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
+  localeMatcher: "lookup",
+  numeric: "auto",
+});
+const minute = 60 * 1000;
+const hour = 60 * minute;
+const day = 24 * hour;
+const month = 30 * day;
 
 export function relativizeDate(dateString) {
-  const date = leafac.localizeDate(dateString);
-  const today = leafac.localizeDate(new Date().toISOString());
+  const date = localizeDate(dateString);
+  const today = localizeDate(new Date().toISOString());
   const yesterdayDate = new Date();
   yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-  const yesterday = leafac.localizeDate(yesterdayDate.toISOString());
+  const yesterday = localizeDate(yesterdayDate.toISOString());
   return date === today
     ? "Today"
     : date === yesterday
     ? "Yesterday"
-    : `${date} · ${leafac.weekday(date)}`;
+    : `${date} · ${weekday(date)}`;
 }
 
 export function localizeDate(dateString) {
   const date = new Date(dateString.trim());
-  return `${String(date.getFullYear())}-${String(
-    date.getMonth() + 1
-  ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  return `${String(date.getFullYear())}-${String(date.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 export function localizeTime(dateString) {
@@ -743,9 +716,7 @@ export function localizeTime(dateString) {
 }
 
 export function localizeDateTime(dateString) {
-  return `${leafac.localizeDate(dateString)} ${leafac.localizeTime(
-    dateString
-  )}`;
+  return `${localizeDate(dateString)} ${localizeTime(dateString)}`;
 }
 
 export function formatUTCDateTime(dateString) {
@@ -758,23 +729,21 @@ export function formatUTCDateTime(dateString) {
 }
 
 export function UTCizeDateTime(dateString) {
-  if (dateString.match(leafac.regExps.localizedDateTime) === null) return;
+  if (dateString.match(regExps.localizedDateTime) === null) return;
   const date = new Date(dateString.trim().replace(" ", "T"));
   if (isNaN(date.getTime())) return;
   return date;
 }
 
 export function weekday(dateString) {
-  return dateTimeFormat.format(new Date(dateString.trim()))
+  return dateTimeFormat.format(new Date(dateString.trim()));
 }
 const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
 });
 
 export function capitalize(text) {
-  return text.length === 0
-    ? text
-    : `${text[0].toUpperCase()}${text.slice(1)}`;
+  return text.length === 0 ? text : `${text[0].toUpperCase()}${text.slice(1)}`;
 }
 
 export function saveFormInputValue(element, identifier) {
@@ -792,14 +761,10 @@ export function saveFormInputValue(element, identifier) {
     element.saveFormInputValueHandleChange = () => {
       const localStorageItem = getLocalStorageItem();
       localStorageItem[window.location.pathname] ??= {};
-      localStorageItem[window.location.pathname][identifier] =
-        element.checked;
+      localStorageItem[window.location.pathname][identifier] = element.checked;
       setLocalStorageItem(localStorageItem);
     };
-    element.addEventListener(
-      "change",
-      element.saveFormInputValueHandleChange
-    );
+    element.addEventListener("change", element.saveFormInputValueHandleChange);
   } else if (
     typeof element.value === "string" &&
     typeof element.defaultValue === "string"
@@ -807,10 +772,7 @@ export function saveFormInputValue(element, identifier) {
     element.value = element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
 
-    element.removeEventListener(
-      "input",
-      element.saveFormInputValueHandleInput
-    );
+    element.removeEventListener("input", element.saveFormInputValueHandleInput);
     element.saveFormInputValueHandleInput = () => {
       const localStorageItem = getLocalStorageItem();
       localStorageItem[window.location.pathname] ??= {};
@@ -886,19 +848,19 @@ export function previousSiblings(element) {
 }
 
 export function isConnected(element) {
-  for (const ancestor of leafac.ancestors(element)) {
+  for (const ancestor of ancestors(element)) {
     if (ancestor.forceIsConnected === true || ancestor.matches("html"))
       return true;
     if (ancestor.matches("[data-tippy-root]"))
-      return leafac.isConnected(ancestor._tippy.reference);
+      return isConnected(ancestor._tippy.reference);
   }
   return false;
 }
 
 // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
-export const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.platform),
+export const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
 export const regExps = {
   email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
   localizedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
-}
+};
