@@ -2341,8 +2341,10 @@ export default async (app: Courselore): Promise<void> => {
 
     const esbuild = await import("esbuild");
     await esbuild.build({
+      absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
       entryPoints: ["bundle.js"],
       outdir: "bundle",
+      entryNames: "[dir]/[name]--[hash]",
 
       loader: {
         ".ttf": "file",
@@ -2355,8 +2357,6 @@ export default async (app: Courselore): Promise<void> => {
       bundle: true,
       minify: true,
       sourcemap: true,
-
-      absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
     });
   }
 
