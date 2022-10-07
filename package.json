@@ -91,6 +91,7 @@
     "@types/semver": "^7.3.12",
     "@types/sharp": "^0.31.0",
     "caxa": "^2.1.0",
+    "esbuild": "^0.15.10",
     "nodemon": "^2.0.20",
     "npm-check-updates": "^16.3.4",
     "prettier": "^2.7.1",

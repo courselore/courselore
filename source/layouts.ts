@@ -1,3 +1,4 @@
+import url from "url";
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
@@ -1200,7 +1201,7 @@ export default async (app: Courselore): Promise<void> => {
       }
     );
 
-  if (app.locals.options.environment === "development")
+  if (app.locals.options.environment === "development") {
     await fs.writeFile(
       new URL("../static/global.css", import.meta.url),
       processCSS(css`
@@ -2337,6 +2338,27 @@ export default async (app: Courselore): Promise<void> => {
         }
       `)
     );
+
+    const esbuild = await import("esbuild");
+    await esbuild.build({
+      entryPoints: ["bundle.js"],
+      outdir: "bundle",
+
+      loader: {
+        ".ttf": "file",
+        ".woff2": "file",
+        ".woff": "file",
+      },
+
+      target: ["chrome100", "safari14", "edge100", "firefox100", "ios14"],
+
+      bundle: true,
+      minify: true,
+      sourcemap: true,
+
+      absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
+    });
+  }
 
   app.locals.layouts.box = ({ req, res, head, body }) =>
     app.locals.layouts.base({
