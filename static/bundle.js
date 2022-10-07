@@ -97,9 +97,6 @@ import "./global.css";
 import autosize from "autosize";
 window.autosize = autosize;
 
-import fastMyersDiff from "fast-myers-diff";
-window.fastMyersDiff = fastMyersDiff;
-
 import "mousetrap";
 
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
@@ -113,5 +110,5 @@ import "textarea-caret";
 import * as textFieldEdit from "text-field-edit";
 window.textFieldEdit = textFieldEdit;
 
-import leafac from "./leafac--javascript.js";
+import * as leafac from "./leafac--javascript.js";
 window.leafac = leafac;

@@ -2156,7 +2156,7 @@ export default async (app: Courselore): Promise<void> => {
                                 buttons[currentHoverIndex].classList.remove("hover");
                                 const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
                                 buttonToHover.classList.add("hover");
-                                scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                                scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
                                 break;
                               case "Enter":
                               case "Tab":
