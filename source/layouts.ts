@@ -2086,9 +2086,9 @@ export default async (app: Courselore): Promise<void> => {
       entryNames: "[dir]/[name]-[hash]",
 
       loader: {
-        ".ttf": "file",
         ".woff2": "file",
         ".woff": "file",
+        ".ttf": "file",
       },
 
       target: ["chrome100", "safari14", "edge100", "firefox100", "ios14"],
