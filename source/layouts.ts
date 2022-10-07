@@ -2340,7 +2340,7 @@ export default async (app: Courselore): Promise<void> => {
     );
 
     const esbuild = await import("esbuild");
-    await esbuild.build({
+    const esbuildResult = await esbuild.build({
       absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
       entryPoints: ["bundle.js"],
       outdir: "bundle",
@@ -2357,7 +2357,13 @@ export default async (app: Courselore): Promise<void> => {
       bundle: true,
       minify: true,
       sourcemap: true,
+      metafile: true,
     });
+    for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
+      esbuildResult.metafile.outputs
+    ))
+      if (entryPoint === "bundle.js" && typeof cssBundle === "string")
+        console.log("FOUND");
   }
 
   app.locals.layouts.box = ({ req, res, head, body }) =>
