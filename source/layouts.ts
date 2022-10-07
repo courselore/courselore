@@ -2344,7 +2344,7 @@ export default async (app: Courselore): Promise<void> => {
       absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
       entryPoints: ["bundle.js"],
       outdir: "bundle",
-      entryNames: "[dir]/[name]--[hash]",
+      entryNames: "[dir]/[name]-[hash]",
 
       loader: {
         ".ttf": "file",
