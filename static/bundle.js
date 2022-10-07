@@ -113,5 +113,5 @@ import "textarea-caret";
 import * as textFieldEdit from "text-field-edit";
 window.textFieldEdit = textFieldEdit;
 
-import * as leafac from "./leafac--javascript.js";
+import leafac from "./leafac--javascript.js";
 window.leafac = leafac;

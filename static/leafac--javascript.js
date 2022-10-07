@@ -1,6 +1,6 @@
 // This file is here for now because it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
-const leafac = {
+export default {
   liveConnection({
     version,
     url,
