@@ -23,10 +23,9 @@ window.scrollIntoViewIfNeeded = scrollIntoViewIfNeeded;
 import tippy from "tippy.js";
 window.tippy = tippy;
 
-import textareaCaret from "textarea-caret";
-window.textareaCaret = textareaCaret;
+import "textarea-caret";
 
-import textFieldEdit from "text-field-edit";
+import * as textFieldEdit from "text-field-edit";
 window.textFieldEdit = textFieldEdit;
 
 import * as leafac from "./leafac--javascript.js";
@@ -110,7 +109,7 @@ import "@fontsource/jetbrains-mono/800-italic.css";
 import "@fontsource/jetbrains-mono/800.css";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
-import "katex/dist/katex.min.css";
+import "katex/dist/katex.css";
 import "tippy.js/dist/tippy.css";
 import "tippy.js/dist/svg-arrow.css";
 import "tippy.js/dist/border.css";
