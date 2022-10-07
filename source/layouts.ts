@@ -2107,8 +2107,8 @@ export default async (app: Courselore): Promise<void> => {
           new URL("../static/bundle/entrypoints.json", import.meta.url),
           JSON.stringify(
             {
-              javascriptBundle,
               cssBundle,
+              javascriptBundle,
             },
             undefined,
             2
@@ -2116,7 +2116,7 @@ export default async (app: Courselore): Promise<void> => {
         );
   }
 
-  const { javascriptBundle, cssBundle } = JSON.parse(
+  const { cssBundle, javascriptBundle } = JSON.parse(
     await fs.readFile(
       new URL("../static/bundle/entrypoints.json", import.meta.url),
       "utf8"
