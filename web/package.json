@@ -2,9 +2,9 @@
   "name": "courselore",
   "version": "4.1.6",
   "description": "Communication Platform for Education",
-  "exports": "./distribution/index.js",
-  "types": "./distribution/index.d.ts",
-  "bin": "./distribution/binary.js",
+  "exports": "./build/server/index.js",
+  "types": "./build/server/index.d.ts",
+  "bin": "./build/server/binary.js",
   "repository": "courselore/courselore",
   "keywords": [
     "education",
@@ -20,11 +20,11 @@
   "homepage": "https://github.com/courselore/courselore#readme",
   "type": "module",
   "scripts": {
-    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./distribution/binary.js ./configuration/development.mjs\"",
+    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./build/server/binary.js ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
-    "clean": "shx rm -rf ./distribution/ ./static/bundle/ ./node_modules/ ./static/node_modules/",
+    "clean": "shx rm -rf ./build/ ./static/bundle/ ./node_modules/ ./static/node_modules/",
     "clean:data": "shx rm -rf ./data/",
     "update": "npm-check-updates --upgrade && (cd static && npm-check-updates --upgrade) && npm install"
   },
