@@ -17,7 +17,7 @@ import {
   IsSignedInMiddlewareLocals,
   User,
   UserAvatarlessBackgroundColor,
-} from "./index.js";
+} from "./index.mjs";
 
 export interface Enrollment {
   id: number;

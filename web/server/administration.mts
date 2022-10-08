@@ -10,7 +10,7 @@ import {
   Courselore,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
-} from "./index.js";
+} from "./index.mjs";
 
 export interface AdministrationOptions {
   latestVersion?: string;

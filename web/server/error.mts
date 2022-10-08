@@ -6,7 +6,7 @@ import {
   BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export default (app: Courselore): void => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(

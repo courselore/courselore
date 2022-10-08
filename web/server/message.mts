@@ -15,7 +15,7 @@ import {
   ConversationParticipants,
   ConversationType,
   IsConversationAccessibleMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export type GetMessageHelper = ({
   req,

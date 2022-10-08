@@ -4,7 +4,7 @@ import expressFileUpload from "express-fileupload";
 import { html } from "@leafac/html";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
-import { Courselore } from "./index.js";
+import { Courselore } from "./index.mjs";
 
 export interface GlobalMiddlewaresOptions {
   cookies: express.CookieOptions;

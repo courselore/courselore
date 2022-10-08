@@ -17,7 +17,7 @@ import {
   CourseRole,
   EnrollmentAccentColor,
   SystemRole,
-} from "./index.js";
+} from "./index.mjs";
 
 export interface AuthenticationOptions {
   argon2: argon2.Options & { raw?: false };

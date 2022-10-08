@@ -16,7 +16,7 @@ import {
   HasPasswordConfirmationMiddlewareLocals,
   MaybeEnrollment,
   IsEnrolledInCourseMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export interface User {
   id: number;

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { sql } from "@leafac/sqlite";
-import { Courselore } from "./index.js";
+import { Courselore } from "./index.mjs";
 
 export type SendEmailWorker = () => Promise<void>;
 

@@ -18,7 +18,6 @@
   "license": "GPL",
   "bugs": "https://github.com/courselore/courselore/issues",
   "homepage": "https://github.com/courselore/courselore#readme",
-  "type": "module",
   "scripts": {
     "postinstall": "(cd ./server/ && npm install) && (cd ./static/ && npm install)",
     "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./build/server/binary.js ./configuration/development.mjs\"",

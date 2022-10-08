@@ -38,7 +38,7 @@ import {
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsConversationAccessibleMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export type ContentPreprocessedPartial = (contentSource: string) => {
   contentPreprocessed: string;

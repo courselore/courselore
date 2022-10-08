@@ -4,7 +4,7 @@ import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import prompts from "prompts";
-import { Courselore } from "./index.js";
+import { Courselore } from "./index.mjs";
 
 export interface DatabaseLocals {
   database: Database;

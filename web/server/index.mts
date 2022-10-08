@@ -3,19 +3,19 @@ import fs from "fs-extra";
 import express from "express";
 import nodemailer from "nodemailer";
 
-import database, { DatabaseLocals } from "./database.js";
-import logging from "./logging.js";
+import database, { DatabaseLocals } from "./database.mjs";
+import logging from "./logging.mjs";
 
 import globalMiddlewares, {
   GlobalMiddlewaresOptions,
-} from "./global-middlewares.js";
-export { BaseMiddlewareLocals } from "./global-middlewares.js";
+} from "./global-middlewares.mjs";
+export { BaseMiddlewareLocals } from "./global-middlewares.mjs";
 
 import liveUpdates, {
   LiveUpdatesMiddleware,
   LiveUpdatesDispatchHelper,
-} from "./live-updates.js";
-export { LiveUpdatesMiddlewareLocals } from "./live-updates.js";
+} from "./live-updates.mjs";
+export { LiveUpdatesMiddlewareLocals } from "./live-updates.mjs";
 
 import layouts, {
   BaseLayout,
@@ -28,7 +28,7 @@ import layouts, {
   SpinnerPartial,
   ReportIssueHrefPartial,
   FlashHelper,
-} from "./layouts.js";
+} from "./layouts.mjs";
 
 import authentication, {
   AuthenticationOptions,
@@ -37,31 +37,31 @@ import authentication, {
   IsSignedInMiddleware,
   HasPasswordConfirmationMiddleware,
   EmailVerificationMailer,
-} from "./authentication.js";
+} from "./authentication.mjs";
 export {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   HasPasswordConfirmationMiddlewareLocals,
-} from "./authentication.js";
+} from "./authentication.mjs";
 
-import administrator, { AdministrationOptions } from "./administration.js";
+import administrator, { AdministrationOptions } from "./administration.mjs";
 export {
   UserSystemRolesWhoMayCreateCourses,
   userSystemRolesWhoMayCreateCourseses,
   SystemRole,
   systemRoles,
-} from "./administration.js";
+} from "./administration.mjs";
 
-import about, { AboutHandler } from "./about.js";
+import about, { AboutHandler } from "./about.mjs";
 
-import user, { UserPartial } from "./user.js";
+import user, { UserPartial } from "./user.mjs";
 export {
   User,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotificationsForAllMessages,
   userEmailNotificationsForAllMessageses,
-} from "./user.js";
+} from "./user.mjs";
 
 import course, {
   CoursePartial,
@@ -69,7 +69,7 @@ import course, {
   CourseArchivedPartial,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
-} from "./course.js";
+} from "./course.mjs";
 export {
   Enrollment,
   MaybeEnrollment,
@@ -79,38 +79,38 @@ export {
   enrollmentAccentColors,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
-} from "./course.js";
+} from "./course.mjs";
 
 import conversation, {
   ConversationLayout,
   ConversationPartial,
   GetConversationHelper,
   IsConversationAccessibleMiddleware,
-} from "./conversation.js";
+} from "./conversation.mjs";
 export {
   ConversationParticipants,
   conversationParticipantses,
   ConversationType,
   conversationTypes,
   IsConversationAccessibleMiddlewareLocals,
-} from "./conversation.js";
+} from "./conversation.mjs";
 
 import message, {
   GetMessageHelper,
   MayEditMessageHelper,
   MayEndorseMessageHelper,
   EmailNotificationsMailer,
-} from "./message.js";
+} from "./message.mjs";
 
 import content, {
   ContentPreprocessedPartial,
   ContentPartial,
   ContentEditorPartial,
-} from "./content.js";
+} from "./content.mjs";
 
-import email, { SendEmailWorker } from "./email.js";
-import demonstration from "./demonstration.js";
-import error from "./error.js";
+import email, { SendEmailWorker } from "./email.mjs";
+import demonstration from "./demonstration.mjs";
+import error from "./error.mjs";
 
 import helpers, {
   EmailRegExpHelper,
@@ -119,7 +119,7 @@ import helpers, {
   SanitizeSearchHelper,
   HighlightSearchResultHelper,
   SplitFilterablePhrasesHelper,
-} from "./helpers.js";
+} from "./helpers.mjs";
 
 export interface Courselore extends express.Express {
   locals: {

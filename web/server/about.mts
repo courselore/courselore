@@ -8,7 +8,7 @@ import {
   BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export type AboutHandler = express.RequestHandler<
   {},

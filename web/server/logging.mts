@@ -1,4 +1,4 @@
-import { Courselore, BaseMiddlewareLocals } from "./index.js";
+import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
 export default (app: Courselore): void => {
   app.once("listen", () => {

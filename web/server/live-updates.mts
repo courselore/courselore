@@ -4,7 +4,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export type LiveUpdatesMiddleware = express.RequestHandler<
   {},

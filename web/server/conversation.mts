@@ -18,7 +18,7 @@ import {
   CourseRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
-} from "./index.js";
+} from "./index.mjs";
 
 export type ConversationParticipants =
   typeof conversationParticipantses[number];

@@ -1,6 +1,6 @@
 import escapeStringRegexp from "escape-string-regexp";
 import { HTML, html } from "@leafac/html";
-import { Courselore } from "./index.js";
+import { Courselore } from "./index.mjs";
 
 export type EmailRegExpHelper = RegExp;
 

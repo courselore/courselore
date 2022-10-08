@@ -20,7 +20,7 @@ import {
   conversationParticipantses,
   ConversationType,
   conversationTypes,
-} from "./index.js";
+} from "./index.mjs";
 
 export default (app: Courselore): void => {
   if (!app.locals.options.demonstration) return;
