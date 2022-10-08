@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "postinstall": "rollup node_modules/text-field-edit/index.js --file node_modules/text-field-edit/index.umd.js --format umd --name textFieldEdit && rollup node_modules/fast-myers-diff/bin/index.js --file node_modules/fast-myers-diff/index.umd.js --format umd --name fastMyersDiff --plugin commonjs --exports named"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.5.11",
