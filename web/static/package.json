@@ -1,6 +1,5 @@
 {
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.5.11",
     "@fontsource/public-sans": "^4.5.11",
