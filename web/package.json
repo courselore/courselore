@@ -2,9 +2,9 @@
   "name": "courselore",
   "version": "4.1.6",
   "description": "Communication Platform for Education",
-  "exports": "./build/server/index.js",
-  "types": "./build/server/index.d.ts",
-  "bin": "./build/server/binary.js",
+  "exports": "./build/server/index.mjs",
+  "types": "./build/server/index.d.mts",
+  "bin": "./build/server/binary.mjs",
   "repository": "courselore/courselore",
   "keywords": [
     "education",
