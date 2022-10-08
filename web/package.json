@@ -20,7 +20,7 @@
   "homepage": "https://github.com/courselore/courselore#readme",
   "scripts": {
     "postinstall": "(cd ./server/ && npm install) && (cd ./static/ && npm install)",
-    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./build/server/binary.js ./configuration/development.mjs\"",
+    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",

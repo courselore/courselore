@@ -2,7 +2,7 @@ const esbuild = await import("esbuild");
 
 const esbuildResult = await esbuild.build({
   absWorkingDir: url.fileURLToPath(new URL("../static/", import.meta.url)),
-  entryPoints: ["bundle.js"],
+  entryPoints: ["bundle.mjs"],
   outdir: "bundle",
   entryNames: "[dir]/[name]-[hash]",
 
@@ -23,7 +23,7 @@ const esbuildResult = await esbuild.build({
 for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   esbuildResult.metafile.outputs
 ))
-  if (entryPoint === "bundle.js" && typeof cssBundle === "string")
+  if (entryPoint === "bundle.mjs" && typeof cssBundle === "string")
     fs.writeFile(
       new URL("../static/bundle/entrypoints.json", import.meta.url),
       JSON.stringify(

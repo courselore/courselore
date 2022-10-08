@@ -171,7 +171,7 @@ export default async ({
     const fs = (await courseloreImport("fs-extra")).default;
     const filenamify = (await courseloreImport("filenamify")).default;
     const nodemailer = await courseloreImport("nodemailer");
-    const courselore = (await courseloreImport("./index.js")).default;
+    const courselore = (await courseloreImport("./index.mjs")).default;
 
     if (typeof sendMail !== "function") {
       const { options, defaults } = sendMail;
