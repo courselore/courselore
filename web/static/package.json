@@ -16,6 +16,7 @@
     "scroll-into-view-if-needed": "^2.2.29",
     "text-field-edit": "^3.1.9001",
     "textarea-caret": "^3.1.0",
-    "tippy.js": "^6.3.7"
+    "tippy.js": "^6.3.7",
+    "esbuild": "^0.15.10"
   }
 }
