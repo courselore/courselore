@@ -5,7 +5,11 @@
   "exports": "./build/server/index.mjs",
   "types": "./build/server/index.d.mts",
   "bin": "./build/server/binary.mjs",
+  "author": "Courselore <npm@courselore.org> (https://courselore.org)",
+  "homepage": "https://github.com/courselore/courselore",
+  "bugs": "https://github.com/courselore/courselore/issues",
   "repository": "courselore/courselore",
+  "license": "GPL",
   "keywords": [
     "education",
     "students",
@@ -14,19 +18,15 @@
     "forum",
     "chat"
   ],
-  "author": "Courselore <npm@courselore.org> (https://courselore.org)",
-  "license": "GPL",
-  "bugs": "https://github.com/courselore/courselore/issues",
-  "homepage": "https://github.com/courselore/courselore#readme",
   "scripts": {
     "postinstall": "(cd ./server/ && npm install) && (cd ./static/ && npm install)",
-    "start": "nodemon --watch \"./source/\" --watch \"./configuration/\" --ext ts,mjs --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
+    "start": "nodemon --watch \"./server/\" --watch \"./static/\" --watch \"./configuration/\" --ext mts,mjs --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
-    "test": "prettier --check \"./source/**/*\" --end-of-line auto",
-    "prepare": "tsc",
-    "clean": "shx rm -rf ./build/ ./static/bundle/ ./node_modules/ ./static/node_modules/",
+    "test": "prettier --check \"./server/**/*\" --check \"./static/**/*\" --end-of-line auto",
+    "prepare": "(cd ./server/ && tsc) && (cd ./static/ && node prepare.mjs)",
+    "clean": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
-    "update": "npm-check-updates --upgrade && (cd static && npm-check-updates --upgrade) && npm install"
+    "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade) && (cd ./static/ && npm-check-updates --upgrade) && npm install"
   },
   "engines": {
     "node": ">=18"
