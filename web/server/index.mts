@@ -213,7 +213,7 @@ export default async (options: Options): Promise<Courselore> => {
     ...options,
     version: JSON.parse(
       await fs.readFile(
-        url.fileURLToPath(new URL("../package.json", import.meta.url)),
+        url.fileURLToPath(new URL("../../package.json", import.meta.url)),
         "utf8"
       )
     ).version,

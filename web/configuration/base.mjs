@@ -1,6 +1,5 @@
 export default async ({
   courseloreImport,
-  courseloreImportMetaURL,
   // DEPRECATED
   host,
   hostname = host,
@@ -117,7 +116,7 @@ export default async ({
                 uri strip_prefix /cache-busting/${version}
                 root * ${path.resolve(
                   url.fileURLToPath(
-                    new URL("../static/", courseloreImportMetaURL)
+                    new URL("../build/static/", import.meta.url)
                   )
                 )}
                 @file_exists file
@@ -131,7 +130,7 @@ export default async ({
               route {
                 root * ${path.resolve(
                   url.fileURLToPath(
-                    new URL("../static/", courseloreImportMetaURL)
+                    new URL("../build/static/", import.meta.url)
                   )
                 )}
                 @file_exists file

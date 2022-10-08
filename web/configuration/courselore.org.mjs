@@ -1,4 +1,4 @@
-export default async ({ courseloreImport, courseloreImportMetaURL }) => {
+export default async ({ courseloreImport }) => {
   const url = await courseloreImport("node:url");
   const fs = (await courseloreImport("fs-extra")).default;
   const secrets = JSON.parse(
@@ -7,9 +7,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
       "utf8"
     )
   );
-  (await courseloreImport("../configuration/base.mjs")).default({
+  (await courseloreImport("../../configuration/base.mjs")).default({
     courseloreImport,
-    courseloreImportMetaURL,
     hostname: "courselore.org",
     administratorEmail: "administrator@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),

@@ -1,10 +1,9 @@
 // COURSELORE CONFIGURATION
 
-export default async ({ courseloreImport, courseloreImportMetaURL }) => {
+export default async ({ courseloreImport }) => {
   const url = await courseloreImport("node:url");
-  (await courseloreImport("../configuration/base.mjs")).default({
+  (await courseloreImport("../../configuration/base.mjs")).default({
     courseloreImport,
-    courseloreImportMetaURL,
 
     // The main hostname through which people may access Courselore.
     hostname: "YOUR-DOMAIN.EDU",

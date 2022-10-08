@@ -1,8 +1,7 @@
-export default async ({ courseloreImport, courseloreImportMetaURL }) => {
+export default async ({ courseloreImport }) => {
   const url = await courseloreImport("node:url");
-  (await courseloreImport("../configuration/base.mjs")).default({
+  (await courseloreImport("../../configuration/base.mjs")).default({
     courseloreImport,
-    courseloreImportMetaURL,
     hostname: process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
     administratorEmail: "development@courselore.org",
     dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
