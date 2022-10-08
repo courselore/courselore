@@ -5,8 +5,6 @@
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.5.11",
     "@fontsource/public-sans": "^4.5.11",
-    "@leafac/css": "^0.6.2",
-    "@leafac/javascript": "^0.2.12",
     "autosize": "^5.0.1",
     "bootstrap-icons": "^1.9.1",
     "fake-avatars": "^1.0.0",
@@ -16,7 +14,9 @@
     "scroll-into-view-if-needed": "^2.2.29",
     "text-field-edit": "^3.1.9001",
     "textarea-caret": "^3.1.0",
-    "tippy.js": "^6.3.7",
+    "tippy.js": "^6.3.7"
+  },
+  "devDependencies": {
     "esbuild": "^0.15.10"
   }
 }
