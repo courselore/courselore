@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-10-08</summary>
+
+- Fixed an issue that was causing non-high-DPI images to be resized.
+- Fixed an issue that was causing Firefox to show “Failed to connect to the Courselore server.” for a moment during reload.
+- Module bundling.
+
+</details>
+
+<details>
 <summary>2021-10-02</summary>
 
 - Issues we fixed:
