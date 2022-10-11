@@ -1,8 +1,7 @@
-import url from "url";
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { processCSS, css } from "@leafac/css";
+import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
