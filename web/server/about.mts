@@ -206,8 +206,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/cache-busting/${app
-                  .locals.options.version}/main-screen--light.png"
+                src="https://${app.locals.options.hostname}/${app.locals.options
+                  .static["about/main-screen--light.png"]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -222,8 +222,8 @@ export default (app: Courselore): void => {
                 `)}"
               />
               <img
-                src="https://${app.locals.options.hostname}/cache-busting/${app
-                  .locals.options.version}/main-screen--dark.png"
+                src="https://${app.locals.options.hostname}/${app.locals.options
+                  .static["about/main-screen--dark.png"]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -419,8 +419,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/cache-busting/${app
-                  .locals.options.version}/main-screen--light-and-dark.png"
+                src="https://${app.locals.options.hostname}/${app.locals.options
+                  .static["about/main-screen--light-and-dark.png"]}"
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
@@ -496,8 +496,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/cache-busting/${app
-                  .locals.options.version}/main-screen--phone--light.jpeg"
+                src="https://${app.locals.options.hostname}/${app.locals.options
+                  .static["about/main-screen--phone--light.jpeg"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -512,8 +512,8 @@ export default (app: Courselore): void => {
                 `)}"
               />
               <img
-                src="https://${app.locals.options.hostname}/cache-busting/${app
-                  .locals.options.version}/main-screen--phone--dark.jpeg"
+                src="https://${app.locals.options.hostname}/${app.locals.options
+                  .static["about/main-screen--phone--dark.jpeg"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -733,9 +733,8 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options
-                    .hostname}/cache-busting/${app.locals.options
-                    .version}/team/scott-smith.png"
+                  src="https://${app.locals.options.hostname}/${app.locals
+                    .options.static["about/scott-smith.png"]}"
                   alt="Dr. Scott Smith"
                   loading="lazy"
                   class="img"
@@ -755,9 +754,8 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options
-                    .hostname}/cache-busting/${app.locals.options
-                    .version}/team/ali-madooei.png"
+                  src="https://${app.locals.options.hostname}/${app.locals
+                    .options.static["about/ali-madooei.png"]}"
                   alt="Dr. Ali Madooei"
                   loading="lazy"
                   class="img"
@@ -774,9 +772,8 @@ export default (app: Courselore): void => {
 
               <a href="https://leafac.com" class="button button--transparent">
                 <img
-                  src="https://${app.locals.options
-                    .hostname}/cache-busting/${app.locals.options
-                    .version}/team/leandro-facchinetti.png"
+                  src="https://${app.locals.options.hostname}/${app.locals
+                    .options.static["about/leandro-facchinetti.png"]}"
                   alt="Leandro Facchinetti"
                   loading="lazy"
                   class="img"
@@ -808,9 +805,8 @@ export default (app: Courselore): void => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options
-                    .hostname}/cache-busting/${app.locals.options
-                    .version}/team/eliot-smith.png"
+                  src="https://${app.locals.options.hostname}/${app.locals
+                    .options.static["about/eliot-smith.png"]}"
                   alt="Eliot Smith"
                   loading="lazy"
                   class="img"
