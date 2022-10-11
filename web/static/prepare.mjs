@@ -5,8 +5,6 @@ import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import esbuild from "esbuild";
 
-const paths = {};
-
 await fs.writeFile(
   "global.css",
   processCSS(css`
@@ -1222,17 +1220,31 @@ const esbuildResult = await esbuild.build({
   metafile: true,
 });
 
-const [javascriptBundle, { entryPoint, cssBundle }] = Object.entries(
+await fs.unlink("global.css");
+await fs.unlink("index.mjs");
+
+const paths = {};
+
+for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   esbuildResult.metafile.outputs
-).find(
-  ([javascriptBundle, { entryPoint, cssBundle }]) =>
-    entryPoint === "index.mjs" && typeof cssBundle === "string"
-);
+))
+  if (entryPoint === "index.mjs" && typeof cssBundle === "string") {
+    paths["index.css"] = cssBundle.slice("../build/static/".length);
+    paths["index.js"] = javascriptBundle.slice("../build/static/".length);
+    break;
+  }
 
-paths["index.css"] = cssBundle.slice("../build/static/".length);
-paths["index.js"] = javascriptBundle.slice("../build/static/".length);
-
-for (const source of ["main-screen--phone--light.jpeg"]) {
+for (const source of [
+  "about/ali-madooei.png",
+  "about/eliot-smith.png",
+  "about/leandro-facchinetti.png",
+  "about/main-screen--dark.png",
+  "about/main-screen--light-and-dark.png",
+  "about/main-screen--light.png",
+  "about/main-screen--phone--dark.jpeg",
+  "about/main-screen--phone--light.jpeg",
+  "about/scott-smith.png",
+]) {
   const extension = path.extname(source);
   const destination = `../build/static/${source.slice(
     0,
@@ -1250,6 +1262,3 @@ fs.writeFile(
   new URL("../build/static/paths.json", import.meta.url),
   JSON.stringify(paths, undefined, 2)
 );
-
-await fs.unlink("global.css");
-await fs.unlink("index.mjs");
