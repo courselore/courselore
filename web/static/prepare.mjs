@@ -1258,7 +1258,10 @@ for (const source of [
   await fs.copy(source, destination);
 }
 
-fs.writeFile(
+await fs.writeFile(
   new URL("../build/static/paths.json", import.meta.url),
   JSON.stringify(paths, undefined, 2)
 );
+
+for (const file of ["apple-touch-icon.png", "favicon.ico"])
+  await fs.copy(file, path.join("../build/static", file));
