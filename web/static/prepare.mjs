@@ -1219,5 +1219,24 @@ const esbuildResult = await esbuild.build({
   metafile: true,
 });
 
+const [javascriptBundle, { entryPoint, cssBundle }] = Object.entries(
+  esbuildResult.metafile.outputs
+).find(
+  ([javascriptBundle, { entryPoint, cssBundle }]) =>
+    entryPoint === "index.mjs" && typeof cssBundle === "string"
+);
+
+fs.writeFile(
+  new URL("../build/static/paths.json", import.meta.url),
+  JSON.stringify(
+    {
+      "index.css": cssBundle.slice("../build/static/".length),
+      "index.js": javascriptBundle.slice("../build/static/".length),
+    },
+    undefined,
+    2
+  )
+);
+
 await fs.unlink("global.css");
 await fs.unlink("index.mjs");
