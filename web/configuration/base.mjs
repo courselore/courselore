@@ -4,7 +4,7 @@ export default async ({
   administratorEmail,
   dataDirectory,
   sendMail,
-  alternativeHostnames,
+  alternativeHostnames = [],
   hstsPreload = false,
   caddyExtraConfiguration = "",
   tunnel = false,
