@@ -218,7 +218,12 @@ export default async (options: Options): Promise<Courselore> => {
         "utf8"
       )
     ).version,
-    static: JSON.parse(await fs.readFile("../static/paths.json", "utf8")),
+    static: JSON.parse(
+      await fs.readFile(
+        url.fileURLToPath(new URL("../static/paths.json", import.meta.url)),
+        "utf8"
+      )
+    ),
     canonicalHostname: "courselore.org",
     metaCourseloreInvitation: "https://meta.courselore.org",
     tryHostname: "try.courselore.org",
