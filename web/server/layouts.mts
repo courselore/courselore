@@ -853,12 +853,13 @@ export default async (app: Courselore): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="https://${app.locals.options.hostname}/${cssBundle}"
+            href="https://${app.locals.options.hostname}/${app.locals.options
+              .static["index.css"]}"
           />
           $${res.locals.css.toString()}
 
-          <script src="https://${app.locals.options
-              .hostname}/${javascriptBundle}"></script>
+          <script src="https://${app.locals.options.hostname}/${app.locals
+              .options.static["index.js"]}"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
