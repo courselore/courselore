@@ -108,35 +108,22 @@ export default async ({
           http${tunnel ? `` : `s`}://${hostname} {
             route {
               import common
-              route /cache-busting/${version}/* {
-                uri strip_prefix /cache-busting/${version}
-                root * ${path.resolve(
-                  url.fileURLToPath(
-                    new URL("../build/static/", import.meta.url)
-                  )
-                )}
-                @file_exists file
-                route @file_exists {
-                  header Cache-Control "public, ${
-                    demonstration ? "no-cache" : "max-age=31536000, immutable"
-                  }"
-                  file_server
-                }
-              }
               route {
-                root * ${path.resolve(
-                  url.fileURLToPath(
-                    new URL("../build/static/", import.meta.url)
+                root * ${JSON.stringify(
+                  path.resolve(
+                    url.fileURLToPath(
+                      new URL("../build/static/", import.meta.url)
+                    )
                   )
                 )}
                 @file_exists file
                 route @file_exists {
-                  header Cache-Control "public, no-cache"
+                  header Cache-Control "public, max-age=31536000, immutable"
                   file_server
                 }
               }
               route /files/* {
-                root * ${path.resolve(dataDirectory)}
+                root * ${JSON.stringify(path.resolve(dataDirectory))}
                 @file_exists file
                 route @file_exists {
                   header Cache-Control "private, max-age=31536000, immutable"
