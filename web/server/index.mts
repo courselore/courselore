@@ -125,6 +125,7 @@ export interface Courselore extends express.Express {
   locals: {
     options: {
       version: string;
+      static: { [file: string]: string };
       canonicalHostname: string;
       metaCourseloreInvitation: string;
       tryHostname: string;
@@ -217,6 +218,7 @@ export default async (options: Options): Promise<Courselore> => {
         "utf8"
       )
     ).version,
+    static: JSON.parse(await fs.readFile("../static/paths.json", "utf8")),
     canonicalHostname: "courselore.org",
     metaCourseloreInvitation: "https://meta.courselore.org",
     tryHostname: "try.courselore.org",

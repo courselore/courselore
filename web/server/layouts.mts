@@ -938,13 +938,6 @@ export default async (app: Courselore): Promise<void> => {
       }
     );
 
-  const { cssBundle, javascriptBundle } = JSON.parse(
-    await fs.readFile(
-      new URL("../static/bundle/entrypoints.json", import.meta.url),
-      "utf8"
-    )
-  );
-
   app.locals.layouts.box = ({ req, res, head, body }) =>
     app.locals.layouts.base({
       req,
