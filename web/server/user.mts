@@ -1066,11 +1066,11 @@ export default (app: Courselore): void => {
       await req.files.avatar.mv(
         path.join(app.locals.options.dataDirectory, `files/${folder}/${name}`)
       );
-      const ext = path.extname(name);
+      const extension = path.extname(name);
       const nameAvatar = `${name.slice(
         0,
-        name.length - ext.length
-      )}--avatar${ext}`;
+        -extension.length
+      )}--avatar${extension}`;
       try {
         await sharp(req.files.avatar.data, { limitInputPixels: false })
           .rotate()

@@ -1,4 +1,5 @@
-import url from "node:url";
+import path from "node:path";
+import crypto from "node:crypto";
 import fs from "fs-extra";
 import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
@@ -1225,6 +1226,19 @@ const [javascriptBundle, { entryPoint, cssBundle }] = Object.entries(
   ([javascriptBundle, { entryPoint, cssBundle }]) =>
     entryPoint === "index.mjs" && typeof cssBundle === "string"
 );
+
+for (const source of ["./main-screen--phone--light.jpeg"]) {
+  const extension = path.extname(source);
+  const destination = `../build/static/${source.slice(
+    0,
+    -extension.length
+  )}--${crypto
+    .createHash("sha1")
+    .update(await fs.readFile(source))
+    .digest("hex")}${extension}`;
+  await fs.ensureDir(path.dirname(destination));
+  await fs.copy(source, destination);
+}
 
 fs.writeFile(
   new URL("../build/static/paths.json", import.meta.url),

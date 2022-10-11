@@ -2831,11 +2831,11 @@ ${contentSource}</textarea
               }](${href})\n\n`;
               continue;
             }
-            const ext = path.extname(attachment.name);
+            const extension = path.extname(attachment.name);
             const nameThumbnail = `${attachment.name.slice(
               0,
-              attachment.name.length - ext.length
-            )}--thumbnail${ext}`;
+              -extension.length
+            )}--thumbnail${extension}`;
             await image
               .rotate()
               .resize({ width: maximumWidth })
