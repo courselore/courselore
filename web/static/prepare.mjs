@@ -1263,7 +1263,11 @@ await fs.writeFile(
   JSON.stringify(paths, undefined, 2)
 );
 
-for (const source of ["apple-touch-icon.png", "favicon.ico"]) {
+for (const source of [
+  "apple-touch-icon.png",
+  "favicon.ico",
+  "node_modules/fake-avatars/avatars/",
+]) {
   const destination = path.join("../build/static", source);
   await fs.ensureDir(path.dirname(destination));
   await fs.copy(source, destination);

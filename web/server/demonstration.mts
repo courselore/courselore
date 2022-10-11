@@ -99,8 +99,8 @@ export default (app: Courselore): void => {
             ${html`${name}`},
             ${
               Math.random() < 0.6
-                ? `https://${app.locals.options.hostname}/cache-busting/${
-                    app.locals.options.version
+                ? `https://${
+                    app.locals.options.hostname
                   }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                 : null
             },
