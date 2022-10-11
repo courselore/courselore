@@ -5,6 +5,8 @@ import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import esbuild from "esbuild";
 
+const paths = {};
+
 await fs.writeFile(
   "global.css",
   processCSS(css`
@@ -1227,7 +1229,10 @@ const [javascriptBundle, { entryPoint, cssBundle }] = Object.entries(
     entryPoint === "index.mjs" && typeof cssBundle === "string"
 );
 
-for (const source of ["./main-screen--phone--light.jpeg"]) {
+paths["index.css"] = cssBundle.slice("../build/static/".length);
+paths["index.js"] = javascriptBundle.slice("../build/static/".length);
+
+for (const source of ["main-screen--phone--light.jpeg"]) {
   const extension = path.extname(source);
   const destination = `../build/static/${source.slice(
     0,
@@ -1236,20 +1241,14 @@ for (const source of ["./main-screen--phone--light.jpeg"]) {
     .createHash("sha1")
     .update(await fs.readFile(source))
     .digest("hex")}${extension}`;
+  paths[source] = destination.slice("../build/static/".length);
   await fs.ensureDir(path.dirname(destination));
   await fs.copy(source, destination);
 }
 
 fs.writeFile(
   new URL("../build/static/paths.json", import.meta.url),
-  JSON.stringify(
-    {
-      "index.css": cssBundle.slice("../build/static/".length),
-      "index.js": javascriptBundle.slice("../build/static/".length),
-    },
-    undefined,
-    2
-  )
+  JSON.stringify(paths, undefined, 2)
 );
 
 await fs.unlink("global.css");
