@@ -14,15 +14,8 @@ export default async ({
   if (process.argv[3] === undefined) {
     const path = await courseloreImport("node:path");
     const url = await courseloreImport("node:url");
-    const fs = (await courseloreImport("fs-extra")).default;
     const execa = (await courseloreImport("execa")).execa;
     const caddyfile = (await courseloreImport("dedent")).default;
-    const version = JSON.parse(
-      await fs.readFile(
-        url.fileURLToPath(new URL("../package.json", import.meta.url)),
-        "utf8"
-      )
-    ).version;
 
     const subprocesses = [
       execa(
