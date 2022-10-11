@@ -1,14 +1,10 @@
 export default async ({
   courseloreImport,
-  // DEPRECATED
-  host,
-  hostname = host,
+  hostname,
   administratorEmail,
   dataDirectory,
   sendMail,
-  // DEPRECATED
-  alternativeHosts = [],
-  alternativeHostnames = alternativeHosts,
+  alternativeHostnames,
   hstsPreload = false,
   caddyExtraConfiguration = "",
   tunnel = false,
