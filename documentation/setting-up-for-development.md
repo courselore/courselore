@@ -79,7 +79,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    ```console
    > git clone git@github.com:courselore/courselore.git
-   > cd courselore
+   > cd courselore/web/
    > npm install
    > npm start
    ```
@@ -129,7 +129,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    ```console
    $ git clone git@github.com:courselore/courselore.git
-   $ cd courselore
+   $ cd courselore/web/
    $ npm install
    $ npm start
    ```
@@ -186,7 +186,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    ```console
    $ git clone git@github.com:courselore/courselore.git
-   $ cd courselore
+   $ cd courselore/web/
    $ npm install
    $ npm start
    ```
