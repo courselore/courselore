@@ -1246,13 +1246,13 @@ for (const source of [
   "about/scott-smith.png",
 ]) {
   const extension = path.extname(source);
-  const destination = `../build/static/${source.slice(
-    0,
-    -extension.length
-  )}--${crypto
-    .createHash("sha1")
-    .update(await fs.readFile(source))
-    .digest("hex")}${extension}`;
+  const destination = path.join(
+    "../build/static",
+    `${source.slice(0, -extension.length)}--${crypto
+      .createHash("sha1")
+      .update(await fs.readFile(source))
+      .digest("hex")}${extension}`
+  );
   paths[source] = destination.slice("../build/static/".length);
   await fs.ensureDir(path.dirname(destination));
   await fs.copy(source, destination);
@@ -1263,5 +1263,8 @@ await fs.writeFile(
   JSON.stringify(paths, undefined, 2)
 );
 
-for (const file of ["apple-touch-icon.png", "favicon.ico"])
-  await fs.copy(file, path.join("../build/static", file));
+for (const source of ["apple-touch-icon.png", "favicon.ico"]) {
+  const destination = path.join("../build/static", source);
+  await fs.ensureDir(path.dirname(destination));
+  await fs.copy(source, destination);
+}
