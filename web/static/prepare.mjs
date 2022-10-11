@@ -1128,7 +1128,7 @@ await fs.writeFile(
 );
 
 await fs.writeFile(
-  "index.js",
+  "index.mjs",
   javascript`
     // CSS
 
@@ -1199,5 +1199,25 @@ await fs.writeFile(
   `
 );
 
+const esbuildResult = await esbuild.build({
+  entryPoints: ["index.mjs"],
+  outdir: "../build/static/",
+  entryNames: "[dir]/[name]--[hash]",
+  assetNames: "[dir]/[name]--[hash]",
+
+  loader: {
+    ".woff2": "file",
+    ".woff": "file",
+    ".ttf": "file",
+  },
+
+  target: ["chrome100", "safari14", "edge100", "firefox100", "ios14"],
+
+  bundle: true,
+  minify: true,
+  sourcemap: true,
+  metafile: true,
+});
+
 await fs.unlink("global.css");
-await fs.unlink("index.js");
+await fs.unlink("index.mjs");
