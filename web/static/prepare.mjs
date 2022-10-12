@@ -1183,8 +1183,9 @@ await fs.writeFile(
     import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
     window.scrollIntoViewIfNeeded = scrollIntoViewIfNeeded;
 
-    import tippy from "tippy.js";
+    import tippy, * as tippyStatic from "tippy.js";
     window.tippy = tippy;
+    window.tippy.hideAll = tippyStatic.hideAll;
 
     import textareaCaret from "textarea-caret";
     window.textareaCaret = textareaCaret;
