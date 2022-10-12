@@ -1,5 +1,6 @@
 export default async ({
   courseloreImport,
+  courseloreImportMetaURL,
   hostname,
   administratorEmail,
   dataDirectory,
@@ -105,7 +106,7 @@ export default async ({
                 root * ${JSON.stringify(
                   path.resolve(
                     url.fileURLToPath(
-                      new URL("../build/static/", import.meta.url)
+                      new URL("../static/", courseloreImportMetaURL)
                     )
                   )
                 )}
