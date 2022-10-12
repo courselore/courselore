@@ -824,6 +824,20 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Consider using esbuild to compile TypeScript on server.
+
+  - .
+
+    ```console
+    $ cd ./web/server/
+    $ npm i -D esbuild # Or perhaps pull esbuild up, since it’s needed by the ‘static/’ as well?
+    $ npx esbuild --outdir=../build/server/ --platform=node --format=esm --out-extension:.js=.mjs "--external:*.node" --external:canvas --bundle --minify --sourcemap index.mts
+    ```
+
+  - In `tsconfig`, set `"isolatedModules": true,` and deal with explicit `export type`s that become necessary.
+
+  - Use TypeScript only to check types: `tsc -noEmit`
+
 - Try other methods for prioritizing the queue for Live-Updates. More specifically, we want to make sure that the person who performed the action will receive feedback before we get the server busy with Live-Updates. Right now we’re simply delaying the Live-Updates by a fixed time.
   - We could detect that the person has received their feedback and fire Live-Updates right away, instead of waiting for that fixed time, giving faster feedback on Live-Updates.
   - We could answer the POST/PATCH/PUT with the material of the updated page, instead of redirecting. This is heavy-handed, because it affects many routes. But it saves one roundtrip.
