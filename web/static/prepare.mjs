@@ -1129,7 +1129,7 @@ await fs.writeFile(
 );
 
 await fs.writeFile(
-  "index.js",
+  "index.mjs",
   javascript`
     // CSS
 
@@ -1201,7 +1201,7 @@ await fs.writeFile(
 );
 
 const esbuildResult = await esbuild.build({
-  entryPoints: ["index.js"],
+  entryPoints: ["index.mjs"],
   outdir: "../build/static/",
   entryNames: "[dir]/[name]--[hash]",
   assetNames: "[dir]/[name]--[hash]",
@@ -1221,16 +1221,16 @@ const esbuildResult = await esbuild.build({
 });
 
 await fs.unlink("global.css");
-await fs.unlink("index.js");
+await fs.unlink("index.mjs");
 
 const paths = {};
 
 for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   esbuildResult.metafile.outputs
 ))
-  if (entryPoint === "index.js" && typeof cssBundle === "string") {
+  if (entryPoint === "index.mjs" && typeof cssBundle === "string") {
     paths["index.css"] = cssBundle.slice("../build/static/".length);
-    paths["index.js"] = javascriptBundle.slice("../build/static/".length);
+    paths["index.mjs"] = javascriptBundle.slice("../build/static/".length);
     break;
   }
 
