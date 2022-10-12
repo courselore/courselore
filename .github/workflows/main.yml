@@ -1,19 +1,5 @@
 on: push
 jobs:
-  web--test:
-    strategy:
-      matrix:
-        os: [windows, macos, ubuntu]
-    runs-on: ${{ matrix.os }}-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 18
-      - run: |
-          cd web
-          npm install-ci-test
-
   web--build:
     strategy:
       matrix:
@@ -46,6 +32,20 @@ jobs:
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
+
+  web--test:
+    strategy:
+      matrix:
+        os: [windows, macos, ubuntu]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - run: |
+          cd web
+          npm install-ci-test
 
   web--deploy--try-courselore-org:
     if: github.ref == 'refs/heads/main'
