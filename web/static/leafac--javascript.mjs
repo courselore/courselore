@@ -6,7 +6,7 @@ import tippy from "tippy.js";
 export function liveConnection({
   version,
   url,
-  newVersionMessage = "There has been update. Please reload the page.",
+  newVersionMessage = "There has been an update. Please reload the page.",
   offlineMessage = "Failed to connect to server. Please check your internet connection and try reloading the page.",
   liveReload = false,
 }) {
