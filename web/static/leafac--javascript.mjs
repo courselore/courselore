@@ -424,7 +424,6 @@ export async function liveUpdates(nonce) {
         headers: { "Live-Updates": nonce },
         signal: abortController.signal,
       });
-      body.liveUpdatesNetworkErrorTooltip?.hide();
       if (response.status === 422) {
         console.error(response);
         (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
@@ -589,9 +588,7 @@ export function isModified(element) {
   const elementsToCheck = descendants(element);
   for (const element of elementsToCheck) {
     if (
-      leafac
-        .ancestors(element)
-        .some((element) => element.isModified === false) ||
+      ancestors(element).some((element) => element.isModified === false) ||
       element.closest("[disabled]") !== null
     )
       continue;
@@ -665,27 +662,39 @@ export function relativizeDateTime(
   const difference = new Date(dateString.trim()).getTime() - Date.now();
   const absoluteDifference = Math.abs(difference);
   const relativeDateTime =
-    absoluteDifference < minute
+    absoluteDifference < relativizeDateTimeMinute
       ? "just now"
-      : absoluteDifference < hour
-      ? relativeTimeFormat.format(Math.trunc(difference / minute), "minutes")
-      : absoluteDifference < day
-      ? relativeTimeFormat.format(Math.trunc(difference / hour), "hours")
-      : absoluteDifference < month
-      ? relativeTimeFormat.format(Math.trunc(difference / day), "days")
+      : absoluteDifference < relativizeDateTimeHour
+      ? relativizeDateTimeRelativeTimeFormat.format(
+          Math.trunc(difference / relativizeDateTimeMinute),
+          "minutes"
+        )
+      : absoluteDifference < relativizeDateTimeDay
+      ? relativizeDateTimeRelativeTimeFormat.format(
+          Math.trunc(difference / relativizeDateTimeHour),
+          "hours"
+        )
+      : absoluteDifference < relativizeDateTimeMonth
+      ? relativizeDateTimeRelativeTimeFormat.format(
+          Math.trunc(difference / relativizeDateTimeDay),
+          "days"
+        )
       : `${preposition === undefined ? "" : `${preposition} `}${
           dateOnly ? localizeDate(dateString) : localizeDateTime(dateString)
         }`;
   return shouldCapitalize ? capitalize(relativeDateTime) : relativeDateTime;
 }
-const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
-  localeMatcher: "lookup",
-  numeric: "auto",
-});
-const minute = 60 * 1000;
-const hour = 60 * minute;
-const day = 24 * hour;
-const month = 30 * day;
+const relativizeDateTimeRelativeTimeFormat = new Intl.RelativeTimeFormat(
+  "en-US",
+  {
+    localeMatcher: "lookup",
+    numeric: "auto",
+  }
+);
+const relativizeDateTimeMinute = 60 * 1000;
+const relativizeDateTimeHour = 60 * relativizeDateTimeMinute;
+const relativizeDateTimeDay = 24 * relativizeDateTimeHour;
+const relativizeDateTimeMonth = 30 * relativizeDateTimeDay;
 
 export function relativizeDate(dateString) {
   const date = localizeDate(dateString);
@@ -736,9 +745,9 @@ export function UTCizeDateTime(dateString) {
 }
 
 export function weekday(dateString) {
-  return dateTimeFormat.format(new Date(dateString.trim()));
+  return weekdayDateTimeFormat.format(new Date(dateString.trim()));
 }
-const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+const weekdayDateTimeFormat = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
 });
 
