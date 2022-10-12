@@ -1186,7 +1186,8 @@ await fs.writeFile(
     import tippy from "tippy.js";
     window.tippy = tippy;
 
-    import "textarea-caret";
+    import textareaCaret from "textarea-caret";
+    window.textareaCaret = textareaCaret;
 
     import * as textFieldEdit from "text-field-edit";
     window.textFieldEdit = textFieldEdit;

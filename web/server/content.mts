@@ -2103,7 +2103,7 @@ export default async (app: Courselore): Promise<void> => {
                                   (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
                                 ) continue;
                                 anchorIndex = selectionMin;
-                                const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
+                                const caretCoordinates = textareaCaret.getCaretCoordinates(this, anchorIndex - 1);
                                 dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                                 dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                                 tippy.hideAll();
