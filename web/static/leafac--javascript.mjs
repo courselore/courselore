@@ -239,7 +239,7 @@ export function liveNavigation(hostname) {
   };
 }
 
-function loadDocument(documentString, detail) {
+export function loadDocument(documentString, detail) {
   const newDocument = new DOMParser().parseFromString(
     documentString,
     "text/html"
@@ -291,7 +291,7 @@ export function loadPartial(parentElement, partialString) {
   parentElement.forceIsConnected = false;
 }
 
-function morph(from, to, detail = {}) {
+export function morph(from, to, detail = {}) {
   const fromChildNodes = from.childNodes;
   const toChildNodes = to.childNodes;
   const getKey = (node) =>
