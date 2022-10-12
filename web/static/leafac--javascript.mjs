@@ -1,7 +1,7 @@
 // This file is here for now because it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
 import fastMyersDiff from "fast-myers-diff";
-import tippy from "tippy.js";
+import tippy, { hideAll as tippyHideAll } from "tippy.js";
 
 export function liveConnection({
   version,
@@ -251,7 +251,7 @@ function loadDocument(documentString, detail) {
       element.remove();
   for (const element of newDocument.querySelectorAll(`[key="local-css"]`))
     document.querySelector("head").insertAdjacentElement("beforeend", element);
-  if (!detail.liveUpdate) tippy.hideAll();
+  if (!detail.liveUpdate) tippyHideAll();
   morph(
     document.querySelector("body"),
     newDocument.querySelector("body"),
