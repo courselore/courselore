@@ -22,7 +22,7 @@
     "postinstall": "(cd ./server/ && npm install) && (cd ./static/ && npm install)",
     "start": "nodemon --watch \"./server/**/*.mts\" --watch \"./static/{prepare.mjs,**/*.{png,jpeg,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
-    "test": "prettier --check \"./server/**/*\" --check \"./static/**/*\" --check \"./configuration/**/*\" --end-of-line auto",
+    "test": "prettier --check \"./server/**/*.mts\" --check \"./static/prepare.mjs\" --check \"./configuration/**/*.mjs\" --end-of-line auto",
     "prepare": "(cd ./server/ && npm run prepare) && (cd ./static/ && npm run prepare)",
     "clean": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
