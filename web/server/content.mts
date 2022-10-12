@@ -1615,7 +1615,7 @@ export default async (app: Courselore): Promise<void> => {
                             onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
-                            ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
+                            ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
