@@ -859,7 +859,7 @@ export default async (app: Courselore): Promise<void> => {
           $${res.locals.css.toString()}
 
           <script src="https://${app.locals.options.hostname}/${app.locals
-              .options.static["index.js"]}"></script>
+              .options.static["index.mjs"]}"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
