@@ -1131,8 +1131,6 @@ await fs.writeFile(
 await fs.writeFile(
   "index.mjs",
   javascript`
-    // CSS
-
     import "@fontsource/public-sans/100-italic.css";
     import "@fontsource/public-sans/100.css";
     import "@fontsource/public-sans/200-italic.css";
@@ -1176,8 +1174,6 @@ await fs.writeFile(
     import "tippy.js/dist/border.css";
     import "@leafac/css/distribution/browser.css";
     import "./global.css";
-
-    // JAVASCRIPT
 
     import autosize from "autosize";
     window.autosize = autosize;
