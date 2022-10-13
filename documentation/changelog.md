@@ -10,7 +10,35 @@
 
 ## Unreleased
 
-- Fixed the bad interactions between HTTP/3 and Firefox and reenabled HTTP/3.
+## 5.0.0
+
+**2022-10-13 · [Download](https://github.com/courselore/courselore/releases/tag/v5.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+**This is a major release because we introduced changes to the Courselore configuration file that require your intervention as a system administrator.**
+
+1. In your configuration file, you may have a line similar to the following:
+
+   ```javascript
+   (await courseloreImport("../configuration/base.mjs")).default({
+   ```
+
+   You must change this line to add another `../` to the path:
+
+   ```javascript
+   (await courseloreImport("../../configuration/base.mjs")).default({
+   ```
+
+2. In version 4.1.0 we renamed the configuration fields `host` & `alternativeHosts` to `hostname` & `alternativeHostnames`, but kept backwards compatibility, so `host` & `alternativeHosts` continued to work. In version 5.0.0 the old names no longer work, and you must update to `hostname` & `alternativeHostnames`.
+
+Alternatively, you may refer to [`example.mjs`](https://github.com/courselore/courselore/blob/v5.0.0/web/configuration/example.mjs) and restart your configuration from scratch.
+
+---
+
+These changes to the configuration file are relatively minor, but were caused by a major restructuring of the codebase to allow for significant internal improvements. Here are some of the highlights:
+
+- Previously, we served static files such as CSS & JavaScript as a collection of several small files. We were relying on HTTP/2 multiplexing to speed things up, but as it turns out, [even with HTTP/2 multiplexing that strategy isn’t the best](https://www.smashingmagazine.com/2021/09/http3-practical-deployment-options-part3/). Now Courselore is bundling CSS & JavaScript into single files. In our tests this led to an 2x improvement when first visiting a page without cache.
+- Restructured the cache-busting mechanism to allow for caches to be reused even across different versions of Courselore—as long as the files haven’t changed, of course.
+- Reenabled HTTP/3, [which should improve the performance for people whose internet connection isn’t very reliable](https://www.smashingmagazine.com/2021/08/http3-core-concepts-part1/). Fixed the bad interactions between HTTP/3 and Firefox.
 
 ## 4.1.6
 
@@ -64,7 +92,7 @@
 
   We recommend that you take action and update your configuration file, but existing configuration files will continue to work until the next major version (5.0.0).
 
-  We renamed the `host` & `alternativeHosts` configuration fields to `hostname` & `alternativeHostnames` (see [`example.mjs`](/configuration/example.mjs)). This follows [the Node.js naming convention for parts of an URL](https://nodejs.org/dist/latest-v18.x/docs/api/url.html#url-strings-and-url-objects) and reflects the intent that Courselore must be run from the default ports (80 for HTTP & 443 for HTTPS).
+  We renamed the `host` & `alternativeHosts` configuration fields to `hostname` & `alternativeHostnames` (see [`example.mjs`](https://github.com/courselore/courselore/blob/v4.1.0/configuration/example.mjs)). This follows [the Node.js naming convention for parts of an URL](https://nodejs.org/dist/latest-v18.x/docs/api/url.html#url-strings-and-url-objects) and reflects the intent that Courselore must be run from the default ports (80 for HTTP & 443 for HTTPS).
 
 - Fixed an issue in which Google Chrome users would see a “validation error” when trying to change the attributes of a conversation, for example, “pinning” a conversation.
 
