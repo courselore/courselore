@@ -2,9 +2,6 @@
   "name": "courselore",
   "version": "5.0.0",
   "description": "Communication Platform for Education",
-  "exports": "./build/server/index.mjs",
-  "types": "./build/server/index.d.mts",
-  "bin": "./build/server/binary.mjs",
   "author": "Courselore <npm@courselore.org> (https://courselore.org)",
   "homepage": "https://github.com/courselore/courselore",
   "bugs": "https://github.com/courselore/courselore/issues",
@@ -18,6 +15,9 @@
     "forum",
     "chat"
   ],
+  "exports": "./build/server/index.mjs",
+  "types": "./build/server/index.d.mts",
+  "bin": "./build/server/binary.mjs",
   "scripts": {
     "postinstall": "(cd ./server/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
     "start": "nodemon --watch \"./server/**/*.mts\" --watch \"./static/{{prepare,leafac--javascript}.mjs,**/*.{png,jpeg,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
