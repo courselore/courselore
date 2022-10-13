@@ -32,7 +32,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.artifact }}
-          path: ${{ matrix.artifact }}
+          path: web/${{ matrix.artifact }}
 
   web--test:
     strategy:
