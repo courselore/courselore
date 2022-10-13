@@ -179,7 +179,7 @@ export default async (app: Courselore): Promise<void> => {
     const baseLayoutBody = html`
       <body
         css="${res.locals.css(css`
-          font-family: "Public Sans", var(--font-family--sans-serif);
+          font-family: "Public SansVariable", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
           color: var(--color--gray--medium--700);

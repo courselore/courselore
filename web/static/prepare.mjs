@@ -520,7 +520,7 @@ await fs.writeFile(
 
     .code,
     .pre > code {
-      font-family: "JetBrains Mono", var(--font-family--monospace);
+      font-family: "JetBrains MonoVariable", var(--font-family--monospace);
       font-variant-ligatures: none;
     }
 
@@ -879,7 +879,7 @@ await fs.writeFile(
       tt,
       kbd,
       samp {
-        font-family: "JetBrains Mono", var(--font-family--monospace);
+        font-family: "JetBrains MonoVariable", var(--font-family--monospace);
         font-variant-ligatures: none;
         background-color: var(--color--gray--medium--200);
         @media (prefers-color-scheme: dark) {
@@ -1131,41 +1131,11 @@ await fs.writeFile(
 await fs.writeFile(
   "index.mjs",
   javascript`
-    import "@fontsource/public-sans/100-italic.css";
-    import "@fontsource/public-sans/100.css";
-    import "@fontsource/public-sans/200-italic.css";
-    import "@fontsource/public-sans/200.css";
-    import "@fontsource/public-sans/300-italic.css";
-    import "@fontsource/public-sans/300.css";
-    import "@fontsource/public-sans/400-italic.css";
-    import "@fontsource/public-sans/400.css";
-    import "@fontsource/public-sans/500-italic.css";
-    import "@fontsource/public-sans/500.css";
-    import "@fontsource/public-sans/600-italic.css";
-    import "@fontsource/public-sans/600.css";
-    import "@fontsource/public-sans/700-italic.css";
-    import "@fontsource/public-sans/700.css";
-    import "@fontsource/public-sans/800-italic.css";
-    import "@fontsource/public-sans/800.css";
-    import "@fontsource/public-sans/900-italic.css";
-    import "@fontsource/public-sans/900.css";
+    import "@fontsource/public-sans/variable.css";
+    import "@fontsource/public-sans/variable-italic.css";
 
-    import "@fontsource/jetbrains-mono/100-italic.css";
-    import "@fontsource/jetbrains-mono/100.css";
-    import "@fontsource/jetbrains-mono/200-italic.css";
-    import "@fontsource/jetbrains-mono/200.css";
-    import "@fontsource/jetbrains-mono/300-italic.css";
-    import "@fontsource/jetbrains-mono/300.css";
-    import "@fontsource/jetbrains-mono/400-italic.css";
-    import "@fontsource/jetbrains-mono/400.css";
-    import "@fontsource/jetbrains-mono/500-italic.css";
-    import "@fontsource/jetbrains-mono/500.css";
-    import "@fontsource/jetbrains-mono/600-italic.css";
-    import "@fontsource/jetbrains-mono/600.css";
-    import "@fontsource/jetbrains-mono/700-italic.css";
-    import "@fontsource/jetbrains-mono/700.css";
-    import "@fontsource/jetbrains-mono/800-italic.css";
-    import "@fontsource/jetbrains-mono/800.css";
+    import "@fontsource/jetbrains-mono/variable.css";
+    import "@fontsource/jetbrains-mono/variable-italic.css";
 
     import "bootstrap-icons/font/bootstrap-icons.css";
     import "katex/dist/katex.css";
