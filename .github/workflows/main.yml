@@ -29,7 +29,7 @@ jobs:
           npm ci
           npx shx rm -rf ./server/node_modules/ ./static/node_modules/
           ${{ matrix.build }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.artifact }}
           path: web/${{ matrix.artifact }}
@@ -63,7 +63,7 @@ jobs:
           try.courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG/EwPAIUK55YtP/2/uvuUMsgdzVXWNij6xUIp420M+27iszaAGsnIf8kW2AafjSgmhPSIdw0eaF9hEV17K61KM=
           EOF
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: |
@@ -96,7 +96,7 @@ jobs:
           courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPofde8yo79U6RYTB5DRK2qy1KDwrJRFb1A2FwqEJFsm
           EOF
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: |
@@ -135,15 +135,15 @@ jobs:
     needs: [web--build, web--test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: courselore--windows--${{ github.sha }}.exe
       - run: mv courselore--windows--${{ github.sha }}.exe courselore--windows--${{ github.ref_name }}.exe
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: courselore--macos--${{ github.sha }}.tgz
       - run: mv courselore--macos--${{ github.sha }}.tgz courselore--macos--${{ github.ref_name }}.tgz
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: mv courselore--linux--${{ github.sha }}.tgz courselore--linux--${{ github.ref_name }}.tgz
