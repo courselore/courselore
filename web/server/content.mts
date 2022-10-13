@@ -1944,7 +1944,8 @@ export default async (app: Courselore): Promise<void> => {
                 }
 
                 &.content-editor--write--textarea--programmer-mode {
-                  font-family: "JetBrains MonoVariable", var(--font-family--monospace);
+                  font-family: "JetBrains MonoVariable",
+                    var(--font-family--monospace);
                   font-variant-ligatures: none;
                 }
               `)}"
