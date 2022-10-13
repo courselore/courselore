@@ -20,8 +20,8 @@ jobs:
             artifact: courselore--linux--${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: |
@@ -40,8 +40,8 @@ jobs:
         os: [windows, macos, ubuntu]
     runs-on: ${{ matrix.os }}-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
       - run: |
@@ -62,7 +62,7 @@ jobs:
           try.courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGAWFdx5CGspfwddSeorz1agEafveZq0w9F/JPoGm5fIryqlqtcuTYcKdlntaks4oHy2J5riTE4eJ8Nft2kVHOuJFU5I/Zrv84XHgH/OAB8MlyHlSBxWj3ICN1tREX92QMAOSqq4hz5LVGEYzc8YFnTLG1eIqpgtNzQXvsRdfFlsYsGuxQqatQ0agCmPY97GhDOxBGC/n1XgB+qyJC1GPsn8GjpvXqfhoCiI+z0FiznK6HSRN+DCFl/kJdJHZ9j+IJPctujGpPx5EhUWbNz9LsXa4pftMDxWsu4mLIbA9dUERic06Ou2hdLh5DkaOJ/rssvPIH8U9Ek+c+dx6gcqL9dRDhJs0t6CdOSuuO0g072ipLdbVzqpbjalrgNt9N0fmVAKpSAj9XmykaEEeUiYAS3ppFnGgzK4HZ3VG1nevnJs04xwTtk29c1ZAuAP6nMakVuBDvttSb1lMFN03TG3u/heY7eyKvOX4Uc+Z8hXtq4FuWa5V4j6bUTL58anp8cVE=
           try.courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBG/EwPAIUK55YtP/2/uvuUMsgdzVXWNij6xUIp420M+27iszaAGsnIf8kW2AafjSgmhPSIdw0eaF9hEV17K61KM=
           EOF
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
@@ -95,7 +95,7 @@ jobs:
           courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHfmR6Uk3d9aPn44tL+o5finOSDqss+u9X66e8tvXYuU0SNNh1xYjed7pnfE+g5nq2AWXSYUKzz8IE1oCsNcTK4=
           courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPofde8yo79U6RYTB5DRK2qy1KDwrJRFb1A2FwqEJFsm
           EOF
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
@@ -118,8 +118,8 @@ jobs:
     needs: web--test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
