@@ -824,6 +824,9 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Update GitHub Actions to use Node 16:
+  - https://github.com/softprops/action-gh-release
+  - https://github.com/webfactory/ssh-agent
 - Consider using esbuild to compile TypeScript on server.
 
   - .
