@@ -19,14 +19,14 @@
     "chat"
   ],
   "scripts": {
-    "postinstall": "(pushd \"./server/\" && npm install && popd) && (pushd \"./static/\" && npm install && popd)",
+    "postinstall": "(cd ./server/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
     "start": "nodemon --watch \"./server/**/*.mts\" --watch \"./static/{{prepare,leafac--javascript}.mjs,**/*.{png,jpeg,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./server/**/*.mts\" --check \"./static/prepare.mjs\" --check \"./configuration/**/*.mjs\" --end-of-line auto",
-    "prepare": "(pushd \"./server/\" && npm run prepare && popd) && (pushd \"./static/\" && npm run prepare && popd)",
+    "prepare": "(cd ./server/ && npm run prepare && cd ..) && (cd ./static/ && npm run prepare && cd ..)",
     "clean": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
-    "update": "npm-check-updates --upgrade && (pushd \"./server/\" && npm-check-updates --upgrade && popd) && (pushd \"./static/\" && npm-check-updates --upgrade && popd) && npm install"
+    "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
   },
   "engines": {
     "node": ">=18"
