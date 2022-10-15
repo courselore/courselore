@@ -11,8 +11,8 @@
     "chat"
   ],
   "homepage": "https://github.com/courselore/courselore",
+  "repository": "https://github.com/courselore/courselore",
   "bugs": "https://github.com/courselore/courselore/issues",
-  "repository": "courselore/courselore",
   "author": "Courselore <npm@courselore.org> (https://courselore.org)",
   "license": "GPL",
   "exports": "./build/server/index.mjs",
