@@ -3,11 +3,19 @@ import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 export default (app: Courselore): void => {
   app.once("server:start", () => {
     console.log(
-      `${new Date().toISOString()}\tCourselore/${
+      `${new Date().toISOString()}\tSERVER\tCourselore/${
         app.locals.options.version
       } started at https://${app.locals.options.hostname}`
     );
   });
+  app.once("server:stop", () => {
+    console.log(
+      `${new Date().toISOString()}\tSERVER\tCourselore/${
+        app.locals.options.version
+      } stopped at https://${app.locals.options.hostname}`
+    );
+  });
+
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.loggingStartTime = process.hrtime.bigint();
@@ -36,11 +44,19 @@ export default (app: Courselore): void => {
     }
     next();
   });
-  app.once("server:stop", () => {
+
+  app.once("worker:start", () => {
     console.log(
-      `${new Date().toISOString()}\tCourselore/${
+      `${new Date().toISOString()}\tWORKER\tCourselore/${
         app.locals.options.version
-      } stopped at https://${app.locals.options.hostname}`
+      } started`
+    );
+  });
+  app.once("worker:stop", () => {
+    console.log(
+      `${new Date().toISOString()}\tWORKER\tCourselore/${
+        app.locals.options.version
+      } stopped`
     );
   });
 };
