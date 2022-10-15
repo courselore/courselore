@@ -1358,7 +1358,7 @@ export default async (app: Courselore): Promise<void> => {
       DELETE FROM "sessions";
     `
   );
-  app.once("close", () => {
+  app.once("stop", () => {
     app.locals.database.close();
   });
 };

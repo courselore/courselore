@@ -197,7 +197,7 @@ export default async ({
       process.once(signal, () => {
         server.close();
         app.emit("server:stop");
-        app.emit("close");
+        app.emit("stop");
         if (signal.startsWith("SIG")) process.kill(process.pid, signal);
       });
   }
