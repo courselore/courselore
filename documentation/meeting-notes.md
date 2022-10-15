@@ -1,11 +1,25 @@
 # Meeting Notes
 
 <details>
+<summary>2021-10-15</summary>
+
+</details>
+
+<details>
 <summary>2021-10-08</summary>
 
 - Fixed an issue that was causing non-high-DPI images to be resized.
 - Fixed an issue that was causing Firefox to show “Failed to connect to the Courselore server.” for a moment during reload.
-- Module bundling.
+- Started module bundling.
+- We should start reaching out to more people on the spring, and before that we need:
+  - Feature parity with Piazza.
+  - Mobile application.
+  - More robust notification system.
+  - Better chat user interface.
+- Long conversations are a bit slow (we need to flesh out pagination).
+- Let’s rename “Staff” to “Course Staff”. (We also considered “Professor/Teaching Assistants”.)
+- Let’s add more ℹ️s to explain “Selected People” & “Course Staff”.
+- Let’s make tutorials to teach people Courselore in detail.
 
 </details>
 
