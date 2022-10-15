@@ -1142,7 +1142,7 @@ await fs.writeFile(
     import "tippy.js/dist/tippy.css";
     import "tippy.js/dist/svg-arrow.css";
     import "tippy.js/dist/border.css";
-    import "@leafac/css/distribution/browser.css";
+    import "@leafac/css/build/browser.css";
     import "./global.css";
 
     import autosize from "autosize";
