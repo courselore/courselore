@@ -36,7 +36,7 @@ export default (app: Courselore): void => {
     }
     next();
   });
-  app.once("close", () => {
+  app.once("listen:close", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
