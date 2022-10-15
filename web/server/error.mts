@@ -58,7 +58,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
+  app.use(((err, req, res, next) => {
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
