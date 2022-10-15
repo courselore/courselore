@@ -537,11 +537,11 @@ shiki
 
     const html = md.render(fs.readFileSync("index.md", "utf-8"));
     const out = \`
-    <title>Shiki</title>
-    <link rel="stylesheet" href="style.css">
-    \${html}
-    <script src="index.js"></script>
-  \`;
+      <title>Shiki</title>
+      <link rel="stylesheet" href="style.css">
+      \${html}
+      <script src="index.js"></script>
+    \`;
     fs.writeFileSync("index.html", out);
 
     console.log("done");
