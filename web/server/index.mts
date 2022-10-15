@@ -44,7 +44,7 @@ export {
   HasPasswordConfirmationMiddlewareLocals,
 } from "./authentication.mjs";
 
-import administrator, { AdministrationOptions } from "./administration.mjs";
+import administration, { AdministrationOptions } from "./administration.mjs";
 export {
   UserSystemRolesWhoMayCreateCourses,
   userSystemRolesWhoMayCreateCourseses,
@@ -241,7 +241,7 @@ export default async (options: Options): Promise<Courselore> => {
   liveUpdates(app);
   await layouts(app);
   authentication(app);
-  administrator(app);
+  await administration(app);
   about(app);
   user(app);
   course(app);

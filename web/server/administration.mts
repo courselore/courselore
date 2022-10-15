@@ -28,7 +28,7 @@ export const userSystemRolesWhoMayCreateCourseses = [
 export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.options = {
     ...app.locals.options,
     ...app.locals.database.get<{ [key: string]: any }>(
@@ -39,33 +39,31 @@ export default (app: Courselore): void => {
   };
 
   if (app.locals.options.environment === "production")
-    app.once("jobs", async () => {
-      while (true) {
-        try {
-          const latestVersion = (
-            (await got(
-              "https://api.github.com/repos/courselore/courselore/releases/latest"
-            ).json()) as { tag_name: string }
-          ).tag_name;
-          if (semver.gt(latestVersion, app.locals.options.version)) {
-            app.locals.options.latestVersion = latestVersion;
-            console.log(
-              `${new Date().toISOString()}\tUPDATE CHECK\tNew version available: ${
-                app.locals.options.latestVersion
-              }.`
-            );
-          } else
-            console.log(
-              `${new Date().toISOString()}\tUPDATE CHECK\tCurrent version is the latest.`
-            );
-        } catch (error) {
+    while (true) {
+      try {
+        const latestVersion = (
+          (await got(
+            "https://api.github.com/repos/courselore/courselore/releases/latest"
+          ).json()) as { tag_name: string }
+        ).tag_name;
+        if (semver.gt(latestVersion, app.locals.options.version)) {
+          app.locals.options.latestVersion = latestVersion;
           console.log(
-            `${new Date().toISOString()}\tUPDATE CHECK\tERROR:\n${error}`
+            `${new Date().toISOString()}\tUPDATE CHECK\tNew version available: ${
+              app.locals.options.latestVersion
+            }.`
           );
-        }
-        await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
+        } else
+          console.log(
+            `${new Date().toISOString()}\tUPDATE CHECK\tCurrent version is the latest.`
+          );
+      } catch (error) {
+        console.log(
+          `${new Date().toISOString()}\tUPDATE CHECK\tERROR:\n${error}`
+        );
       }
-    });
+      await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
+    }
 
   interface IsAdministratorMiddlewareLocals
     extends IsSignedInMiddlewareLocals {}
