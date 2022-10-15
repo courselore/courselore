@@ -1,7 +1,7 @@
 import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
 export default (app: Courselore): void => {
-  app.once("listen", () => {
+  app.once("server:start", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version
@@ -36,7 +36,7 @@ export default (app: Courselore): void => {
     }
     next();
   });
-  app.once("listen:close", () => {
+  app.once("server:stop", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${
         app.locals.options.version

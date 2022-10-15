@@ -183,7 +183,7 @@ export default async ({
       demonstration,
     });
     const server = app.listen(4000, "127.0.0.1");
-    app.emit("listen");
+    app.emit("server:start");
     app.emit("jobs");
     for (const signal of [
       "exit",
@@ -196,7 +196,7 @@ export default async ({
     ])
       process.once(signal, () => {
         server.close();
-        app.emit("listen:close");
+        app.emit("server:stop");
         app.emit("close");
         if (signal.startsWith("SIG")) process.kill(process.pid, signal);
       });
