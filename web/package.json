@@ -2,11 +2,6 @@
   "name": "courselore",
   "version": "5.0.0",
   "description": "Communication Platform for Education",
-  "author": "Courselore <npm@courselore.org> (https://courselore.org)",
-  "homepage": "https://github.com/courselore/courselore",
-  "bugs": "https://github.com/courselore/courselore/issues",
-  "repository": "courselore/courselore",
-  "license": "GPL",
   "keywords": [
     "education",
     "students",
@@ -15,6 +10,11 @@
     "forum",
     "chat"
   ],
+  "homepage": "https://github.com/courselore/courselore",
+  "bugs": "https://github.com/courselore/courselore/issues",
+  "repository": "courselore/courselore",
+  "author": "Courselore <npm@courselore.org> (https://courselore.org)",
+  "license": "GPL",
   "exports": "./build/server/index.mjs",
   "types": "./build/server/index.d.mts",
   "bin": "./build/server/binary.mjs",
