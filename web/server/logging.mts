@@ -26,9 +26,9 @@ export default (app: Courselore): void => {
       resUntyped[method] = (...arguments_: any) => {
         const output = implementation(...arguments_);
         console.log(
-          `${new Date().toISOString()}\t${req.method}\t${res.statusCode}\t${
-            req.ip
-          }\t${
+          `${new Date().toISOString()}\tSERVER\t${req.method}\t${
+            res.statusCode
+          }\t${req.ip}\t${
             (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
           }ms\t\t${Math.floor(
             Number(res.getHeader("Content-Length") ?? "0") / 1000

@@ -65,7 +65,7 @@ export default (app: Courselore): void => {
         })
       );
       console.log(
-        `${new Date().toISOString()}\tERROR\nCross-Site Request Forgery`
+        `${new Date().toISOString()}\tSERVER\tERROR\nCross-Site Request Forgery`
       );
     }
 

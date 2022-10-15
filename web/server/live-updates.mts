@@ -71,7 +71,7 @@ export default (app: Courselore): void => {
         );
         connections.delete(connectionMetadata.nonce);
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+          `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
             connectionMetadata.nonce
           }\tEXPIRED`
         );
@@ -103,7 +103,7 @@ export default (app: Courselore): void => {
           `
         );
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+          `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
             res.locals.liveUpdatesNonce
           }\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
         );
@@ -132,7 +132,7 @@ export default (app: Courselore): void => {
           connections.has(res.locals.liveUpdatesNonce)
         ) {
           console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
           );
@@ -149,7 +149,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
@@ -169,7 +169,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
@@ -188,7 +188,7 @@ export default (app: Courselore): void => {
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
           console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
               (process.hrtime.bigint() - res.locals.loggingStartTime) /
@@ -207,7 +207,7 @@ export default (app: Courselore): void => {
           );
           connections.delete(res.locals.liveUpdatesNonce!);
           console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
@@ -274,7 +274,7 @@ export default (app: Courselore): void => {
     connections.delete(nonce);
     connection?.res.end();
     console.log(
-      `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tABORTED\t${
+      `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${nonce}\tABORTED\t${
         connection?.req.ip ?? ""
       }\t\t\t${connection?.req.originalUrl ?? ""}`
     );

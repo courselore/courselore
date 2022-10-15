@@ -54,17 +54,17 @@ export default async (app: Courselore): Promise<void> => {
           if (semver.gt(latestVersion, app.locals.options.version)) {
             app.locals.options.latestVersion = latestVersion;
             console.log(
-              `${new Date().toISOString()}\tUPDATE CHECK\tNew version available: ${
+              `${new Date().toISOString()}\tSERVER\tUPDATE CHECK\tNew version available: ${
                 app.locals.options.latestVersion
               }.`
             );
           } else
             console.log(
-              `${new Date().toISOString()}\tUPDATE CHECK\tCurrent version is the latest.`
+              `${new Date().toISOString()}\tSERVER\tUPDATE CHECK\tCurrent version is the latest.`
             );
         } catch (error) {
           console.log(
-            `${new Date().toISOString()}\tUPDATE CHECK\tERROR:\n${error}`
+            `${new Date().toISOString()}\tSERVER\tUPDATE CHECK\tERROR:\n${error}`
           );
         }
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));

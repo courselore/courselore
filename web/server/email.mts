@@ -33,7 +33,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -63,7 +63,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -109,7 +109,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailJobs\tSUCCEEDED\t\t${
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSUCCEEDED\t\t${
               sentMessageInfo.response ?? ""
             }\t\t${mailOptions.to}\t\t${mailOptions.subject}`
           );
@@ -125,7 +125,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailJobs\tFAILED\t\t${
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFAILED\t\t${
               error.response ?? ""
             }\t\t${mailOptions.to}\t\t${mailOptions.subject}\n${error}`
           );

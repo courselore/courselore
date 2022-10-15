@@ -1290,7 +1290,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
+            `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
               job.message
             }`
           );
@@ -1318,7 +1318,7 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
+            `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
               job.message
             }`
           );
@@ -1649,7 +1649,7 @@ export default (app: Courselore): void => {
           `
         );
         console.log(
-          `${new Date().toISOString()}\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
+          `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
             job.message
           }`
         );
