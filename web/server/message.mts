@@ -1271,7 +1271,7 @@ export default (app: Courselore): void => {
     });
   };
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{

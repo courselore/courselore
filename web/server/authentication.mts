@@ -242,7 +242,7 @@ export default (app: Courselore): void => {
     },
   };
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -875,7 +875,7 @@ export default (app: Courselore): void => {
     },
   };
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       app.locals.database.run(
         sql`
@@ -1570,7 +1570,7 @@ export default (app: Courselore): void => {
     app.locals.workers.sendEmail();
   };
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       app.locals.database.run(
         sql`

@@ -53,7 +53,7 @@ export default (app: Courselore): void => {
     }
   >();
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       for (const connectionMetadata of connectionsMetadata.all<{
         nonce: string;

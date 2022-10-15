@@ -134,7 +134,7 @@ export default (app: Courselore): void => {
     }
   })();
 
-  app.once("jobs", () => {
+  app.once("worker:start", () => {
     app.locals.workers.sendEmail();
   });
 };

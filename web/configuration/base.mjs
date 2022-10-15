@@ -184,7 +184,7 @@ export default async ({
     });
     const server = app.listen(4000, "127.0.0.1");
     app.emit("server:start");
-    app.emit("jobs");
+    app.emit("worker:start");
     for (const signal of [
       "exit",
       "SIGHUP",
@@ -197,6 +197,7 @@ export default async ({
       process.once(signal, () => {
         server.close();
         app.emit("server:stop");
+        app.emit("worker:stop");
         app.emit("stop");
         if (signal.startsWith("SIG")) process.kill(process.pid, signal);
       });

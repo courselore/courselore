@@ -1835,7 +1835,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  app.once("jobs", async () => {
+  app.once("worker:start", async () => {
     while (true) {
       app.locals.database.run(
         sql`
