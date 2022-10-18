@@ -5,14 +5,14 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tSERVER\tCourselore/${
         app.locals.options.version
-      } started at https://${app.locals.options.hostname}`
+      }\tSTARTED\thttps://${app.locals.options.hostname}`
     );
   });
   app.once("server:stop", () => {
     console.log(
       `${new Date().toISOString()}\tSERVER\tCourselore/${
         app.locals.options.version
-      } stopped at https://${app.locals.options.hostname}`
+      }\tSTOPPED\thttps://${app.locals.options.hostname}`
     );
   });
 
@@ -49,14 +49,14 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tWORKER\tCourselore/${
         app.locals.options.version
-      } started`
+      }\tSTARTED`
     );
   });
   app.once("worker:stop", () => {
     console.log(
       `${new Date().toISOString()}\tWORKER\tCourselore/${
         app.locals.options.version
-      } stopped`
+      }\tSTOPPED`
     );
   });
 };

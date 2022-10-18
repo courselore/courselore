@@ -53,7 +53,7 @@ export default (app: Courselore): void => {
     }
   >();
 
-  app.once("worker:start", async () => {
+  (async () => {
     while (true) {
       for (const connectionMetadata of connectionsMetadata.all<{
         nonce: string;
@@ -78,7 +78,7 @@ export default (app: Courselore): void => {
       }
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
     }
-  });
+  })();
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {

@@ -1845,6 +1845,9 @@ export default async (app: Courselore): Promise<void> => {
           ).toISOString()}
         `
       );
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘flashes’`
+      );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
   });

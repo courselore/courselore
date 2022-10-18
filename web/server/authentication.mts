@@ -252,6 +252,9 @@ export default (app: Courselore): void => {
           ).toISOString()}
         `
       );
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘sessions’`
+      );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
   });
@@ -884,6 +887,9 @@ export default (app: Courselore): void => {
             Date.now() - PasswordReset.maxAge
           ).toISOString()}
         `
+      );
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘passwordResets’`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
@@ -1579,6 +1585,9 @@ export default (app: Courselore): void => {
             Date.now() - 24 * 60 * 60 * 1000
           ).toISOString()}
         `
+      );
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘emailVerifications’`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
