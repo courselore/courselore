@@ -12,7 +12,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\tSERVER\tCourselore/${
         app.locals.options.version
-      }\tSTOPPED\thttps://${app.locals.options.hostname}`
+      }\tSTOPPED`
     );
   });
 
