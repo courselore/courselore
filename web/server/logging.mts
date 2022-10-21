@@ -16,6 +16,21 @@ export default (app: Courselore): void => {
     );
   });
 
+  app.once("worker:start", () => {
+    console.log(
+      `${new Date().toISOString()}\tWORKER\tCourselore/${
+        app.locals.options.version
+      }\tSTARTED`
+    );
+  });
+  app.once("worker:stop", () => {
+    console.log(
+      `${new Date().toISOString()}\tWORKER\tCourselore/${
+        app.locals.options.version
+      }\tSTOPPED`
+    );
+  });
+
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.loggingStartTime = process.hrtime.bigint();
@@ -43,20 +58,5 @@ export default (app: Courselore): void => {
       };
     }
     next();
-  });
-
-  app.once("worker:start", () => {
-    console.log(
-      `${new Date().toISOString()}\tWORKER\tCourselore/${
-        app.locals.options.version
-      }\tSTARTED`
-    );
-  });
-  app.once("worker:stop", () => {
-    console.log(
-      `${new Date().toISOString()}\tWORKER\tCourselore/${
-        app.locals.options.version
-      }\tSTOPPED`
-    );
   });
 };
