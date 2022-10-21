@@ -205,10 +205,10 @@ export default async ({
     return;
   }
 
-  const server =
-    processType === "server" ? app.listen(4000, "127.0.0.1") : undefined;
   app.emit("start");
   app.emit(`${processType}:start`);
+  const server =
+    processType === "server" ? app.listen(4000, "127.0.0.1") : undefined;
   for (const signal of [
     "exit",
     "SIGHUP",
