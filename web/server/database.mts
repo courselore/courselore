@@ -1375,7 +1375,7 @@ export default async (app: Courselore): Promise<void> => {
     console.log(
       `${new Date().toISOString()}\tMAIN\tCourselore/${
         app.locals.options.version
-      }\tDATABASE\tFINISHED DATABASE MIGRATION`
+      }\tFINISHED DATABASE MIGRATION`
     );
   };
 
