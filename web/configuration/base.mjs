@@ -23,7 +23,44 @@ export default async ({
 
   const processType = process.argv[3];
 
+  if (typeof sendMail !== "function") {
+    const { options, defaults } = sendMail;
+    const transport = nodemailer.createTransport(options, defaults);
+    sendMail =
+      options.streamTransport && options.buffer
+        ? async (mailOptions) => {
+            const sentMessageInfo = await transport.sendMail(mailOptions);
+            const emailsDirectory = path.join(dataDirectory, "emails");
+            await fs.ensureDir(emailsDirectory);
+            await fs.writeFile(
+              path.join(
+                emailsDirectory,
+                filenamify(
+                  `${new Date().toISOString()}--${mailOptions.to}.eml`,
+                  { replacement: "-" }
+                )
+              ),
+              sentMessageInfo.message
+            );
+            return sentMessageInfo;
+          }
+        : async (mailOptions) => await transport.sendMail(mailOptions);
+    sendMail.options = options;
+    sendMail.defaults = defaults;
+  }
+  const app = await courselore({
+    hostname,
+    administratorEmail,
+    dataDirectory,
+    sendMail,
+    environment,
+    demonstration,
+  });
+
   if (processType === undefined) {
+    app.emit("main:start");
+    app.emit("stop");
+
     const subprocesses = [
       execa(
         process.argv[0],
@@ -167,41 +204,8 @@ export default async ({
     return;
   }
 
-  if (typeof sendMail !== "function") {
-    const { options, defaults } = sendMail;
-    const transport = nodemailer.createTransport(options, defaults);
-    sendMail =
-      options.streamTransport && options.buffer
-        ? async (mailOptions) => {
-            const sentMessageInfo = await transport.sendMail(mailOptions);
-            const emailsDirectory = path.join(dataDirectory, "emails");
-            await fs.ensureDir(emailsDirectory);
-            await fs.writeFile(
-              path.join(
-                emailsDirectory,
-                filenamify(
-                  `${new Date().toISOString()}--${mailOptions.to}.eml`,
-                  { replacement: "-" }
-                )
-              ),
-              sentMessageInfo.message
-            );
-            return sentMessageInfo;
-          }
-        : async (mailOptions) => await transport.sendMail(mailOptions);
-    sendMail.options = options;
-    sendMail.defaults = defaults;
-  }
-  const app = await courselore({
-    hostname,
-    administratorEmail,
-    dataDirectory,
-    sendMail,
-    environment,
-    demonstration,
-  });
-  let server;
-  if (processType === "server") server = app.listen(4000, "127.0.0.1");
+  const server =
+    processType === "server" ? app.listen(4000, "127.0.0.1") : undefined;
   app.emit(`${processType}:start`);
   for (const signal of [
     "exit",
@@ -213,7 +217,7 @@ export default async ({
     "SIGBREAK",
   ])
     process.once(signal, () => {
-      if (processType === "server") server.close();
+      server?.close();
       app.emit(`${processType}:stop`);
       app.emit("stop");
       if (signal.startsWith("SIG")) process.kill(process.pid, signal);
