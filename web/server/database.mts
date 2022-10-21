@@ -19,6 +19,11 @@ export default async (app: Courselore): Promise<void> => {
   );
 
   app.locals.databaseMigrate = async () => {
+    console.log(
+      `${new Date().toISOString()}\tMAIN\tCourselore/${
+        app.locals.options.version
+      }\tDATABASE\tSTARTING MIGRATION…`
+    );
     app.locals.database.pragma("journal_mode = WAL");
     await app.locals.database.migrate(
       sql`
@@ -1366,6 +1371,11 @@ export default async (app: Courselore): Promise<void> => {
       sql`
         DELETE FROM "sessions";
       `
+    );
+    console.log(
+      `${new Date().toISOString()}\tMAIN\tCourselore/${
+        app.locals.options.version
+      }\tDATABASE\tMIGRATED`
     );
   };
 
