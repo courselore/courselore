@@ -30,14 +30,15 @@ export default async ({
       options.streamTransport && options.buffer
         ? async (mailOptions) => {
             const sentMessageInfo = await transport.sendMail(mailOptions);
-            const emailsDirectory = path.join(dataDirectory, "emails");
-            await fs.ensureDir(emailsDirectory);
-            await fs.writeFile(
+            await fs.outputFile(
               path.join(
-                emailsDirectory,
+                dataDirectory,
+                "emails",
                 filenamify(
                   `${new Date().toISOString()}--${mailOptions.to}.eml`,
-                  { replacement: "-" }
+                  {
+                    replacement: "-",
+                  }
                 )
               ),
               sentMessageInfo.message
