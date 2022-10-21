@@ -58,7 +58,7 @@ export default async ({
   });
 
   if (processType === undefined) {
-    app.emit("main:start");
+    await app.locals.databaseMigrate();
     app.emit("stop");
 
     const subprocesses = [

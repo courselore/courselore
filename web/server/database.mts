@@ -8,6 +8,7 @@ import { Courselore } from "./index.mjs";
 
 export interface DatabaseLocals {
   database: Database;
+  databaseMigrate: () => Promise<void>;
 }
 
 export default async (app: Courselore): Promise<void> => {
@@ -17,7 +18,7 @@ export default async (app: Courselore): Promise<void> => {
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
 
-  app.once("main:start", async () => {
+  app.locals.databaseMigrate = async () => {
     app.locals.database.pragma("journal_mode = WAL");
     await app.locals.database.migrate(
       sql`
@@ -1366,7 +1367,7 @@ export default async (app: Courselore): Promise<void> => {
         DELETE FROM "sessions";
       `
     );
-  });
+  };
 
   app.once("stop", () => {
     app.locals.database.close();
