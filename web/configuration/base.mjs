@@ -12,14 +12,18 @@ export default async ({
   environment = "production",
   demonstration = false,
 }) => {
+  const path = await courseloreImport("node:path");
+  const url = await courseloreImport("node:url");
+  const fs = (await courseloreImport("fs-extra")).default;
+  const filenamify = (await courseloreImport("filenamify")).default;
+  const nodemailer = await courseloreImport("nodemailer");
+  const execa = (await courseloreImport("execa")).execa;
+  const caddyfile = (await courseloreImport("dedent")).default;
+  const courselore = (await courseloreImport("./index.mjs")).default;
+
   const processType = process.argv[3];
 
   if (processType === undefined) {
-    const path = await courseloreImport("node:path");
-    const url = await courseloreImport("node:url");
-    const execa = (await courseloreImport("execa")).execa;
-    const caddyfile = (await courseloreImport("dedent")).default;
-
     const subprocesses = [
       execa(
         process.argv[0],
@@ -162,12 +166,6 @@ export default async ({
       });
     return;
   }
-
-  const path = await courseloreImport("node:path");
-  const fs = (await courseloreImport("fs-extra")).default;
-  const filenamify = (await courseloreImport("filenamify")).default;
-  const nodemailer = await courseloreImport("nodemailer");
-  const courselore = (await courseloreImport("./index.mjs")).default;
 
   if (typeof sendMail !== "function") {
     const { options, defaults } = sendMail;
