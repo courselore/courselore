@@ -3,8 +3,8 @@ import fs from "fs-extra";
 import express from "express";
 import nodemailer from "nodemailer";
 
-import database, { DatabaseLocals } from "./database.mjs";
 import logging from "./logging.mjs";
+import database, { DatabaseLocals } from "./database.mjs";
 
 import globalMiddlewares, {
   GlobalMiddlewaresOptions,
@@ -236,8 +236,8 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.helpers = {} as any;
   app.locals.mailers = {} as any;
   app.locals.workers = {} as any;
-  await database(app);
   logging(app);
+  await database(app);
   globalMiddlewares(app);
   liveUpdates(app);
   await layouts(app);
