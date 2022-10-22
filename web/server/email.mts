@@ -17,7 +17,9 @@ export default (app: Courselore): void => {
 
     async function work(): Promise<void> {
       console.log(
-        `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSTARTING...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tsendEmailJobs\tSTARTING...`
       );
 
       app.locals.database.executeTransaction(() => {
@@ -37,7 +39,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -67,7 +71,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -113,9 +119,11 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSUCCEEDED\t${
-              sentMessageInfo.response ?? ""
-            }\t${mailOptions.to}\t${mailOptions.subject}`
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\tsendEmailJobs\tSUCCEEDED\t${sentMessageInfo.response ?? ""}\t${
+              mailOptions.to
+            }\t${mailOptions.subject}`
           );
         } catch (error: nodemailer.SentMessageInfo) {
           app.locals.database.run(
@@ -129,15 +137,19 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFAILED\t${
-              error.response ?? ""
-            }\t${mailOptions.to}\t${mailOptions.subject}\n${error}`
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\tsendEmailJobs\tFAILED\t${error.response ?? ""}\t${
+              mailOptions.to
+            }\t${mailOptions.subject}\n${error}`
           );
         }
       }
 
       console.log(
-        `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tsendEmailJobs\tFINISHED`
       );
     }
   })();

@@ -1274,7 +1274,9 @@ export default (app: Courselore): void => {
   app.once("worker:start", async () => {
     while (true) {
       console.log(
-        `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tSTARTED...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\temailNotificationMessageJobs\tSTARTED...`
       );
 
       app.locals.database.executeTransaction(() => {
@@ -1294,9 +1296,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
-              job.message
-            }`
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${job.message}`
           );
         }
       });
@@ -1322,7 +1324,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
               job.message
             }`
           );
@@ -1653,9 +1657,9 @@ export default (app: Courselore): void => {
           `
         );
         console.log(
-          `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
-            job.message
-          }`
+          `${new Date().toISOString()}\t${
+            app.locals.options.processType
+          }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${job.message}`
         );
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -1663,7 +1667,9 @@ export default (app: Courselore): void => {
       app.locals.workers.sendEmail();
 
       console.log(
-        `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\temailNotificationMessageJobs\tFINISHED`
       );
 
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));

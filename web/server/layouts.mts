@@ -1838,7 +1838,9 @@ export default async (app: Courselore): Promise<void> => {
   app.once("worker:start", async () => {
     while (true) {
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
       );
       app.locals.database.run(
         sql`
@@ -1849,7 +1851,9 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘flashes’\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }

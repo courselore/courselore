@@ -19,7 +19,9 @@ export default async (app: Courselore): Promise<void> => {
 
   if (app.locals.options.processType === "main") {
     console.log(
-      `${new Date().toISOString()}\tMAIN\tDATABASE MIGRATION\tSTARTING...`
+      `${new Date().toISOString()}\t${
+        app.locals.options.processType
+      }\tDATABASE MIGRATION\tSTARTING...`
     );
     app.locals.database.pragma("journal_mode = WAL");
     await app.locals.database.migrate(
@@ -1370,7 +1372,9 @@ export default async (app: Courselore): Promise<void> => {
       `
     );
     console.log(
-      `${new Date().toISOString()}\tMAIN\tDATABASE MIGRATION\tFINISHED`
+      `${new Date().toISOString()}\t${
+        app.locals.options.processType
+      }\tDATABASE MIGRATION\tFINISHED`
     );
   }
 

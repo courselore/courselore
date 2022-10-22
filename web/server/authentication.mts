@@ -245,7 +245,9 @@ export default (app: Courselore): void => {
   app.once("worker:start", async () => {
     while (true) {
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
       );
       app.locals.database.run(
         sql`
@@ -256,7 +258,9 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘sessions’\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
@@ -884,7 +888,9 @@ export default (app: Courselore): void => {
   app.once("worker:start", async () => {
     while (true) {
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
       );
       app.locals.database.run(
         sql`
@@ -895,7 +901,9 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
@@ -1585,7 +1593,9 @@ export default (app: Courselore): void => {
   app.once("worker:start", async () => {
     while (true) {
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
       );
       app.locals.database.run(
         sql`
@@ -1596,7 +1606,9 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
