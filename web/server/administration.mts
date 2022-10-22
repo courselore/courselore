@@ -29,19 +29,8 @@ export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export default async (app: Courselore): Promise<void> => {
-  app.once("start", () => {
-    app.locals.options = {
-      ...app.locals.options,
-      ...app.locals.database.get<{ [key: string]: any }>(
-        sql`
-          SELECT * FROM "administrationOptions"
-        `
-      )!,
-    };
-  });
-
   if (app.locals.options.environment === "production")
-    (async () => {
+    app.once("server:start", async () => {
       while (true) {
         try {
           const latestVersion = semver.clean(
@@ -71,7 +60,7 @@ export default async (app: Courselore): Promise<void> => {
         }
         await new Promise((resolve) => setTimeout(resolve, 60 * 60 * 1000));
       }
-    })();
+    });
 
   interface IsAdministratorMiddlewareLocals
     extends IsSignedInMiddlewareLocals {}
