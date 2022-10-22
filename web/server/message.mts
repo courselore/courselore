@@ -1671,7 +1671,7 @@ export default (app: Courselore): void => {
           await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
-        app.locals.workers.sendEmail();
+        app.locals.workers.sendEmail?.();
 
         console.log(
           `${new Date().toISOString()}\t${
