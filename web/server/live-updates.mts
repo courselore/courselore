@@ -53,42 +53,43 @@ export default (app: Courselore): void => {
     }
   >();
 
-  (async () => {
-    while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          app.locals.options.processType
-        }\tCLEAN EXPIRED ‘connectionsMetadata’\tSTARTING...`
-      );
-      for (const connectionMetadata of connectionsMetadata.all<{
-        nonce: string;
-      }>(
-        sql`
-          SELECT "nonce"
-          FROM "connectionsMetadata"
-          WHERE "expiresAt" < ${new Date().toISOString()}
-        `
-      )) {
-        connectionsMetadata.run(
-          sql`
-            DELETE FROM "connectionsMetadata" WHERE "nonce" = ${connectionMetadata.nonce}
-          `
-        );
-        connections.delete(connectionMetadata.nonce);
+  if (app.locals.options.processType === "server")
+    (async () => {
+      while (true) {
         console.log(
           `${new Date().toISOString()}\t${
             app.locals.options.processType
-          }\tLIVE-UPDATES\t${connectionMetadata.nonce}\tEXPIRED`
+          }\tCLEAN EXPIRED ‘connectionsMetadata’\tSTARTING...`
         );
+        for (const connectionMetadata of connectionsMetadata.all<{
+          nonce: string;
+        }>(
+          sql`
+            SELECT "nonce"
+            FROM "connectionsMetadata"
+            WHERE "expiresAt" < ${new Date().toISOString()}
+          `
+        )) {
+          connectionsMetadata.run(
+            sql`
+              DELETE FROM "connectionsMetadata" WHERE "nonce" = ${connectionMetadata.nonce}
+            `
+          );
+          connections.delete(connectionMetadata.nonce);
+          console.log(
+            `${new Date().toISOString()}\t${
+              app.locals.options.processType
+            }\tLIVE-UPDATES\t${connectionMetadata.nonce}\tEXPIRED`
+          );
+        }
+        console.log(
+          `${new Date().toISOString()}\t${
+            app.locals.options.processType
+          }\tCLEAN EXPIRED ‘connectionsMetadata’\tFINISHED`
+        );
+        await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
       }
-      console.log(
-        `${new Date().toISOString()}\t${
-          app.locals.options.processType
-        }\tCLEAN EXPIRED ‘connectionsMetadata’\tFINISHED`
-      );
-      await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
-    }
-  })();
+    })();
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {

@@ -4,7 +4,7 @@ import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 export default (app: Courselore): void => {
   console.log(
     `${new Date().toISOString()}\t${app.locals.options.processType}\tSTARTED${
-      app.locals.options.processType
+      app.locals.options.processType === "main"
         ? `\tCourselore/${app.locals.options.version}\thttps://${app.locals.options.hostname}`
         : ``
     }`
