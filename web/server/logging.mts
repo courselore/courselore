@@ -21,7 +21,7 @@ export default (app: Courselore): void => {
     console.log(
       `${new Date().toISOString()}\t${app.locals.options.processType}\t${
         req.ip
-      }\t${req.method}\t${req.originalUrl}\tSTARTED...\n${
+      }\t${req.method}\t${req.originalUrl}\tSTARTED...${
         app.locals.options.environment === "development" &&
         !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method)
           ? `\n${JSON.stringify(req.body, undefined, 2)}`
