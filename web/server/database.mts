@@ -1369,7 +1369,46 @@ export default async (app: Courselore): Promise<void> => {
 
       sql`
         DELETE FROM "sessions";
-      `
+      `,
+
+      () => {
+        app.locals.database.execute(
+          sql`
+            CREATE TABLE "new_administrationOptions" (
+              "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+              "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL,
+              "latestVersion" TEXT NOT NULL
+            );
+          `
+        );
+        const administrationOptions = app.locals.database.get<{
+          userSystemRolesWhoMayCreateCourses: string;
+        }>(
+          sql`
+            SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
+          `
+        );
+        if (administrationOptions === undefined)
+          throw new Error("Failed to find ‘administrationOptions’");
+        app.locals.database.run(
+          sql`
+            INSERT INTO "new_administrationOptions" (
+              "userSystemRolesWhoMayCreateCourses",
+              "latestVersion"
+            )
+            VALUES (
+              ${administrationOptions.userSystemRolesWhoMayCreateCourses},
+              ${app.locals.options.version}
+            )
+          `
+        );
+        app.locals.database.execute(
+          sql`
+            DROP TABLE "administrationOptions";
+            ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
+          `
+        );
+      }
     );
     console.log(
       `${new Date().toISOString()}\t${
