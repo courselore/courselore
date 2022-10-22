@@ -58,8 +58,6 @@ export default async ({
   });
 
   if (processType === "main") {
-    app.emit("stop");
-
     const subprocesses = [
       execa(
         process.argv[0],
@@ -197,13 +195,13 @@ export default async ({
     ];
     for (const subprocess of subprocesses)
       subprocess.once("close", () => {
-        for (const otherSubprocess of subprocesses)
-          if (subprocess !== otherSubprocess) otherSubprocess.cancel();
+        for (const otherSubprocess of subprocesses) otherSubprocess.cancel();
       });
+    await Promise.allSettled(subprocesses);
+    app.emit("stop");
     return;
   }
 
-  app.emit(`${processType}:start`);
   const server =
     processType === "server" ? app.listen(4000, "127.0.0.1") : undefined;
   for (const signal of [
@@ -217,7 +215,6 @@ export default async ({
   ])
     process.once(signal, () => {
       server?.close();
-      app.emit(`${processType}:stop`);
       app.emit("stop");
       if (signal.startsWith("SIG")) process.kill(process.pid, signal);
     });

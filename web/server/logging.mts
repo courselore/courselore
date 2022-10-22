@@ -2,35 +2,16 @@ import express from "express";
 import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
 export default (app: Courselore): void => {
-  app.once("server:start", () => {
+  console.log(
+    `${new Date().toISOString()}\t${app.locals.options.processType}\tSTARTED${
+      app.locals.options.processType
+        ? `\tCourselore/${app.locals.options.version}\thttps://${app.locals.options.hostname}`
+        : ``
+    }`
+  );
+  app.once("stop", () => {
     console.log(
-      `${new Date().toISOString()}\t${
-        app.locals.options.processType
-      }\tCourselore/${app.locals.options.version}\tSTARTED\thttps://${
-        app.locals.options.hostname
-      }`
-    );
-  });
-  app.once("server:stop", () => {
-    console.log(
-      `${new Date().toISOString()}\t${
-        app.locals.options.processType
-      }\tCourselore/${app.locals.options.version}\tSTOPPED`
-    );
-  });
-
-  app.once("worker:start", () => {
-    console.log(
-      `${new Date().toISOString()}\t${
-        app.locals.options.processType
-      }\tCourselore/${app.locals.options.version}\tSTARTED`
-    );
-  });
-  app.once("worker:stop", () => {
-    console.log(
-      `${new Date().toISOString()}\t${
-        app.locals.options.processType
-      }\tCourselore/${app.locals.options.version}\tSTOPPED`
+      `${new Date().toISOString()}\t${app.locals.options.processType}\tSTOPPED`
     );
   });
 
