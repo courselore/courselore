@@ -154,7 +154,6 @@ export default (app: Courselore): void => {
     }
   })();
 
-  app.once("worker:start", () => {
+  if (app.locals.options.processType === "worker")
     app.locals.workers.sendEmail();
-  });
 };

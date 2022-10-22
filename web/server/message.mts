@@ -1271,25 +1271,391 @@ export default (app: Courselore): void => {
     });
   };
 
-  app.once("worker:start", async () => {
-    while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          app.locals.options.processType
-        }\temailNotificationMessageJobs\tSTARTED...`
-      );
+  if (app.locals.options.processType === "worker")
+    (async () => {
+      while (true) {
+        console.log(
+          `${new Date().toISOString()}\t${
+            app.locals.options.processType
+          }\temailNotificationMessageJobs\tSTARTED...`
+        );
 
-      app.locals.database.executeTransaction(() => {
-        for (const job of app.locals.database.all<{
-          id: number;
-          message: number;
-        }>(
-          sql`
-            SELECT "id", "message"
-            FROM "emailNotificationMessageJobs"
-            WHERE "expiresAt" < ${new Date().toISOString()}
-          `
-        )) {
+        app.locals.database.executeTransaction(() => {
+          for (const job of app.locals.database.all<{
+            id: number;
+            message: number;
+          }>(
+            sql`
+              SELECT "id", "message"
+              FROM "emailNotificationMessageJobs"
+              WHERE "expiresAt" < ${new Date().toISOString()}
+            `
+          )) {
+            app.locals.database.run(
+              sql`
+                DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
+              `
+            );
+            console.log(
+              `${new Date().toISOString()}\t${
+                app.locals.options.processType
+              }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
+                job.message
+              }`
+            );
+          }
+        });
+
+        app.locals.database.executeTransaction(() => {
+          for (const job of app.locals.database.all<{
+            id: number;
+            message: number;
+          }>(
+            sql`
+              SELECT "id", "message"
+              FROM "emailNotificationMessageJobs"
+              WHERE "startedAt" < ${new Date(
+                Date.now() - 2 * 60 * 1000
+              ).toISOString()}
+            `
+          )) {
+            app.locals.database.run(
+              sql`
+                UPDATE "emailNotificationMessageJobs"
+                SET "startedAt" = NULL
+                WHERE "id" = ${job.id}
+              `
+            );
+            console.log(
+              `${new Date().toISOString()}\t${
+                app.locals.options.processType
+              }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
+                job.message
+              }`
+            );
+          }
+        });
+
+        while (true) {
+          const job = app.locals.database.executeTransaction(() => {
+            const job = app.locals.database.get<{
+              id: number;
+              message: string;
+            }>(
+              sql`
+                SELECT "id", "message"
+                FROM "emailNotificationMessageJobs"
+                WHERE "startAt" <= ${new Date().toISOString()} AND
+                      "startedAt" IS NULL
+                ORDER BY "startAt" ASC
+                LIMIT 1
+              `
+            );
+            if (job !== undefined)
+              app.locals.database.run(
+                sql`
+                  UPDATE "emailNotificationMessageJobs"
+                  SET "startedAt" = ${new Date().toISOString()}
+                  WHERE "id" = ${job.id}
+                `
+              );
+            return job;
+          });
+          if (job === undefined) break;
+
+          const messageRow = app.locals.database.get<{
+            id: number;
+            conversationId: number;
+            courseId: number;
+            courseReference: string;
+            courseArchivedAt: string | null;
+            courseName: string;
+            courseYear: string | null;
+            courseTerm: string | null;
+            courseInstitution: string | null;
+            courseCode: string | null;
+            courseNextConversationReference: number;
+            conversationReference: string;
+            conversationParticipants: ConversationParticipants;
+            conversationType: ConversationType;
+            conversationAnnouncementAt: string | null;
+            conversationTitle: string;
+            reference: string;
+            authorUserName: string | null;
+            anonymousAt: string | null;
+            contentPreprocessed: string;
+          }>(
+            sql`
+              SELECT "messages"."id",
+                     "conversations"."id" AS "conversationId",
+                     "courses"."id" AS "courseId",
+                     "courses"."reference" AS "courseReference",
+                     "courses"."archivedAt" AS "courseArchivedAt",
+                     "courses"."name" AS "courseName",
+                     "courses"."year" AS "courseYear",
+                     "courses"."term" AS "courseTerm",
+                     "courses"."institution" AS "courseInstitution",
+                     "courses"."code" AS "courseCode",
+                     "courses"."nextConversationReference" AS "courseNextConversationReference",
+                     "conversations"."reference" AS "conversationReference",
+                     "conversations"."participants" AS "conversationParticipants",
+                     "conversations"."type" AS "conversationType",
+                     "conversations"."announcementAt" AS "conversationAnnouncementAt",
+                     "conversations"."title" AS "conversationTitle",
+                     "messages"."reference",
+                     "authorUser"."name" AS "authorUserName",
+                     "messages"."anonymousAt",
+                     "messages"."contentPreprocessed"
+              FROM "messages"
+              JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
+              JOIN "courses" ON "conversations"."course" = "courses"."id"
+              LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+              LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
+              WHERE "messages"."id" = ${job.message}
+            `
+          )!;
+          const message = {
+            id: messageRow.id,
+            reference: messageRow.reference,
+            authorEnrollment:
+              messageRow.authorUserName !== null
+                ? {
+                    user: {
+                      name: messageRow.authorUserName,
+                    },
+                  }
+                : ("no-longer-enrolled" as const),
+            anonymousAt: messageRow.anonymousAt,
+            contentPreprocessed: messageRow.contentPreprocessed,
+          };
+          const conversation = {
+            id: messageRow.conversationId,
+            reference: messageRow.conversationReference,
+            participants: messageRow.conversationParticipants,
+            type: messageRow.conversationType,
+            announcementAt: messageRow.conversationAnnouncementAt,
+            title: messageRow.conversationTitle,
+          };
+          const course = {
+            id: messageRow.courseId,
+            reference: messageRow.courseReference,
+            archivedAt: messageRow.courseArchivedAt,
+            name: messageRow.courseName,
+            year: messageRow.courseYear,
+            term: messageRow.courseTerm,
+            institution: messageRow.courseInstitution,
+            code: messageRow.courseCode,
+            nextConversationReference:
+              messageRow.courseNextConversationReference,
+          };
+          const contentProcessed = app.locals.partials.content({
+            req: { query: {} } as Parameters<
+              typeof app.locals.partials.content
+            >[0]["req"],
+            res: {
+              locals: {
+                css: localCSS(),
+                html: HTMLForJavaScript(),
+                user: {},
+                enrollment: {},
+                course,
+              },
+            } as Parameters<typeof app.locals.partials.content>[0]["res"],
+            contentPreprocessed: message.contentPreprocessed,
+            decorate: true,
+          });
+
+          const enrollments = app.locals.database.all<{
+            id: number;
+            userId: number;
+            userEmail: string;
+            userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+            reference: string;
+            courseRole: CourseRole;
+          }>(
+            sql`
+              SELECT "enrollments"."id",
+                     "users"."id" AS "userId",
+                     "users"."email" AS "userEmail",
+                     "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
+                     "enrollments"."reference",
+                     "enrollments"."courseRole"
+              FROM "enrollments"
+              JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                              "users"."emailVerifiedAt" IS NOT NULL
+              WHERE "enrollments"."course" = ${course.id} AND
+                    NOT EXISTS(
+                      SELECT TRUE
+                      FROM "emailNotificationDeliveries"
+                      WHERE "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                            "emailNotificationDeliveries"."message" = ${
+                              message.id
+                            }
+                    ) $${
+                      conversation.participants === "everyone"
+                        ? sql``
+                        : conversation.participants === "staff"
+                        ? sql`
+                            AND (
+                              "enrollments"."courseRole" = 'staff' OR EXISTS(
+                                SELECT TRUE
+                                FROM "conversationSelectedParticipants"
+                                WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                              )
+                            )
+                          `
+                        : conversation.participants === "selected-people"
+                        ? sql`
+                            AND EXISTS(
+                              SELECT TRUE
+                              FROM "conversationSelectedParticipants"
+                              WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                                    "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                            )
+                          `
+                        : sql``
+                    } $${
+              conversation.type === "note" &&
+              conversation.announcementAt !== null &&
+              message.reference === "1"
+                ? sql``
+                : sql`
+                    AND (
+                      "users"."emailNotificationsForAllMessages" != 'none' OR (
+                        "users"."emailNotificationsForMentionsAt" IS NOT NULL
+                          $${
+                            contentProcessed.mentions.has("everyone")
+                              ? sql``
+                              : contentProcessed.mentions.has("staff")
+                              ? sql`
+                                  AND (
+                                    "enrollments"."courseRole" = 'staff' OR
+                                    "enrollments"."reference" IN ${contentProcessed.mentions}
+                                  )
+                                `
+                              : contentProcessed.mentions.has("students")
+                              ? sql`
+                                  AND (
+                                    "enrollments"."courseRole" = 'student' OR
+                                    "enrollments"."reference" IN ${contentProcessed.mentions}
+                                  )
+                                `
+                              : sql`
+                                  AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                                `
+                          }
+                      ) OR (
+                        "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
+                          SELECT TRUE
+                          FROM "messages"
+                          WHERE "conversation" = ${conversation.id} AND
+                                "authorEnrollment" = "enrollments"."id"
+                        )
+                      ) OR (
+                        "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
+                          SELECT TRUE
+                          FROM "conversations"
+                          WHERE "id" = ${conversation.id} AND
+                                "authorEnrollment" = "enrollments"."id"
+                        )
+                      )
+                    )
+                  `
+            }
+            `
+          );
+
+          for (const enrollment of enrollments) {
+            // TODO: Better email notifications
+            // switch (enrollment.userEmailNotificationsForAllMessages) {
+            //   case "instant":
+            //     break;
+
+            //   case "hourly-digests":
+            //   case "daily-digests":
+            //     break;
+            // }
+            app.locals.database.run(
+              sql`
+                INSERT INTO "sendEmailJobs" (
+                  "createdAt",
+                  "startAt",
+                  "expiresAt",
+                  "mailOptions"
+                )
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${new Date().toISOString()},
+                  ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+                  ${JSON.stringify({
+                    from: {
+                      name: `${course.name} · ${app.locals.options.sendMail.defaults.from.name}`,
+                      address:
+                        app.locals.options.sendMail.defaults.from.address,
+                    },
+                    to: enrollment.userEmail,
+                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
+                    references: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
+                    subject: conversation.title,
+                    html: html`
+                      <p>
+                        <a
+                          href="https://${app.locals.options
+                            .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
+                            {
+                              messages: {
+                                messageReference: message.reference,
+                              },
+                            },
+                            { addQueryPrefix: true }
+                          )}"
+                          >${message.authorEnrollment === "no-longer-enrolled"
+                            ? "Someone who is no longer enrolled"
+                            : message.anonymousAt !== null
+                            ? `Anonymous ${
+                                enrollment.courseRole === "staff"
+                                  ? `(${message.authorEnrollment.user.name})`
+                                  : ""
+                              }`
+                            : message.authorEnrollment.user.name}
+                          says</a
+                        >:
+                      </p>
+
+                      <hr />
+
+                      $${message.contentPreprocessed}
+
+                      <hr />
+
+                      <p>
+                        <small>
+                          <a
+                            href="https://${app.locals.options
+                              .hostname}/settings/notifications-preferences"
+                            >Change Notifications Preferences</a
+                          >
+                        </small>
+                      </p>
+                    `,
+                  })}
+                )
+              `
+            );
+
+            app.locals.database.run(
+              sql`
+                INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${message.id},
+                  ${enrollment.id}
+                )
+              `
+            );
+          }
+
           app.locals.database.run(
             sql`
               DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
@@ -1298,381 +1664,22 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\t${
               app.locals.options.processType
-            }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${job.message}`
-          );
-        }
-      });
-
-      app.locals.database.executeTransaction(() => {
-        for (const job of app.locals.database.all<{
-          id: number;
-          message: number;
-        }>(
-          sql`
-            SELECT "id", "message"
-            FROM "emailNotificationMessageJobs"
-            WHERE "startedAt" < ${new Date(
-              Date.now() - 2 * 60 * 1000
-            ).toISOString()}
-          `
-        )) {
-          app.locals.database.run(
-            sql`
-              UPDATE "emailNotificationMessageJobs"
-              SET "startedAt" = NULL
-              WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\t${
-              app.locals.options.processType
-            }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
+            }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
               job.message
             }`
           );
-        }
-      });
-
-      while (true) {
-        const job = app.locals.database.executeTransaction(() => {
-          const job = app.locals.database.get<{
-            id: number;
-            message: string;
-          }>(
-            sql`
-              SELECT "id", "message"
-              FROM "emailNotificationMessageJobs"
-              WHERE "startAt" <= ${new Date().toISOString()} AND
-                    "startedAt" IS NULL
-              ORDER BY "startAt" ASC
-              LIMIT 1
-            `
-          );
-          if (job !== undefined)
-            app.locals.database.run(
-              sql`
-                UPDATE "emailNotificationMessageJobs"
-                SET "startedAt" = ${new Date().toISOString()}
-                WHERE "id" = ${job.id}
-              `
-            );
-          return job;
-        });
-        if (job === undefined) break;
-
-        const messageRow = app.locals.database.get<{
-          id: number;
-          conversationId: number;
-          courseId: number;
-          courseReference: string;
-          courseArchivedAt: string | null;
-          courseName: string;
-          courseYear: string | null;
-          courseTerm: string | null;
-          courseInstitution: string | null;
-          courseCode: string | null;
-          courseNextConversationReference: number;
-          conversationReference: string;
-          conversationParticipants: ConversationParticipants;
-          conversationType: ConversationType;
-          conversationAnnouncementAt: string | null;
-          conversationTitle: string;
-          reference: string;
-          authorUserName: string | null;
-          anonymousAt: string | null;
-          contentPreprocessed: string;
-        }>(
-          sql`
-            SELECT "messages"."id",
-                   "conversations"."id" AS "conversationId",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "conversations"."reference" AS "conversationReference",
-                   "conversations"."participants" AS "conversationParticipants",
-                   "conversations"."type" AS "conversationType",
-                   "conversations"."announcementAt" AS "conversationAnnouncementAt",
-                   "conversations"."title" AS "conversationTitle",
-                   "messages"."reference",
-                   "authorUser"."name" AS "authorUserName",
-                   "messages"."anonymousAt",
-                   "messages"."contentPreprocessed"
-            FROM "messages"
-            JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
-            JOIN "courses" ON "conversations"."course" = "courses"."id"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
-            WHERE "messages"."id" = ${job.message}
-          `
-        )!;
-        const message = {
-          id: messageRow.id,
-          reference: messageRow.reference,
-          authorEnrollment:
-            messageRow.authorUserName !== null
-              ? {
-                  user: {
-                    name: messageRow.authorUserName,
-                  },
-                }
-              : ("no-longer-enrolled" as const),
-          anonymousAt: messageRow.anonymousAt,
-          contentPreprocessed: messageRow.contentPreprocessed,
-        };
-        const conversation = {
-          id: messageRow.conversationId,
-          reference: messageRow.conversationReference,
-          participants: messageRow.conversationParticipants,
-          type: messageRow.conversationType,
-          announcementAt: messageRow.conversationAnnouncementAt,
-          title: messageRow.conversationTitle,
-        };
-        const course = {
-          id: messageRow.courseId,
-          reference: messageRow.courseReference,
-          archivedAt: messageRow.courseArchivedAt,
-          name: messageRow.courseName,
-          year: messageRow.courseYear,
-          term: messageRow.courseTerm,
-          institution: messageRow.courseInstitution,
-          code: messageRow.courseCode,
-          nextConversationReference: messageRow.courseNextConversationReference,
-        };
-        const contentProcessed = app.locals.partials.content({
-          req: { query: {} } as Parameters<
-            typeof app.locals.partials.content
-          >[0]["req"],
-          res: {
-            locals: {
-              css: localCSS(),
-              html: HTMLForJavaScript(),
-              user: {},
-              enrollment: {},
-              course,
-            },
-          } as Parameters<typeof app.locals.partials.content>[0]["res"],
-          contentPreprocessed: message.contentPreprocessed,
-          decorate: true,
-        });
-
-        const enrollments = app.locals.database.all<{
-          id: number;
-          userId: number;
-          userEmail: string;
-          userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
-          reference: string;
-          courseRole: CourseRole;
-        }>(
-          sql`
-            SELECT "enrollments"."id",
-                   "users"."id" AS "userId",
-                   "users"."email" AS "userEmail",
-                   "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole"
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                            "users"."emailVerifiedAt" IS NOT NULL
-            WHERE "enrollments"."course" = ${course.id} AND
-                  NOT EXISTS(
-                    SELECT TRUE
-                    FROM "emailNotificationDeliveries"
-                    WHERE "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
-                          "emailNotificationDeliveries"."message" = ${
-                            message.id
-                          }
-                  ) $${
-                    conversation.participants === "everyone"
-                      ? sql``
-                      : conversation.participants === "staff"
-                      ? sql`
-                          AND (
-                            "enrollments"."courseRole" = 'staff' OR EXISTS(
-                              SELECT TRUE
-                              FROM "conversationSelectedParticipants"
-                              WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                                    "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                            )
-                          )
-                        `
-                      : conversation.participants === "selected-people"
-                      ? sql`
-                          AND EXISTS(
-                            SELECT TRUE
-                            FROM "conversationSelectedParticipants"
-                            WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                                  "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                          )
-                        `
-                      : sql``
-                  } $${
-            conversation.type === "note" &&
-            conversation.announcementAt !== null &&
-            message.reference === "1"
-              ? sql``
-              : sql`
-                  AND (
-                    "users"."emailNotificationsForAllMessages" != 'none' OR (
-                      "users"."emailNotificationsForMentionsAt" IS NOT NULL
-                        $${
-                          contentProcessed.mentions.has("everyone")
-                            ? sql``
-                            : contentProcessed.mentions.has("staff")
-                            ? sql`
-                                AND (
-                                  "enrollments"."courseRole" = 'staff' OR
-                                  "enrollments"."reference" IN ${contentProcessed.mentions}
-                                )
-                              `
-                            : contentProcessed.mentions.has("students")
-                            ? sql`
-                                AND (
-                                  "enrollments"."courseRole" = 'student' OR
-                                  "enrollments"."reference" IN ${contentProcessed.mentions}
-                                )
-                              `
-                            : sql`
-                                AND "enrollments"."reference" IN ${contentProcessed.mentions}
-                              `
-                        }
-                    ) OR (
-                      "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
-                        SELECT TRUE
-                        FROM "messages"
-                        WHERE "conversation" = ${conversation.id} AND
-                              "authorEnrollment" = "enrollments"."id"
-                      )
-                    ) OR (
-                      "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
-                        SELECT TRUE
-                        FROM "conversations"
-                        WHERE "id" = ${conversation.id} AND
-                              "authorEnrollment" = "enrollments"."id"
-                      )
-                    )
-                  )
-                `
-          }
-          `
-        );
-
-        for (const enrollment of enrollments) {
-          // TODO: Better email notifications
-          // switch (enrollment.userEmailNotificationsForAllMessages) {
-          //   case "instant":
-          //     break;
-
-          //   case "hourly-digests":
-          //   case "daily-digests":
-          //     break;
-          // }
-          app.locals.database.run(
-            sql`
-              INSERT INTO "sendEmailJobs" (
-                "createdAt",
-                "startAt",
-                "expiresAt",
-                "mailOptions"
-              )
-              VALUES (
-                ${new Date().toISOString()},
-                ${new Date().toISOString()},
-                ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-                ${JSON.stringify({
-                  from: {
-                    name: `${course.name} · ${app.locals.options.sendMail.defaults.from.name}`,
-                    address: app.locals.options.sendMail.defaults.from.address,
-                  },
-                  to: enrollment.userEmail,
-                  inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
-                  references: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
-                  subject: conversation.title,
-                  html: html`
-                    <p>
-                      <a
-                        href="https://${app.locals.options
-                          .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
-                          {
-                            messages: {
-                              messageReference: message.reference,
-                            },
-                          },
-                          { addQueryPrefix: true }
-                        )}"
-                        >${message.authorEnrollment === "no-longer-enrolled"
-                          ? "Someone who is no longer enrolled"
-                          : message.anonymousAt !== null
-                          ? `Anonymous ${
-                              enrollment.courseRole === "staff"
-                                ? `(${message.authorEnrollment.user.name})`
-                                : ""
-                            }`
-                          : message.authorEnrollment.user.name}
-                        says</a
-                      >:
-                    </p>
-
-                    <hr />
-
-                    $${message.contentPreprocessed}
-
-                    <hr />
-
-                    <p>
-                      <small>
-                        <a
-                          href="https://${app.locals.options
-                            .hostname}/settings/notifications-preferences"
-                          >Change Notifications Preferences</a
-                        >
-                      </small>
-                    </p>
-                  `,
-                })}
-              )
-            `
-          );
-
-          app.locals.database.run(
-            sql`
-              INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
-              VALUES (
-                ${new Date().toISOString()},
-                ${message.id},
-                ${enrollment.id}
-              )
-            `
-          );
+          await new Promise((resolve) => setTimeout(resolve, 100));
         }
 
-        app.locals.database.run(
-          sql`
-            DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
-          `
-        );
+        app.locals.workers.sendEmail();
+
         console.log(
           `${new Date().toISOString()}\t${
             app.locals.options.processType
-          }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${job.message}`
+          }\temailNotificationMessageJobs\tFINISHED`
         );
-        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
       }
-
-      app.locals.workers.sendEmail();
-
-      console.log(
-        `${new Date().toISOString()}\t${
-          app.locals.options.processType
-        }\temailNotificationMessageJobs\tFINISHED`
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
-    }
-  });
+    })();
 };

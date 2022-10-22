@@ -29,51 +29,6 @@ export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export default async (app: Courselore): Promise<void> => {
-  app.once("server:start", async () => {
-    while (true) {
-      try {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCHECK FOR UPDATES\tSTARTING...`
-        );
-        const latestVersion = semver.clean(
-          (
-            (await got(
-              "https://api.github.com/repos/courselore/courselore/releases/latest"
-            ).json()) as { tag_name: string }
-          ).tag_name
-        );
-        if (typeof latestVersion !== "string")
-          throw new Error(`latestVersion = ‘${latestVersion}’`);
-        if (semver.gt(latestVersion, app.locals.options.version)) {
-          app.locals.options.latestVersion = latestVersion;
-          console.log(
-            `${new Date().toISOString()}\t${
-              app.locals.options.processType
-            }\tCHECK FOR UPDATES\tNEW VERSION AVAILABLE: ${
-              app.locals.options.version
-            } → ${app.locals.options.latestVersion}`
-          );
-        } else
-          console.log(
-            `${new Date().toISOString()}\t${
-              app.locals.options.processType
-            }\tCHECK FOR UPDATES\tCURRENT VERSION ${
-              app.locals.options.version
-            } IS THE LATEST`
-          );
-      } catch (error) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCHECK FOR UPDATES\tERROR\n${error}`
-        );
-      }
-      await new Promise((resolve) => setTimeout(resolve, 5 * 60 * 1000));
-    }
-  });
-
   interface IsAdministratorMiddlewareLocals
     extends IsSignedInMiddlewareLocals {}
   const isAdministratorMiddleware: express.RequestHandler<
