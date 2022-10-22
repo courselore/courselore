@@ -244,6 +244,9 @@ export default (app: Courselore): void => {
 
   app.once("worker:start", async () => {
     while (true) {
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
+      );
       app.locals.database.run(
         sql`
           DELETE FROM "sessions"
@@ -253,7 +256,7 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘sessions’`
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘sessions’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
