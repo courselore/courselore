@@ -21,8 +21,6 @@ export default async ({
   const caddyfile = (await courseloreImport("dedent")).default;
   const courselore = (await courseloreImport("./index.mjs")).default;
 
-  const processType = process.argv[3];
-
   if (typeof sendMail !== "function") {
     const { options, defaults } = sendMail;
     const transport = nodemailer.createTransport(options, defaults);
@@ -57,6 +55,8 @@ export default async ({
     environment,
     demonstration,
   });
+
+  const processType = process.argv[3];
 
   if (processType === undefined) {
     await app.locals.databaseMigrate();
