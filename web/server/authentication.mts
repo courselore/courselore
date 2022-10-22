@@ -622,7 +622,7 @@ export default (app: Courselore): void => {
         typeof req.body.passwordConfirmation !== "string" ||
         req.body.passwordConfirmation.trim() === ""
       )
-        return next("validation");
+        return next("Validation");
 
       if (
         !(await argon2.verify(
@@ -807,7 +807,7 @@ export default (app: Courselore): void => {
         typeof req.body.password !== "string" ||
         req.body.password.trim() === ""
       )
-        return next("validation");
+        return next("Validation");
       const user = app.locals.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
       );
@@ -1028,7 +1028,7 @@ export default (app: Courselore): void => {
         typeof req.body.email !== "string" ||
         req.body.email.match(app.locals.helpers.emailRegExp) === null
       )
-        return next("validation");
+        return next("Validation");
 
       const user = app.locals.database.get<{ id: number; email: string }>(
         sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
@@ -1272,7 +1272,7 @@ export default (app: Courselore): void => {
         req.body.password.trim() === "" ||
         req.body.password.length < 8
       )
-        return next("validation");
+        return next("Validation");
 
       const userId = PasswordReset.get(req.params.passwordResetNonce);
       if (userId === undefined) {
@@ -1621,7 +1621,7 @@ export default (app: Courselore): void => {
         req.body.password.trim() === "" ||
         req.body.password.length < 8
       )
-        return next("validation");
+        return next("Validation");
 
       if (
         app.locals.database.get<{}>(

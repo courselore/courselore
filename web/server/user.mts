@@ -1014,7 +1014,7 @@ export default (app: Courselore): void => {
         typeof req.body.avatar !== "string" ||
         typeof req.body.biography !== "string"
       )
-        return next("validation");
+        return next("Validation");
       app.locals.database.run(
         sql`
           UPDATE "users"
@@ -1052,13 +1052,13 @@ export default (app: Courselore): void => {
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
-        return next("validation");
+        return next("Validation");
       if (!req.files.avatar.mimetype.startsWith("image/"))
         return res.status(413).send("The avatar must be an image.");
       if (req.files.avatar.truncated)
         return res.status(413).send("The avatar must be smaller than 10MB.");
       const name = filenamify(req.files.avatar.name, { replacement: "-" });
-      if (name.trim() === "") return next("validation");
+      if (name.trim() === "") return next("Validation");
       const folder = cryptoRandomString({
         length: 20,
         type: "numeric",
@@ -1086,7 +1086,7 @@ export default (app: Courselore): void => {
             )
           );
       } catch (error) {
-        return next("validation");
+        return next("Validation");
       }
       res.send(
         `https://${
@@ -1095,7 +1095,7 @@ export default (app: Courselore): void => {
       );
     }),
     ((err, req, res, next) => {
-      if (err === "validation")
+      if (err === "Validation")
         return res
           .status(422)
           .send(
@@ -1270,7 +1270,7 @@ export default (app: Courselore): void => {
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.email === "string") {
         if (req.body.email.match(app.locals.helpers.emailRegExp) === null)
-          return next("validation");
+          return next("Validation");
         if (
           app.locals.database.get<{}>(
             sql`
@@ -1363,7 +1363,7 @@ export default (app: Courselore): void => {
           req.body.newPassword.trim() === "" ||
           req.body.newPassword.length < 8
         )
-          return next("validation");
+          return next("Validation");
 
         app.locals.database.run(
           sql`
@@ -1765,7 +1765,7 @@ export default (app: Courselore): void => {
           req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
             "on")
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`

@@ -272,7 +272,7 @@ export default async (app: Courselore): Promise<void> => {
           req.body.userSystemRolesWhoMayCreateCourses
         )
       )
-        return next("validation");
+        return next("Validation");
 
       const administrationOptions = app.locals.database.get<{
         [key: string]: any;
@@ -723,10 +723,10 @@ export default async (app: Courselore): Promise<void> => {
         `
       )!.count === 1
     )
-      return next("validation");
+      return next("Validation");
 
     if (typeof req.body.role === "string") {
-      if (!systemRoles.includes(req.body.role)) return next("validation");
+      if (!systemRoles.includes(req.body.role)) return next("Validation");
 
       app.locals.database.run(
         sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${managedUser.id}`

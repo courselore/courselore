@@ -599,7 +599,7 @@ export default (app: Courselore): void => {
       !["string", "undefined"].includes(typeof req.body.institution) ||
       !["string", "undefined"].includes(typeof req.body.code)
     )
-      return next("validation");
+      return next("Validation");
 
     const course = app.locals.database.get<{
       id: number;
@@ -1286,7 +1286,7 @@ export default (app: Courselore): void => {
             (req.body.isArchived === "false" &&
               res.locals.course.archivedAt === null)))
       )
-        return next("validation");
+        return next("Validation");
 
       if (typeof req.body.isArchived !== "string") {
         app.locals.database.run(
@@ -1875,7 +1875,7 @@ export default (app: Courselore): void => {
                     ![undefined, "on"].includes(tag.isStaffOnly)))))
         )
       )
-        return next("validation");
+        return next("Validation");
 
       for (const tag of req.body.tags)
         if (tag.reference === undefined)
@@ -3014,7 +3014,7 @@ export default (app: Courselore): void => {
         typeof req.body.type !== "string" ||
         !["link", "email"].includes(req.body.type)
       )
-        return next("validation");
+        return next("Validation");
 
       switch (req.body.type) {
         case "link":
@@ -3056,7 +3056,7 @@ export default (app: Courselore): void => {
           break;
 
         case "email":
-          if (typeof req.body.emails !== "string") return next("validation");
+          if (typeof req.body.emails !== "string") return next("Validation");
           const emails: { email: string; name: string | null }[] = [];
           for (let email of req.body.emails.split(/[,\n]/)) {
             email = email.trim();
@@ -3079,7 +3079,7 @@ export default (app: Courselore): void => {
                 email.match(app.locals.helpers.emailRegExp) === null
             )
           )
-            return next("validation");
+            return next("Validation");
 
           for (const { email, name } of emails) {
             if (
@@ -3283,14 +3283,14 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     ...invitationExistsMiddleware,
     (req, res, next) => {
-      if (res.locals.invitation.usedAt !== null) return next("validation");
+      if (res.locals.invitation.usedAt !== null) return next("Validation");
 
       if (req.body.resend === "true") {
         if (
           app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
-          return next("validation");
+          return next("Validation");
         invitationMailer({
           req,
           res,
@@ -3309,7 +3309,7 @@ export default (app: Courselore): void => {
           app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           !courseRoles.includes(req.body.courseRole)
         )
-          return next("validation");
+          return next("Validation");
 
         app.locals.database.run(
           sql`UPDATE "invitations" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.invitation.id}`
@@ -3329,7 +3329,7 @@ export default (app: Courselore): void => {
           !app.locals.helpers.isDate(req.body.expiresAt) ||
           app.locals.helpers.isExpired(req.body.expiresAt)
         )
-          return next("validation");
+          return next("Validation");
 
         app.locals.database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
@@ -3935,7 +3935,7 @@ export default (app: Courselore): void => {
           `
         )!.count === 1
       )
-        return next("validation");
+        return next("Validation");
       next();
     },
   ];
@@ -3952,7 +3952,7 @@ export default (app: Courselore): void => {
     (req, res, next) => {
       if (typeof req.body.courseRole === "string") {
         if (!courseRoles.includes(req.body.courseRole))
-          return next("validation");
+          return next("Validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
@@ -4144,7 +4144,7 @@ export default (app: Courselore): void => {
         typeof req.body.accentColor !== "string" ||
         !enrollmentAccentColors.includes(req.body.accentColor)
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`

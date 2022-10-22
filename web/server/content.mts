@@ -2238,7 +2238,7 @@ ${contentSource}</textarea
         typeof req.query.search !== "string" ||
         req.query.search.trim() === ""
       )
-        return next("validation");
+        return next("Validation");
 
       const enrollments = app.locals.database
         .all<{
@@ -2407,7 +2407,7 @@ ${contentSource}</textarea
         typeof req.query.search !== "string" ||
         req.query.search.trim() === ""
       )
-        return next("validation");
+        return next("Validation");
 
       let results = html``;
 
@@ -2786,11 +2786,11 @@ ${contentSource}</textarea
     "/content-editor/attachments",
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
-      if (req.files?.attachments === undefined) return next("validation");
+      if (req.files?.attachments === undefined) return next("Validation");
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
         : [req.files.attachments];
-      if (attachments.length === 0) return next("validation");
+      if (attachments.length === 0) return next("Validation");
       for (const attachment of attachments) {
         if (attachment.truncated)
           return res
@@ -2799,7 +2799,7 @@ ${contentSource}</textarea
               `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`
             );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
-        if (attachment.name.trim() === "") return next("validation");
+        if (attachment.name.trim() === "") return next("Validation");
       }
       let attachmentsContentSources = ``;
       for (const attachment of attachments) {
@@ -2871,7 +2871,7 @@ ${contentSource}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        return next("validation");
+        return next("Validation");
       res.send(
         app.locals.layouts.partial({
           req,

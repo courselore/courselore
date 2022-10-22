@@ -569,7 +569,7 @@ export default (app: Courselore): void => {
         (req.body.isAnonymous === "on" &&
           res.locals.enrollment.courseRole === "staff")
       )
-        return next("validation");
+        return next("Validation");
 
       const mostRecentMessage = app.locals.helpers.getMessage({
         req,
@@ -758,7 +758,7 @@ export default (app: Courselore): void => {
           (req.body.isAnswer === "false" &&
             res.locals.message.answerAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else
           app.locals.database.run(
             sql`
@@ -780,7 +780,7 @@ export default (app: Courselore): void => {
           (req.body.isAnonymous === "false" &&
             res.locals.message.anonymousAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else {
           app.locals.database.run(
             sql`
@@ -813,7 +813,7 @@ export default (app: Courselore): void => {
         }
 
       if (typeof req.body.content === "string") {
-        if (req.body.content.trim() === "") return next("validation");
+        if (req.body.content.trim() === "") return next("Validation");
         const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content
         );
@@ -985,7 +985,7 @@ export default (app: Courselore): void => {
             like.enrollment.id === res.locals.enrollment.id
         )
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`
@@ -1037,7 +1037,7 @@ export default (app: Courselore): void => {
           like.enrollment !== "no-longer-enrolled" &&
           like.enrollment.id === res.locals.enrollment.id
       );
-      if (like === undefined) return next("validation");
+      if (like === undefined) return next("Validation");
 
       app.locals.database.run(
         sql`
@@ -1121,7 +1121,7 @@ export default (app: Courselore): void => {
             endorsement.enrollment.id === res.locals.enrollment.id
         )
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`
@@ -1181,7 +1181,7 @@ export default (app: Courselore): void => {
           endorsement.enrollment !== "no-longer-enrolled" &&
           endorsement.enrollment.id === res.locals.enrollment.id
       );
-      if (endorsement === undefined) return next("validation");
+      if (endorsement === undefined) return next("Validation");
 
       app.locals.database.run(
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`

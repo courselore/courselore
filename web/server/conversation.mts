@@ -2600,7 +2600,7 @@ export default (app: Courselore): void => {
         res.locals.conversation.participants === "everyone" ||
         res.locals.conversation.selectedParticipants.length <= 1
       )
-        return next("validation");
+        return next("Validation");
 
       res.send(
         app.locals.layouts.partial({
@@ -4515,7 +4515,7 @@ export default (app: Courselore): void => {
         req.body.selectedParticipantsReferences.length !==
           new Set(req.body.selectedParticipantsReferences).size
       )
-        return next("validation");
+        return next("Validation");
 
       if (
         (req.body.participants === "staff" &&
@@ -4558,7 +4558,7 @@ export default (app: Courselore): void => {
         (req.body.isAnonymous === "on" &&
           res.locals.enrollment.courseRole === "staff")
       )
-        return next("validation");
+        return next("Validation");
 
       const hasMessage =
         typeof req.body.content === "string" && req.body.content.trim() !== "";
@@ -4744,7 +4744,7 @@ export default (app: Courselore): void => {
         typeof req.body.conversationDraftReference !== "string" ||
         !req.body.conversationDraftReference.match(/^[0-9]+$/)
       )
-        return next("validation");
+        return next("Validation");
       const conversationDraft = app.locals.database.get<{
         id: number;
       }>(
@@ -4756,7 +4756,7 @@ export default (app: Courselore): void => {
                 "authorEnrollment" = ${res.locals.enrollment.id}
         `
       );
-      if (conversationDraft === undefined) return next("validation");
+      if (conversationDraft === undefined) return next("Validation");
       app.locals.database.run(
         sql`
           DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
@@ -9194,7 +9194,7 @@ export default (app: Courselore): void => {
           req.body.selectedParticipantsReferences.length !==
             new Set(req.body.selectedParticipantsReferences).size
         )
-          return next("validation");
+          return next("Validation");
 
         if (
           (req.body.participants === "staff" &&
@@ -9228,7 +9228,7 @@ export default (app: Courselore): void => {
                 selectedParticipant.courseRole === "staff"
             ))
         )
-          return next("validation");
+          return next("Validation");
 
         app.locals.database.run(
           sql`
@@ -9269,7 +9269,7 @@ export default (app: Courselore): void => {
           (req.body.isAnonymous === "false" &&
             res.locals.conversation.anonymousAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else {
           app.locals.database.run(
             sql`
@@ -9301,7 +9301,7 @@ export default (app: Courselore): void => {
 
       if (typeof req.body.type === "string")
         if (!conversationTypes.includes(req.body.type))
-          return next("validation");
+          return next("Validation");
         else
           app.locals.database.run(
             sql`
@@ -9321,7 +9321,7 @@ export default (app: Courselore): void => {
           (req.body.isAnnouncement === "false" &&
             res.locals.conversation.announcementAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else {
           app.locals.database.run(
             sql`
@@ -9360,7 +9360,7 @@ export default (app: Courselore): void => {
           (req.body.isPinned === "false" &&
             res.locals.conversation.pinnedAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else
           app.locals.database.run(
             sql`
@@ -9389,7 +9389,7 @@ export default (app: Courselore): void => {
           (req.body.isResolved === "false" &&
             res.locals.conversation.resolvedAt === null)
         )
-          return next("validation");
+          return next("Validation");
         else
           app.locals.database.run(
             sql`
@@ -9402,7 +9402,7 @@ export default (app: Courselore): void => {
           );
 
       if (typeof req.body.title === "string")
-        if (req.body.title.trim() === "") return next("validation");
+        if (req.body.title.trim() === "") return next("Validation");
         else
           app.locals.database.run(
             sql`
@@ -9493,7 +9493,7 @@ export default (app: Courselore): void => {
           (tagging) => req.body.reference === tagging.tag.reference
         )
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`
@@ -9549,7 +9549,7 @@ export default (app: Courselore): void => {
           (tagging) => req.body.reference === tagging.tag.reference
         )
       )
-        return next("validation");
+        return next("Validation");
 
       app.locals.database.run(
         sql`
