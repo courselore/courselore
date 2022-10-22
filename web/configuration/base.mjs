@@ -34,9 +34,7 @@ export default async ({
                 "emails",
                 filenamify(
                   `${new Date().toISOString()}--${mailOptions.to}.eml`,
-                  {
-                    replacement: "-",
-                  }
+                  { replacement: "-" }
                 )
               ),
               sentMessageInfo.message
