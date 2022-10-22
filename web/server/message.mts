@@ -1273,6 +1273,10 @@ export default (app: Courselore): void => {
 
   app.once("worker:start", async () => {
     while (true) {
+      console.log(
+        `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tSTARTED...`
+      );
+
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
@@ -1657,6 +1661,10 @@ export default (app: Courselore): void => {
       }
 
       app.locals.workers.sendEmail();
+
+      console.log(
+        `${new Date().toISOString()}\tWORKER\temailNotificationMessageJobs\tFINISHED`
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
     }

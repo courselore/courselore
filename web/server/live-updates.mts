@@ -55,6 +55,9 @@ export default (app: Courselore): void => {
 
   (async () => {
     while (true) {
+      console.log(
+        `${new Date().toISOString()}\tSERVER\tCLEAN EXPIRED ‘connectionsMetadata’\tSTARTING...`
+      );
       for (const connectionMetadata of connectionsMetadata.all<{
         nonce: string;
       }>(
@@ -76,6 +79,9 @@ export default (app: Courselore): void => {
           }\tEXPIRED`
         );
       }
+      console.log(
+        `${new Date().toISOString()}\tSERVER\tCLEAN EXPIRED ‘connectionsMetadata’\tFINISHED`
+      );
       await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
     }
   })();
@@ -103,9 +109,9 @@ export default (app: Courselore): void => {
           `
         );
         console.log(
-          `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
-            res.locals.liveUpdatesNonce
-          }\tCREATED\t${req.ip}\t${req.originalUrl}`
+          `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+            req.originalUrl
+          }\tLIVE-UPDATES\t${res.locals.liveUpdatesNonce}\tCREATED`
         );
         return next();
       }
@@ -132,9 +138,9 @@ export default (app: Courselore): void => {
           connections.has(res.locals.liveUpdatesNonce)
         ) {
           console.log(
-            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\tFAILED\t${req.ip}\t${req.originalUrl}`
+            `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+              req.originalUrl
+            }\tLIVE-UPDATES\t${res.locals.liveUpdatesNonce}\tCONNECTION FAILED`
           );
           return res.status(422).end();
         }
@@ -149,9 +155,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\tOPENED\t${req.ip}\t${req.originalUrl}`
+            `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+              req.originalUrl
+            }\tLIVE-UPDATES\t${res.locals.liveUpdatesNonce}\tCONNECTION OPENED`
           );
         } else {
           connectionsMetadata.run(
@@ -169,9 +175,11 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
+            `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+              req.originalUrl
+            }\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCREATED&OPENED\t${req.ip}\t${req.originalUrl}`
+            }\tCREATED & CONNECTION OPENED`
           );
         }
 
@@ -188,14 +196,14 @@ export default (app: Courselore): void => {
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
           console.log(
-            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
+            `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+              req.originalUrl
+            }\tLIVE-UPDATES\t${res.locals.liveUpdatesNonce}\t${
+              res.statusCode
+            }\t${
               (process.hrtime.bigint() - res.locals.loggingStartTime) /
               1_000_000n
-            }ms\t${Math.floor(Buffer.byteLength(body) / 1000)}kB\t${
-              req.originalUrl
-            }`
+            }ms\t${Math.floor(Buffer.byteLength(body) / 1000)}kB`
           );
           return res;
         };
@@ -207,9 +215,9 @@ export default (app: Courselore): void => {
           );
           connections.delete(res.locals.liveUpdatesNonce!);
           console.log(
-            `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\tCLOSED\t${req.ip}\t${req.originalUrl}`
+            `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+              req.originalUrl
+            }\tLIVE-UPDATES\t${res.locals.liveUpdatesNonce}\tCONNECTION CLOSED`
           );
         });
         connections.set(res.locals.liveUpdatesNonce, {
@@ -274,8 +282,10 @@ export default (app: Courselore): void => {
     connections.delete(nonce);
     connection?.res.end();
     console.log(
-      `${new Date().toISOString()}\tSERVER\tLIVE-UPDATES\t${nonce}\tABORTED\t${
-        connection?.req.ip ?? ""
+      `${new Date().toISOString()}\tSERVER\t${req.ip}\t${req.method}\t${
+        req.originalUrl
+      }\tLIVE-UPDATES\t${nonce}\tABORTED\t${connection?.req.ip ?? ""}\t${
+        connection?.req.method ?? ""
       }\t${connection?.req.originalUrl ?? ""}`
     );
     next();
