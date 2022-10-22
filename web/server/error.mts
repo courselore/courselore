@@ -59,32 +59,40 @@ export default (app: Courselore): void => {
   );
 
   app.use(((err, req, res, next) => {
-    const isValidation = err === "validation";
-    const message = isValidation ? "Validation" : "Server";
-    res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html`<title>${message} Error · Courselore</title>`,
-        body: html`
-          <h2 class="heading">
-            <i class="bi bi-bug-fill"></i>
-            ${message} Error
-          </h2>
+    if (!["Cross-Site Request Forgery", "Validation"].includes(err))
+      err = "Server";
+    res
+      .status(
+        err === "Cross-Site Request Forgery"
+          ? 403
+          : err === "Validation"
+          ? 422
+          : 500
+      )
+      .send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`<title>${err} Error · Courselore</title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-bug-fill"></i>
+              ${err} Error
+            </h2>
 
-          <p>
-            This is an issue in Courselore, please report to the system
-            administrator at
-            <a
-              href="${app.locals.partials.reportIssueHref}"
-              target="_blank"
-              class="link"
-              >${app.locals.options.administratorEmail}</a
-            >.
-          </p>
-        `,
-      })
-    );
-    console.log(`${new Date().toISOString()}\tSERVER\tERROR\n${err}`);
+            <p>
+              ${err === "Cross-Site Request Forgery"
+                ? "This request doesn’t appear to have come from Courselore. Please try again. If the issue persists, please report to the system administrator at"
+                : "This is an issue in Courselore. Please report to the system administrator at"}
+              <a
+                href="${app.locals.partials.reportIssueHref}"
+                target="_blank"
+                class="link"
+                >${app.locals.options.administratorEmail}</a
+              >.
+            </p>
+          `,
+        })
+      );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
 };

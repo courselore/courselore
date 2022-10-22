@@ -16,6 +16,10 @@ export default (app: Courselore): void => {
     }
 
     async function work(): Promise<void> {
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSTARTING...`
+      );
+
       app.locals.database.executeTransaction(() => {
         for (const job of app.locals.database.all<{
           id: number;
@@ -109,9 +113,9 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSUCCEEDED\t\t${
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tSUCCEEDED\t${
               sentMessageInfo.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}`
+            }\t${mailOptions.to}\t${mailOptions.subject}`
           );
         } catch (error: nodemailer.SentMessageInfo) {
           app.locals.database.run(
@@ -125,12 +129,16 @@ export default (app: Courselore): void => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFAILED\t\t${
+            `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFAILED\t${
               error.response ?? ""
-            }\t\t${mailOptions.to}\t\t${mailOptions.subject}\n${error}`
+            }\t${mailOptions.to}\t${mailOptions.subject}\n${error}`
           );
         }
       }
+
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tsendEmailJobs\tFINISHED`
+      );
     }
   })();
 

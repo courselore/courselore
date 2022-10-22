@@ -59,7 +59,7 @@ export default async (app: Courselore): Promise<void> => {
           );
       } catch (error) {
         console.log(
-          `${new Date().toISOString()}\tWORKER\tCHECK FOR UPDATES\tERROR:\n${error}`
+          `${new Date().toISOString()}\tWORKER\tCHECK FOR UPDATES\tERROR\n${error}`
         );
       }
       await new Promise((resolve) => setTimeout(resolve, 5 * 60 * 1000));

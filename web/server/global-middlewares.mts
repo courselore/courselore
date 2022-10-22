@@ -30,45 +30,11 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
-
     if (
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
       req.header("CSRF-Protection") !== "true"
-    ) {
-      res.status(403).send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`<title>
-            Cross-Site Request Forgery Error · Courselore
-          </title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-bug-fill"></i>
-              Cross-Site Request Forgery Error
-            </h2>
-            <p>
-              This request doesn’t appear to have come from Courselore. Please
-              try again.
-            </p>
-            <p>
-              If the issue persists, please report to the system administrator
-              at
-              <a
-                href="${app.locals.partials.reportIssueHref}"
-                target="_blank"
-                class="link"
-                >${app.locals.options.administratorEmail}</a
-              >.
-            </p>
-          `,
-        })
-      );
-      console.log(
-        `${new Date().toISOString()}\tSERVER\tERROR\nCross-Site Request Forgery`
-      );
-    }
-
+    )
+      next("Cross-Site Request Forgery");
     next();
   });
 

@@ -883,6 +883,9 @@ export default (app: Courselore): void => {
 
   app.once("worker:start", async () => {
     while (true) {
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
+      );
       app.locals.database.run(
         sql`
           DELETE FROM "passwordResets"
@@ -892,7 +895,7 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘passwordResets’`
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
@@ -1581,6 +1584,9 @@ export default (app: Courselore): void => {
 
   app.once("worker:start", async () => {
     while (true) {
+      console.log(
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+      );
       app.locals.database.run(
         sql`
           DELETE FROM "emailVerifications"
@@ -1590,7 +1596,7 @@ export default (app: Courselore): void => {
         `
       );
       console.log(
-        `${new Date().toISOString()}\tWORKER\tCLEANED EXPIRED ‘emailVerifications’`
+        `${new Date().toISOString()}\tWORKER\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
       );
       await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
     }
