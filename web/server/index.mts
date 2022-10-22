@@ -193,6 +193,7 @@ export interface Courselore extends express.Express {
 }
 
 export interface Options {
+  processType: "main" | "server" | "worker";
   hostname: string;
   administratorEmail: string;
   dataDirectory: string;
