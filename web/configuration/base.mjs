@@ -193,10 +193,16 @@ export default async ({
         `,
       }),
     ];
-    for (const subprocess of subprocesses)
-      subprocess.once("close", () => {
-        process.kill(process.pid, "SIGINT");
-      });
+    const cancelSubprocesses = () => {
+      const canceledSubprocesses = new Set();
+      return () => {
+        for (const subprocess of subprocesses) {
+          if (canceledSubprocesses.has(subprocess)) continue;
+          canceledSubprocesses.add(subprocess);
+          subprocess.cancel();
+        }
+      };
+    };
     for (const signal of [
       "exit",
       "SIGHUP",
@@ -206,9 +212,9 @@ export default async ({
       "SIGTERM",
       "SIGBREAK",
     ])
-      process.on(signal, () => {
-        for (const subprocess of subprocesses) subprocess.cancel();
-      });
+      process.once(signal, cancelSubprocesses);
+    for (const subprocess of subprocesses)
+      subprocess.once("close", cancelSubprocesses);
     await Promise.allSettled(subprocesses);
     app.emit("stop");
     return;
@@ -228,6 +234,5 @@ export default async ({
     process.once(signal, () => {
       server?.close();
       app.emit("stop");
-      process.exit();
     });
 };
