@@ -195,7 +195,7 @@ export default async ({
     ];
     for (const subprocess of subprocesses)
       subprocess.once("close", () => {
-        for (const otherSubprocess of subprocesses) otherSubprocess.cancel();
+        for (const subprocess of subprocesses) subprocess.cancel();
       });
     await Promise.allSettled(subprocesses);
     app.emit("stop");
