@@ -209,7 +209,7 @@ export default async ({
       break;
 
     case "worker":
-      const processKeepalive = setInterval(() => {});
+      const processKeepalive = setInterval(() => {}, 1 << 30);
       await signalPromise;
       clearInterval(processKeepalive);
       break;
