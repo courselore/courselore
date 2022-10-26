@@ -57,168 +57,186 @@ export default async ({
     demonstration,
   });
 
-  if (processType === "main") {
-    const subprocesses = [
-      ...["server", "worker"].map((processType) =>
-        execa(
-          process.argv[0],
-          [
-            process.argv[1],
-            process.argv[2] ??
-              url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
-            processType,
-          ],
-          {
-            preferLocal: true,
-            stdio: "inherit",
-            ...(environment === "production"
-              ? { env: { NODE_ENV: "production" } }
-              : {}),
-          }
-        )
-      ),
-      execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
-        preferLocal: true,
-        stdout: "ignore",
-        stderr: "ignore",
-        input: caddyfile`
-          {
-            admin off
+  switch (processType) {
+    case "main":
+      const subprocesses = [
+        ...["server", "worker"].map((processType) =>
+          execa(
+            process.argv[0],
+            [
+              process.argv[1],
+              process.argv[2] ??
+                url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
+              processType,
+            ],
+            {
+              preferLocal: true,
+              stdio: "inherit",
+              ...(environment === "production"
+                ? { env: { NODE_ENV: "production" } }
+                : {}),
+            }
+          )
+        ),
+        execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
+          preferLocal: true,
+          stdout: "ignore",
+          stderr: "ignore",
+          input: caddyfile`
+            {
+              admin off
+              ${
+                environment === "production"
+                  ? `email ${administratorEmail}`
+                  : `local_certs`
+              }
+            }
+  
+            (common) {
+              header Cache-Control no-store
+              header Content-Security-Policy "default-src https://${hostname}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+              header Cross-Origin-Embedder-Policy require-corp
+              header Cross-Origin-Opener-Policy same-origin
+              header Cross-Origin-Resource-Policy same-origin
+              header Referrer-Policy no-referrer
+              header Strict-Transport-Security "max-age=31536000; includeSubDomains${
+                hstsPreload ? `; preload` : ``
+              }"
+              header X-Content-Type-Options nosniff
+              header Origin-Agent-Cluster "?1"
+              header X-DNS-Prefetch-Control off
+              header X-Frame-Options DENY
+              header X-Permitted-Cross-Domain-Policies none
+              header -Server
+              header -X-Powered-By
+              header X-XSS-Protection 0
+              header Permissions-Policy "interest-cohort=()"
+              encode zstd gzip
+            }
+  
+            ${[tunnel ? [] : [hostname], ...alternativeHostnames]
+              .map((hostname) => `http://${hostname}`)
+              .join(", ")} {
+              import common
+              redir https://{host}{uri} 308
+              handle_errors {
+                import common
+              }
+            }
+  
             ${
-              environment === "production"
-                ? `email ${administratorEmail}`
-                : `local_certs`
-            }
-          }
-
-          (common) {
-            header Cache-Control no-store
-            header Content-Security-Policy "default-src https://${hostname}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
-            header Cross-Origin-Embedder-Policy require-corp
-            header Cross-Origin-Opener-Policy same-origin
-            header Cross-Origin-Resource-Policy same-origin
-            header Referrer-Policy no-referrer
-            header Strict-Transport-Security "max-age=31536000; includeSubDomains${
-              hstsPreload ? `; preload` : ``
-            }"
-            header X-Content-Type-Options nosniff
-            header Origin-Agent-Cluster "?1"
-            header X-DNS-Prefetch-Control off
-            header X-Frame-Options DENY
-            header X-Permitted-Cross-Domain-Policies none
-            header -Server
-            header -X-Powered-By
-            header X-XSS-Protection 0
-            header Permissions-Policy "interest-cohort=()"
-            encode zstd gzip
-          }
-
-          ${[tunnel ? [] : [hostname], ...alternativeHostnames]
-            .map((hostname) => `http://${hostname}`)
-            .join(", ")} {
-            import common
-            redir https://{host}{uri} 308
-            handle_errors {
-              import common
-            }
-          }
-
-          ${
-            alternativeHostnames.length > 0
-              ? caddyfile`
-                  ${alternativeHostnames
-                    .map((hostname) => `https://${hostname}`)
-                    .join(", ")} {
-                    import common
-                    redir https://${hostname}{uri} 307
-                    handle_errors {
+              alternativeHostnames.length > 0
+                ? caddyfile`
+                    ${alternativeHostnames
+                      .map((hostname) => `https://${hostname}`)
+                      .join(", ")} {
                       import common
+                      redir https://${hostname}{uri} 307
+                      handle_errors {
+                        import common
+                      }
                     }
-                  }
-                `
-              : ``
-          }
-
-          ${caddyExtraConfiguration}
-          
-          http${tunnel ? `` : `s`}://${hostname} {
-            route {
-              import common
+                  `
+                : ``
+            }
+  
+            ${caddyExtraConfiguration}
+            
+            http${tunnel ? `` : `s`}://${hostname} {
               route {
-                root * ${JSON.stringify(
-                  path.resolve(
-                    url.fileURLToPath(
-                      new URL("../static/", courseloreImportMetaURL)
+                import common
+                route {
+                  root * ${JSON.stringify(
+                    path.resolve(
+                      url.fileURLToPath(
+                        new URL("../static/", courseloreImportMetaURL)
+                      )
                     )
-                  )
-                )}
-                @file_exists file
-                route @file_exists {
-                  header Cache-Control "public, max-age=31536000, immutable"
-                  file_server
+                  )}
+                  @file_exists file
+                  route @file_exists {
+                    header Cache-Control "public, max-age=31536000, immutable"
+                    file_server
+                  }
                 }
-              }
-              route /files/* {
-                root * ${JSON.stringify(path.resolve(dataDirectory))}
-                @file_exists file
-                route @file_exists {
-                  header Cache-Control "private, max-age=31536000, immutable"
-                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-                  header @must_be_downloaded Content-Disposition attachment
-                  @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
-                  header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
-                  file_server
+                route /files/* {
+                  root * ${JSON.stringify(path.resolve(dataDirectory))}
+                  @file_exists file
+                  route @file_exists {
+                    header Cache-Control "private, max-age=31536000, immutable"
+                    @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
+                    header @must_be_downloaded Content-Disposition attachment
+                    @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
+                    header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
+                    file_server
+                  }
                 }
+                reverse_proxy 127.0.0.1:4000
               }
-              reverse_proxy 127.0.0.1:4000
+              handle_errors {
+                import common
+              }
             }
-            handle_errors {
-              import common
-            }
+          `,
+        }),
+      ];
+      const cancelSubprocesses = () => {
+        const canceledSubprocesses = new Set();
+        return () => {
+          for (const subprocess of subprocesses) {
+            if (canceledSubprocesses.has(subprocess)) continue;
+            canceledSubprocesses.add(subprocess);
+            subprocess.cancel();
           }
-        `,
-      }),
-    ];
-    const cancelSubprocesses = () => {
-      const canceledSubprocesses = new Set();
-      return () => {
-        for (const subprocess of subprocesses) {
-          if (canceledSubprocesses.has(subprocess)) continue;
-          canceledSubprocesses.add(subprocess);
-          subprocess.cancel();
-        }
+        };
       };
-    };
-    for (const signal of [
-      "exit",
-      "SIGHUP",
-      "SIGINT",
-      "SIGQUIT",
-      "SIGUSR2",
-      "SIGTERM",
-      "SIGBREAK",
-    ])
-      process.once(signal, cancelSubprocesses);
-    for (const subprocess of subprocesses)
-      subprocess.once("close", cancelSubprocesses);
-    await Promise.allSettled(subprocesses);
-    app.emit("stop");
-    return;
-  }
-
-  const server =
-    processType === "server" ? app.listen(4000, "127.0.0.1") : undefined;
-  for (const signal of [
-    "exit",
-    "SIGHUP",
-    "SIGINT",
-    "SIGQUIT",
-    "SIGUSR2",
-    "SIGTERM",
-    "SIGBREAK",
-  ])
-    process.once(signal, () => {
-      server?.close();
+      for (const signal of [
+        "exit",
+        "SIGHUP",
+        "SIGINT",
+        "SIGQUIT",
+        "SIGUSR2",
+        "SIGTERM",
+        "SIGBREAK",
+      ])
+        process.once(signal, cancelSubprocesses);
+      for (const subprocess of subprocesses)
+        subprocess.once("close", cancelSubprocesses);
+      await Promise.allSettled(subprocesses);
       app.emit("stop");
-    });
+      break;
+
+    case "server":
+      const server = app.listen(4000, "127.0.0.1");
+      for (const signal of [
+        "exit",
+        "SIGHUP",
+        "SIGINT",
+        "SIGQUIT",
+        "SIGUSR2",
+        "SIGTERM",
+        "SIGBREAK",
+      ])
+        process.once(signal, () => {
+          server.close();
+          app.emit("stop");
+        });
+      break;
+
+    case "worker":
+      await new Promise((resolve) => {
+        for (const signal of [
+          "exit",
+          "SIGHUP",
+          "SIGINT",
+          "SIGQUIT",
+          "SIGUSR2",
+          "SIGTERM",
+          "SIGBREAK",
+        ])
+          process.once(signal, resolve);
+      });
+      app.emit("stop");
+      break;
+  }
 };
