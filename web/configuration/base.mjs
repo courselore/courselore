@@ -69,7 +69,7 @@ export default async ({
     ].map(
       (signal) =>
         new Promise((resolve) => {
-          process.once(signal, resolve);
+          process.on(signal, resolve);
         })
     )
   );
