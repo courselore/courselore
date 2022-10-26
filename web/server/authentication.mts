@@ -263,9 +263,9 @@ export default (app: Courselore): void => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
         );
-        await new Promise((resolve) =>
-          setTimeout(resolve, 24 * 60 * 60 * 1000)
-        );
+        await new Promise((resolve) => {
+          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
+        });
       }
     })();
 
@@ -909,9 +909,9 @@ export default (app: Courselore): void => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
         );
-        await new Promise((resolve) =>
-          setTimeout(resolve, 24 * 60 * 60 * 1000)
-        );
+        await new Promise((resolve) => {
+          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
+        });
       }
     })();
 
@@ -1617,9 +1617,9 @@ export default (app: Courselore): void => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
         );
-        await new Promise((resolve) =>
-          setTimeout(resolve, 24 * 60 * 60 * 1000)
-        );
+        await new Promise((resolve) => {
+          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
+        });
       }
     })();
 

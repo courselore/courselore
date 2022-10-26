@@ -87,7 +87,9 @@ export default (app: Courselore): void => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘connectionsMetadata’\tFINISHED`
         );
-        await new Promise((resolve) => setTimeout(resolve, 60 * 1000).unref());
+        await new Promise((resolve) => {
+          setTimeout(resolve, 60 * 1000).unref();
+        });
       }
     })();
 
@@ -198,7 +200,7 @@ export default (app: Courselore): void => {
         let heartbeatTimeout: NodeJS.Timeout;
         (function heartbeat() {
           res.write("\n");
-          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000).unref();
         })();
         res.once("close", () => {
           clearTimeout(heartbeatTimeout);
@@ -252,7 +254,9 @@ export default (app: Courselore): void => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
-    await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5 * 1000).unref();
+    });
 
     connectionsMetadata.run(
       sql`
@@ -279,7 +283,9 @@ export default (app: Courselore): void => {
         liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
       app(connection.req, connection.res);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 100).unref();
+      });
     }
   };
 

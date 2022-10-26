@@ -12,7 +12,7 @@ export default (app: Courselore): void => {
     async function schedule() {
       await work();
       clearTimeout(timeout);
-      timeout = setTimeout(schedule, 2 * 60 * 1000);
+      timeout = setTimeout(schedule, 2 * 60 * 1000).unref();
     }
 
     async function work(): Promise<void> {
@@ -144,6 +144,10 @@ export default (app: Courselore): void => {
             }\t${mailOptions.subject}\n${error}`
           );
         }
+
+        await new Promise((resolve) => {
+          setTimeout(resolve, 100).unref();
+        });
       }
 
       console.log(

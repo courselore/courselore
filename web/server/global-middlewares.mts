@@ -57,7 +57,7 @@ export default (app: Courselore): void => {
       let heartbeatTimeout: NodeJS.Timeout;
       (function heartbeat() {
         res.write("\n");
-        heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+        heartbeatTimeout = setTimeout(heartbeat, 15 * 1000).unref();
       })();
       res.once("close", () => {
         clearTimeout(heartbeatTimeout);

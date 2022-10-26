@@ -1668,7 +1668,9 @@ export default (app: Courselore): void => {
               job.message
             }`
           );
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => {
+            setTimeout(resolve, 100).unref();
+          });
         }
 
         app.locals.workers.sendEmail?.();
@@ -1679,7 +1681,9 @@ export default (app: Courselore): void => {
           }\temailNotificationMessageJobs\tFINISHED`
         );
 
-        await new Promise((resolve) => setTimeout(resolve, 2 * 60 * 1000));
+        await new Promise((resolve) => {
+          setTimeout(resolve, 2 * 60 * 1000).unref();
+        });
       }
     })();
 };

@@ -68,7 +68,9 @@ export default async (app: Courselore): Promise<void> => {
             }\tCHECK FOR UPDATES\tERROR\n${error}`
           );
         }
-        await new Promise((resolve) => setTimeout(resolve, 5 * 60 * 1000));
+        await new Promise((resolve) => {
+          setTimeout(resolve, 5 * 60 * 1000).unref();
+        });
       }
     })();
 

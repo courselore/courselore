@@ -23,7 +23,7 @@ export function liveConnection({
           const abort = () => {
             abortController.abort();
           };
-          let heartbeatTimeout = setTimeout(abort, 50 * 1000);
+          let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
           const response = await fetch(url, {
             cache: "no-store",
             signal: abortController.signal,
@@ -57,7 +57,7 @@ export function liveConnection({
             const chunk = (await responseBodyReader.read()).value;
             if (chunk === undefined) break;
             clearTimeout(heartbeatTimeout);
-            heartbeatTimeout = setTimeout(abort, 50 * 1000);
+            heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
           }
         } catch (error) {
           console.error(error);
@@ -75,9 +75,9 @@ export function liveConnection({
             shouldLiveReloadOnNextConnection = liveReload;
           }
         }
-        await new Promise((resolve) =>
-          setTimeout(resolve, liveReload ? 200 : 1000)
-        );
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, liveReload ? 200 : 1000);
+        });
       }
     },
     { once: true }
@@ -418,7 +418,7 @@ export async function liveUpdates(nonce) {
         abortController.abort();
       };
       window.addEventListener("livenavigate", abort, { once: true });
-      let heartbeatTimeout = setTimeout(abort, 50 * 1000);
+      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
       const response = await fetch(window.location.href, {
         cache: "no-store",
         headers: { "Live-Updates": nonce },
@@ -447,7 +447,7 @@ export async function liveUpdates(nonce) {
         const chunk = (await responseBodyReader.read()).value;
         if (chunk === undefined) break;
         clearTimeout(heartbeatTimeout);
-        heartbeatTimeout = setTimeout(abort, 50 * 1000);
+        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
         buffer += textDecoder.decode(chunk, { stream: true });
         const bufferParts = buffer.split("\n");
         buffer = bufferParts.pop();
@@ -467,7 +467,9 @@ export async function liveUpdates(nonce) {
       console.error(error);
     }
     nonce = Math.random().toString(36).slice(2);
-    await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 5 * 1000);
+    });
   }
 }
 

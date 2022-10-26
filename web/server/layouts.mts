@@ -1856,9 +1856,9 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
         );
-        await new Promise((resolve) =>
-          setTimeout(resolve, 24 * 60 * 60 * 1000)
-        );
+        await new Promise((resolve) => {
+          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
+        });
       }
     })();
 };
