@@ -209,7 +209,9 @@ export default async ({
       break;
 
     case "worker":
+      const keepalive = setInterval(() => {});
       await signalPromise;
+      clearInterval(keepalive);
       break;
   }
 };
