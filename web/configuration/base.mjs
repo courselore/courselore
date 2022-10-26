@@ -214,6 +214,7 @@ export default async ({
       clearInterval(processKeepalive);
       break;
   }
+
   await new Promise((resolve) => {
     setTimeout(resolve, 5 * 1000).unref();
   });
