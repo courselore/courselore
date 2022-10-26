@@ -935,7 +935,7 @@ export default async (app: Courselore): Promise<void> => {
             `,
           })
         );
-        process.exit(0);
+        process.exit();
       }
     );
 
