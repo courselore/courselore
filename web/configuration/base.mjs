@@ -75,22 +75,22 @@ export default async ({
             : {}),
         }
       ),
-      // execa(
-      //   process.argv[0],
-      //   [
-      //     process.argv[1],
-      //     process.argv[2] ??
-      //       url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
-      //     "worker",
-      //   ],
-      //   {
-      //     preferLocal: true,
-      //     stdio: "inherit",
-      //     ...(environment === "production"
-      //       ? { env: { NODE_ENV: "production" } }
-      //       : {}),
-      //   }
-      // ),
+      execa(
+        process.argv[0],
+        [
+          process.argv[1],
+          process.argv[2] ??
+            url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
+          "worker",
+        ],
+        {
+          preferLocal: true,
+          stdio: "inherit",
+          ...(environment === "production"
+            ? { env: { NODE_ENV: "production" } }
+            : {}),
+        }
+      ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
         stdout: "ignore",
