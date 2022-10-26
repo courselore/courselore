@@ -209,9 +209,9 @@ export default async ({
       break;
 
     case "worker":
-      const keepalive = setInterval(() => {});
+      const processKeepalive = setInterval(() => {});
       await signalPromise;
-      clearInterval(keepalive);
+      clearInterval(processKeepalive);
       break;
   }
 };
