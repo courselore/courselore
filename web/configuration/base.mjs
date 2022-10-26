@@ -57,6 +57,23 @@ export default async ({
     demonstration,
   });
 
+  const signalPromise = Promise.race(
+    [
+      "exit",
+      "SIGHUP",
+      "SIGINT",
+      "SIGQUIT",
+      "SIGUSR2",
+      "SIGTERM",
+      "SIGBREAK",
+    ].map(
+      (signal) =>
+        new Promise((resolve) => {
+          process.once(signal, resolve);
+        })
+    )
+  );
+
   switch (processType) {
     case "main":
       const subprocesses = [
@@ -180,63 +197,20 @@ export default async ({
           `,
         }),
       ];
-      const cancelSubprocesses = () => {
-        const canceledSubprocesses = new Set();
-        return () => {
-          for (const subprocess of subprocesses) {
-            if (canceledSubprocesses.has(subprocess)) continue;
-            canceledSubprocesses.add(subprocess);
-            subprocess.cancel();
-          }
-        };
-      };
-      for (const signal of [
-        "exit",
-        "SIGHUP",
-        "SIGINT",
-        "SIGQUIT",
-        "SIGUSR2",
-        "SIGTERM",
-        "SIGBREAK",
-      ])
-        process.once(signal, cancelSubprocesses);
-      for (const subprocess of subprocesses)
-        subprocess.once("close", cancelSubprocesses);
+      await Promise.race([signalPromise, ...subprocesses]);
+      for (const subprocess of subprocesses) subprocess.cancel();
       await Promise.allSettled(subprocesses);
-      app.emit("stop");
       break;
 
     case "server":
       const server = app.listen(4000, "127.0.0.1");
-      for (const signal of [
-        "exit",
-        "SIGHUP",
-        "SIGINT",
-        "SIGQUIT",
-        "SIGUSR2",
-        "SIGTERM",
-        "SIGBREAK",
-      ])
-        process.once(signal, () => {
-          server.close();
-          app.emit("stop");
-        });
+      await signalPromise;
+      server.close();
       break;
 
     case "worker":
-      await new Promise((resolve) => {
-        for (const signal of [
-          "exit",
-          "SIGHUP",
-          "SIGINT",
-          "SIGQUIT",
-          "SIGUSR2",
-          "SIGTERM",
-          "SIGBREAK",
-        ])
-          process.once(signal, resolve);
-      });
-      app.emit("stop");
+      await signalPromise;
       break;
   }
+  app.emit("stop");
 };
