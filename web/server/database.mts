@@ -16,6 +16,9 @@ export default async (app: Courselore): Promise<void> => {
     path.join(app.locals.options.dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
+  process.once("exit", () => {
+    app.locals.database.close();
+  });
 
   if (app.locals.options.processType === "main") {
     console.log(
@@ -1416,8 +1419,4 @@ export default async (app: Courselore): Promise<void> => {
       }\tDATABASE MIGRATION\tFINISHED`
     );
   }
-
-  app.once("stop", () => {
-    app.locals.database.close();
-  });
 };

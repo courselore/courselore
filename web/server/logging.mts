@@ -9,7 +9,7 @@ export default (app: Courselore): void => {
         : ``
     }`
   );
-  app.once("stop", () => {
+  process.once("exit", () => {
     console.log(
       `${new Date().toISOString()}\t${app.locals.options.processType}\tSTOPPED`
     );

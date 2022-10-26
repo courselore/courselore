@@ -63,8 +63,8 @@ export default async ({
       "SIGHUP",
       "SIGINT",
       "SIGQUIT",
-      "SIGUSR2",
       "SIGTERM",
+      "SIGUSR2",
       "SIGBREAK",
     ].map(
       (signal) =>
@@ -214,5 +214,4 @@ export default async ({
       await signalPromise;
       break;
   }
-  app.emit("stop");
 };
