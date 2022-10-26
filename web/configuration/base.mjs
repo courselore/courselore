@@ -58,7 +58,15 @@ export default async ({
   });
 
   const signalPromise = Promise.race(
-    ["SIGHUP", "SIGINT", "SIGQUIT", "SIGTERM", "SIGUSR2", "SIGBREAK"].map(
+    [
+      "exit",
+      "SIGHUP",
+      "SIGINT",
+      "SIGQUIT",
+      "SIGTERM",
+      "SIGUSR2",
+      "SIGBREAK",
+    ].map(
       (signal) =>
         new Promise((resolve) => {
           process.once(signal, resolve);
