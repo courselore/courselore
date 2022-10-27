@@ -18,12 +18,17 @@ export default async (app: Courselore): Promise<void> => {
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.loggingStartTime = process.hrtime.bigint();
+    const liveUpdatesNonce = req.header("Live-Updates");
     console.log(
       `${new Date().toISOString()}\t${app.locals.options.processType}\t${
         req.ip
-      }\t${req.method}\t${req.originalUrl}\tSTARTED...`
+      }\t${req.method}\t${req.originalUrl}${
+        liveUpdatesNonce !== undefined
+          ? `\tLIVE-UPDATES\t${liveUpdatesNonce}`
+          : ``
+      }\tSTARTED...`
     );
-    if (req.header("Live-Updates") !== undefined) return next();
+    if (liveUpdatesNonce !== undefined) return next();
     for (const method of ["send", "redirect"]) {
       const resUntyped = res as any;
       const implementation = resUntyped[method].bind(resUntyped);
