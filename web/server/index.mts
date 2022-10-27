@@ -11,6 +11,8 @@ import globalMiddlewares, {
 } from "./global-middlewares.mjs";
 export { BaseMiddlewareLocals } from "./global-middlewares.mjs";
 
+import healthChecks from "./health-checks.mjs";
+
 import liveUpdates, {
   LiveUpdatesMiddleware,
   LiveUpdatesDispatchHelper,
@@ -236,22 +238,23 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.helpers = {} as any;
   app.locals.mailers = {} as any;
   app.locals.workers = {} as any;
-  logging(app);
+  await logging(app);
   await database(app);
-  globalMiddlewares(app);
-  liveUpdates(app);
+  await healthChecks(app);
+  await globalMiddlewares(app);
+  await liveUpdates(app);
   await layouts(app);
-  authentication(app);
+  await authentication(app);
   await administration(app);
-  about(app);
-  user(app);
-  course(app);
-  conversation(app);
-  message(app);
+  await about(app);
+  await user(app);
+  await course(app);
+  await conversation(app);
+  await message(app);
   await content(app);
-  email(app);
-  demonstration(app);
-  error(app);
-  helpers(app);
+  await email(app);
+  await demonstration(app);
+  await error(app);
+  await helpers(app);
   return app;
 };
