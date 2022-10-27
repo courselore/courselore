@@ -5,7 +5,6 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
-import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
