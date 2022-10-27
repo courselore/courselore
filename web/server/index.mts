@@ -46,7 +46,7 @@ export {
   HasPasswordConfirmationMiddlewareLocals,
 } from "./authentication.mjs";
 
-import administration, { AdministrationOptions } from "./administration.mjs";
+import administration from "./administration.mjs";
 export {
   UserSystemRolesWhoMayCreateCourses,
   userSystemRolesWhoMayCreateCourseses,
@@ -133,8 +133,7 @@ export interface Courselore extends express.Express {
       tryHostname: string;
     } & Options &
       GlobalMiddlewaresOptions &
-      AuthenticationOptions &
-      AdministrationOptions;
+      AuthenticationOptions;
     handlers: {
       about: AboutHandler;
     };

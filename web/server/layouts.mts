@@ -6,6 +6,7 @@ import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
 import cryptoRandomString from "crypto-random-string";
+import semver from "semver";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -691,7 +692,10 @@ export default async (app: Courselore): Promise<void> => {
             </div>
 
             $${res.locals.user?.systemRole === "administrator" &&
-            typeof app.locals.options.latestVersion === "string"
+            semver.gt(
+              res.locals.administrationOptions.latestVersion,
+              app.locals.options.version
+            )
               ? html`
                   <div>
                     <button
@@ -725,7 +729,8 @@ export default async (app: Courselore): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${app.locals.options.latestVersion}
+                                    ${res.locals.administrationOptions
+                                      .latestVersion}
                                   </span>
                                 </span>
                               </h3>
@@ -748,8 +753,9 @@ export default async (app: Courselore): Promise<void> => {
                                   Update Instructions
                                 </a>
                                 <a
-                                  href="https://github.com/courselore/courselore/releases/tag/v${app
-                                    .locals.options.latestVersion}"
+                                  href="https://github.com/courselore/courselore/releases/tag/v${res
+                                    .locals.administrationOptions
+                                    .latestVersion}"
                                   target="_blank"
                                   class="dropdown--menu--item button button--green"
                                 >

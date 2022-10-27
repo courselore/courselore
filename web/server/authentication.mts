@@ -610,11 +610,12 @@ export default async (app: Courselore): Promise<void> => {
         }));
 
       res.locals.mayCreateCourses =
-        app.locals.options.userSystemRolesWhoMayCreateCourses === "all" ||
-        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
+        res.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
+          "all" ||
+        (res.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
           "staff-and-administrators" &&
           ["staff", "administrator"].includes(res.locals.user.systemRole)) ||
-        (app.locals.options.userSystemRolesWhoMayCreateCourses ===
+        (res.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
           "administrators" &&
           res.locals.user.systemRole === "administrator");
 

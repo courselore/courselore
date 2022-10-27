@@ -12,11 +12,6 @@ import {
   UserAvatarlessBackgroundColor,
 } from "./index.mjs";
 
-export interface AdministrationOptions {
-  latestVersion?: string;
-  userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
-}
-
 export type UserSystemRolesWhoMayCreateCourses =
   typeof userSystemRolesWhoMayCreateCourseses[number];
 export const userSystemRolesWhoMayCreateCourseses = [
@@ -195,7 +190,7 @@ export default async (app: Courselore): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="all"
                       required
-                      $${app.locals.options
+                      $${res.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses === "all"
                         ? html`checked`
                         : html``}
@@ -215,7 +210,7 @@ export default async (app: Courselore): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${app.locals.options
+                      $${res.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses ===
                       "staff-and-administrators"
                         ? html`checked`
@@ -236,7 +231,7 @@ export default async (app: Courselore): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="administrators"
                       required
-                      $${app.locals.options
+                      $${res.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses === "administrators"
                         ? html`checked`
                         : html``}
@@ -282,16 +277,12 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      const administrationOptions = app.locals.database.get<{
-        [key: string]: any;
-      }>(
+      app.locals.database.run(
         sql`
           UPDATE "administrationOptions"
           SET "userSystemRolesWhoMayCreateCourses" = ${req.body.userSystemRolesWhoMayCreateCourses}
-          RETURNING *
         `
       )!;
-      app.locals.options = { ...app.locals.options, ...administrationOptions };
 
       app.locals.helpers.Flash.set({
         req,

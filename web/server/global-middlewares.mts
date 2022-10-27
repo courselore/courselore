@@ -25,11 +25,6 @@ export default async (app: Courselore): Promise<void> => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
-    if (
-      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
-      req.header("CSRF-Protection") !== "true"
-    )
-      next("Cross-Site Request Forgery");
     res.locals.administrationOptions = app.locals.database.get<{
       latestVersion: string;
       userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
@@ -39,6 +34,11 @@ export default async (app: Courselore): Promise<void> => {
         FROM "administrationOptions"
       `
     )!;
+    if (
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
+      req.header("CSRF-Protection") !== "true"
+    )
+      next("Cross-Site Request Forgery");
     next();
   });
 
