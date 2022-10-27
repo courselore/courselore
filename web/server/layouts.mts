@@ -911,8 +911,8 @@ export default async (app: Courselore): Promise<void> => {
             res,
             head: html`
               <title>
-                Thanks for Trying! · Courselore · Communication Platform for
-                Education
+                Thanks for trying Courselore! · Courselore · Communication
+                Platform for Education
               </title>
             `,
             body: html`
