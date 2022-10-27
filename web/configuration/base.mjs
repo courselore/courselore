@@ -197,9 +197,18 @@ export default async ({
           `,
         }),
       ];
-      await Promise.race([signalPromise, ...subprocesses]);
+      try {
+        await Promise.race([signalPromise, ...subprocesses]);
+      } catch {}
       for (const subprocess of subprocesses) subprocess.cancel();
-      await Promise.allSettled(subprocesses);
+      const subprocessesResults = await Promise.allSettled(subprocesses);
+      console.log(
+        `${new Date().toISOString()}\t${processType}\tSUBPROCESSES\n${JSON.stringify(
+          subprocessesResults,
+          undefined,
+          2
+        )}`
+      );
       break;
 
     case "server":
