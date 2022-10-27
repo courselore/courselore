@@ -240,8 +240,8 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.workers = {} as any;
   await logging(app);
   await database(app);
-  await healthChecks(app);
   await globalMiddlewares(app);
+  await healthChecks(app);
   await liveUpdates(app);
   await layouts(app);
   await authentication(app);

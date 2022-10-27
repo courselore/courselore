@@ -27,4 +27,40 @@ export default async (app: Courselore): Promise<void> => {
   app.once("close", () => {
     for (const { req, res } of liveConnections) res.end();
   });
+
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/health", (req, res) => {
+    res.json({ version: app.locals.options.version });
+  });
+
+  if (app.locals.options.environment === "development") {
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/errors/validation",
+      (req, res, next) => {
+        next("Validation");
+      }
+    );
+
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/errors/cross-site-request-forgery",
+      (req, res, next) => {
+        next("Cross-Site Request Forgery");
+      }
+    );
+
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/errors/exception",
+      (req, res) => {
+        throw new Error("Exception");
+      }
+    );
+
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/errors/crash",
+      (req, res) => {
+        setTimeout(() => {
+          throw new Error("Crash");
+        });
+      }
+    );
+  }
 };
