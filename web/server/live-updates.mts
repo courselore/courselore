@@ -309,4 +309,8 @@ export default (app: Courselore): void => {
     );
     next();
   });
+
+  app.once("close", () => {
+    for (const [_, { req, res }] of connections) res.end();
+  });
 };
