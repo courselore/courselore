@@ -17,15 +17,6 @@ export interface BaseMiddlewareLocals {
 }
 
 export default (app: Courselore): void => {
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
-
-  app.locals.options.cookies = {
-    path: "/",
-    secure: true,
-    httpOnly: true,
-    sameSite: "lax",
-  };
-
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
@@ -36,6 +27,14 @@ export default (app: Courselore): void => {
       next("Cross-Site Request Forgery");
     next();
   });
+
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
+  app.locals.options.cookies = {
+    path: "/",
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
+  };
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.urlencoded({ extended: true })
