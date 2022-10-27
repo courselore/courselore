@@ -21,7 +21,7 @@ export type HighlightSearchResultHelper = (
 
 export type SplitFilterablePhrasesHelper = (filterable: string) => string[];
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.helpers.emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
   app.locals.helpers.isDate = (string) =>

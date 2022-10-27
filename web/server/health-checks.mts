@@ -1,7 +1,7 @@
 import express from "express";
 import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   const liveConnections = new Set<{
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;

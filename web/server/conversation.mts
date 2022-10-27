@@ -168,7 +168,7 @@ export interface IsConversationAccessibleMiddlewareLocals
   >;
 }
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   const conversationTypeIcon: {
     [conversationType in ConversationType]: {
       regular: HTML;

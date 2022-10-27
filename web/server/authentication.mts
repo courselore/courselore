@@ -166,7 +166,7 @@ export type EmailVerificationMailer = ({
   welcome?: boolean;
 }) => void;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 

@@ -96,7 +96,7 @@ export type UserPartial = ({
   bold?: boolean;
 }) => HTML;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.partials.user = ({
     req,
     res,

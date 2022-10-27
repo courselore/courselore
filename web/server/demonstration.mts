@@ -22,7 +22,7 @@ import {
   conversationTypes,
 } from "./index.mjs";
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   if (!app.locals.options.demonstration) return;
 
   const handler: express.RequestHandler<

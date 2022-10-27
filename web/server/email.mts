@@ -4,7 +4,7 @@ import { Courselore } from "./index.mjs";
 
 export type SendEmailWorker = () => Promise<void>;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.workers.sendEmail = (() => {
     let timeout: NodeJS.Timeout;
     return schedule;

@@ -114,7 +114,7 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   const courseRoleIcon: {
     [courseRole in CourseRole]: {
       regular: HTML;

@@ -16,7 +16,7 @@ export interface BaseMiddlewareLocals {
   liveUpdatesNonce: string | undefined;
 }
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();

@@ -8,7 +8,7 @@ import {
   IsSignedInMiddlewareLocals,
 } from "./index.mjs";
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedOut,

@@ -18,7 +18,7 @@ export type AboutHandler = express.RequestHandler<
   IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
 >;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   if (
     app.locals.options.hostname !== app.locals.options.canonicalHostname &&
     app.locals.options.environment !== "development"

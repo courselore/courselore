@@ -118,7 +118,7 @@ export type EmailNotificationsMailer = ({
   >;
 }) => void;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   app.locals.helpers.getMessage = ({
     req,
     res,

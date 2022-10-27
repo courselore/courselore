@@ -1,7 +1,7 @@
 import express from "express";
 import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   console.log(
     `${new Date().toISOString()}\t${app.locals.options.processType}\tSTARTED${
       app.locals.options.processType === "main"

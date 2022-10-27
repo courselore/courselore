@@ -25,7 +25,7 @@ export type LiveUpdatesDispatchHelper = ({
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
 }) => Promise<void>;
 
-export default (app: Courselore): void => {
+export default async (app: Courselore): Promise<void> => {
   // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
   const connectionsMetadata = new Database("");
   connectionsMetadata.migrate(
