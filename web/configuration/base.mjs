@@ -206,6 +206,7 @@ export default async ({
       const server = app.listen(4000, "127.0.0.1");
       await signalPromise;
       server.close();
+      app.emit("close");
       break;
 
     case "worker":
