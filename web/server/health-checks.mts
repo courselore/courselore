@@ -21,6 +21,13 @@ export default async (app: Courselore): Promise<void> => {
       res.once("close", () => {
         liveConnections.delete(connection);
         clearTimeout(heartbeatTimeout);
+        console.log(
+          `${new Date().toISOString()}\t${app.locals.options.processType}\t${
+            req.ip
+          }\t${req.method}\t${req.originalUrl}\t${res.statusCode}\t${
+            (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
+          }ms`
+        );
       });
     }
   );

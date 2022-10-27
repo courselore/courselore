@@ -220,6 +220,7 @@ export default async (app: Courselore): Promise<void> => {
           );
           return res;
         };
+        const connectionOpenTime = res.locals.loggingStartTime;
         res.once("close", () => {
           connectionsMetadata.run(
             sql`
@@ -232,7 +233,9 @@ export default async (app: Courselore): Promise<void> => {
               req.ip
             }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
-            }\tCONNECTION CLOSED`
+            }\tCONNECTION CLOSED\t${
+              (process.hrtime.bigint() - connectionOpenTime) / 1_000_000n
+            }ms`
           );
         });
         connections.set(res.locals.liveUpdatesNonce, {
