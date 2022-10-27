@@ -1,9 +1,10 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
+import { sql } from "@leafac/sqlite";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
-import { Courselore } from "./index.mjs";
+import { Courselore, UserSystemRolesWhoMayCreateCourses } from "./index.mjs";
 
 export interface GlobalMiddlewaresOptions {
   cookies: express.CookieOptions;
@@ -13,6 +14,10 @@ export interface BaseMiddlewareLocals {
   loggingStartTime: bigint;
   css: ReturnType<typeof localCSS>;
   html: ReturnType<typeof HTMLForJavaScript>;
+  administrationOptions: {
+    latestVersion: string;
+    userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+  };
   liveUpdatesNonce: string | undefined;
 }
 
@@ -25,6 +30,15 @@ export default async (app: Courselore): Promise<void> => {
       req.header("CSRF-Protection") !== "true"
     )
       next("Cross-Site Request Forgery");
+    res.locals.administrationOptions = app.locals.database.get<{
+      latestVersion: string;
+      userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+    }>(
+      sql`
+        SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
+        FROM "administrationOptions"
+      `
+    )!;
     next();
   });
 
