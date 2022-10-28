@@ -243,30 +243,29 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
-    (async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
-        );
-        app.locals.database.run(
-          sql`
-            DELETE FROM "sessions"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - app.locals.helpers.Session.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    })();
+  app.once("worker", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
+      );
+      app.locals.database.run(
+        sql`
+          DELETE FROM "sessions"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - app.locals.helpers.Session.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
@@ -888,30 +887,29 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
-    (async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
-        );
-        app.locals.database.run(
-          sql`
-            DELETE FROM "passwordResets"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - PasswordReset.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    })();
+  app.once("worker", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
+      );
+      app.locals.database.run(
+        sql`
+          DELETE FROM "passwordResets"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - PasswordReset.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
   app.get<
     {},
@@ -1594,30 +1592,29 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.workers.sendEmail();
   };
 
-  if (app.locals.options.processType === "worker")
-    (async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
-        );
-        app.locals.database.run(
-          sql`
-            DELETE FROM "emailVerifications"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - 24 * 60 * 60 * 1000
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    })();
+  app.once("worker", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+      );
+      app.locals.database.run(
+        sql`
+          DELETE FROM "emailVerifications"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - 24 * 60 * 60 * 1000
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
   app.post<
     {},

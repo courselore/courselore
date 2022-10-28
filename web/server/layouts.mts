@@ -1841,28 +1841,27 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
-    (async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
-        );
-        app.locals.database.run(
-          sql`
-            DELETE FROM "flashes"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - app.locals.helpers.Flash.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.locals.options.processType
-          }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    })();
+  app.once("worker", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
+      );
+      app.locals.database.run(
+        sql`
+          DELETE FROM "flashes"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - app.locals.helpers.Flash.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          app.locals.options.processType
+        }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 };
