@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import qs from "qs";
 import { sql } from "@leafac/sqlite";
@@ -1668,9 +1669,7 @@ export default async (app: Courselore): Promise<void> => {
               job.message
             }`
           );
-          await new Promise((resolve) => {
-            setTimeout(resolve, 100).unref();
-          });
+          await timers.setTimeout(100, undefined, { ref: false });
         }
 
         app.locals.workers.sendEmail?.();
@@ -1681,9 +1680,7 @@ export default async (app: Courselore): Promise<void> => {
           }\temailNotificationMessageJobs\tFINISHED`
         );
 
-        await new Promise((resolve) => {
-          setTimeout(resolve, 2 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
       }
     })();
 };

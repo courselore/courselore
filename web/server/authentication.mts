@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import qs from "qs";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -263,9 +264,7 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
         );
-        await new Promise((resolve) => {
-          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
       }
     })();
 
@@ -910,9 +909,7 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
         );
-        await new Promise((resolve) => {
-          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
       }
     })();
 
@@ -1618,9 +1615,7 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
         );
-        await new Promise((resolve) => {
-          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
       }
     })();
 

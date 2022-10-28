@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
 import {
@@ -87,9 +88,7 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘connectionsMetadata’\tFINISHED`
         );
-        await new Promise((resolve) => {
-          setTimeout(resolve, 60 * 1000).unref();
-        });
+        await timers.setTimeout(60 * 1000, undefined, { ref: false });
       }
     })();
 
@@ -257,9 +256,7 @@ export default async (app: Courselore): Promise<void> => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
-    await new Promise((resolve) => {
-      setTimeout(resolve, 5 * 1000).unref();
-    });
+    await timers.setTimeout(5 * 1000, undefined, { ref: false });
 
     connectionsMetadata.run(
       sql`
@@ -286,9 +283,7 @@ export default async (app: Courselore): Promise<void> => {
         liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
       app(connection.req, connection.res);
-      await new Promise((resolve) => {
-        setTimeout(resolve, 100).unref();
-      });
+      await timers.setTimeout(100, undefined, { ref: false });
     }
   };
 

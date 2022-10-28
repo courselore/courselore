@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
@@ -1861,9 +1862,7 @@ export default async (app: Courselore): Promise<void> => {
             app.locals.options.processType
           }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
         );
-        await new Promise((resolve) => {
-          setTimeout(resolve, 24 * 60 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
       }
     })();
 };

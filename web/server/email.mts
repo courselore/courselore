@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import nodemailer from "nodemailer";
 import { sql } from "@leafac/sqlite";
 import { Courselore } from "./index.mjs";
@@ -145,9 +146,7 @@ export default async (app: Courselore): Promise<void> => {
           );
         }
 
-        await new Promise((resolve) => {
-          setTimeout(resolve, 100).unref();
-        });
+        await timers.setTimeout(100, undefined, { ref: false });
       }
 
       console.log(

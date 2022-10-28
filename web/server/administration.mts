@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
@@ -63,9 +64,7 @@ export default async (app: Courselore): Promise<void> => {
             }\tCHECK FOR UPDATES\tERROR\n${error}`
           );
         }
-        await new Promise((resolve) => {
-          setTimeout(resolve, 5 * 60 * 1000).unref();
-        });
+        await timers.setTimeout(5 * 60 * 1000, undefined, { ref: false });
       }
     })();
 
