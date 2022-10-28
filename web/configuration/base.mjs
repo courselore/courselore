@@ -75,6 +75,7 @@ export default async ({
     )
   );
 
+  app.emit("start");
   switch (processType) {
     case "main":
       const subprocesses = [
@@ -214,7 +215,6 @@ export default async ({
       const server = app.listen(4000, "127.0.0.1");
       await signalPromise;
       server.close();
-      app.emit("close");
       break;
 
     case "worker":
@@ -223,6 +223,7 @@ export default async ({
       clearInterval(processKeepAlive);
       break;
   }
+  app.emit("stop");
 
   await timers.setTimeout(5 * 1000, undefined, { ref: false });
   process.exit();

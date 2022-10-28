@@ -315,7 +315,8 @@ export default async (app: Courselore): Promise<void> => {
     next();
   });
 
-  app.once("close", () => {
-    for (const [_, { req, res }] of connections) res.end();
-  });
+  if (app.locals.options.processType === "server")
+    app.once("stop", () => {
+      for (const [_, { req, res }] of connections) res.end();
+    });
 };

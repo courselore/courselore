@@ -41,9 +41,10 @@ export default async (app: Courselore): Promise<void> => {
       });
     }
   );
-  app.once("close", () => {
-    for (const { req, res } of liveConnections) res.end();
-  });
+  if (app.locals.options.processType === "server")
+    app.once("stop", () => {
+      for (const { req, res } of liveConnections) res.end();
+    });
 
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>("/health", (req, res) => {
     res.json({ version: app.locals.options.version });
