@@ -196,14 +196,20 @@ export default async (app: Courselore): Promise<void> => {
         }
 
         res.contentType("application/x-ndjson");
-        let heartbeatTimeout: NodeJS.Timeout;
-        (function heartbeat() {
-          res.write("\n");
-          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000).unref();
+        const heartbeatAbortController = new AbortController();
+        (async () => {
+          while (true) {
+            res.write("\n");
+            try {
+              await timers.setTimeout(15 * 1000, undefined, {
+                ref: false,
+                signal: heartbeatAbortController.signal,
+              });
+            } catch {
+              break;
+            }
+          }
         })();
-        res.once("close", () => {
-          clearTimeout(heartbeatTimeout);
-        });
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
@@ -221,6 +227,7 @@ export default async (app: Courselore): Promise<void> => {
         };
         const connectionOpenTime = res.locals.loggingStartTime;
         res.once("close", () => {
+          heartbeatAbortController.abort();
           connectionsMetadata.run(
             sql`
               DELETE FROM "connectionsMetadata" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
