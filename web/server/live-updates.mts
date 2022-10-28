@@ -55,7 +55,7 @@ export default async (app: Courselore): Promise<void> => {
   >();
 
   if (app.locals.options.processType === "server")
-    (async () => {
+    app.once("ready", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
@@ -90,7 +90,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         await timers.setTimeout(60 * 1000, undefined, { ref: false });
       }
-    })();
+    });
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {

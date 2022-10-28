@@ -57,9 +57,6 @@ export default async ({
     environment,
     demonstration,
   });
-  console.log(
-    `${new Date().toISOString()}\t${processType}\tAPP FINISHED LOADING`
-  );
 
   const signalPromise = Promise.race(
     [
@@ -221,7 +218,6 @@ export default async ({
       break;
 
     case "worker":
-      app.emit("worker");
       const processKeepAlive = setInterval(() => {}, 1 << 30);
       await signalPromise;
       clearInterval(processKeepAlive);
