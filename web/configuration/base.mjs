@@ -14,6 +14,7 @@ export default async ({
 }) => {
   const path = await courseloreImport("node:path");
   const url = await courseloreImport("node:url");
+  const timers = await courseloreImport("node:timers/promises");
   const fs = (await courseloreImport("fs-extra")).default;
   const filenamify = (await courseloreImport("filenamify")).default;
   const nodemailer = await courseloreImport("nodemailer");
@@ -225,8 +226,6 @@ export default async ({
       break;
   }
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 5 * 1000).unref();
-  });
+  await timers.setTimeout(5 * 1000, undefined, { ref: false });
   process.exit();
 };
