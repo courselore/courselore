@@ -1,3 +1,4 @@
+import timers from "node:timers/promises";
 import express from "express";
 import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
 
@@ -13,14 +14,23 @@ export default async (app: Courselore): Promise<void> => {
       liveConnections.add(connection);
       res.header("Version", app.locals.options.version);
       res.contentType("text/plain");
-      let heartbeatTimeout: NodeJS.Timeout;
-      (function heartbeat() {
-        res.write("\n");
-        heartbeatTimeout = setTimeout(heartbeat, 15 * 1000).unref();
+      const heartbeatAbortController = new AbortController();
+      (async () => {
+        while (true) {
+          res.write("\n");
+          try {
+            await timers.setTimeout(15 * 1000, undefined, {
+              ref: false,
+              signal: heartbeatAbortController.signal,
+            });
+          } catch {
+            break;
+          }
+        }
       })();
       res.once("close", () => {
         liveConnections.delete(connection);
-        clearTimeout(heartbeatTimeout);
+        heartbeatAbortController.abort();
         console.log(
           `${new Date().toISOString()}\t${app.locals.options.processType}\t${
             req.ip
