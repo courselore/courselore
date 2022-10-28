@@ -220,7 +220,7 @@ export default async ({
     case "worker":
       const processKeepAlive = setInterval(() => {}, 1 << 30);
       await signalPromise;
-      clearInterval(processKeepAlive);
+      processKeepAlive.unref();
       break;
   }
   app.emit("stop");
