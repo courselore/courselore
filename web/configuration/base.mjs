@@ -198,9 +198,7 @@ export default async ({
           `,
         }),
       ];
-      try {
-        await Promise.race([signalPromise, ...subprocesses]);
-      } catch {}
+      await Promise.race([signalPromise, ...subprocesses]).catch(() => {});
       for (const subprocess of subprocesses) subprocess.cancel();
       const subprocessesResults = await Promise.allSettled(subprocesses);
       console.log(
