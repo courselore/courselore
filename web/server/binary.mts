@@ -10,6 +10,13 @@ import { execa } from "execa";
 import caddyfile from "dedent";
 import courselore from "./index.mjs";
 
+const [
+  configuration = url.fileURLToPath(
+    new URL("../../configuration/default.mjs", import.meta.url)
+  ),
+  processType = "main",
+] = process.argv.slice(2);
+
 let {
   hostname,
   administratorEmail,
@@ -17,7 +24,7 @@ let {
   sendMail,
   alternativeHostnames = [],
   hstsPreload = false,
-  caddyExtraConfiguration = "",
+  caddyExtraConfiguration = caddyfile``,
   tunnel = false,
   environment = "production",
   demonstration = false,
@@ -35,15 +42,7 @@ let {
   tunnel?: boolean;
   environment?: "default" | "development" | "production";
   demonstration?: boolean;
-} = await (
-  await import(
-    process.argv[2] === undefined
-      ? new URL("../../configuration/default.mjs", import.meta.url).href
-      : url.pathToFileURL(path.resolve(process.argv[2])).href
-  )
-).default();
-
-const processType = (process.argv[3] ?? "main") as "main" | "server" | "worker";
+} = (await import(url.pathToFileURL(path.resolve(configuration)).href)).default;
 
 if (typeof sendMail !== "function") {
   const { options, defaults } = sendMail;
@@ -92,22 +91,13 @@ switch (processType) {
   case "main":
     const subprocesses = [
       ...["server", "worker"].map((processType) =>
-        execa(
-          process.argv[0],
-          [
-            process.argv[1],
-            process.argv[2] ??
-              url.fileURLToPath(new URL("./default.mjs", import.meta.url)),
-            processType,
-          ],
-          {
-            preferLocal: true,
-            stdio: "inherit",
-            ...(environment === "production"
-              ? { env: { NODE_ENV: "production" } }
-              : {}),
-          }
-        )
+        execa(process.argv[0], [process.argv[1], configuration, processType], {
+          preferLocal: true,
+          stdio: "inherit",
+          ...(environment === "production"
+            ? { env: { NODE_ENV: "production" } }
+            : {}),
+        })
       ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
