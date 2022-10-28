@@ -255,6 +255,5 @@ export default async (options: Options): Promise<Courselore> => {
   await demonstration(app);
   await error(app);
   await helpers(app);
-  app.emit("ready");
   return app;
 };

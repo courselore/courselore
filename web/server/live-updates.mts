@@ -55,7 +55,7 @@ export default async (app: Courselore): Promise<void> => {
   >();
 
   if (app.locals.options.processType === "server")
-    app.once("ready", async () => {
+    app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
