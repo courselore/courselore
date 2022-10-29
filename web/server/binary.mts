@@ -218,9 +218,14 @@ switch (processType) {
     break;
 
   case "worker":
-    const processKeepAlive = setInterval(() => {}, 1 << 30);
+    const worker = new AbortController();
+    timers
+      .setInterval(1 << 30, undefined, { signal: worker.signal })
+      [Symbol.asyncIterator]()
+      .next()
+      .catch(() => {});
     await signalPromise;
-    processKeepAlive.unref();
+    worker.abort();
     break;
 }
 app.emit("stop");
