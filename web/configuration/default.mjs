@@ -1,7 +1,7 @@
 import path from "node:path";
 
 export default {
-  hostname: process.env.HOSTNAME ?? "localhost",
+  hostname: "localhost",
   administratorEmail: "feedback@courselore.org",
   dataDirectory: path.join(process.cwd(), "data"),
   sendMail: {
