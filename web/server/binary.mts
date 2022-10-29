@@ -38,7 +38,7 @@ await commander.program
         email,
         alternativeHostnames = [],
         hstsPreload = false,
-        caddyfileCustom = caddyfile``,
+        caddyfileExtra = caddyfile``,
         tunnel = false,
         environment = "production",
         demonstration = false,
@@ -52,7 +52,7 @@ await commander.program
         };
         alternativeHostnames?: string[];
         hstsPreload?: boolean;
-        caddyfileCustom?: string;
+        caddyfileExtra?: string;
         tunnel?: boolean;
         environment?: "default" | "development" | "production";
         demonstration?: boolean;
@@ -165,7 +165,7 @@ await commander.program
                     : ``
                 }
 
-                ${caddyfileCustom}
+                ${caddyfileExtra}
                 
                 http${tunnel ? `` : `s`}://${hostname} {
                   route {
