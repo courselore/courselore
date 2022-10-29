@@ -1,4 +1,5 @@
 import url from "node:url";
+
 export default {
   hostname: process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
   administratorEmail: "development@courselore.org",
