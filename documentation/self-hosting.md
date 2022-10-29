@@ -52,15 +52,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    # nano configuration.mjs
    ```
 
-   > **Note for Advanced Users:** The Courselore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
-   >
-   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs)).
-   >
-   > - Replace Caddy with a different reverse proxy, which may be necessary if you have other applications running on the same server. Note that the other reverse proxy must serve static files & manage HTTP headers in a similar way to [how we configure Caddy](https://github.com/courselore/courselore/blob/main/web/configuration/base.mjs) or Courselore will malfunction.
-   >
-   > - Use a different email service provider, either via SMTP with [Nodemailer](https://nodemailer.com/) or via a proprietary API specific to your email service provider that may be available as a [Node.js](https://nodejs.org/) package. You may even try to [deliver emails directly from your server instead of relying on an email delivery service](https://github.com/nodemailer/nodemailer/issues/1227) if you can include your server on the allowlist of you users’ inbox.
-   >
-   > - Mount Courselore as part of a larger Node.js application. This allows you to intercept Courselore’s requests & responses and manipulate them in any way you want.
+   > **Note for Advanced Users:** The Courselore configuration is a JavaScript module. You may use JavaScript for more advanced configuration options, for example, in the configuration for [`courselore.org`](https://courselore.org) (see [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs)), we load secrets from a different file instead of hard-coding them.
 
 3. Configure your operating system’s service manager to start Courselore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`web/configuration/courselore.service`](/web/configuration/courselore.service):
 
