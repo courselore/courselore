@@ -47,8 +47,10 @@ await commander.program
         administratorEmail: string;
         dataDirectory: string;
         email: {
-          options: Parameters<typeof nodemailer.createTransport>[0];
-          defaults: Parameters<typeof nodemailer.createTransport>[1];
+          options: any;
+          defaults: nodemailer.SendMailOptions & {
+            from: { name: string; address: string };
+          };
         };
         alternativeHostnames?: string[];
         hstsPreload?: boolean;

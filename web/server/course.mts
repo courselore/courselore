@@ -2961,8 +2961,8 @@ export default async (app: Courselore): Promise<void> => {
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             from: {
-              name: `${invitation.course.name} · ${app.locals.options.sendMail.defaults.from.name}`,
-              address: app.locals.options.sendMail.defaults.from.address,
+              name: `${invitation.course.name} · ${app.locals.options.email.defaults.from.name}`,
+              address: app.locals.options.email.defaults.from.address,
             },
             to: invitation.email!,
             subject: `Enroll in ${invitation.course.name}`,

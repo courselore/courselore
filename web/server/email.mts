@@ -1,6 +1,9 @@
+import path from "node:path";
 import timers from "node:timers/promises";
+import fs from "fs-extra";
 import nodemailer from "nodemailer";
 import { sql } from "@leafac/sqlite";
+import filenamify from "filenamify";
 import { Courselore } from "./index.mjs";
 
 export type SendEmailWorker = () => Promise<void>;
@@ -8,6 +11,35 @@ export type SendEmailWorker = () => Promise<void>;
 export default async (app: Courselore): Promise<void> => {
   if (app.locals.options.processType === "worker")
     app.once("start", async () => {
+      const sendMailTransport = nodemailer.createTransport(
+        app.locals.options.email.options,
+        app.locals.options.email.defaults
+      );
+      const sendMail =
+        app.locals.options.email.options.streamTransport &&
+        app.locals.options.email.options.buffer
+          ? async (mailOptions: nodemailer.SendMailOptions) => {
+              const sentMessageInfo = await sendMailTransport.sendMail(
+                mailOptions
+              );
+              await fs.outputFile(
+                path.join(
+                  app.locals.options.dataDirectory,
+                  "emails",
+                  filenamify(
+                    `${new Date().toISOString()}--${mailOptions.to}.eml`,
+                    {
+                      replacement: "-",
+                    }
+                  )
+                ),
+                (sentMessageInfo as any).message
+              );
+              return sentMessageInfo;
+            }
+          : async (mailOptions: nodemailer.SendMailOptions) =>
+              await sendMailTransport.sendMail(mailOptions);
+
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
@@ -103,9 +135,7 @@ export default async (app: Courselore): Promise<void> => {
           if (job === undefined) break;
           const mailOptions = JSON.parse(job.mailOptions);
           try {
-            const sentMessageInfo = await app.locals.options.sendMail(
-              mailOptions
-            );
+            const sentMessageInfo = await sendMail(mailOptions);
             app.locals.database.run(
               sql`
                 DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
