@@ -42,6 +42,7 @@
     "@sindresorhus/slugify": "^2.1.1",
     "argon2": "^0.30.1",
     "casual": "^1.6.2",
+    "commander": "^9.4.1",
     "cookie-parser": "^1.4.6",
     "crypto-random-string": "^5.0.0",
     "dedent": "^0.7.0",

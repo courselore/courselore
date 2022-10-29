@@ -4,12 +4,36 @@ import path from "node:path";
 import url from "node:url";
 import timers from "node:timers/promises";
 import fs from "fs-extra";
+import * as commander from "commander";
 import filenamify from "filenamify";
 import nodemailer from "nodemailer";
 import { execa } from "execa";
 import caddyfile from "dedent";
 import courselore from "./index.mjs";
 
+await commander.program
+  .name("courselore")
+  .description("Communication Platform for Education")
+  .argument(
+    "[configuration]",
+    "Path to configuration file.",
+    url.fileURLToPath(
+      new URL("../../configuration/default.mjs", import.meta.url)
+    )
+  )
+  .argument("[process-type]", "‘main’, ‘server’, or ‘worker’", "main")
+  .version(
+    JSON.parse(
+      await fs.readFile(new URL("../../package.json", import.meta.url), "utf8")
+    ).version
+  )
+  .action(async (configuration, processType) => {
+    console.log(configuration, processType);
+  })
+  .showHelpAfterError()
+  .parseAsync();
+
+/*
 const [
   configuration = url.fileURLToPath(
     new URL("../../configuration/default.mjs", import.meta.url)
@@ -232,3 +256,4 @@ app.emit("stop");
 
 await timers.setTimeout(5 * 1000, undefined, { ref: false });
 process.exit();
+*/
