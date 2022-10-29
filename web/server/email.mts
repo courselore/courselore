@@ -28,9 +28,7 @@ export default async (app: Courselore): Promise<void> => {
                   "emails",
                   filenamify(
                     `${new Date().toISOString()}--${mailOptions.to}.eml`,
-                    {
-                      replacement: "-",
-                    }
+                    { replacement: "-" }
                   )
                 ),
                 (sentMessageInfo as any).message
