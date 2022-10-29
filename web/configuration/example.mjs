@@ -12,9 +12,9 @@ export default {
   //    In case something goes wrong with the certificate, they’ll contact you at this address.
   administratorEmail: "ADMINISTRATOR@YOUR-DOMAIN.EDU",
 
-  // The path to the folder in which Courselore stores data: the database & the files uploaded by users (avatars & attachments in messages, for example).
+  // The path to the folder in which Courselore stores data: the database and the files uploaded by users (for example, user avatars and attachments in messages).
   // With the line below this is a folder called ‘data/’ relative to this configuration file.
-  // In most cases this is good enough, but you may want to change this to an absolute path, for example, ‘/home/courselore/data/’.
+  // In most cases this is appropriate, but you may want to change it to an absolute path, for example, ‘/home/courselore/data/’.
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
 
   // Configuration to reach the email server which delivers email on Courselore’s behalf.
