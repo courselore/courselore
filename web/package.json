@@ -15,8 +15,6 @@
   "bugs": "https://github.com/courselore/courselore/issues",
   "author": "Courselore <npm@courselore.org> (https://courselore.org)",
   "license": "GPL",
-  "exports": "./build/server/index.mjs",
-  "types": "./build/server/index.d.mts",
   "bin": "./build/server/binary.mjs",
   "scripts": {
     "postinstall": "(cd ./server/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
