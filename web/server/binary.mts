@@ -230,14 +230,16 @@ await commander.program
         ];
         await Promise.race([signalPromise, ...subprocesses]).catch(() => {});
         for (const subprocess of subprocesses) subprocess.cancel();
-        const subprocessesResults = await Promise.allSettled(subprocesses);
-        console.log(
-          `${new Date().toISOString()}\t${processType}\tSUBPROCESSES\n${JSON.stringify(
-            subprocessesResults,
-            undefined,
-            2
-          )}`
-        );
+        (async () => {
+          const subprocessesResults = await Promise.allSettled(subprocesses);
+          console.log(
+            `${new Date().toISOString()}\t${processType}\tSUBPROCESSES\n${JSON.stringify(
+              subprocessesResults,
+              undefined,
+              2
+            )}`
+          );
+        })();
         break;
 
       case "server":
