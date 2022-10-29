@@ -33,7 +33,7 @@ export default {
     "www.courselore.com",
   ],
   hstsPreload: true,
-  caddyExtraConfiguration: `
+  caddyfileCustom: `
     http://meta.courselore.org, http://meta.courselore.com {
       import common
       redir https://{host}{uri} 308

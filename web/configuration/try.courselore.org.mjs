@@ -14,7 +14,7 @@ export default {
     },
   },
   alternativeHostnames: ["try.courselore.com"],
-  caddyExtraConfiguration: `
+  caddyfileCustom: `
     http://leafac.courselore.org {
       redir https://{host}{uri} 308
     }

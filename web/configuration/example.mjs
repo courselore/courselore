@@ -40,4 +40,7 @@ export default {
 
   // [OPTIONAL, BUT RECOMMENDED] See https://hstspreload.org/ to learn more.
   // hstsPreload: true,
+
+  // [OPTIONAL] Custom Caddy configuration to add to Courselore’s Caddy configuration.
+  // caddyfileCustom: ``,
 };
