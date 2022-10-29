@@ -4,7 +4,7 @@ export default {
   hostname: "localhost",
   administratorEmail: "feedback@courselore.org",
   dataDirectory: path.join(process.cwd(), "data"),
-  sendMail: {
+  email: {
     options: { streamTransport: true, buffer: true },
     defaults: {
       from: {

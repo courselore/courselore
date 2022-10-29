@@ -32,7 +32,7 @@ await commander.program
       hostname,
       administratorEmail,
       dataDirectory,
-      sendMail,
+      email,
       alternativeHostnames = [],
       hstsPreload = false,
       caddyExtraConfiguration = caddyfile``,
@@ -43,10 +43,10 @@ await commander.program
       hostname: string;
       administratorEmail: string;
       dataDirectory: string;
-      sendMail:
-        | Parameters<typeof nodemailer.createTransport>
-        | ReturnType<typeof nodemailer.createTransport>
-        | any;
+      email: {
+        options: Parameters<typeof nodemailer.createTransport>[0];
+        defaults: Parameters<typeof nodemailer.createTransport>[1];
+      };
       alternativeHostnames?: string[];
       hstsPreload?: boolean;
       caddyExtraConfiguration?: string;
@@ -56,38 +56,12 @@ await commander.program
     } = (await import(url.pathToFileURL(path.resolve(configuration)).href))
       .default;
 
-    if (typeof sendMail !== "function") {
-      const { options, defaults } = sendMail;
-      const transport = nodemailer.createTransport(options, defaults);
-      sendMail =
-        options.streamTransport && options.buffer
-          ? async (mailOptions: any) => {
-              const sentMessageInfo = await transport.sendMail(mailOptions);
-              await fs.outputFile(
-                path.join(
-                  dataDirectory,
-                  "emails",
-                  filenamify(
-                    `${new Date().toISOString()}--${mailOptions.to}.eml`,
-                    {
-                      replacement: "-",
-                    }
-                  )
-                ),
-                (sentMessageInfo as any).message
-              );
-              return sentMessageInfo;
-            }
-          : async (mailOptions: any) => await transport.sendMail(mailOptions);
-      sendMail.options = options;
-      sendMail.defaults = defaults;
-    }
     const app = await courselore({
       processType,
       hostname,
       administratorEmail,
       dataDirectory,
-      sendMail,
+      email,
       environment,
       demonstration,
     });

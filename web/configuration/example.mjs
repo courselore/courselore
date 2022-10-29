@@ -19,7 +19,7 @@ export default {
 
   // Configuration to reach the email server which delivers email on Courselore’s behalf.
   // Use the format of arguments accepted by Nodemailer’s ‘.createTransport()’. See https://nodemailer.com/smtp/.
-  sendMail: {
+  email: {
     options: {
       host: "SMTP.YOUR-DOMAIN.EDU",
       auth: {

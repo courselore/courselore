@@ -12,7 +12,7 @@ export default {
   hostname: "courselore.org",
   administratorEmail: "administrator@courselore.org",
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
-  sendMail: {
+  email: {
     options: {
       host: "email-smtp.us-east-1.amazonaws.com",
       auth: {

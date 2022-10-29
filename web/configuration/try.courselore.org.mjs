@@ -4,7 +4,7 @@ export default {
   hostname: "try.courselore.org",
   administratorEmail: "try@courselore.org",
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
-  sendMail: {
+  email: {
     options: { jsonTransport: true },
     defaults: {
       from: {
