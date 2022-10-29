@@ -198,13 +198,9 @@ export interface Options {
   hostname: string;
   administratorEmail: string;
   dataDirectory: string;
-  sendMail: ((
-    mailOptions: nodemailer.SendMailOptions
-  ) => Promise<nodemailer.SentMessageInfo>) & {
-    options: any;
-    defaults: nodemailer.SendMailOptions & {
-      from: { name: string; address: string };
-    };
+  email: {
+    options: Parameters<typeof nodemailer.createTransport>[0];
+    defaults: Parameters<typeof nodemailer.createTransport>[1];
   };
   environment: "default" | "development" | "production";
   demonstration: boolean;
@@ -230,6 +226,42 @@ export default async (options: Options): Promise<Courselore> => {
     metaCourseloreInvitation: "https://meta.courselore.org",
     tryHostname: "try.courselore.org",
   } as any;
+
+  // import filenamify from "filenamify";
+  // sendMail: ((
+  //   mailOptions: nodemailer.SendMailOptions
+  // ) => Promise<nodemailer.SentMessageInfo>) & {
+  //   options: any;
+  //   defaults: nodemailer.SendMailOptions & {
+  //     from: { name: string; address: string };
+  //   };
+  // };
+  // if (typeof sendMail !== "function") {
+  //   const { options, defaults } = sendMail;
+  //   const transport = nodemailer.createTransport(options, defaults);
+  //   sendMail =
+  //     options.streamTransport && options.buffer
+  //       ? async (mailOptions: any) => {
+  //           const sentMessageInfo = await transport.sendMail(mailOptions);
+  //           await fs.outputFile(
+  //             path.join(
+  //               dataDirectory,
+  //               "emails",
+  //               filenamify(
+  //                 `${new Date().toISOString()}--${mailOptions.to}.eml`,
+  //                 {
+  //                   replacement: "-",
+  //                 }
+  //               )
+  //             ),
+  //             (sentMessageInfo as any).message
+  //           );
+  //           return sentMessageInfo;
+  //         }
+  //       : async (mailOptions: any) => await transport.sendMail(mailOptions);
+  //   sendMail.options = options;
+  //   sendMail.defaults = defaults;
+  // }
   app.locals.handlers = {} as any;
   app.locals.middlewares = {} as any;
   app.locals.layouts = {} as any;
