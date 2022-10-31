@@ -22,8 +22,10 @@
     "start": "nodemon --watch \"./server/**/*.mts\" --watch \"./static/{{prepare,leafac--javascript}.mjs,**/*.{png,jpeg,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/binary.mjs ./configuration/development.mjs\"",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./server/**/*.mts\" --check \"./static/prepare.mjs\" --check \"./configuration/**/*.mjs\" --end-of-line auto",
-    "clean": "shx rm -rf ./build/",
-    "clean:data": "npm run clean && shx rm -rf ./data/",
+    "clean:all": "npm run clean:build && npm run clean:data && npm run clean:node_modules",
+    "clean:build": "shx rm -rf ./build/",
+    "clean:data": "shx rm -rf ./data/",
+    "clean:node_modules": "shx rm -rf ./node_modules/ ./server/node_modules/ ./static/node_modules/",
     "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
   },
   "engines": {
