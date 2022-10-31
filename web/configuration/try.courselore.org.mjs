@@ -5,7 +5,7 @@ export default {
   administratorEmail: "try@courselore.org",
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
   email: {
-    options: { jsonTransport: true },
+    options: { streamTransport: true, buffer: true },
     defaults: {
       from: {
         name: "Courselore",
