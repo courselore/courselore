@@ -23,7 +23,7 @@
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./server/**/*.mts\" --check \"./static/prepare.mjs\" --check \"./configuration/**/*.mjs\" --end-of-line auto",
     "clean": "shx rm -rf ./build/",
-    "clean:data": "shx rm -rf ./data/",
+    "clean:data": "npm run clean && shx rm -rf ./data/",
     "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
   },
   "engines": {
