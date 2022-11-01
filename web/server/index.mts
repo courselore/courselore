@@ -116,7 +116,9 @@ if (
       new commander.Option(
         "--process-type <process-type>",
         "[INTERNAL] ‘main’, ‘server’, or ‘worker’."
-      ).hideHelp()
+      )
+        .default("main")
+        .hideHelp()
     )
     .addOption(
       new commander.Option(
@@ -136,8 +138,9 @@ if (
       "after",
       "\n" +
         dedent`
-        Configuration:
-          See ‘https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md’ for instructions, and ‘https://github.com/courselore/courselore/blob/main/web/configuration/example.mjs’ for an example.`
+          Configuration:
+            See ‘https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md’ for instructions, and ‘https://github.com/courselore/courselore/blob/main/web/configuration/example.mjs’ for an example.
+        `
     )
     .allowExcessArguments(false)
     .showHelpAfterError()
@@ -152,79 +155,75 @@ if (
           port: string;
         }
       ) => {
-        console.log(configuration);
-        console.log(processType);
-        console.log(port);
+        const courselore = {
+          configuration: (
+            await import(url.pathToFileURL(path.resolve(configuration)).href)
+          ).default,
+          process: {
+            identifier: Math.random().toString(36).slice(2),
+            type: processType,
+          },
+          version,
+          addresses: {
+            canonicalHostname: "courselore.org",
+            metaCourseloreInvitation: "https://meta.courselore.org",
+            tryHostname: "try.courselore.org",
+          },
+          static: JSON.parse(
+            await fs.readFile(
+              url.fileURLToPath(
+                new URL("../static/paths.json", import.meta.url)
+              ),
+              "utf8"
+            )
+          ),
+          server: express(),
+          worker: express(),
+        } as Courselore;
 
-        // const courselore = {
-        //   configuration: (
-        //     await import(url.pathToFileURL(path.resolve(configuration)).href)
-        //   ).default,
-        //   process: {
-        //     identifier: Math.random().toString(36).slice(2),
-        //     type: processType,
-        //   },
-        //   version,
-        //   addresses: {
-        //     canonicalHostname: "courselore.org",
-        //     metaCourseloreInvitation: "https://meta.courselore.org",
-        //     tryHostname: "try.courselore.org",
-        //   },
-        //   static: JSON.parse(
-        //     await fs.readFile(
-        //       url.fileURLToPath(
-        //         new URL("../static/paths.json", import.meta.url)
-        //       ),
-        //       "utf8"
-        //     )
-        //   ),
-        //   server: express(),
-        //   worker: express(),
-        // } as Courselore;
+        courselore.configuration.environment ??= "production";
+        courselore.configuration.demonstration ??=
+          courselore.configuration.environment !== "production";
+        courselore.configuration.tunnel ??= false;
+        courselore.configuration.alternativeHostnames ??= [];
+        courselore.configuration.hstsPreload ??= false;
+        courselore.configuration.caddyfileExtra ??= caddyfile``;
 
-        // courselore.configuration.environment ??= "production";
-        // courselore.configuration.demonstration ??=
-        //   courselore.configuration.environment !== "production";
-        // courselore.configuration.tunnel ??= false;
-        // courselore.configuration.alternativeHostnames ??= [];
-        // courselore.configuration.hstsPreload ??= false;
-        // courselore.configuration.caddyfileExtra ??= caddyfile``;
+        // await logging(courselore);
+        // await database(courselore);
+        // await globalMiddlewares(courselore);
+        // await liveUpdates(courselore);
+        // await healthChecks(courselore);
+        // await authentication(courselore);
+        // await layouts(courselore);
+        // await about(courselore);
+        // await administration(courselore);
+        // await user(courselore);
+        // await course(courselore);
+        // await conversation(courselore);
+        // await message(courselore);
+        // await content(courselore);
+        // await email(courselore);
+        // await demonstration(courselore);
+        // await error(courselore);
+        // await helpers(courselore);
 
-        // // await logging(courselore);
-        // // await database(courselore);
-        // // await globalMiddlewares(courselore);
-        // // await liveUpdates(courselore);
-        // // await healthChecks(courselore);
-        // // await authentication(courselore);
-        // // await layouts(courselore);
-        // // await about(courselore);
-        // // await administration(courselore);
-        // // await user(courselore);
-        // // await course(courselore);
-        // // await conversation(courselore);
-        // // await message(courselore);
-        // // await content(courselore);
-        // // await email(courselore);
-        // // await demonstration(courselore);
-        // // await error(courselore);
-        // // await helpers(courselore);
-
-        // const signalPromise = Promise.race(
-        //   [
-        //     "exit",
-        //     "SIGHUP",
-        //     "SIGINT",
-        //     "SIGQUIT",
-        //     "SIGTERM",
-        //     "SIGUSR2",
-        //     "SIGBREAK",
-        //   ].map(
-        //     (signal) =>
-        //       new Promise((resolve) => {
-        //         process.on(signal, resolve);
-        //       })
-        //   )
-        // );
+        const signalPromise = Promise.race(
+          [
+            "exit",
+            "SIGHUP",
+            "SIGINT",
+            "SIGQUIT",
+            "SIGTERM",
+            "SIGUSR2",
+            "SIGBREAK",
+          ].map(
+            (signal) =>
+              new Promise((resolve) => {
+                process.on(signal, resolve);
+              })
+          )
+        );
 
         // switch (processType) {
         //   case "main":
@@ -260,7 +259,6 @@ if (
         //                   : `local_certs`
         //               }
         //             }
-
         //             (common) {
         //               header Cache-Control no-store
         //               header Content-Security-Policy "default-src https://${
@@ -284,7 +282,6 @@ if (
         //               header Permissions-Policy "interest-cohort=()"
         //               encode zstd gzip
         //             }
-
         //             ${[
         //               courselore.configuration.tunnel
         //                 ? []
@@ -299,7 +296,6 @@ if (
         //                 import common
         //               }
         //             }
-
         //             ${
         //               courselore.configuration.alternativeHostnames.length > 0
         //                 ? caddyfile`
@@ -317,9 +313,7 @@ if (
         //                   `
         //                 : ``
         //             }
-
         //             ${courselore.configuration.caddyfileExtra}
-
         //             http${courselore.configuration.tunnel ? `` : `s`}://${
         //             courselore.configuration.hostname
         //           } {
@@ -386,16 +380,13 @@ if (
         //       );
         //     })();
         //     break;
-
         //   case "server":
         //     courselore.server.emit("start");
         //     courselore.server.emit("stop");
-
         //     const server = app.listen(4000, "127.0.0.1");
         //     await signalPromise;
         //     server.close();
         //     break;
-
         //   case "worker":
         //     courselore.worker.emit("start");
         //     courselore.worker.emit("stop");
@@ -409,7 +400,6 @@ if (
         //     worker.abort();
         //     break;
         // }
-
         // await timers.setTimeout(5 * 1000, undefined, { ref: false });
         // process.exit();
       }
