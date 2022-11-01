@@ -10,60 +10,60 @@ import nodemailer from "nodemailer";
 import { execa } from "execa";
 import caddyfile from "dedent";
 import logging from "./logging.mjs";
-import database from "./database.mjs";
-import globalMiddlewares from "./global-middlewares.mjs";
-export { BaseLocals } from "./global-middlewares.mjs";
-import liveUpdates from "./live-updates.mjs";
-export { LiveUpdatesLocals } from "./live-updates.mjs";
-import healthChecks from "./health-checks.mjs";
-import authentication from "./authentication.mjs";
-export {
-  IsSignedOutLocals,
-  IsSignedInLocals,
-  HasPasswordConfirmationLocals,
-} from "./authentication.mjs";
-import layouts from "./layouts.mjs";
-import about from "./about.mjs";
-import administration from "./administration.mjs";
-export {
-  UserSystemRolesWhoMayCreateCourses,
-  userSystemRolesWhoMayCreateCourseses,
-  SystemRole,
-  systemRoles,
-} from "./administration.mjs";
-import user from "./user.mjs";
-export {
-  User,
-  UserAvatarlessBackgroundColor,
-  userAvatarlessBackgroundColors,
-  UserEmailNotificationsForAllMessages,
-  userEmailNotificationsForAllMessageses,
-} from "./user.mjs";
-import course from "./course.mjs";
-export {
-  Enrollment,
-  MaybeEnrollment,
-  CourseRole,
-  courseRoles,
-  EnrollmentAccentColor,
-  enrollmentAccentColors,
-  IsEnrolledInCourseLocals,
-  IsCourseStaffLocals,
-} from "./course.mjs";
-import conversation from "./conversation.mjs";
-export {
-  ConversationParticipants,
-  conversationParticipantses,
-  ConversationType,
-  conversationTypes,
-  IsConversationAccessibleLocals,
-} from "./conversation.mjs";
-import message from "./message.mjs";
-import content from "./content.mjs";
-import email from "./email.mjs";
-import demonstration from "./demonstration.mjs";
-import error from "./error.mjs";
-import helpers from "./helpers.mjs";
+// import database from "./database.mjs";
+// import globalMiddlewares from "./global-middlewares.mjs";
+// export { BaseLocals } from "./global-middlewares.mjs";
+// import liveUpdates from "./live-updates.mjs";
+// export { LiveUpdatesLocals } from "./live-updates.mjs";
+// import healthChecks from "./health-checks.mjs";
+// import authentication from "./authentication.mjs";
+// export {
+//   IsSignedOutLocals,
+//   IsSignedInLocals,
+//   HasPasswordConfirmationLocals,
+// } from "./authentication.mjs";
+// import layouts from "./layouts.mjs";
+// import about from "./about.mjs";
+// import administration from "./administration.mjs";
+// export {
+//   UserSystemRolesWhoMayCreateCourses,
+//   userSystemRolesWhoMayCreateCourseses,
+//   SystemRole,
+//   systemRoles,
+// } from "./administration.mjs";
+// import user from "./user.mjs";
+// export {
+//   User,
+//   UserAvatarlessBackgroundColor,
+//   userAvatarlessBackgroundColors,
+//   UserEmailNotificationsForAllMessages,
+//   userEmailNotificationsForAllMessageses,
+// } from "./user.mjs";
+// import course from "./course.mjs";
+// export {
+//   Enrollment,
+//   MaybeEnrollment,
+//   CourseRole,
+//   courseRoles,
+//   EnrollmentAccentColor,
+//   enrollmentAccentColors,
+//   IsEnrolledInCourseLocals,
+//   IsCourseStaffLocals,
+// } from "./course.mjs";
+// import conversation from "./conversation.mjs";
+// export {
+//   ConversationParticipants,
+//   conversationParticipantses,
+//   ConversationType,
+//   conversationTypes,
+//   IsConversationAccessibleLocals,
+// } from "./conversation.mjs";
+// import message from "./message.mjs";
+// import content from "./content.mjs";
+// import email from "./email.mjs";
+// import demonstration from "./demonstration.mjs";
+// import error from "./error.mjs";
+// import helpers from "./helpers.mjs";
 
 export type Courselore = {
   configuration: {
@@ -166,23 +166,23 @@ if (
         courselore.configuration.caddyfileExtra ??= caddyfile``;
 
         await logging(courselore);
-        await database(courselore);
-        await globalMiddlewares(courselore);
-        await liveUpdates(courselore);
-        await healthChecks(courselore);
-        await authentication(courselore);
-        await layouts(courselore);
-        await about(courselore);
-        await administration(courselore);
-        await user(courselore);
-        await course(courselore);
-        await conversation(courselore);
-        await message(courselore);
-        await content(courselore);
-        await email(courselore);
-        await demonstration(courselore);
-        await error(courselore);
-        await helpers(courselore);
+        // await database(courselore);
+        // await globalMiddlewares(courselore);
+        // await liveUpdates(courselore);
+        // await healthChecks(courselore);
+        // await authentication(courselore);
+        // await layouts(courselore);
+        // await about(courselore);
+        // await administration(courselore);
+        // await user(courselore);
+        // await course(courselore);
+        // await conversation(courselore);
+        // await message(courselore);
+        // await content(courselore);
+        // await email(courselore);
+        // await demonstration(courselore);
+        // await error(courselore);
+        // await helpers(courselore);
 
         const signalPromise = Promise.race(
           [
