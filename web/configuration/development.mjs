@@ -2,7 +2,6 @@ import url from "node:url";
 
 export default {
   hostname: process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
-  administratorEmail: "development@courselore.org",
   dataDirectory: url.fileURLToPath(new URL("../data/", import.meta.url)),
   email: {
     options: { streamTransport: true, buffer: true },
@@ -13,7 +12,7 @@ export default {
       },
     },
   },
-  tunnel: typeof process.env.TUNNEL === "string",
+  administratorEmail: "development@courselore.org",
   environment: "development",
-  demonstration: true,
+  tunnel: typeof process.env.TUNNEL === "string",
 };

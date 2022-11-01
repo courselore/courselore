@@ -11,11 +11,11 @@ import {
   UserEmailNotificationsForAllMessages,
   MaybeEnrollment,
   CourseRole,
-  IsEnrolledInCourseMiddlewareLocals,
-  IsCourseStaffMiddlewareLocals,
+  IsEnrolledInCourseLocals,
+  IsCourseStaffLocals,
   ConversationParticipants,
   ConversationType,
-  IsConversationAccessibleMiddlewareLocals,
+  IsConversationAccessibleLocals,
 } from "./index.mjs";
 
 export type GetMessageHelper = ({
@@ -24,8 +24,8 @@ export type GetMessageHelper = ({
   conversation,
   messageReference,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -70,9 +70,9 @@ export type MayEditMessageHelper = ({
     any,
     {},
     {},
-    IsConversationAccessibleMiddlewareLocals
+    IsConversationAccessibleLocals
   >;
-  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  res: express.Response<any, IsConversationAccessibleLocals>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -91,9 +91,9 @@ export type MayEndorseMessageHelper = ({
     any,
     {},
     {},
-    IsConversationAccessibleMiddlewareLocals
+    IsConversationAccessibleLocals
   >;
-  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  res: express.Response<any, IsConversationAccessibleLocals>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -103,8 +103,8 @@ export type CourseLiveUpdater = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
 }) => Promise<void>;
 
 export type EmailNotificationsMailer = ({
@@ -112,8 +112,8 @@ export type EmailNotificationsMailer = ({
   res,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -447,12 +447,11 @@ export default async (app: Courselore): Promise<void> => {
     };
   };
 
-  interface MessageExistsMiddlewareLocals
-    extends IsConversationAccessibleMiddlewareLocals {
+  type MessageExistsLocals = IsConversationAccessibleLocals & {
     message: NonNullable<
       ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
     >;
-  }
+  };
   const messageExistsMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -462,7 +461,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    MessageExistsMiddlewareLocals
+    MessageExistsLocals
   >[] = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
@@ -492,7 +491,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
+    IsCourseStaffLocals & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
     ...app.locals.middlewares.isCourseStaff,
@@ -555,7 +554,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsConversationAccessibleMiddlewareLocals
+    IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
     ...app.locals.middlewares.isConversationAccessible,
@@ -735,7 +734,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsMiddlewareLocals
+    MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...messageExistsMiddleware,
@@ -873,7 +872,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
+    IsCourseStaffLocals & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...app.locals.middlewares.isCourseStaff,
@@ -907,7 +906,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & MessageExistsMiddlewareLocals
+    IsEnrolledInCourseLocals & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -974,7 +973,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsMiddlewareLocals
+    MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...messageExistsMiddleware,
@@ -1028,7 +1027,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsMiddlewareLocals
+    MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...messageExistsMiddleware,
@@ -1071,8 +1070,7 @@ export default async (app: Courselore): Promise<void> => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.courseRole !== "staff");
 
-  interface MayEndorseMessageMiddlewareLocals
-    extends MessageExistsMiddlewareLocals {}
+  type MayEndorseMessageLocals = MessageExistsLocals;
   const mayEndorseMessageMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -1082,7 +1080,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    MayEndorseMessageMiddlewareLocals
+    MayEndorseMessageLocals
   >[] = [
     ...messageExistsMiddleware,
     (req, res, next) => {
@@ -1110,7 +1108,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEndorseMessageMiddlewareLocals
+    MayEndorseMessageLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,
@@ -1172,7 +1170,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEndorseMessageMiddlewareLocals
+    MayEndorseMessageLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,

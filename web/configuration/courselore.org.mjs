@@ -7,7 +7,6 @@ const secrets = JSON.parse(
 
 export default {
   hostname: "courselore.org",
-  administratorEmail: "administrator@courselore.org",
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
   email: {
     options: {
@@ -24,6 +23,7 @@ export default {
       },
     },
   },
+  administratorEmail: "administrator@courselore.org",
   alternativeHostnames: [
     "www.courselore.org",
     "courselore.com",

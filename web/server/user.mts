@@ -11,14 +11,14 @@ import sharp from "sharp";
 import argon2 from "argon2";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
-  HasPasswordConfirmationMiddlewareLocals,
+  BaseLocals,
+  IsSignedInLocals,
+  HasPasswordConfirmationLocals,
   MaybeEnrollment,
-  IsEnrolledInCourseMiddlewareLocals,
+  IsEnrolledInCourseLocals,
 } from "./index.mjs";
 
-export interface User {
+export type User = {
   id: number;
   lastSeenOnlineAt: string;
   reference: string;
@@ -28,7 +28,7 @@ export interface User {
   avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
   biographySource: string | null;
   biographyPreprocessed: HTML | null;
-}
+};
 
 export type UserAvatarlessBackgroundColor =
   typeof userAvatarlessBackgroundColors[number];
@@ -79,12 +79,9 @@ export type UserPartial = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseLocals & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<
-    any,
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-  >;
+  res: express.Response<any, BaseLocals & Partial<IsEnrolledInCourseLocals>>;
   enrollment?: MaybeEnrollment;
   user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";
@@ -613,7 +610,7 @@ export default async (app: Courselore): Promise<void> => {
       : html``;
   };
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -630,8 +627,8 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-    res: express.Response<any, IsSignedInMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
+    res: express.Response<any, IsSignedInLocals>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -703,7 +700,7 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1003,7 +1000,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    IsSignedInMiddlewareLocals
+    IsSignedInLocals
   >(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
@@ -1048,7 +1045,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.post<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1102,10 +1099,10 @@ export default async (app: Courselore): Promise<void> => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.locals.options.administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseLocals>
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings/email-and-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1253,7 +1250,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     { passwordConfirmation?: string; email?: string; newPassword?: string },
     { redirect?: string },
-    HasPasswordConfirmationMiddlewareLocals
+    HasPasswordConfirmationLocals
   >(
     "/settings/email-and-password",
     (req, res, next) => {
@@ -1439,7 +1436,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1727,7 +1724,7 @@ export default async (app: Courselore): Promise<void> => {
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
     },
     {},
-    IsSignedInMiddlewareLocals
+    IsSignedInLocals
   >(
     "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
@@ -1812,7 +1809,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/settings/account",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1885,7 +1882,7 @@ export default async (app: Courselore): Promise<void> => {
 
   /*
   TODO
-  app.delete<{}, any, {}, {}, HasPasswordConfirmationMiddlewareLocals>(
+  app.delete<{}, any, {}, {}, HasPasswordConfirmationLocals>(
     "/settings/account",
     (req, res, next) => {
       res.locals.hasPasswordConfirmationRedirect = "settings/account";

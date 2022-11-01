@@ -9,8 +9,8 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  IsSignedOutLocals,
+  IsSignedInLocals,
   userAvatarlessBackgroundColors,
   userEmailNotificationsForAllMessageses,
   CourseRole,
@@ -30,7 +30,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+    IsSignedOutLocals & Partial<IsSignedInLocals>
   > = asyncHandler(async (req, res) => {
     const password = await argon2.hash("courselore", app.locals.options.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
@@ -1415,13 +1415,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     res.redirect(303, `https://${app.locals.options.hostname}`);
   });
 
-  app.post<{}, any, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.post<{}, any, {}, {}, IsSignedOutLocals>(
     "/demonstration-data",
     ...app.locals.middlewares.isSignedOut,
     handler
   );
 
-  app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
+  app.post<{}, any, {}, {}, IsSignedInLocals>(
     "/demonstration-data",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;

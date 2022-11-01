@@ -10,9 +10,9 @@ import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
-  IsEnrolledInCourseMiddlewareLocals,
+  BaseLocals,
+  IsSignedInLocals,
+  IsEnrolledInCourseLocals,
 } from "./index.mjs";
 
 export type BaseLayout = ({
@@ -27,12 +27,9 @@ export type BaseLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseLocals & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<
-    any,
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-  >;
+  res: express.Response<any, BaseLocals & Partial<IsEnrolledInCourseLocals>>;
   head: HTML;
   extraHeaders?: HTML;
   body: HTML;
@@ -49,12 +46,9 @@ export type BoxLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseLocals & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<
-    any,
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-  >;
+  res: express.Response<any, BaseLocals & Partial<IsEnrolledInCourseLocals>>;
   head: HTML;
   body: HTML;
 }) => HTML;
@@ -72,11 +66,11 @@ export type ApplicationLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -96,11 +90,11 @@ export type MainLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -115,8 +109,8 @@ export type SettingsLayout = ({
   menu,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-  res: express.Response<any, IsSignedInMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
+  res: express.Response<any, IsSignedInLocals>;
   head: HTML;
   menuButton: HTML;
   menu: HTML;
@@ -130,8 +124,8 @@ export type PartialLayout = ({
   res,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, BaseLocals>;
+  res: express.Response<any, BaseLocals>;
   body: HTML;
 }) => HTML;
 
@@ -140,14 +134,14 @@ export type SpinnerPartial = ({
   res,
   size,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, BaseLocals>;
+  res: express.Response<any, BaseLocals>;
   size?: number;
 }) => HTML;
 
 export type ReportIssueHrefPartial = string;
 
-export interface FlashHelper {
+export type FlashHelper = {
   maxAge: number;
   set({
     req,
@@ -155,8 +149,8 @@ export interface FlashHelper {
     theme,
     content,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, BaseLocals>;
+    res: express.Response<any, BaseLocals>;
     theme: string;
     content: HTML;
   }): void;
@@ -164,10 +158,10 @@ export interface FlashHelper {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, BaseLocals>;
+    res: express.Response<any, BaseLocals>;
   }): { theme: string; content: HTML } | undefined;
-}
+};
 
 export default async (app: Courselore): Promise<void> => {
   app.locals.layouts.base = ({
@@ -909,41 +903,38 @@ export default async (app: Courselore): Promise<void> => {
   };
 
   if (app.locals.options.environment !== "production")
-    app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/turn-off",
-      (req, res) => {
-        res.send(
-          app.locals.layouts.box({
-            req,
-            res,
-            head: html`
-              <title>
-                Thanks for trying Courselore! · Courselore · Communication
-                Platform for Education
-              </title>
-            `,
-            body: html`
-              <p class="strong">Thanks for trying Courselore!</p>
-              <p>
-                Next steps:
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
-                  class="link"
-                  >Learn how to install Courselore on your own server</a
-                >
-                or
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
-                  class="link"
-                  >learn how to setup for development</a
-                >.
-              </p>
-            `,
-          })
-        );
-        process.exit();
-      }
-    );
+    app.delete<{}, any, {}, {}, BaseLocals>("/turn-off", (req, res) => {
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Thanks for trying Courselore! · Courselore · Communication
+              Platform for Education
+            </title>
+          `,
+          body: html`
+            <p class="strong">Thanks for trying Courselore!</p>
+            <p>
+              Next steps:
+              <a
+                href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
+                class="link"
+                >Learn how to install Courselore on your own server</a
+              >
+              or
+              <a
+                href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
+                class="link"
+                >learn how to setup for development</a
+              >.
+            </p>
+          `,
+        })
+      );
+      process.exit();
+    });
 
   app.locals.layouts.box = ({ req, res, head, body }) =>
     app.locals.layouts.base({

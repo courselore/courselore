@@ -6,10 +6,6 @@ import cryptoRandomString from "crypto-random-string";
 import prompts from "prompts";
 import { Courselore } from "./index.mjs";
 
-export interface DatabaseLocals {
-  database: Database;
-}
-
 export default async (app: Courselore): Promise<void> => {
   await fs.ensureDir(app.locals.options.dataDirectory);
   app.locals.database = new Database(

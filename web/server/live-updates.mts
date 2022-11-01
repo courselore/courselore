@@ -1,29 +1,23 @@
 import timers from "node:timers/promises";
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
-import {
-  Courselore,
-  BaseMiddlewareLocals,
-  IsEnrolledInCourseMiddlewareLocals,
-} from "./index.mjs";
+import { Courselore, BaseLocals, IsEnrolledInCourseLocals } from "./index.mjs";
 
 export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
   {},
-  LiveUpdatesMiddlewareLocals
+  LiveUpdatesLocals
 >[];
-export interface LiveUpdatesMiddlewareLocals
-  extends BaseMiddlewareLocals,
-    IsEnrolledInCourseMiddlewareLocals {}
+export type LiveUpdatesLocals = BaseLocals & IsEnrolledInCourseLocals;
 
 export type LiveUpdatesDispatchHelper = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
 }) => Promise<void>;
 
 export default async (app: Courselore): Promise<void> => {
@@ -49,8 +43,8 @@ export default async (app: Courselore): Promise<void> => {
   const connections = new Map<
     string,
     {
-      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+      req: express.Request<{}, any, {}, {}, LiveUpdatesLocals>;
+      res: express.Response<any, LiveUpdatesLocals>;
     }
   >();
 
@@ -260,8 +254,8 @@ export default async (app: Courselore): Promise<void> => {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+    res: express.Response<any, IsEnrolledInCourseLocals>;
   }) => {
     await timers.setTimeout(5 * 1000, undefined, { ref: false });
 
@@ -288,13 +282,13 @@ export default async (app: Courselore): Promise<void> => {
       if (connection === undefined) continue;
       connection.res.locals = {
         liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
-      } as LiveUpdatesMiddlewareLocals;
+      } as LiveUpdatesLocals;
       app(connection.req, connection.res);
       await timers.setTimeout(100, undefined, { ref: false });
     }
   };
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseLocals>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
     if (nonce === undefined) return next();
     connectionsMetadata.run(

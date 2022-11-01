@@ -31,13 +31,13 @@ import lodash from "lodash";
 import got from "got";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  BaseLocals,
+  IsSignedOutLocals,
+  IsSignedInLocals,
   UserAvatarlessBackgroundColor,
   CourseRole,
-  IsEnrolledInCourseMiddlewareLocals,
-  IsConversationAccessibleMiddlewareLocals,
+  IsEnrolledInCourseLocals,
+  IsConversationAccessibleLocals,
 } from "./index.mjs";
 
 export type ContentPreprocessedPartial = (contentSource: string) => {
@@ -58,12 +58,9 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseLocals & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<
-    any,
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-  >;
+  res: express.Response<any, BaseLocals & Partial<IsEnrolledInCourseLocals>>;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -86,15 +83,15 @@ export type ContentEditorPartial = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<IsConversationAccessibleMiddlewareLocals>
+    BaseLocals &
+      Partial<IsEnrolledInCourseLocals> &
+      Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<IsConversationAccessibleMiddlewareLocals>
+    BaseLocals &
+      Partial<IsEnrolledInCourseLocals> &
+      Partial<IsConversationAccessibleLocals>
   >;
   name?: string;
   contentSource?: string;
@@ -281,12 +278,9 @@ export default async (app: Courselore): Promise<void> => {
         any,
         {},
         {},
-        IsEnrolledInCourseMiddlewareLocals
+        IsEnrolledInCourseLocals
       >;
-      const narrowRes = res as express.Response<
-        any,
-        IsEnrolledInCourseMiddlewareLocals
-      >;
+      const narrowRes = res as express.Response<any, IsEnrolledInCourseLocals>;
 
       for (const element of contentElement.querySelectorAll("a")) {
         const href = element.getAttribute("href");
@@ -2231,8 +2225,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsEnrolledInCourseMiddlewareLocals &
-        Partial<IsConversationAccessibleMiddlewareLocals>
+      IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
     > = (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2373,7 +2366,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsEnrolledInCourseMiddlewareLocals
+      IsEnrolledInCourseLocals
     >(
       "/courses/:courseReference/content-editor/mention-user-search",
       ...app.locals.middlewares.isEnrolledInCourse,
@@ -2385,7 +2378,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsConversationAccessibleMiddlewareLocals
+      IsConversationAccessibleLocals
     >(
       "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
       ...app.locals.middlewares.isConversationAccessible,
@@ -2398,7 +2391,7 @@ ${contentSource}</textarea
     any,
     {},
     { search?: string },
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseLocals
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2782,7 +2775,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
+  app.post<{}, any, {}, {}, IsSignedInLocals>(
     "/content-editor/attachments",
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
@@ -2865,7 +2858,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+      BaseLocals & Partial<IsEnrolledInCourseLocals>
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2893,20 +2886,20 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      IsEnrolledInCourseMiddlewareLocals
+      IsEnrolledInCourseLocals
     >(
       "/courses/:courseReference/content-editor/preview",
       ...app.locals.middlewares.isEnrolledInCourse,
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
+    app.post<{}, any, { content?: string }, {}, IsSignedInLocals>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedIn,
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
+    app.post<{}, any, { content?: string }, {}, IsSignedOutLocals>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedOut,
       handler

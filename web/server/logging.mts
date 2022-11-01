@@ -1,5 +1,5 @@
 import express from "express";
-import { Courselore, BaseMiddlewareLocals } from "./index.mjs";
+import { Courselore, BaseLocals } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
   console.log(
@@ -16,7 +16,7 @@ export default async (app: Courselore): Promise<void> => {
   });
 
   app.enable("trust proxy");
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseLocals>((req, res, next) => {
     res.locals.loggingStartTime = process.hrtime.bigint();
     const liveUpdatesNonce = req.header("Live-Updates");
     console.log(
@@ -56,5 +56,5 @@ export default async (app: Courselore): Promise<void> => {
       }\t${req.method}\t${req.originalUrl}\tERROR\n${err}`
     );
     next(err);
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseLocals>);
 };

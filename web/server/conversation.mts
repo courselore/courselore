@@ -11,13 +11,13 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  LiveUpdatesMiddlewareLocals,
+  LiveUpdatesLocals,
   UserAvatarlessBackgroundColor,
   Enrollment,
   MaybeEnrollment,
   CourseRole,
-  IsEnrolledInCourseMiddlewareLocals,
-  IsCourseStaffMiddlewareLocals,
+  IsEnrolledInCourseLocals,
+  IsCourseStaffLocals,
 } from "./index.mjs";
 
 export type ConversationParticipants =
@@ -61,13 +61,11 @@ export type ConversationLayout = ({
       messages?: object;
       newConversation?: object;
     },
-    IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals>
+    IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     HTML,
-    IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals>
+    IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
   >;
   head: HTML;
   sidebarOnSmallScreen?: boolean;
@@ -82,8 +80,8 @@ export type ConversationPartial = ({
   searchResult,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -116,8 +114,8 @@ export type GetConversationHelper = ({
   res,
   conversationReference,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+  res: express.Response<any, IsEnrolledInCourseLocals>;
   conversationReference: string;
 }) =>
   | {
@@ -159,14 +157,13 @@ export type IsConversationAccessibleMiddleware = express.RequestHandler<
   HTML,
   {},
   {},
-  IsConversationAccessibleMiddlewareLocals
+  IsConversationAccessibleLocals
 >[];
-export interface IsConversationAccessibleMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {
+export type IsConversationAccessibleLocals = IsEnrolledInCourseLocals & {
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
-}
+};
 
 export default async (app: Courselore): Promise<void> => {
   const conversationTypeIcon: {
@@ -2591,7 +2588,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsConversationAccessibleMiddlewareLocals
+    IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
     ...app.locals.middlewares.isConversationAccessible,
@@ -2958,7 +2955,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     { redirect?: string },
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseLocals
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (req, res, next) => {
@@ -3037,7 +3034,7 @@ export default async (app: Courselore): Promise<void> => {
         isPinned?: "true";
       };
     },
-    IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
+    IsEnrolledInCourseLocals & LiveUpdatesLocals
   >(
     `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
       "|"
@@ -4339,7 +4336,7 @@ export default async (app: Courselore): Promise<void> => {
       conversationDraftReference?: string;
     },
     { conversations?: object },
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseLocals
   >(
     "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4735,7 +4732,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { conversationDraftReference?: string },
     { conversations?: object },
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseLocals
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4783,9 +4780,9 @@ export default async (app: Courselore): Promise<void> => {
       any,
       {},
       {},
-      IsConversationAccessibleMiddlewareLocals
+      IsConversationAccessibleLocals
     >;
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+    res: express.Response<any, IsConversationAccessibleLocals>;
   }): boolean =>
     res.locals.enrollment.courseRole === "staff" ||
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
@@ -4807,7 +4804,7 @@ export default async (app: Courselore): Promise<void> => {
         };
       };
     },
-    IsConversationAccessibleMiddlewareLocals & LiveUpdatesMiddlewareLocals
+    IsConversationAccessibleLocals & LiveUpdatesLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,
@@ -9137,8 +9134,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  interface MayEditConversationMiddlewareLocals
-    extends IsConversationAccessibleMiddlewareLocals {}
+  type MayEditConversationLocals = IsConversationAccessibleLocals;
   const mayEditConversationMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -9147,7 +9143,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    MayEditConversationMiddlewareLocals
+    MayEditConversationLocals
   >[] = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
@@ -9173,7 +9169,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationMiddlewareLocals
+    MayEditConversationLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
@@ -9439,7 +9435,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
+    IsCourseStaffLocals & IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isCourseStaff,
@@ -9481,7 +9477,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationMiddlewareLocals
+    MayEditConversationLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...mayEditConversationMiddleware,
@@ -9536,7 +9532,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationMiddlewareLocals
+    MayEditConversationLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...mayEditConversationMiddleware,

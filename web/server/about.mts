@@ -5,9 +5,9 @@ import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  BaseLocals,
+  IsSignedOutLocals,
+  IsSignedInLocals,
 } from "./index.mjs";
 
 export type AboutHandler = express.RequestHandler<
@@ -15,7 +15,7 @@ export type AboutHandler = express.RequestHandler<
   any,
   {},
   {},
-  IsSignedOutMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  IsSignedOutLocals & Partial<IsSignedInLocals>
 >;
 
 export default async (app: Courselore): Promise<void> => {
@@ -23,7 +23,7 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.options.hostname !== app.locals.options.canonicalHostname &&
     app.locals.options.environment !== "development"
   ) {
-    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
+    app.get<{}, HTML, {}, {}, BaseLocals>("/about", (req, res) => {
       res.redirect(
         303,
         `https://${app.locals.options.canonicalHostname}/about`
@@ -925,13 +925,13 @@ export default async (app: Courselore): Promise<void> => {
     );
   };
 
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedOutLocals>(
     "/about",
     ...app.locals.middlewares.isSignedOut,
     app.locals.handlers.about
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/about",
     ...app.locals.middlewares.isSignedIn,
     app.locals.handlers.about

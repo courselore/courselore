@@ -11,20 +11,20 @@ import lodash from "lodash";
 import QRCode from "qrcode";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  LiveUpdatesMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  BaseLocals,
+  LiveUpdatesLocals,
+  IsSignedOutLocals,
+  IsSignedInLocals,
   User,
   UserAvatarlessBackgroundColor,
 } from "./index.mjs";
 
-export interface Enrollment {
+export type Enrollment = {
   id: number;
   user: User;
   reference: string;
   courseRole: CourseRole;
-}
+};
 
 export type MaybeEnrollment = Enrollment | "no-longer-enrolled";
 
@@ -48,10 +48,10 @@ export type CoursePartial = ({
   enrollment,
   tight,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
-  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
-  enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
+  req: express.Request<{}, any, {}, {}, BaseLocals>;
+  res: express.Response<any, BaseLocals>;
+  course: IsSignedInLocals["enrollments"][number]["course"];
+  enrollment?: IsSignedInLocals["enrollments"][number];
   tight?: boolean;
 }) => HTML;
 
@@ -65,11 +65,11 @@ export type CoursesPartial = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
   >;
   tight?: boolean;
 }) => HTML;
@@ -78,8 +78,8 @@ export type CourseArchivedPartial = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, BaseLocals>;
+  res: express.Response<any, BaseLocals>;
 }) => HTML;
 
 export type IsEnrolledInCourseMiddleware = express.RequestHandler<
@@ -87,13 +87,12 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsEnrolledInCourseMiddlewareLocals
+  IsEnrolledInCourseLocals
 >[];
-export interface IsEnrolledInCourseMiddlewareLocals
-  extends IsSignedInMiddlewareLocals {
+export type IsEnrolledInCourseLocals = IsSignedInLocals & {
   actionAllowedOnArchivedCourse?: boolean;
-  enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
-  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+  enrollment: IsSignedInLocals["enrollments"][number];
+  course: IsSignedInLocals["enrollments"][number]["course"];
   courseEnrollmentsCount: number;
   conversationsCount: number;
   tags: {
@@ -102,17 +101,16 @@ export interface IsEnrolledInCourseMiddlewareLocals
     name: string;
     staffOnlyAt: string | null;
   }[];
-}
+};
 
 export type IsCourseStaffMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
   {},
   {},
-  IsCourseStaffMiddlewareLocals
+  IsCourseStaffLocals
 >[];
-export interface IsCourseStaffMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {}
+export type IsCourseStaffLocals = IsEnrolledInCourseLocals;
 
 export default async (app: Courselore): Promise<void> => {
   const courseRoleIcon: {
@@ -338,7 +336,7 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
     "/",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -452,14 +450,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  interface MayCreateCoursesMiddlewareLocals
-    extends IsSignedInMiddlewareLocals {}
+  type MayCreateCoursesLocals = IsSignedInLocals;
   const mayCreateCoursesMiddleware: express.RequestHandler<
     {},
     any,
     {},
     {},
-    MayCreateCoursesMiddlewareLocals
+    MayCreateCoursesLocals
   >[] = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
@@ -468,7 +465,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.get<{}, HTML, {}, {}, MayCreateCoursesMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, MayCreateCoursesLocals>(
     "/courses/new",
     ...mayCreateCoursesMiddleware,
     (req, res) => {
@@ -589,7 +586,7 @@ export default async (app: Courselore): Promise<void> => {
       code?: string;
     },
     {},
-    MayCreateCoursesMiddlewareLocals
+    MayCreateCoursesLocals
   >("/courses", ...mayCreateCoursesMiddleware, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
@@ -669,8 +666,8 @@ export default async (app: Courselore): Promise<void> => {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-    res: express.Response<any, IsSignedInMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
+    res: express.Response<any, IsSignedInLocals>;
   }): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
       res.locals.enrollments.map((enrollment) => enrollment.accentColor)
@@ -789,7 +786,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
+    IsEnrolledInCourseLocals & LiveUpdatesLocals
   >(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -873,13 +870,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsEnrolledInCourseLocals>(
     "/courses/:courseReference/settings",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -902,8 +893,8 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
+    res: express.Response<any, IsEnrolledInCourseLocals>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -999,13 +990,7 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/course-information",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1256,7 +1241,7 @@ export default async (app: Courselore): Promise<void> => {
       isArchived?: "true" | "false";
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    IsCourseStaffLocals
   >(
     "/courses/:courseReference/settings/course-information",
     (req, res, next) => {
@@ -1356,13 +1341,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1851,7 +1830,7 @@ export default async (app: Courselore): Promise<void> => {
       }[];
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    IsCourseStaffLocals
   >(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
@@ -1925,13 +1904,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -2942,9 +2915,9 @@ export default async (app: Courselore): Promise<void> => {
     res,
     invitation,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    invitation: InvitationExistsMiddlewareLocals["invitation"];
+    req: express.Request<{}, any, {}, {}, BaseLocals>;
+    res: express.Response<any, BaseLocals>;
+    invitation: InvitationExistsLocals["invitation"];
   }): void => {
     const link = `https://${app.locals.options.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     app.locals.database.run(
@@ -2999,7 +2972,7 @@ export default async (app: Courselore): Promise<void> => {
       emails?: string;
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    IsCourseStaffLocals
   >(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
@@ -3170,7 +3143,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+  type InvitationExistsLocals = BaseLocals & {
     invitation: {
       id: number;
       expiresAt: string | null;
@@ -3191,13 +3164,13 @@ export default async (app: Courselore): Promise<void> => {
       name: string | null;
       courseRole: CourseRole;
     };
-  }
+  };
   const invitationExistsMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    InvitationExistsMiddlewareLocals
+    InvitationExistsLocals
   >[] = [
     (req, res, next) => {
       const invitation = app.locals.database.get<{
@@ -3277,7 +3250,7 @@ export default async (app: Courselore): Promise<void> => {
       expire?: "true";
     },
     {},
-    IsCourseStaffMiddlewareLocals & InvitationExistsMiddlewareLocals
+    IsCourseStaffLocals & InvitationExistsLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
     ...app.locals.middlewares.isCourseStaff,
@@ -3384,13 +3357,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -3891,20 +3858,19 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  interface MayManageEnrollmentMiddlewareLocals
-    extends IsCourseStaffMiddlewareLocals {
+  type MayManageEnrollmentLocals = IsCourseStaffLocals & {
     managedEnrollment: {
       id: number;
       reference: string;
       isSelf: boolean;
     };
-  }
+  };
   const mayManageEnrollmentMiddleware: express.RequestHandler<
     { courseReference: string; enrollmentReference: string },
     any,
     {},
     {},
-    MayManageEnrollmentMiddlewareLocals
+    MayManageEnrollmentLocals
   >[] = [
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
@@ -3945,7 +3911,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { courseRole?: CourseRole },
     {},
-    MayManageEnrollmentMiddlewareLocals
+    MayManageEnrollmentLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...mayManageEnrollmentMiddleware,
@@ -3981,7 +3947,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    MayManageEnrollmentMiddlewareLocals
+    MayManageEnrollmentLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...mayManageEnrollmentMiddleware,
@@ -4013,13 +3979,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
+  app.get<{ courseReference: string }, HTML, {}, {}, IsEnrolledInCourseLocals>(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -4135,7 +4095,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { accentColor?: EnrollmentAccentColor },
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4164,21 +4124,17 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  interface IsInvitationUsableMiddlewareLocals
-    extends BaseMiddlewareLocals,
-      Omit<Partial<IsSignedOutMiddlewareLocals>, keyof BaseMiddlewareLocals>,
-      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals>,
-      Omit<
-        Partial<IsEnrolledInCourseMiddlewareLocals>,
-        keyof BaseMiddlewareLocals
-      >,
-      InvitationExistsMiddlewareLocals {}
+  type IsInvitationUsableLocals = BaseLocals &
+    Omit<Partial<IsSignedOutLocals>, keyof BaseLocals> &
+    Omit<Partial<IsSignedInLocals>, keyof BaseLocals> &
+    Omit<Partial<IsEnrolledInCourseLocals>, keyof BaseLocals> &
+    InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
     {},
     { redirect?: string },
-    IsInvitationUsableMiddlewareLocals
+    IsInvitationUsableLocals
   >[] = [
     ...invitationExistsMiddleware,
     asyncHandler(async (req, res, next) => {
@@ -4402,7 +4358,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsEnrolledInCourseLocals & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4414,7 +4370,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedInLocals & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
@@ -4469,7 +4425,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsEnrolledInCourseLocals & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4481,7 +4437,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedInLocals & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
@@ -4523,7 +4479,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsSignedOutMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedOutLocals & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedOut,
@@ -4629,7 +4585,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    BaseMiddlewareLocals
+    BaseLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {

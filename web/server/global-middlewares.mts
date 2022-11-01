@@ -6,11 +6,11 @@ import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 import { Courselore, UserSystemRolesWhoMayCreateCourses } from "./index.mjs";
 
-export interface GlobalMiddlewaresOptions {
+export type GlobalMiddlewaresOptions = {
   cookies: express.CookieOptions;
-}
+};
 
-export interface BaseMiddlewareLocals {
+export type BaseLocals = {
   loggingStartTime: bigint;
   css: ReturnType<typeof localCSS>;
   html: ReturnType<typeof HTMLForJavaScript>;
@@ -19,10 +19,10 @@ export interface BaseMiddlewareLocals {
     userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
   };
   liveUpdatesNonce: string | undefined;
-}
+};
 
 export default async (app: Courselore): Promise<void> => {
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
     res.locals.administrationOptions = app.locals.database.get<{
@@ -42,7 +42,7 @@ export default async (app: Courselore): Promise<void> => {
     next();
   });
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
+  app.use<{}, any, {}, {}, BaseLocals>(cookieParser());
   app.locals.options.cookies = {
     path: "/",
     secure: true,
@@ -50,11 +50,9 @@ export default async (app: Courselore): Promise<void> => {
     sameSite: "lax",
   };
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    express.urlencoded({ extended: true })
-  );
+  app.use<{}, any, {}, {}, BaseLocals>(express.urlencoded({ extended: true }));
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
+  app.use<{}, any, {}, {}, BaseLocals>(
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },

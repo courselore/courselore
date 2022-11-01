@@ -3,13 +3,13 @@ import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  BaseLocals,
+  IsSignedOutLocals,
+  IsSignedInLocals,
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
-  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.all<{}, HTML, {}, {}, IsSignedOutLocals>(
     "*",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
@@ -23,7 +23,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
     "*",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -94,5 +94,5 @@ export default async (app: Courselore): Promise<void> => {
           `,
         })
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseLocals>);
 };

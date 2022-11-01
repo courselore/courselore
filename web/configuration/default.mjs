@@ -2,7 +2,6 @@ import path from "node:path";
 
 export default {
   hostname: "localhost",
-  administratorEmail: "feedback@courselore.org",
   dataDirectory: path.join(process.cwd(), "data"),
   email: {
     options: { streamTransport: true, buffer: true },
@@ -13,6 +12,6 @@ export default {
       },
     },
   },
-  environment: "default",
-  demonstration: true,
+  administratorEmail: "feedback@courselore.org",
+  environment: "other",
 };
