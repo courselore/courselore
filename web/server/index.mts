@@ -9,7 +9,7 @@ import * as commander from "commander";
 import express from "express";
 import nodemailer from "nodemailer";
 import lodash from "lodash";
-import { execa } from "execa";
+import { execa, ExecaChildProcess } from "execa";
 import caddyfile from "dedent";
 import dedent from "dedent";
 // import logging from "./logging.mjs";
@@ -227,159 +227,180 @@ if (
 
         switch (processType) {
           case "main":
-            //     const subprocesses = [
-            //       ...["server", "worker"].flatMap((processType) =>
-            //         lodash.times(os.cpus().length, () =>
-            //           execa(
-            //             process.argv[0],
-            //             [process.argv[1], configuration, processType],
-            //             {
-            //               preferLocal: true,
-            //               stdio: "inherit",
-            //               ...(courselore.configuration.environment === "production"
-            //                 ? { env: { NODE_ENV: "production" } }
-            //                 : {}),
-            //             }
-            //           )
-            //         )
-            //       ),
-            //       execa(
-            //         "caddy",
-            //         ["run", "--config", "-", "--adapter", "caddyfile"],
-            //         {
-            //           preferLocal: true,
-            //           stdout: "ignore",
-            //           stderr: "ignore",
-            //           input: caddyfile`
-            //             {
-            //               admin off
-            //               ${
-            //                 courselore.configuration.environment === "production"
-            //                   ? `email ${courselore.configuration.administratorEmail}`
-            //                   : `local_certs`
-            //               }
-            //             }
-            //             (common) {
-            //               header Cache-Control no-store
-            //               header Content-Security-Policy "default-src https://${
-            //                 courselore.configuration.hostname
-            //               }/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
-            //               header Cross-Origin-Embedder-Policy require-corp
-            //               header Cross-Origin-Opener-Policy same-origin
-            //               header Cross-Origin-Resource-Policy same-origin
-            //               header Referrer-Policy no-referrer
-            //               header Strict-Transport-Security "max-age=31536000; includeSubDomains${
-            //                 courselore.configuration.hstsPreload ? `; preload` : ``
-            //               }"
-            //               header X-Content-Type-Options nosniff
-            //               header Origin-Agent-Cluster "?1"
-            //               header X-DNS-Prefetch-Control off
-            //               header X-Frame-Options DENY
-            //               header X-Permitted-Cross-Domain-Policies none
-            //               header -Server
-            //               header -X-Powered-By
-            //               header X-XSS-Protection 0
-            //               header Permissions-Policy "interest-cohort=()"
-            //               encode zstd gzip
-            //             }
-            //             ${[
-            //               courselore.configuration.tunnel
-            //                 ? []
-            //                 : [courselore.configuration.hostname],
-            //               ...courselore.configuration.alternativeHostnames,
-            //             ]
-            //               .map((hostname) => `http://${hostname}`)
-            //               .join(", ")} {
-            //               import common
-            //               redir https://{host}{uri} 308
-            //               handle_errors {
-            //                 import common
-            //               }
-            //             }
-            //             ${
-            //               courselore.configuration.alternativeHostnames.length > 0
-            //                 ? caddyfile`
-            //                     ${courselore.configuration.alternativeHostnames
-            //                       .map((hostname) => `https://${hostname}`)
-            //                       .join(", ")} {
-            //                       import common
-            //                       redir https://${
-            //                         courselore.configuration.hostname
-            //                       }{uri} 307
-            //                       handle_errors {
-            //                         import common
-            //                       }
-            //                     }
-            //                   `
-            //                 : ``
-            //             }
-            //             ${courselore.configuration.caddyfileExtra}
-            //             http${courselore.configuration.tunnel ? `` : `s`}://${
-            //             courselore.configuration.hostname
-            //           } {
-            //               route {
-            //                 import common
-            //                 route {
-            //                   root * ${JSON.stringify(
-            //                     path.resolve(
-            //                       url.fileURLToPath(
-            //                         new URL("../static/", import.meta.url)
-            //                       )
-            //                     )
-            //                   )}
-            //                   @file_exists file
-            //                   route @file_exists {
-            //                     header Cache-Control "public, max-age=31536000, immutable"
-            //                     file_server
-            //                   }
-            //                 }
-            //                 route /files/* {
-            //                   root * ${JSON.stringify(
-            //                     path.resolve(courselore.configuration.dataDirectory)
-            //                   )}
-            //                   @file_exists file
-            //                   route @file_exists {
-            //                     header Cache-Control "private, max-age=31536000, immutable"
-            //                     @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-            //                     header @must_be_downloaded Content-Disposition attachment
-            //                     @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
-            //                     header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
-            //                     file_server
-            //                   }
-            //                 }
-            //                 reverse_proxy ${lodash
-            //                   .times(
-            //                     os.cpus().length,
-            //                     (processNumber) =>
-            //                       `127.0.0.1:${4000 + processNumber}`
-            //                   )
-            //                   .join(" ")}
-            //               }
-            //               handle_errors {
-            //                 import common
-            //               }
-            //             }
-            //           `,
-            //         }
-            //       ),
-            //     ];
-            //     await Promise.race([signalPromise, ...subprocesses]).catch(
-            //       () => {}
-            //     );
-            //     for (const subprocess of subprocesses) subprocess.cancel();
-            //     (async () => {
-            //       const subprocessesResults = await Promise.allSettled(
-            //         subprocesses
-            //       );
-            //       console.log(
-            //         `${new Date().toISOString()}\t${processType}\tSUBPROCESSES\n${JSON.stringify(
-            //           subprocessesResults,
-            //           undefined,
-            //           2
-            //         )}`
-            //       );
-            //     })();
+            let keepAlive = true;
+            const childProcesses = new Set<ExecaChildProcess>();
+            for (const execaArguments of [
+              ...["server", "worker"].flatMap((processType) =>
+                lodash.times(os.cpus().length, (processNumber) => ({
+                  file: process.argv[0],
+                  arguments: [
+                    process.argv[1],
+                    "--process-type",
+                    processType,
+                    "--port",
+                    { server: 6000, worker: 7000 }[processType]! +
+                      processNumber,
+                    configuration,
+                  ],
+                  options: {
+                    preferLocal: true,
+                    stdio: "inherit",
+                    ...(courselore.configuration.environment === "production"
+                      ? { env: { NODE_ENV: "production" } }
+                      : {}),
+                  },
+                }))
+              ),
+              {
+                file: "caddy",
+                arguments: ["run", "--config", "-", "--adapter", "caddyfile"],
+                options: {
+                  preferLocal: true,
+                  stdout: "ignore",
+                  stderr: "ignore",
+                  input: caddyfile`
+                    {
+                      admin off
+                      ${
+                        courselore.configuration.environment === "production"
+                          ? `email ${courselore.configuration.administratorEmail}`
+                          : `local_certs`
+                      }
+                    }
+                    (common) {
+                      header Cache-Control no-store
+                      header Content-Security-Policy "default-src https://${
+                        courselore.configuration.hostname
+                      }/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+                      header Cross-Origin-Embedder-Policy require-corp
+                      header Cross-Origin-Opener-Policy same-origin
+                      header Cross-Origin-Resource-Policy same-origin
+                      header Referrer-Policy no-referrer
+                      header Strict-Transport-Security "max-age=31536000; includeSubDomains${
+                        courselore.configuration.hstsPreload ? `; preload` : ``
+                      }"
+                      header X-Content-Type-Options nosniff
+                      header Origin-Agent-Cluster "?1"
+                      header X-DNS-Prefetch-Control off
+                      header X-Frame-Options DENY
+                      header X-Permitted-Cross-Domain-Policies none
+                      header -Server
+                      header -X-Powered-By
+                      header X-XSS-Protection 0
+                      header Permissions-Policy "interest-cohort=()"
+                      encode zstd gzip
+                    }
+                    ${[
+                      courselore.configuration.tunnel
+                        ? []
+                        : [courselore.configuration.hostname],
+                      ...courselore.configuration.alternativeHostnames,
+                    ]
+                      .map((hostname) => `http://${hostname}`)
+                      .join(", ")} {
+                      import common
+                      redir https://{host}{uri} 308
+                      handle_errors {
+                        import common
+                      }
+                    }
+                    ${
+                      courselore.configuration.alternativeHostnames.length > 0
+                        ? caddyfile`
+                            ${courselore.configuration.alternativeHostnames
+                              .map((hostname) => `https://${hostname}`)
+                              .join(", ")} {
+                              import common
+                              redir https://${
+                                courselore.configuration.hostname
+                              }{uri} 307
+                              handle_errors {
+                                import common
+                              }
+                            }
+                          `
+                        : ``
+                    }
+                    ${courselore.configuration.caddyfileExtra}
+                    http${courselore.configuration.tunnel ? `` : `s`}://${
+                    courselore.configuration.hostname
+                  } {
+                      route {
+                        import common
+                        route {
+                          root * ${JSON.stringify(
+                            path.resolve(
+                              url.fileURLToPath(
+                                new URL("../static/", import.meta.url)
+                              )
+                            )
+                          )}
+                          @file_exists file
+                          route @file_exists {
+                            header Cache-Control "public, max-age=31536000, immutable"
+                            file_server
+                          }
+                        }
+                        route /files/* {
+                          root * ${JSON.stringify(
+                            path.resolve(courselore.configuration.dataDirectory)
+                          )}
+                          @file_exists file
+                          route @file_exists {
+                            header Cache-Control "private, max-age=31536000, immutable"
+                            @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
+                            header @must_be_downloaded Content-Disposition attachment
+                            @may_be_embedded_in_other_sites path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf
+                            header @may_be_embedded_in_other_sites Cross-Origin-Resource-Policy cross-origin
+                            file_server
+                          }
+                        }
+                        reverse_proxy ${lodash
+                          .times(
+                            os.cpus().length,
+                            (processNumber) =>
+                              `127.0.0.1:${6000 + processNumber}`
+                          )
+                          .join(" ")}
+                      }
+                      handle_errors {
+                        import common
+                      }
+                    }
+                  `,
+                },
+              },
+            ])
+              (async () => {
+                while (true) {
+                  const childProcess = execa(
+                    execaArguments.file,
+                    execaArguments.arguments as any,
+                    {
+                      ...execaArguments.options,
+                      reject: false,
+                      cleanup: false,
+                    } as any
+                  );
+                  childProcesses.add(childProcess);
+                  const childProcessResult = await childProcess;
+                  console.log(
+                    `${new Date().toISOString()}\t${processType}\tCHILD PROCESS RESULT\n${JSON.stringify(
+                      childProcessResult,
+                      undefined,
+                      2
+                    )}`
+                  );
+                  if (!keepAlive) break;
+                  childProcesses.delete(childProcess);
+                }
+              })();
+
+            await signalPromise;
+            keepAlive = false;
+            for (const childProcess of childProcesses) childProcess.cancel();
             break;
+
           //   case "server":
           //     courselore.server.emit("start");
           //     courselore.server.emit("stop");
@@ -387,6 +408,7 @@ if (
           //     await signalPromise;
           //     server.close();
           //     break;
+
           //   case "worker":
           //     courselore.worker.emit("start");
           //     courselore.worker.emit("stop");
