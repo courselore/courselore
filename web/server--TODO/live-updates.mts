@@ -1,7 +1,7 @@
 import timers from "node:timers/promises";
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
-import { Courselore, BaseLocals, IsEnrolledInCourseLocals } from "./index.mjs";
+import { Courselore, BaseResponseLocals, IsEnrolledInCourseLocals } from "./index.mjs";
 
 export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
@@ -10,7 +10,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   LiveUpdatesLocals
 >[];
-export type LiveUpdatesLocals = BaseLocals & IsEnrolledInCourseLocals;
+export type LiveUpdatesLocals = BaseResponseLocals & IsEnrolledInCourseLocals;
 
 export type LiveUpdatesDispatchHelper = ({
   req,
@@ -288,7 +288,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   };
 
-  app.use<{}, any, {}, {}, BaseLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseResponseLocals>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
     if (nonce === undefined) return next();
     connectionsMetadata.run(

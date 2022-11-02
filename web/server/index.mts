@@ -12,10 +12,11 @@ import lodash from "lodash";
 import { execa, ExecaChildProcess } from "execa";
 import caddyfile from "dedent";
 import dedent from "dedent";
-// import logging from "./logging.mjs";
+import logging, { ApplicationLogging } from "./logging.mjs";
+export { ResponseLocalsLogging } from "./logging.mjs";
 // import database from "./database.mjs";
 // import globalMiddlewares from "./global-middlewares.mjs";
-// export { BaseLocals } from "./global-middlewares.mjs";
+// export { BaseResponseLocals } from "./global-middlewares.mjs";
 // import liveUpdates from "./live-updates.mjs";
 // export { LiveUpdatesLocals } from "./live-updates.mjs";
 // import healthChecks from "./health-checks.mjs";
@@ -68,7 +69,7 @@ import dedent from "dedent";
 // import error from "./error.mjs";
 // import helpers from "./helpers.mjs";
 
-export type Courselore = {
+export type Application = {
   configuration: {
     hostname: string;
     dataDirectory: string;
@@ -89,6 +90,7 @@ export type Courselore = {
   process: {
     identifier: string;
     type: "main" | "server" | "worker";
+    port: number | undefined;
   };
   version: string;
   addresses: {
@@ -101,7 +103,7 @@ export type Courselore = {
   };
   server: express.Express;
   worker: express.Express;
-};
+} & ApplicationLogging;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -155,13 +157,14 @@ if (
           port: string;
         }
       ) => {
-        const courselore = {
+        const application = {
           configuration: (
             await import(url.pathToFileURL(path.resolve(configuration)).href)
           ).default,
           process: {
             identifier: Math.random().toString(36).slice(2),
             type: processType,
+            port: typeof port === "string" ? Number(port) : undefined,
           },
           version,
           addresses: {
@@ -179,42 +182,34 @@ if (
           ),
           server: express(),
           worker: express(),
-        } as Courselore;
+        } as Application;
 
-        courselore.configuration.environment ??= "production";
-        courselore.configuration.demonstration ??=
-          courselore.configuration.environment !== "production";
-        courselore.configuration.tunnel ??= false;
-        courselore.configuration.alternativeHostnames ??= [];
-        courselore.configuration.hstsPreload ??= false;
-        courselore.configuration.caddyfileExtra ??= caddyfile``;
+        application.configuration.environment ??= "production";
+        application.configuration.demonstration ??=
+          application.configuration.environment !== "production";
+        application.configuration.tunnel ??= false;
+        application.configuration.alternativeHostnames ??= [];
+        application.configuration.hstsPreload ??= false;
+        application.configuration.caddyfileExtra ??= caddyfile``;
 
-        // TODO
-        courselore.server.get("/", (req, res) => {
-          res.send("SERVER");
-        });
-        courselore.worker.get("/", (req, res) => {
-          res.send("WORKER");
-        });
-
-        // await logging(courselore);
-        // await database(courselore);
-        // await globalMiddlewares(courselore);
-        // await liveUpdates(courselore);
-        // await healthChecks(courselore);
-        // await authentication(courselore);
-        // await layouts(courselore);
-        // await about(courselore);
-        // await administration(courselore);
-        // await user(courselore);
-        // await course(courselore);
-        // await conversation(courselore);
-        // await message(courselore);
-        // await content(courselore);
-        // await email(courselore);
-        // await demonstration(courselore);
-        // await error(courselore);
-        // await helpers(courselore);
+        await logging(application);
+        // await database(application);
+        // await globalMiddlewares(application);
+        // await liveUpdates(application);
+        // await healthChecks(application);
+        // await authentication(application);
+        // await layouts(application);
+        // await about(application);
+        // await administration(application);
+        // await user(application);
+        // await course(application);
+        // await conversation(application);
+        // await message(application);
+        // await content(application);
+        // await email(application);
+        // await demonstration(application);
+        // await error(application);
+        // await helpers(application);
 
         const processKeepAlive = new AbortController();
         timers
@@ -240,7 +235,7 @@ if (
           )
         );
 
-        switch (courselore.process.type) {
+        switch (application.process.type) {
           case "main":
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
@@ -260,7 +255,7 @@ if (
                   options: {
                     preferLocal: true,
                     stdio: "inherit",
-                    ...(courselore.configuration.environment === "production"
+                    ...(application.configuration.environment === "production"
                       ? { env: { NODE_ENV: "production" } }
                       : {}),
                   },
@@ -277,8 +272,8 @@ if (
                     {
                       admin off
                       ${
-                        courselore.configuration.environment === "production"
-                          ? `email ${courselore.configuration.administratorEmail}`
+                        application.configuration.environment === "production"
+                          ? `email ${application.configuration.administratorEmail}`
                           : `local_certs`
                       }
                     }
@@ -286,14 +281,14 @@ if (
                     (common) {
                       header Cache-Control no-store
                       header Content-Security-Policy "default-src https://${
-                        courselore.configuration.hostname
+                        application.configuration.hostname
                       }/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
                       header Cross-Origin-Embedder-Policy require-corp
                       header Cross-Origin-Opener-Policy same-origin
                       header Cross-Origin-Resource-Policy same-origin
                       header Referrer-Policy no-referrer
                       header Strict-Transport-Security "max-age=31536000; includeSubDomains${
-                        courselore.configuration.hstsPreload ? `; preload` : ``
+                        application.configuration.hstsPreload ? `; preload` : ``
                       }"
                       header X-Content-Type-Options nosniff
                       header Origin-Agent-Cluster "?1"
@@ -308,10 +303,10 @@ if (
                     }
 
                     ${[
-                      courselore.configuration.tunnel
+                      application.configuration.tunnel
                         ? []
-                        : [courselore.configuration.hostname],
-                      ...courselore.configuration.alternativeHostnames,
+                        : [application.configuration.hostname],
+                      ...application.configuration.alternativeHostnames,
                     ]
                       .map((hostname) => `http://${hostname}`)
                       .join(", ")} {
@@ -323,14 +318,14 @@ if (
                     }
 
                     ${
-                      courselore.configuration.alternativeHostnames.length > 0
+                      application.configuration.alternativeHostnames.length > 0
                         ? caddyfile`
-                            ${courselore.configuration.alternativeHostnames
+                            ${application.configuration.alternativeHostnames
                               .map((hostname) => `https://${hostname}`)
                               .join(", ")} {
                               import common
                               redir https://${
-                                courselore.configuration.hostname
+                                application.configuration.hostname
                               }{uri} 307
                               handle_errors {
                                 import common
@@ -340,10 +335,10 @@ if (
                         : ``
                     }
 
-                    ${courselore.configuration.caddyfileExtra}
+                    ${application.configuration.caddyfileExtra}
 
-                    http${courselore.configuration.tunnel ? `` : `s`}://${
-                    courselore.configuration.hostname
+                    http${application.configuration.tunnel ? `` : `s`}://${
+                    application.configuration.hostname
                   } {
                       route {
                         import common
@@ -363,7 +358,9 @@ if (
                         }
                         route /files/* {
                           root * ${JSON.stringify(
-                            path.resolve(courselore.configuration.dataDirectory)
+                            path.resolve(
+                              application.configuration.dataDirectory
+                            )
                           )}
                           @file_exists file
                           route @file_exists {
@@ -406,7 +403,7 @@ if (
                   const childProcessResult = await childProcess;
                   console.log(
                     `${new Date().toISOString()}\t${
-                      courselore.process.type
+                      application.process.type
                     }\tCHILD PROCESS RESULT\n${JSON.stringify(
                       childProcessResult,
                       undefined,
@@ -425,12 +422,15 @@ if (
 
           case "server":
           case "worker":
-            const application = courselore[courselore.process.type];
-            application.emit("start");
-            const server = application.listen(Number(port), "127.0.0.1");
+            const processApplication = application[application.process.type];
+            processApplication.emit("start");
+            const server = processApplication.listen(
+              application.process.port!,
+              "127.0.0.1"
+            );
             await signalPromise;
             server.close();
-            application.emit("stop");
+            processApplication.emit("stop");
             break;
         }
 

@@ -10,7 +10,7 @@ export type GlobalMiddlewaresOptions = {
   cookies: express.CookieOptions;
 };
 
-export type BaseLocals = {
+export type BaseResponseLocals = {
   loggingStartTime: bigint;
   css: ReturnType<typeof localCSS>;
   html: ReturnType<typeof HTMLForJavaScript>;
@@ -22,7 +22,7 @@ export type BaseLocals = {
 };
 
 export default async (app: Courselore): Promise<void> => {
-  app.use<{}, any, {}, {}, BaseLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseResponseLocals>((req, res, next) => {
     res.locals.css = localCSS();
     res.locals.html = HTMLForJavaScript();
     res.locals.administrationOptions = app.locals.database.get<{
@@ -42,7 +42,7 @@ export default async (app: Courselore): Promise<void> => {
     next();
   });
 
-  app.use<{}, any, {}, {}, BaseLocals>(cookieParser());
+  app.use<{}, any, {}, {}, BaseResponseLocals>(cookieParser());
   app.locals.options.cookies = {
     path: "/",
     secure: true,
@@ -50,9 +50,9 @@ export default async (app: Courselore): Promise<void> => {
     sameSite: "lax",
   };
 
-  app.use<{}, any, {}, {}, BaseLocals>(express.urlencoded({ extended: true }));
+  app.use<{}, any, {}, {}, BaseResponseLocals>(express.urlencoded({ extended: true }));
 
-  app.use<{}, any, {}, {}, BaseLocals>(
+  app.use<{}, any, {}, {}, BaseResponseLocals>(
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },

@@ -1,13 +1,13 @@
 import timers from "node:timers/promises";
 import express from "express";
-import { Courselore, BaseLocals } from "./index.mjs";
+import { Courselore, BaseResponseLocals } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
   const liveConnections = new Set<{
-    req: express.Request<{}, any, {}, {}, BaseLocals>;
-    res: express.Response<any, BaseLocals>;
+    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
+    res: express.Response<any, BaseResponseLocals>;
   }>();
-  app.get<{}, any, {}, {}, BaseLocals>("/live-connection", (req, res) => {
+  app.get<{}, any, {}, {}, BaseResponseLocals>("/live-connection", (req, res) => {
     const connection = { req, res };
     liveConnections.add(connection);
     res.header("Version", app.locals.options.version);
@@ -43,30 +43,30 @@ export default async (app: Courselore): Promise<void> => {
       for (const { req, res } of liveConnections) res.end();
     });
 
-  app.get<{}, any, {}, {}, BaseLocals>("/health", (req, res) => {
+  app.get<{}, any, {}, {}, BaseResponseLocals>("/health", (req, res) => {
     res.json({ version: app.locals.options.version });
   });
 
   if (app.locals.options.environment === "development") {
-    app.get<{}, any, {}, {}, BaseLocals>(
+    app.get<{}, any, {}, {}, BaseResponseLocals>(
       "/errors/validation",
       (req, res, next) => {
         next("Validation");
       }
     );
 
-    app.get<{}, any, {}, {}, BaseLocals>(
+    app.get<{}, any, {}, {}, BaseResponseLocals>(
       "/errors/cross-site-request-forgery",
       (req, res, next) => {
         next("Cross-Site Request Forgery");
       }
     );
 
-    app.get<{}, any, {}, {}, BaseLocals>("/errors/exception", (req, res) => {
+    app.get<{}, any, {}, {}, BaseResponseLocals>("/errors/exception", (req, res) => {
       throw new Error("Exception");
     });
 
-    app.get<{}, any, {}, {}, BaseLocals>("/errors/crash", (req, res) => {
+    app.get<{}, any, {}, {}, BaseResponseLocals>("/errors/crash", (req, res) => {
       setTimeout(() => {
         throw new Error("Crash");
       });

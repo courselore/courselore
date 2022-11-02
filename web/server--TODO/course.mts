@@ -11,7 +11,7 @@ import lodash from "lodash";
 import QRCode from "qrcode";
 import {
   Courselore,
-  BaseLocals,
+  BaseResponseLocals,
   LiveUpdatesLocals,
   IsSignedOutLocals,
   IsSignedInLocals,
@@ -48,8 +48,8 @@ export type CoursePartial = ({
   enrollment,
   tight,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseLocals>;
-  res: express.Response<any, BaseLocals>;
+  req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
+  res: express.Response<any, BaseResponseLocals>;
   course: IsSignedInLocals["enrollments"][number]["course"];
   enrollment?: IsSignedInLocals["enrollments"][number];
   tight?: boolean;
@@ -78,8 +78,8 @@ export type CourseArchivedPartial = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseLocals>;
-  res: express.Response<any, BaseLocals>;
+  req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
+  res: express.Response<any, BaseResponseLocals>;
 }) => HTML;
 
 export type IsEnrolledInCourseMiddleware = express.RequestHandler<
@@ -2915,8 +2915,8 @@ export default async (app: Courselore): Promise<void> => {
     res,
     invitation,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseLocals>;
-    res: express.Response<any, BaseLocals>;
+    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
+    res: express.Response<any, BaseResponseLocals>;
     invitation: InvitationExistsLocals["invitation"];
   }): void => {
     const link = `https://${app.locals.options.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
@@ -3143,7 +3143,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  type InvitationExistsLocals = BaseLocals & {
+  type InvitationExistsLocals = BaseResponseLocals & {
     invitation: {
       id: number;
       expiresAt: string | null;
@@ -4124,10 +4124,10 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  type IsInvitationUsableLocals = BaseLocals &
-    Omit<Partial<IsSignedOutLocals>, keyof BaseLocals> &
-    Omit<Partial<IsSignedInLocals>, keyof BaseLocals> &
-    Omit<Partial<IsEnrolledInCourseLocals>, keyof BaseLocals> &
+  type IsInvitationUsableLocals = BaseResponseLocals &
+    Omit<Partial<IsSignedOutLocals>, keyof BaseResponseLocals> &
+    Omit<Partial<IsSignedInLocals>, keyof BaseResponseLocals> &
+    Omit<Partial<IsEnrolledInCourseLocals>, keyof BaseResponseLocals> &
     InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
@@ -4585,7 +4585,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    BaseLocals
+    BaseResponseLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {

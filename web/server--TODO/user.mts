@@ -11,7 +11,7 @@ import sharp from "sharp";
 import argon2 from "argon2";
 import {
   Courselore,
-  BaseLocals,
+  BaseResponseLocals,
   IsSignedInLocals,
   HasPasswordConfirmationLocals,
   MaybeEnrollment,
@@ -79,9 +79,9 @@ export type UserPartial = ({
     any,
     {},
     {},
-    BaseLocals & Partial<IsEnrolledInCourseLocals>
+    BaseResponseLocals & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<any, BaseLocals & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, BaseResponseLocals & Partial<IsEnrolledInCourseLocals>>;
   enrollment?: MaybeEnrollment;
   user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";
@@ -1099,7 +1099,7 @@ export default async (app: Courselore): Promise<void> => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.locals.options.administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseLocals>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseResponseLocals>
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInLocals>(
