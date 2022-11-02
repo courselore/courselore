@@ -415,26 +415,15 @@ if (
             for (const childProcess of childProcesses) childProcess.cancel();
             break;
 
-          //   case "server":
-          //     courselore.server.emit("start");
-          //     courselore.server.emit("stop");
-          //     const server = app.listen(4000, "127.0.0.1");
-          //     await signalPromise;
-          //     server.close();
-          //     break;
-
-          //   case "worker":
-          //     courselore.worker.emit("start");
-          //     courselore.worker.emit("stop");
-          //     const worker = new AbortController();
-          //     timers
-          //       .setInterval(1 << 30, undefined, { signal: worker.signal })
-          //       [Symbol.asyncIterator]()
-          //       .next()
-          //       .catch(() => {});
-          //     await signalPromise;
-          //     worker.abort();
-          //     break;
+          case "server":
+          case "worker":
+            const application = courselore[courselore.process.type];
+            application.emit("start");
+            const server = application.listen(Number(port), "127.0.0.1");
+            await signalPromise;
+            server.close();
+            application.emit("stop");
+            break;
         }
 
         processKeepAlive.abort();
