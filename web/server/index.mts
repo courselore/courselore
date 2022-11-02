@@ -208,6 +208,13 @@ if (
         // await error(courselore);
         // await helpers(courselore);
 
+        const processKeepAlive = new AbortController();
+        timers
+          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
+          [Symbol.asyncIterator]()
+          .next()
+          .catch(() => {});
+
         const signalPromise = Promise.race(
           [
             "exit",
@@ -225,14 +232,7 @@ if (
           )
         );
 
-        const processKeepAlive = new AbortController();
-        timers
-          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
-          [Symbol.asyncIterator]()
-          .next()
-          .catch(() => {});
-
-        switch (processType) {
+        switch (courselore.process.type) {
           case "main":
             const childProcesses = new Set<ExecaChildProcess>();
             let respawnChildProcesses = true;
@@ -397,7 +397,9 @@ if (
                   childProcesses.add(childProcess);
                   const childProcessResult = await childProcess;
                   console.log(
-                    `${new Date().toISOString()}\t${processType}\tCHILD PROCESS RESULT\n${JSON.stringify(
+                    `${new Date().toISOString()}\t${
+                      courselore.process.type
+                    }\tCHILD PROCESS RESULT\n${JSON.stringify(
                       childProcessResult,
                       undefined,
                       2
@@ -410,10 +412,7 @@ if (
 
             await signalPromise;
             respawnChildProcesses = false;
-            for (const childProcess of childProcesses) {
-              childProcess.unref();
-              childProcess.cancel();
-            }
+            for (const childProcess of childProcesses) childProcess.cancel();
             break;
 
           //   case "server":
