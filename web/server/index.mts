@@ -189,6 +189,14 @@ if (
         courselore.configuration.hstsPreload ??= false;
         courselore.configuration.caddyfileExtra ??= caddyfile``;
 
+        // TODO
+        courselore.server.get("/", (req, res) => {
+          res.send("SERVER");
+        });
+        courselore.worker.get("/", (req, res) => {
+          res.send("WORKER");
+        });
+
         // await logging(courselore);
         // await database(courselore);
         // await globalMiddlewares(courselore);
