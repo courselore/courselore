@@ -225,10 +225,17 @@ if (
           )
         );
 
+        const processKeepAlive = new AbortController();
+        timers
+          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
+          [Symbol.asyncIterator]()
+          .next()
+          .catch(() => {});
+
         switch (processType) {
           case "main":
-            let keepAlive = true;
             const childProcesses = new Set<ExecaChildProcess>();
+            let respawnChildProcesses = true;
             for (const execaArguments of [
               ...["server", "worker"].flatMap((processType) =>
                 lodash.times(os.cpus().length, (processNumber) => ({
@@ -267,6 +274,7 @@ if (
                           : `local_certs`
                       }
                     }
+
                     (common) {
                       header Cache-Control no-store
                       header Content-Security-Policy "default-src https://${
@@ -290,6 +298,7 @@ if (
                       header Permissions-Policy "interest-cohort=()"
                       encode zstd gzip
                     }
+
                     ${[
                       courselore.configuration.tunnel
                         ? []
@@ -304,6 +313,7 @@ if (
                         import common
                       }
                     }
+
                     ${
                       courselore.configuration.alternativeHostnames.length > 0
                         ? caddyfile`
@@ -321,7 +331,9 @@ if (
                           `
                         : ``
                     }
+
                     ${courselore.configuration.caddyfileExtra}
+
                     http${courselore.configuration.tunnel ? `` : `s`}://${
                     courselore.configuration.hostname
                   } {
@@ -391,14 +403,17 @@ if (
                       2
                     )}`
                   );
-                  if (!keepAlive) break;
+                  if (!respawnChildProcesses) break;
                   childProcesses.delete(childProcess);
                 }
               })();
 
             await signalPromise;
-            keepAlive = false;
-            for (const childProcess of childProcesses) childProcess.cancel();
+            respawnChildProcesses = false;
+            for (const childProcess of childProcesses) {
+              childProcess.unref();
+              childProcess.cancel();
+            }
             break;
 
           //   case "server":
@@ -423,8 +438,9 @@ if (
           //     break;
         }
 
-        await timers.setTimeout(5 * 1000, undefined, { ref: false });
-        process.exit();
+        processKeepAlive.abort();
+        await timers.setTimeout(10 * 1000, undefined, { ref: false });
+        process.exit(1);
       }
     )
     .parseAsync();
