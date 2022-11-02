@@ -243,7 +243,7 @@ if (
         switch (courselore.process.type) {
           case "main":
             const childProcesses = new Set<ExecaChildProcess>();
-            let respawnChildProcesses = true;
+            let restartChildProcesses = true;
             for (const execaArguments of [
               ...["server", "worker"].flatMap((processType) =>
                 lodash.times(os.cpus().length, (processNumber) => ({
@@ -413,13 +413,13 @@ if (
                       2
                     )}`
                   );
-                  if (!respawnChildProcesses) break;
+                  if (!restartChildProcesses) break;
                   childProcesses.delete(childProcess);
                 }
               })();
 
             await signalPromise;
-            respawnChildProcesses = false;
+            restartChildProcesses = false;
             for (const childProcess of childProcesses) childProcess.cancel();
             break;
 
