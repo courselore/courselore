@@ -6,7 +6,8 @@ export type ApplicationLogging = {
 };
 
 export type ResponseLocalsLogging = {
-  responseStartTime: bigint;
+  id: string;
+  startTime: bigint;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -30,16 +31,20 @@ export default async (application: Application): Promise<void> => {
         ]
       : ["PORT", String(application.process.port)])
   );
+
   process.once("exit", () => {
     application.log("STOPPED");
   });
 
   application.server.enable("trust proxy");
+
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
-      response.locals.responseStartTime = process.hrtime.bigint();
+      response.locals.id = Math.random().toString(36).slice(2);
+      response.locals.startTime = process.hrtime.bigint();
       const liveUpdatesNonce = request.header("Live-Updates");
       application.log(
+        response.locals.id,
         request.ip,
         request.method,
         request.originalUrl,
@@ -55,13 +60,13 @@ export default async (application: Application): Promise<void> => {
         responseUntyped[method] = (...parameters: any) => {
           const output = implementation(...parameters);
           application.log(
+            response.locals.id,
             request.ip,
             request.method,
             request.originalUrl,
             String(response.statusCode),
             `${
-              (process.hrtime.bigint() - response.locals.responseStartTime) /
-              1_000_000n
+              (process.hrtime.bigint() - response.locals.startTime) / 1_000_000n
             }ms`,
             ...(typeof response.getHeader("Content-Length") === "string"
               ? [
@@ -80,6 +85,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use(((error, request, response, next) => {
     application.log(
+      response.locals.id,
       request.ip,
       request.method,
       request.originalUrl,
