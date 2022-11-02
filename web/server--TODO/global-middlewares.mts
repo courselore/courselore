@@ -11,7 +11,7 @@ export type GlobalMiddlewaresOptions = {
 };
 
 export type BaseResponseLocals = {
-  loggingStartTime: bigint;
+  responseStartTime: bigint;
   css: ReturnType<typeof localCSS>;
   html: ReturnType<typeof HTMLForJavaScript>;
   administrationOptions: {

@@ -33,7 +33,7 @@ export default async (app: Courselore): Promise<void> => {
         `${new Date().toISOString()}\t${app.locals.options.processType}\t${
           req.ip
         }\t${req.method}\t${req.originalUrl}\t${res.statusCode}\t${
-          (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
+          (process.hrtime.bigint() - res.locals.responseStartTime) / 1_000_000n
         }ms`
       );
     });

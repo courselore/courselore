@@ -401,10 +401,10 @@ if (
                   );
                   childProcesses.add(childProcess);
                   const childProcessResult = await childProcess;
-                  application.log([
+                  application.log(
                     "CHILD PROCESS RESULT",
-                    JSON.stringify(childProcessResult, undefined, 2),
-                  ]);
+                    JSON.stringify(childProcessResult, undefined, 2)
+                  );
                   if (!restartChildProcesses) break;
                   childProcesses.delete(childProcess);
                 }

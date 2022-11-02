@@ -213,13 +213,13 @@ export default async (app: Courselore): Promise<void> => {
             }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesNonce
             }\t${res.statusCode}\t${
-              (process.hrtime.bigint() - res.locals.loggingStartTime) /
+              (process.hrtime.bigint() - res.locals.responseStartTime) /
               1_000_000n
             }ms\t${Math.floor(Buffer.byteLength(body) / 1000)}kB`
           );
           return res;
         };
-        const connectionOpenTime = res.locals.loggingStartTime;
+        const connectionOpenTime = res.locals.responseStartTime;
         res.once("close", () => {
           heartbeatAbortController.abort();
           connectionsMetadata.run(
