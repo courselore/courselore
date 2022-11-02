@@ -54,31 +54,26 @@ export default async (application: Application): Promise<void> => {
         "STARTED..."
       );
       if (liveUpdatesNonce !== undefined) return next();
-      for (const method of ["send", "redirect"]) {
-        const responseUntyped = response as any;
-        const implementation = responseUntyped[method].bind(responseUntyped);
-        responseUntyped[method] = (...parameters: any) => {
-          const output = implementation(...parameters);
-          application.log(
-            response.locals.id,
-            request.ip,
-            request.method,
-            request.originalUrl,
-            String(response.statusCode),
-            `${
-              (process.hrtime.bigint() - response.locals.startTime) / 1_000_000n
-            }ms`,
-            ...(typeof response.getHeader("Content-Length") === "string"
-              ? [
-                  `${Math.floor(
-                    Number(response.getHeader("Content-Length")!) / 1000
-                  )}kB`,
-                ]
-              : [])
-          );
-          return output;
-        };
-      }
+      // TODO: Test that ‘close’ always fires, even in case of error. Consider the ‘finish’, ‘error’, and ‘end’ events as well.
+      response.once("close", () => {
+        application.log(
+          response.locals.id,
+          request.ip,
+          request.method,
+          request.originalUrl,
+          String(response.statusCode),
+          `${
+            (process.hrtime.bigint() - response.locals.startTime) / 1_000_000n
+          }ms`,
+          ...(typeof response.getHeader("Content-Length") === "string"
+            ? [
+                `${Math.floor(
+                  Number(response.getHeader("Content-Length")!) / 1000
+                )}kB`,
+              ]
+            : [])
+        );
+      });
       next();
     }
   );
