@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prepare": "node prepare.mjs"
+    "prepare": "node ./prepare.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.5.11",
