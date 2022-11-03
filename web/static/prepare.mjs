@@ -1188,8 +1188,8 @@ const esbuildResult = await esbuild.build({
   metafile: true,
 });
 
-await fs.unlink("global.css");
-await fs.unlink("index.mjs");
+await fs.rm("global.css");
+await fs.rm("index.mjs");
 
 const paths = {};
 
@@ -1222,8 +1222,8 @@ for (const source of [
       .digest("hex")}${extension}`
   );
   paths[source] = destination.slice("../build/static/".length);
-  await fs.ensureDir(path.dirname(destination));
-  await fs.copy(source, destination);
+  await fs.mkdir(path.dirname(destination), { recursive: true });
+  await fs.cp(source, destination, { recursive: true });
 }
 
 await fs.writeFile(
@@ -1237,6 +1237,6 @@ for (const source of [
   "node_modules/fake-avatars/avatars/",
 ]) {
   const destination = path.join("../build/static", source);
-  await fs.ensureDir(path.dirname(destination));
-  await fs.copy(source, destination);
+  await fs.mkdir(path.dirname(destination), { recursive: true });
+  await fs.cp(source, destination, { recursive: true });
 }
