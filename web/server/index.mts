@@ -157,14 +157,15 @@ if (
           port: string;
         }
       ) => {
-        const processKeepAlive = new AbortController();
-        timers
-          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
-          [Symbol.asyncIterator]()
-          .next()
-          .catch(() => {});
-
-        const stop = new Promise((resolve) => {
+        const stop = new Promise<void>((resolve) => {
+          const processKeepAlive = new AbortController();
+          timers
+            .setInterval(1 << 30, undefined, {
+              signal: processKeepAlive.signal,
+            })
+            [Symbol.asyncIterator]()
+            .next()
+            .catch(() => {});
           for (const event of [
             "exit",
             "SIGHUP",
@@ -174,7 +175,10 @@ if (
             "SIGUSR2",
             "SIGBREAK",
           ])
-            process.on(event, resolve);
+            process.on(event, () => {
+              processKeepAlive.abort();
+              resolve();
+            });
         });
 
         const application = {
@@ -423,7 +427,6 @@ if (
             break;
         }
 
-        processKeepAlive.abort();
         await timers.setTimeout(10 * 1000, undefined, { ref: false });
         process.exit(1);
       }
