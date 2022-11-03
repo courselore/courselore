@@ -1,4 +1,3 @@
-import express from "express";
 import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
@@ -69,9 +68,4 @@ export default async (application: Application): Promise<void> => {
       next();
     }
   );
-
-  application.server.use(((error, request, response, next) => {
-    response.locals.log("ERROR", String(error));
-    next(error);
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsLogging>);
 };

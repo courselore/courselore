@@ -59,6 +59,8 @@ export default async (app: Courselore): Promise<void> => {
   );
 
   app.use(((err, req, res, next) => {
+    response.locals.log("ERROR", String(error));
+
     if (!["Cross-Site Request Forgery", "Validation"].includes(err))
       err = "Server";
     res
