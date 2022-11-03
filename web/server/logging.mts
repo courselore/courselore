@@ -2,12 +2,11 @@ import express from "express";
 import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
-  log: (...messageParts: string[]) => void;
+  log(...messageParts: string[]): void;
 };
 
 export type ResponseLocalsLogging = {
-  id: string;
-  startTime: bigint;
+  log(...messageParts: string[]): void;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -40,37 +39,31 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
-      response.locals.id = Math.random().toString(36).slice(2);
-      response.locals.startTime = process.hrtime.bigint();
+      const id = Math.random().toString(36).slice(2);
+      const time = process.hrtime.bigint();
       const liveUpdatesNonce = request.header("Live-Updates");
-      application.log(
-        response.locals.id,
-        request.ip,
-        request.method,
-        request.originalUrl,
-        ...(liveUpdatesNonce !== undefined
-          ? ["LIVE-UPDATES", liveUpdatesNonce]
-          : []),
-        "STARTED..."
-      );
-      if (liveUpdatesNonce !== undefined) return next();
-      // TODO: Test that ‘close’ always fires, even in case of error. Consider the ‘finish’, ‘error’, and ‘end’ events as well. Or maybe patch the ‘.end()’ method.
-      response.once("close", () => {
+      response.locals.log = (...messageParts) => {
         application.log(
-          response.locals.id,
+          ...(liveUpdatesNonce !== undefined
+            ? ["LIVE-UPDATES", liveUpdatesNonce]
+            : []),
+          id,
+          `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
           request.ip,
           request.method,
           request.originalUrl,
+          ...messageParts
+        );
+      };
+      response.locals.log("STARTED...");
+      if (liveUpdatesNonce !== undefined) return next();
+      // TODO: Test that ‘close’ always fires, even in case of error. Consider the ‘finish’, ‘error’, and ‘end’ events as well. Or maybe patch the ‘.end()’ method.
+      response.once("close", () => {
+        const contentLength = response.getHeader("Content-Length");
+        response.locals.log(
           String(response.statusCode),
-          `${
-            (process.hrtime.bigint() - response.locals.startTime) / 1_000_000n
-          }ms`,
-          ...(typeof response.getHeader("Content-Length") === "string"
-            ? [
-                `${Math.floor(
-                  Number(response.getHeader("Content-Length")!) / 1000
-                )}kB`,
-              ]
+          ...(typeof contentLength === "string"
+            ? [`${Math.floor(Number(contentLength!) / 1000)}kB`]
             : [])
         );
       });
@@ -79,14 +72,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   application.server.use(((error, request, response, next) => {
-    application.log(
-      response.locals.id,
-      request.ip,
-      request.method,
-      request.originalUrl,
-      "ERROR",
-      String(error)
-    );
+    response.locals.log("ERROR", String(error));
     next(error);
   }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsLogging>);
 };
