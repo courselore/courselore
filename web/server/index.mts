@@ -157,6 +157,26 @@ if (
           port: string;
         }
       ) => {
+        const processKeepAlive = new AbortController();
+        timers
+          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
+          [Symbol.asyncIterator]()
+          .next()
+          .catch(() => {});
+
+        const stop = new Promise((resolve) => {
+          for (const event of [
+            "exit",
+            "SIGHUP",
+            "SIGINT",
+            "SIGQUIT",
+            "SIGTERM",
+            "SIGUSR2",
+            "SIGBREAK",
+          ])
+            process.on(event, resolve);
+        });
+
         const application = {
           configuration: (
             await import(url.pathToFileURL(path.resolve(configuration)).href)
@@ -210,26 +230,6 @@ if (
         // await demonstration(application);
         // await error(application);
         // await helpers(application);
-
-        const processKeepAlive = new AbortController();
-        timers
-          .setInterval(1 << 30, undefined, { signal: processKeepAlive.signal })
-          [Symbol.asyncIterator]()
-          .next()
-          .catch(() => {});
-
-        const signalPromise = new Promise((resolve) => {
-          for (const event of [
-            "exit",
-            "SIGHUP",
-            "SIGINT",
-            "SIGQUIT",
-            "SIGTERM",
-            "SIGUSR2",
-            "SIGBREAK",
-          ])
-            process.on(event, resolve);
-        });
 
         switch (application.process.type) {
           case "main":
@@ -404,7 +404,7 @@ if (
                   childProcesses.delete(childProcess);
                 }
               })();
-            await signalPromise;
+            await stop;
             restartChildProcesses = false;
             for (const childProcess of childProcesses) childProcess.cancel();
             break;
@@ -417,7 +417,7 @@ if (
               application.process.port!,
               "127.0.0.1"
             );
-            await signalPromise;
+            await stop;
             server.close();
             processApplication.emit("stop");
             break;
