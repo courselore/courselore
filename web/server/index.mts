@@ -218,8 +218,8 @@ if (
           .next()
           .catch(() => {});
 
-        const signalPromise = Promise.race(
-          [
+        const signalPromise = new Promise((resolve) => {
+          for (const event of [
             "exit",
             "SIGHUP",
             "SIGINT",
@@ -227,13 +227,9 @@ if (
             "SIGTERM",
             "SIGUSR2",
             "SIGBREAK",
-          ].map(
-            (signal) =>
-              new Promise((resolve) => {
-                process.on(signal, resolve);
-              })
-          )
-        );
+          ])
+            process.on(event, resolve);
+        });
 
         switch (application.process.type) {
           case "main":
@@ -389,7 +385,7 @@ if (
               },
             ])
               (async () => {
-                while (true) {
+                while (restartChildProcesses) {
                   const childProcess = execa(
                     execaArguments.file,
                     execaArguments.arguments as any,
@@ -405,11 +401,9 @@ if (
                     "CHILD PROCESS RESULT",
                     JSON.stringify(childProcessResult, undefined, 2)
                   );
-                  if (!restartChildProcesses) break;
                   childProcesses.delete(childProcess);
                 }
               })();
-
             await signalPromise;
             restartChildProcesses = false;
             for (const childProcess of childProcesses) childProcess.cancel();
