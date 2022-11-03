@@ -1,7 +1,7 @@
 import path from "node:path";
+import fs from "node:fs/promises";
 import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
-import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import prompts from "prompts";
 import { Courselore } from "./index.mjs";

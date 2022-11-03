@@ -2,9 +2,9 @@
 
 import path from "node:path";
 import url from "node:url";
+import fs from "node:fs/promises";
 import timers from "node:timers/promises";
 import os from "node:os";
-import fs from "fs-extra";
 import * as commander from "commander";
 import express from "express";
 import nodemailer from "nodemailer";
@@ -130,7 +130,7 @@ if (
     )
     .argument(
       "[configuration]",
-      "Path to configuration file. If you don’t provide a configuration file, Courselore runs in demonstration mode.",
+      "Path to configuration file. If you don’t provide a configuration file, the application runs in demonstration mode.",
       url.fileURLToPath(
         new URL("../../configuration/default.mjs", import.meta.url)
       )

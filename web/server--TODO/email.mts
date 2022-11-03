@@ -1,6 +1,6 @@
 import path from "node:path";
+import fs from "node:fs/promises";
 import timers from "node:timers/promises";
-import fs from "fs-extra";
 import nodemailer from "nodemailer";
 import { sql } from "@leafac/sqlite";
 import filenamify from "filenamify";
