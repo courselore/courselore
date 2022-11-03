@@ -57,7 +57,6 @@ export default async (application: Application): Promise<void> => {
       };
       response.locals.log("STARTED...");
       if (liveUpdatesNonce !== undefined) return next();
-      // TODO: Test that ‘close’ always fires, even in case of error. Consider the ‘finish’, ‘error’, and ‘end’ events as well. Or maybe patch the ‘.end()’ method.
       response.once("close", () => {
         const contentLength = response.getHeader("Content-Length");
         response.locals.log(
