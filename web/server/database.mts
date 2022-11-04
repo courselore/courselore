@@ -1411,14 +1411,14 @@ export default async (application: Application): Promise<void> => {
     sql`
       CREATE TABLE "liveUpdates" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "nonce" TEXT NOT NULL UNIQUE,
         "expiresAt" TEXT NULL,
+        "nonce" TEXT NOT NULL UNIQUE,
         "shouldLiveUpdateOnOpenAt" TEXT NULL,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE
       );
-      CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
       CREATE INDEX "liveUpdatesExpiresAtIndex" ON "liveUpdates" ("expiresAt");
+      CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
       CREATE INDEX "liveUpdatesShouldLiveUpdateOnOpenAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnOpenAt");
       CREATE INDEX "liveUpdatesCourseIndex" ON "liveUpdates" ("course");
     `

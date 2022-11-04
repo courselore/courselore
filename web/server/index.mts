@@ -47,7 +47,10 @@ export type UserSystemRolesWhoMayCreateCourses = string;
 // } from "./user.mjs";
 // import course from "./course.mjs";
 // TODO
-export type ResponseLocalsCourseEnrolled = {};
+import { ResponseLocalsBase } from "./base.mjs";
+export type ResponseLocalsCourseEnrolled = ResponseLocalsBase & {
+  course: { id: number };
+};
 // export {
 //   Enrollment,
 //   MaybeEnrollment,

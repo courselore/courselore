@@ -70,11 +70,11 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server.locals.middleware.liveUpdates = [
-    (req, res, next) => {
-      const nonce = req.header("Live-Updates");
+    (request, response, next) => {
+      const nonce = request.header("Live-Updates");
 
       if (nonce === undefined) {
-        res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
+        response.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
         application.database.run(
           sql`
             INSERT INTO "liveUpdates" (
@@ -85,24 +85,18 @@ export default async (application: Application): Promise<void> => {
             )
             VALUES (
               ${new Date(Date.now() + 60 * 1000).toISOString()},
-              ${res.locals.liveUpdatesNonce},
-              ${req.originalUrl},
-              ${res.locals.course.id}
+              ${response.locals.liveUpdatesNonce},
+              ${request.originalUrl},
+              ${response.locals.course.id}
             )
           `
         );
-        response.log(
-          `${new Date().toISOString()}\t${application.process.type}\t${
-            req.ip
-          }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-            res.locals.liveUpdatesNonce
-          }\tCREATED`
-        );
+        response.locals.log("CREATED");
         return next();
       }
 
-      if (res.locals.liveUpdatesNonce === undefined) {
-        res.locals.liveUpdatesNonce = nonce;
+      if (response.locals.liveUpdatesNonce === undefined) {
+        response.locals.liveUpdatesNonce = nonce;
 
         const connectionMetadata = application.database.get<{
           expiresAt: string | null;
@@ -112,24 +106,24 @@ export default async (application: Application): Promise<void> => {
           sql`
             SELECT "expiresAt", "shouldLiveUpdateOnOpenAt", "url"
             FROM "liveUpdates"
-            WHERE "nonce" = ${res.locals.liveUpdatesNonce}
+            WHERE "nonce" = ${response.locals.liveUpdatesNonce}
           `
         );
 
         if (
           (connectionMetadata !== undefined &&
             (connectionMetadata.expiresAt === null ||
-              connectionMetadata.url !== req.originalUrl)) ||
-          connections.has(res.locals.liveUpdatesNonce)
+              connectionMetadata.url !== request.originalUrl)) ||
+          connections.has(response.locals.liveUpdatesNonce)
         ) {
-          response.log(
+          response.locals.log(
             `${new Date().toISOString()}\t${application.process.type}\t${
-              req.ip
-            }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
+              request.ip
+            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
+              response.locals.liveUpdatesNonce
             }\tCONNECTION FAILED`
           );
-          return res.status(422).end();
+          return response.status(422).end();
         }
 
         if (connectionMetadata !== undefined) {
@@ -138,14 +132,14 @@ export default async (application: Application): Promise<void> => {
               UPDATE "liveUpdates"
               SET "expiresAt" = NULL,
                   "shouldLiveUpdateOnOpenAt" = NULL
-              WHERE "nonce" = ${res.locals.liveUpdatesNonce}
+              WHERE "nonce" = ${response.locals.liveUpdatesNonce}
             `
           );
-          response.log(
+          response.locals.log(
             `${new Date().toISOString()}\t${application.process.type}\t${
-              req.ip
-            }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
+              request.ip
+            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
+              response.locals.liveUpdatesNonce
             }\tCONNECTION OPENED`
           );
         } else {
@@ -157,26 +151,26 @@ export default async (application: Application): Promise<void> => {
                 "course"
               )
               VALUES (
-                ${res.locals.liveUpdatesNonce},
-                ${req.originalUrl},
-                ${res.locals.course.id}
+                ${response.locals.liveUpdatesNonce},
+                ${request.originalUrl},
+                ${response.locals.course.id}
               )
             `
           );
-          response.log(
+          response.locals.log(
             `${new Date().toISOString()}\t${application.process.type}\t${
-              req.ip
-            }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
+              request.ip
+            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
+              response.locals.liveUpdatesNonce
             }\tCREATED & CONNECTION OPENED`
           );
         }
 
-        res.contentType("application/x-ndjson");
+        response.contentType("application/x-ndjson");
         const heartbeatAbortController = new AbortController();
         (async () => {
           while (true) {
-            res.write("\n");
+            response.write("\n");
             try {
               await timers.setTimeout(15 * 1000, undefined, {
                 ref: false,
@@ -187,43 +181,43 @@ export default async (application: Application): Promise<void> => {
             }
           }
         })();
-        res.setHeader = (name, value) => res;
-        res.send = (body) => {
-          res.write(JSON.stringify(body) + "\n");
-          response.log(
+        response.setHeader = (name, value) => response;
+        response.send = (body) => {
+          response.write(JSON.stringify(body) + "\n");
+          response.locals.log(
             `${new Date().toISOString()}\t${application.process.type}\t${
-              req.ip
-            }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
-            }\t${res.statusCode}\t${
-              (process.hrtime.bigint() - res.locals.responseStartTime) /
+              request.ip
+            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
+              response.locals.liveUpdatesNonce
+            }\t${response.statusCode}\t${
+              (process.hrtime.bigint() - response.locals.responseStartTime) /
               1_000_000n
             }ms\t${Math.floor(Buffer.byteLength(body) / 1000)}kB`
           );
-          return res;
+          return response;
         };
-        const connectionOpenTime = res.locals.responseStartTime;
-        res.once("close", () => {
+        const connectionOpenTime = response.locals.responseStartTime;
+        response.once("close", () => {
           heartbeatAbortController.abort();
           application.database.run(
             sql`
-              DELETE FROM "liveUpdates" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
+              DELETE FROM "liveUpdates" WHERE "nonce" = ${response.locals.liveUpdatesNonce}
             `
           );
-          connections.delete(res.locals.liveUpdatesNonce!);
-          response.log(
+          connections.delete(response.locals.liveUpdatesNonce!);
+          response.locals.log(
             `${new Date().toISOString()}\t${application.process.type}\t${
-              req.ip
-            }\t${req.method}\t${req.originalUrl}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesNonce
+              request.ip
+            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
+              response.locals.liveUpdatesNonce
             }\tCONNECTION CLOSED\t${
               (process.hrtime.bigint() - connectionOpenTime) / 1_000_000n
             }ms`
           );
         });
-        connections.set(res.locals.liveUpdatesNonce, {
-          req,
-          res,
+        connections.set(response.locals.liveUpdatesNonce, {
+          req: request,
+          res: response,
         });
 
         if (connectionMetadata?.shouldLiveUpdateOnOpenAt === null) return;
@@ -282,7 +276,7 @@ export default async (application: Application): Promise<void> => {
     const connection = connections.get(nonce);
     connections.delete(nonce);
     connection?.res.end();
-    response.log(
+    response.locals.log(
       `${new Date().toISOString()}\t${application.process.type}\t${req.ip}\t${
         req.method
       }\t${req.originalUrl}\tLIVE-UPDATES\t${nonce}\tABORTED\t${

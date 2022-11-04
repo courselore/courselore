@@ -38,6 +38,11 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
+      /*
+LIVE-UPDATES\t${
+            response.locals.liveUpdatesNonce
+          }
+      */
       const id = Math.random().toString(36).slice(2);
       const time = process.hrtime.bigint();
       const liveUpdatesNonce = request.header("Live-Updates");
