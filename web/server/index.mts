@@ -29,6 +29,8 @@ export { ResponseLocalsBase } from "./base.mjs";
 // import layouts from "./layouts.mjs";
 // import about from "./about.mjs";
 // import administration from "./administration.mjs";
+// TODO
+export type UserSystemRolesWhoMayCreateCourses = string;
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
 //   userSystemRolesWhoMayCreateCourseses,
