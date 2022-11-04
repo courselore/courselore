@@ -82,7 +82,7 @@ export type Application = {
   process: {
     identifier: string;
     type: "main" | "server" | "worker";
-    port: number | undefined;
+    number: number | undefined;
   };
   configuration: {
     hostname: string;
@@ -131,18 +131,12 @@ if (
     .name("courselore")
     .description("Communication Platform for Education")
     .addOption(
-      new commander.Option(
-        "--process-type <process-type>",
-        "[INTERNAL] ‘main’, ‘server’, or ‘worker’."
-      )
+      new commander.Option("--process-type <process-type>")
         .default("main")
         .hideHelp()
     )
     .addOption(
-      new commander.Option(
-        "--port <port>",
-        "[INTERNAL] The network port on which to listen."
-      ).hideHelp()
+      new commander.Option("--process-number <process-number>").hideHelp()
     )
     .argument(
       "[configuration]",
@@ -167,10 +161,10 @@ if (
         configuration: string,
         {
           processType,
-          port,
+          processNumber,
         }: {
           processType: "main" | "server" | "worker";
-          port: string;
+          processNumber: string;
         }
       ) => {
         const stop = new Promise<void>((resolve) => {
@@ -203,7 +197,10 @@ if (
           process: {
             identifier: Math.random().toString(36).slice(2),
             type: processType,
-            port: typeof port === "string" ? Number(port) : undefined,
+            number:
+              typeof processNumber === "string"
+                ? Number(processNumber)
+                : undefined,
           },
           configuration: (
             await import(url.pathToFileURL(path.resolve(configuration)).href)
@@ -447,7 +444,9 @@ if (
             const processApplication = application[application.process.type];
             processApplication.emit("start");
             const server = processApplication.listen(
-              application.process.port!,
+              application.ports[`${application.process.type}Events`][
+                application.process.number!
+              ],
               "127.0.0.1"
             );
             await stop;

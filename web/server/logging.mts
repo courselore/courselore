@@ -27,7 +27,7 @@ export default async (application: Application): Promise<void> => {
           `Courselore/${application.version}`,
           `https://${application.configuration.hostname}`,
         ]
-      : ["PORT", String(application.process.port)])
+      : ["PROCESS NUMBER", String(application.process.number)])
   );
 
   process.once("exit", () => {
