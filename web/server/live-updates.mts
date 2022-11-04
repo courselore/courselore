@@ -70,7 +70,18 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "liveUpdates" WHERE "nonce" = ${liveUpdates.nonce}
           `
         );
-        // TODO: Emit ‘DELETE’ of this ‘nonce’.
+        for (const port of application.ports.serverEvents)
+          got
+            .delete(`http://127.0.0.1:${port}/live-updates`, {
+              form: { nonce: liveUpdates.nonce },
+            })
+            .catch((error) => {
+              application.log(
+                "LIVE-UPDATES",
+                "ERROR EMITTING DELETE EVENT",
+                error
+              );
+            });
         application.log("LIVE-UPDATES", liveUpdates.nonce, "EXPIRED");
       }
       application.log("CLEAN EXPIRED ‘liveUpdates’", "FINISHED");
@@ -223,7 +234,11 @@ export default async (application: Application): Promise<void> => {
           form: { courseId: response.locals.course.id },
         })
         .catch((error) => {
-          response.locals.log("ERROR EMITTING LIVE-UPDATES POST EVENT", error);
+          response.locals.log(
+            "LIVE-UPDATES ",
+            "ERROR EMITTING POST EVENT",
+            error
+          );
         });
   };
 
@@ -274,7 +289,8 @@ export default async (application: Application): Promise<void> => {
           })
           .catch((error) => {
             response.locals.log(
-              "ERROR EMITTING LIVE-UPDATES DELETE EVENT",
+              "LIVE-UPDATES",
+              "ERROR EMITTING DELETE EVENT",
               error
             );
           });
