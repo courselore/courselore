@@ -70,6 +70,7 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "liveUpdates" WHERE "nonce" = ${liveUpdates.nonce}
           `
         );
+        // TODO: Emit ‘DELETE’ of this ‘nonce’.
         application.log("LIVE-UPDATES", liveUpdates.nonce, "EXPIRED");
       }
       application.log("CLEAN EXPIRED ‘liveUpdates’", "FINISHED");
@@ -217,21 +218,24 @@ export default async (application: Application): Promise<void> => {
     );
 
     for (const port of application.ports.serverEvents)
-      got(
-        `http://127.0.0.1:${port}/live-updates?courseId=${response.locals.course.id}`
-      ).catch((error) => {
-        response.locals.log("ERROR EMITTING LIVE-UPDATES EVENT", error);
-      });
+      got
+        .post(`http://127.0.0.1:${port}/live-updates`, {
+          body: { courseId: response.locals.course.id },
+        })
+        .catch((error) => {
+          response.locals.log("ERROR EMITTING LIVE-UPDATES POST EVENT", error);
+        });
   };
 
-  application.serverEvents.get<{}, any, {}, { courseId: string }, {}>(
+  application.serverEvents.post<{}, any, { courseId: string }, {}, {}>(
     "/live-updates",
     asyncHandler(async (request, response, next) => {
       if (
-        typeof request.query.courseId !== "string" ||
-        request.query.courseId.trim() === ""
+        typeof request.body.courseId !== "string" ||
+        request.body.courseId.trim() === ""
       )
         next("Validation");
+      response.end();
 
       for (const liveUpdates of application.database.all<{
         nonce: string;
@@ -239,7 +243,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT "nonce"
           FROM "liveUpdates"
-          WHERE "course" = ${request.query.courseId} AND
+          WHERE "course" = ${request.body.courseId} AND
                 "expiresAt" IS NULL
         `
       )) {
@@ -254,31 +258,49 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.use<{}, any, {}, {}, ResponseLocalsBase>((req, res, next) => {
-    const nonce = req.header("Live-Updates-Abort");
-    if (nonce === undefined) return next();
-    application.database.run(
-      sql`
-        DELETE FROM "liveUpdates" WHERE "nonce" = ${nonce}
-      `
-    );
-    const connection = connections.get(nonce);
-    connections.delete(nonce);
-    connection?.response.end();
-    response.locals.log(
-      `${new Date().toISOString()}\t${application.process.type}\t${req.ip}\t${
-        req.method
-      }\t${req.originalUrl}\tLIVE-UPDATES\t${nonce}\tABORTED\t${
-        connection?.request.ip ?? ""
-      }\t${connection?.request.method ?? ""}\t${
-        connection?.request.originalUrl ?? ""
-      }`
-    );
-    next();
-  });
+  application.server.use<{}, any, {}, {}, ResponseLocalsBase>(
+    (request, response, next) => {
+      const nonce = request.header("Live-Updates-Abort");
+      if (nonce === undefined) return next();
+      application.database.run(
+        sql`
+          DELETE FROM "liveUpdates" WHERE "nonce" = ${nonce}
+        `
+      );
+      for (const port of application.ports.serverEvents)
+        got
+          .delete(`http://127.0.0.1:${port}/live-updates`, {
+            body: { nonce },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "ERROR EMITTING LIVE-UPDATES DELETE EVENT",
+              error
+            );
+          });
+      next();
+    }
+  );
 
-  if (application.process.type === "server")
-    application.once("stop", () => {
-      for (const [_, { request: req, response: res }] of connections) res.end();
-    });
+  application.serverEvents.delete<{}, any, { nonce: string }, {}, {}>(
+    "/live-updates",
+    (request, response, next) => {
+      if (
+        typeof request.body.nonce !== "string" ||
+        request.body.nonce.trim() === ""
+      )
+        next("Validation");
+      response.end();
+
+      const connection = connections.get(request.body.nonce);
+      if (connection === undefined) return;
+      connections.delete(request.body.nonce);
+      connection.response.end();
+      connection.response.locals.log("LIVE-UPDATES", "ABORTED");
+    }
+  );
+
+  application.serverEvents.once("stop", () => {
+    for (const [_, { request, response }] of connections) response.end();
+  });
 };

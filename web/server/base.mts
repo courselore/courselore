@@ -67,6 +67,14 @@ export default async (application: Application): Promise<void> => {
     express.urlencoded({ extended: true })
   );
 
+  application.serverEvents.use<{}, any, {}, {}, {}>(
+    express.urlencoded({ extended: true })
+  );
+
+  application.workerEvents.use<{}, any, {}, {}, {}>(
+    express.urlencoded({ extended: true })
+  );
+
   application.server.use<{}, any, {}, {}, ResponseLocalsBase>(
     expressFileUpload({
       createParentPath: true,

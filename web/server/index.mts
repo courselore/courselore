@@ -114,9 +114,9 @@ export type Application = {
     metaCourseloreInvitation: string;
     tryHostname: string;
   };
-  server: Omit<express.Express, "locals">;
-  serverEvents: Omit<express.Express, "locals">;
-  workerEvents: Omit<express.Express, "locals">;
+  server: Omit<express.Express, "locals"> & Function;
+  serverEvents: Omit<express.Express, "locals"> & Function;
+  workerEvents: Omit<express.Express, "locals"> & Function;
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
