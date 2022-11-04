@@ -1396,7 +1396,7 @@ export default async (application: Application): Promise<void> => {
           )
           VALUES (
             ${administrationOptions.userSystemRolesWhoMayCreateCourses},
-            ${application.configuration.version}
+            ${application.version}
         )
       `
       );
