@@ -1,9 +1,8 @@
 import timers from "node:timers/promises";
-import os from "node:os";
 import express from "express";
+import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import got from "got";
-import lodash from "lodash";
 import {
   Application,
   ResponseLocalsBase,
@@ -54,7 +53,7 @@ export default async (application: Application): Promise<void> => {
     }
   >();
 
-  application.worker.once("start", async () => {
+  application.workerEvents.once("start", async () => {
     while (true) {
       application.log("CLEAN EXPIRED ‘liveUpdates’", "STARTING...");
       for (const liveUpdates of application.database.all<{
@@ -219,30 +218,41 @@ export default async (application: Application): Promise<void> => {
 
     for (const port of application.ports.serverEvents)
       got(
-        `http://127.0.0.1:${port}/live-updates?courseReference=${response.locals.course.reference}`
+        `http://127.0.0.1:${port}/live-updates?courseId=${response.locals.course.id}`
       ).catch((error) => {
         response.locals.log("ERROR EMITTING LIVE-UPDATES EVENT", error);
       });
   };
 
-  // for (const connectionMetadata of application.database.all<{
-  //   nonce: string;
-  // }>(
-  //   sql`
-  //     SELECT "nonce"
-  //     FROM "liveUpdates"
-  //     WHERE "course" = ${response.locals.course.id} AND
-  //           "expiresAt" IS NULL
-  //   `
-  // )) {
-  //   const connection = connections.get(connectionMetadata.nonce);
-  //   if (connection === undefined) continue;
-  //   connection.response.locals = {
-  //     liveUpdatesNonce: connection.response.locals.liveUpdatesNonce,
-  //   } as ResponseLocalsLiveUpdates;
-  //   application(connection.request, connection.response);
-  //   await timers.setTimeout(100, undefined, { ref: false });
-  // }
+  application.serverEvents.get<{}, any, {}, { courseId: string }, {}>(
+    "/live-updates",
+    asyncHandler(async (request, response, next) => {
+      if (
+        typeof request.query.courseId !== "string" ||
+        request.query.courseId.trim() === ""
+      )
+        next("Validation");
+
+      for (const liveUpdates of application.database.all<{
+        nonce: string;
+      }>(
+        sql`
+          SELECT "nonce"
+          FROM "liveUpdates"
+          WHERE "course" = ${request.query.courseId} AND
+                "expiresAt" IS NULL
+        `
+      )) {
+        const connection = connections.get(liveUpdates.nonce);
+        if (connection === undefined) continue;
+        connection.response.locals = {
+          liveUpdatesNonce: connection.response.locals.liveUpdatesNonce,
+        } as ResponseLocalsLiveUpdates;
+        application.server(connection.request, connection.response);
+        await timers.setTimeout(100, undefined, { ref: false });
+      }
+    })
+  );
 
   application.use<{}, any, {}, {}, ResponseLocalsBase>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
