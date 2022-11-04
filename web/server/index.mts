@@ -104,6 +104,11 @@ export type Application = {
   static: {
     [path: string]: string;
   };
+  ports: {
+    server: number[];
+    serverEvents: number[];
+    workerEvents: number[];
+  };
   addresses: {
     canonicalHostname: string;
     metaCourseloreInvitation: string;
@@ -211,6 +216,20 @@ if (
               "utf8"
             )
           ),
+          ports: {
+            server: lodash.times(
+              os.cpus().length,
+              (processNumber) => 6000 + processNumber
+            ),
+            serverEvents: lodash.times(
+              os.cpus().length,
+              (processNumber) => 7000 + processNumber
+            ),
+            workerEvents: lodash.times(
+              os.cpus().length,
+              (processNumber) => 8000 + processNumber
+            ),
+          },
           addresses: {
             canonicalHostname: "courselore.org",
             metaCourseloreInvitation: "https://meta.courselore.org",
@@ -262,9 +281,8 @@ if (
                     process.argv[1],
                     "--process-type",
                     processType,
-                    "--port",
-                    { server: 6000, worker: 8000 }[processType]! +
-                      processNumber,
+                    "--process-number",
+                    processNumber,
                     configuration,
                   ],
                   options: {
@@ -385,12 +403,8 @@ if (
                             file_server
                           }
                         }
-                        reverse_proxy ${lodash
-                          .times(
-                            os.cpus().length,
-                            (processNumber) =>
-                              `127.0.0.1:${6000 + processNumber}`
-                          )
+                        reverse_proxy ${application.ports.server
+                          .map((port) => `127.0.0.1:${port}`)
                           .join(" ")}
                       }
                       handle_errors {

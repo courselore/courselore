@@ -217,13 +217,12 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
-    lodash.times(os.cpus().length, (processNumber) => {
+    for (const port of application.ports.serverEvents)
       got(
-        `http://127.0.0.1:${7000 + processNumber}/live-updates/${
-          response.locals.course.reference
-        }`
-      );
-    });
+        `http://127.0.0.1:${port}/live-updates?courseReference=${response.locals.course.reference}`
+      ).catch((error) => {
+        response.locals.log("ERROR EMITTING LIVE-UPDATES EVENT", error);
+      });
   };
 
   // for (const connectionMetadata of application.database.all<{
