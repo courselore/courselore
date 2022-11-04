@@ -4723,7 +4723,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -9423,7 +9423,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -9462,7 +9462,7 @@ export default async (app: Courselore): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 

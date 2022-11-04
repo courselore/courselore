@@ -49,7 +49,7 @@ export type UserSystemRolesWhoMayCreateCourses = string;
 // TODO
 import { ResponseLocalsBase } from "./base.mjs";
 export type ResponseLocalsCourseEnrolled = ResponseLocalsBase & {
-  course: { id: number };
+  course: { id: number; reference: string };
 };
 // export {
 //   Enrollment,
@@ -263,7 +263,7 @@ if (
                     "--process-type",
                     processType,
                     "--port",
-                    { server: 6000, worker: 7000 }[processType]! +
+                    { server: 6000, worker: 8000 }[processType]! +
                       processNumber,
                     configuration,
                   ],

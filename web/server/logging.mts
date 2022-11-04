@@ -64,6 +64,7 @@ LIVE-UPDATES\t${
       response.once("close", () => {
         const contentLength = response.getHeader("Content-Length");
         response.locals.log(
+          "CLOSE",
           String(response.statusCode),
           ...(typeof contentLength === "string"
             ? [`${Math.floor(Number(contentLength!) / 1000)}kB`]

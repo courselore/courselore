@@ -1,6 +1,9 @@
 import timers from "node:timers/promises";
+import os from "node:os";
 import express from "express";
-import { Database, sql } from "@leafac/sqlite";
+import { sql } from "@leafac/sqlite";
+import got from "got";
+import lodash from "lodash";
 import {
   Application,
   ResponseLocalsBase,
@@ -21,11 +24,17 @@ export type ApplicationLiveUpdates = {
       };
       helpers: {
         liveUpdates({
-          req,
-          res,
+          request,
+          response,
         }: {
-          req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-          res: express.Response<any, ResponseLocalsCourseEnrolled>;
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsCourseEnrolled
+          >;
+          response: express.Response<any, ResponseLocalsCourseEnrolled>;
         }): Promise<void>;
       };
     };
@@ -40,15 +49,15 @@ export default async (application: Application): Promise<void> => {
   const connections = new Map<
     string,
     {
-      req: express.Request<{}, any, {}, {}, ResponseLocalsLiveUpdates>;
-      res: express.Response<any, ResponseLocalsLiveUpdates>;
+      request: express.Request<{}, any, {}, {}, ResponseLocalsLiveUpdates>;
+      response: express.Response<any, ResponseLocalsLiveUpdates>;
     }
   >();
 
   application.worker.once("start", async () => {
     while (true) {
       application.log("CLEAN EXPIRED ‘liveUpdates’", "STARTING...");
-      for (const connectionMetadata of application.database.all<{
+      for (const liveUpdates of application.database.all<{
         nonce: string;
       }>(
         sql`
@@ -59,10 +68,10 @@ export default async (application: Application): Promise<void> => {
       )) {
         application.database.run(
           sql`
-            DELETE FROM "liveUpdates" WHERE "nonce" = ${connectionMetadata.nonce}
+            DELETE FROM "liveUpdates" WHERE "nonce" = ${liveUpdates.nonce}
           `
         );
-        application.log("LIVE-UPDATES", connectionMetadata.nonce, "EXPIRED");
+        application.log("LIVE-UPDATES", liveUpdates.nonce, "EXPIRED");
       }
       application.log("CLEAN EXPIRED ‘liveUpdates’", "FINISHED");
       await timers.setTimeout(60 * 1000, undefined, { ref: false });
@@ -91,14 +100,14 @@ export default async (application: Application): Promise<void> => {
             )
           `
         );
-        response.locals.log("CREATED");
+        response.locals.log("LIVE-UPDATES", "CREATED");
         return next();
       }
 
       if (response.locals.liveUpdatesNonce === undefined) {
         response.locals.liveUpdatesNonce = nonce;
 
-        const connectionMetadata = application.database.get<{
+        const liveUpdates = application.database.get<{
           expiresAt: string | null;
           shouldLiveUpdateOnOpenAt: string | null;
           url: string;
@@ -111,22 +120,15 @@ export default async (application: Application): Promise<void> => {
         );
 
         if (
-          (connectionMetadata !== undefined &&
-            (connectionMetadata.expiresAt === null ||
-              connectionMetadata.url !== request.originalUrl)) ||
-          connections.has(response.locals.liveUpdatesNonce)
+          liveUpdates !== undefined &&
+          (liveUpdates.expiresAt === null ||
+            liveUpdates.url !== request.originalUrl)
         ) {
-          response.locals.log(
-            `${new Date().toISOString()}\t${application.process.type}\t${
-              request.ip
-            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
-              response.locals.liveUpdatesNonce
-            }\tCONNECTION FAILED`
-          );
+          response.locals.log("LIVE-UPDATES", "CONNECTION FAILED");
           return response.status(422).end();
         }
 
-        if (connectionMetadata !== undefined) {
+        if (liveUpdates !== undefined) {
           application.database.run(
             sql`
               UPDATE "liveUpdates"
@@ -135,13 +137,7 @@ export default async (application: Application): Promise<void> => {
               WHERE "nonce" = ${response.locals.liveUpdatesNonce}
             `
           );
-          response.locals.log(
-            `${new Date().toISOString()}\t${application.process.type}\t${
-              request.ip
-            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
-              response.locals.liveUpdatesNonce
-            }\tCONNECTION OPENED`
-          );
+          response.locals.log("LIVE-UPDATES", "CONNECTION OPENED");
         } else {
           application.database.run(
             sql`
@@ -157,13 +153,7 @@ export default async (application: Application): Promise<void> => {
               )
             `
           );
-          response.locals.log(
-            `${new Date().toISOString()}\t${application.process.type}\t${
-              request.ip
-            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
-              response.locals.liveUpdatesNonce
-            }\tCREATED & CONNECTION OPENED`
-          );
+          response.locals.log("LIVE-UPDATES", "CREATED & CONNECTION OPENED");
         }
 
         response.contentType("application/x-ndjson");
@@ -185,18 +175,11 @@ export default async (application: Application): Promise<void> => {
         response.send = (body) => {
           response.write(JSON.stringify(body) + "\n");
           response.locals.log(
-            `${new Date().toISOString()}\t${application.process.type}\t${
-              request.ip
-            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
-              response.locals.liveUpdatesNonce
-            }\t${response.statusCode}\t${
-              (process.hrtime.bigint() - response.locals.responseStartTime) /
-              1_000_000n
-            }ms\t${Math.floor(Buffer.byteLength(body) / 1000)}kB`
+            String(response.statusCode),
+            `${Math.floor(Buffer.byteLength(body) / 1000)}kB`
           );
           return response;
         };
-        const connectionOpenTime = response.locals.responseStartTime;
         response.once("close", () => {
           heartbeatAbortController.abort();
           application.database.run(
@@ -205,65 +188,62 @@ export default async (application: Application): Promise<void> => {
             `
           );
           connections.delete(response.locals.liveUpdatesNonce!);
-          response.locals.log(
-            `${new Date().toISOString()}\t${application.process.type}\t${
-              request.ip
-            }\t${request.method}\t${request.originalUrl}\tLIVE-UPDATES\t${
-              response.locals.liveUpdatesNonce
-            }\tCONNECTION CLOSED\t${
-              (process.hrtime.bigint() - connectionOpenTime) / 1_000_000n
-            }ms`
-          );
         });
         connections.set(response.locals.liveUpdatesNonce, {
-          req: request,
-          res: response,
+          request,
+          response,
         });
 
-        if (connectionMetadata?.shouldLiveUpdateOnOpenAt === null) return;
+        if (liveUpdates?.shouldLiveUpdateOnOpenAt === null) return;
       }
 
       next();
     },
   ];
 
-  application.locals.helpers.liveUpdatesDispatch = async ({
-    req,
-    res,
+  application.server.locals.helpers.liveUpdates = async ({
+    request,
+    response,
   }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-    res: express.Response<any, ResponseLocalsCourseEnrolled>;
+    request: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+    response: express.Response<any, ResponseLocalsCourseEnrolled>;
   }) => {
-    await timers.setTimeout(5 * 1000, undefined, { ref: false });
-
     application.database.run(
       sql`
         UPDATE "liveUpdates"
         SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
-        WHERE "course" = ${res.locals.course.id} AND
+        WHERE "course" = ${response.locals.course.id} AND
               "expiresAt" IS NOT NULL
       `
     );
 
-    for (const connectionMetadata of application.database.all<{
-      nonce: string;
-    }>(
-      sql`
-        SELECT "nonce"
-        FROM "liveUpdates"
-        WHERE "course" = ${res.locals.course.id} AND
-              "expiresAt" IS NULL
-      `
-    )) {
-      const connection = connections.get(connectionMetadata.nonce);
-      if (connection === undefined) continue;
-      connection.res.locals = {
-        liveUpdatesNonce: connection.res.locals.liveUpdatesNonce,
-      } as ResponseLocalsLiveUpdates;
-      application(connection.req, connection.res);
-      await timers.setTimeout(100, undefined, { ref: false });
-    }
+    lodash.times(os.cpus().length, (processNumber) => {
+      got(
+        `http://127.0.0.1:${7000 + processNumber}/live-updates/${
+          response.locals.course.reference
+        }`
+      );
+    });
   };
+
+  // for (const connectionMetadata of application.database.all<{
+  //   nonce: string;
+  // }>(
+  //   sql`
+  //     SELECT "nonce"
+  //     FROM "liveUpdates"
+  //     WHERE "course" = ${response.locals.course.id} AND
+  //           "expiresAt" IS NULL
+  //   `
+  // )) {
+  //   const connection = connections.get(connectionMetadata.nonce);
+  //   if (connection === undefined) continue;
+  //   connection.response.locals = {
+  //     liveUpdatesNonce: connection.response.locals.liveUpdatesNonce,
+  //   } as ResponseLocalsLiveUpdates;
+  //   application(connection.request, connection.response);
+  //   await timers.setTimeout(100, undefined, { ref: false });
+  // }
 
   application.use<{}, any, {}, {}, ResponseLocalsBase>((req, res, next) => {
     const nonce = req.header("Live-Updates-Abort");
@@ -275,19 +255,21 @@ export default async (application: Application): Promise<void> => {
     );
     const connection = connections.get(nonce);
     connections.delete(nonce);
-    connection?.res.end();
+    connection?.response.end();
     response.locals.log(
       `${new Date().toISOString()}\t${application.process.type}\t${req.ip}\t${
         req.method
       }\t${req.originalUrl}\tLIVE-UPDATES\t${nonce}\tABORTED\t${
-        connection?.req.ip ?? ""
-      }\t${connection?.req.method ?? ""}\t${connection?.req.originalUrl ?? ""}`
+        connection?.request.ip ?? ""
+      }\t${connection?.request.method ?? ""}\t${
+        connection?.request.originalUrl ?? ""
+      }`
     );
     next();
   });
 
   if (application.process.type === "server")
     application.once("stop", () => {
-      for (const [_, { req, res }] of connections) res.end();
+      for (const [_, { request: req, response: res }] of connections) res.end();
     });
 };

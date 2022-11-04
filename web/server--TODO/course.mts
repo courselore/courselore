@@ -1337,7 +1337,7 @@ export default async (app: Courselore): Promise<void> => {
         `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -1900,7 +1900,7 @@ export default async (app: Courselore): Promise<void> => {
         `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/tags`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -3938,7 +3938,7 @@ export default async (app: Courselore): Promise<void> => {
           : `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -3975,7 +3975,7 @@ export default async (app: Courselore): Promise<void> => {
           : `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.helpers.liveUpdatesDispatch({ req, res });
+      app.locals.helpers.liveUpdates({ req, res });
     }
   );
 
