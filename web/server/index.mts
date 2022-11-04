@@ -14,7 +14,7 @@ import caddyfile from "dedent";
 import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
 export { ResponseLocalsLogging } from "./logging.mjs";
-// import database from "./database.mjs";
+import database, { ApplicationDatabase } from "./database.mjs";
 // import globalMiddlewares from "./global-middlewares.mjs";
 // export { BaseResponseLocals } from "./global-middlewares.mjs";
 // import liveUpdates from "./live-updates.mjs";
@@ -70,6 +70,13 @@ export { ResponseLocalsLogging } from "./logging.mjs";
 // import helpers from "./helpers.mjs";
 
 export type Application = {
+  name: string;
+  version: string;
+  process: {
+    identifier: string;
+    type: "main" | "server" | "worker";
+    port: number | undefined;
+  };
   configuration: {
     hostname: string;
     dataDirectory: string;
@@ -87,23 +94,18 @@ export type Application = {
     hstsPreload: boolean;
     caddy: string;
   };
-  process: {
-    identifier: string;
-    type: "main" | "server" | "worker";
-    port: number | undefined;
+  static: {
+    [path: string]: string;
   };
-  version: string;
   addresses: {
     canonicalHostname: string;
     metaCourseloreInvitation: string;
     tryHostname: string;
   };
-  static: {
-    [path: string]: string;
-  };
   server: express.Express;
   worker: express.Express;
-} & ApplicationLogging;
+} & ApplicationLogging &
+  ApplicationDatabase;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -182,20 +184,16 @@ if (
         });
 
         const application = {
-          configuration: (
-            await import(url.pathToFileURL(path.resolve(configuration)).href)
-          ).default,
+          name: "courselore",
+          version,
           process: {
             identifier: Math.random().toString(36).slice(2),
             type: processType,
             port: typeof port === "string" ? Number(port) : undefined,
           },
-          version,
-          addresses: {
-            canonicalHostname: "courselore.org",
-            metaCourseloreInvitation: "https://meta.courselore.org",
-            tryHostname: "try.courselore.org",
-          },
+          configuration: (
+            await import(url.pathToFileURL(path.resolve(configuration)).href)
+          ).default,
           static: JSON.parse(
             await fs.readFile(
               url.fileURLToPath(
@@ -204,6 +202,11 @@ if (
               "utf8"
             )
           ),
+          addresses: {
+            canonicalHostname: "courselore.org",
+            metaCourseloreInvitation: "https://meta.courselore.org",
+            tryHostname: "try.courselore.org",
+          },
           server: express(),
           worker: express(),
         } as Application;
@@ -217,7 +220,7 @@ if (
         application.configuration.caddy ??= caddyfile``;
 
         await logging(application);
-        // await database(application);
+        await database(application);
         // await globalMiddlewares(application);
         // await liveUpdates(application);
         // await healthChecks(application);
