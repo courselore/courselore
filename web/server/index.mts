@@ -115,7 +115,8 @@ export type Application = {
     tryHostname: string;
   };
   server: Omit<express.Express, "locals">;
-  worker: Omit<express.Express, "locals">;
+  serverEvents: Omit<express.Express, "locals">;
+  workerEvents: Omit<express.Express, "locals">;
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
@@ -233,7 +234,8 @@ if (
             tryHostname: "try.courselore.org",
           },
           server: express() as any,
-          worker: express() as any,
+          serverEvents: express() as any,
+          workerEvents: express() as any,
         } as Application;
 
         application.configuration.environment ??= "production";
@@ -267,7 +269,7 @@ if (
         // await helpers(application);
 
         switch (application.process.type) {
-          case "main":
+          case "main": {
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
             for (const execaArguments of [
@@ -438,21 +440,41 @@ if (
             restartChildProcesses = false;
             for (const childProcess of childProcesses) childProcess.cancel();
             break;
+          }
 
-          case "server":
-          case "worker":
-            const processApplication = application[application.process.type];
-            processApplication.emit("start");
-            const server = processApplication.listen(
-              application.ports[`${application.process.type}Events`][
-                application.process.number!
-              ],
+          case "server": {
+            const serverApplication = application.server;
+            const eventsApplication = application.serverEvents;
+            serverApplication.emit("start");
+            eventsApplication.emit("start");
+            const server = serverApplication.listen(
+              application.ports.server[application.process.number!],
+              "127.0.0.1"
+            );
+            const events = eventsApplication.listen(
+              application.ports.serverEvents[application.process.number!],
               "127.0.0.1"
             );
             await stop;
             server.close();
-            processApplication.emit("stop");
+            events.close();
+            serverApplication.emit("stop");
+            eventsApplication.emit("stop");
             break;
+          }
+
+          case "worker": {
+            const eventsApplication = application.workerEvents;
+            eventsApplication.emit("start");
+            const events = eventsApplication.listen(
+              application.ports.workerEvents[application.process.number!],
+              "127.0.0.1"
+            );
+            await stop;
+            events.close();
+            eventsApplication.emit("stop");
+            break;
+          }
         }
 
         await timers.setTimeout(10 * 1000, undefined, { ref: false });
