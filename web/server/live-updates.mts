@@ -220,7 +220,7 @@ export default async (application: Application): Promise<void> => {
     for (const port of application.ports.serverEvents)
       got
         .post(`http://127.0.0.1:${port}/live-updates`, {
-          body: { courseId: response.locals.course.id },
+          form: { courseId: response.locals.course.id },
         })
         .catch((error) => {
           response.locals.log("ERROR EMITTING LIVE-UPDATES POST EVENT", error);
@@ -270,7 +270,7 @@ export default async (application: Application): Promise<void> => {
       for (const port of application.ports.serverEvents)
         got
           .delete(`http://127.0.0.1:${port}/live-updates`, {
-            body: { nonce },
+            form: { nonce },
           })
           .catch((error) => {
             response.locals.log(
