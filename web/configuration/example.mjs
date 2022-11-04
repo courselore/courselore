@@ -6,7 +6,8 @@ export default {
   // The main hostname through which people may access Courselore.
   hostname: "YOUR-DOMAIN.EDU",
 
-  // The path to the folder in which Courselore stores data: the database and the files uploaded by users (for example, user avatars and attachments in messages).
+  // The path to the folder in which Courselore stores data:
+  // the database and the files uploaded by users (for example, user avatars and attachments in messages).
   // With the line below this is a folder called ‘data/’ relative to this configuration file.
   // In most cases this is appropriate, but you may want to change it to an absolute path, for example, ‘/home/courselore/data/’.
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
@@ -38,9 +39,9 @@ export default {
   // [OPTIONAL] Other hostnames you’d like to redirect to this Courselore installation.
   // alternativeHostnames: ["WWW.YOUR-DOMAIN.EDU", "..."],
 
-  // [OPTIONAL, BUT RECOMMENDED] See https://hstspreload.org/ to learn more.
+  // [OPTIONAL, BUT RECOMMENDED] See https://hstspreload.org/.
   // hstsPreload: true,
 
-  // [OPTIONAL] Extra Caddy configuration to add to Courselore’s Caddy configuration.
-  // caddyfileExtra: ``,
+  // [OPTIONAL] Extra Caddy configuration to add to Courselore’s Caddy configuration. See https://caddyserver.com.
+  // caddy: ``,
 };

@@ -15,7 +15,7 @@ export default {
   administratorEmail: "try@courselore.org",
   demonstration: true,
   alternativeHostnames: ["try.courselore.com"],
-  caddyfileExtra: `
+  caddy: `
     http://leafac.courselore.org {
       redir https://{host}{uri} 308
     }

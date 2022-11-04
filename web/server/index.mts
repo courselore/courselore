@@ -85,7 +85,7 @@ export type Application = {
     tunnel: boolean;
     alternativeHostnames: string[];
     hstsPreload: boolean;
-    caddyfileExtra: string;
+    caddy: string;
   };
   process: {
     identifier: string;
@@ -214,7 +214,7 @@ if (
         application.configuration.tunnel ??= false;
         application.configuration.alternativeHostnames ??= [];
         application.configuration.hstsPreload ??= false;
-        application.configuration.caddyfileExtra ??= caddyfile``;
+        application.configuration.caddy ??= caddyfile``;
 
         await logging(application);
         // await database(application);
@@ -335,8 +335,6 @@ if (
                         : ``
                     }
 
-                    ${application.configuration.caddyfileExtra}
-
                     http${application.configuration.tunnel ? `` : `s`}://${
                     application.configuration.hostname
                   } {
@@ -384,6 +382,8 @@ if (
                         import common
                       }
                     }
+
+                    ${application.configuration.caddy}
                   `,
                 },
               },
