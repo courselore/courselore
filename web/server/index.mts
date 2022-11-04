@@ -106,8 +106,8 @@ export type Application = {
     metaCourseloreInvitation: string;
     tryHostname: string;
   };
-  server: express.Express;
-  worker: express.Express;
+  server: Omit<express.Express, "locals">;
+  worker: Omit<express.Express, "locals">;
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
@@ -213,8 +213,8 @@ if (
             metaCourseloreInvitation: "https://meta.courselore.org",
             tryHostname: "try.courselore.org",
           },
-          server: express(),
-          worker: express(),
+          server: express() as any,
+          worker: express() as any,
         } as Application;
 
         application.configuration.environment ??= "production";
