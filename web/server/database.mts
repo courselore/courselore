@@ -592,18 +592,18 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                "createdAt",
-                "lastSeenOnlineAt",
-                "email",
-                "password",
-                "emailVerifiedAt",
-                "name",
-                "nameSearch",
-                "avatar",
-                "avatarlessBackgroundColor",
-                "biographySource",
-                "biographyPreprocessed",
-                "emailNotifications"
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "emailNotifications"
           FROM "users"
         `
       ))
@@ -704,19 +704,19 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                "createdAt",
-                "lastSeenOnlineAt",
-                "reference",
-                "email",
-                "password",
-                "emailVerifiedAt",
-                "name",
-                "nameSearch",
-                "avatar",
-                "avatarlessBackgroundColor",
-                "biographySource",
-                "biographyPreprocessed",
-                "emailNotifications"
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "emailNotifications"
           FROM "users"
         `
       ))
@@ -862,23 +862,23 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                "createdAt",
-                "lastSeenOnlineAt",
-                "reference",
-                "email",
-                "password",
-                "emailVerifiedAt",
-                "name",
-                "nameSearch",
-                "avatar",
-                "avatarlessBackgroundColor",
-                "biographySource",
-                "biographyPreprocessed",
-                "emailNotificationsForAllMessagesAt",
-                "emailNotificationsForMentionsAt",
-                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                "emailNotificationsForMessagesInConversationsYouStartedAt",
-                "emailNotificationsDigestsFrequency"
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt",
+                 "emailNotificationsDigestsFrequency"
           FROM "users"
         `
       ))
@@ -1052,24 +1052,24 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                "createdAt",
-                "lastSeenOnlineAt",
-                "reference",
-                "email",
-                "password",
-                "emailVerifiedAt",
-                "name",
-                "nameSearch",
-                "avatar",
-                "avatarlessBackgroundColor",
-                "biographySource",
-                "biographyPreprocessed",
-                "systemRole",
-                "emailNotificationsForAllMessagesAt",
-                "emailNotificationsForMentionsAt",
-                "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                "emailNotificationsForMessagesInConversationsYouStartedAt",
-                "emailNotificationsDigestsFrequency"
+                 "createdAt",
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "nameSearch",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "systemRole",
+                 "emailNotificationsForAllMessagesAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt",
+                 "emailNotificationsDigestsFrequency"
           FROM "users"
         `
       ))
@@ -1243,19 +1243,19 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                "createdAt",
-                "updatedAt",
-                "course",
-                "reference",
-                "authorEnrollment",
-                "anonymousAt",
-                "type",
-                "pinnedAt",
-                "staffOnlyAt",
-                "title",
-                "titleSearch",
-                "nextMessageReference",
-                "resolvedAt"
+                 "createdAt",
+                 "updatedAt",
+                 "course",
+                 "reference",
+                 "authorEnrollment",
+                 "anonymousAt",
+                 "type",
+                 "pinnedAt",
+                 "staffOnlyAt",
+                 "title",
+                 "titleSearch",
+                 "nextMessageReference",
+                 "resolvedAt"
           FROM "conversations"
         `
       )) {
