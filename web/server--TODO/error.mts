@@ -3,7 +3,7 @@ import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import {
   Courselore,
-  BaseResponseLocals,
+  ResponseLocalsBase,
   IsSignedOutLocals,
   IsSignedInLocals,
 } from "./index.mjs";
@@ -96,5 +96,5 @@ export default async (app: Courselore): Promise<void> => {
           `,
         })
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseResponseLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>);
 };

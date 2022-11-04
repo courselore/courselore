@@ -11,7 +11,7 @@ import argon2 from "argon2";
 import lodash from "lodash";
 import {
   Courselore,
-  BaseResponseLocals,
+  ResponseLocalsBase,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotificationsForAllMessages,
@@ -31,31 +31,31 @@ export type SessionHelper = {
     res,
     userId,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
     userId: number;
   }): void;
   get({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
   }): number | undefined;
   close({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
   }): void;
   closeAllAndReopen({
     req,
     res,
     userId,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
     userId: number;
   }): void;
 };
@@ -67,7 +67,7 @@ export type IsSignedOutMiddleware = express.RequestHandler<
   {},
   IsSignedOutLocals
 >[];
-export type IsSignedOutLocals = BaseResponseLocals;
+export type IsSignedOutLocals = ResponseLocalsBase;
 
 export type IsSignedInMiddleware = express.RequestHandler<
   {},
@@ -76,7 +76,7 @@ export type IsSignedInMiddleware = express.RequestHandler<
   {},
   IsSignedInLocals
 >[];
-export type IsSignedInLocals = BaseResponseLocals & {
+export type IsSignedInLocals = ResponseLocalsBase & {
   actionAllowedToUserWithUnverifiedEmail?: boolean;
   user: {
     id: number;
@@ -153,8 +153,8 @@ export type EmailVerificationMailer = ({
   userEmail,
   welcome,
 }: {
-  req: express.Request<{}, any, {}, { redirect?: string }, BaseResponseLocals>;
-  res: express.Response<any, BaseResponseLocals>;
+  req: express.Request<{}, any, {}, { redirect?: string }, ResponseLocalsBase>;
+  res: express.Response<any, ResponseLocalsBase>;
   userId: number;
   userEmail: string;
   welcome?: boolean;

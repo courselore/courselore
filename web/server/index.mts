@@ -15,8 +15,8 @@ import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
 export { ResponseLocalsLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
-// import globalMiddlewares from "./global-middlewares.mjs";
-// export { BaseResponseLocals } from "./global-middlewares.mjs";
+import base, { ApplicationBase } from "./base.mjs";
+export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates from "./live-updates.mjs";
 // export { LiveUpdatesLocals } from "./live-updates.mjs";
 // import healthChecks from "./health-checks.mjs";
@@ -105,7 +105,8 @@ export type Application = {
   server: express.Express;
   worker: express.Express;
 } & ApplicationLogging &
-  ApplicationDatabase;
+  ApplicationDatabase &
+  ApplicationBase;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -221,7 +222,7 @@ if (
 
         await logging(application);
         await database(application);
-        // await globalMiddlewares(application);
+        await base(application);
         // await liveUpdates(application);
         // await healthChecks(application);
         // await authentication(application);

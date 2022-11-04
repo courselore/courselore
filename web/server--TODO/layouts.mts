@@ -10,7 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
 import {
   Courselore,
-  BaseResponseLocals,
+  ResponseLocalsBase,
   IsSignedInLocals,
   IsEnrolledInCourseLocals,
 } from "./index.mjs";
@@ -27,9 +27,9 @@ export type BaseLayout = ({
     any,
     {},
     {},
-    BaseResponseLocals & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<any, BaseResponseLocals & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
   head: HTML;
   extraHeaders?: HTML;
   body: HTML;
@@ -46,9 +46,9 @@ export type BoxLayout = ({
     any,
     {},
     {},
-    BaseResponseLocals & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<any, BaseResponseLocals & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
   head: HTML;
   body: HTML;
 }) => HTML;
@@ -124,8 +124,8 @@ export type PartialLayout = ({
   res,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-  res: express.Response<any, BaseResponseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+  res: express.Response<any, ResponseLocalsBase>;
   body: HTML;
 }) => HTML;
 
@@ -134,8 +134,8 @@ export type SpinnerPartial = ({
   res,
   size,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-  res: express.Response<any, BaseResponseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+  res: express.Response<any, ResponseLocalsBase>;
   size?: number;
 }) => HTML;
 
@@ -149,8 +149,8 @@ export type FlashHelper = {
     theme,
     content,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
     theme: string;
     content: HTML;
   }): void;
@@ -158,8 +158,8 @@ export type FlashHelper = {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
   }): { theme: string; content: HTML } | undefined;
 };
 
@@ -903,7 +903,7 @@ export default async (app: Courselore): Promise<void> => {
   };
 
   if (app.locals.options.environment !== "production")
-    app.delete<{}, any, {}, {}, BaseResponseLocals>("/turn-off", (req, res) => {
+    app.delete<{}, any, {}, {}, ResponseLocalsBase>("/turn-off", (req, res) => {
       res.send(
         app.locals.layouts.box({
           req,

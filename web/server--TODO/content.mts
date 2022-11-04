@@ -31,7 +31,7 @@ import lodash from "lodash";
 import got from "got";
 import {
   Courselore,
-  BaseResponseLocals,
+  ResponseLocalsBase,
   IsSignedOutLocals,
   IsSignedInLocals,
   UserAvatarlessBackgroundColor,
@@ -58,9 +58,9 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    BaseResponseLocals & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
   >;
-  res: express.Response<any, BaseResponseLocals & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -83,13 +83,13 @@ export type ContentEditorPartial = ({
     any,
     {},
     {},
-    BaseResponseLocals &
+    ResponseLocalsBase &
       Partial<IsEnrolledInCourseLocals> &
       Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
-    BaseResponseLocals &
+    ResponseLocalsBase &
       Partial<IsEnrolledInCourseLocals> &
       Partial<IsConversationAccessibleLocals>
   >;
@@ -2858,7 +2858,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      BaseResponseLocals & Partial<IsEnrolledInCourseLocals>
+      ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||

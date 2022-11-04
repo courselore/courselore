@@ -1,13 +1,13 @@
 import timers from "node:timers/promises";
 import express from "express";
-import { Courselore, BaseResponseLocals } from "./index.mjs";
+import { Courselore, ResponseLocalsBase } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
   const liveConnections = new Set<{
-    req: express.Request<{}, any, {}, {}, BaseResponseLocals>;
-    res: express.Response<any, BaseResponseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+    res: express.Response<any, ResponseLocalsBase>;
   }>();
-  app.get<{}, any, {}, {}, BaseResponseLocals>("/live-connection", (req, res) => {
+  app.get<{}, any, {}, {}, ResponseLocalsBase>("/live-connection", (req, res) => {
     const connection = { req, res };
     liveConnections.add(connection);
     res.header("Version", app.locals.options.version);
@@ -43,30 +43,30 @@ export default async (app: Courselore): Promise<void> => {
       for (const { req, res } of liveConnections) res.end();
     });
 
-  app.get<{}, any, {}, {}, BaseResponseLocals>("/health", (req, res) => {
+  app.get<{}, any, {}, {}, ResponseLocalsBase>("/health", (req, res) => {
     res.json({ version: app.locals.options.version });
   });
 
   if (app.locals.options.environment === "development") {
-    app.get<{}, any, {}, {}, BaseResponseLocals>(
+    app.get<{}, any, {}, {}, ResponseLocalsBase>(
       "/errors/validation",
       (req, res, next) => {
         next("Validation");
       }
     );
 
-    app.get<{}, any, {}, {}, BaseResponseLocals>(
+    app.get<{}, any, {}, {}, ResponseLocalsBase>(
       "/errors/cross-site-request-forgery",
       (req, res, next) => {
         next("Cross-Site Request Forgery");
       }
     );
 
-    app.get<{}, any, {}, {}, BaseResponseLocals>("/errors/exception", (req, res) => {
+    app.get<{}, any, {}, {}, ResponseLocalsBase>("/errors/exception", (req, res) => {
       throw new Error("Exception");
     });
 
-    app.get<{}, any, {}, {}, BaseResponseLocals>("/errors/crash", (req, res) => {
+    app.get<{}, any, {}, {}, ResponseLocalsBase>("/errors/crash", (req, res) => {
       setTimeout(() => {
         throw new Error("Crash");
       });

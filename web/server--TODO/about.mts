@@ -5,7 +5,7 @@ import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import {
   Courselore,
-  BaseResponseLocals,
+  ResponseLocalsBase,
   IsSignedOutLocals,
   IsSignedInLocals,
 } from "./index.mjs";
@@ -23,7 +23,7 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.options.hostname !== app.locals.options.canonicalHostname &&
     app.locals.options.environment !== "development"
   ) {
-    app.get<{}, HTML, {}, {}, BaseResponseLocals>("/about", (req, res) => {
+    app.get<{}, HTML, {}, {}, ResponseLocalsBase>("/about", (req, res) => {
       res.redirect(
         303,
         `https://${app.locals.options.canonicalHostname}/about`
