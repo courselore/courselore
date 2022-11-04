@@ -11,12 +11,12 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  LiveUpdatesLocals,
+  ResponseLocalsLiveUpdates,
   UserAvatarlessBackgroundColor,
   Enrollment,
   MaybeEnrollment,
   CourseRole,
-  IsEnrolledInCourseLocals,
+  ResponseLocalsCourseEnrolled,
   IsCourseStaffLocals,
 } from "./index.mjs";
 
@@ -61,11 +61,11 @@ export type ConversationLayout = ({
       messages?: object;
       newConversation?: object;
     },
-    IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
+    ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     HTML,
-    IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
+    ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
   >;
   head: HTML;
   sidebarOnSmallScreen?: boolean;
@@ -80,8 +80,8 @@ export type ConversationPartial = ({
   searchResult,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-  res: express.Response<any, IsEnrolledInCourseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+  res: express.Response<any, ResponseLocalsCourseEnrolled>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -114,8 +114,8 @@ export type GetConversationHelper = ({
   res,
   conversationReference,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-  res: express.Response<any, IsEnrolledInCourseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+  res: express.Response<any, ResponseLocalsCourseEnrolled>;
   conversationReference: string;
 }) =>
   | {
@@ -159,7 +159,7 @@ export type IsConversationAccessibleMiddleware = express.RequestHandler<
   {},
   IsConversationAccessibleLocals
 >[];
-export type IsConversationAccessibleLocals = IsEnrolledInCourseLocals & {
+export type IsConversationAccessibleLocals = ResponseLocalsCourseEnrolled & {
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -2955,7 +2955,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     { redirect?: string },
-    IsEnrolledInCourseLocals
+    ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (req, res, next) => {
@@ -3034,7 +3034,7 @@ export default async (app: Courselore): Promise<void> => {
         isPinned?: "true";
       };
     },
-    IsEnrolledInCourseLocals & LiveUpdatesLocals
+    ResponseLocalsCourseEnrolled & ResponseLocalsLiveUpdates
   >(
     `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
       "|"
@@ -4336,7 +4336,7 @@ export default async (app: Courselore): Promise<void> => {
       conversationDraftReference?: string;
     },
     { conversations?: object },
-    IsEnrolledInCourseLocals
+    ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4732,7 +4732,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { conversationDraftReference?: string },
     { conversations?: object },
-    IsEnrolledInCourseLocals
+    ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4804,7 +4804,7 @@ export default async (app: Courselore): Promise<void> => {
         };
       };
     },
-    IsConversationAccessibleLocals & LiveUpdatesLocals
+    IsConversationAccessibleLocals & ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,

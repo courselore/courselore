@@ -12,7 +12,7 @@ import QRCode from "qrcode";
 import {
   Courselore,
   ResponseLocalsBase,
-  LiveUpdatesLocals,
+  ResponseLocalsLiveUpdates,
   IsSignedOutLocals,
   IsSignedInLocals,
   User,
@@ -65,11 +65,11 @@ export type CoursesPartial = ({
     any,
     {},
     {},
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   res: express.Response<
     any,
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   tight?: boolean;
 }) => HTML;
@@ -87,9 +87,9 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsEnrolledInCourseLocals
+  ResponseLocalsCourseEnrolled
 >[];
-export type IsEnrolledInCourseLocals = IsSignedInLocals & {
+export type ResponseLocalsCourseEnrolled = IsSignedInLocals & {
   actionAllowedOnArchivedCourse?: boolean;
   enrollment: IsSignedInLocals["enrollments"][number];
   course: IsSignedInLocals["enrollments"][number]["course"];
@@ -110,7 +110,7 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
   {},
   IsCourseStaffLocals
 >[];
-export type IsCourseStaffLocals = IsEnrolledInCourseLocals;
+export type IsCourseStaffLocals = ResponseLocalsCourseEnrolled;
 
 export default async (app: Courselore): Promise<void> => {
   const courseRoleIcon: {
@@ -786,7 +786,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseLocals & LiveUpdatesLocals
+    ResponseLocalsCourseEnrolled & ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -870,7 +870,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsEnrolledInCourseLocals>(
+  app.get<{ courseReference: string }, HTML, {}, {}, ResponseLocalsCourseEnrolled>(
     "/courses/:courseReference/settings",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -893,8 +893,8 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-    res: express.Response<any, IsEnrolledInCourseLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+    res: express.Response<any, ResponseLocalsCourseEnrolled>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -3979,7 +3979,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsEnrolledInCourseLocals>(
+  app.get<{ courseReference: string }, HTML, {}, {}, ResponseLocalsCourseEnrolled>(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -4095,7 +4095,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { accentColor?: EnrollmentAccentColor },
     {},
-    IsEnrolledInCourseLocals
+    ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4127,7 +4127,7 @@ export default async (app: Courselore): Promise<void> => {
   type IsInvitationUsableLocals = ResponseLocalsBase &
     Omit<Partial<IsSignedOutLocals>, keyof ResponseLocalsBase> &
     Omit<Partial<IsSignedInLocals>, keyof ResponseLocalsBase> &
-    Omit<Partial<IsEnrolledInCourseLocals>, keyof ResponseLocalsBase> &
+    Omit<Partial<ResponseLocalsCourseEnrolled>, keyof ResponseLocalsBase> &
     InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
@@ -4358,7 +4358,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsEnrolledInCourseLocals & IsInvitationUsableLocals
+    ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -4425,7 +4425,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsEnrolledInCourseLocals & IsInvitationUsableLocals
+    ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,

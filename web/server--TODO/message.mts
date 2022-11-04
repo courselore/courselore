@@ -11,7 +11,7 @@ import {
   UserEmailNotificationsForAllMessages,
   MaybeEnrollment,
   CourseRole,
-  IsEnrolledInCourseLocals,
+  ResponseLocalsCourseEnrolled,
   IsCourseStaffLocals,
   ConversationParticipants,
   ConversationType,
@@ -24,8 +24,8 @@ export type GetMessageHelper = ({
   conversation,
   messageReference,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-  res: express.Response<any, IsEnrolledInCourseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+  res: express.Response<any, ResponseLocalsCourseEnrolled>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -103,8 +103,8 @@ export type CourseLiveUpdater = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-  res: express.Response<any, IsEnrolledInCourseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+  res: express.Response<any, ResponseLocalsCourseEnrolled>;
 }) => Promise<void>;
 
 export type EmailNotificationsMailer = ({
@@ -112,8 +112,8 @@ export type EmailNotificationsMailer = ({
   res,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseLocals>;
-  res: express.Response<any, IsEnrolledInCourseLocals>;
+  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
+  res: express.Response<any, ResponseLocalsCourseEnrolled>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -906,7 +906,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseLocals & MessageExistsLocals
+    ResponseLocalsCourseEnrolled & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...app.locals.middlewares.isEnrolledInCourse,

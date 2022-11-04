@@ -36,7 +36,7 @@ import {
   IsSignedInLocals,
   UserAvatarlessBackgroundColor,
   CourseRole,
-  IsEnrolledInCourseLocals,
+  ResponseLocalsCourseEnrolled,
   IsConversationAccessibleLocals,
 } from "./index.mjs";
 
@@ -58,9 +58,9 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -84,13 +84,13 @@ export type ContentEditorPartial = ({
     {},
     {},
     ResponseLocalsBase &
-      Partial<IsEnrolledInCourseLocals> &
+      Partial<ResponseLocalsCourseEnrolled> &
       Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
     ResponseLocalsBase &
-      Partial<IsEnrolledInCourseLocals> &
+      Partial<ResponseLocalsCourseEnrolled> &
       Partial<IsConversationAccessibleLocals>
   >;
   name?: string;
@@ -278,9 +278,9 @@ export default async (app: Courselore): Promise<void> => {
         any,
         {},
         {},
-        IsEnrolledInCourseLocals
+        ResponseLocalsCourseEnrolled
       >;
-      const narrowRes = res as express.Response<any, IsEnrolledInCourseLocals>;
+      const narrowRes = res as express.Response<any, ResponseLocalsCourseEnrolled>;
 
       for (const element of contentElement.querySelectorAll("a")) {
         const href = element.getAttribute("href");
@@ -2225,7 +2225,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsEnrolledInCourseLocals & Partial<IsConversationAccessibleLocals>
+      ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
     > = (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2366,7 +2366,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsEnrolledInCourseLocals
+      ResponseLocalsCourseEnrolled
     >(
       "/courses/:courseReference/content-editor/mention-user-search",
       ...app.locals.middlewares.isEnrolledInCourse,
@@ -2391,7 +2391,7 @@ ${contentSource}</textarea
     any,
     {},
     { search?: string },
-    IsEnrolledInCourseLocals
+    ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2858,7 +2858,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
+      ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2886,7 +2886,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      IsEnrolledInCourseLocals
+      ResponseLocalsCourseEnrolled
     >(
       "/courses/:courseReference/content-editor/preview",
       ...app.locals.middlewares.isEnrolledInCourse,

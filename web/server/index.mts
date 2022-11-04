@@ -17,8 +17,8 @@ export { ResponseLocalsLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import base, { ApplicationBase } from "./base.mjs";
 export { ResponseLocalsBase } from "./base.mjs";
-// import liveUpdates from "./live-updates.mjs";
-// export { LiveUpdatesLocals } from "./live-updates.mjs";
+import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
+export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 // import healthChecks from "./health-checks.mjs";
 // import authentication from "./authentication.mjs";
 // export {
@@ -46,6 +46,8 @@ export type UserSystemRolesWhoMayCreateCourses = string;
 //   userEmailNotificationsForAllMessageses,
 // } from "./user.mjs";
 // import course from "./course.mjs";
+// TODO
+export type ResponseLocalsCourseEnrolled = {};
 // export {
 //   Enrollment,
 //   MaybeEnrollment,
@@ -53,7 +55,7 @@ export type UserSystemRolesWhoMayCreateCourses = string;
 //   courseRoles,
 //   EnrollmentAccentColor,
 //   enrollmentAccentColors,
-//   IsEnrolledInCourseLocals,
+//   ResponseLocalsCourseEnrolled,
 //   IsCourseStaffLocals,
 // } from "./course.mjs";
 // import conversation from "./conversation.mjs";
@@ -108,7 +110,8 @@ export type Application = {
   worker: express.Express;
 } & ApplicationLogging &
   ApplicationDatabase &
-  ApplicationBase;
+  ApplicationBase &
+  ApplicationLiveUpdates;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -222,10 +225,13 @@ if (
         application.configuration.hstsPreload ??= false;
         application.configuration.caddy ??= caddyfile``;
 
+        application.server.locals.middleware = {} as any;
+        application.server.locals.helpers = {} as any;
+
         await logging(application);
         await database(application);
         await base(application);
-        // await liveUpdates(application);
+        await liveUpdates(application);
         // await healthChecks(application);
         // await authentication(application);
         // await layouts(application);

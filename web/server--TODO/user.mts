@@ -15,7 +15,7 @@ import {
   IsSignedInLocals,
   HasPasswordConfirmationLocals,
   MaybeEnrollment,
-  IsEnrolledInCourseLocals,
+  ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
 
 export type User = {
@@ -79,9 +79,9 @@ export type UserPartial = ({
     any,
     {},
     {},
-    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
   enrollment?: MaybeEnrollment;
   user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";

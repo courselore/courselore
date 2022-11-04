@@ -12,7 +12,7 @@ import {
   Courselore,
   ResponseLocalsBase,
   IsSignedInLocals,
-  IsEnrolledInCourseLocals,
+  ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
 
 export type BaseLayout = ({
@@ -27,9 +27,9 @@ export type BaseLayout = ({
     any,
     {},
     {},
-    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
   head: HTML;
   extraHeaders?: HTML;
   body: HTML;
@@ -46,9 +46,9 @@ export type BoxLayout = ({
     any,
     {},
     {},
-    ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>
+    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<IsEnrolledInCourseLocals>>;
+  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
   head: HTML;
   body: HTML;
 }) => HTML;
@@ -66,11 +66,11 @@ export type ApplicationLayout = ({
     any,
     {},
     {},
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   res: express.Response<
     any,
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -90,11 +90,11 @@ export type MainLayout = ({
     any,
     {},
     {},
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   res: express.Response<
     any,
-    IsSignedInLocals & Partial<IsEnrolledInCourseLocals>
+    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
