@@ -6,6 +6,7 @@ export type ApplicationLogging = {
 
 export type ResponseLocalsLogging = {
   log(...messageParts: string[]): void;
+  liveUpdatesNonce: string | undefined;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -55,22 +56,18 @@ export default async (application: Application): Promise<void> => {
         );
       };
       response.locals.log("STARTING...");
-      for (const method of ["send", "redirect"]) {
-        const responseAny = response as any;
-        const implementation = responseAny[method].bind(responseAny);
-        responseAny[method] = (...arguments_: any) => {
-          const output = implementation(...arguments_);
-          const contentLength = response.getHeader("Content-Length");
-          response.locals.log(
-            "FINISHED",
-            String(response.statusCode),
-            ...(typeof contentLength === "string"
-              ? [`${Math.floor(Number(contentLength) / 1000)}kB`]
-              : [])
-          );
-          return output;
-        };
-      }
+      if (response.locals.liveUpdatesNonce !== undefined) return next();
+      const log = response.locals.log;
+      response.once("close", () => {
+        const contentLength = response.getHeader("Content-Length");
+        log(
+          "FINISHED",
+          String(response.statusCode),
+          ...(typeof contentLength === "string"
+            ? [`${Math.floor(Number(contentLength) / 1000)}kB`]
+            : [])
+        );
+      });
       next();
     }
   );
