@@ -9,6 +9,8 @@ import {
   ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
 
+// TODO: "LIVE-UPDATES", liveUpdatesNonce
+
 export type ApplicationLiveUpdates = {
   server: {
     locals: {
