@@ -40,27 +40,51 @@ export default async (application: Application): Promise<void> => {
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
       const liveUpdatesNonce = request.header("Live-Updates");
-      if (
-        typeof liveUpdatesNonce === "string" &&
-        response.locals.liveUpdatesNonce === undefined
-      ) {
-        const time = process.hrtime.bigint();
-        response.locals.log = (...messageParts) => {
-          application.log(
-            "LIVE-UPDATES",
-            liveUpdatesNonce,
-            `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
-            request.ip,
-            request.method,
-            request.originalUrl,
-            ...messageParts
-          );
-        };
-        response.locals.log("STARTING...");
-        const log = response.locals.log;
-        response.once("close", () => {
-          log("CLOSED");
-        });
+      if (typeof liveUpdatesNonce === "string") {
+        if (response.locals.liveUpdatesNonce === undefined) {
+          const time = process.hrtime.bigint();
+          response.locals.log = (...messageParts) => {
+            application.log(
+              "LIVE-UPDATES",
+              liveUpdatesNonce,
+              `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
+              request.ip,
+              request.method,
+              request.originalUrl,
+              ...messageParts
+            );
+          };
+          response.locals.log("STARTING...");
+          const log = response.locals.log.bind(response);
+          response.once("close", () => {
+            log("CLOSED");
+          });
+        } else {
+          const id = Math.random().toString(36).slice(2);
+          const time = process.hrtime.bigint();
+          response.locals.log = (...messageParts) => {
+            application.log(
+              "LIVE-UPDATES",
+              liveUpdatesNonce,
+              id,
+              `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
+              request.ip,
+              request.method,
+              request.originalUrl,
+              ...messageParts
+            );
+          };
+          response.locals.log("STARTING...");
+          const responseSend = response.send.bind(response);
+          response.send = (body) => {
+            responseSend(body);
+            response.locals.log(
+              "CLOSED",
+              `${Math.floor(Buffer.byteLength(body) / 1000)}kB`
+            );
+            return response;
+          };
+        }
         return next();
       }
 
@@ -91,6 +115,15 @@ export default async (application: Application): Promise<void> => {
         );
       });
       next();
+
+      // for (const method of ["send", "redirect"]) {
+      //   const responseAny = response as any;
+      //   const implementation = responseAny[method].bind(responseAny);
+      //   responseAny[method] = (...arguments_: any) => {
+      //     const output = implementation(...arguments_);
+      //     return output;
+      //   };
+      // }
     }
   );
 };
