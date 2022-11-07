@@ -1413,13 +1413,15 @@ export default async (application: Application): Promise<void> => {
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
-        "shouldLiveUpdateOnOpenAt" TEXT NULL,
+        "processNumber" INTEGER NULL,
+        "shouldLiveUpdateOnConnectionAt" TEXT NULL,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE
       );
       CREATE INDEX "liveUpdatesExpiresAtIndex" ON "liveUpdates" ("expiresAt");
       CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
-      CREATE INDEX "liveUpdatesShouldLiveUpdateOnOpenAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnOpenAt");
+      CREATE INDEX "liveUpdatesProcessNumber" ON "liveUpdates" ("processNumber");
+      CREATE INDEX "liveUpdatesshouldLiveUpdateOnConnectionAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnConnectionAt");
       CREATE INDEX "liveUpdatesCourseIndex" ON "liveUpdates" ("course");
     `
   );

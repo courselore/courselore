@@ -14,7 +14,7 @@ export default async (application: Application): Promise<void> => {
       [
         new Date().toISOString(),
         application.process.type,
-        application.process.identifier,
+        application.process.id,
         ...messageParts,
       ].join("\t")
     );

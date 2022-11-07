@@ -122,11 +122,11 @@ export default async (application: Application): Promise<void> => {
 
         const liveUpdates = application.database.get<{
           expiresAt: string | null;
-          shouldLiveUpdateOnOpenAt: string | null;
+          shouldLiveUpdateOnConnectionAt: string | null;
           url: string;
         }>(
           sql`
-            SELECT "expiresAt", "shouldLiveUpdateOnOpenAt", "url"
+            SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
             FROM "liveUpdates"
             WHERE "nonce" = ${response.locals.liveUpdatesNonce}
           `
@@ -146,7 +146,7 @@ export default async (application: Application): Promise<void> => {
             sql`
               UPDATE "liveUpdates"
               SET "expiresAt" = NULL,
-                  "shouldLiveUpdateOnOpenAt" = NULL
+                  "shouldLiveUpdateOnConnectionAt" = NULL
               WHERE "nonce" = ${response.locals.liveUpdatesNonce}
             `
           );
@@ -207,7 +207,7 @@ export default async (application: Application): Promise<void> => {
           response,
         });
 
-        if (liveUpdates?.shouldLiveUpdateOnOpenAt === null) return;
+        if (liveUpdates?.shouldLiveUpdateOnConnectionAt === null) return;
       }
 
       next();
@@ -224,7 +224,7 @@ export default async (application: Application): Promise<void> => {
     application.database.run(
       sql`
         UPDATE "liveUpdates"
-        SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
+        SET "shouldLiveUpdateOnConnectionAt" = ${new Date().toISOString()}
         WHERE "course" = ${response.locals.course.id} AND
               "expiresAt" IS NOT NULL
       `

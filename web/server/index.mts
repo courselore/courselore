@@ -80,7 +80,7 @@ export type Application = {
   name: string;
   version: string;
   process: {
-    identifier: string;
+    id: string;
     type: "main" | "server" | "worker";
     number: number;
   };
@@ -196,7 +196,7 @@ if (
           name: "courselore",
           version,
           process: {
-            identifier: Math.random().toString(36).slice(2),
+            id: Math.random().toString(36).slice(2),
             type: processType,
             number:
               typeof processNumber === "string"
