@@ -47,6 +47,12 @@ export type ResponseLocalsLiveUpdates = ResponseLocalsCourseEnrolled & {
 };
 
 export default async (application: Application): Promise<void> => {
+  application.database.run(
+    sql`
+      DELETE FROM "liveUpdates" WHERE ___
+    `
+  );
+
   const connections = new Map<
     string,
     {

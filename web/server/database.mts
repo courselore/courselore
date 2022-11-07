@@ -1414,14 +1414,14 @@ export default async (application: Application): Promise<void> => {
         "expiresAt" TEXT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "processNumber" INTEGER NULL,
-        "shouldLiveUpdateOnConnectionAt" TEXT NULL,
+        "needsUpdateAt" TEXT NULL,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE
       );
       CREATE INDEX "liveUpdatesExpiresAtIndex" ON "liveUpdates" ("expiresAt");
       CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
-      CREATE INDEX "liveUpdatesProcessNumber" ON "liveUpdates" ("processNumber");
-      CREATE INDEX "liveUpdatesShouldLiveUpdateOnConnectionAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnConnectionAt");
+      CREATE INDEX "liveUpdatesProcessNumberIndex" ON "liveUpdates" ("processNumber");
+      CREATE INDEX "liveUpdatesNeedsUpdateAtIndex" ON "liveUpdates" ("needsUpdateAt");
       CREATE INDEX "liveUpdatesCourseIndex" ON "liveUpdates" ("course");
     `
   );
