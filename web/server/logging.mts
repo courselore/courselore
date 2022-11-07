@@ -6,6 +6,7 @@ export type ApplicationLogging = {
 
 export type ResponseLocalsLogging = {
   log(...messageParts: string[]): void;
+  liveUpdatesNonce: string | undefined;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -38,19 +39,10 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
-      /*
-LIVE-UPDATES\t${
-            response.locals.liveUpdatesNonce
-          }
-      */
       const id = Math.random().toString(36).slice(2);
       const time = process.hrtime.bigint();
-      const liveUpdatesNonce = request.header("Live-Updates");
       response.locals.log = (...messageParts) => {
         application.log(
-          ...(liveUpdatesNonce !== undefined
-            ? ["LIVE-UPDATES", liveUpdatesNonce]
-            : []),
           id,
           `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
           request.ip,
@@ -59,19 +51,25 @@ LIVE-UPDATES\t${
           ...messageParts
         );
       };
-      response.locals.log("STARTED...");
-      if (liveUpdatesNonce !== undefined) return next();
+      response.locals.log("STARTING...");
       response.once("close", () => {
         const contentLength = response.getHeader("Content-Length");
         response.locals.log(
-          "CLOSE",
+          "CLOSED",
           String(response.statusCode),
           ...(typeof contentLength === "string"
-            ? [`${Math.floor(Number(contentLength!) / 1000)}kB`]
+            ? [`${Math.floor(Number(contentLength) / 1000)}kB`]
             : [])
         );
       });
       next();
+
+      // if (response.locals.liveUpdatesNonce !== undefined) {
+      // }
+      // const liveUpdatesNonce = request.header("Live-Updates");
+      // ...(liveUpdatesNonce !== undefined
+      //   ? ["LIVE-UPDATES", liveUpdatesNonce]
+      //   : []),
     }
   );
 };
