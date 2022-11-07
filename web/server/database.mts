@@ -1409,26 +1409,24 @@ export default async (application: Application): Promise<void> => {
     },
 
     sql`
-      CREATE TABLE "liveUpdates" (
+      CREATE TABLE "liveConnections" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "processNumber" INTEGER NULL,
         "needsUpdateAt" TEXT NULL,
-        "url" TEXT NOT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE
+        "url" TEXT NOT NULL
       );
-      CREATE INDEX "liveUpdatesExpiresAtIndex" ON "liveUpdates" ("expiresAt");
-      CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
-      CREATE INDEX "liveUpdatesProcessNumberIndex" ON "liveUpdates" ("processNumber");
-      CREATE INDEX "liveUpdatesNeedsUpdateAtIndex" ON "liveUpdates" ("needsUpdateAt");
-      CREATE INDEX "liveUpdatesCourseIndex" ON "liveUpdates" ("course");
+      CREATE INDEX "liveConnectionsExpiresAtIndex" ON "liveConnections" ("expiresAt");
+      CREATE INDEX "liveConnectionsNonceIndex" ON "liveConnections" ("nonce");
+      CREATE INDEX "liveConnectionsProcessNumberIndex" ON "liveConnections" ("processNumber");
+      CREATE INDEX "liveConnectionsNeedsUpdateAtIndex" ON "liveConnections" ("needsUpdateAt");
     `
   );
 
   application.database.run(
     sql`
-      DELETE FROM "liveUpdates"
+      DELETE FROM "liveConnections"
     `
   );
 
