@@ -6,7 +6,6 @@ export type ApplicationLogging = {
 
 export type ResponseLocalsLogging = {
   log(...messageParts: string[]): void;
-  liveUpdatesNonce: string | undefined;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -39,14 +38,10 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
-      const liveUpdatesNonce = request.header("Live-Updates");
       const id = Math.random().toString(36).slice(2);
       const time = process.hrtime.bigint();
       response.locals.log = (...messageParts) => {
         application.log(
-          ...(typeof liveUpdatesNonce === "string"
-            ? ["LIVE-UPDATES", liveUpdatesNonce]
-            : []),
           id,
           `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
           request.ip,
@@ -56,18 +51,19 @@ export default async (application: Application): Promise<void> => {
         );
       };
       response.locals.log("STARTING...");
-      if (response.locals.liveUpdatesNonce !== undefined) return next();
-      const log = response.locals.log;
-      response.once("close", () => {
+      const responseEnd = response.end.bind(response);
+      response.end = (...arguments_: any[]) => {
+        const output = responseEnd(...arguments_);
         const contentLength = response.getHeader("Content-Length");
-        log(
+        response.locals.log(
           "FINISHED",
           String(response.statusCode),
           ...(typeof contentLength === "string"
             ? [`${Math.floor(Number(contentLength) / 1000)}kB`]
             : [])
         );
-      });
+        return output;
+      };
       next();
     }
   );
