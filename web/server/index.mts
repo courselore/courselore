@@ -30,7 +30,7 @@ export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 // import about from "./about.mjs";
 // import administration from "./administration.mjs";
 // TODO
-export type UserSystemRolesWhoMayCreateCourses = string;
+// export type UserSystemRolesWhoMayCreateCourses = string;
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
 //   userSystemRolesWhoMayCreateCourseses,
