@@ -15,11 +15,11 @@ import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
 export { ResponseLocalsLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
+import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
 export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
-// import healthChecks from "./health-checks.mjs";
 // import authentication from "./authentication.mjs";
 // export {
 //   IsSignedOutLocals,
@@ -248,9 +248,9 @@ if (
 
         await logging(application);
         await database(application);
+        await healthChecks(application);
         await base(application);
         // await liveUpdates(application);
-        // await healthChecks(application);
         // await authentication(application);
         // await layouts(application);
         // await about(application);
