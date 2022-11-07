@@ -59,7 +59,7 @@ export default async (application: Application): Promise<void> => {
           "FINISHED",
           String(response.statusCode),
           ...(typeof contentLength === "string"
-            ? [`${Math.floor(Number(contentLength) / 1000)}kB`]
+            ? [`${Math.ceil(Number(contentLength) / 1000)}kB`]
             : [])
         );
         return output;

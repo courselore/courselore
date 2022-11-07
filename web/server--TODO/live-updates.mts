@@ -239,7 +239,7 @@ export default async (application: Application): Promise<void> => {
           response.write(JSON.stringify(body) + "\n");
           response.locals.log(
             String(response.statusCode),
-            `${Math.floor(Buffer.byteLength(body) / 1000)}kB`
+            `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
           );
           return response;
         };
