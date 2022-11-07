@@ -82,7 +82,7 @@ export type Application = {
   process: {
     identifier: string;
     type: "main" | "server" | "worker";
-    number: number | undefined;
+    number: number;
   };
   configuration: {
     hostname: string;
@@ -203,9 +203,8 @@ if (
                 ? Number(processNumber)
                 : undefined,
           },
-          configuration: (
-            await import(url.pathToFileURL(path.resolve(configuration)).href)
-          ).default,
+          configuration: (await import(url.pathToFileURL(configuration).href))
+            .default,
           static: JSON.parse(
             await fs.readFile(
               url.fileURLToPath(
@@ -448,11 +447,11 @@ if (
             serverApplication.emit("start");
             eventsApplication.emit("start");
             const server = serverApplication.listen(
-              application.ports.server[application.process.number!],
+              application.ports.server[application.process.number],
               "127.0.0.1"
             );
             const events = eventsApplication.listen(
-              application.ports.serverEvents[application.process.number!],
+              application.ports.serverEvents[application.process.number],
               "127.0.0.1"
             );
             await stop;
@@ -467,7 +466,7 @@ if (
             const eventsApplication = application.workerEvents;
             eventsApplication.emit("start");
             const events = eventsApplication.listen(
-              application.ports.workerEvents[application.process.number!],
+              application.ports.workerEvents[application.process.number],
               "127.0.0.1"
             );
             await stop;
