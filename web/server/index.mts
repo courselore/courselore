@@ -207,9 +207,7 @@ if (
             .default,
           static: JSON.parse(
             await fs.readFile(
-              url.fileURLToPath(
-                new URL("../static/paths.json", import.meta.url)
-              ),
+              new URL("../static/paths.json", import.meta.url),
               "utf8"
             )
           ),
@@ -373,10 +371,8 @@ if (
                         import common
                         route {
                           root * ${JSON.stringify(
-                            path.resolve(
-                              url.fileURLToPath(
-                                new URL("../static/", import.meta.url)
-                              )
+                            url.fileURLToPath(
+                              new URL("../static/", import.meta.url)
                             )
                           )}
                           @file_exists file
