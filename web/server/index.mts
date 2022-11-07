@@ -399,7 +399,9 @@ if (
                         }
                         reverse_proxy ${application.ports.server
                           .map((port) => `127.0.0.1:${port}`)
-                          .join(" ")}
+                          .join(" ")} {
+                            health_uri /health
+                          }
                       }
                       handle_errors {
                         import common
