@@ -228,6 +228,8 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
+    await timers.setTimeout(3000, undefined, { ref: false });
+
     for (const port of application.ports.serverEvents)
       got
         .post(`http://127.0.0.1:${port}/live-updates`, {
