@@ -1421,7 +1421,7 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "liveUpdatesExpiresAtIndex" ON "liveUpdates" ("expiresAt");
       CREATE INDEX "liveUpdatesNonceIndex" ON "liveUpdates" ("nonce");
       CREATE INDEX "liveUpdatesProcessNumber" ON "liveUpdates" ("processNumber");
-      CREATE INDEX "liveUpdatesshouldLiveUpdateOnConnectionAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnConnectionAt");
+      CREATE INDEX "liveUpdatesShouldLiveUpdateOnConnectionAtIndex" ON "liveUpdates" ("shouldLiveUpdateOnConnectionAt");
       CREATE INDEX "liveUpdatesCourseIndex" ON "liveUpdates" ("course");
     `
   );
