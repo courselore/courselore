@@ -38,6 +38,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
     (request, response, next) => {
+      if (response.locals.log !== undefined) return next();
       const id = Math.random().toString(36).slice(2);
       const time = process.hrtime.bigint();
       response.locals.log = (...messageParts) => {
@@ -50,20 +51,18 @@ export default async (application: Application): Promise<void> => {
           ...messageParts
         );
       };
-      response.locals.log("STARTING...");
-      const responseEnd = response.end.bind(response);
-      response.end = (...arguments_: any[]) => {
-        const output = responseEnd(...arguments_);
+      const log = response.locals.log.bind(response);
+      log("STARTING...");
+      response.once("close", () => {
         const contentLength = response.getHeader("Content-Length");
-        response.locals.log(
+        log(
           "FINISHED",
           String(response.statusCode),
           ...(typeof contentLength === "string"
             ? [`${Math.ceil(Number(contentLength) / 1000)}kB`]
             : [])
         );
-        return output;
-      };
+      });
       next();
     }
   );
