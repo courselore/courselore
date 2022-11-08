@@ -13,7 +13,7 @@ import {
   Courselore,
   ResponseLocalsBase,
   ResponseLocalsLiveUpdates,
-  IsSignedOutLocals,
+  ResponseLocalsBase,
   ResponseLocalsSignedIn,
   User,
   UserAvatarlessBackgroundColor,
@@ -4125,7 +4125,7 @@ export default async (app: Courselore): Promise<void> => {
   );
 
   type IsInvitationUsableLocals = ResponseLocalsBase &
-    Omit<Partial<IsSignedOutLocals>, keyof ResponseLocalsBase> &
+    Omit<Partial<ResponseLocalsBase>, keyof ResponseLocalsBase> &
     Omit<Partial<ResponseLocalsSignedIn>, keyof ResponseLocalsBase> &
     Omit<Partial<ResponseLocalsCourseEnrolled>, keyof ResponseLocalsBase> &
     InvitationExistsLocals;
@@ -4479,7 +4479,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsSignedOutLocals & IsInvitationUsableLocals
+    ResponseLocalsBase & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedOut,

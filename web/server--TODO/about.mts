@@ -6,7 +6,7 @@ import dedent from "dedent";
 import {
   Courselore,
   ResponseLocalsBase,
-  IsSignedOutLocals,
+  ResponseLocalsBase,
   ResponseLocalsSignedIn,
 } from "./index.mjs";
 
@@ -15,7 +15,7 @@ export type AboutHandler = express.RequestHandler<
   any,
   {},
   {},
-  IsSignedOutLocals & Partial<ResponseLocalsSignedIn>
+  ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
 >;
 
 export default async (app: Courselore): Promise<void> => {
@@ -931,7 +931,7 @@ export default async (app: Courselore): Promise<void> => {
     );
   };
 
-  app.get<{}, HTML, {}, {}, IsSignedOutLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsBase>(
     "/about",
     ...app.locals.middlewares.isSignedOut,
     app.locals.handlers.about

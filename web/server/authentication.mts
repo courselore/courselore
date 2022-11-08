@@ -10,7 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
 import {
-  Courselore,
+  Application,
   ResponseLocalsBase,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
@@ -20,62 +20,60 @@ import {
   SystemRole,
 } from "./index.mjs";
 
-export type AuthenticationOptions = {
-  argon2: argon2.Options & { raw?: false };
+export type ApplicationAuthentication = {
+  server: {
+    locals: {
+      argon2: argon2.Options & { raw?: false };
+      middleware: {
+        passwordConfirmation: express.RequestHandler<
+          {},
+          any,
+          { passwordConfirmation?: string },
+          {},
+          HasPasswordConfirmationLocals
+        >[];
+      };
+      helpers: {
+        Session: {
+          maxAge: number;
+          open({
+            req,
+            res,
+            userId,
+          }: {
+            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            res: express.Response<any, ResponseLocalsBase>;
+            userId: number;
+          }): void;
+          get({
+            req,
+            res,
+          }: {
+            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            res: express.Response<any, ResponseLocalsBase>;
+          }): number | undefined;
+          close({
+            req,
+            res,
+          }: {
+            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            res: express.Response<any, ResponseLocalsBase>;
+          }): void;
+          closeAllAndReopen({
+            req,
+            res,
+            userId,
+          }: {
+            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            res: express.Response<any, ResponseLocalsBase>;
+            userId: number;
+          }): void;
+        };
+      };
+    };
+  };
 };
 
-export type SessionHelper = {
-  maxAge: number;
-  open({
-    req,
-    res,
-    userId,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-    userId: number;
-  }): void;
-  get({
-    req,
-    res,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-  }): number | undefined;
-  close({
-    req,
-    res,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-  }): void;
-  closeAllAndReopen({
-    req,
-    res,
-    userId,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-    userId: number;
-  }): void;
-};
-
-export type IsSignedOutMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  IsSignedOutLocals
->[];
-export type IsSignedOutLocals = ResponseLocalsBase;
-
-export type IsSignedInMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  ResponseLocalsSignedIn
->[];
 export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   actionAllowedToUserWithUnverifiedEmail?: boolean;
   user: {
@@ -135,13 +133,6 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   mayCreateCourses: boolean;
 };
 
-export type HasPasswordConfirmationMiddleware = express.RequestHandler<
-  {},
-  any,
-  { passwordConfirmation?: string },
-  {},
-  HasPasswordConfirmationLocals
->[];
 export type HasPasswordConfirmationLocals = ResponseLocalsSignedIn & {
   hasPasswordConfirmationRedirect?: string;
 };
@@ -160,7 +151,7 @@ export type EmailVerificationMailer = ({
   welcome?: boolean;
 }) => void;
 
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
@@ -229,9 +220,7 @@ export default async (app: Courselore): Promise<void> => {
 
     closeAllAndReopen({ req, res, userId }) {
       app.locals.helpers.Session.close({ req, res });
-      app.database.run(
-        sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
-      );
+      app.database.run(sql`DELETE FROM "sessions" WHERE "user" = ${userId}`);
       app.locals.helpers.Session.open({ req, res, userId });
     },
   };
@@ -654,7 +643,7 @@ export default async (app: Courselore): Promise<void> => {
       HTML,
       {},
       { redirect?: string; invitation?: { email?: string; name?: string } },
-      IsSignedOutLocals
+      ResponseLocalsBase
     > = (req, res) => {
       res.send(
         app.locals.layouts.box({
@@ -761,7 +750,7 @@ export default async (app: Courselore): Promise<void> => {
       );
     };
 
-    app.get<{}, HTML, {}, {}, IsSignedOutLocals>(
+    app.get<{}, HTML, {}, {}, ResponseLocalsBase>(
       "/",
       ...app.locals.middlewares.isSignedOut,
       app.configuration.hostname === app.configuration.canonicalHostname
@@ -771,7 +760,7 @@ export default async (app: Courselore): Promise<void> => {
         : handler
     );
 
-    app.get<{}, HTML, {}, {}, IsSignedOutLocals>(
+    app.get<{}, HTML, {}, {}, ResponseLocalsBase>(
       "/sign-in",
       ...app.locals.middlewares.isSignedOut,
       handler
@@ -796,7 +785,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >(
     "/sign-in",
     ...app.locals.middlewares.isSignedOut,
@@ -911,7 +900,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >("/reset-password", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
@@ -1024,7 +1013,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { email?: string; resend?: "true" },
     { redirect?: string; invitation?: object },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >(
     "/reset-password",
     ...app.locals.middlewares.isSignedOut,
@@ -1147,7 +1136,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >(
     "/reset-password/:passwordResetNonce",
     ...app.locals.middlewares.isSignedOut,
@@ -1183,9 +1172,8 @@ export default async (app: Courselore): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.configuration
-                .hostname}/reset-password/${req.params
-                .passwordResetNonce}${qs.stringify(
+              action="https://${app.configuration.hostname}/reset-password/${req
+                .params.passwordResetNonce}${qs.stringify(
                 {
                   redirect: req.query.redirect,
                   invitation: req.query.invitation,
@@ -1267,7 +1255,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >(
     "/reset-password/:passwordResetNonce",
     ...app.locals.middlewares.isSignedOut,
@@ -1376,7 +1364,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
@@ -1390,8 +1378,7 @@ export default async (app: Courselore): Promise<void> => {
         body: html`
           <form
             method="POST"
-            action="https://${app.configuration
-              .hostname}/sign-up${qs.stringify(
+            action="https://${app.configuration.hostname}/sign-up${qs.stringify(
               {
                 redirect: req.query.redirect,
                 invitation: req.query.invitation,
@@ -1617,7 +1604,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    IsSignedOutLocals
+    ResponseLocalsBase
   >(
     "/sign-up",
     ...app.locals.middlewares.isSignedOut,

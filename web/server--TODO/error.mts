@@ -4,12 +4,12 @@ import { HTML, html } from "@leafac/html";
 import {
   Courselore,
   ResponseLocalsBase,
-  IsSignedOutLocals,
+  ResponseLocalsBase,
   ResponseLocalsSignedIn,
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
-  app.all<{}, HTML, {}, {}, IsSignedOutLocals>(
+  app.all<{}, HTML, {}, {}, ResponseLocalsBase>(
     "*",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {

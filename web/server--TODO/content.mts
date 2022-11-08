@@ -32,7 +32,7 @@ import got from "got";
 import {
   Courselore,
   ResponseLocalsBase,
-  IsSignedOutLocals,
+  ResponseLocalsBase,
   ResponseLocalsSignedIn,
   UserAvatarlessBackgroundColor,
   CourseRole,
@@ -2899,7 +2899,7 @@ ${contentSource}</textarea
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, IsSignedOutLocals>(
+    app.post<{}, any, { content?: string }, {}, ResponseLocalsBase>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedOut,
       handler

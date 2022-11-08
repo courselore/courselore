@@ -21,22 +21,16 @@ export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
-import authentication from "./authentication.mjs";
-// TODO
-export type ResponseLocalsSignedIn = ResponseLocalsBase & {
-  user: any;
-  administrationOptions: any;
-  mayCreateCourses: any;
-};
+import authentication, {
+  ApplicationAuthentication,
+} from "./authentication.mjs";
 // export {
-//   IsSignedOutLocals,
+//   ResponseLocalsBase,
 //   ResponseLocalsSignedIn,
 //   HasPasswordConfirmationLocals,
 // } from "./authentication.mjs";
 // import about from "./about.mjs";
 // import administration from "./administration.mjs";
-// TODO
-// export type UserSystemRolesWhoMayCreateCourses = string;
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
 //   userSystemRolesWhoMayCreateCourseses,
@@ -44,16 +38,6 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
 //   systemRoles,
 // } from "./administration.mjs";
 // import user from "./user.mjs";
-// TODO
-type ApplicationUser = {
-  server: {
-    locals: {
-      partials: {
-        user: any;
-      };
-    };
-  };
-};
 // export {
 //   User,
 //   UserAvatarlessBackgroundColor,
@@ -62,25 +46,6 @@ type ApplicationUser = {
 //   userEmailNotificationsForAllMessageses,
 // } from "./user.mjs";
 // import course from "./course.mjs";
-// TODO
-import { ResponseLocalsBase } from "./base.mjs";
-export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
-  course: any;
-  enrollment: any;
-  enrollments: any;
-  invitations: any[];
-};
-type ApplicationCourse = {
-  server: {
-    locals: {
-      partials: {
-        course: any;
-        courses: any;
-        courseArchived: any;
-      };
-    };
-  };
-};
 // export {
 //   Enrollment,
 //   MaybeEnrollment,
@@ -105,6 +70,46 @@ type ApplicationCourse = {
 // import demonstration from "./demonstration.mjs";
 // import error from "./error.mjs";
 // import helpers from "./helpers.mjs";
+
+// TODO
+import { ResponseLocalsBase } from "./base.mjs";
+export type ResponseLocalsSignedIn = ResponseLocalsBase & {
+  user: any;
+  administrationOptions: any;
+  mayCreateCourses: any;
+};
+export type UserAvatarlessBackgroundColor = any;
+export const userAvatarlessBackgroundColors = [];
+export type UserEmailNotificationsForAllMessages = any;
+export type CourseRole = any;
+export type EnrollmentAccentColor = any;
+export type SystemRole = any;
+export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
+  course: any;
+  enrollment: any;
+  enrollments: any;
+  invitations: any[];
+};
+type ApplicationUser = {
+  server: {
+    locals: {
+      partials: {
+        user: any;
+      };
+    };
+  };
+};
+type ApplicationCourse = {
+  server: {
+    locals: {
+      partials: {
+        course: any;
+        courses: any;
+        courseArchived: any;
+      };
+    };
+  };
+};
 
 export type Application = {
   name: string;
@@ -152,6 +157,7 @@ export type Application = {
   ApplicationBase &
   // & ApplicationLiveUpdates
   ApplicationLayouts &
+  ApplicationAuthentication &
   ApplicationUser &
   ApplicationCourse;
 
