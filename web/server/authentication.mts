@@ -358,23 +358,8 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.locals.middlewares.isSignedOut = [
+  application.server.use<{}, any, {}, {}, ResponseLocalsSignedIn>(
     (request, response, next) => {
-      if (
-        application.server.locals.helpers.Session.get({ request, response }) !==
-        undefined
-      )
-        return next("route");
-      next();
-    },
-  ];
-
-  application.locals.middlewares.isSignedIn = [
-    (request, response, next) => {
-      const actionAllowedToUserWithUnverifiedEmail =
-        response.locals.actionAllowedToUserWithUnverifiedEmail;
-      delete response.locals.actionAllowedToUserWithUnverifiedEmail;
-
       const userId = application.server.locals.helpers.Session.get({
         request,
         response,
@@ -404,22 +389,22 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "systemRole",
-                 "emailNotificationsForAllMessages",
-                 "emailNotificationsForAllMessagesDigestDeliveredAt",
-                 "emailNotificationsForMentionsAt",
-                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "emailNotificationsForMessagesInConversationsYouStartedAt"
+                  "lastSeenOnlineAt",
+                  "reference",
+                  "email",
+                  "password",
+                  "emailVerifiedAt",
+                  "name",
+                  "avatar",
+                  "avatarlessBackgroundColor",
+                  "biographySource",
+                  "biographyPreprocessed",
+                  "systemRole",
+                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForAllMessagesDigestDeliveredAt",
+                  "emailNotificationsForMentionsAt",
+                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                  "emailNotificationsForMessagesInConversationsYouStartedAt"
           FROM "users"
           WHERE "id" = ${userId}
         `
@@ -610,17 +595,17 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT "invitations"."id",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "invitations"."reference",
-                   "invitations"."courseRole"
+                    "courses"."id" AS "courseId",
+                    "courses"."reference" AS "courseReference",
+                    "courses"."archivedAt" AS "courseArchivedAt",
+                    "courses"."name" AS "courseName",
+                    "courses"."year" AS "courseYear",
+                    "courses"."term" AS "courseTerm",
+                    "courses"."institution" AS "courseInstitution",
+                    "courses"."code" AS "courseCode",
+                    "courses"."nextConversationReference" AS "courseNextConversationReference",
+                    "invitations"."reference",
+                    "invitations"."courseRole"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
@@ -667,18 +652,18 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT "enrollments"."id",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole",
-                   "enrollments"."accentColor"
+                    "courses"."id" AS "courseId",
+                    "courses"."reference" AS "courseReference",
+                    "courses"."archivedAt" AS "courseArchivedAt",
+                    "courses"."name" AS "courseName",
+                    "courses"."year" AS "courseYear",
+                    "courses"."term" AS "courseTerm",
+                    "courses"."institution" AS "courseInstitution",
+                    "courses"."code" AS "courseCode",
+                    "courses"."nextConversationReference" AS "courseNextConversationReference",
+                    "enrollments"."reference",
+                    "enrollments"."courseRole",
+                    "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${response.locals.user.id}
@@ -717,8 +702,8 @@ export default async (application: Application): Promise<void> => {
           response.locals.user.systemRole === "administrator");
 
       next();
-    },
-  ];
+    }
+  );
 
   application.locals.middlewares.hasPasswordConfirmation = [
     ...application.locals.middlewares.isSignedIn,
@@ -1955,7 +1940,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  application.server.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/sign-out",
     ...application.locals.middlewares.isSignedIn,
     (request, response) => {
