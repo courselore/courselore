@@ -8,7 +8,9 @@ import { Application, ResponseLocalsLogging } from "./index.mjs";
 export type ApplicationBase = {
   server: {
     locals: {
-      cookies: express.CookieOptions;
+      configuration: {
+        cookies: express.CookieOptions;
+      };
     };
   };
 };
@@ -34,7 +36,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, ResponseLocalsBase>(cookieParser());
 
-  application.server.locals.cookies = {
+  application.server.locals.configuration.cookies = {
     path: "/",
     secure: true,
     httpOnly: true,

@@ -23,7 +23,9 @@ import {
 export type ApplicationAuthentication = {
   server: {
     locals: {
-      argon2: argon2.Options & { raw?: false };
+      configuration: {
+        argon2: argon2.Options & { raw?: false };
+      };
       helpers: {
         Session: {
           maxAge: number;
