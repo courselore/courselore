@@ -20,20 +20,20 @@ export type ApplicationLayouts = {
     locals: {
       layouts: {
         base: ({
-          req,
-          res,
+          request,
+          response,
           head,
           extraHeaders,
           body,
         }: {
-          req: express.Request<
+          request: express.Request<
             {},
             any,
             {},
             {},
             ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
           >;
-          res: express.Response<
+          response: express.Response<
             any,
             ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
           >;
@@ -42,19 +42,19 @@ export type ApplicationLayouts = {
           body: HTML;
         }) => HTML;
         box: ({
-          req,
-          res,
+          request,
+          response,
           head,
           body,
         }: {
-          req: express.Request<
+          request: express.Request<
             {},
             any,
             {},
             {},
             ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
           >;
-          res: express.Response<
+          response: express.Response<
             any,
             ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
           >;
@@ -62,21 +62,21 @@ export type ApplicationLayouts = {
           body: HTML;
         }) => HTML;
         application: ({
-          req,
-          res,
+          request,
+          response,
           head,
           showCourseSwitcher,
           extraHeaders,
           body,
         }: {
-          req: express.Request<
+          request: express.Request<
             {},
             any,
             {},
             {},
             ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
           >;
-          res: express.Response<
+          response: express.Response<
             any,
             ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
           >;
@@ -86,20 +86,20 @@ export type ApplicationLayouts = {
           body: HTML;
         }) => HTML;
         main: ({
-          req,
-          res,
+          request,
+          response,
           head,
           showCourseSwitcher,
           body,
         }: {
-          req: express.Request<
+          request: express.Request<
             {},
             any,
             {},
             {},
             ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
           >;
-          res: express.Response<
+          response: express.Response<
             any,
             ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
           >;
@@ -108,81 +108,81 @@ export type ApplicationLayouts = {
           body: HTML;
         }) => HTML;
         settings: ({
-          req,
-          res,
+          request,
+          response,
           head,
           menuButton,
           menu,
           body,
         }: {
-          req: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
-          res: express.Response<any, ResponseLocalsSignedIn>;
+          request: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
+          response: express.Response<any, ResponseLocalsSignedIn>;
           head: HTML;
           menuButton: HTML;
           menu: HTML;
           body: HTML;
         }) => HTML;
         partial: ({
-          req,
-          res,
+          request,
+          response,
           body,
         }: {
-          req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-          res: express.Response<any, ResponseLocalsBase>;
+          request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+          response: express.Response<any, ResponseLocalsBase>;
           body: HTML;
         }) => HTML;
+      };
+      partials: {
+        logo: (options?: { size?: number }) => HTML;
+        spinner: ({
+          request,
+          response,
+          size,
+        }: {
+          request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+          response: express.Response<any, ResponseLocalsBase>;
+          size?: number;
+        }) => HTML;
+        reportIssueHref: string;
+      };
+      helpers: {
+        Flash: {
+          maxAge: number;
+          set({
+            request,
+            response,
+            theme,
+            content,
+          }: {
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
+            theme: string;
+            content: HTML;
+          }): void;
+          get({
+            request,
+            response,
+          }: {
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
+          }): { theme: string; content: HTML } | undefined;
+        };
       };
     };
   };
 };
 
-export type LogoPartial = (options?: { size?: number }) => HTML;
-
-export type SpinnerPartial = ({
-  req,
-  res,
-  size,
-}: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-  res: express.Response<any, ResponseLocalsBase>;
-  size?: number;
-}) => HTML;
-
-export type ReportIssueHrefPartial = string;
-
-export type FlashHelper = {
-  maxAge: number;
-  set({
-    req,
-    res,
-    theme,
-    content,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-    theme: string;
-    content: HTML;
-  }): void;
-  get({
-    req,
-    res,
-  }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-    res: express.Response<any, ResponseLocalsBase>;
-  }): { theme: string; content: HTML } | undefined;
-};
-
-export default async (app: Application): Promise<void> => {
-  app.locals.layouts.base = ({
-    req,
-    res,
+export default async (application: Application): Promise<void> => {
+  application.server.locals.layouts.base = ({
+    request,
+    response,
     head,
     extraHeaders = html``,
     body,
   }) => {
     const baseLayoutBody = html`
       <body
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           font-family: "Public SansVariable", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
@@ -196,7 +196,7 @@ export default async (app: Application): Promise<void> => {
       >
         <div
           key="viewport"
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             position: absolute;
             top: 0;
             right: 0;
@@ -212,7 +212,10 @@ export default async (app: Application): Promise<void> => {
             };
 
             ${(() => {
-              const flash = app.locals.helpers.Flash.get({ req, res });
+              const flash = application.locals.helpers.Flash.get({
+                req: request,
+                res: response,
+              });
               return flash === undefined
                 ? javascript``
                 : javascript`
@@ -225,10 +228,10 @@ export default async (app: Application): Promise<void> => {
                       theme: ${JSON.stringify(flash.theme)},
                       arrow: false,
                       interactive: true,
-                      content: ${res.locals.html(
+                      content: ${response.locals.html(
                         html`
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               padding: var(--space--1) var(--space--2);
                               display: flex;
                               gap: var(--space--2);
@@ -242,7 +245,7 @@ export default async (app: Application): Promise<void> => {
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
-                                  content: ${res.locals.html(
+                                  content: ${response.locals.html(
                                     html`
                                       Close
                                       <span class="keyboard-shortcut">
@@ -282,43 +285,43 @@ export default async (app: Application): Promise<void> => {
             })()}
 
             document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-              res.locals.enrollment?.accentColor
+              response.locals.enrollment?.accentColor
             }--500"));
             document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-              res.locals.enrollment?.accentColor
+              response.locals.enrollment?.accentColor
             }--600"));
 
             ${
-              res.locals.liveUpdatesNonce !== undefined
+              response.locals.liveUpdatesNonce !== undefined
                 ? javascript`
                     if (event?.detail?.liveUpdate !== true)
                       leafac.liveUpdates(${JSON.stringify(
-                        res.locals.liveUpdatesNonce
+                        response.locals.liveUpdatesNonce
                       )});
                   `
                 : javascript``
             }
           `}"
         >
-          $${res.locals.enrollment === undefined
+          $${response.locals.enrollment === undefined
             ? html``
             : html`
                 <div
                   key="header--accent-color"
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     height: var(--border-width--8);
                     display: flex;
                   `)}"
                 >
                   <button
                     class="button"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       background-color: var(
-                        --color--${res.locals.enrollment.accentColor}--500
+                        --color--${response.locals.enrollment.accentColor}--500
                       );
                       @media (prefers-color-scheme: dark) {
                         background-color: var(
-                          --color--${res.locals.enrollment.accentColor}--600
+                          --color--${response.locals.enrollment.accentColor}--600
                         );
                       }
                       border-radius: var(--border-radius--none);
@@ -333,10 +336,10 @@ export default async (app: Application): Promise<void> => {
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${res.locals.html(
+                        content: ${response.locals.html(
                           html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -349,11 +352,11 @@ export default async (app: Application): Promise<void> => {
                                 differentiate between courses.
                               </p>
                               <a
-                                href="https://${app.locals.options
-                                  .hostname}/courses/${res.locals.course!
+                                href="https://${application.locals.options
+                                  .hostname}/courses/${response.locals.course!
                                   .reference}/settings/your-enrollment"
                                 class="button button--blue"
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   width: 100%;
                                 `)}"
                               >
@@ -373,7 +376,7 @@ export default async (app: Application): Promise<void> => {
 
             let headerMeta = html``;
 
-            if (app.locals.options.demonstration)
+            if (application.locals.options.demonstration)
               headerMeta += html`
                 <div>
                   <button
@@ -382,10 +385,10 @@ export default async (app: Application): Promise<void> => {
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${res.locals.html(
+                        content: ${response.locals.html(
                           html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -403,12 +406,12 @@ export default async (app: Application): Promise<void> => {
                               </p>
                               <form
                                 method="POST"
-                                action="https://${app.locals.options
+                                action="https://${application.locals.options
                                   .hostname}/demonstration-data"
                               >
                                 <button
                                   class="button button--blue"
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     width: 100%;
                                   `)}"
                                 >
@@ -428,11 +431,12 @@ export default async (app: Application): Promise<void> => {
                 </div>
               `;
 
-            if (app.locals.options.environment !== "production")
+            if (application.locals.options.environment !== "production")
               headerMeta += html`
                 <form
                   method="DELETE"
-                  action="https://${app.locals.options.hostname}/turn-off"
+                  action="https://${application.locals.options
+                    .hostname}/turn-off"
                 >
                   <button class="button button--transparent">
                     <i class="bi bi-power"></i>
@@ -445,7 +449,7 @@ export default async (app: Application): Promise<void> => {
               header += html`
                 <div
                   key="header--meta"
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     justify-content: center;
                     flex-wrap: wrap;
                   `)}"
@@ -460,7 +464,7 @@ export default async (app: Application): Promise<void> => {
               ? html`
                   <div
                     key="header"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       background-color: var(--color--gray--medium--100);
@@ -488,7 +492,7 @@ export default async (app: Application): Promise<void> => {
 
           <div
             key="main"
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               flex: 1;
               overflow: auto;
             `)}"
@@ -506,7 +510,7 @@ export default async (app: Application): Promise<void> => {
 
           <div
             key="footer"
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -527,17 +531,17 @@ export default async (app: Application): Promise<void> => {
             <div>
               <button
                 class="button button--transparent"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   align-items: center;
                 `)}"
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         <h3 class="heading">
-                          $${app.locals.partials.logo({
+                          $${application.locals.partials.logo({
                             size: 12 /* var(--space--3) */,
                           })}
                           <span>
@@ -545,18 +549,19 @@ export default async (app: Application): Promise<void> => {
                             Communication Platform for Education <br />
                             <small
                               class="secondary"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
                               `)}"
                             >
-                              Version ${app.locals.options.version}
+                              Version ${application.locals.options.version}
                             </small>
                           </span>
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="https://${app.locals.options.hostname}/about"
+                            href="https://${application.locals.options
+                              .hostname}/about"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -577,7 +582,9 @@ export default async (app: Application): Promise<void> => {
                   });
                 `}"
               >
-                $${app.locals.partials.logo({ size: 16 /* var(--space--4) */ })}
+                $${application.locals.partials.logo({
+                  size: 16 /* var(--space--4) */,
+                })}
                 Courselore
               </button>
             </div>
@@ -589,7 +596,7 @@ export default async (app: Application): Promise<void> => {
                   (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         <h3 class="heading">
                           <i class="bi bi-bug"></i>
@@ -597,7 +604,7 @@ export default async (app: Application): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${app.locals.options
+                            href="${application.locals.options
                               .metaCourseloreInvitation}${qs.stringify(
                               {
                                 redirect: `conversations/new/question${qs.stringify(
@@ -622,7 +629,7 @@ export default async (app: Application): Promise<void> => {
 
                                         **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                        - Courselore Version: ${app.locals.options.version}
+                                        - Courselore Version: ${application.locals.options.version}
                                       `,
                                       tagsReferences: ["9676584193"],
                                     },
@@ -634,22 +641,23 @@ export default async (app: Application): Promise<void> => {
                             )}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               align-items: center;
                             `)}"
                           >
-                            $${app.locals.partials.logo({
+                            $${application.locals.partials.logo({
                               size: 14 /* var(--space--3-5) */,
                             })}
                             Meta Courselore
                           </a>
                           <a
-                            href="${app.locals.partials.reportIssueHref}"
+                            href="${application.locals.partials
+                              .reportIssueHref}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
                             <i class="bi bi-envelope"></i>
-                            ${app.locals.options.administratorEmail}
+                            ${application.locals.options.administratorEmail}
                           </a>
                           <a
                             href="https://github.com/courselore/courselore/issues/new${qs.stringify(
@@ -673,7 +681,7 @@ export default async (app: Application): Promise<void> => {
 
                                   **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                  - Courselore Version: ${app.locals.options.version}
+                                  - Courselore Version: ${application.locals.options.version}
                                 `,
                               },
                               { addQueryPrefix: true }
@@ -695,10 +703,10 @@ export default async (app: Application): Promise<void> => {
               </button>
             </div>
 
-            $${res.locals.user?.systemRole === "administrator" &&
+            $${response.locals.user?.systemRole === "administrator" &&
             semver.gt(
-              res.locals.administrationOptions.latestVersion,
-              app.locals.options.version
+              response.locals.administrationOptions.latestVersion,
+              application.locals.options.version
             )
               ? html`
                   <div>
@@ -708,7 +716,7 @@ export default async (app: Application): Promise<void> => {
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <h3 class="heading">
                                 <i class="bi bi-arrow-up-circle-fill"></i>
@@ -722,7 +730,7 @@ export default async (app: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${app.locals.options.version}
+                                    ${application.locals.options.version}
                                   </span>
                                   →
                                   <span
@@ -733,7 +741,7 @@ export default async (app: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${res.locals.administrationOptions
+                                    ${response.locals.administrationOptions
                                       .latestVersion}
                                   </span>
                                 </span>
@@ -757,7 +765,7 @@ export default async (app: Application): Promise<void> => {
                                   Update Instructions
                                 </a>
                                 <a
-                                  href="https://github.com/courselore/courselore/releases/tag/v${res
+                                  href="https://github.com/courselore/courselore/releases/tag/v${response
                                     .locals.administrationOptions
                                     .latestVersion}"
                                   target="_blank"
@@ -772,7 +780,7 @@ export default async (app: Application): Promise<void> => {
                         });
                       `}"
                     >
-                    <span css="${res.locals.css(css`
+                    <span css="${response.locals.css(css`
                       display: flex;
                       gap: var(--space--2);
                       animation: bounce 1s 3;
@@ -790,7 +798,7 @@ export default async (app: Application): Promise<void> => {
         <div
           key="progress-bar"
           hidden
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             position: fixed;
             top: 0;
             right: 0;
@@ -822,7 +830,7 @@ export default async (app: Application): Promise<void> => {
           `}"
         >
           <div
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               height: var(--border-width--4);
               background-color: var(--color--blue--500);
               @media (prefers-color-scheme: dark) {
@@ -843,7 +851,7 @@ export default async (app: Application): Promise<void> => {
           ></div>
         </div>
 
-        $${res.locals.html.toString()}
+        $${response.locals.html.toString()}
       </body>
     `;
     return html`
@@ -862,32 +870,34 @@ export default async (app: Application): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="https://${app.locals.options.hostname}/${app.locals.options
-              .static["index.css"]}"
+            href="https://${application.locals.options.hostname}/${application
+              .locals.options.static["index.css"]}"
           />
-          $${res.locals.css.toString()}
+          $${response.locals.css.toString()}
 
-          <script src="https://${app.locals.options.hostname}/${app.locals
-              .options.static["index.mjs"]}"></script>
+          <script src="https://${application.locals.options
+              .hostname}/${application.locals.options.static[
+              "index.mjs"
+            ]}"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
             leafac.liveConnection({
-              version: $${JSON.stringify(app.locals.options.version)},
+              version: $${JSON.stringify(application.locals.options.version)},
               url: $${JSON.stringify(
-                `https://${app.locals.options.hostname}/live-connection`
+                `https://${application.locals.options.hostname}/live-connection`
               )},
               newVersionMessage:
                 "Courselore has been updated. Please reload the page.",
               offlineMessage:
                 "Failed to connect to the Courselore server. Please check your internet connection and try reloading the page.",
               liveReload: $${JSON.stringify(
-                app.locals.options.environment === "development"
+                application.locals.options.environment === "development"
               )},
             });
             leafac.liveNavigation(
-              $${JSON.stringify(app.locals.options.hostname)}
+              $${JSON.stringify(application.locals.options.hostname)}
             );
           </script>
 
@@ -911,44 +921,52 @@ export default async (app: Application): Promise<void> => {
     `;
   };
 
-  if (app.locals.options.environment !== "production")
-    app.delete<{}, any, {}, {}, ResponseLocalsBase>("/turn-off", (req, res) => {
-      res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`
-            <title>
-              Thanks for trying Courselore! · Courselore · Communication
-              Platform for Education
-            </title>
-          `,
-          body: html`
-            <p class="strong">Thanks for trying Courselore!</p>
-            <p>
-              Next steps:
-              <a
-                href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
-                class="link"
-                >Learn how to install Courselore on your own server</a
-              >
-              or
-              <a
-                href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
-                class="link"
-                >learn how to setup for development</a
-              >.
-            </p>
-          `,
-        })
-      );
-      process.exit();
-    });
+  if (application.locals.options.environment !== "production")
+    application.delete<{}, any, {}, {}, ResponseLocalsBase>(
+      "/turn-off",
+      (req, res) => {
+        res.send(
+          application.server.locals.layouts.box({
+            request: req,
+            response: res,
+            head: html`
+              <title>
+                Thanks for trying Courselore! · Courselore · Communication
+                Platform for Education
+              </title>
+            `,
+            body: html`
+              <p class="strong">Thanks for trying Courselore!</p>
+              <p>
+                Next steps:
+                <a
+                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
+                  class="link"
+                  >Learn how to install Courselore on your own server</a
+                >
+                or
+                <a
+                  href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
+                  class="link"
+                  >learn how to setup for development</a
+                >.
+              </p>
+            `,
+          })
+        );
+        process.exit();
+      }
+    );
 
-  app.locals.layouts.box = ({ req, res, head, body }) =>
-    app.locals.layouts.base({
-      req,
-      res,
+  application.server.locals.layouts.box = ({
+    request: req,
+    response: res,
+    head,
+    body,
+  }) =>
+    application.server.locals.layouts.base({
+      request: req,
+      response: res,
       head,
       body: html`
         <div
@@ -979,13 +997,13 @@ export default async (app: Application): Promise<void> => {
               `)}"
             >
               <a
-                href="https://${app.locals.options.hostname}/"
+                href="https://${application.locals.options.hostname}/"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   align-items: center;
                 `)}"
               >
-                $${app.locals.partials.logo()} Courselore
+                $${application.locals.partials.logo()} Courselore
               </a>
             </div>
             <div
@@ -1005,7 +1023,8 @@ export default async (app: Application): Promise<void> => {
               $${body}
             </div>
 
-            $${app.locals.options.hostname === app.locals.options.tryHostname
+            $${application.locals.options.hostname ===
+            application.locals.options.tryHostname
               ? html`
                   <div
                     key="main--try"
@@ -1047,7 +1066,7 @@ export default async (app: Application): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="https://${app.locals.options
+                        action="https://${application.locals.options
                           .hostname}/demonstration-data"
                       >
                         <button
@@ -1063,7 +1082,7 @@ export default async (app: Application): Promise<void> => {
                     </div>
                   </div>
                 `
-              : app.locals.options.demonstration
+              : application.locals.options.demonstration
               ? html`
                   <div
                     key="main--demonstration"
@@ -1105,7 +1124,7 @@ export default async (app: Application): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="https://${app.locals.options
+                        action="https://${application.locals.options
                           .hostname}/demonstration-data"
                       >
                         <button
@@ -1127,17 +1146,17 @@ export default async (app: Application): Promise<void> => {
       `,
     });
 
-  app.locals.layouts.application = ({
-    req,
-    res,
+  application.server.locals.layouts.application = ({
+    request: req,
+    response: res,
     head,
     showCourseSwitcher = true,
     extraHeaders = html``,
     body,
   }) =>
-    app.locals.layouts.base({
-      req,
-      res,
+    application.server.locals.layouts.base({
+      request: req,
+      response: res,
       head,
       extraHeaders: html`
         <div
@@ -1150,7 +1169,7 @@ export default async (app: Application): Promise<void> => {
           `)}"
         >
           <a
-            href="https://${app.locals.options.hostname}/"
+            href="https://${application.locals.options.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
             onload="${javascript`
               (this.tooltip ??= tippy(this)).setProps({
@@ -1159,7 +1178,7 @@ export default async (app: Application): Promise<void> => {
               });
             `}"
           >
-            $${app.locals.partials.logo()}
+            $${application.locals.partials.logo()}
           </a>
 
           <div
@@ -1173,7 +1192,11 @@ export default async (app: Application): Promise<void> => {
             $${(() => {
               const courseSwitcher = html`
                 <div class="dropdown--menu">
-                  $${app.locals.partials.courses({ req, res, tight: true })}
+                  $${application.locals.partials.courses({
+                    req,
+                    res,
+                    tight: true,
+                  })}
                 </div>
               `;
 
@@ -1213,7 +1236,7 @@ export default async (app: Application): Promise<void> => {
                                             margin-top: var(--space---2);
                                           `)}"
                                         >
-                                          $${app.locals.partials.courseArchived(
+                                          $${application.locals.partials.courseArchived(
                                             { req, res }
                                           )}
                                         </div>
@@ -1221,7 +1244,7 @@ export default async (app: Application): Promise<void> => {
                                     : html``}
                                   <div class="dropdown--menu">
                                     <a
-                                      href="https://${app.locals.options
+                                      href="https://${application.locals.options
                                         .hostname}/courses/${res.locals.course
                                         .reference}"
                                       class="dropdown--menu--item button ${req.path.includes(
@@ -1240,7 +1263,7 @@ export default async (app: Application): Promise<void> => {
                                       Conversations
                                     </a>
                                     <a
-                                      href="https://${app.locals.options
+                                      href="https://${application.locals.options
                                         .hostname}/courses/${res.locals.course
                                         .reference}/settings"
                                       class="dropdown--menu--item button ${req.path.includes(
@@ -1283,7 +1306,10 @@ export default async (app: Application): Promise<void> => {
                       </span>
                       $${res.locals.course.archivedAt !== null
                         ? html`
-                            $${app.locals.partials.courseArchived({ req, res })}
+                            $${application.locals.partials.courseArchived({
+                              req,
+                              res,
+                            })}
                           `
                         : html``}
                       <i class="bi bi-chevron-down"></i>
@@ -1363,12 +1389,13 @@ export default async (app: Application): Promise<void> => {
                                     (invitation) => html`
                                       <a
                                         key="invitation--${invitation.reference}"
-                                        href="https://${app.locals.options
+                                        href="https://${application.locals
+                                          .options
                                           .hostname}/courses/${invitation.course
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
                                       >
-                                        $${app.locals.partials.course({
+                                        $${application.locals.partials.course({
                                           req,
                                           res,
                                           course: invitation.course,
@@ -1397,7 +1424,7 @@ export default async (app: Application): Promise<void> => {
                           $${res.locals.mayCreateCourses
                             ? html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${application.locals.options
                                     .hostname}/courses/new"
                                   class="dropdown--menu--item button button--transparent"
                                 >
@@ -1496,7 +1523,7 @@ export default async (app: Application): Promise<void> => {
                               <div class="dropdown--menu">
                                 <a
                                   class="dropdown--menu--item button button--transparent"
-                                  href="https://${app.locals.options
+                                  href="https://${application.locals.options
                                     .hostname}/administration"
                                 >
                                   <i class="bi bi-pc-display-horizontal"></i>
@@ -1511,7 +1538,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             class="dropdown--menu--item button button--transparent"
-                            href="https://${app.locals.options
+                            href="https://${application.locals.options
                               .hostname}/settings"
                           >
                             <i class="bi bi-sliders"></i>
@@ -1519,7 +1546,7 @@ export default async (app: Application): Promise<void> => {
                           </a>
                           <form
                             method="DELETE"
-                            action="https://${app.locals.options
+                            action="https://${application.locals.options
                               .hostname}/sign-out"
                           >
                             <button
@@ -1541,7 +1568,7 @@ export default async (app: Application): Promise<void> => {
                 });
               `}"
             >
-              $${app.locals.partials.user({
+              $${application.locals.partials.user({
                 req,
                 res,
                 user: res.locals.user,
@@ -1557,16 +1584,16 @@ export default async (app: Application): Promise<void> => {
       body,
     });
 
-  app.locals.layouts.main = ({
-    req,
-    res,
+  application.server.locals.layouts.main = ({
+    request: req,
+    response: res,
     head,
     showCourseSwitcher = true,
     body,
   }) =>
-    app.locals.layouts.application({
-      req,
-      res,
+    application.server.locals.layouts.application({
+      request: req,
+      response: res,
       head,
       showCourseSwitcher,
       body: html`
@@ -1594,10 +1621,17 @@ export default async (app: Application): Promise<void> => {
       `,
     });
 
-  app.locals.layouts.settings = ({ req, res, head, menuButton, menu, body }) =>
-    app.locals.layouts.application({
-      req,
-      res,
+  application.server.locals.layouts.settings = ({
+    request: req,
+    response: res,
+    head,
+    menuButton,
+    menu,
+    body,
+  }) =>
+    application.server.locals.layouts.application({
+      request: req,
+      response: res,
       head,
       extraHeaders:
         menu === html``
@@ -1678,7 +1712,7 @@ export default async (app: Application): Promise<void> => {
       `,
     });
 
-  app.locals.partials.logo = (() => {
+  application.locals.partials.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -1728,7 +1762,11 @@ export default async (app: Application): Promise<void> => {
     `;
   })();
 
-  app.locals.layouts.partial = ({ req, res, body }) => html`
+  application.server.locals.layouts.partial = ({
+    request: req,
+    response: res,
+    body,
+  }) => html`
     <!DOCTYPE html>
     <html>
       <head>
@@ -1740,7 +1778,7 @@ export default async (app: Application): Promise<void> => {
     </html>
   `;
 
-  app.locals.partials.spinner = ({ req, res, size = 20 }) => html`
+  application.locals.partials.spinner = ({ req, res, size = 20 }) => html`
     <svg
       width="${size.toString()}"
       height="${size.toString()}"
@@ -1767,8 +1805,8 @@ export default async (app: Application): Promise<void> => {
     </svg>
   `;
 
-  app.locals.partials.reportIssueHref = `mailto:${
-    app.locals.options.administratorEmail
+  application.locals.partials.reportIssueHref = `mailto:${
+    application.locals.options.administratorEmail
   }${qs.stringify(
     {
       subject: "Report an Issue",
@@ -1791,17 +1829,17 @@ export default async (app: Application): Promise<void> => {
   
           Please provide as much relevant context as possible (operating system, browser, and so forth):
   
-          Courselore Version: ${app.locals.options.version}
+          Courselore Version: ${application.locals.options.version}
         `,
     },
     { addQueryPrefix: true }
   )}`;
 
-  app.locals.helpers.Flash = {
+  application.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
     set({ req, res, theme, content }) {
-      const flash = app.locals.database.get<{ nonce: string }>(
+      const flash = application.locals.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("createdAt", "nonce", "theme", "content")
           VALUES (
@@ -1815,14 +1853,14 @@ export default async (app: Application): Promise<void> => {
       )!;
       req.cookies["__Host-Flash"] = flash.nonce;
       res.cookie("__Host-Flash", flash.nonce, {
-        ...app.locals.options.cookies,
-        maxAge: app.locals.helpers.Flash.maxAge,
+        ...application.locals.options.cookies,
+        maxAge: application.locals.helpers.Flash.maxAge,
       });
     },
 
     get({ req, res }) {
       if (req.cookies["__Host-Flash"] === undefined) return undefined;
-      const flash = app.locals.database.get<{
+      const flash = application.locals.database.get<{
         id: number;
         theme: string;
         content: HTML;
@@ -1830,9 +1868,9 @@ export default async (app: Application): Promise<void> => {
         sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies["__Host-Flash"]}`
       );
       delete req.cookies["__Host-Flash"];
-      res.clearCookie("__Host-Flash", app.locals.options.cookies);
+      res.clearCookie("__Host-Flash", application.locals.options.cookies);
       if (flash === undefined) return undefined;
-      app.locals.database.run(
+      application.locals.database.run(
         sql`
           DELETE FROM "flashes" WHERE "id" = ${flash.id}
         `
@@ -1841,25 +1879,25 @@ export default async (app: Application): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
-    app.once("start", async () => {
+  if (application.locals.options.processType === "worker")
+    application.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            application.locals.options.processType
           }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
         );
-        app.locals.database.run(
+        application.locals.database.run(
           sql`
             DELETE FROM "flashes"
             WHERE "createdAt" < ${new Date(
-              Date.now() - app.locals.helpers.Flash.maxAge
+              Date.now() - application.locals.helpers.Flash.maxAge
             ).toISOString()}
           `
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            application.locals.options.processType
           }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });

@@ -248,7 +248,8 @@ if (
 
         // application.server.locals.middleware = {} as any;
         application.server.locals.layouts = {} as any;
-        // application.server.locals.helpers = {} as any;
+        application.server.locals.partials = {} as any;
+        application.server.locals.helpers = {} as any;
 
         await logging(application);
         await database(application);
