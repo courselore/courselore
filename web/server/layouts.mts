@@ -212,9 +212,9 @@ export default async (application: Application): Promise<void> => {
             };
 
             ${(() => {
-              const flash = application.locals.helpers.Flash.get({
-                req: request,
-                res: response,
+              const flash = application.server.locals.helpers.Flash.get({
+                request,
+                response,
               });
               return flash === undefined
                 ? javascript``
@@ -290,17 +290,6 @@ export default async (application: Application): Promise<void> => {
             document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
               response.locals.enrollment?.accentColor
             }--600"));
-
-            ${
-              response.locals.liveUpdatesNonce !== undefined
-                ? javascript`
-                    if (event?.detail?.liveUpdate !== true)
-                      leafac.liveUpdates(${JSON.stringify(
-                        response.locals.liveUpdatesNonce
-                      )});
-                  `
-                : javascript``
-            }
           `}"
         >
           $${response.locals.enrollment === undefined
@@ -1835,7 +1824,7 @@ export default async (application: Application): Promise<void> => {
     { addQueryPrefix: true }
   )}`;
 
-  application.locals.helpers.Flash = {
+  application.server.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
     set({ req, res, theme, content }) {
@@ -1854,7 +1843,7 @@ export default async (application: Application): Promise<void> => {
       req.cookies["__Host-Flash"] = flash.nonce;
       res.cookie("__Host-Flash", flash.nonce, {
         ...application.locals.options.cookies,
-        maxAge: application.locals.helpers.Flash.maxAge,
+        maxAge: application.server.locals.helpers.Flash.maxAge,
       });
     },
 
@@ -1891,7 +1880,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "flashes"
             WHERE "createdAt" < ${new Date(
-              Date.now() - application.locals.helpers.Flash.maxAge
+              Date.now() - application.server.locals.helpers.Flash.maxAge
             ).toISOString()}
           `
         );

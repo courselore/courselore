@@ -1,5 +1,17 @@
 // This file is here for now because it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
+// ‘layouts.mts’
+// ${
+//   response.locals.liveUpdatesNonce !== undefined
+//     ? javascript`
+//         if (event?.detail?.liveUpdate !== true)
+//           leafac.liveUpdates(${JSON.stringify(
+//             response.locals.liveUpdatesNonce
+//           )});
+//       `
+//     : javascript``
+// }
+
 import fastMyersDiff from "fast-myers-diff";
 import tippy, * as tippyStatic from "tippy.js";
 

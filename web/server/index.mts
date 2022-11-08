@@ -52,6 +52,7 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase;
 import { ResponseLocalsBase } from "./base.mjs";
 export type ResponseLocalsCourseEnrolled = ResponseLocalsBase & {
   course: { id: number; reference: string };
+  enrollment: { accentColor: string };
 };
 // export {
 //   Enrollment,
