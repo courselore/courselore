@@ -21,13 +21,13 @@ export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
+import authentication from "./authentication.mjs";
 // TODO
 export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   user: any;
   administrationOptions: any;
   mayCreateCourses: any;
 };
-// import authentication from "./authentication.mjs";
 // export {
 //   IsSignedOutLocals,
 //   ResponseLocalsSignedIn,
@@ -287,7 +287,7 @@ if (
         await base(application);
         // await liveUpdates(application);
         await layouts(application);
-        // await authentication(application);
+        await authentication(application);
         // await about(application);
         // await administration(application);
         // await user(application);
