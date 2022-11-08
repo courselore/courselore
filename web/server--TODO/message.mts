@@ -126,7 +126,7 @@ export default async (app: Courselore): Promise<void> => {
     conversation,
     messageReference,
   }) => {
-    const messageRow = app.locals.database.get<{
+    const messageRow = app.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -227,7 +227,7 @@ export default async (app: Courselore): Promise<void> => {
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
 
-    const readings = app.locals.database
+    const readings = app.database
       .all<{
         id: number;
         createdAt: string;
@@ -299,7 +299,7 @@ export default async (app: Courselore): Promise<void> => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const endorsements = app.locals.database
+    const endorsements = app.database
       .all<{
         id: number;
         enrollmentId: number | null;
@@ -368,7 +368,7 @@ export default async (app: Courselore): Promise<void> => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const likes = app.locals.database
+    const likes = app.database
       .all<{
         id: number;
         createdAt: string;
@@ -593,14 +593,14 @@ export default async (app: Courselore): Promise<void> => {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
         const contentPreprocessed =
           app.locals.partials.contentPreprocessed(contentSource);
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        message = app.locals.database.get<{ id: number; reference: string }>(
+        message = app.database.get<{ id: number; reference: string }>(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
@@ -610,7 +610,7 @@ export default async (app: Courselore): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "readings"
             WHERE "message" = ${mostRecentMessage.id} AND
@@ -621,7 +621,7 @@ export default async (app: Courselore): Promise<void> => {
         const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()},
@@ -647,7 +647,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        message = app.locals.database.get<{
+        message = app.database.get<{
           id: number;
           reference: string;
         }>(
@@ -679,7 +679,7 @@ export default async (app: Courselore): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -760,7 +760,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
@@ -782,7 +782,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -799,7 +799,7 @@ export default async (app: Courselore): Promise<void> => {
             res.locals.conversation.authorEnrollment.id ===
               res.locals.message.authorEnrollment.id
           )
-            app.locals.database.run(
+            app.database.run(
               sql`
                 UPDATE "conversations"
                 SET "anonymousAt" = ${
@@ -817,7 +817,7 @@ export default async (app: Courselore): Promise<void> => {
         const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
@@ -829,7 +829,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.message.id}
           `
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
@@ -878,7 +878,7 @@ export default async (app: Courselore): Promise<void> => {
     ...app.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res, next) => {
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
       res.redirect(
@@ -987,7 +987,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "likes" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1039,7 +1039,7 @@ export default async (app: Courselore): Promise<void> => {
       );
       if (like === undefined) return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "likes" WHERE "id" = ${like.id}
         `
@@ -1122,7 +1122,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1133,7 +1133,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (res.locals.conversation.resolvedAt === null)
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "conversations"
             SET "resolvedAt" = ${new Date().toISOString()}
@@ -1182,7 +1182,7 @@ export default async (app: Courselore): Promise<void> => {
       );
       if (endorsement === undefined) return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
@@ -1204,8 +1204,8 @@ export default async (app: Courselore): Promise<void> => {
   );
 
   app.locals.mailers.emailNotifications = ({ req, res, message }) => {
-    app.locals.database.executeTransaction(() => {
-      app.locals.database.run(
+    app.database.executeTransaction(() => {
+      app.database.run(
         sql`
           INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1216,7 +1216,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (message.authorEnrollment !== "no-longer-enrolled")
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
             VALUES (
@@ -1227,7 +1227,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
 
-      const job = app.locals.database.get<{ id: number }>(
+      const job = app.database.get<{ id: number }>(
         sql`
           SELECT "id"
           FROM "emailNotificationMessageJobs"
@@ -1236,7 +1236,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (job === undefined)
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "emailNotificationMessageJobs" (
               "createdAt",
@@ -1255,7 +1255,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
       else
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "emailNotificationMessageJobs"
             SET "startAt" = ${new Date(
@@ -1270,17 +1270,17 @@ export default async (app: Courselore): Promise<void> => {
     });
   };
 
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\temailNotificationMessageJobs\tSTARTED...`
         );
 
-        app.locals.database.executeTransaction(() => {
-          for (const job of app.locals.database.all<{
+        app.database.executeTransaction(() => {
+          for (const job of app.database.all<{
             id: number;
             message: number;
           }>(
@@ -1290,14 +1290,14 @@ export default async (app: Courselore): Promise<void> => {
               WHERE "expiresAt" < ${new Date().toISOString()}
             `
           )) {
-            app.locals.database.run(
+            app.database.run(
               sql`
                 DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
               `
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
                 job.message
               }`
@@ -1305,8 +1305,8 @@ export default async (app: Courselore): Promise<void> => {
           }
         });
 
-        app.locals.database.executeTransaction(() => {
-          for (const job of app.locals.database.all<{
+        app.database.executeTransaction(() => {
+          for (const job of app.database.all<{
             id: number;
             message: number;
           }>(
@@ -1318,7 +1318,7 @@ export default async (app: Courselore): Promise<void> => {
               ).toISOString()}
             `
           )) {
-            app.locals.database.run(
+            app.database.run(
               sql`
                 UPDATE "emailNotificationMessageJobs"
                 SET "startedAt" = NULL
@@ -1327,7 +1327,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
                 job.message
               }`
@@ -1336,8 +1336,8 @@ export default async (app: Courselore): Promise<void> => {
         });
 
         while (true) {
-          const job = app.locals.database.executeTransaction(() => {
-            const job = app.locals.database.get<{
+          const job = app.database.executeTransaction(() => {
+            const job = app.database.get<{
               id: number;
               message: string;
             }>(
@@ -1351,7 +1351,7 @@ export default async (app: Courselore): Promise<void> => {
               `
             );
             if (job !== undefined)
-              app.locals.database.run(
+              app.database.run(
                 sql`
                   UPDATE "emailNotificationMessageJobs"
                   SET "startedAt" = ${new Date().toISOString()}
@@ -1362,7 +1362,7 @@ export default async (app: Courselore): Promise<void> => {
           });
           if (job === undefined) break;
 
-          const messageRow = app.locals.database.get<{
+          const messageRow = app.database.get<{
             id: number;
             conversationId: number;
             courseId: number;
@@ -1464,7 +1464,7 @@ export default async (app: Courselore): Promise<void> => {
             decorate: true,
           });
 
-          const enrollments = app.locals.database.all<{
+          const enrollments = app.database.all<{
             id: number;
             userId: number;
             userEmail: string;
@@ -1575,7 +1575,7 @@ export default async (app: Courselore): Promise<void> => {
             //   case "daily-digests":
             //     break;
             // }
-            app.locals.database.run(
+            app.database.run(
               sql`
                 INSERT INTO "sendEmailJobs" (
                   "createdAt",
@@ -1642,7 +1642,7 @@ export default async (app: Courselore): Promise<void> => {
               `
             );
 
-            app.locals.database.run(
+            app.database.run(
               sql`
                 INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
                 VALUES (
@@ -1654,14 +1654,14 @@ export default async (app: Courselore): Promise<void> => {
             );
           }
 
-          app.locals.database.run(
+          app.database.run(
             sql`
               DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
             `
           );
           console.log(
             `${new Date().toISOString()}\t${
-              app.configuration.processType
+              app.process.type
             }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
               job.message
             }`
@@ -1673,7 +1673,7 @@ export default async (app: Courselore): Promise<void> => {
 
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\temailNotificationMessageJobs\tFINISHED`
         );
 

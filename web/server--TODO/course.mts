@@ -598,7 +598,7 @@ export default async (app: Courselore): Promise<void> => {
     )
       return next("Validation");
 
-    const course = app.locals.database.get<{
+    const course = app.database.get<{
       id: number;
       reference: string;
     }>(
@@ -643,7 +643,7 @@ export default async (app: Courselore): Promise<void> => {
         RETURNING *
       `
     )!;
-    app.locals.database.run(
+    app.database.run(
       sql`
         INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
         VALUES (
@@ -697,7 +697,7 @@ export default async (app: Courselore): Promise<void> => {
       res.locals.enrollment = enrollment;
       res.locals.course = enrollment.course;
 
-      res.locals.courseEnrollmentsCount = app.locals.database.get<{
+      res.locals.courseEnrollmentsCount = app.database.get<{
         count: number;
       }>(
         sql`
@@ -707,7 +707,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       )!.count;
 
-      res.locals.conversationsCount = app.locals.database.get<{
+      res.locals.conversationsCount = app.database.get<{
         count: number;
       }>(
         sql`
@@ -730,7 +730,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       )!.count;
 
-      res.locals.tags = app.locals.database.all<{
+      res.locals.tags = app.database.all<{
         id: number;
         reference: string;
         name: string;
@@ -1274,7 +1274,7 @@ export default async (app: Courselore): Promise<void> => {
         return next("Validation");
 
       if (typeof req.body.isArchived !== "string") {
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "courses"
             SET "name" = ${req.body.name},
@@ -1312,7 +1312,7 @@ export default async (app: Courselore): Promise<void> => {
           content: html`Course information updated successfully.`,
         });
       } else {
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "courses"
             SET "archivedAt" = ${
@@ -1858,7 +1858,7 @@ export default async (app: Courselore): Promise<void> => {
 
       for (const tag of req.body.tags)
         if (tag.reference === undefined)
-          app.locals.database.run(
+          app.database.run(
             sql`
               INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
               VALUES (
@@ -1871,13 +1871,13 @@ export default async (app: Courselore): Promise<void> => {
             `
           );
         else if (tag.delete === "true")
-          app.locals.database.run(
+          app.database.run(
             sql`
               DELETE FROM "tags" WHERE "reference" = ${tag.reference}
             `
           );
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "tags"
               SET "name" = ${tag.name},
@@ -1908,7 +1908,7 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const invitations = app.locals.database.all<{
+      const invitations = app.database.all<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -2920,7 +2920,7 @@ export default async (app: Courselore): Promise<void> => {
     invitation: InvitationExistsLocals["invitation"];
   }): void => {
     const link = `https://${app.configuration.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-    app.locals.database.run(
+    app.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -2991,7 +2991,7 @@ export default async (app: Courselore): Promise<void> => {
 
       switch (req.body.type) {
         case "link":
-          const invitation = app.locals.database.get<{ reference: string }>(
+          const invitation = app.database.get<{ reference: string }>(
             sql`
               INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "courseRole")
               VALUES (
@@ -3056,7 +3056,7 @@ export default async (app: Courselore): Promise<void> => {
 
           for (const { email, name } of emails) {
             if (
-              app.locals.database.get<{}>(
+              app.database.get<{}>(
                 sql`
                   SELECT TRUE
                   FROM "enrollments"
@@ -3068,7 +3068,7 @@ export default async (app: Courselore): Promise<void> => {
             )
               continue;
 
-            const existingUnusedInvitation = app.locals.database.get<{
+            const existingUnusedInvitation = app.database.get<{
               id: number;
               name: string | null;
             }>(
@@ -3081,7 +3081,7 @@ export default async (app: Courselore): Promise<void> => {
               `
             );
             if (existingUnusedInvitation !== undefined) {
-              app.locals.database.run(
+              app.database.run(
                 sql`
                   UPDATE "invitations"
                   SET "expiresAt" = ${req.body.expiresAt},
@@ -3093,7 +3093,7 @@ export default async (app: Courselore): Promise<void> => {
               continue;
             }
 
-            const invitation = app.locals.database.get<{
+            const invitation = app.database.get<{
               id: number;
               expiresAt: string | null;
               usedAt: string | null;
@@ -3173,7 +3173,7 @@ export default async (app: Courselore): Promise<void> => {
     InvitationExistsLocals
   >[] = [
     (req, res, next) => {
-      const invitation = app.locals.database.get<{
+      const invitation = app.database.get<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -3284,7 +3284,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
 
-        app.locals.database.run(
+        app.database.run(
           sql`UPDATE "invitations" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.invitation.id}`
         );
 
@@ -3304,7 +3304,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
 
-        app.locals.database.run(
+        app.database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
@@ -3317,7 +3317,7 @@ export default async (app: Courselore): Promise<void> => {
       }
 
       if (req.body.removeExpiration === "true") {
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${null}
@@ -3334,7 +3334,7 @@ export default async (app: Courselore): Promise<void> => {
       }
 
       if (req.body.expire === "true") {
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${new Date().toISOString()}
@@ -3361,7 +3361,7 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const enrollments = app.locals.database
+      const enrollments = app.database
         .all<{
           id: number;
           userId: number;
@@ -3874,7 +3874,7 @@ export default async (app: Courselore): Promise<void> => {
   >[] = [
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      const managedEnrollment = app.locals.database.get<{
+      const managedEnrollment = app.database.get<{
         id: number;
         reference: string;
       }>(
@@ -3892,7 +3892,7 @@ export default async (app: Courselore): Promise<void> => {
       };
       if (
         res.locals.managedEnrollment.isSelf &&
-        app.locals.database.get<{ count: number }>(
+        app.database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
@@ -3919,7 +3919,7 @@ export default async (app: Courselore): Promise<void> => {
       if (typeof req.body.courseRole === "string") {
         if (!courseRoles.includes(req.body.courseRole))
           return next("Validation");
-        app.locals.database.run(
+        app.database.run(
           sql`UPDATE "enrollments" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
@@ -3952,7 +3952,7 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...mayManageEnrollmentMiddleware,
     (req, res) => {
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
@@ -4106,7 +4106,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
@@ -4443,7 +4443,7 @@ export default async (app: Courselore): Promise<void> => {
     ...app.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
     (req, res) => {
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
           VALUES (
@@ -4457,7 +4457,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (res.locals.invitation.email !== null)
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "invitations"
             SET "usedAt" = ${new Date().toISOString()}
@@ -4519,7 +4519,7 @@ export default async (app: Courselore): Promise<void> => {
                 const hasInvitationEmail = res.locals.invitation.email !== null;
                 const invitationUserExists =
                   hasInvitationEmail &&
-                  app.locals.database.get<{}>(
+                  app.database.get<{}>(
                     sql`
                       SELECT TRUE
                       FROM "users"

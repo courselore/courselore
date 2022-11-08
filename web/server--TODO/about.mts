@@ -181,7 +181,7 @@ export default async (app: Courselore): Promise<void> => {
 
                 <div>
                   <a
-                    href="https://${app.configuration.tryHostname}"
+                    href="https://${app.addresses.tryHostname}"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -913,7 +913,7 @@ export default async (app: Courselore): Promise<void> => {
               Source Code
             </a>
             <a
-              href="https://${app.configuration.tryHostname}"
+              href="https://${app.addresses.tryHostname}"
               class="button button--transparent"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({

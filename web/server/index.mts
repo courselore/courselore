@@ -23,8 +23,8 @@ export { ResponseLocalsBase } from "./base.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 // TODO
 export type ResponseLocalsSignedIn = ResponseLocalsBase & {
-  user: { systemRole: string };
-  administrationOptions: { latestVersion: string };
+  user: any;
+  administrationOptions: any;
 };
 // import authentication from "./authentication.mjs";
 // export {
@@ -54,8 +54,18 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
 // TODO
 import { ResponseLocalsBase } from "./base.mjs";
 export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
-  course: { id: number; reference: string };
-  enrollment: { accentColor: string };
+  course: any;
+  enrollment: any;
+};
+type ApplicationCourse = {
+  server: {
+    locals: {
+      partials: {
+        courses: any;
+        courseArchived: any;
+      };
+    };
+  };
 };
 // export {
 //   Enrollment,
@@ -127,7 +137,8 @@ export type Application = {
   ApplicationDatabase &
   ApplicationBase &
   // & ApplicationLiveUpdates
-  ApplicationLayouts;
+  ApplicationLayouts &
+  ApplicationCourse;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))

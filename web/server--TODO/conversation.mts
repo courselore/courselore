@@ -330,7 +330,7 @@ export default async (app: Courselore): Promise<void> => {
         ? Number(req.query.conversations.conversationsPage)
         : 1;
 
-    const conversationsWithSearchResults = app.locals.database
+    const conversationsWithSearchResults = app.database
       .all<{
         reference: string;
         conversationTitleSearchResultHighlight?: string | null;
@@ -580,7 +580,7 @@ export default async (app: Courselore): Promise<void> => {
 
     // TODO: Conversation drafts
     // conversationsWithSearchResults.unshift(
-    //   ...app.locals.database
+    //   ...app.database
     //     .all<{
     //       id: number;
     //       createdAt: string;
@@ -611,7 +611,7 @@ export default async (app: Courselore): Promise<void> => {
     //       `
     //     )
     //     .map((conversationDraft) => {
-    //       const taggings = app.locals.database
+    //       const taggings = app.database
     //         .all<{
     //           id: number;
     //           reference: string;
@@ -2638,7 +2638,7 @@ export default async (app: Courselore): Promise<void> => {
     res,
     conversationReference,
   }) => {
-    const conversationRow = app.locals.database.get<{
+    const conversationRow = app.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -2760,7 +2760,7 @@ export default async (app: Courselore): Promise<void> => {
     const selectedParticipants =
       conversation.participants === "everyone"
         ? []
-        : app.locals.database
+        : app.database
             .all<{
               enrollmentId: number;
               userId: number;
@@ -2815,7 +2815,7 @@ export default async (app: Courselore): Promise<void> => {
               courseRole: selectedParticipant.enrollmentCourseRole,
             }));
 
-    const taggings = app.locals.database
+    const taggings = app.database
       .all<{
         id: number;
         tagId: number;
@@ -2850,13 +2850,13 @@ export default async (app: Courselore): Promise<void> => {
         },
       }));
 
-    const messagesCount = app.locals.database.get<{
+    const messagesCount = app.database.get<{
       messagesCount: number;
     }>(
       sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
     )!.messagesCount;
 
-    const readingsCount = app.locals.database.get<{ readingsCount: number }>(
+    const readingsCount = app.database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
@@ -2868,7 +2868,7 @@ export default async (app: Courselore): Promise<void> => {
 
     const endorsements =
       conversation.type === "question"
-        ? app.locals.database
+        ? app.database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -2964,7 +2964,7 @@ export default async (app: Courselore): Promise<void> => {
     },
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
-      const messages = app.locals.database.all<{ id: number }>(
+      const messages = app.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
           FROM "messages"
@@ -2997,7 +2997,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       for (const message of messages)
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -3046,7 +3046,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.query.newConversation?.conversationDraftReference ===
           "string" &&
         req.query.newConversation.conversationDraftReference.match(/^[0-9]+$/)
-          ? app.locals.database.get<{
+          ? app.database.get<{
               createdAt: string;
               updatedAt: string | null;
               reference: string;
@@ -3415,7 +3415,7 @@ export default async (app: Courselore): Promise<void> => {
                     </div>
                   `}
               $${(() => {
-                const enrollments = app.locals.database
+                const enrollments = app.database
                   .all<{
                     id: number;
                     userId: number;
@@ -4346,7 +4346,7 @@ export default async (app: Courselore): Promise<void> => {
         // let conversationDraft =
         //   typeof req.body.conversationDraftReference === "string" &&
         //   req.body.conversationDraftReference.match(/^[0-9]+$/)
-        //     ? app.locals.database.get<{
+        //     ? app.database.get<{
         //         reference: string;
         //       }>(
         //         sql`
@@ -4359,7 +4359,7 @@ export default async (app: Courselore): Promise<void> => {
         //       )
         //     : undefined;
         // if (conversationDraft === undefined)
-        //   conversationDraft = app.locals.database.get<{
+        //   conversationDraft = app.database.get<{
         //     reference: string;
         //   }>(
         //     sql`
@@ -4415,7 +4415,7 @@ export default async (app: Courselore): Promise<void> => {
         //     `
         //   )!;
         // else
-        //   app.locals.database.run(
+        //   app.database.run(
         //     sql`
         //       UPDATE "conversationDrafts"
         //       SET "updatedAt" = ${new Date().toISOString()},
@@ -4525,7 +4525,7 @@ export default async (app: Courselore): Promise<void> => {
       const selectedParticipants =
         req.body.selectedParticipantsReferences.length === 0
           ? []
-          : app.locals.database.all<{
+          : app.database.all<{
               id: number;
               courseRole: CourseRole;
             }>(
@@ -4560,7 +4560,7 @@ export default async (app: Courselore): Promise<void> => {
       const hasMessage =
         typeof req.body.content === "string" && req.body.content.trim() !== "";
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
@@ -4570,7 +4570,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
 
-      const conversation = app.locals.database.get<{
+      const conversation = app.database.get<{
         id: number;
         reference: string;
         participants: ConversationParticipants;
@@ -4613,7 +4613,7 @@ export default async (app: Courselore): Promise<void> => {
       )!;
 
       for (const selectedParticipant of selectedParticipants)
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
             VALUES (
@@ -4625,7 +4625,7 @@ export default async (app: Courselore): Promise<void> => {
         );
 
       for (const tagReference of req.body.tagsReferences)
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
@@ -4644,7 +4644,7 @@ export default async (app: Courselore): Promise<void> => {
         const contentPreprocessed = app.locals.partials.contentPreprocessed(
           req.body.content!
         );
-        const message = app.locals.database.get<{
+        const message = app.database.get<{
           id: number;
           reference: string;
         }>(
@@ -4674,7 +4674,7 @@ export default async (app: Courselore): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -4704,7 +4704,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.body.conversationDraftReference === "string" &&
         req.body.conversationDraftReference.match(/^[0-9]+$/)
       )
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "conversationDrafts"
             WHERE "course" = ${res.locals.course.id} AND
@@ -4742,7 +4742,7 @@ export default async (app: Courselore): Promise<void> => {
         !req.body.conversationDraftReference.match(/^[0-9]+$/)
       )
         return next("Validation");
-      const conversationDraft = app.locals.database.get<{
+      const conversationDraft = app.database.get<{
         id: number;
       }>(
         sql`
@@ -4754,7 +4754,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
       if (conversationDraft === undefined) return next("Validation");
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
         `
@@ -4814,7 +4814,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.query.messages?.messagesPage?.beforeMessageReference ===
           "string" &&
         req.query.messages.messagesPage.beforeMessageReference.trim() !== ""
-          ? app.locals.database.get<{ id: number }>(
+          ? app.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -4829,7 +4829,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.query.messages?.messagesPage?.afterMessageReference ===
           "string" &&
         req.query.messages.messagesPage.afterMessageReference.trim() !== ""
-          ? app.locals.database.get<{ id: number }>(
+          ? app.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -4845,7 +4845,7 @@ export default async (app: Courselore): Promise<void> => {
 
       const messagesPageSize = 999999; // TODO: Pagination: 25
 
-      const messagesRows = app.locals.database.all<{ reference: string }>(
+      const messagesRows = app.database.all<{ reference: string }>(
         sql`
           SELECT "reference"
           FROM "messages"
@@ -4882,7 +4882,7 @@ export default async (app: Courselore): Promise<void> => {
       );
 
       for (const message of messages)
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -6079,7 +6079,7 @@ export default async (app: Courselore): Promise<void> => {
                     })()}
                     $${mayEditConversation({ req, res })
                       ? (() => {
-                          const enrollments = app.locals.database
+                          const enrollments = app.database
                             .all<{
                               id: number;
                               userId: number;
@@ -9203,7 +9203,7 @@ export default async (app: Courselore): Promise<void> => {
         const selectedParticipants =
           req.body.selectedParticipantsReferences.length === 0
             ? []
-            : app.locals.database.all<{
+            : app.database.all<{
                 id: number;
                 courseRole: CourseRole;
               }>(
@@ -9226,14 +9226,14 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
 
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "conversations"
             SET "participants" = ${req.body.participants}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "conversationSelectedParticipants"
             WHERE "conversation" = ${res.locals.conversation.id} AND
@@ -9243,7 +9243,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
         for (const selectedParticipant of selectedParticipants)
-          app.locals.database.run(
+          app.database.run(
             sql`
               INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
@@ -9267,7 +9267,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET "anonymousAt" = ${
@@ -9278,7 +9278,7 @@ export default async (app: Courselore): Promise<void> => {
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -9299,7 +9299,7 @@ export default async (app: Courselore): Promise<void> => {
         if (!conversationTypes.includes(req.body.type))
           return next("Validation");
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
@@ -9319,7 +9319,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET $${
@@ -9358,7 +9358,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET $${
@@ -9387,7 +9387,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET "resolvedAt" = ${
@@ -9400,7 +9400,7 @@ export default async (app: Courselore): Promise<void> => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("Validation");
         else
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "conversations"
               SET "updatedAt" = ${new Date().toISOString()},
@@ -9441,7 +9441,7 @@ export default async (app: Courselore): Promise<void> => {
     ...app.locals.middlewares.isCourseStaff,
     ...app.locals.middlewares.isConversationAccessible,
     (req, res) => {
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
       app.locals.helpers.Flash.set({
@@ -9491,7 +9491,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
@@ -9547,7 +9547,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "taggings"
           WHERE "conversation" = ${res.locals.conversation.id} AND

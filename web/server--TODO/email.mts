@@ -9,7 +9,7 @@ import { Courselore } from "./index.mjs";
 export type SendEmailWorker = () => Promise<void>;
 
 export default async (app: Courselore): Promise<void> => {
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       const sendMailTransport = nodemailer.createTransport(
         app.configuration.email.options,
@@ -41,12 +41,12 @@ export default async (app: Courselore): Promise<void> => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tsendEmailJobs\tSTARTING...`
         );
 
-        app.locals.database.executeTransaction(() => {
-          for (const job of app.locals.database.all<{
+        app.database.executeTransaction(() => {
+          for (const job of app.database.all<{
             id: number;
             mailOptions: string;
           }>(
@@ -56,14 +56,14 @@ export default async (app: Courselore): Promise<void> => {
               WHERE "expiresAt" < ${new Date().toISOString()}
             `
           )) {
-            app.locals.database.run(
+            app.database.run(
               sql`
                 DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
               `
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
                 JSON.parse(job.mailOptions),
                 undefined,
@@ -73,8 +73,8 @@ export default async (app: Courselore): Promise<void> => {
           }
         });
 
-        app.locals.database.executeTransaction(() => {
-          for (const job of app.locals.database.all<{
+        app.database.executeTransaction(() => {
+          for (const job of app.database.all<{
             id: number;
             mailOptions: string;
           }>(
@@ -86,7 +86,7 @@ export default async (app: Courselore): Promise<void> => {
               ).toISOString()}
             `
           )) {
-            app.locals.database.run(
+            app.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startedAt" = NULL
@@ -95,7 +95,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
                 JSON.parse(job.mailOptions),
                 undefined,
@@ -106,8 +106,8 @@ export default async (app: Courselore): Promise<void> => {
         });
 
         while (true) {
-          const job = app.locals.database.executeTransaction(() => {
-            const job = app.locals.database.get<{
+          const job = app.database.executeTransaction(() => {
+            const job = app.database.get<{
               id: number;
               mailOptions: string;
             }>(
@@ -121,7 +121,7 @@ export default async (app: Courselore): Promise<void> => {
               `
             );
             if (job !== undefined)
-              app.locals.database.run(
+              app.database.run(
                 sql`
                   UPDATE "sendEmailJobs"
                   SET "startedAt" = ${new Date().toISOString()}
@@ -134,20 +134,20 @@ export default async (app: Courselore): Promise<void> => {
           const mailOptions = JSON.parse(job.mailOptions);
           try {
             const sentMessageInfo = await sendMail(mailOptions);
-            app.locals.database.run(
+            app.database.run(
               sql`
                 DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
               `
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\tsendEmailJobs\tSUCCEEDED\t${sentMessageInfo.response ?? ""}\t${
                 mailOptions.to
               }\t${mailOptions.subject}`
             );
           } catch (error: nodemailer.SentMessageInfo) {
-            app.locals.database.run(
+            app.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startAt" = ${new Date(
@@ -159,7 +159,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.configuration.processType
+                app.process.type
               }\tsendEmailJobs\tFAILED\t${error.response ?? ""}\t${
                 mailOptions.to
               }\t${mailOptions.subject}\n${error}`
@@ -171,7 +171,7 @@ export default async (app: Courselore): Promise<void> => {
 
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tsendEmailJobs\tFINISHED`
         );
 

@@ -56,7 +56,7 @@ export default async (app: Courselore): Promise<void> => {
       hour.setUTCMinutes(0, 0, 0);
       const day = new Date();
       day.setUTCHours(0, 0, 0, 0);
-      return app.locals.database.get<{
+      return app.database.get<{
         id: number;
         email: string;
         name: string;
@@ -111,7 +111,7 @@ export default async (app: Courselore): Promise<void> => {
                 .contentPreprocessed
             },
             ${
-              app.configuration.hostname === app.configuration.tryHostname
+              app.configuration.hostname === app.addresses.tryHostname
                 ? "none"
                 : userIndex === 0
                 ? "administrator"
@@ -184,7 +184,7 @@ export default async (app: Courselore): Promise<void> => {
         isArchived: true,
       },
     ].reverse()) {
-      const course = app.locals.database.get<{
+      const course = app.database.get<{
         id: number;
         reference: string;
         nextConversationReference: number;
@@ -216,7 +216,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       )!;
 
-      const enrollment = app.locals.database.get<{
+      const enrollment = app.database.get<{
         id: number;
         reference: string;
         courseRole: CourseRole;
@@ -266,7 +266,7 @@ export default async (app: Courselore): Promise<void> => {
                 type: "numeric",
               })}@courselore.org`
             : null;
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "invitations" (
               "createdAt",
@@ -305,7 +305,7 @@ export default async (app: Courselore): Promise<void> => {
         enrollment,
         ...enrollmentsUsers.map(
           (enrollmentUser) =>
-            app.locals.database.get<{
+            app.database.get<{
               id: number;
               reference: string;
               courseRole: CourseRole;
@@ -353,7 +353,7 @@ export default async (app: Courselore): Promise<void> => {
         },
       ].map(
         ({ name, staffOnlyAt }) =>
-          app.locals.database.get<{ id: number }>(
+          app.database.get<{ id: number }>(
             sql`
               INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
               VALUES (
@@ -1172,7 +1172,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               )
             ).toISOString()
           );
-        const conversation = app.locals.database.get<{
+        const conversation = app.database.get<{
           id: number;
           authorEnrollment: number | null;
           participants: ConversationParticipants;
@@ -1239,7 +1239,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         )!;
 
         for (const enrollment of selectedParticipantEnrollments)
-          app.locals.database.run(
+          app.database.run(
             sql`
               INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
@@ -1250,7 +1250,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             `
           );
 
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
@@ -1284,7 +1284,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 .join("\n\n");
           const contentPreprocessed =
             app.locals.partials.contentPreprocessed(contentSource);
-          const message = app.locals.database.get<{ id: number }>(
+          const message = app.database.get<{ id: number }>(
             sql`
               INSERT INTO "messages" (
                 "createdAt",
@@ -1346,7 +1346,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                   lodash.random(12 * 60 * 60 * 1000)
               )
             ).toISOString();
-            app.locals.database.run(
+            app.database.run(
               sql`
                 INSERT INTO "readings" ("createdAt", "message", "enrollment")
                 VALUES (
@@ -1362,7 +1362,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             lodash.intersection(staff, participantEnrollments),
             Math.random() < 0.8 ? 0 : lodash.random(2)
           ))
-            app.locals.database.run(
+            app.database.run(
               sql`
                 INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
                 VALUES (
@@ -1379,7 +1379,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               ? 0
               : lodash.random(5)
           ))
-            app.locals.database.run(
+            app.database.run(
               sql`
                 INSERT INTO "likes" ("createdAt", "message", "enrollment")
                 VALUES (

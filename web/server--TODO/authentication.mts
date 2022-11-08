@@ -165,7 +165,7 @@ export default async (app: Courselore): Promise<void> => {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
     open({ req, res, userId }) {
-      const session = app.locals.database.get<{
+      const session = app.database.get<{
         token: string;
       }>(
         sql`
@@ -187,7 +187,7 @@ export default async (app: Courselore): Promise<void> => {
 
     get({ req, res }) {
       if (req.cookies["__Host-Session"] === undefined) return undefined;
-      const session = app.locals.database.get<{
+      const session = app.database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -208,7 +208,7 @@ export default async (app: Courselore): Promise<void> => {
         app.locals.helpers.Session.close({ req, res });
         app.locals.helpers.Session.open({ req, res, userId: session.user });
       }
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "users"
           SET "lastSeenOnlineAt" = ${new Date().toISOString()}
@@ -220,7 +220,7 @@ export default async (app: Courselore): Promise<void> => {
 
     close({ req, res }) {
       if (req.cookies["__Host-Session"] === undefined) return;
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies["__Host-Session"]}`
       );
       delete req.cookies["__Host-Session"];
@@ -229,22 +229,22 @@ export default async (app: Courselore): Promise<void> => {
 
     closeAllAndReopen({ req, res, userId }) {
       app.locals.helpers.Session.close({ req, res });
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
       );
       app.locals.helpers.Session.open({ req, res, userId });
     },
   };
 
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "sessions"
             WHERE "createdAt" < ${new Date(
@@ -254,7 +254,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -278,7 +278,7 @@ export default async (app: Courselore): Promise<void> => {
       const userId = app.locals.helpers.Session.get({ req, res });
       if (userId === undefined) return next("route");
 
-      res.locals.user = app.locals.database.get<{
+      res.locals.user = app.database.get<{
         id: number;
         lastSeenOnlineAt: string;
         reference: string;
@@ -441,7 +441,7 @@ export default async (app: Courselore): Promise<void> => {
 
               $${app.configuration.demonstration
                 ? (() => {
-                    let emailVerification = app.locals.database.get<{
+                    let emailVerification = app.database.get<{
                       nonce: string;
                     }>(
                       sql`
@@ -455,7 +455,7 @@ export default async (app: Courselore): Promise<void> => {
                         userId: res.locals.user.id,
                         userEmail: res.locals.user.email,
                       });
-                      emailVerification = app.locals.database.get<{
+                      emailVerification = app.database.get<{
                         nonce: string;
                       }>(
                         sql`
@@ -490,7 +490,7 @@ export default async (app: Courselore): Promise<void> => {
           })
         );
 
-      res.locals.invitations = app.locals.database
+      res.locals.invitations = app.database
         .all<{
           id: number;
           courseId: number;
@@ -546,7 +546,7 @@ export default async (app: Courselore): Promise<void> => {
           courseRole: invitation.courseRole,
         }));
 
-      res.locals.enrollments = app.locals.database
+      res.locals.enrollments = app.database
         .all<{
           id: number;
           courseId: number;
@@ -808,7 +808,7 @@ export default async (app: Courselore): Promise<void> => {
         req.body.password.trim() === ""
       )
         return next("Validation");
-      const user = app.locals.database.get<{ id: number; password: string }>(
+      const user = app.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (
@@ -846,12 +846,12 @@ export default async (app: Courselore): Promise<void> => {
     maxAge: 10 * 60 * 1000,
 
     create(userId: number): string {
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
         `
       );
-      return app.locals.database.get<{ nonce: string }>(
+      return app.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
           VALUES (
@@ -865,7 +865,7 @@ export default async (app: Courselore): Promise<void> => {
     },
 
     get(nonce: string): number | undefined {
-      return app.locals.database.get<{
+      return app.database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -881,15 +881,15 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "passwordResets"
             WHERE "createdAt" < ${new Date(
@@ -899,7 +899,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -1035,7 +1035,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      const user = app.locals.database.get<{ id: number; email: string }>(
+      const user = app.database.get<{ id: number; email: string }>(
         sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (user === undefined) {
@@ -1066,7 +1066,7 @@ export default async (app: Courselore): Promise<void> => {
         },
         { addQueryPrefix: true }
       )}`;
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "sendEmailJobs" (
             "createdAt",
@@ -1301,10 +1301,10 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
 
-      app.locals.database.run(
+      app.database.run(
         sql`DELETE FROM "passwordResets" WHERE "user" = ${userId}`
       );
-      const user = app.locals.database.get<{ email: string }>(
+      const user = app.database.get<{ email: string }>(
         sql`
           UPDATE "users"
           SET "password" = ${await argon2.hash(
@@ -1315,7 +1315,7 @@ export default async (app: Courselore): Promise<void> => {
           RETURNING *
         `
       )!;
-      app.locals.database.run(
+      app.database.run(
         sql`
           INSERT INTO "sendEmailJobs" (
             "createdAt",
@@ -1532,13 +1532,13 @@ export default async (app: Courselore): Promise<void> => {
     userEmail,
     welcome = false,
   }) => {
-    const emailVerification = app.locals.database.executeTransaction(() => {
-      app.locals.database.run(
+    const emailVerification = app.database.executeTransaction(() => {
+      app.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "user" = ${userId}
         `
       );
-      return app.locals.database.get<{
+      return app.database.get<{
         nonce: string;
       }>(
         sql`
@@ -1559,7 +1559,7 @@ export default async (app: Courselore): Promise<void> => {
       { redirect: req.query.redirect ?? req.originalUrl.slice(1) },
       { addQueryPrefix: true }
     )}`;
-    app.locals.database.run(
+    app.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -1587,15 +1587,15 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.workers.sendEmail();
   };
 
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             DELETE FROM "emailVerifications"
             WHERE "createdAt" < ${new Date(
@@ -1605,7 +1605,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.configuration.processType
+            app.process.type
           }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -1634,7 +1634,7 @@ export default async (app: Courselore): Promise<void> => {
         return next("Validation");
 
       if (
-        app.locals.database.get<{}>(
+        app.database.get<{}>(
           sql`
             SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
           `
@@ -1658,7 +1658,7 @@ export default async (app: Courselore): Promise<void> => {
         );
       }
 
-      const user = app.locals.database.get<{ id: number; email: string }>(
+      const user = app.database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
@@ -1688,8 +1688,8 @@ export default async (app: Courselore): Promise<void> => {
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${
-              app.configuration.hostname !== app.configuration.tryHostname &&
-              app.locals.database.get<{ count: number }>(
+              app.configuration.hostname !== app.addresses.tryHostname &&
+              app.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count" FROM "users"
                 `
@@ -1781,7 +1781,7 @@ export default async (app: Courselore): Promise<void> => {
     },
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      const emailVerification = app.locals.database.get<{ user: number }>(
+      const emailVerification = app.database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
         `
@@ -1816,12 +1816,12 @@ export default async (app: Courselore): Promise<void> => {
           }`
         );
       }
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "nonce" = ${req.params.emailVerificationNonce}
         `
       );
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "users"
           SET "emailVerifiedAt" = ${new Date().toISOString()}

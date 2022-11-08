@@ -369,7 +369,7 @@ export default async (app: Courselore): Promise<void> => {
                   break;
                 default:
                   const enrollmentReference = mention.split("--")[0];
-                  const enrollmentRow = app.locals.database.get<{
+                  const enrollmentRow = app.database.get<{
                     id: number;
                     userId: number;
                     userLastSeenOnlineAt: string;
@@ -2233,7 +2233,7 @@ ${contentSource}</textarea
       )
         return next("Validation");
 
-      const enrollments = app.locals.database
+      const enrollments = app.database
         .all<{
           id: number;
           userId: number;
@@ -2405,7 +2405,7 @@ ${contentSource}</textarea
       let results = html``;
 
       if (req.query.search.match(/^\d+$/) !== null)
-        for (const conversationRow of app.locals.database.all<{
+        for (const conversationRow of app.database.all<{
           reference: string;
         }>(
           sql`
@@ -2465,7 +2465,7 @@ ${contentSource}</textarea
           conversationReference,
         });
         if (conversation !== undefined) {
-          for (const messageRow of app.locals.database.all<{
+          for (const messageRow of app.database.all<{
             reference: string;
           }>(
             sql`
@@ -2554,7 +2554,7 @@ ${contentSource}</textarea
         }
       }
 
-      for (const conversationRow of app.locals.database.all<{
+      for (const conversationRow of app.database.all<{
         reference: string;
         conversationTitleSearchResultHighlight: string;
       }>(
@@ -2602,7 +2602,7 @@ ${contentSource}</textarea
         `;
       }
 
-      for (const messageRow of app.locals.database.all<{
+      for (const messageRow of app.database.all<{
         messageReference: string;
         conversationReference: string;
         messageAuthorUserNameSearchResultHighlight: string;
@@ -2692,7 +2692,7 @@ ${contentSource}</textarea
         `;
       }
 
-      for (const messageRow of app.locals.database.all<{
+      for (const messageRow of app.database.all<{
         messageReference: string;
         conversationReference: string;
         messageContentSearchResultSnippet: string;

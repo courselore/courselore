@@ -909,13 +909,13 @@ export default async (application: Application): Promise<void> => {
   };
 
   if (application.configuration.environment !== "production")
-    application.delete<{}, any, {}, {}, ResponseLocalsBase>(
+    application.server.delete<{}, any, {}, {}, ResponseLocalsBase>(
       "/turn-off",
-      (req, res) => {
-        res.send(
+      (request, response) => {
+        response.send(
           application.server.locals.layouts.box({
-            request: req,
-            response: res,
+            request,
+            response,
             head: html`
               <title>
                 Thanks for trying Courselore! · Courselore · Communication
@@ -945,20 +945,15 @@ export default async (application: Application): Promise<void> => {
       }
     );
 
-  application.server.locals.layouts.box = ({
-    request: req,
-    response: res,
-    head,
-    body,
-  }) =>
+  application.server.locals.layouts.box = ({ request, response, head, body }) =>
     application.server.locals.layouts.base({
-      request: req,
-      response: res,
+      request,
+      response,
       head,
       body: html`
         <div
           key="layout--box"
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             min-width: 100%;
             min-height: 100%;
             display: flex;
@@ -967,7 +962,7 @@ export default async (application: Application): Promise<void> => {
           `)}"
         >
           <div
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
@@ -978,7 +973,7 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               key="main--logo"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 justify-content: center;
               `)}"
@@ -986,7 +981,7 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="https://${application.configuration.hostname}/"
                 class="heading--display button button--transparent"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   align-items: center;
                 `)}"
               >
@@ -994,8 +989,8 @@ export default async (application: Application): Promise<void> => {
               </a>
             </div>
             <div
-              key="main--${req.path}"
-              css="${res.locals.css(css`
+              key="main--${request.path}"
+              css="${response.locals.css(css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -1011,11 +1006,11 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             $${application.configuration.hostname ===
-            application.configuration.tryHostname
+            application.addresses.tryHostname
               ? html`
                   <div
                     key="main--try"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1029,7 +1024,7 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -1037,7 +1032,7 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -1058,7 +1053,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <button
                           class="button button--amber"
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             width: 100%;
                           `)}"
                         >
@@ -1073,7 +1068,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="main--demonstration"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1087,7 +1082,7 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -1095,7 +1090,7 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -1116,7 +1111,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <button
                           class="button button--amber"
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             width: 100%;
                           `)}"
                         >
@@ -1134,21 +1129,21 @@ export default async (application: Application): Promise<void> => {
     });
 
   application.server.locals.layouts.application = ({
-    request: req,
-    response: res,
+    request,
+    response,
     head,
     showCourseSwitcher = true,
     extraHeaders = html``,
     body,
   }) =>
     application.server.locals.layouts.base({
-      request: req,
-      response: res,
+      request: request,
+      response: response,
       head,
       extraHeaders: html`
         <div
           key="header--menu--primary"
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
             gap: var(--space--4);
@@ -1169,7 +1164,7 @@ export default async (application: Application): Promise<void> => {
           </a>
 
           <div
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               font-size: var(--font-size--sm);
               line-height: var(--line-height--sm);
               flex: 1;
@@ -1180,28 +1175,28 @@ export default async (application: Application): Promise<void> => {
               const courseSwitcher = html`
                 <div class="dropdown--menu">
                   $${application.server.locals.partials.courses({
-                    req,
-                    res,
+                    req: request,
+                    res: response,
                     tight: true,
                   })}
                 </div>
               `;
 
-              return res.locals.course !== undefined
+              return response.locals.course !== undefined
                 ? html`
                     <button
                       class="button button--tight button--tight--inline button--transparent strong"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                   display: flex;
@@ -1212,19 +1207,19 @@ export default async (application: Application): Promise<void> => {
                                 <div>
                                   <h3 class="heading">
                                     <i class="bi bi-journal-text"></i>
-                                    ${res.locals.course.name}
+                                    ${response.locals.course.name}
                                   </h3>
-                                  $${res.locals.course.archivedAt !== null
+                                  $${response.locals.course.archivedAt !== null
                                     ? html`
                                         <div
-                                          css="${res.locals.css(css`
+                                          css="${response.locals.css(css`
                                             padding: var(--space--0)
                                               var(--space--2) var(--space--1);
                                             margin-top: var(--space---2);
                                           `)}"
                                         >
                                           $${application.server.locals.partials.courseArchived(
-                                            { req, res }
+                                            { req: request, res: response }
                                           )}
                                         </div>
                                       `
@@ -1232,16 +1227,16 @@ export default async (application: Application): Promise<void> => {
                                   <div class="dropdown--menu">
                                     <a
                                       href="https://${application.configuration
-                                        .hostname}/courses/${res.locals.course
-                                        .reference}"
-                                      class="dropdown--menu--item button ${req.path.includes(
+                                        .hostname}/courses/${response.locals
+                                        .course.reference}"
+                                      class="dropdown--menu--item button ${request.path.includes(
                                         "/settings/"
                                       )
                                         ? "button--transparent"
                                         : "button--blue"}"
                                     >
                                       <i
-                                        class="bi ${req.path.includes(
+                                        class="bi ${request.path.includes(
                                           "/settings/"
                                         )
                                           ? "bi-chat-text"
@@ -1251,9 +1246,9 @@ export default async (application: Application): Promise<void> => {
                                     </a>
                                     <a
                                       href="https://${application.configuration
-                                        .hostname}/courses/${res.locals.course
-                                        .reference}/settings"
-                                      class="dropdown--menu--item button ${req.path.includes(
+                                        .hostname}/courses/${response.locals
+                                        .course.reference}/settings"
+                                      class="dropdown--menu--item button ${request.path.includes(
                                         "/settings/"
                                       )
                                         ? "button--blue"
@@ -1264,7 +1259,7 @@ export default async (application: Application): Promise<void> => {
                                     </a>
                                   </div>
                                 </div>
-                                $${res.locals.enrollments.length > 1
+                                $${response.locals.enrollments.length > 1
                                   ? html`
                                       <div>
                                         <h3 class="heading">
@@ -1283,20 +1278,20 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           white-space: nowrap;
                           overflow: hidden;
                           text-overflow: ellipsis;
                         `)}"
                       >
-                        ${res.locals.course.name}
+                        ${response.locals.course.name}
                       </span>
-                      $${res.locals.course.archivedAt !== null
+                      $${response.locals.course.archivedAt !== null
                         ? html`
                             $${application.server.locals.partials.courseArchived(
                               {
-                                req,
-                                res,
+                                req: request,
+                                res: response,
                               }
                             )}
                           `
@@ -1304,21 +1299,21 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-chevron-down"></i>
                     </button>
                   `
-                : showCourseSwitcher && res.locals.enrollments.length > 0
+                : showCourseSwitcher && response.locals.enrollments.length > 0
                 ? html`
                     <button
                       class="button button--tight button--tight--inline button--transparent"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                 `)}"
@@ -1345,10 +1340,12 @@ export default async (application: Application): Promise<void> => {
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(
-                    res.locals.invitations!.length === 0
+                    response.locals.invitations!.length === 0
                       ? "Add"
-                      : `${res.locals.invitations!.length} pending invitation${
-                          res.locals.invitations!.length === 1 ? "" : "s"
+                      : `${
+                          response.locals.invitations!.length
+                        } pending invitation${
+                          response.locals.invitations!.length === 1 ? "" : "s"
                         }`
                   )},
                 });
@@ -1356,16 +1353,16 @@ export default async (application: Application): Promise<void> => {
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${res.locals.html(
+                  content: ${response.locals.html(
                     html`
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
                         `)}"
                       >
-                        $${res.locals.invitations!.length === 0
+                        $${response.locals.invitations!.length === 0
                           ? html``
                           : html`
                               <div>
@@ -1374,7 +1371,7 @@ export default async (application: Application): Promise<void> => {
                                   Invitations
                                 </h3>
                                 <div class="dropdown--menu">
-                                  $${res.locals.invitations!.map(
+                                  $${response.locals.invitations!.map(
                                     (invitation) => html`
                                       <a
                                         key="invitation--${invitation.reference}"
@@ -1386,8 +1383,8 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         $${application.server.locals.partials.course(
                                           {
-                                            req,
-                                            res,
+                                            req: request,
+                                            res: response,
                                             course: invitation.course,
                                             tight: true,
                                           }
@@ -1412,7 +1409,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-journal-arrow-down"></i>
                             Enroll in an Existing Course
                           </button>
-                          $${res.locals.mayCreateCourses
+                          $${response.locals.mayCreateCourses
                             ? html`
                                 <a
                                   href="https://${application.configuration
@@ -1432,7 +1429,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
@@ -1440,7 +1437,7 @@ export default async (application: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
@@ -1452,11 +1449,11 @@ export default async (application: Application): Promise<void> => {
                 >
                   +
                 </div>
-                $${res.locals.invitations!.length === 0
+                $${response.locals.invitations!.length === 0
                   ? html``
                   : html`
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           background-color: var(--color--rose--500);
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
@@ -1476,40 +1473,40 @@ export default async (application: Application): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
-                  content: ${JSON.stringify(res.locals.user.name)},
+                  content: ${JSON.stringify(response.locals.user.name)},
                 });
 
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${res.locals.html(
+                  content: ${response.locals.html(
                     html`
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
                         `)}"
                       >
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             padding: var(--space--0) var(--space--2);
                           `)}"
                         >
-                          <p class="strong">${res.locals.user.name}</p>
-                          <p class="secondary">${res.locals.user.email}</p>
+                          <p class="strong">${response.locals.user.name}</p>
+                          <p class="secondary">${response.locals.user.email}</p>
                         </div>
 
                         <hr class="dropdown--separator" />
 
-                        $${res.locals.user.systemRole === "administrator"
+                        $${response.locals.user.systemRole === "administrator"
                           ? html`
                               <div class="dropdown--menu">
                                 <a
@@ -1560,9 +1557,9 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.server.locals.partials.user({
-                req,
-                res,
-                user: res.locals.user,
+                req: request,
+                res: response,
+                user: response.locals.user,
                 decorate: false,
                 name: false,
               })}
@@ -1576,27 +1573,27 @@ export default async (application: Application): Promise<void> => {
     });
 
   application.server.locals.layouts.main = ({
-    request: req,
-    response: res,
+    request,
+    response,
     head,
     showCourseSwitcher = true,
     body,
   }) =>
     application.server.locals.layouts.application({
-      request: req,
-      response: res,
+      request,
+      response,
       head,
       showCourseSwitcher,
       body: html`
         <div
-          key="layout--main--${req.path}"
-          css="${res.locals.css(css`
+          key="layout--main--${request.path}"
+          css="${response.locals.css(css`
             display: flex;
             justify-content: center;
           `)}"
         >
           <div
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -1613,24 +1610,24 @@ export default async (application: Application): Promise<void> => {
     });
 
   application.server.locals.layouts.settings = ({
-    request: req,
-    response: res,
+    request,
+    response,
     head,
     menuButton,
     menu,
     body,
   }) =>
     application.server.locals.layouts.application({
-      request: req,
-      response: res,
+      request,
+      response,
       head,
       extraHeaders:
         menu === html``
           ? html``
           : html`
               <div
-                key="header--menu--secondary--${req.path}"
-                css="${res.locals.css(css`
+                key="header--menu--secondary--${request.path}"
+                css="${response.locals.css(css`
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
@@ -1638,7 +1635,7 @@ export default async (application: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     padding: var(--space--1) var(--space--0);
                   `)}"
                 >
@@ -1648,7 +1645,7 @@ export default async (application: Application): Promise<void> => {
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${res.locals.html(
+                        content: ${response.locals.html(
                           html`<div class="dropdown--menu">$${menu}</div>`
                         )},
                       });
@@ -1662,8 +1659,8 @@ export default async (application: Application): Promise<void> => {
             `,
       body: html`
         <div
-          key="layout--settings--${req.path}"
-          css="${res.locals.css(css`
+          key="layout--settings--${request.path}"
+          css="${response.locals.css(css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
@@ -1675,7 +1672,7 @@ export default async (application: Application): Promise<void> => {
             : html`
                 <div
                   key="layout--settings--menu"
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     flex: 1;
                     max-width: var(--space--64);
                     @media (max-width: 699px) {
@@ -1688,7 +1685,7 @@ export default async (application: Application): Promise<void> => {
               `}
           <div
             key="layout--settings--main"
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -1754,24 +1751,24 @@ export default async (application: Application): Promise<void> => {
   })();
 
   application.server.locals.layouts.partial = ({
-    request: req,
-    response: res,
+    request,
+    response,
     body,
   }) => html`
     <!DOCTYPE html>
     <html>
       <head>
-        $${res.locals.css.toString()}
+        $${response.locals.css.toString()}
       </head>
       <body>
-        $${body}$${res.locals.html.toString()}
+        $${body}$${response.locals.html.toString()}
       </body>
     </html>
   `;
 
   application.server.locals.partials.spinner = ({
-    req,
-    res,
+    request,
+    response,
     size = 20,
   }) => html`
     <svg
@@ -1781,19 +1778,19 @@ export default async (application: Application): Promise<void> => {
       fill="none"
       stroke="currentColor"
       stroke-width="4"
-      css="${res.locals.css(css`
+      css="${response.locals.css(css`
         animation: var(--animation--spin);
       `)}"
     >
       <path
         d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           opacity: var(--opacity--25);
         `)}"
       />
       <path
         d="M 2 10 A 8 8 0 0 0 15.5 15.5"
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           opacity: var(--opacity--75);
         `)}"
       />
@@ -1833,8 +1830,8 @@ export default async (application: Application): Promise<void> => {
   application.server.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
-    set({ req, res, theme, content }) {
-      const flash = application.locals.database.get<{ nonce: string }>(
+    set({ request, response, theme, content }) {
+      const flash = application.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("createdAt", "nonce", "theme", "content")
           VALUES (
@@ -1846,26 +1843,26 @@ export default async (application: Application): Promise<void> => {
           RETURNING *
         `
       )!;
-      req.cookies["__Host-Flash"] = flash.nonce;
-      res.cookie("__Host-Flash", flash.nonce, {
-        ...application.configuration.cookies,
+      request.cookies["__Host-Flash"] = flash.nonce;
+      response.cookie("__Host-Flash", flash.nonce, {
+        ...application.server.locals.cookies,
         maxAge: application.server.locals.helpers.Flash.maxAge,
       });
     },
 
-    get({ req, res }) {
-      if (req.cookies["__Host-Flash"] === undefined) return undefined;
-      const flash = application.locals.database.get<{
+    get({ request, response }) {
+      if (request.cookies["__Host-Flash"] === undefined) return undefined;
+      const flash = application.database.get<{
         id: number;
         theme: string;
         content: HTML;
       }>(
-        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies["__Host-Flash"]}`
+        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${request.cookies["__Host-Flash"]}`
       );
-      delete req.cookies["__Host-Flash"];
-      res.clearCookie("__Host-Flash", application.configuration.cookies);
+      delete request.cookies["__Host-Flash"];
+      response.clearCookie("__Host-Flash", application.server.locals.cookies);
       if (flash === undefined) return undefined;
-      application.locals.database.run(
+      application.database.run(
         sql`
           DELETE FROM "flashes" WHERE "id" = ${flash.id}
         `
@@ -1874,15 +1871,15 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  if (application.configuration.processType === "worker")
+  if (application.process.type === "worker")
     application.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            application.configuration.processType
+            application.process.type
           }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
         );
-        application.locals.database.run(
+        application.database.run(
           sql`
             DELETE FROM "flashes"
             WHERE "createdAt" < ${new Date(
@@ -1892,7 +1889,7 @@ export default async (application: Application): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            application.configuration.processType
+            application.process.type
           }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });

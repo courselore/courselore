@@ -25,13 +25,13 @@ export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export default async (app: Courselore): Promise<void> => {
-  if (app.configuration.processType === "worker")
+  if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
         try {
           console.log(
             `${new Date().toISOString()}\t${
-              app.configuration.processType
+              app.process.type
             }\tCHECK FOR UPDATES\tSTARTING...`
           );
           const latestVersion = semver.clean(
@@ -43,14 +43,14 @@ export default async (app: Courselore): Promise<void> => {
           );
           if (typeof latestVersion !== "string")
             throw new Error(`latestVersion = ‘${latestVersion}’`);
-          app.locals.database.run(
+          app.database.run(
             sql`
               UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
             `
           );
           console.log(
             `${new Date().toISOString()}\t${
-              app.configuration.processType
+              app.process.type
             }\tCHECK FOR UPDATES\t${
               semver.gt(latestVersion, app.version)
                 ? `NEW VERSION AVAILABLE: ${app.version} → ${latestVersion}`
@@ -60,7 +60,7 @@ export default async (app: Courselore): Promise<void> => {
         } catch (error) {
           console.log(
             `${new Date().toISOString()}\t${
-              app.configuration.processType
+              app.process.type
             }\tCHECK FOR UPDATES\tERROR\n${error}`
           );
         }
@@ -275,7 +275,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "administrationOptions"
           SET "userSystemRolesWhoMayCreateCourses" = ${req.body.userSystemRolesWhoMayCreateCourses}
@@ -312,7 +312,7 @@ export default async (app: Courselore): Promise<void> => {
     "/administration/users",
     ...isAdministratorMiddleware,
     (req, res) => {
-      const users = app.locals.database.all<{
+      const users = app.database.all<{
         id: number;
         lastSeenOnlineAt: string;
         reference: string;
@@ -699,7 +699,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     IsAdministratorLocals
   >("/users/:userReference", ...isAdministratorMiddleware, (req, res, next) => {
-    const managedUser = app.locals.database.get<{
+    const managedUser = app.database.get<{
       id: number;
     }>(
       sql`
@@ -712,7 +712,7 @@ export default async (app: Courselore): Promise<void> => {
     const isSelf = managedUser.id === res.locals.user.id;
     if (
       isSelf &&
-      app.locals.database.get<{ count: number }>(
+      app.database.get<{ count: number }>(
         sql`
           SELECT COUNT(*) AS "count"
           FROM "users"
@@ -725,7 +725,7 @@ export default async (app: Courselore): Promise<void> => {
     if (typeof req.body.role === "string") {
       if (!systemRoles.includes(req.body.role)) return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${managedUser.id}`
       );
     }

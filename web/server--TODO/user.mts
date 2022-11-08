@@ -1039,7 +1039,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.body.biography !== "string"
       )
         return next("Validation");
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "users"
           SET "name" = ${req.body.name},
@@ -1296,7 +1296,7 @@ export default async (app: Courselore): Promise<void> => {
         if (req.body.email.match(app.locals.helpers.emailRegExp) === null)
           return next("Validation");
         if (
-          app.locals.database.get<{}>(
+          app.database.get<{}>(
             sql`
               SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
             `
@@ -1318,7 +1318,7 @@ export default async (app: Courselore): Promise<void> => {
           );
         }
 
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "users"
             SET "email" = ${req.body.email},
@@ -1327,7 +1327,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
         if (res.locals.user.emailVerifiedAt !== null)
-          app.locals.database.run(
+          app.database.run(
             sql`
               INSERT INTO "sendEmailJobs" (
                 "createdAt",
@@ -1389,7 +1389,7 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
 
-        app.locals.database.run(
+        app.database.run(
           sql`
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
@@ -1399,7 +1399,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        app.locals.database.run(
+        app.database.run(
           sql`
             INSERT INTO "sendEmailJobs" (
               "createdAt",
@@ -1791,7 +1791,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.locals.database.run(
+      app.database.run(
         sql`
           UPDATE "users"
           SET "emailNotificationsForAllMessages" = ${
@@ -1917,7 +1917,7 @@ export default async (app: Courselore): Promise<void> => {
     },
     ...app.locals.middlewares.hasPasswordConfirmation,
     (req, res) => {
-      app.locals.database.run(
+      app.database.run(
         sql`
           DELETE FROM "users"
           WHERE "id" = ${res.locals.user.id}
