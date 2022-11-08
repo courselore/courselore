@@ -21,7 +21,7 @@ export default {
     }
 
     https://leafac.courselore.org {
-      reverse_proxy 127.0.0.1:4001
+      reverse_proxy http://127.0.0.1:9000
     }
   `,
 };

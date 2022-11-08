@@ -253,15 +253,15 @@ if (
           ports: {
             server: lodash.times(
               os.cpus().length,
-              (processNumber) => 6000 + processNumber
+              (processNumber) => 6001 + processNumber
             ),
             serverEvents: lodash.times(
               os.cpus().length,
-              (processNumber) => 7000 + processNumber
+              (processNumber) => 7001 + processNumber
             ),
             workerEvents: lodash.times(
               os.cpus().length,
-              (processNumber) => 8000 + processNumber
+              (processNumber) => 8001 + processNumber
             ),
           },
           addresses: {
@@ -439,12 +439,32 @@ if (
                           }
                         }
                         reverse_proxy ${application.ports.server
-                          .map((port) => `127.0.0.1:${port}`)
-                          .join(" ")}
+                          .map((port) => `http://127.0.0.1:${port}`)
+                          .join(" ")} {
+                            lb_retries 1
+                          }
                       }
                       handle_errors {
                         import common
                       }
+                    }
+
+                    http://127.0.0.1:7000 {
+                      bind 127.0.0.1
+                      reverse_proxy ${application.ports.serverEvents
+                        .map((port) => `http://127.0.0.1:${port}`)
+                        .join(" ")} {
+                          lb_retries 1
+                        }
+                    }
+
+                    http://127.0.0.1:8000 {
+                      bind 127.0.0.1
+                      reverse_proxy ${application.ports.workerEvents
+                        .map((port) => `http://127.0.0.1:${port}`)
+                        .join(" ")} {
+                          lb_retries 1
+                        }
                     }
 
                     ${application.configuration.caddy}
