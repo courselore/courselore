@@ -24,15 +24,6 @@ export type ApplicationAuthentication = {
   server: {
     locals: {
       argon2: argon2.Options & { raw?: false };
-      middleware: {
-        passwordConfirmation: express.RequestHandler<
-          {},
-          any,
-          { passwordConfirmation?: string },
-          {},
-          HasPasswordConfirmationLocals
-        >[];
-      };
       helpers: {
         Session: {
           maxAge: number;

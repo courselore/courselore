@@ -282,7 +282,6 @@ if (
         application.configuration.hstsPreload ??= false;
         application.configuration.caddy ??= caddyfile``;
 
-        // application.server.locals.middleware = {} as any;
         application.server.locals.layouts = {} as any;
         application.server.locals.partials = {} as any;
         application.server.locals.helpers = {} as any;
