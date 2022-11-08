@@ -28,45 +28,63 @@ export type ApplicationAuthentication = {
         Session: {
           maxAge: number;
           open({
-            req,
-            res,
+            request,
+            response,
             userId,
           }: {
-            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            res: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
             userId: number;
           }): void;
           get({
-            req,
-            res,
+            request,
+            response,
           }: {
-            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            res: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
           }): number | undefined;
           close({
-            req,
-            res,
+            request,
+            response,
           }: {
-            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            res: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
           }): void;
           closeAllAndReopen({
-            req,
-            res,
+            request,
+            response,
             userId,
           }: {
-            req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            res: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+            response: express.Response<any, ResponseLocalsBase>;
             userId: number;
           }): void;
         };
+        emailVerification: ({
+          request,
+          response,
+          userId,
+          userEmail,
+          welcome,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            { redirect?: string },
+            ResponseLocalsBase
+          >;
+          response: express.Response<any, ResponseLocalsBase>;
+          userId: number;
+          userEmail: string;
+          welcome?: boolean;
+        }) => void;
       };
     };
   };
 };
 
 export type ResponseLocalsSignedIn = ResponseLocalsBase & {
-  actionAllowedToUserWithUnverifiedEmail?: boolean;
   user: {
     id: number;
     lastSeenOnlineAt: string;
@@ -122,25 +140,9 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
     accentColor: EnrollmentAccentColor;
   }[];
   mayCreateCourses: boolean;
+  actionAllowedToUserWithUnverifiedEmail?: boolean;
+  confirmedPassword?: boolean;
 };
-
-export type HasPasswordConfirmationLocals = ResponseLocalsSignedIn & {
-  hasPasswordConfirmationRedirect?: string;
-};
-
-export type EmailVerificationMailer = ({
-  req,
-  res,
-  userId,
-  userEmail,
-  welcome,
-}: {
-  req: express.Request<{}, any, {}, { redirect?: string }, ResponseLocalsBase>;
-  res: express.Response<any, ResponseLocalsBase>;
-  userId: number;
-  userEmail: string;
-  welcome?: boolean;
-}) => void;
 
 export default async (app: Application): Promise<void> => {
   app.locals.helpers.Session = {
