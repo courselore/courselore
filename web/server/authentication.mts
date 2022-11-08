@@ -144,12 +144,12 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   confirmedPassword?: boolean;
 };
 
-export default async (app: Application): Promise<void> => {
-  app.locals.helpers.Session = {
+export default async (application: Application): Promise<void> => {
+  application.server.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
     open({ request, response, userId }) {
-      const session = app.database.get<{
+      const session = application.database.get<{
         token: string;
       }>(
         sql`
@@ -164,14 +164,14 @@ export default async (app: Application): Promise<void> => {
       )!;
       request.cookies["__Host-Session"] = session.token;
       response.cookie("__Host-Session", session.token, {
-        ...app.configuration.cookies,
-        maxAge: app.locals.helpers.Session.maxAge,
+        ...application.server.locals.cookies,
+        maxAge: application.server.locals.helpers.Session.maxAge,
       });
     },
 
     get({ request, response }) {
       if (request.cookies["__Host-Session"] === undefined) return undefined;
-      const session = app.database.get<{
+      const session = application.database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -180,23 +180,23 @@ export default async (app: Application): Promise<void> => {
       if (
         session === undefined ||
         new Date(session.createdAt).getTime() <
-          Date.now() - app.locals.helpers.Session.maxAge
+          Date.now() - application.server.locals.helpers.Session.maxAge
       ) {
-        app.locals.helpers.Session.close({ request, response });
+        application.server.locals.helpers.Session.close({ request, response });
         return undefined;
       } else if (
         request.header("Live-Updates") === undefined &&
         new Date(session.createdAt).getTime() <
-          Date.now() - app.locals.helpers.Session.maxAge / 2
+          Date.now() - application.server.locals.helpers.Session.maxAge / 2
       ) {
-        app.locals.helpers.Session.close({ request, response });
-        app.locals.helpers.Session.open({
+        application.server.locals.helpers.Session.close({ request, response });
+        application.server.locals.helpers.Session.open({
           request,
           response,
           userId: session.user,
         });
       }
-      app.database.run(
+      application.database.run(
         sql`
           UPDATE "users"
           SET "lastSeenOnlineAt" = ${new Date().toISOString()}
@@ -208,63 +208,74 @@ export default async (app: Application): Promise<void> => {
 
     close({ request, response }) {
       if (request.cookies["__Host-Session"] === undefined) return;
-      app.database.run(
+      application.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
       );
       delete request.cookies["__Host-Session"];
-      response.clearCookie("__Host-Session", app.configuration.cookies);
+      response.clearCookie("__Host-Session", application.server.locals.cookies);
     },
 
     closeAllAndReopen({ request, response, userId }) {
-      app.locals.helpers.Session.close({ request, response });
-      app.database.run(sql`DELETE FROM "sessions" WHERE "user" = ${userId}`);
-      app.locals.helpers.Session.open({ request, response, userId });
+      application.server.locals.helpers.Session.close({ request, response });
+      application.database.run(
+        sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
+      );
+      application.server.locals.helpers.Session.open({
+        request,
+        response,
+        userId,
+      });
     },
   };
 
-  if (app.process.type === "worker")
-    app.once("start", async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
-        );
-        app.database.run(
-          sql`
-            DELETE FROM "sessions"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - app.locals.helpers.Session.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    });
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "sessions"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - application.server.locals.helpers.Session.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
-  app.locals.middlewares.isSignedOut = [
+  application.locals.middlewares.isSignedOut = [
     (request, response, next) => {
-      if (app.locals.helpers.Session.get({ request, response }) !== undefined)
+      if (
+        application.server.locals.helpers.Session.get({ request, response }) !==
+        undefined
+      )
         return next("route");
       next();
     },
   ];
 
-  app.locals.middlewares.isSignedIn = [
+  application.locals.middlewares.isSignedIn = [
     (request, response, next) => {
       const actionAllowedToUserWithUnverifiedEmail =
         response.locals.actionAllowedToUserWithUnverifiedEmail;
       delete response.locals.actionAllowedToUserWithUnverifiedEmail;
 
-      const userId = app.locals.helpers.Session.get({ request, response });
+      const userId = application.server.locals.helpers.Session.get({
+        request,
+        response,
+      });
       if (userId === undefined) return next("route");
 
-      response.locals.user = app.database.get<{
+      response.locals.user = application.database.get<{
         id: number;
         lastSeenOnlineAt: string;
         reference: string;
@@ -313,7 +324,7 @@ export default async (app: Application): Promise<void> => {
         response.locals.user.emailVerifiedAt === null
       )
         return response.send(
-          app.locals.layouts.box({
+          application.locals.layouts.box({
             request,
             response,
             head: html` <title>Email Verification · Courselore</title> `,
@@ -332,7 +343,7 @@ export default async (app: Application): Promise<void> => {
 
               <form
                 method="POST"
-                action="https://${app.configuration
+                action="https://${application.configuration
                   .hostname}/resend-email-verification${qs.stringify(
                   { redirect: request.originalUrl.slice(1) },
                   { addQueryPrefix: true }
@@ -361,7 +372,7 @@ export default async (app: Application): Promise<void> => {
               <form
                 key="update-email"
                 method="PATCH"
-                action="https://${app.configuration
+                action="https://${application.configuration
                   .hostname}/settings/email-and-password${qs.stringify(
                   { redirect: request.originalUrl.slice(1) },
                   { addQueryPrefix: true }
@@ -425,9 +436,9 @@ export default async (app: Application): Promise<void> => {
                 </div>
               </form>
 
-              $${app.configuration.demonstration
+              $${application.configuration.demonstration
                 ? (() => {
-                    let emailVerification = app.database.get<{
+                    let emailVerification = application.database.get<{
                       nonce: string;
                     }>(
                       sql`
@@ -435,13 +446,13 @@ export default async (app: Application): Promise<void> => {
                       `
                     );
                     if (emailVerification === undefined) {
-                      app.locals.mailers.emailVerification({
+                      application.locals.mailers.emailVerification({
                         request,
                         response,
                         userId: response.locals.user.id,
                         userEmail: response.locals.user.email,
                       });
-                      emailVerification = app.database.get<{
+                      emailVerification = application.database.get<{
                         nonce: string;
                       }>(
                         sql`
@@ -460,7 +471,7 @@ export default async (app: Application): Promise<void> => {
                         This Courselore installation is running in demonstration
                         mode and doesn’t send emails.
                         <a
-                          href="https://${app.configuration
+                          href="https://${application.configuration
                             .hostname}/email-verification/${emailVerification.nonce}${qs.stringify(
                             { redirect: request.originalUrl.slice(1) },
                             { addQueryPrefix: true }
@@ -476,7 +487,7 @@ export default async (app: Application): Promise<void> => {
           })
         );
 
-      response.locals.invitations = app.database
+      response.locals.invitations = application.database
         .all<{
           id: number;
           courseId: number;
@@ -532,7 +543,7 @@ export default async (app: Application): Promise<void> => {
           courseRole: invitation.courseRole,
         }));
 
-      response.locals.enrollments = app.database
+      response.locals.enrollments = application.database
         .all<{
           id: number;
           courseId: number;
@@ -603,8 +614,8 @@ export default async (app: Application): Promise<void> => {
     },
   ];
 
-  app.locals.middlewares.hasPasswordConfirmation = [
-    ...app.locals.middlewares.isSignedIn,
+  application.locals.middlewares.hasPasswordConfirmation = [
+    ...application.locals.middlewares.isSignedIn,
     asyncHandler(async (request, response, next) => {
       if (
         typeof request.body.passwordConfirmation !== "string" ||
@@ -618,7 +629,7 @@ export default async (app: Application): Promise<void> => {
           request.body.passwordConfirmation
         ))
       ) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -626,7 +637,7 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/${
+          `https://${application.configuration.hostname}/${
             response.locals.hasPasswordConfirmationRedirect ?? ""
           }`
         );
@@ -645,7 +656,7 @@ export default async (app: Application): Promise<void> => {
       ResponseLocalsBase
     > = (request, response) => {
       response.send(
-        app.locals.layouts.box({
+        application.locals.layouts.box({
           request,
           response,
           head: html`
@@ -656,7 +667,7 @@ export default async (app: Application): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/sign-in${qs.stringify(
                 {
                   redirect: request.query.redirect,
@@ -716,7 +727,7 @@ export default async (app: Application): Promise<void> => {
               <p>
                 Don’t have an account?
                 <a
-                  href="https://${app.configuration
+                  href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
                     {
                       redirect: request.query.redirect,
@@ -731,7 +742,7 @@ export default async (app: Application): Promise<void> => {
               <p>
                 Forgot your password?
                 <a
-                  href="https://${app.configuration
+                  href="https://${application.configuration
                     .hostname}/reset-password${qs.stringify(
                     {
                       redirect: request.query.redirect,
@@ -749,29 +760,36 @@ export default async (app: Application): Promise<void> => {
       );
     };
 
-    app.get<{}, HTML, {}, {}, ResponseLocalsBase>(
+    application.server.get<{}, HTML, {}, {}, ResponseLocalsBase>(
       "/",
-      ...app.locals.middlewares.isSignedOut,
-      app.configuration.hostname === app.configuration.canonicalHostname
+      ...application.locals.middlewares.isSignedOut,
+      application.configuration.hostname ===
+        application.configuration.canonicalHostname
         ? (request, response, next) => {
-            app.locals.handlers.about(request, response, next);
+            application.locals.handlers.about(request, response, next);
           }
         : handler
     );
 
-    app.get<{}, HTML, {}, {}, ResponseLocalsBase>(
+    application.server.get<{}, HTML, {}, {}, ResponseLocalsBase>(
       "/sign-in",
-      ...app.locals.middlewares.isSignedOut,
+      ...application.locals.middlewares.isSignedOut,
       handler
     );
 
-    app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
+    application.server.get<
+      {},
+      HTML,
+      {},
+      { redirect?: string },
+      ResponseLocalsSignedIn
+    >(
       "/sign-in",
-      ...app.locals.middlewares.isSignedIn,
+      ...application.locals.middlewares.isSignedIn,
       (request, response) => {
         response.redirect(
           303,
-          `https://${app.configuration.hostname}/${
+          `https://${application.configuration.hostname}/${
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
@@ -781,7 +799,7 @@ export default async (app: Application): Promise<void> => {
     );
   })();
 
-  app.post<
+  application.server.post<
     {},
     HTML,
     { email?: string; password?: string },
@@ -789,23 +807,25 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/sign-in",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
       if (
         typeof request.body.email !== "string" ||
-        request.body.email.match(app.locals.helpers.emailRegExp) === null ||
+        request.body.email.match(
+          application.server.locals.helpers.emailRegExp
+        ) === null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === ""
       )
         return next("Validation");
-      const user = app.database.get<{ id: number; password: string }>(
+      const user = application.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${request.body.email}`
       );
       if (
         user === undefined ||
         !(await argon2.verify(user.password, request.body.password))
       ) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -813,7 +833,7 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/sign-in${qs.stringify(
+          `https://${application.configuration.hostname}/sign-in${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
@@ -822,10 +842,14 @@ export default async (app: Application): Promise<void> => {
           )}`
         );
       }
-      app.locals.helpers.Session.open({ request, response, userId: user.id });
+      application.server.locals.helpers.Session.open({
+        request,
+        response,
+        userId: user.id,
+      });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -838,12 +862,12 @@ export default async (app: Application): Promise<void> => {
     maxAge: 10 * 60 * 1000,
 
     create(userId: number): string {
-      app.database.run(
+      application.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
         `
       );
-      return app.database.get<{ nonce: string }>(
+      return application.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
           VALUES (
@@ -857,7 +881,7 @@ export default async (app: Application): Promise<void> => {
     },
 
     get(nonce: string): number | undefined {
-      return app.database.get<{
+      return application.database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -873,32 +897,31 @@ export default async (app: Application): Promise<void> => {
     },
   };
 
-  if (app.process.type === "worker")
-    app.once("start", async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
-        );
-        app.database.run(
-          sql`
-            DELETE FROM "passwordResets"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - PasswordReset.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    });
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "passwordResets"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - PasswordReset.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
-  app.get<
+  application.server.get<
     {},
     HTML,
     {},
@@ -906,10 +929,10 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/reset-password",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     (request, response) => {
       response.send(
-        app.locals.layouts.box({
+        application.locals.layouts.box({
           request,
           response,
           head: html`
@@ -920,7 +943,7 @@ export default async (app: Application): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/reset-password${qs.stringify(
                 {
                   redirect: request.query.redirect,
@@ -968,7 +991,7 @@ export default async (app: Application): Promise<void> => {
               <p>
                 Don’t have an account?
                 <a
-                  href="https://${app.configuration
+                  href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
                     {
                       redirect: request.query.redirect,
@@ -983,7 +1006,7 @@ export default async (app: Application): Promise<void> => {
               <p>
                 Remember your password?
                 <a
-                  href="https://${app.configuration
+                  href="https://${application.configuration
                     .hostname}/sign-in${qs.stringify(
                     {
                       redirect: request.query.redirect,
@@ -1002,13 +1025,19 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string },
+    ResponseLocalsSignedIn
+  >(
     "/reset-password",
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1017,7 +1046,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.post<
+  application.server.post<
     {},
     HTML,
     { email?: string; resend?: "true" },
@@ -1025,19 +1054,21 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/reset-password",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     (request, response, next) => {
       if (
         typeof request.body.email !== "string" ||
-        request.body.email.match(app.locals.helpers.emailRegExp) === null
+        request.body.email.match(
+          application.server.locals.helpers.emailRegExp
+        ) === null
       )
         return next("Validation");
 
-      const user = app.database.get<{ id: number; email: string }>(
+      const user = application.database.get<{ id: number; email: string }>(
         sql`SELECT "id", "email" FROM "users" WHERE "email" = ${request.body.email}`
       );
       if (user === undefined) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1045,7 +1076,9 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/reset-password${qs.stringify(
+          `https://${
+            application.configuration.hostname
+          }/reset-password${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
@@ -1056,7 +1089,7 @@ export default async (app: Application): Promise<void> => {
       }
 
       const link = `https://${
-        app.configuration.hostname
+        application.configuration.hostname
       }/reset-password/${PasswordReset.create(user.id)}${qs.stringify(
         {
           redirect: request.query.redirect,
@@ -1064,7 +1097,7 @@ export default async (app: Application): Promise<void> => {
         },
         { addQueryPrefix: true }
       )}`;
-      app.database.run(
+      application.database.run(
         sql`
           INSERT INTO "sendEmailJobs" (
             "createdAt",
@@ -1093,16 +1126,16 @@ export default async (app: Application): Promise<void> => {
           )
         `
       );
-      app.locals.workers.sendEmail();
+      application.locals.workers.sendEmail();
       if (request.body.resend === "true")
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
           content: html`Email resent.`,
         });
       response.send(
-        app.locals.layouts.box({
+        application.locals.layouts.box({
           request,
           response,
           head: html`
@@ -1118,7 +1151,7 @@ export default async (app: Application): Promise<void> => {
             </p>
             <form
               method="POST"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/reset-password${qs.stringify(
                 {
                   redirect: request.query.redirect,
@@ -1140,7 +1173,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.get<
+  application.server.get<
     { passwordResetNonce: string },
     HTML,
     {},
@@ -1148,11 +1181,11 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/reset-password/:passwordResetNonce",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     (request, response) => {
       const userId = PasswordReset.get(request.params.passwordResetNonce);
       if (userId === undefined) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1160,7 +1193,9 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/reset-password${qs.stringify(
+          `https://${
+            application.configuration.hostname
+          }/reset-password${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
@@ -1170,7 +1205,7 @@ export default async (app: Application): Promise<void> => {
         );
       }
       response.send(
-        app.locals.layouts.box({
+        application.locals.layouts.box({
           request,
           response,
           head: html`
@@ -1181,7 +1216,7 @@ export default async (app: Application): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/reset-password/${request.params
                 .passwordResetNonce}${qs.stringify(
                 {
@@ -1232,7 +1267,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.get<
+  application.server.get<
     { passwordResetNonce: string },
     HTML,
     {},
@@ -1240,9 +1275,9 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsSignedIn
   >(
     "/reset-password/:passwordResetNonce",
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
-      app.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "rose",
@@ -1253,7 +1288,7 @@ export default async (app: Application): Promise<void> => {
       });
       return response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1262,7 +1297,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.post<
+  application.server.post<
     { passwordResetNonce: string },
     HTML,
     { password?: string },
@@ -1270,7 +1305,7 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/reset-password/:passwordResetNonce",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
       if (
         typeof request.body.password !== "string" ||
@@ -1281,7 +1316,7 @@ export default async (app: Application): Promise<void> => {
 
       const userId = PasswordReset.get(request.params.passwordResetNonce);
       if (userId === undefined) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1291,7 +1326,9 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/reset-password${qs.stringify(
+          `https://${
+            application.configuration.hostname
+          }/reset-password${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
@@ -1301,21 +1338,21 @@ export default async (app: Application): Promise<void> => {
         );
       }
 
-      app.database.run(
+      application.database.run(
         sql`DELETE FROM "passwordResets" WHERE "user" = ${userId}`
       );
-      const user = app.database.get<{ email: string }>(
+      const user = application.database.get<{ email: string }>(
         sql`
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             request.body.password,
-            app.configuration.argon2
+            application.configuration.argon2
           )}
           WHERE "id" = ${userId}
           RETURNING *
         `
       )!;
-      app.database.run(
+      application.database.run(
         sql`
           INSERT INTO "sendEmailJobs" (
             "createdAt",
@@ -1344,8 +1381,10 @@ export default async (app: Application): Promise<void> => {
                 <p>
                   If you did not perform this reset, then please contact the
                   system administrator at
-                  <a href="mailto:${app.configuration.administratorEmail}"
-                    >${app.configuration.administratorEmail}</a
+                  <a
+                    href="mailto:${application.configuration
+                      .administratorEmail}"
+                    >${application.configuration.administratorEmail}</a
                   >
                   as soon as possible.
                 </p>
@@ -1354,13 +1393,13 @@ export default async (app: Application): Promise<void> => {
           )
         `
       );
-      app.locals.workers.sendEmail();
-      app.locals.helpers.Session.closeAllAndReopen({
+      application.locals.workers.sendEmail();
+      application.server.locals.helpers.Session.closeAllAndReopen({
         request,
         response,
         userId,
       });
-      app.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -1368,7 +1407,7 @@ export default async (app: Application): Promise<void> => {
       });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1377,146 +1416,157 @@ export default async (app: Application): Promise<void> => {
     })
   );
 
-  app.get<
+  application.server.get<
     {},
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
     ResponseLocalsBase
-  >("/sign-up", ...app.locals.middlewares.isSignedOut, (request, response) => {
-    response.send(
-      app.locals.layouts.box({
-        request,
-        response,
-        head: html`
-          <title>
-            Sign up · Courselore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <form
-            method="POST"
-            action="https://${app.configuration.hostname}/sign-up${qs.stringify(
-              {
-                redirect: request.query.redirect,
-                invitation: request.query.invitation,
-              },
-              { addQueryPrefix: true }
-            )}"
-            novalidate
-            css="${response.locals.css(css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `)}"
-          >
-            <label class="label">
-              <p class="label--text">Name</p>
-              <input
-                type="text"
-                name="name"
-                value="${typeof request.query.invitation?.name === "string" &&
-                request.query.invitation.name.trim() !== ""
-                  ? request.query.invitation.name
-                  : ""}"
-                required
-                autofocus
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${typeof request.query.invitation?.email === "string" &&
-                request.query.invitation.email.trim() !== ""
-                  ? request.query.invitation.email
-                  : ""}"
-                required
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                minlength="8"
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password Confirmation</p>
-              <input
-                type="password"
-                required
-                class="input--text"
-                onload="${javascript`
+  >(
+    "/sign-up",
+    ...application.locals.middlewares.isSignedOut,
+    (request, response) => {
+      response.send(
+        application.locals.layouts.box({
+          request,
+          response,
+          head: html`
+            <title>
+              Sign up · Courselore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="https://${application.configuration
+                .hostname}/sign-up${qs.stringify(
+                {
+                  redirect: request.query.redirect,
+                  invitation: request.query.invitation,
+                },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              css="${response.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <label class="label">
+                <p class="label--text">Name</p>
+                <input
+                  type="text"
+                  name="name"
+                  value="${typeof request.query.invitation?.name === "string" &&
+                  request.query.invitation.name.trim() !== ""
+                    ? request.query.invitation.name
+                    : ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${typeof request.query.invitation?.email ===
+                    "string" && request.query.invitation.email.trim() !== ""
+                    ? request.query.invitation.email
+                    : ""}"
+                  required
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  minlength="8"
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password Confirmation</p>
+                <input
+                  type="password"
+                  required
+                  class="input--text"
+                  onload="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };
               `}"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-person-plus-fill"></i>
-              Sign up
-            </button>
-          </form>
-          <div
-            css="${response.locals.css(css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `)}"
-          >
-            <p>
-              Already have an account account?
-              <a
-                href="https://${app.configuration
-                  .hostname}/sign-in${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Sign in</a
-              >.
-            </p>
-            <p>
-              Forgot your password?
-              <a
-                href="https://${app.configuration
-                  .hostname}/reset-password${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Reset password</a
-              >.
-            </p>
-          </div>
-        `,
-      })
-    );
-  });
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-person-plus-fill"></i>
+                Sign up
+              </button>
+            </form>
+            <div
+              css="${response.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `)}"
+            >
+              <p>
+                Already have an account account?
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-in${qs.stringify(
+                    {
+                      redirect: request.query.redirect,
+                      invitation: request.query.invitation,
+                    },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >Sign in</a
+                >.
+              </p>
+              <p>
+                Forgot your password?
+                <a
+                  href="https://${application.configuration
+                    .hostname}/reset-password${qs.stringify(
+                    {
+                      redirect: request.query.redirect,
+                      invitation: request.query.invitation,
+                    },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >Reset password</a
+                >.
+              </p>
+            </div>
+          `,
+        })
+      );
+    }
+  );
 
-  app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string },
+    ResponseLocalsSignedIn
+  >(
     "/sign-up",
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1525,27 +1575,27 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.configuration.argon2 = {
+  application.configuration.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
     parallelism: 1,
   };
 
-  app.locals.mailers.emailVerification = ({
+  application.locals.mailers.emailVerification = ({
     request,
     response,
     userId,
     userEmail,
     welcome = false,
   }) => {
-    const emailVerification = app.database.executeTransaction(() => {
-      app.database.run(
+    const emailVerification = application.database.executeTransaction(() => {
+      application.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "user" = ${userId}
         `
       );
-      return app.database.get<{
+      return application.database.get<{
         nonce: string;
       }>(
         sql`
@@ -1560,13 +1610,13 @@ export default async (app: Application): Promise<void> => {
       )!;
     });
 
-    const link = `https://${app.configuration.hostname}/email-verification/${
-      emailVerification.nonce
-    }${qs.stringify(
+    const link = `https://${
+      application.configuration.hostname
+    }/email-verification/${emailVerification.nonce}${qs.stringify(
       { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
       { addQueryPrefix: true }
     )}`;
-    app.database.run(
+    application.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -1591,35 +1641,34 @@ export default async (app: Application): Promise<void> => {
         )
       `
     );
-    app.locals.workers.sendEmail();
+    application.locals.workers.sendEmail();
   };
 
-  if (app.process.type === "worker")
-    app.once("start", async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
-        );
-        app.database.run(
-          sql`
-            DELETE FROM "emailVerifications"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - 24 * 60 * 60 * 1000
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            app.process.type
-          }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    });
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "emailVerifications"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - 24 * 60 * 60 * 1000
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
-  app.post<
+  application.server.post<
     {},
     HTML,
     { name?: string; email?: string; password?: string },
@@ -1627,13 +1676,15 @@ export default async (app: Application): Promise<void> => {
     ResponseLocalsBase
   >(
     "/sign-up",
-    ...app.locals.middlewares.isSignedOut,
+    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
       if (
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
         typeof request.body.email !== "string" ||
-        request.body.email.match(app.locals.helpers.emailRegExp) === null ||
+        request.body.email.match(
+          application.server.locals.helpers.emailRegExp
+        ) === null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === "" ||
         request.body.password.length < 8
@@ -1641,13 +1692,13 @@ export default async (app: Application): Promise<void> => {
         return next("Validation");
 
       if (
-        app.database.get<{}>(
+        application.database.get<{}>(
           sql`
             SELECT TRUE FROM "users" WHERE "email" = ${request.body.email}
           `
         ) !== undefined
       ) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1655,7 +1706,7 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/sign-in${qs.stringify(
+          `https://${application.configuration.hostname}/sign-in${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: {
@@ -1668,7 +1719,7 @@ export default async (app: Application): Promise<void> => {
         );
       }
 
-      const user = app.database.get<{ id: number; email: string }>(
+      const user = application.database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
@@ -1694,15 +1745,16 @@ export default async (app: Application): Promise<void> => {
             ${request.body.email},
             ${await argon2.hash(
               request.body.password,
-              app.configuration.argon2
+              application.configuration.argon2
             )},
             ${null},
             ${request.body.name},
             ${html`${request.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${
-              app.configuration.hostname !== app.addresses.tryHostname &&
-              app.database.get<{ count: number }>(
+              application.configuration.hostname !==
+                application.addresses.tryHostname &&
+              application.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count" FROM "users"
                 `
@@ -1720,17 +1772,21 @@ export default async (app: Application): Promise<void> => {
         `
       )!;
 
-      app.locals.mailers.emailVerification({
+      application.locals.mailers.emailVerification({
         request,
         response,
         userId: user.id,
         userEmail: user.email,
         welcome: true,
       });
-      app.locals.helpers.Session.open({ request, response, userId: user.id });
+      application.server.locals.helpers.Session.open({
+        request,
+        response,
+        userId: user.id,
+      });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1739,16 +1795,22 @@ export default async (app: Application): Promise<void> => {
     })
   );
 
-  app.post<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
+  application.server.post<
+    {},
+    HTML,
+    {},
+    { redirect?: string },
+    ResponseLocalsSignedIn
+  >(
     "/resend-email-verification",
     (request, response, next) => {
       response.locals.actionAllowedToUserWithUnverifiedEmail = true;
       next();
     },
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
       if (response.locals.user.emailVerifiedAt !== null) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1756,20 +1818,20 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/${
+          `https://${application.configuration.hostname}/${
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
           }`
         );
       }
-      app.locals.mailers.emailVerification({
+      application.locals.mailers.emailVerification({
         request,
         response,
         userId: response.locals.user.id,
         userEmail: response.locals.user.email,
       });
-      app.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -1777,7 +1839,7 @@ export default async (app: Application): Promise<void> => {
       });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1786,7 +1848,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.get<
+  application.server.get<
     { emailVerificationNonce: string },
     HTML,
     {},
@@ -1798,15 +1860,15 @@ export default async (app: Application): Promise<void> => {
       response.locals.actionAllowedToUserWithUnverifiedEmail = true;
       next();
     },
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
-      const emailVerification = app.database.get<{ user: number }>(
+      const emailVerification = application.database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
         `
       );
       if (emailVerification === undefined) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1814,7 +1876,7 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/${
+          `https://${application.configuration.hostname}/${
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
@@ -1822,7 +1884,7 @@ export default async (app: Application): Promise<void> => {
         );
       }
       if (emailVerification.user !== response.locals.user.id) {
-        app.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1832,26 +1894,26 @@ export default async (app: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/${
+          `https://${application.configuration.hostname}/${
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
           }`
         );
       }
-      app.database.run(
+      application.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
         `
       );
-      app.database.run(
+      application.database.run(
         sql`
           UPDATE "users"
           SET "emailVerifiedAt" = ${new Date().toISOString()}
           WHERE "id" = ${response.locals.user.id}
         `
       );
-      app.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -1859,7 +1921,7 @@ export default async (app: Application): Promise<void> => {
       });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -1868,17 +1930,17 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  application.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/sign-out",
-    ...app.locals.middlewares.isSignedIn,
+    ...application.locals.middlewares.isSignedIn,
     (request, response) => {
-      app.locals.helpers.Session.close({ request, response });
+      application.server.locals.helpers.Session.close({ request, response });
       response
         .header(
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${app.configuration.hostname}/`);
+        .redirect(303, `https://${application.configuration.hostname}/`);
     }
   );
 };
