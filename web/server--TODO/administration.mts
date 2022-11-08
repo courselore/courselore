@@ -9,7 +9,7 @@ import lodash from "lodash";
 import semver from "semver";
 import {
   Courselore,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   UserAvatarlessBackgroundColor,
 } from "./index.mjs";
 
@@ -68,7 +68,7 @@ export default async (app: Courselore): Promise<void> => {
       }
     });
 
-  type IsAdministratorLocals = IsSignedInLocals;
+  type IsAdministratorLocals = ResponseLocalsSignedIn;
   const isAdministratorMiddleware: express.RequestHandler<
     {},
     any,

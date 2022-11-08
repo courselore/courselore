@@ -10,7 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   IsSignedOutLocals,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   userAvatarlessBackgroundColors,
   userEmailNotificationsForAllMessageses,
   CourseRole,
@@ -30,7 +30,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    IsSignedOutLocals & Partial<IsSignedInLocals>
+    IsSignedOutLocals & Partial<ResponseLocalsSignedIn>
   > = asyncHandler(async (req, res) => {
     const password = await argon2.hash("courselore", app.locals.options.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
@@ -1421,7 +1421,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     handler
   );
 
-  app.post<{}, any, {}, {}, IsSignedInLocals>(
+  app.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/demonstration-data",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;

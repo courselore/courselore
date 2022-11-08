@@ -14,7 +14,7 @@ import {
   ResponseLocalsBase,
   ResponseLocalsLiveUpdates,
   IsSignedOutLocals,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   User,
   UserAvatarlessBackgroundColor,
 } from "./index.mjs";
@@ -50,8 +50,8 @@ export type CoursePartial = ({
 }: {
   req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
   res: express.Response<any, ResponseLocalsBase>;
-  course: IsSignedInLocals["enrollments"][number]["course"];
-  enrollment?: IsSignedInLocals["enrollments"][number];
+  course: ResponseLocalsSignedIn["enrollments"][number]["course"];
+  enrollment?: ResponseLocalsSignedIn["enrollments"][number];
   tight?: boolean;
 }) => HTML;
 
@@ -65,11 +65,11 @@ export type CoursesPartial = ({
     any,
     {},
     {},
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
+    ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
   >;
   res: express.Response<
     any,
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
+    ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
   >;
   tight?: boolean;
 }) => HTML;
@@ -89,10 +89,10 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   {},
   ResponseLocalsCourseEnrolled
 >[];
-export type ResponseLocalsCourseEnrolled = IsSignedInLocals & {
+export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
   actionAllowedOnArchivedCourse?: boolean;
-  enrollment: IsSignedInLocals["enrollments"][number];
-  course: IsSignedInLocals["enrollments"][number]["course"];
+  enrollment: ResponseLocalsSignedIn["enrollments"][number];
+  course: ResponseLocalsSignedIn["enrollments"][number]["course"];
   courseEnrollmentsCount: number;
   conversationsCount: number;
   tags: {
@@ -336,7 +336,7 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -450,7 +450,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  type MayCreateCoursesLocals = IsSignedInLocals;
+  type MayCreateCoursesLocals = ResponseLocalsSignedIn;
   const mayCreateCoursesMiddleware: express.RequestHandler<
     {},
     any,
@@ -666,8 +666,8 @@ export default async (app: Courselore): Promise<void> => {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
-    res: express.Response<any, IsSignedInLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
+    res: express.Response<any, ResponseLocalsSignedIn>;
   }): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
       res.locals.enrollments.map((enrollment) => enrollment.accentColor)
@@ -4126,7 +4126,7 @@ export default async (app: Courselore): Promise<void> => {
 
   type IsInvitationUsableLocals = ResponseLocalsBase &
     Omit<Partial<IsSignedOutLocals>, keyof ResponseLocalsBase> &
-    Omit<Partial<IsSignedInLocals>, keyof ResponseLocalsBase> &
+    Omit<Partial<ResponseLocalsSignedIn>, keyof ResponseLocalsBase> &
     Omit<Partial<ResponseLocalsCourseEnrolled>, keyof ResponseLocalsBase> &
     InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
@@ -4370,7 +4370,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInLocals & IsInvitationUsableLocals
+    ResponseLocalsSignedIn & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
@@ -4437,7 +4437,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInLocals & IsInvitationUsableLocals
+    ResponseLocalsSignedIn & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,

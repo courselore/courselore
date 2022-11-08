@@ -7,7 +7,7 @@ import {
   Courselore,
   ResponseLocalsBase,
   IsSignedOutLocals,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
 } from "./index.mjs";
 
 export type AboutHandler = express.RequestHandler<
@@ -15,7 +15,7 @@ export type AboutHandler = express.RequestHandler<
   any,
   {},
   {},
-  IsSignedOutLocals & Partial<IsSignedInLocals>
+  IsSignedOutLocals & Partial<ResponseLocalsSignedIn>
 >;
 
 export default async (app: Courselore): Promise<void> => {
@@ -931,7 +931,7 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.handlers.about
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/about",
     ...app.locals.middlewares.isSignedIn,
     app.locals.handlers.about

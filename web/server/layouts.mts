@@ -9,125 +9,134 @@ import qs from "qs";
 import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
 import {
-  Courselore,
+  Application,
   ResponseLocalsBase,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
 
-export type BaseLayout = ({
-  req,
-  res,
-  head,
-  extraHeaders,
-  body,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
-  head: HTML;
-  extraHeaders?: HTML;
-  body: HTML;
-}) => HTML;
-
-export type BoxLayout = ({
-  req,
-  res,
-  head,
-  body,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
-  head: HTML;
-  body: HTML;
-}) => HTML;
-
-export type ApplicationLayout = ({
-  req,
-  res,
-  head,
-  showCourseSwitcher,
-  extraHeaders,
-  body,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  res: express.Response<
-    any,
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  head: HTML;
-  showCourseSwitcher?: boolean;
-  extraHeaders?: HTML;
-  body: HTML;
-}) => HTML;
-
-export type MainLayout = ({
-  req,
-  res,
-  head,
-  showCourseSwitcher,
-  body,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  res: express.Response<
-    any,
-    IsSignedInLocals & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  head: HTML;
-  showCourseSwitcher?: boolean;
-  body: HTML;
-}) => HTML;
-
-export type SettingsLayout = ({
-  req,
-  res,
-  head,
-  menuButton,
-  menu,
-  body,
-}: {
-  req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
-  res: express.Response<any, IsSignedInLocals>;
-  head: HTML;
-  menuButton: HTML;
-  menu: HTML;
-  body: HTML;
-}) => HTML;
+export type ApplicationLayouts = {
+  server: {
+    locals: {
+      layouts: {
+        base: ({
+          req,
+          res,
+          head,
+          extraHeaders,
+          body,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          res: express.Response<
+            any,
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          head: HTML;
+          extraHeaders?: HTML;
+          body: HTML;
+        }) => HTML;
+        box: ({
+          req,
+          res,
+          head,
+          body,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          res: express.Response<
+            any,
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          head: HTML;
+          body: HTML;
+        }) => HTML;
+        application: ({
+          req,
+          res,
+          head,
+          showCourseSwitcher,
+          extraHeaders,
+          body,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          res: express.Response<
+            any,
+            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          head: HTML;
+          showCourseSwitcher?: boolean;
+          extraHeaders?: HTML;
+          body: HTML;
+        }) => HTML;
+        main: ({
+          req,
+          res,
+          head,
+          showCourseSwitcher,
+          body,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          res: express.Response<
+            any,
+            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          head: HTML;
+          showCourseSwitcher?: boolean;
+          body: HTML;
+        }) => HTML;
+        settings: ({
+          req,
+          res,
+          head,
+          menuButton,
+          menu,
+          body,
+        }: {
+          req: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
+          res: express.Response<any, ResponseLocalsSignedIn>;
+          head: HTML;
+          menuButton: HTML;
+          menu: HTML;
+          body: HTML;
+        }) => HTML;
+        partial: ({
+          req,
+          res,
+          body,
+        }: {
+          req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
+          res: express.Response<any, ResponseLocalsBase>;
+          body: HTML;
+        }) => HTML;
+      };
+    };
+  };
+};
 
 export type LogoPartial = (options?: { size?: number }) => HTML;
-
-export type PartialLayout = ({
-  req,
-  res,
-  body,
-}: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-  res: express.Response<any, ResponseLocalsBase>;
-  body: HTML;
-}) => HTML;
 
 export type SpinnerPartial = ({
   req,
@@ -163,7 +172,7 @@ export type FlashHelper = {
   }): { theme: string; content: HTML } | undefined;
 };
 
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   app.locals.layouts.base = ({
     req,
     res,

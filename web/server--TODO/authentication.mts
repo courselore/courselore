@@ -74,9 +74,9 @@ export type IsSignedInMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsSignedInLocals
+  ResponseLocalsSignedIn
 >[];
-export type IsSignedInLocals = ResponseLocalsBase & {
+export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   actionAllowedToUserWithUnverifiedEmail?: boolean;
   user: {
     id: number;
@@ -142,7 +142,7 @@ export type HasPasswordConfirmationMiddleware = express.RequestHandler<
   {},
   HasPasswordConfirmationLocals
 >[];
-export type HasPasswordConfirmationLocals = IsSignedInLocals & {
+export type HasPasswordConfirmationLocals = ResponseLocalsSignedIn & {
   hasPasswordConfirmationRedirect?: string;
 };
 
@@ -777,7 +777,7 @@ export default async (app: Courselore): Promise<void> => {
       handler
     );
 
-    app.get<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
+    app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
       "/sign-in",
       ...app.locals.middlewares.isSignedIn,
       (req, res) => {
@@ -1006,7 +1006,7 @@ export default async (app: Courselore): Promise<void> => {
     );
   });
 
-  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
+  app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
     "/reset-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1239,7 +1239,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    IsSignedInLocals
+    ResponseLocalsSignedIn
   >(
     "/reset-password/:passwordResetNonce",
     ...app.locals.middlewares.isSignedIn,
@@ -1505,7 +1505,7 @@ export default async (app: Courselore): Promise<void> => {
     );
   });
 
-  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
+  app.get<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
     "/sign-up",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1724,7 +1724,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.post<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
+  app.post<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
     "/resend-email-verification",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;
@@ -1772,7 +1772,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInLocals
+    ResponseLocalsSignedIn
   >(
     "/email-verification/:emailVerificationNonce",
     (req, res, next) => {
@@ -1843,7 +1843,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.delete<{}, any, {}, {}, IsSignedInLocals>(
+  app.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/sign-out",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {

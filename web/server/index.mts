@@ -20,13 +20,15 @@ import base, { ApplicationBase } from "./base.mjs";
 export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
+import layouts, { ApplicationLayouts } from "./layouts.mjs";
+// TODO
+export type ResponseLocalsSignedIn = ResponseLocalsBase;
 // import authentication from "./authentication.mjs";
 // export {
 //   IsSignedOutLocals,
-//   IsSignedInLocals,
+//   ResponseLocalsSignedIn,
 //   HasPasswordConfirmationLocals,
 // } from "./authentication.mjs";
-// import layouts from "./layouts.mjs";
 // import about from "./about.mjs";
 // import administration from "./administration.mjs";
 // TODO
@@ -119,8 +121,9 @@ export type Application = {
   workerEvents: Omit<express.Express, "locals"> & Function;
 } & ApplicationLogging &
   ApplicationDatabase &
-  ApplicationBase;
-// & ApplicationLiveUpdates
+  ApplicationBase &
+  // & ApplicationLiveUpdates
+  ApplicationLayouts;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -244,6 +247,7 @@ if (
         application.configuration.caddy ??= caddyfile``;
 
         // application.server.locals.middleware = {} as any;
+        application.server.locals.layouts = {} as any;
         // application.server.locals.helpers = {} as any;
 
         await logging(application);
@@ -251,8 +255,8 @@ if (
         await healthChecks(application);
         await base(application);
         // await liveUpdates(application);
+        await layouts(application);
         // await authentication(application);
-        // await layouts(application);
         // await about(application);
         // await administration(application);
         // await user(application);

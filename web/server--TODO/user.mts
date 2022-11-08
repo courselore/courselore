@@ -39,7 +39,7 @@ import argon2 from "argon2";
 import {
   Courselore,
   ResponseLocalsBase,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   HasPasswordConfirmationLocals,
   MaybeEnrollment,
   ResponseLocalsCourseEnrolled,
@@ -637,7 +637,7 @@ export default async (app: Courselore): Promise<void> => {
       : html``;
   };
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -654,8 +654,8 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, IsSignedInLocals>;
-    res: express.Response<any, IsSignedInLocals>;
+    req: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
+    res: express.Response<any, ResponseLocalsSignedIn>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -727,7 +727,7 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1027,7 +1027,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    IsSignedInLocals
+    ResponseLocalsSignedIn
   >(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
@@ -1072,7 +1072,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1129,7 +1129,7 @@ export default async (app: Courselore): Promise<void> => {
     }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/email-and-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1463,7 +1463,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1751,7 +1751,7 @@ export default async (app: Courselore): Promise<void> => {
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
     },
     {},
-    IsSignedInLocals
+    ResponseLocalsSignedIn
   >(
     "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
@@ -1836,7 +1836,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInLocals>(
+  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/account",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {

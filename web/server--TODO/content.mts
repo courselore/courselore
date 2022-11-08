@@ -33,7 +33,7 @@ import {
   Courselore,
   ResponseLocalsBase,
   IsSignedOutLocals,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
   UserAvatarlessBackgroundColor,
   CourseRole,
   ResponseLocalsCourseEnrolled,
@@ -2775,7 +2775,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.post<{}, any, {}, {}, IsSignedInLocals>(
+  app.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/content-editor/attachments",
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
@@ -2893,7 +2893,7 @@ ${contentSource}</textarea
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, IsSignedInLocals>(
+    app.post<{}, any, { content?: string }, {}, ResponseLocalsSignedIn>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedIn,
       handler

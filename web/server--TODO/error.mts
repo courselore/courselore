@@ -5,7 +5,7 @@ import {
   Courselore,
   ResponseLocalsBase,
   IsSignedOutLocals,
-  IsSignedInLocals,
+  ResponseLocalsSignedIn,
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
@@ -23,7 +23,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInLocals>(
+  app.all<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
     "*",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
