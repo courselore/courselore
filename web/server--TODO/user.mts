@@ -1368,7 +1368,7 @@ export default async (app: Courselore): Promise<void> => {
               )
             `
           );
-        app.locals.mailers.emailVerification({
+        app.server.locals.helpers.emailVerification({
           req,
           res,
           userId: res.locals.user.id,

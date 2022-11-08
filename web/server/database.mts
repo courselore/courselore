@@ -1422,6 +1422,11 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "liveConnectionsURLIndex" ON "liveConnections" ("url");
       CREATE INDEX "liveConnectionsProcessNumberIndex" ON "liveConnections" ("processNumber");
       CREATE INDEX "liveConnectionsNeedsUpdateAtIndex" ON "liveConnections" ("needsUpdateAt");
+    `,
+
+    sql`
+      CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
+      CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
     `
   );
 

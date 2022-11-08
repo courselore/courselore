@@ -4684,7 +4684,7 @@ export default async (app: Courselore): Promise<void> => {
             )
           `
         );
-        app.locals.mailers.emailNotifications({
+        app.server.locals.helpers.emailNotifications({
           req,
           res,
           message: app.locals.helpers.getMessage({
@@ -9343,7 +9343,7 @@ export default async (app: Courselore): Promise<void> => {
               messageReference: "1",
             });
             if (message !== undefined)
-              app.locals.mailers.emailNotifications({ req, res, message });
+              app.server.locals.helpers.emailNotifications({ req, res, message });
           }
         }
 

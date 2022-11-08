@@ -183,7 +183,11 @@ export default async (application: Application): Promise<void> => {
         createdAt: string;
         user: number;
       }>(
-        sql`SELECT "createdAt", "user" FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
+        sql`
+          SELECT "createdAt", "user"
+          FROM "sessions"
+          WHERE "token" = ${request.cookies["__Host-Session"]}
+        `
       );
       if (
         session === undefined ||
@@ -263,7 +267,7 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.locals.mailers.emailVerification = ({
+  application.server.locals.helpers.emailVerification = ({
     request,
     response,
     userId,
@@ -543,7 +547,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     );
                     if (emailVerification === undefined) {
-                      application.locals.mailers.emailVerification({
+                      application.server.locals.helpers.emailVerification({
                         request,
                         response,
                         userId: response.locals.user.id,
@@ -1776,7 +1780,7 @@ export default async (application: Application): Promise<void> => {
         `
       )!;
 
-      application.locals.mailers.emailVerification({
+      application.server.locals.helpers.emailVerification({
         request,
         response,
         userId: user.id,
@@ -1829,7 +1833,7 @@ export default async (application: Application): Promise<void> => {
           }`
         );
       }
-      application.locals.mailers.emailVerification({
+      application.server.locals.helpers.emailVerification({
         request,
         response,
         userId: response.locals.user.id,

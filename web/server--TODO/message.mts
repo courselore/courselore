@@ -690,7 +690,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
       }
-      app.locals.mailers.emailNotifications({
+      app.server.locals.helpers.emailNotifications({
         req,
         res,
         message: app.locals.helpers.getMessage({
@@ -836,7 +836,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        app.locals.mailers.emailNotifications({
+        app.server.locals.helpers.emailNotifications({
           req,
           res,
           message: res.locals.message,
@@ -1203,7 +1203,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.locals.mailers.emailNotifications = ({ req, res, message }) => {
+  app.server.locals.helpers.emailNotifications = ({ req, res, message }) => {
     app.database.executeTransaction(() => {
       app.database.run(
         sql`
