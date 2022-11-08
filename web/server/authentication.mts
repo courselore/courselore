@@ -214,7 +214,10 @@ export default async (application: Application): Promise<void> => {
         sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
       );
       delete request.cookies["__Host-Session"];
-      response.clearCookie("__Host-Session", application.server.locals.configuration.cookies);
+      response.clearCookie(
+        "__Host-Session",
+        application.server.locals.configuration.cookies
+      );
     },
 
     closeAllAndReopen({ request, response, userId }) {
