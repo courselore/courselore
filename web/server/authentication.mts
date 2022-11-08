@@ -146,6 +146,13 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
 };
 
 export default async (application: Application): Promise<void> => {
+  application.server.locals.configuration.argon2 = {
+    type: argon2.argon2id,
+    memoryCost: 15 * 2 ** 10,
+    timeCost: 2,
+    parallelism: 1,
+  };
+
   application.server.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
@@ -251,6 +258,92 @@ export default async (application: Application): Promise<void> => {
         `${new Date().toISOString()}\t${
           application.process.type
         }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
+
+  application.locals.mailers.emailVerification = ({
+    request,
+    response,
+    userId,
+    userEmail,
+    welcome = false,
+  }) => {
+    const emailVerification = application.database.executeTransaction(() => {
+      application.database.run(
+        sql`
+          DELETE FROM "emailVerifications" WHERE "user" = ${userId}
+        `
+      );
+      return application.database.get<{
+        nonce: string;
+      }>(
+        sql`
+          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
+          VALUES (
+            ${new Date().toISOString()},
+            ${userId},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+      )!;
+    });
+
+    const link = `https://${
+      application.configuration.hostname
+    }/email-verification/${emailVerification.nonce}${qs.stringify(
+      { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
+      { addQueryPrefix: true }
+    )}`;
+    application.database.run(
+      sql`
+        INSERT INTO "sendEmailJobs" (
+          "createdAt",
+          "startAt",
+          "expiresAt",
+          "mailOptions"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${new Date().toISOString()},
+          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+          ${JSON.stringify({
+            to: userEmail,
+            subject: welcome ? "Welcome to Courselore!" : "Email Verification",
+            html: html`
+              <p>
+                Please verify your email:<br />
+                <a href="${link}" target="_blank">${link}</a>
+              </p>
+            `,
+          })}
+        )
+      `
+    );
+    application.locals.workers.sendEmail();
+  };
+
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "emailVerifications"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - 24 * 60 * 60 * 1000
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
       );
       await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
     }
@@ -1578,99 +1671,6 @@ export default async (application: Application): Promise<void> => {
       );
     }
   );
-
-  application.server.locals.configuration.argon2 = {
-    type: argon2.argon2id,
-    memoryCost: 15 * 2 ** 10,
-    timeCost: 2,
-    parallelism: 1,
-  };
-
-  application.locals.mailers.emailVerification = ({
-    request,
-    response,
-    userId,
-    userEmail,
-    welcome = false,
-  }) => {
-    const emailVerification = application.database.executeTransaction(() => {
-      application.database.run(
-        sql`
-          DELETE FROM "emailVerifications" WHERE "user" = ${userId}
-        `
-      );
-      return application.database.get<{
-        nonce: string;
-      }>(
-        sql`
-          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
-          VALUES (
-            ${new Date().toISOString()},
-            ${userId},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
-        `
-      )!;
-    });
-
-    const link = `https://${
-      application.configuration.hostname
-    }/email-verification/${emailVerification.nonce}${qs.stringify(
-      { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
-      { addQueryPrefix: true }
-    )}`;
-    application.database.run(
-      sql`
-        INSERT INTO "sendEmailJobs" (
-          "createdAt",
-          "startAt",
-          "expiresAt",
-          "mailOptions"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${new Date().toISOString()},
-          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-          ${JSON.stringify({
-            to: userEmail,
-            subject: welcome ? "Welcome to Courselore!" : "Email Verification",
-            html: html`
-              <p>
-                Please verify your email:<br />
-                <a href="${link}" target="_blank">${link}</a>
-              </p>
-            `,
-          })}
-        )
-      `
-    );
-    application.locals.workers.sendEmail();
-  };
-
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
-      );
-      application.database.run(
-        sql`
-          DELETE FROM "emailVerifications"
-          WHERE "createdAt" < ${new Date(
-            Date.now() - 24 * 60 * 60 * 1000
-          ).toISOString()}
-        `
-      );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
-      );
-      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-    }
-  });
 
   application.server.post<
     {},
