@@ -142,7 +142,6 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
     accentColor: EnrollmentAccentColor;
   }[];
   mayCreateCourses: boolean;
-  actionAllowedToUserWithUnverifiedEmail?: boolean;
   confirmedPassword?: boolean;
 };
 
