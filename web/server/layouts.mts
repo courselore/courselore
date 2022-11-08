@@ -694,7 +694,7 @@ export default async (application: Application): Promise<void> => {
 
             $${response.locals.user?.systemRole === "administrator" &&
             semver.gt(
-              response.locals.administrationOptions.latestVersion,
+              response.locals.administrationOptions!.latestVersion,
               application.version
             )
               ? html`
@@ -730,7 +730,7 @@ export default async (application: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${response.locals.administrationOptions
+                                    ${response.locals.administrationOptions!
                                       .latestVersion}
                                   </span>
                                 </span>
@@ -755,7 +755,7 @@ export default async (application: Application): Promise<void> => {
                                 </a>
                                 <a
                                   href="https://github.com/courselore/courselore/releases/tag/v${response
-                                    .locals.administrationOptions
+                                    .locals.administrationOptions!
                                     .latestVersion}"
                                   target="_blank"
                                   class="dropdown--menu--item button button--green"
@@ -860,14 +860,12 @@ export default async (application: Application): Promise<void> => {
           <link
             rel="stylesheet"
             href="https://${application.configuration.hostname}/${application
-              .configuration.static["index.css"]}"
+              .static["index.css"]}"
           />
           $${response.locals.css.toString()}
 
           <script src="https://${application.configuration
-              .hostname}/${application.configuration.static[
-              "index.mjs"
-            ]}"></script>
+              .hostname}/${application.static["index.mjs"]}"></script>
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();

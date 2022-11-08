@@ -22,7 +22,10 @@ export { ResponseLocalsBase } from "./base.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 // TODO
-export type ResponseLocalsSignedIn = ResponseLocalsBase;
+export type ResponseLocalsSignedIn = ResponseLocalsBase & {
+  user: { systemRole: string };
+  administrationOptions: { latestVersion: string };
+};
 // import authentication from "./authentication.mjs";
 // export {
 //   IsSignedOutLocals,
@@ -50,7 +53,7 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase;
 // import course from "./course.mjs";
 // TODO
 import { ResponseLocalsBase } from "./base.mjs";
-export type ResponseLocalsCourseEnrolled = ResponseLocalsBase & {
+export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
   course: { id: number; reference: string };
   enrollment: { accentColor: string };
 };

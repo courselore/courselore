@@ -24,10 +24,7 @@ export default async (app: Courselore): Promise<void> => {
     app.configuration.environment !== "development"
   ) {
     app.get<{}, HTML, {}, {}, ResponseLocalsBase>("/about", (req, res) => {
-      res.redirect(
-        303,
-        `https://${app.configuration.canonicalHostname}/about`
-      );
+      res.redirect(303, `https://${app.configuration.canonicalHostname}/about`);
     });
     return;
   }
@@ -206,8 +203,9 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.configuration.hostname}/${app.configuration
-                  .static["about/main-screen--light.png"]}"
+                src="https://${app.configuration.hostname}/${app.static[
+                  "about/main-screen--light.png"
+                ]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -222,8 +220,9 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               />
               <img
-                src="https://${app.configuration.hostname}/${app.configuration
-                  .static["about/main-screen--dark.png"]}"
+                src="https://${app.configuration.hostname}/${app.static[
+                  "about/main-screen--dark.png"
+                ]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -419,8 +418,9 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.configuration.hostname}/${app.configuration
-                  .static["about/main-screen--light-and-dark.png"]}"
+                src="https://${app.configuration.hostname}/${app.static[
+                  "about/main-screen--light-and-dark.png"
+                ]}"
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
@@ -496,8 +496,9 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.configuration.hostname}/${app.configuration
-                  .static["about/main-screen--phone--light.jpeg"]}"
+                src="https://${app.configuration.hostname}/${app.static[
+                  "about/main-screen--phone--light.jpeg"
+                ]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -512,8 +513,9 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               />
               <img
-                src="https://${app.configuration.hostname}/${app.configuration
-                  .static["about/main-screen--phone--dark.jpeg"]}"
+                src="https://${app.configuration.hostname}/${app.static[
+                  "about/main-screen--phone--dark.jpeg"
+                ]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -733,8 +735,9 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.configuration.hostname}/${app.locals
-                    .options.static["about/scott-smith.png"]}"
+                  src="https://${app.configuration.hostname}/${app.static[
+                    "about/scott-smith.png"
+                  ]}"
                   alt="Dr. Scott Smith"
                   loading="lazy"
                   class="img"
@@ -754,8 +757,9 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.configuration.hostname}/${app.locals
-                    .options.static["about/ali-madooei.png"]}"
+                  src="https://${app.configuration.hostname}/${app.static[
+                    "about/ali-madooei.png"
+                  ]}"
                   alt="Dr. Ali Madooei"
                   loading="lazy"
                   class="img"
@@ -772,8 +776,9 @@ export default async (app: Courselore): Promise<void> => {
 
               <a href="https://leafac.com" class="button button--transparent">
                 <img
-                  src="https://${app.configuration.hostname}/${app.locals
-                    .options.static["about/leandro-facchinetti.png"]}"
+                  src="https://${app.configuration.hostname}/${app.static[
+                    "about/leandro-facchinetti.png"
+                  ]}"
                   alt="Leandro Facchinetti"
                   loading="lazy"
                   class="img"
@@ -805,8 +810,9 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.configuration.hostname}/${app.locals
-                    .options.static["about/eliot-smith.png"]}"
+                  src="https://${app.configuration.hostname}/${app.static[
+                    "about/eliot-smith.png"
+                  ]}"
                   alt="Eliot Smith"
                   loading="lazy"
                   class="img"
