@@ -1,13 +1,9 @@
-
 //   UserSystemRolesWhoMayCreateCourses,
 
 //   administrationOptions: {
 //     latestVersion: string;
 //     userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
 //   };
-
-
-
 
 // res.locals.administrationOptions =
 // application.database.get<{
@@ -23,8 +19,6 @@
 //   throw new Error("Failed to fetch ‘administrationOptions’.");
 // })();
 
-
-
 import path from "node:path";
 import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -36,6 +30,7 @@ import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import argon2 from "argon2";
+import got from "got";
 import {
   Courselore,
   ResponseLocalsBase,
@@ -108,7 +103,10 @@ export type UserPartial = ({
     {},
     ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
+  res: express.Response<
+    any,
+    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+  >;
   enrollment?: MaybeEnrollment;
   user?: User | "no-longer-enrolled";
   anonymous?: boolean | "reveal";
@@ -1438,7 +1436,13 @@ export default async (app: Courselore): Promise<void> => {
             )
           `
         );
-        app.locals.workers.sendEmail();
+        got
+          .post(
+            `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+          )
+          .catch((error) => {
+            response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+          });
         app.locals.helpers.Session.closeAllAndReopen({
           req,
           res,

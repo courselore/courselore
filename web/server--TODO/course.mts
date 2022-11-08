@@ -9,6 +9,7 @@ import dedent from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import QRCode from "qrcode";
+import got from "got";
 import {
   Courselore,
   ResponseLocalsBase,
@@ -234,8 +235,8 @@ export default async (app: Courselore): Promise<void> => {
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="https://${app.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
+                href="https://${app.configuration.hostname}/courses/${enrollment
+                  .course.reference}"
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
                   : "button--tight"} ${enrollment.id ===
@@ -290,8 +291,8 @@ export default async (app: Courselore): Promise<void> => {
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="https://${app.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
+                href="https://${app.configuration.hostname}/courses/${enrollment
+                  .course.reference}"
                 hidden
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
@@ -870,7 +871,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, ResponseLocalsCourseEnrolled>(
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    ResponseLocalsCourseEnrolled
+  >(
     "/courses/:courseReference/settings",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -910,8 +917,8 @@ export default async (app: Courselore): Promise<void> => {
         res.locals.enrollment.courseRole === "staff"
           ? html`
               <a
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/settings/course-information"
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course.reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/course-information\/?$/i
                 )
@@ -922,8 +929,8 @@ export default async (app: Courselore): Promise<void> => {
                 Course Information
               </a>
               <a
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/settings/tags"
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course.reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/tags\/?$/i
                 )
@@ -938,8 +945,8 @@ export default async (app: Courselore): Promise<void> => {
                 Tags
               </a>
               <a
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/settings/invitations"
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course.reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/invitations\/?$/i
                 )
@@ -954,8 +961,8 @@ export default async (app: Courselore): Promise<void> => {
                 Invitations
               </a>
               <a
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/settings/enrollments"
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course.reference}/settings/enrollments"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/enrollments\/?$/i
                 )
@@ -970,8 +977,8 @@ export default async (app: Courselore): Promise<void> => {
                 Enrollments
               </a>
               <a
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/settings/your-enrollment"
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course.reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/your-enrollment\/?$/i
                 )
@@ -1013,8 +1020,8 @@ export default async (app: Courselore): Promise<void> => {
             </h2>
             <form
               method="PATCH"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/settings/course-information"
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/settings/course-information"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1099,8 +1106,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/settings/course-information"
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/settings/course-information"
               css="${res.locals.css(css`
                 display: flex;
                 flex-direction: column;
@@ -1382,8 +1389,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PUT"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/settings/tags"
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/settings/tags"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1945,8 +1952,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/settings/invitations"
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/settings/invitations"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -2959,7 +2966,11 @@ export default async (app: Courselore): Promise<void> => {
         )
       `
     );
-    app.locals.workers.sendEmail();
+    got
+      .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
+      .catch((error) => {
+        response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+      });
   };
 
   app.post<
@@ -3979,7 +3990,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, ResponseLocalsCourseEnrolled>(
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    ResponseLocalsCourseEnrolled
+  >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
@@ -4003,8 +4020,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/settings/your-enrollment"
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/settings/your-enrollment"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -4397,8 +4414,8 @@ export default async (app: Courselore): Promise<void> => {
             })}
             <form
               method="POST"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.invitation.course.reference}/invitations/${res.locals
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .invitation.course.reference}/invitations/${res.locals
                 .invitation.reference}${qs.stringify(
                 { redirect: req.query.redirect },
                 { addQueryPrefix: true }

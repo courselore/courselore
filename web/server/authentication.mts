@@ -9,6 +9,7 @@ import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
+import got from "got";
 import {
   Application,
   ResponseLocalsBase,
@@ -326,7 +327,11 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-    application.locals.workers.sendEmail();
+    got
+      .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
+      .catch((error) => {
+        response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+      });
   };
 
   application.workerEvents.once("start", async () => {
@@ -1227,7 +1232,13 @@ export default async (application: Application): Promise<void> => {
           )
         `
       );
-      application.locals.workers.sendEmail();
+      got
+        .post(
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+        )
+        .catch((error) => {
+          response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+        });
       if (request.body.resend === "true")
         application.server.locals.helpers.Flash.set({
           request,
@@ -1494,7 +1505,13 @@ export default async (application: Application): Promise<void> => {
           )
         `
       );
-      application.locals.workers.sendEmail();
+      got
+        .post(
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+        )
+        .catch((error) => {
+          response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+        });
       application.server.locals.helpers.Session.closeAllAndReopen({
         request,
         response,
