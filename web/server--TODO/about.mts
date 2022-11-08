@@ -150,7 +150,7 @@ export default async (app: Courselore): Promise<void> => {
 
                 <div>
                   <a
-                    href="${app.configuration.metaCourseloreInvitation}"
+                    href="${app.addresses.metaCourseloreInvitation}"
                     class="button button--transparent"
                     css="${res.locals.css(css`
                       align-items: center;
@@ -878,7 +878,7 @@ export default async (app: Courselore): Promise<void> => {
                   </a>
                 `}
             <a
-              href="${app.configuration.metaCourseloreInvitation}"
+              href="${app.addresses.metaCourseloreInvitation}"
               class="button button--transparent"
               css="${res.locals.css(css`
                 align-items: center;

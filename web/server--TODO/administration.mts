@@ -52,9 +52,9 @@ export default async (app: Courselore): Promise<void> => {
             `${new Date().toISOString()}\t${
               app.configuration.processType
             }\tCHECK FOR UPDATES\t${
-              semver.gt(latestVersion, app.configuration.version)
-                ? `NEW VERSION AVAILABLE: ${app.configuration.version} → ${latestVersion}`
-                : `CURRENT VERSION ${app.configuration.version} IS THE LATEST`
+              semver.gt(latestVersion, app.version)
+                ? `NEW VERSION AVAILABLE: ${app.version} → ${latestVersion}`
+                : `CURRENT VERSION ${app.version} IS THE LATEST`
             }`
           );
         } catch (error) {

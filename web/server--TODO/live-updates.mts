@@ -20,7 +20,7 @@ import {
 //   (req, res) => {
 //     const connection = { req, res };
 //     liveConnections.add(connection);
-//     res.header("Version", app.configuration.version);
+//     res.header("Version", app.version);
 //     res.contentType("text/plain");
 //     const heartbeatAbortController = new AbortController();
 //     (async () => {

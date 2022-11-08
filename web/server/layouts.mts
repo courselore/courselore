@@ -530,7 +530,7 @@ export default async (application: Application): Promise<void> => {
                     content: ${response.locals.html(
                       html`
                         <h3 class="heading">
-                          $${application.locals.partials.logo({
+                          $${application.server.locals.partials.logo({
                             size: 12 /* var(--space--3) */,
                           })}
                           <span>
@@ -543,7 +543,7 @@ export default async (application: Application): Promise<void> => {
                                 line-height: var(--line-height--2xs);
                               `)}"
                             >
-                              Version ${application.configuration.version}
+                              Version ${application.version}
                             </small>
                           </span>
                         </h3>
@@ -571,7 +571,7 @@ export default async (application: Application): Promise<void> => {
                   });
                 `}"
               >
-                $${application.locals.partials.logo({
+                $${application.server.locals.partials.logo({
                   size: 16 /* var(--space--4) */,
                 })}
                 Courselore
@@ -593,7 +593,7 @@ export default async (application: Application): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${application.configuration
+                            href="${application.addresses
                               .metaCourseloreInvitation}${qs.stringify(
                               {
                                 redirect: `conversations/new/question${qs.stringify(
@@ -618,7 +618,7 @@ export default async (application: Application): Promise<void> => {
 
                                         **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                        - Courselore Version: ${application.configuration.version}
+                                        - Courselore Version: ${application.version}
                                       `,
                                       tagsReferences: ["9676584193"],
                                     },
@@ -634,13 +634,13 @@ export default async (application: Application): Promise<void> => {
                               align-items: center;
                             `)}"
                           >
-                            $${application.locals.partials.logo({
+                            $${application.server.locals.partials.logo({
                               size: 14 /* var(--space--3-5) */,
                             })}
                             Meta Courselore
                           </a>
                           <a
-                            href="${application.locals.partials
+                            href="${application.server.locals.partials
                               .reportIssueHref}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
@@ -670,7 +670,7 @@ export default async (application: Application): Promise<void> => {
 
                                   **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                  - Courselore Version: ${application.configuration.version}
+                                  - Courselore Version: ${application.version}
                                 `,
                               },
                               { addQueryPrefix: true }
@@ -695,7 +695,7 @@ export default async (application: Application): Promise<void> => {
             $${response.locals.user?.systemRole === "administrator" &&
             semver.gt(
               response.locals.administrationOptions.latestVersion,
-              application.configuration.version
+              application.version
             )
               ? html`
                   <div>
@@ -719,7 +719,7 @@ export default async (application: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${application.configuration.version}
+                                    ${application.version}
                                   </span>
                                   →
                                   <span
@@ -873,7 +873,7 @@ export default async (application: Application): Promise<void> => {
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
             leafac.liveConnection({
-              version: $${JSON.stringify(application.configuration.version)},
+              version: $${JSON.stringify(application.version)},
               url: $${JSON.stringify(
                 `https://${application.configuration.hostname}/live-connection`
               )},
@@ -992,7 +992,7 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `)}"
               >
-                $${application.locals.partials.logo()} Courselore
+                $${application.server.locals.partials.logo()} Courselore
               </a>
             </div>
             <div
@@ -1167,7 +1167,7 @@ export default async (application: Application): Promise<void> => {
               });
             `}"
           >
-            $${application.locals.partials.logo()}
+            $${application.server.locals.partials.logo()}
           </a>
 
           <div
@@ -1181,7 +1181,7 @@ export default async (application: Application): Promise<void> => {
             $${(() => {
               const courseSwitcher = html`
                 <div class="dropdown--menu">
-                  $${application.locals.partials.courses({
+                  $${application.server.locals.partials.courses({
                     req,
                     res,
                     tight: true,
@@ -1225,7 +1225,7 @@ export default async (application: Application): Promise<void> => {
                                             margin-top: var(--space---2);
                                           `)}"
                                         >
-                                          $${application.locals.partials.courseArchived(
+                                          $${application.server.locals.partials.courseArchived(
                                             { req, res }
                                           )}
                                         </div>
@@ -1295,10 +1295,12 @@ export default async (application: Application): Promise<void> => {
                       </span>
                       $${res.locals.course.archivedAt !== null
                         ? html`
-                            $${application.locals.partials.courseArchived({
-                              req,
-                              res,
-                            })}
+                            $${application.server.locals.partials.courseArchived(
+                              {
+                                req,
+                                res,
+                              }
+                            )}
                           `
                         : html``}
                       <i class="bi bi-chevron-down"></i>
@@ -1384,12 +1386,14 @@ export default async (application: Application): Promise<void> => {
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
                                       >
-                                        $${application.locals.partials.course({
-                                          req,
-                                          res,
-                                          course: invitation.course,
-                                          tight: true,
-                                        })}
+                                        $${application.server.locals.partials.course(
+                                          {
+                                            req,
+                                            res,
+                                            course: invitation.course,
+                                            tight: true,
+                                          }
+                                        )}
                                       </a>
                                     `
                                   )}
@@ -1557,7 +1561,7 @@ export default async (application: Application): Promise<void> => {
                 });
               `}"
             >
-              $${application.locals.partials.user({
+              $${application.server.locals.partials.user({
                 req,
                 res,
                 user: res.locals.user,
@@ -1701,7 +1705,7 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
-  application.locals.partials.logo = (() => {
+  application.server.locals.partials.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -1767,7 +1771,11 @@ export default async (application: Application): Promise<void> => {
     </html>
   `;
 
-  application.locals.partials.spinner = ({ req, res, size = 20 }) => html`
+  application.server.locals.partials.spinner = ({
+    req,
+    res,
+    size = 20,
+  }) => html`
     <svg
       width="${size.toString()}"
       height="${size.toString()}"
@@ -1794,7 +1802,7 @@ export default async (application: Application): Promise<void> => {
     </svg>
   `;
 
-  application.locals.partials.reportIssueHref = `mailto:${
+  application.server.locals.partials.reportIssueHref = `mailto:${
     application.configuration.administratorEmail
   }${qs.stringify(
     {
@@ -1818,7 +1826,7 @@ export default async (application: Application): Promise<void> => {
   
           Please provide as much relevant context as possible (operating system, browser, and so forth):
   
-          Courselore Version: ${application.configuration.version}
+          Courselore Version: ${application.version}
         `,
     },
     { addQueryPrefix: true }
