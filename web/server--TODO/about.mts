@@ -20,13 +20,13 @@ export type AboutHandler = express.RequestHandler<
 
 export default async (app: Courselore): Promise<void> => {
   if (
-    app.locals.options.hostname !== app.locals.options.canonicalHostname &&
-    app.locals.options.environment !== "development"
+    app.configuration.hostname !== app.configuration.canonicalHostname &&
+    app.configuration.environment !== "development"
   ) {
     app.get<{}, HTML, {}, {}, ResponseLocalsBase>("/about", (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.canonicalHostname}/about`
+        `https://${app.configuration.canonicalHostname}/about`
       );
     });
     return;
@@ -63,7 +63,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <a
-                href="https://${app.locals.options.hostname}/about"
+                href="https://${app.configuration.hostname}/about"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   font-size: var(--font-size--5xl);
@@ -109,7 +109,7 @@ export default async (app: Courselore): Promise<void> => {
                   $${res.locals.user === undefined
                     ? html`
                         <a
-                          href="https://${app.locals.options
+                          href="https://${app.configuration
                             .canonicalHostname}/sign-up"
                           class="button button--blue"
                           onload="${javascript`
@@ -123,7 +123,7 @@ export default async (app: Courselore): Promise<void> => {
                           Sign up
                         </a>
                         <a
-                          href="https://${app.locals.options
+                          href="https://${app.configuration
                             .canonicalHostname}/sign-in"
                           class="button button--transparent"
                           onload="${javascript`
@@ -139,7 +139,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     : html`
                         <a
-                          href="https://${app.locals.options.hostname}/"
+                          href="https://${app.configuration.hostname}/"
                           class="button button--blue"
                         >
                           Return to Courselore
@@ -150,7 +150,7 @@ export default async (app: Courselore): Promise<void> => {
 
                 <div>
                   <a
-                    href="${app.locals.options.metaCourseloreInvitation}"
+                    href="${app.configuration.metaCourseloreInvitation}"
                     class="button button--transparent"
                     css="${res.locals.css(css`
                       align-items: center;
@@ -184,7 +184,7 @@ export default async (app: Courselore): Promise<void> => {
 
                 <div>
                   <a
-                    href="https://${app.locals.options.tryHostname}"
+                    href="https://${app.configuration.tryHostname}"
                     class="button button--transparent"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
@@ -206,7 +206,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/${app.locals.options
+                src="https://${app.configuration.hostname}/${app.configuration
                   .static["about/main-screen--light.png"]}"
                 alt="Courselore Main Screen"
                 width="960"
@@ -222,7 +222,7 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               />
               <img
-                src="https://${app.locals.options.hostname}/${app.locals.options
+                src="https://${app.configuration.hostname}/${app.configuration
                   .static["about/main-screen--dark.png"]}"
                 alt="Courselore Main Screen"
                 width="960"
@@ -419,7 +419,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/${app.locals.options
+                src="https://${app.configuration.hostname}/${app.configuration
                   .static["about/main-screen--light-and-dark.png"]}"
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
@@ -496,7 +496,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <img
-                src="https://${app.locals.options.hostname}/${app.locals.options
+                src="https://${app.configuration.hostname}/${app.configuration
                   .static["about/main-screen--phone--light.jpeg"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
@@ -512,7 +512,7 @@ export default async (app: Courselore): Promise<void> => {
                 `)}"
               />
               <img
-                src="https://${app.locals.options.hostname}/${app.locals.options
+                src="https://${app.configuration.hostname}/${app.configuration
                   .static["about/main-screen--phone--dark.jpeg"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
@@ -733,7 +733,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options.hostname}/${app.locals
+                  src="https://${app.configuration.hostname}/${app.locals
                     .options.static["about/scott-smith.png"]}"
                   alt="Dr. Scott Smith"
                   loading="lazy"
@@ -754,7 +754,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options.hostname}/${app.locals
+                  src="https://${app.configuration.hostname}/${app.locals
                     .options.static["about/ali-madooei.png"]}"
                   alt="Dr. Ali Madooei"
                   loading="lazy"
@@ -772,7 +772,7 @@ export default async (app: Courselore): Promise<void> => {
 
               <a href="https://leafac.com" class="button button--transparent">
                 <img
-                  src="https://${app.locals.options.hostname}/${app.locals
+                  src="https://${app.configuration.hostname}/${app.locals
                     .options.static["about/leandro-facchinetti.png"]}"
                   alt="Leandro Facchinetti"
                   loading="lazy"
@@ -805,7 +805,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent"
               >
                 <img
-                  src="https://${app.locals.options.hostname}/${app.locals
+                  src="https://${app.configuration.hostname}/${app.locals
                     .options.static["about/eliot-smith.png"]}"
                   alt="Eliot Smith"
                   loading="lazy"
@@ -840,7 +840,7 @@ export default async (app: Courselore): Promise<void> => {
             $${res.locals.user === undefined
               ? html`
                   <a
-                    href="https://${app.locals.options
+                    href="https://${app.configuration
                       .canonicalHostname}/sign-up"
                     class="button button--blue"
                     onload="${javascript`
@@ -854,7 +854,7 @@ export default async (app: Courselore): Promise<void> => {
                     Sign up
                   </a>
                   <a
-                    href="https://${app.locals.options
+                    href="https://${app.configuration
                       .canonicalHostname}/sign-in"
                     class="button button--transparent"
                     onload="${javascript`
@@ -870,7 +870,7 @@ export default async (app: Courselore): Promise<void> => {
                 `
               : html`
                   <a
-                    href="https://${app.locals.options.hostname}/"
+                    href="https://${app.configuration.hostname}/"
                     class="button button--blue"
                   >
                     Return to Courselore
@@ -878,7 +878,7 @@ export default async (app: Courselore): Promise<void> => {
                   </a>
                 `}
             <a
-              href="${app.locals.options.metaCourseloreInvitation}"
+              href="${app.configuration.metaCourseloreInvitation}"
               class="button button--transparent"
               css="${res.locals.css(css`
                 align-items: center;
@@ -907,7 +907,7 @@ export default async (app: Courselore): Promise<void> => {
               Source Code
             </a>
             <a
-              href="https://${app.locals.options.tryHostname}"
+              href="https://${app.configuration.tryHostname}"
               class="button button--transparent"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({

@@ -25,13 +25,13 @@ export type SystemRole = typeof systemRoles[number];
 export const systemRoles = ["none", "staff", "administrator"] as const;
 
 export default async (app: Courselore): Promise<void> => {
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       while (true) {
         try {
           console.log(
             `${new Date().toISOString()}\t${
-              app.locals.options.processType
+              app.configuration.processType
             }\tCHECK FOR UPDATES\tSTARTING...`
           );
           const latestVersion = semver.clean(
@@ -50,17 +50,17 @@ export default async (app: Courselore): Promise<void> => {
           );
           console.log(
             `${new Date().toISOString()}\t${
-              app.locals.options.processType
+              app.configuration.processType
             }\tCHECK FOR UPDATES\t${
-              semver.gt(latestVersion, app.locals.options.version)
-                ? `NEW VERSION AVAILABLE: ${app.locals.options.version} → ${latestVersion}`
-                : `CURRENT VERSION ${app.locals.options.version} IS THE LATEST`
+              semver.gt(latestVersion, app.configuration.version)
+                ? `NEW VERSION AVAILABLE: ${app.configuration.version} → ${latestVersion}`
+                : `CURRENT VERSION ${app.configuration.version} IS THE LATEST`
             }`
           );
         } catch (error) {
           console.log(
             `${new Date().toISOString()}\t${
-              app.locals.options.processType
+              app.configuration.processType
             }\tCHECK FOR UPDATES\tERROR\n${error}`
           );
         }
@@ -89,7 +89,7 @@ export default async (app: Courselore): Promise<void> => {
     (res, req) => {
       req.redirect(
         303,
-        `https://${app.locals.options.hostname}/administration/system-settings`
+        `https://${app.configuration.hostname}/administration/system-settings`
       );
     }
   );
@@ -115,7 +115,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
       menu: html`
         <a
-          href="https://${app.locals.options
+          href="https://${app.configuration
             .hostname}/administration/system-settings"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/administration\/system-settings\/?$/i
@@ -127,7 +127,7 @@ export default async (app: Courselore): Promise<void> => {
           System Settings
         </a>
         <a
-          href="https://${app.locals.options.hostname}/administration/users"
+          href="https://${app.configuration.hostname}/administration/users"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/administration\/users\/?$/i
           )
@@ -166,7 +166,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/administration/system-settings"
               novalidate
               css="${res.locals.css(css`
@@ -291,7 +291,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/administration/system-settings`
+        `https://${app.configuration.hostname}/administration/system-settings`
       );
     }
   );
@@ -399,7 +399,7 @@ export default async (app: Courselore): Promise<void> => {
             </label>
 
             $${users.map((user) => {
-              const action = `https://${app.locals.options.hostname}/users/${user.reference}`;
+              const action = `https://${app.configuration.hostname}/users/${user.reference}`;
               const isSelf = user.id === res.locals.user.id;
               const isOnlyAdministrator =
                 isSelf &&
@@ -740,8 +740,8 @@ export default async (app: Courselore): Promise<void> => {
     res.redirect(
       303,
       isSelf
-        ? `https://${app.locals.options.hostname}`
-        : `https://${app.locals.options.hostname}/administration/users`
+        ? `https://${app.configuration.hostname}`
+        : `https://${app.configuration.hostname}/administration/users`
     );
   });
 };

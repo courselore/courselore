@@ -22,7 +22,7 @@
 - Communicate that we’re in a free hosting period for now:
 
 ```javascript
-            $${app.locals.options.host === app.locals.options.canonicalHost
+            $${app.configuration.host === app.configuration.canonicalHost
               ? html`
                   <div
                     css="${res.locals.css(css`

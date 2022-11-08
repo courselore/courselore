@@ -341,7 +341,7 @@ export default async (application: Application): Promise<void> => {
                                 differentiate between courses.
                               </p>
                               <a
-                                href="https://${application.locals.options
+                                href="https://${application.configuration
                                   .hostname}/courses/${response.locals.course!
                                   .reference}/settings/your-enrollment"
                                 class="button button--blue"
@@ -365,7 +365,7 @@ export default async (application: Application): Promise<void> => {
 
             let headerMeta = html``;
 
-            if (application.locals.options.demonstration)
+            if (application.configuration.demonstration)
               headerMeta += html`
                 <div>
                   <button
@@ -395,7 +395,7 @@ export default async (application: Application): Promise<void> => {
                               </p>
                               <form
                                 method="POST"
-                                action="https://${application.locals.options
+                                action="https://${application.configuration
                                   .hostname}/demonstration-data"
                               >
                                 <button
@@ -420,11 +420,11 @@ export default async (application: Application): Promise<void> => {
                 </div>
               `;
 
-            if (application.locals.options.environment !== "production")
+            if (application.configuration.environment !== "production")
               headerMeta += html`
                 <form
                   method="DELETE"
-                  action="https://${application.locals.options
+                  action="https://${application.configuration
                     .hostname}/turn-off"
                 >
                   <button class="button button--transparent">
@@ -543,13 +543,13 @@ export default async (application: Application): Promise<void> => {
                                 line-height: var(--line-height--2xs);
                               `)}"
                             >
-                              Version ${application.locals.options.version}
+                              Version ${application.configuration.version}
                             </small>
                           </span>
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="https://${application.locals.options
+                            href="https://${application.configuration
                               .hostname}/about"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
@@ -593,7 +593,7 @@ export default async (application: Application): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${application.locals.options
+                            href="${application.configuration
                               .metaCourseloreInvitation}${qs.stringify(
                               {
                                 redirect: `conversations/new/question${qs.stringify(
@@ -618,7 +618,7 @@ export default async (application: Application): Promise<void> => {
 
                                         **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                        - Courselore Version: ${application.locals.options.version}
+                                        - Courselore Version: ${application.configuration.version}
                                       `,
                                       tagsReferences: ["9676584193"],
                                     },
@@ -646,7 +646,7 @@ export default async (application: Application): Promise<void> => {
                             class="dropdown--menu--item button button--transparent"
                           >
                             <i class="bi bi-envelope"></i>
-                            ${application.locals.options.administratorEmail}
+                            ${application.configuration.administratorEmail}
                           </a>
                           <a
                             href="https://github.com/courselore/courselore/issues/new${qs.stringify(
@@ -670,7 +670,7 @@ export default async (application: Application): Promise<void> => {
 
                                   **Please provide as much relevant context as possible (operating system, browser, and so forth):**
 
-                                  - Courselore Version: ${application.locals.options.version}
+                                  - Courselore Version: ${application.configuration.version}
                                 `,
                               },
                               { addQueryPrefix: true }
@@ -695,7 +695,7 @@ export default async (application: Application): Promise<void> => {
             $${response.locals.user?.systemRole === "administrator" &&
             semver.gt(
               response.locals.administrationOptions.latestVersion,
-              application.locals.options.version
+              application.configuration.version
             )
               ? html`
                   <div>
@@ -719,7 +719,7 @@ export default async (application: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${application.locals.options.version}
+                                    ${application.configuration.version}
                                   </span>
                                   →
                                   <span
@@ -859,13 +859,13 @@ export default async (application: Application): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="https://${application.locals.options.hostname}/${application
-              .locals.options.static["index.css"]}"
+            href="https://${application.configuration.hostname}/${application
+              .configuration.static["index.css"]}"
           />
           $${response.locals.css.toString()}
 
-          <script src="https://${application.locals.options
-              .hostname}/${application.locals.options.static[
+          <script src="https://${application.configuration
+              .hostname}/${application.configuration.static[
               "index.mjs"
             ]}"></script>
           <script>
@@ -873,20 +873,20 @@ export default async (application: Application): Promise<void> => {
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
             leafac.liveConnection({
-              version: $${JSON.stringify(application.locals.options.version)},
+              version: $${JSON.stringify(application.configuration.version)},
               url: $${JSON.stringify(
-                `https://${application.locals.options.hostname}/live-connection`
+                `https://${application.configuration.hostname}/live-connection`
               )},
               newVersionMessage:
                 "Courselore has been updated. Please reload the page.",
               offlineMessage:
                 "Failed to connect to the Courselore server. Please check your internet connection and try reloading the page.",
               liveReload: $${JSON.stringify(
-                application.locals.options.environment === "development"
+                application.configuration.environment === "development"
               )},
             });
             leafac.liveNavigation(
-              $${JSON.stringify(application.locals.options.hostname)}
+              $${JSON.stringify(application.configuration.hostname)}
             );
           </script>
 
@@ -910,7 +910,7 @@ export default async (application: Application): Promise<void> => {
     `;
   };
 
-  if (application.locals.options.environment !== "production")
+  if (application.configuration.environment !== "production")
     application.delete<{}, any, {}, {}, ResponseLocalsBase>(
       "/turn-off",
       (req, res) => {
@@ -986,7 +986,7 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <a
-                href="https://${application.locals.options.hostname}/"
+                href="https://${application.configuration.hostname}/"
                 class="heading--display button button--transparent"
                 css="${res.locals.css(css`
                   align-items: center;
@@ -1012,8 +1012,8 @@ export default async (application: Application): Promise<void> => {
               $${body}
             </div>
 
-            $${application.locals.options.hostname ===
-            application.locals.options.tryHostname
+            $${application.configuration.hostname ===
+            application.configuration.tryHostname
               ? html`
                   <div
                     key="main--try"
@@ -1055,7 +1055,7 @@ export default async (application: Application): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="https://${application.locals.options
+                        action="https://${application.configuration
                           .hostname}/demonstration-data"
                       >
                         <button
@@ -1071,7 +1071,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </div>
                 `
-              : application.locals.options.demonstration
+              : application.configuration.demonstration
               ? html`
                   <div
                     key="main--demonstration"
@@ -1113,7 +1113,7 @@ export default async (application: Application): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="https://${application.locals.options
+                        action="https://${application.configuration
                           .hostname}/demonstration-data"
                       >
                         <button
@@ -1158,7 +1158,7 @@ export default async (application: Application): Promise<void> => {
           `)}"
         >
           <a
-            href="https://${application.locals.options.hostname}/"
+            href="https://${application.configuration.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
             onload="${javascript`
               (this.tooltip ??= tippy(this)).setProps({
@@ -1233,7 +1233,7 @@ export default async (application: Application): Promise<void> => {
                                     : html``}
                                   <div class="dropdown--menu">
                                     <a
-                                      href="https://${application.locals.options
+                                      href="https://${application.configuration
                                         .hostname}/courses/${res.locals.course
                                         .reference}"
                                       class="dropdown--menu--item button ${req.path.includes(
@@ -1252,7 +1252,7 @@ export default async (application: Application): Promise<void> => {
                                       Conversations
                                     </a>
                                     <a
-                                      href="https://${application.locals.options
+                                      href="https://${application.configuration
                                         .hostname}/courses/${res.locals.course
                                         .reference}/settings"
                                       class="dropdown--menu--item button ${req.path.includes(
@@ -1413,7 +1413,7 @@ export default async (application: Application): Promise<void> => {
                           $${res.locals.mayCreateCourses
                             ? html`
                                 <a
-                                  href="https://${application.locals.options
+                                  href="https://${application.configuration
                                     .hostname}/courses/new"
                                   class="dropdown--menu--item button button--transparent"
                                 >
@@ -1512,7 +1512,7 @@ export default async (application: Application): Promise<void> => {
                               <div class="dropdown--menu">
                                 <a
                                   class="dropdown--menu--item button button--transparent"
-                                  href="https://${application.locals.options
+                                  href="https://${application.configuration
                                     .hostname}/administration"
                                 >
                                   <i class="bi bi-pc-display-horizontal"></i>
@@ -1527,7 +1527,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             class="dropdown--menu--item button button--transparent"
-                            href="https://${application.locals.options
+                            href="https://${application.configuration
                               .hostname}/settings"
                           >
                             <i class="bi bi-sliders"></i>
@@ -1535,7 +1535,7 @@ export default async (application: Application): Promise<void> => {
                           </a>
                           <form
                             method="DELETE"
-                            action="https://${application.locals.options
+                            action="https://${application.configuration
                               .hostname}/sign-out"
                           >
                             <button
@@ -1795,7 +1795,7 @@ export default async (application: Application): Promise<void> => {
   `;
 
   application.locals.partials.reportIssueHref = `mailto:${
-    application.locals.options.administratorEmail
+    application.configuration.administratorEmail
   }${qs.stringify(
     {
       subject: "Report an Issue",
@@ -1818,7 +1818,7 @@ export default async (application: Application): Promise<void> => {
   
           Please provide as much relevant context as possible (operating system, browser, and so forth):
   
-          Courselore Version: ${application.locals.options.version}
+          Courselore Version: ${application.configuration.version}
         `,
     },
     { addQueryPrefix: true }
@@ -1842,7 +1842,7 @@ export default async (application: Application): Promise<void> => {
       )!;
       req.cookies["__Host-Flash"] = flash.nonce;
       res.cookie("__Host-Flash", flash.nonce, {
-        ...application.locals.options.cookies,
+        ...application.configuration.cookies,
         maxAge: application.server.locals.helpers.Flash.maxAge,
       });
     },
@@ -1857,7 +1857,7 @@ export default async (application: Application): Promise<void> => {
         sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies["__Host-Flash"]}`
       );
       delete req.cookies["__Host-Flash"];
-      res.clearCookie("__Host-Flash", application.locals.options.cookies);
+      res.clearCookie("__Host-Flash", application.configuration.cookies);
       if (flash === undefined) return undefined;
       application.locals.database.run(
         sql`
@@ -1868,12 +1868,12 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  if (application.locals.options.processType === "worker")
+  if (application.configuration.processType === "worker")
     application.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            application.locals.options.processType
+            application.configuration.processType
           }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
         );
         application.locals.database.run(
@@ -1886,7 +1886,7 @@ export default async (application: Application): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            application.locals.options.processType
+            application.configuration.processType
           }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });

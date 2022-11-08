@@ -234,7 +234,7 @@ export default async (app: Courselore): Promise<void> => {
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/courses/${enrollment.course.reference}"
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
@@ -290,7 +290,7 @@ export default async (app: Courselore): Promise<void> => {
             html`
               <a
                 key="enrollment--${enrollment.reference}"
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/courses/${enrollment.course.reference}"
                 hidden
                 class="dropdown--menu--item menu-box--item button ${tight
@@ -366,7 +366,7 @@ export default async (app: Courselore): Promise<void> => {
 
                   <div class="menu-box">
                     <a
-                      href="https://${app.locals.options
+                      href="https://${app.configuration
                         .hostname}/settings/profile"
                       class="menu-box--item button button--blue"
                     >
@@ -388,7 +388,7 @@ export default async (app: Courselore): Promise<void> => {
                     $${res.locals.mayCreateCourses
                       ? html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/new"
                             class="menu-box--item button button--transparent"
                           >
@@ -407,7 +407,7 @@ export default async (app: Courselore): Promise<void> => {
         case 1:
           res.redirect(
             303,
-            `https://${app.locals.options.hostname}/courses/${res.locals.enrollments[0].course.reference}`
+            `https://${app.configuration.hostname}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
 
@@ -482,7 +482,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.locals.options.hostname}/courses"
+              action="https://${app.configuration.hostname}/courses"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -658,7 +658,7 @@ export default async (app: Courselore): Promise<void> => {
     );
     res.redirect(
       303,
-      `https://${app.locals.options.hostname}/courses/${course.reference}`
+      `https://${app.configuration.hostname}/courses/${course.reference}`
     );
   });
 
@@ -765,7 +765,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}`
+          `https://${app.configuration.hostname}/courses/${res.locals.course.reference}`
         );
       }
 
@@ -819,7 +819,7 @@ export default async (app: Courselore): Promise<void> => {
                   $${res.locals.enrollment.courseRole === "staff"
                     ? html`
                         <a
-                          href="https://${app.locals.options
+                          href="https://${app.configuration
                             .hostname}/courses/${res.locals.course
                             .reference}/settings/tags"
                           class="menu-box--item button button--blue"
@@ -830,7 +830,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     : html``}
                   <a
-                    href="https://${app.locals.options.hostname}/courses/${res
+                    href="https://${app.configuration.hostname}/courses/${res
                       .locals.course.reference}/conversations/new${qs.stringify(
                       {
                         newConversation: {
@@ -876,7 +876,7 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/settings/${
           res.locals.enrollment.courseRole === "staff"
@@ -910,7 +910,7 @@ export default async (app: Courselore): Promise<void> => {
         res.locals.enrollment.courseRole === "staff"
           ? html`
               <a
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/course-information\/?$/i
@@ -922,7 +922,7 @@ export default async (app: Courselore): Promise<void> => {
                 Course Information
               </a>
               <a
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/tags\/?$/i
@@ -938,7 +938,7 @@ export default async (app: Courselore): Promise<void> => {
                 Tags
               </a>
               <a
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/invitations\/?$/i
@@ -954,7 +954,7 @@ export default async (app: Courselore): Promise<void> => {
                 Invitations
               </a>
               <a
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/settings/enrollments"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/enrollments\/?$/i
@@ -970,7 +970,7 @@ export default async (app: Courselore): Promise<void> => {
                 Enrollments
               </a>
               <a
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${req.path.match(
                   /\/settings\/your-enrollment\/?$/i
@@ -1013,7 +1013,7 @@ export default async (app: Courselore): Promise<void> => {
             </h2>
             <form
               method="PATCH"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/settings/course-information"
               novalidate
               css="${res.locals.css(css`
@@ -1099,7 +1099,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/settings/course-information"
               css="${res.locals.css(css`
                 display: flex;
@@ -1334,7 +1334,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/course-information`
+        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
       app.locals.helpers.liveUpdates({ req, res });
@@ -1382,7 +1382,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PUT"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/settings/tags"
               novalidate
               css="${res.locals.css(css`
@@ -1628,7 +1628,7 @@ export default async (app: Courselore): Promise<void> => {
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="https://${app.locals.options
+                                    href="https://${app.configuration
                                       .hostname}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
@@ -1897,7 +1897,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/tags`
+        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/tags`
       );
 
       app.locals.helpers.liveUpdates({ req, res });
@@ -1945,7 +1945,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/settings/invitations"
               novalidate
               css="${res.locals.css(css`
@@ -2241,7 +2241,7 @@ export default async (app: Courselore): Promise<void> => {
               ? html``
               : html`
                   $${invitations.map((invitation) => {
-                    const action = `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                    const action = `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired = app.locals.helpers.isExpired(
                       invitation.expiresAt
                     );
@@ -2312,7 +2312,7 @@ export default async (app: Courselore): Promise<void> => {
                                         interactive: true,
                                         maxWidth: "none",
                                         content: ${(() => {
-                                          const link = `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                          const link = `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                           return res.locals.html(
                                             html`
                                               <div
@@ -2919,7 +2919,7 @@ export default async (app: Courselore): Promise<void> => {
     res: express.Response<any, ResponseLocalsBase>;
     invitation: InvitationExistsLocals["invitation"];
   }): void => {
-    const link = `https://${app.locals.options.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    const link = `https://${app.configuration.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
@@ -2934,8 +2934,8 @@ export default async (app: Courselore): Promise<void> => {
           ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             from: {
-              name: `${invitation.course.name} · ${app.locals.options.email.defaults.from.name}`,
-              address: app.locals.options.email.defaults.from.address,
+              name: `${invitation.course.name} · ${app.configuration.email.defaults.from.name}`,
+              address: app.configuration.email.defaults.from.address,
             },
             to: invitation.email!,
             subject: `Enroll in ${invitation.course.name}`,
@@ -3138,7 +3138,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/invitations`
+        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3352,7 +3352,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/invitations`
+        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3473,7 +3473,7 @@ export default async (app: Courselore): Promise<void> => {
             </label>
 
             $${enrollments.map((enrollment) => {
-              const action = `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const action = `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
               const isSelf = enrollment.id === res.locals.enrollment.id;
               const isOnlyStaff =
                 isSelf &&
@@ -3934,8 +3934,8 @@ export default async (app: Courselore): Promise<void> => {
       res.redirect(
         303,
         res.locals.managedEnrollment.isSelf
-          ? `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}`
-          : `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `https://${app.configuration.hostname}/courses/${res.locals.course.reference}`
+          : `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
       app.locals.helpers.liveUpdates({ req, res });
@@ -3971,8 +3971,8 @@ export default async (app: Courselore): Promise<void> => {
       res.redirect(
         303,
         res.locals.managedEnrollment.isSelf
-          ? `https://${app.locals.options.hostname}/`
-          : `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `https://${app.configuration.hostname}/`
+          : `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
       app.locals.helpers.liveUpdates({ req, res });
@@ -4003,7 +4003,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/settings/your-enrollment"
               novalidate
               css="${res.locals.css(css`
@@ -4119,7 +4119,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -4235,10 +4235,10 @@ export default async (app: Courselore): Promise<void> => {
         if (typeof req.query.redirect === "string")
           return res.redirect(
             303,
-            `https://${app.locals.options.hostname}/courses/${res.locals.invitation.course.reference}/${req.query.redirect}`
+            `https://${app.configuration.hostname}/courses/${res.locals.invitation.course.reference}/${req.query.redirect}`
           );
         else {
-          const link = `https://${app.locals.options.hostname}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`;
+          const link = `https://${app.configuration.hostname}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`;
           return res.send(
             app.locals.layouts.box({
               req,
@@ -4326,7 +4326,7 @@ export default async (app: Courselore): Promise<void> => {
 
                         $${(
                           await QRCode.toString(
-                            `https://${app.locals.options.hostname}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`,
+                            `https://${app.configuration.hostname}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`,
                             { type: "svg" }
                           )
                         )
@@ -4337,7 +4337,7 @@ export default async (app: Courselore): Promise<void> => {
                   : html``}
 
                 <a
-                  href="https://${app.locals.options.hostname}/courses/${res
+                  href="https://${app.configuration.hostname}/courses/${res
                     .locals.invitation.course.reference}"
                   class="button button--blue"
                 >
@@ -4397,7 +4397,7 @@ export default async (app: Courselore): Promise<void> => {
             })}
             <form
               method="POST"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.invitation.course.reference}/invitations/${res.locals
                 .invitation.reference}${qs.stringify(
                 { redirect: req.query.redirect },
@@ -4467,7 +4467,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.invitation.course.reference
         }/${typeof req.query.redirect === "string" ? req.query.redirect : ""}`
       );
@@ -4530,7 +4530,7 @@ export default async (app: Courselore): Promise<void> => {
                 if (!hasInvitationEmail || !invitationUserExists)
                   buttons += html`
                     <a
-                      href="https://${app.locals.options
+                      href="https://${app.configuration
                         .hostname}/sign-up${qs.stringify(
                         {
                           redirect: req.originalUrl.slice(1),
@@ -4551,7 +4551,7 @@ export default async (app: Courselore): Promise<void> => {
                 if (!hasInvitationEmail || invitationUserExists)
                   buttons += html`
                     <a
-                      href="https://${app.locals.options
+                      href="https://${app.configuration
                         .hostname}/sign-in${qs.stringify(
                         {
                           redirect: req.originalUrl.slice(1),

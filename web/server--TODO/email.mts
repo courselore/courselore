@@ -9,22 +9,22 @@ import { Courselore } from "./index.mjs";
 export type SendEmailWorker = () => Promise<void>;
 
 export default async (app: Courselore): Promise<void> => {
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       const sendMailTransport = nodemailer.createTransport(
-        app.locals.options.email.options,
-        app.locals.options.email.defaults
+        app.configuration.email.options,
+        app.configuration.email.defaults
       );
       const sendMail =
-        app.locals.options.email.options.streamTransport &&
-        app.locals.options.email.options.buffer
+        app.configuration.email.options.streamTransport &&
+        app.configuration.email.options.buffer
           ? async (mailOptions: nodemailer.SendMailOptions) => {
               const sentMessageInfo = await sendMailTransport.sendMail(
                 mailOptions
               );
               await fs.outputFile(
                 path.join(
-                  app.locals.options.dataDirectory,
+                  app.configuration.dataDirectory,
                   "emails",
                   filenamify(
                     `${new Date().toISOString()}--${mailOptions.to}.eml`,
@@ -41,7 +41,7 @@ export default async (app: Courselore): Promise<void> => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tsendEmailJobs\tSTARTING...`
         );
 
@@ -63,7 +63,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\tsendEmailJobs\tEXPIRED\n${JSON.stringify(
                 JSON.parse(job.mailOptions),
                 undefined,
@@ -95,7 +95,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
                 JSON.parse(job.mailOptions),
                 undefined,
@@ -141,7 +141,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\tsendEmailJobs\tSUCCEEDED\t${sentMessageInfo.response ?? ""}\t${
                 mailOptions.to
               }\t${mailOptions.subject}`
@@ -159,7 +159,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\tsendEmailJobs\tFAILED\t${error.response ?? ""}\t${
                 mailOptions.to
               }\t${mailOptions.subject}\n${error}`
@@ -171,7 +171,7 @@ export default async (app: Courselore): Promise<void> => {
 
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tsendEmailJobs\tFINISHED`
         );
 

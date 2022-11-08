@@ -180,7 +180,7 @@ export default async (app: Courselore): Promise<void> => {
       )!;
       req.cookies["__Host-Session"] = session.token;
       res.cookie("__Host-Session", session.token, {
-        ...app.locals.options.cookies,
+        ...app.configuration.cookies,
         maxAge: app.locals.helpers.Session.maxAge,
       });
     },
@@ -224,7 +224,7 @@ export default async (app: Courselore): Promise<void> => {
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies["__Host-Session"]}`
       );
       delete req.cookies["__Host-Session"];
-      res.clearCookie("__Host-Session", app.locals.options.cookies);
+      res.clearCookie("__Host-Session", app.configuration.cookies);
     },
 
     closeAllAndReopen({ req, res, userId }) {
@@ -236,12 +236,12 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
         );
         app.locals.database.run(
@@ -254,7 +254,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -346,7 +346,7 @@ export default async (app: Courselore): Promise<void> => {
 
               <form
                 method="POST"
-                action="https://${app.locals.options
+                action="https://${app.configuration
                   .hostname}/resend-email-verification${qs.stringify(
                   { redirect: req.originalUrl.slice(1) },
                   { addQueryPrefix: true }
@@ -375,7 +375,7 @@ export default async (app: Courselore): Promise<void> => {
               <form
                 key="update-email"
                 method="PATCH"
-                action="https://${app.locals.options
+                action="https://${app.configuration
                   .hostname}/settings/email-and-password${qs.stringify(
                   { redirect: req.originalUrl.slice(1) },
                   { addQueryPrefix: true }
@@ -439,7 +439,7 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               </form>
 
-              $${app.locals.options.demonstration
+              $${app.configuration.demonstration
                 ? (() => {
                     let emailVerification = app.locals.database.get<{
                       nonce: string;
@@ -474,7 +474,7 @@ export default async (app: Courselore): Promise<void> => {
                         This Courselore installation is running in demonstration
                         mode and doesn’t send emails.
                         <a
-                          href="https://${app.locals.options
+                          href="https://${app.configuration
                             .hostname}/email-verification/${emailVerification.nonce}${qs.stringify(
                             { redirect: req.originalUrl.slice(1) },
                             { addQueryPrefix: true }
@@ -638,7 +638,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${
+          `https://${app.configuration.hostname}/${
             res.locals.hasPasswordConfirmationRedirect ?? ""
           }`
         );
@@ -668,7 +668,7 @@ export default async (app: Courselore): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/sign-in${qs.stringify(
                 {
                   redirect: req.query.redirect,
@@ -728,7 +728,7 @@ export default async (app: Courselore): Promise<void> => {
               <p>
                 Don’t have an account?
                 <a
-                  href="https://${app.locals.options
+                  href="https://${app.configuration
                     .hostname}/sign-up${qs.stringify(
                     {
                       redirect: req.query.redirect,
@@ -743,7 +743,7 @@ export default async (app: Courselore): Promise<void> => {
               <p>
                 Forgot your password?
                 <a
-                  href="https://${app.locals.options
+                  href="https://${app.configuration
                     .hostname}/reset-password${qs.stringify(
                     {
                       redirect: req.query.redirect,
@@ -764,7 +764,7 @@ export default async (app: Courselore): Promise<void> => {
     app.get<{}, HTML, {}, {}, IsSignedOutLocals>(
       "/",
       ...app.locals.middlewares.isSignedOut,
-      app.locals.options.hostname === app.locals.options.canonicalHostname
+      app.configuration.hostname === app.configuration.canonicalHostname
         ? (req, res, next) => {
             app.locals.handlers.about(req, res, next);
           }
@@ -783,7 +783,7 @@ export default async (app: Courselore): Promise<void> => {
       (req, res) => {
         res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${
+          `https://${app.configuration.hostname}/${
             typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
@@ -823,7 +823,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/sign-in${qs.stringify(
+          `https://${app.configuration.hostname}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -835,7 +835,7 @@ export default async (app: Courselore): Promise<void> => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -881,12 +881,12 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
 
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
         );
         app.locals.database.run(
@@ -899,7 +899,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -925,7 +925,7 @@ export default async (app: Courselore): Promise<void> => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.options
+            action="https://${app.configuration
               .hostname}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
@@ -973,7 +973,7 @@ export default async (app: Courselore): Promise<void> => {
             <p>
               Don’t have an account?
               <a
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -988,7 +988,7 @@ export default async (app: Courselore): Promise<void> => {
             <p>
               Remember your password?
               <a
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -1012,7 +1012,7 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1047,7 +1047,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/reset-password${qs.stringify(
+          `https://${app.configuration.hostname}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1058,7 +1058,7 @@ export default async (app: Courselore): Promise<void> => {
       }
 
       const link = `https://${
-        app.locals.options.hostname
+        app.configuration.hostname
       }/reset-password/${PasswordReset.create(user.id)}${qs.stringify(
         {
           redirect: req.query.redirect,
@@ -1120,7 +1120,7 @@ export default async (app: Courselore): Promise<void> => {
             </p>
             <form
               method="POST"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/reset-password${qs.stringify(
                 {
                   redirect: req.query.redirect,
@@ -1162,7 +1162,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/reset-password${qs.stringify(
+          `https://${app.configuration.hostname}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1183,7 +1183,7 @@ export default async (app: Courselore): Promise<void> => {
           body: html`
             <form
               method="POST"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/reset-password/${req.params
                 .passwordResetNonce}${qs.stringify(
                 {
@@ -1255,7 +1255,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       return res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1291,7 +1291,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/reset-password${qs.stringify(
+          `https://${app.configuration.hostname}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: req.query.invitation,
@@ -1309,7 +1309,7 @@ export default async (app: Courselore): Promise<void> => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             req.body.password,
-            app.locals.options.argon2
+            app.configuration.argon2
           )}
           WHERE "id" = ${userId}
           RETURNING *
@@ -1344,8 +1344,8 @@ export default async (app: Courselore): Promise<void> => {
                 <p>
                   If you did not perform this reset, then please contact the
                   system administrator at
-                  <a href="mailto:${app.locals.options.administratorEmail}"
-                    >${app.locals.options.administratorEmail}</a
+                  <a href="mailto:${app.configuration.administratorEmail}"
+                    >${app.configuration.administratorEmail}</a
                   >
                   as soon as possible.
                 </p>
@@ -1364,7 +1364,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1390,7 +1390,7 @@ export default async (app: Courselore): Promise<void> => {
         body: html`
           <form
             method="POST"
-            action="https://${app.locals.options
+            action="https://${app.configuration
               .hostname}/sign-up${qs.stringify(
               {
                 redirect: req.query.redirect,
@@ -1472,7 +1472,7 @@ export default async (app: Courselore): Promise<void> => {
             <p>
               Already have an account account?
               <a
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -1487,7 +1487,7 @@ export default async (app: Courselore): Promise<void> => {
             <p>
               Forgot your password?
               <a
-                href="https://${app.locals.options
+                href="https://${app.configuration
                   .hostname}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
@@ -1511,14 +1511,14 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
     }
   );
 
-  app.locals.options.argon2 = {
+  app.configuration.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
@@ -1553,7 +1553,7 @@ export default async (app: Courselore): Promise<void> => {
       )!;
     });
 
-    const link = `https://${app.locals.options.hostname}/email-verification/${
+    const link = `https://${app.configuration.hostname}/email-verification/${
       emailVerification.nonce
     }${qs.stringify(
       { redirect: req.query.redirect ?? req.originalUrl.slice(1) },
@@ -1587,12 +1587,12 @@ export default async (app: Courselore): Promise<void> => {
     app.locals.workers.sendEmail();
   };
 
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
         );
         app.locals.database.run(
@@ -1605,7 +1605,7 @@ export default async (app: Courselore): Promise<void> => {
         );
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
         );
         await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
@@ -1648,7 +1648,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/sign-in${qs.stringify(
+          `https://${app.configuration.hostname}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
               invitation: { ...req.query.invitation, email: req.body.email },
@@ -1682,13 +1682,13 @@ export default async (app: Courselore): Promise<void> => {
             ${new Date().toISOString()},
             ${cryptoRandomString({ length: 20, type: "numeric" })},
             ${req.body.email},
-            ${await argon2.hash(req.body.password, app.locals.options.argon2)},
+            ${await argon2.hash(req.body.password, app.configuration.argon2)},
             ${null},
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
             ${
-              app.locals.options.hostname !== app.locals.options.tryHostname &&
+              app.configuration.hostname !== app.configuration.tryHostname &&
               app.locals.database.get<{ count: number }>(
                 sql`
                   SELECT COUNT(*) AS "count" FROM "users"
@@ -1717,7 +1717,7 @@ export default async (app: Courselore): Promise<void> => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1741,7 +1741,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${
+          `https://${app.configuration.hostname}/${
             typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
@@ -1760,7 +1760,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1795,7 +1795,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${
+          `https://${app.configuration.hostname}/${
             typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
@@ -1811,7 +1811,7 @@ export default async (app: Courselore): Promise<void> => {
         });
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${
+          `https://${app.configuration.hostname}/${
             typeof req.query.redirect === "string" ? req.query.redirect : ""
           }`
         );
@@ -1836,7 +1836,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -1853,7 +1853,7 @@ export default async (app: Courselore): Promise<void> => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${app.locals.options.hostname}/`);
+        .redirect(303, `https://${app.configuration.hostname}/`);
     }
   );
 };

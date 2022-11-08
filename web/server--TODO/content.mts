@@ -188,12 +188,12 @@ export default async (app: Courselore): Promise<void> => {
       if (
         !element
           .getAttribute("src")
-          ?.startsWith(`https://${app.locals.options.hostname}`)
+          ?.startsWith(`https://${app.configuration.hostname}`)
       )
         element.setAttribute(
           "src",
           `https://${
-            app.locals.options.hostname
+            app.configuration.hostname
           }/content/image-proxy${qs.stringify(
             { url: element.getAttribute("src") },
             { addQueryPrefix: true }
@@ -247,11 +247,11 @@ export default async (app: Courselore): Promise<void> => {
         element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
 
       const isExternal =
-        !href.startsWith(`https://${app.locals.options.hostname}`) &&
+        !href.startsWith(`https://${app.configuration.hostname}`) &&
         !href.startsWith("#");
       if (
         isExternal ||
-        href.startsWith(`https://${app.locals.options.hostname}/files/`)
+        href.startsWith(`https://${app.configuration.hostname}/files/`)
       )
         element.setAttribute("target", "_blank");
 
@@ -288,7 +288,7 @@ export default async (app: Courselore): Promise<void> => {
         const match = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              app.locals.options.hostname
+              app.configuration.hostname
             )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
           )
         );
@@ -452,7 +452,7 @@ export default async (app: Courselore): Promise<void> => {
               if (messageReference === undefined)
                 return html`<a
                   class="reference"
-                  href="https://${app.locals.options.hostname}/courses/${res
+                  href="https://${app.configuration.hostname}/courses/${res
                     .locals.course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
                     { conversations: req.query.conversations },
@@ -469,7 +469,7 @@ export default async (app: Courselore): Promise<void> => {
               if (message === undefined) return match;
               return html`<a
                 class="reference"
-                href="https://${app.locals.options.hostname}/courses/${res
+                href="https://${app.configuration.hostname}/courses/${res
                   .locals.course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
@@ -493,7 +493,7 @@ export default async (app: Courselore): Promise<void> => {
         const hrefMatch = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              app.locals.options.hostname
+              app.configuration.hostname
             )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
           )
         );
@@ -737,7 +737,7 @@ export default async (app: Courselore): Promise<void> => {
                         preview,
                         await (
                           await fetch(${JSON.stringify(
-                            `https://${app.locals.options.hostname}${
+                            `https://${app.configuration.hostname}${
                               res.locals.course === undefined
                                 ? ""
                                 : `/courses/${res.locals.course.reference}`
@@ -1784,7 +1784,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
-                      `https://${app.locals.options.hostname}/content-editor/attachments`
+                      `https://${app.configuration.hostname}/content-editor/attachments`
                     )}, {
                       cache: "no-store",
                       method: "POST",
@@ -2063,7 +2063,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `https://${app.locals.options.hostname}/courses/${
+                              `https://${app.configuration.hostname}/courses/${
                                 res.locals.course.reference
                               }/${
                                 res.locals.conversation !== undefined
@@ -2076,7 +2076,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
@@ -2802,12 +2802,12 @@ ${contentSource}</textarea
         });
         await attachment.mv(
           path.join(
-            app.locals.options.dataDirectory,
+            app.configuration.dataDirectory,
             `files/${folder}/${attachment.name}`
           )
         );
         const href = `https://${
-          app.locals.options.hostname
+          app.configuration.hostname
         }/files/${folder}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
@@ -2835,12 +2835,12 @@ ${contentSource}</textarea
               .resize({ width: maximumWidth })
               .toFile(
                 path.join(
-                  app.locals.options.dataDirectory,
+                  app.configuration.dataDirectory,
                   `files/${folder}/${nameThumbnail}`
                 )
               );
             attachmentsContentSources += `[<img src="https://${
-              app.locals.options.hostname
+              app.configuration.hostname
             }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
               attachment.name
             }" width="${maximumWidth / 2}" />](${href})\n\n`;

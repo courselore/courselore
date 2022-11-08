@@ -20,7 +20,7 @@ import {
 //   (req, res) => {
 //     const connection = { req, res };
 //     liveConnections.add(connection);
-//     res.header("Version", app.locals.options.version);
+//     res.header("Version", app.configuration.version);
 //     res.contentType("text/plain");
 //     const heartbeatAbortController = new AbortController();
 //     (async () => {
@@ -40,7 +40,7 @@ import {
 //       liveConnections.delete(connection);
 //       heartbeatAbortController.abort();
 //       console.log(
-//         `${new Date().toISOString()}\t${app.locals.options.processType}\t${
+//         `${new Date().toISOString()}\t${app.configuration.processType}\t${
 //           req.ip
 //         }\t${req.method}\t${req.originalUrl}\t${res.statusCode}\t${
 //           (process.hrtime.bigint() - res.locals.responseStartTime) /
@@ -50,7 +50,7 @@ import {
 //     });
 //   }
 // );
-// if (app.locals.options.processType === "server")
+// if (app.configuration.processType === "server")
 //   app.once("stop", () => {
 //     for (const { req, res } of liveConnections) res.end();
 //   });

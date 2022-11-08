@@ -694,7 +694,7 @@ export default async (app: Courselore): Promise<void> => {
                   `)}"
                 >
                   <a
-                    href="https://${app.locals.options.hostname}/courses/${res
+                    href="https://${app.configuration.hostname}/courses/${res
                       .locals.course.reference}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
@@ -796,7 +796,7 @@ export default async (app: Courselore): Promise<void> => {
                     $${res.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: req.query.conversations },
@@ -807,7 +807,7 @@ export default async (app: Courselore): Promise<void> => {
                             $${conversationTypeIcon.note.fill} Note
                           </a>
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: req.query.conversations },
@@ -818,7 +818,7 @@ export default async (app: Courselore): Promise<void> => {
                             $${conversationTypeIcon.question.regular} Question
                           </a>
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: req.query.conversations },
@@ -831,7 +831,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: req.query.conversations },
@@ -842,7 +842,7 @@ export default async (app: Courselore): Promise<void> => {
                             $${conversationTypeIcon.question.fill} Question
                           </a>
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: req.query.conversations },
@@ -853,7 +853,7 @@ export default async (app: Courselore): Promise<void> => {
                             $${conversationTypeIcon.note.regular} Note
                           </a>
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: req.query.conversations },
@@ -900,7 +900,7 @@ export default async (app: Courselore): Promise<void> => {
                           )
                             ? html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}${req.path}${qs.stringify(
                                     {
                                       conversations: {
@@ -924,7 +924,7 @@ export default async (app: Courselore): Promise<void> => {
                               `
                             : html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}${req.path}${qs.stringify(
                                     {
                                       messages: req.query.messages,
@@ -951,7 +951,7 @@ export default async (app: Courselore): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 conversations: {
@@ -974,7 +974,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
@@ -999,7 +999,7 @@ export default async (app: Courselore): Promise<void> => {
                           )
                             ? html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}${req.path}${qs.stringify(
                                     {
                                       conversations: {
@@ -1022,7 +1022,7 @@ export default async (app: Courselore): Promise<void> => {
                               `
                             : html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}${req.path}${qs.stringify(
                                     {
                                       messages: req.query.messages,
@@ -1048,7 +1048,7 @@ export default async (app: Courselore): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 conversations: {
@@ -1070,7 +1070,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
@@ -1093,7 +1093,7 @@ export default async (app: Courselore): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 conversations: {
@@ -1115,7 +1115,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}${req.path}${qs.stringify(
                               {
                                 messages: req.query.messages,
@@ -1228,7 +1228,7 @@ export default async (app: Courselore): Promise<void> => {
                         ? html`
                             <form
                               method="POST"
-                              action="https://${app.locals.options
+                              action="https://${app.configuration
                                 .hostname}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
                                 { redirect: req.originalUrl.slice(1) },
@@ -1249,7 +1249,7 @@ export default async (app: Courselore): Promise<void> => {
                     <form
                       key="search-and-filters--form"
                       method="GET"
-                      action="https://${app.locals.options
+                      action="https://${app.configuration
                         .hostname}${req.path}${qs.stringify(
                         {
                           messages: req.query.messages,
@@ -1305,7 +1305,7 @@ export default async (app: Courselore): Promise<void> => {
                         $${search !== undefined
                           ? html`
                               <a
-                                href="https://${app.locals.options
+                                href="https://${app.configuration
                                   .hostname}${req.path}${qs.stringify(
                                   {
                                     conversations: {
@@ -1900,7 +1900,7 @@ export default async (app: Courselore): Promise<void> => {
                           $${Object.keys(filters).length > 0
                             ? html`
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}${req.path}${qs.stringify(
                                     {
                                       conversations: { search },
@@ -2012,7 +2012,7 @@ export default async (app: Courselore): Promise<void> => {
                                 ? javascript`
                                     window.setTimeout(() => {
                                       if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                        `https://${app.locals.options.hostname}/courses/${res.locals.course.reference}`
+                                        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}`
                                       )})) return;
                                       this.querySelector('[key="conversation--${
                                         res.locals.conversation.reference
@@ -2030,7 +2030,7 @@ export default async (app: Courselore): Promise<void> => {
                               return html`
                                 <a
                                   key="conversation--${conversation.reference}"
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}/courses/${res.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     {
@@ -2327,7 +2327,7 @@ export default async (app: Courselore): Promise<void> => {
                       onShow: async () => {
                         this.tooltip.setContent(loading);
                         leafac.loadPartial(content, await (await fetch("https://${
-                          app.locals.options.hostname
+                          app.configuration.hostname
                         }/courses/${
                     res.locals.course.reference
                   }/conversations/${
@@ -3009,7 +3009,7 @@ export default async (app: Courselore): Promise<void> => {
         );
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string" ? req.query.redirect : ""
         }`
       );
@@ -3139,7 +3139,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.locals.options.hostname}/courses/${res
+              action="https://${app.configuration.hostname}/courses/${res
                 .locals.course.reference}/conversations${qs.stringify(
                 { conversations: req.query.conversations },
                 { addQueryPrefix: true }
@@ -3299,7 +3299,7 @@ export default async (app: Courselore): Promise<void> => {
                                 `)}"
                               >
                                 <a
-                                  href="https://${app.locals.options
+                                  href="https://${app.configuration
                                     .hostname}/courses/${res.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
@@ -3324,7 +3324,7 @@ export default async (app: Courselore): Promise<void> => {
                         res.locals.enrollment.courseRole === "staff"
                           ? html`
                               <a
-                                href="https://${app.locals.options
+                                href="https://${app.configuration
                                   .hostname}/courses/${res.locals.course
                                   .reference}/settings/tags"
                                 target="_blank"
@@ -4267,7 +4267,7 @@ export default async (app: Courselore): Promise<void> => {
                       <button
                         class="link text--rose"
                         formmethod="DELETE"
-                        formaction="https://${app.locals.options
+                        formaction="https://${app.configuration
                           .hostname}/courses/${res.locals.course
                           .reference}/conversations/new${qs.stringify(
                           { conversations: req.query.conversations },
@@ -4456,7 +4456,7 @@ export default async (app: Courselore): Promise<void> => {
         //   );
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/courses/${
+          `https://${app.configuration.hostname}/courses/${
             res.locals.course.reference
           }/conversations/new${qs.stringify(
             {
@@ -4715,7 +4715,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${conversation.reference}${qs.stringify(
           { conversations: req.query.conversations },
@@ -4761,7 +4761,7 @@ export default async (app: Courselore): Promise<void> => {
       );
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/new${qs.stringify(
           { conversations: req.query.conversations },
@@ -5130,7 +5130,7 @@ export default async (app: Courselore): Promise<void> => {
                                 ? html`
                                     <form
                                       method="PATCH"
-                                      action="https://${app.locals.options
+                                      action="https://${app.configuration
                                         .hostname}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation.reference}${qs.stringify(
@@ -5225,7 +5225,7 @@ export default async (app: Courselore): Promise<void> => {
                                 ? html`
                                     <form
                                       method="PATCH"
-                                      action="https://${app.locals.options
+                                      action="https://${app.configuration
                                         .hostname}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation.reference}${qs.stringify(
@@ -5298,7 +5298,7 @@ export default async (app: Courselore): Promise<void> => {
                           ? html`
                               <form
                                 method="PATCH"
-                                action="https://${app.locals.options
+                                action="https://${app.configuration
                                   .hostname}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}${qs.stringify(
@@ -5392,7 +5392,7 @@ export default async (app: Courselore): Promise<void> => {
                                         });
 
                                         this.onclick = async () => {
-                                          await navigator.clipboard.writeText("https://${app.locals.options.hostname}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                          await navigator.clipboard.writeText("https://${app.configuration.hostname}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                                           this.copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           this.copied.hide();
@@ -5431,7 +5431,7 @@ export default async (app: Courselore): Promise<void> => {
                                       ? html`
                                           <form
                                             method="PATCH"
-                                            action="https://${app.locals.options
+                                            action="https://${app.configuration
                                               .hostname}/courses/${res.locals
                                               .course
                                               .reference}/conversations/${res
@@ -5538,7 +5538,7 @@ export default async (app: Courselore): Promise<void> => {
                                                       <form
                                                         method="DELETE"
                                                         action="https://${app
-                                                          .locals.options
+                                                          .configuration
                                                           .hostname}/courses/${res
                                                           .locals.course
                                                           .reference}/conversations/${res
@@ -5633,7 +5633,7 @@ export default async (app: Courselore): Promise<void> => {
                       ? html`
                           <form
                             method="PATCH"
-                            action="https://${app.locals.options
+                            action="https://${app.configuration
                               .hostname}/courses/${res.locals.course
                               .reference}/conversations/${res.locals
                               .conversation.reference}${qs.stringify(
@@ -5785,7 +5785,7 @@ export default async (app: Courselore): Promise<void> => {
                             <form
                               key="tagging--${tagging.tag.reference}"
                               method="DELETE"
-                              action="https://${app.locals.options
+                              action="https://${app.configuration
                                 .hostname}/courses/${res.locals.course
                                 .reference}/conversations/${res.locals
                                 .conversation.reference}/taggings${qs.stringify(
@@ -6137,7 +6137,7 @@ export default async (app: Courselore): Promise<void> => {
                           return html`
                             <form
                               method="PATCH"
-                              action="https://${app.locals.options
+                              action="https://${app.configuration
                                 .hostname}/courses/${res.locals.course
                                 .reference}/conversations/${res.locals
                                 .conversation.reference}${qs.stringify(
@@ -6803,7 +6803,7 @@ export default async (app: Courselore): Promise<void> => {
                                       `)}"
                                     >
                                       <a
-                                        href="https://${app.locals.options
+                                        href="https://${app.configuration
                                           .hostname}/courses/${res.locals.course
                                           .reference}/conversations/${res.locals
                                           .conversation
@@ -8425,7 +8425,7 @@ export default async (app: Courselore): Promise<void> => {
                                                       onShow: async () => {
                                                         this.tooltip.setContent(loading);
                                                         leafac.loadPartial(content, await (await fetch("https://${
-                                                          app.locals.options
+                                                          app.configuration
                                                             .hostname
                                                         }/courses/${
                                                     res.locals.course.reference
@@ -8628,7 +8628,7 @@ export default async (app: Courselore): Promise<void> => {
                                       `)}"
                                     >
                                       <a
-                                        href="https://${app.locals.options
+                                        href="https://${app.configuration
                                           .hostname}/courses/${res.locals.course
                                           .reference}/conversations/${res.locals
                                           .conversation
@@ -8805,7 +8805,7 @@ export default async (app: Courselore): Promise<void> => {
 
               <form
                 method="POST"
-                action="https://${app.locals.options.hostname}/courses/${res
+                action="https://${app.configuration.hostname}/courses/${res
                   .locals.course.reference}/conversations/${res.locals
                   .conversation.reference}/messages${qs.stringify(
                   {
@@ -9412,7 +9412,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -9452,7 +9452,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }${qs.stringify(
           {
@@ -9508,7 +9508,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -9561,7 +9561,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {

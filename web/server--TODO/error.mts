@@ -15,7 +15,7 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/sign-in${qs.stringify(
+        `https://${app.configuration.hostname}/sign-in${qs.stringify(
           { redirect: req.originalUrl.slice(1) },
           { addQueryPrefix: true }
         )}`
@@ -30,7 +30,7 @@ export default async (app: Courselore): Promise<void> => {
       if (typeof req.query.redirect === "string")
         return res.redirect(
           303,
-          `https://${app.locals.options.hostname}/${req.query.redirect}`
+          `https://${app.configuration.hostname}/${req.query.redirect}`
         );
       res.status(404).send(
         app.locals.layouts.box({
@@ -49,7 +49,7 @@ export default async (app: Courselore): Promise<void> => {
                 href="${app.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
-                >${app.locals.options.administratorEmail}</a
+                >${app.configuration.administratorEmail}</a
               >.
             </p>
           `,
@@ -90,7 +90,7 @@ export default async (app: Courselore): Promise<void> => {
                 href="${app.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
-                >${app.locals.options.administratorEmail}</a
+                >${app.configuration.administratorEmail}</a
               >.
             </p>
           `,

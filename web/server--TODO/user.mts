@@ -643,7 +643,7 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/settings/profile`
+        `https://${app.configuration.hostname}/settings/profile`
       );
     }
   );
@@ -669,7 +669,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
       menu: html`
         <a
-          href="https://${app.locals.options.hostname}/settings/profile"
+          href="https://${app.configuration.hostname}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/profile\/?$/i
           )
@@ -680,7 +680,7 @@ export default async (app: Courselore): Promise<void> => {
           Profile
         </a>
         <a
-          href="https://${app.locals.options
+          href="https://${app.configuration
             .hostname}/settings/email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/email-and-password\/?$/i
@@ -696,7 +696,7 @@ export default async (app: Courselore): Promise<void> => {
           Email & Password
         </a>
         <a
-          href="https://${app.locals.options.hostname}/settings/notifications"
+          href="https://${app.configuration.hostname}/settings/notifications"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/notifications\/?$/i
           )
@@ -713,7 +713,7 @@ export default async (app: Courselore): Promise<void> => {
         <a
           hidden
           TODO
-          href="https://${app.locals.options.hostname}/settings/account"
+          href="https://${app.configuration.hostname}/settings/account"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/account\/?$/i
           )
@@ -746,7 +746,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options.hostname}/settings/profile"
+              action="https://${app.configuration.hostname}/settings/profile"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -942,7 +942,7 @@ export default async (app: Courselore): Promise<void> => {
                         tippy.hideAll();
                         avatarChooser.uploadingIndicator.show();
                         const response = await fetch("https://${
-                          app.locals.options.hostname
+                          app.configuration.hostname
                         }/settings/profile/avatar", {
                           cache: "no-store",
                           method: "POST",
@@ -1067,7 +1067,7 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/settings/profile`
+        `https://${app.configuration.hostname}/settings/profile`
       );
     }
   );
@@ -1088,7 +1088,7 @@ export default async (app: Courselore): Promise<void> => {
         type: "numeric",
       });
       await req.files.avatar.mv(
-        path.join(app.locals.options.dataDirectory, `files/${folder}/${name}`)
+        path.join(app.configuration.dataDirectory, `files/${folder}/${name}`)
       );
       const extension = path.extname(name);
       const nameAvatar = `${name.slice(
@@ -1105,7 +1105,7 @@ export default async (app: Courselore): Promise<void> => {
           })
           .toFile(
             path.join(
-              app.locals.options.dataDirectory,
+              app.configuration.dataDirectory,
               `files/${folder}/${nameAvatar}`
             )
           );
@@ -1114,7 +1114,7 @@ export default async (app: Courselore): Promise<void> => {
       }
       res.send(
         `https://${
-          app.locals.options.hostname
+          app.configuration.hostname
         }/files/${folder}/${encodeURIComponent(nameAvatar)}`
       );
     }),
@@ -1123,7 +1123,7 @@ export default async (app: Courselore): Promise<void> => {
         return res
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.locals.options.administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.configuration.administratorEmail}.`
           );
       next(err);
     }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>
@@ -1150,7 +1150,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
@@ -1214,7 +1214,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
@@ -1310,7 +1310,7 @@ export default async (app: Courselore): Promise<void> => {
           });
           return res.redirect(
             303,
-            `https://${app.locals.options.hostname}/${
+            `https://${app.configuration.hostname}/${
               typeof req.query.redirect === "string"
                 ? req.query.redirect
                 : "settings/email-and-password"
@@ -1358,8 +1358,8 @@ export default async (app: Courselore): Promise<void> => {
                     <p>
                       If you did not perform this update, then please contact
                       the system administrator at
-                      <a href="mailto:${app.locals.options.administratorEmail}"
-                        >${app.locals.options.administratorEmail}</a
+                      <a href="mailto:${app.configuration.administratorEmail}"
+                        >${app.configuration.administratorEmail}</a
                       >
                       as soon as possible.
                     </p>
@@ -1394,7 +1394,7 @@ export default async (app: Courselore): Promise<void> => {
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               req.body.newPassword,
-              app.locals.options.argon2
+              app.configuration.argon2
             )}
             WHERE "id" = ${res.locals.user.id}
           `
@@ -1428,8 +1428,8 @@ export default async (app: Courselore): Promise<void> => {
                   <p>
                     If you did not perform this update, then please contact the
                     system administrator at
-                    <a href="mailto:${app.locals.options.administratorEmail}"
-                      >${app.locals.options.administratorEmail}</a
+                    <a href="mailto:${app.configuration.administratorEmail}"
+                      >${app.configuration.administratorEmail}</a
                     >
                     as soon as possible.
                   </p>
@@ -1454,7 +1454,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/${
+        `https://${app.configuration.hostname}/${
           typeof req.query.redirect === "string"
             ? req.query.redirect
             : "settings/email-and-password"
@@ -1482,7 +1482,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.locals.options
+              action="https://${app.configuration
                 .hostname}/settings/notifications"
               novalidate
               css="${res.locals.css(css`
@@ -1831,7 +1831,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/settings/notifications`
+        `https://${app.configuration.hostname}/settings/notifications`
       );
     }
   );
@@ -1855,7 +1855,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="DELETE"
-              action="https://${app.locals.options.hostname}/settings/account"
+              action="https://${app.configuration.hostname}/settings/account"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -1940,7 +1940,7 @@ export default async (app: Courselore): Promise<void> => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${app.locals.options.host}/`);
+        .redirect(303, `https://${app.configuration.host}/`);
     }
   );
   */

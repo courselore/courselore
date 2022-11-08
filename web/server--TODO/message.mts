@@ -703,7 +703,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -845,7 +845,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -883,7 +883,7 @@ export default async (app: Courselore): Promise<void> => {
       );
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1000,7 +1000,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1047,7 +1047,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1143,7 +1143,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1188,7 +1188,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.locals.options.hostname}/courses/${
+        `https://${app.configuration.hostname}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
@@ -1270,12 +1270,12 @@ export default async (app: Courselore): Promise<void> => {
     });
   };
 
-  if (app.locals.options.processType === "worker")
+  if (app.configuration.processType === "worker")
     app.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\temailNotificationMessageJobs\tSTARTED...`
         );
 
@@ -1297,7 +1297,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
                 job.message
               }`
@@ -1327,7 +1327,7 @@ export default async (app: Courselore): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.locals.options.processType
+                app.configuration.processType
               }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
                 job.message
               }`
@@ -1589,17 +1589,17 @@ export default async (app: Courselore): Promise<void> => {
                   ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
                   ${JSON.stringify({
                     from: {
-                      name: `${course.name} · ${app.locals.options.email.defaults.from.name}`,
-                      address: app.locals.options.email.defaults.from.address,
+                      name: `${course.name} · ${app.configuration.email.defaults.from.name}`,
+                      address: app.configuration.email.defaults.from.address,
                     },
                     to: enrollment.userEmail,
-                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
-                    references: `courses/${course.reference}/conversations/${conversation.reference}@${app.locals.options.hostname}`,
+                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.configuration.hostname}`,
+                    references: `courses/${course.reference}/conversations/${conversation.reference}@${app.configuration.hostname}`,
                     subject: conversation.title,
                     html: html`
                       <p>
                         <a
-                          href="https://${app.locals.options
+                          href="https://${app.configuration
                             .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
                             {
                               messages: {
@@ -1630,7 +1630,7 @@ export default async (app: Courselore): Promise<void> => {
                       <p>
                         <small>
                           <a
-                            href="https://${app.locals.options
+                            href="https://${app.configuration
                               .hostname}/settings/notifications-preferences"
                             >Change Notifications Preferences</a
                           >
@@ -1661,7 +1661,7 @@ export default async (app: Courselore): Promise<void> => {
           );
           console.log(
             `${new Date().toISOString()}\t${
-              app.locals.options.processType
+              app.configuration.processType
             }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
               job.message
             }`
@@ -1673,7 +1673,7 @@ export default async (app: Courselore): Promise<void> => {
 
         console.log(
           `${new Date().toISOString()}\t${
-            app.locals.options.processType
+            app.configuration.processType
           }\temailNotificationMessageJobs\tFINISHED`
         );
 

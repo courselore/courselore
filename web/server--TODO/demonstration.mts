@@ -23,7 +23,7 @@ import {
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
-  if (!app.locals.options.demonstration) return;
+  if (!app.configuration.demonstration) return;
 
   const handler: express.RequestHandler<
     {},
@@ -32,7 +32,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     IsSignedOutLocals & Partial<ResponseLocalsSignedIn>
   > = asyncHandler(async (req, res) => {
-    const password = await argon2.hash("courselore", app.locals.options.argon2);
+    const password = await argon2.hash("courselore", app.configuration.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
     const users = lodash.times(151, (userIndex) => {
       const name = casual.full_name;
@@ -100,7 +100,7 @@ export default async (app: Courselore): Promise<void> => {
             ${
               Math.random() < 0.6
                 ? `https://${
-                    app.locals.options.hostname
+                    app.configuration.hostname
                   }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                 : null
             },
@@ -111,7 +111,7 @@ export default async (app: Courselore): Promise<void> => {
                 .contentPreprocessed
             },
             ${
-              app.locals.options.hostname === app.locals.options.tryHostname
+              app.configuration.hostname === app.configuration.tryHostname
                 ? "none"
                 : userIndex === 0
                 ? "administrator"
@@ -416,11 +416,11 @@ Conversation other: #2
 Conversation non-existent: #14981039481
 
 Conversation permanent link turned reference: <https://${
-        app.locals.options.hostname
+        app.configuration.hostname
       }/courses/${course.reference}/conversations/1>
 
 Conversation non-existent permanent link turned reference: <https://${
-        app.locals.options.hostname
+        app.configuration.hostname
       }/courses/${course.reference}/conversations/14981039481>
 
 Message self: #1/1
@@ -430,13 +430,13 @@ Message other: #2/1
 Message non-existent: #1/2
 
 Message permanent link turned reference: <https://${
-        app.locals.options.hostname
+        app.configuration.hostname
       }/courses/${
         course.reference
       }/conversations/1?messages%5BmessageReference%5D=1>
 
 Message non-existent permanent link turned reference: <https://${
-        app.locals.options.hostname
+        app.configuration.hostname
       }/courses/${
         course.reference
       }/conversations/1?messages%5BmessageReference%5D=2>
@@ -1412,7 +1412,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         password is “courselore”.
       `,
     });
-    res.redirect(303, `https://${app.locals.options.hostname}`);
+    res.redirect(303, `https://${app.configuration.hostname}`);
   });
 
   app.post<{}, any, {}, {}, IsSignedOutLocals>(
