@@ -332,9 +332,9 @@ if (
                     }
 
                     ${[
-                      application.configuration.tunnel
+                      ...(application.configuration.tunnel
                         ? []
-                        : [application.configuration.hostname],
+                        : [application.configuration.hostname]),
                       ...application.configuration.alternativeHostnames,
                     ]
                       .map((hostname) => `http://${hostname}`)
