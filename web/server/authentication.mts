@@ -1346,7 +1346,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             request.body.password,
-            application.configuration.argon2
+            application.server.locals.argon2
           )}
           WHERE "id" = ${userId}
           RETURNING *
@@ -1575,7 +1575,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.configuration.argon2 = {
+  application.server.locals.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
@@ -1745,7 +1745,7 @@ export default async (application: Application): Promise<void> => {
             ${request.body.email},
             ${await argon2.hash(
               request.body.password,
-              application.configuration.argon2
+              application.server.locals.argon2
             )},
             ${null},
             ${request.body.name},

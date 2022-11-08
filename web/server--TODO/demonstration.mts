@@ -32,7 +32,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   > = asyncHandler(async (req, res) => {
-    const password = await argon2.hash("courselore", app.configuration.argon2);
+    const password = await argon2.hash("courselore", app.server.locals.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
     const users = lodash.times(151, (userIndex) => {
       const name = casual.full_name;
