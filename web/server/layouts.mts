@@ -1700,6 +1700,22 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
+  application.server.locals.layouts.partial = ({
+    request,
+    response,
+    body,
+  }) => html`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        $${response.locals.css.toString()}
+      </head>
+      <body>
+        $${body}$${response.locals.html.toString()}
+      </body>
+    </html>
+  `;
+
   application.server.locals.partials.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
@@ -1749,22 +1765,6 @@ export default async (application: Application): Promise<void> => {
       </svg>
     `;
   })();
-
-  application.server.locals.layouts.partial = ({
-    request,
-    response,
-    body,
-  }) => html`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        $${response.locals.css.toString()}
-      </head>
-      <body>
-        $${body}$${response.locals.html.toString()}
-      </body>
-    </html>
-  `;
 
   application.server.locals.partials.spinner = ({
     request,
