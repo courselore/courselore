@@ -3,8 +3,8 @@ import { Application, ResponseLocalsBase } from "./index.mjs";
 export default async (application: Application): Promise<void> => {
   application.server.get<{}, any, {}, {}, ResponseLocalsBase>(
     "/health",
-    (req, res) => {
-      res.json({ name: application.name, version: application.version });
+    (request, response) => {
+      response.json({ name: application.name, version: application.version });
     }
   );
 
@@ -12,28 +12,28 @@ export default async (application: Application): Promise<void> => {
 
   application.server.get<{}, any, {}, {}, ResponseLocalsBase>(
     "/errors/validation",
-    (req, res, next) => {
+    (request, response, next) => {
       next("Validation");
     }
   );
 
   application.server.get<{}, any, {}, {}, ResponseLocalsBase>(
     "/errors/cross-site-request-forgery",
-    (req, res, next) => {
+    (request, response, next) => {
       next("Cross-Site Request Forgery");
     }
   );
 
   application.server.get<{}, any, {}, {}, ResponseLocalsBase>(
     "/errors/exception",
-    (req, res) => {
+    (request, response) => {
       throw new Error("Exception");
     }
   );
 
   application.server.get<{}, any, {}, {}, ResponseLocalsBase>(
     "/errors/crash",
-    (req, res) => {
+    (request, response) => {
       setTimeout(() => {
         throw new Error("Crash");
       });
