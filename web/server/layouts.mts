@@ -1845,7 +1845,7 @@ export default async (application: Application): Promise<void> => {
       )!;
       request.cookies["__Host-Flash"] = flash.nonce;
       response.cookie("__Host-Flash", flash.nonce, {
-        ...application.server.locals.cookies,
+        ...application.server.locals.configuration.cookies,
         maxAge: application.server.locals.helpers.Flash.maxAge,
       });
     },
@@ -1860,7 +1860,7 @@ export default async (application: Application): Promise<void> => {
         sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${request.cookies["__Host-Flash"]}`
       );
       delete request.cookies["__Host-Flash"];
-      response.clearCookie("__Host-Flash", application.server.locals.cookies);
+      response.clearCookie("__Host-Flash", application.server.locals.configuration.cookies);
       if (flash === undefined) return undefined;
       application.database.run(
         sql`

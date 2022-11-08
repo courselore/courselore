@@ -1394,7 +1394,7 @@ export default async (app: Courselore): Promise<void> => {
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               req.body.newPassword,
-              app.server.locals.argon2
+              app.server.locals.configuration.argon2
             )}
             WHERE "id" = ${res.locals.user.id}
           `

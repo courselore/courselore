@@ -166,7 +166,7 @@ export default async (application: Application): Promise<void> => {
       )!;
       request.cookies["__Host-Session"] = session.token;
       response.cookie("__Host-Session", session.token, {
-        ...application.server.locals.cookies,
+        ...application.server.locals.configuration.cookies,
         maxAge: application.server.locals.helpers.Session.maxAge,
       });
     },
@@ -214,7 +214,7 @@ export default async (application: Application): Promise<void> => {
         sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
       );
       delete request.cookies["__Host-Session"];
-      response.clearCookie("__Host-Session", application.server.locals.cookies);
+      response.clearCookie("__Host-Session", application.server.locals.configuration.cookies);
     },
 
     closeAllAndReopen({ request, response, userId }) {
@@ -1348,7 +1348,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             request.body.password,
-            application.server.locals.argon2
+            application.server.locals.configuration.argon2
           )}
           WHERE "id" = ${userId}
           RETURNING *
@@ -1577,7 +1577,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.locals.argon2 = {
+  application.server.locals.configuration.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
@@ -1747,7 +1747,7 @@ export default async (application: Application): Promise<void> => {
             ${request.body.email},
             ${await argon2.hash(
               request.body.password,
-              application.server.locals.argon2
+              application.server.locals.configuration.argon2
             )},
             ${null},
             ${request.body.name},
