@@ -141,7 +141,9 @@ export type Application = {
   };
   ports: {
     server: number[];
+    serverEventsAny: number;
     serverEvents: number[];
+    workerEventsAny: number;
     workerEvents: number[];
   };
   addresses: {
@@ -255,10 +257,12 @@ if (
               os.cpus().length,
               (processNumber) => 6001 + processNumber
             ),
+            serverEventsAny: 7000,
             serverEvents: lodash.times(
               os.cpus().length,
               (processNumber) => 7001 + processNumber
             ),
+            workerEventsAny: 8000,
             workerEvents: lodash.times(
               os.cpus().length,
               (processNumber) => 8001 + processNumber
@@ -449,7 +453,7 @@ if (
                       }
                     }
 
-                    http://127.0.0.1:7000 {
+                    http://127.0.0.1:${application.ports.serverEventsAny} {
                       bind 127.0.0.1
                       reverse_proxy ${application.ports.serverEvents
                         .map((port) => `http://127.0.0.1:${port}`)
@@ -458,7 +462,7 @@ if (
                         }
                     }
 
-                    http://127.0.0.1:8000 {
+                    http://127.0.0.1:${application.ports.workerEventsAny} {
                       bind 127.0.0.1
                       reverse_proxy ${application.ports.workerEvents
                         .map((port) => `http://127.0.0.1:${port}`)
