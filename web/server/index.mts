@@ -25,6 +25,7 @@ import layouts, { ApplicationLayouts } from "./layouts.mjs";
 export type ResponseLocalsSignedIn = ResponseLocalsBase & {
   user: any;
   administrationOptions: any;
+  mayCreateCourses: any;
 };
 // import authentication from "./authentication.mjs";
 // export {
@@ -43,6 +44,16 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
 //   systemRoles,
 // } from "./administration.mjs";
 // import user from "./user.mjs";
+// TODO
+type ApplicationUser = {
+  server: {
+    locals: {
+      partials: {
+        user: any;
+      };
+    };
+  };
+};
 // export {
 //   User,
 //   UserAvatarlessBackgroundColor,
@@ -56,11 +67,14 @@ import { ResponseLocalsBase } from "./base.mjs";
 export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
   course: any;
   enrollment: any;
+  enrollments: any;
+  invitations: any[];
 };
 type ApplicationCourse = {
   server: {
     locals: {
       partials: {
+        course: any;
         courses: any;
         courseArchived: any;
       };
@@ -138,6 +152,7 @@ export type Application = {
   ApplicationBase &
   // & ApplicationLiveUpdates
   ApplicationLayouts &
+  ApplicationUser &
   ApplicationCourse;
 
 if (

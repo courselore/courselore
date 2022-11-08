@@ -1375,8 +1375,8 @@ export default async (application: Application): Promise<void> => {
                                     (invitation) => html`
                                       <a
                                         key="invitation--${invitation.reference}"
-                                        href="https://${application.locals
-                                          .options
+                                        href="https://${application
+                                          .configuration
                                           .hostname}/courses/${invitation.course
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
@@ -1871,28 +1871,27 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  if (application.process.type === "worker")
-    application.once("start", async () => {
-      while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
-        );
-        application.database.run(
-          sql`
-            DELETE FROM "flashes"
-            WHERE "createdAt" < ${new Date(
-              Date.now() - application.server.locals.helpers.Flash.maxAge
-            ).toISOString()}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
-        );
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-      }
-    });
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "flashes"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - application.server.locals.helpers.Flash.maxAge
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 };
