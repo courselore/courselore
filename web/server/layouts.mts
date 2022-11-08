@@ -1175,8 +1175,8 @@ export default async (application: Application): Promise<void> => {
               const courseSwitcher = html`
                 <div class="dropdown--menu">
                   $${application.server.locals.partials.courses({
-                    req: request,
-                    res: response,
+                    request,
+                    response,
                     tight: true,
                   })}
                 </div>
@@ -1219,7 +1219,7 @@ export default async (application: Application): Promise<void> => {
                                           `)}"
                                         >
                                           $${application.server.locals.partials.courseArchived(
-                                            { req: request, res: response }
+                                            { request, response }
                                           )}
                                         </div>
                                       `
@@ -1290,8 +1290,8 @@ export default async (application: Application): Promise<void> => {
                         ? html`
                             $${application.server.locals.partials.courseArchived(
                               {
-                                req: request,
-                                res: response,
+                                request,
+                                response,
                               }
                             )}
                           `
@@ -1383,8 +1383,8 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         $${application.server.locals.partials.course(
                                           {
-                                            req: request,
-                                            res: response,
+                                            request,
+                                            response,
                                             course: invitation.course,
                                             tight: true,
                                           }
@@ -1557,8 +1557,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.server.locals.partials.user({
-                req: request,
-                res: response,
+                request,
+                response,
                 user: response.locals.user,
                 decorate: false,
                 name: false,
