@@ -129,7 +129,11 @@ export type Application = {
           contentEditor: any;
         };
         helpers: {
-          emailRegExp: any;
+          emailRegExp: RegExp;
+          userAvatarlessBackgroundColors: ["example"];
+          userEmailNotificationsForAllMessageses: ["example"];
+          courseRoles: ["example"];
+          enrollmentAccentColors: ["example"];
         };
       };
     };

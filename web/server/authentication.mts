@@ -10,17 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
 import got from "got";
-import {
-  Application,
-  ResponseLocalsBase,
-  UserSystemRolesWhoMayCreateCourses,
-  SystemRole,
-  UserAvatarlessBackgroundColor,
-  userAvatarlessBackgroundColors,
-  UserEmailNotificationsForAllMessages,
-  CourseRole,
-  EnrollmentAccentColor,
-} from "./index.mjs";
+import { Application, ResponseLocalsBase } from "./index.mjs";
 
 export type ApplicationAuthentication = {
   server: {
@@ -98,11 +88,11 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
     emailVerifiedAt: string | null;
     name: string;
     avatar: string | null;
-    avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+    avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
-    systemRole: SystemRole;
-    emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+    systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+    emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
     emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
     emailNotificationsForMentionsAt: string | null;
     emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
@@ -124,7 +114,7 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
       nextConversationReference: number;
     };
     reference: string;
-    courseRole: CourseRole;
+    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
   }[];
   enrollments: {
     id: number;
@@ -140,12 +130,12 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
       nextConversationReference: number;
     };
     reference: string;
-    courseRole: CourseRole;
-    accentColor: EnrollmentAccentColor;
+    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+    accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
   }[];
   administrationOptions: {
     latestVersion: string;
-    userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+    userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
   };
   mayCreateCourses: boolean;
   passwordConfirmed?: boolean;
@@ -386,11 +376,11 @@ export default async (application: Application): Promise<void> => {
         emailVerifiedAt: string | null;
         name: string;
         avatar: string | null;
-        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        systemRole: SystemRole;
-        emailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+        systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+        emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
         emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
         emailNotificationsForMentionsAt: string | null;
         emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
@@ -434,7 +424,7 @@ export default async (application: Application): Promise<void> => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          courseRole: CourseRole;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT "invitations"."id",
@@ -490,8 +480,8 @@ export default async (application: Application): Promise<void> => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          courseRole: CourseRole;
-          accentColor: EnrollmentAccentColor;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
         }>(
           sql`
             SELECT "enrollments"."id",
@@ -535,7 +525,7 @@ export default async (application: Application): Promise<void> => {
       response.locals.administrationOptions =
         application.database.get<{
           latestVersion: string;
-          userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+          userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
         }>(
           sql`
             SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
@@ -1510,7 +1500,9 @@ export default async (application: Application): Promise<void> => {
             ${null},
             ${request.body.name},
             ${html`${request.body.name}`},
-            ${lodash.sample(userAvatarlessBackgroundColors)},
+            ${lodash.sample(
+              application.server.locals.helpers.userAvatarlessBackgroundColors
+            )},
             ${
               application.configuration.hostname !==
                 application.addresses.tryHostname &&
