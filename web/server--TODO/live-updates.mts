@@ -15,7 +15,7 @@ import {
 //   req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
 //   res: express.Response<any, ResponseLocalsBase>;
 // }>();
-// app.get<{}, any, {}, {}, ResponseLocalsBase>(
+// app.server.get<{}, any, {}, {}, ResponseLocalsBase>(
 //   "/live-connection",
 //   (req, res) => {
 //     const connection = { req, res };

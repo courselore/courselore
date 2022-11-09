@@ -1415,13 +1415,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     res.redirect(303, `https://${app.configuration.hostname}`);
   });
 
-  app.post<{}, any, {}, {}, ResponseLocalsBase>(
+  app.server.post<{}, any, {}, {}, ResponseLocalsBase>(
     "/demonstration-data",
     ...app.locals.middlewares.isSignedOut,
     handler
   );
 
-  app.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  app.server.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/demonstration-data",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;

@@ -614,7 +614,7 @@ export default async (app: Courselore): Promise<void> => {
       : html``;
   };
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -704,7 +704,7 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -999,7 +999,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.patch<
+  app.server.patch<
     {},
     any,
     { name?: string; avatar?: string; biography?: string },
@@ -1049,7 +1049,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1106,7 +1106,7 @@ export default async (app: Courselore): Promise<void> => {
     }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>
   );
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/email-and-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1249,7 +1249,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.patch<
+  app.server.patch<
     {},
     any,
     { passwordConfirmation?: string; email?: string; newPassword?: string },
@@ -1446,7 +1446,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/notifications",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1720,7 +1720,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.patch<
+  app.server.patch<
     {},
     any,
     {
@@ -1819,7 +1819,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/account",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1892,7 +1892,7 @@ export default async (app: Courselore): Promise<void> => {
 
   /*
   TODO
-  app.delete<{}, any, {}, {}, HasPasswordConfirmationLocals>(
+  app.server.delete<{}, any, {}, {}, HasPasswordConfirmationLocals>(
     "/settings/account",
     (req, res, next) => {
       res.locals.hasPasswordConfirmationRedirect = "settings/account";

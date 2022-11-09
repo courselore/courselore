@@ -2583,7 +2583,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.get<
+  app.server.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -2950,7 +2950,7 @@ export default async (app: Courselore): Promise<void> => {
     };
   };
 
-  app.post<
+  app.server.post<
     { courseReference: string },
     any,
     {},
@@ -3016,7 +3016,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string; type?: ConversationType },
     HTML,
     {},
@@ -4319,7 +4319,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<
+  app.server.post<
     { courseReference: string },
     HTML,
     {
@@ -4727,7 +4727,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.delete<
+  app.server.delete<
     { courseReference: string },
     HTML,
     { conversationDraftReference?: string },
@@ -4788,7 +4788,7 @@ export default async (app: Courselore): Promise<void> => {
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
 
-  app.get<
+  app.server.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -9152,7 +9152,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.patch<
+  app.server.patch<
     { courseReference: string; conversationReference: string },
     HTML,
     {
@@ -9427,7 +9427,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.delete<
+  app.server.delete<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -9466,7 +9466,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<
+  app.server.post<
     {
       courseReference: string;
       conversationReference: string;
@@ -9521,7 +9521,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.delete<
+  app.server.delete<
     {
       courseReference: string;
       conversationReference: string;

@@ -607,7 +607,7 @@ export default async (app: Courselore): Promise<void> => {
     return { contentProcessed: contentElement.outerHTML, mentions };
   };
 
-  app.get<{}, any, {}, { url?: string }, {}>(
+  app.server.get<{}, any, {}, { url?: string }, {}>(
     "/content/image-proxy",
     asyncHandler(async (req, res) => {
       if (
@@ -2361,7 +2361,7 @@ ${contentSource}</textarea
       );
     };
 
-    app.get<
+    app.server.get<
       { courseReference: string },
       any,
       {},
@@ -2373,7 +2373,7 @@ ${contentSource}</textarea
       handler
     );
 
-    app.get<
+    app.server.get<
       { courseReference: string; conversationReference: string },
       any,
       {},
@@ -2386,7 +2386,7 @@ ${contentSource}</textarea
     );
   })();
 
-  app.get<
+  app.server.get<
     { courseReference: string },
     any,
     {},
@@ -2775,7 +2775,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  app.server.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/content-editor/attachments",
     ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
@@ -2881,7 +2881,7 @@ ${contentSource}</textarea
       );
     };
 
-    app.post<
+    app.server.post<
       { courseReference: string },
       any,
       { content?: string },
@@ -2893,13 +2893,13 @@ ${contentSource}</textarea
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, ResponseLocalsSignedIn>(
+    app.server.post<{}, any, { content?: string }, {}, ResponseLocalsSignedIn>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedIn,
       handler
     );
 
-    app.post<{}, any, { content?: string }, {}, ResponseLocalsBase>(
+    app.server.post<{}, any, { content?: string }, {}, ResponseLocalsBase>(
       "/content-editor/preview",
       ...app.locals.middlewares.isSignedOut,
       handler

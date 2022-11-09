@@ -337,7 +337,7 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -466,7 +466,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.get<{}, HTML, {}, {}, MayCreateCoursesLocals>(
+  app.server.get<{}, HTML, {}, {}, MayCreateCoursesLocals>(
     "/courses/new",
     ...mayCreateCoursesMiddleware,
     (req, res) => {
@@ -576,7 +576,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<
+  app.server.post<
     {},
     any,
     {
@@ -782,7 +782,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.get<
+  app.server.get<
     { courseReference: string },
     HTML,
     {},
@@ -871,7 +871,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string },
     HTML,
     {},
@@ -997,7 +997,7 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/course-information",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1236,7 +1236,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.patch<
+  app.server.patch<
     { courseReference: string },
     HTML,
     {
@@ -1348,7 +1348,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1825,7 +1825,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.put<
+  app.server.put<
     { courseReference: string },
     HTML,
     {
@@ -1911,7 +1911,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -2973,7 +2973,7 @@ export default async (app: Courselore): Promise<void> => {
       });
   };
 
-  app.post<
+  app.server.post<
     { courseReference: string },
     HTML,
     {
@@ -3250,7 +3250,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.patch<
+  app.server.patch<
     { courseReference: string; invitationReference: string },
     HTML,
     {
@@ -3368,7 +3368,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -3917,7 +3917,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.patch<
+  app.server.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
     { courseRole?: CourseRole },
@@ -3953,7 +3953,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.delete<
+  app.server.delete<
     { courseReference: string; enrollmentReference: string },
     HTML,
     {},
@@ -3990,7 +3990,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string },
     HTML,
     {},
@@ -4107,7 +4107,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.patch<
+  app.server.patch<
     { courseReference: string },
     HTML,
     { accentColor?: EnrollmentAccentColor },
@@ -4370,7 +4370,7 @@ export default async (app: Courselore): Promise<void> => {
     }),
   ];
 
-  app.get<
+  app.server.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
@@ -4382,7 +4382,7 @@ export default async (app: Courselore): Promise<void> => {
     ...isInvitationUsableMiddleware
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
@@ -4437,7 +4437,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.post<
+  app.server.post<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
@@ -4449,7 +4449,7 @@ export default async (app: Courselore): Promise<void> => {
     ...isInvitationUsableMiddleware
   );
 
-  app.post<
+  app.server.post<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
@@ -4491,7 +4491,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
@@ -4597,7 +4597,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.get<
+  app.server.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
