@@ -111,6 +111,15 @@ type ApplicationCourse = {
     };
   };
 };
+type ApplicationHelpers = {
+  server: {
+    locals: {
+      helpers: {
+        emailRegExp: any;
+      };
+    };
+  };
+};
 
 export type Application = {
   name: string;
@@ -162,7 +171,8 @@ export type Application = {
   ApplicationLayouts &
   ApplicationAuthentication &
   ApplicationUser &
-  ApplicationCourse;
+  ApplicationCourse &
+  ApplicationHelpers;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
