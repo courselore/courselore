@@ -26,7 +26,7 @@ import authentication, {
 } from "./authentication.mjs";
 export { ResponseLocalsSignedIn } from "./authentication.mjs";
 import about from "./about.mjs";
-// import administration from "./administration.mjs";
+import administration from "./administration.mjs";
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
 //   userSystemRolesWhoMayCreateCourseses,
@@ -311,7 +311,7 @@ if (
         await layouts(application);
         await authentication(application);
         await about(application);
-        // await administration(application);
+        await administration(application);
         // await user(application);
         // await course(application);
         // await conversation(application);
