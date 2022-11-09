@@ -243,15 +243,15 @@ export default async (app: Courselore): Promise<void> => {
         */
 
         /*
-
-        response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${
-            typeof request.query.redirect === "string"
-              ? request.query.redirect
-              : ""
-          }`
-        );
+        if (request.method === "GET")
+          response.redirect(
+            303,
+            `https://${application.configuration.hostname}/${
+              typeof request.query.redirect === "string"
+                ? request.query.redirect
+                : ""
+            }`
+          );
         */
 
   app.use(((err, req, res, next) => {

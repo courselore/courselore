@@ -332,7 +332,6 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-
     got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
@@ -932,7 +931,25 @@ export default async (application: Application): Promise<void> => {
     { redirect?: string; invitation?: object },
     ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >("/reset-password", (request, response, next) => {
-    if (response.locals.user !== undefined) return next();
+    if (response.locals.user !== undefined) {
+      application.server.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "rose",
+        content: html`
+          You may not use this password reset link because you’re already signed
+          in.
+        `,
+      });
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : ""
+        }`
+      );
+    }
 
     if (
       typeof request.body.email !== "string" ||
@@ -1004,7 +1021,6 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-
     got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
@@ -1061,135 +1077,105 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase
-  >(
-    "/reset-password/:passwordResetNonce",
-    ...application.locals.middlewares.isSignedOut,
-    (request, response) => {
-      const userId = PasswordReset.get(request.params.passwordResetNonce);
-      if (userId === undefined) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`This password reset link is invalid or expired.`,
-        });
-        return response.redirect(
-          303,
-          `https://${
-            application.configuration.hostname
-          }/reset-password${qs.stringify(
-            {
-              redirect: request.query.redirect,
-              invitation: request.query.invitation,
-            },
-            { addQueryPrefix: true }
-          )}`
-        );
-      }
-      response.send(
-        application.server.locals.layouts.box({
-          request,
-          response,
-          head: html`
-            <title>
-              Reset Password · Courselore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="https://${application.configuration
-                .hostname}/reset-password/${request.params
-                .passwordResetNonce}${qs.stringify(
-                {
-                  redirect: request.query.redirect,
-                  invitation: request.query.invitation,
-                },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  minlength="8"
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password Confirmation</p>
-                <input
-                  type="password"
-                  required
-                  class="input--text"
-                  onload="${javascript`
-                    this.onvalidate = () => {
-                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                        return "Password & Password Confirmation don’t match.";
-                    };
-                  `}"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-key-fill"></i>
-                Reset Password
-              </button>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+  >("/reset-password/:passwordResetNonce", (request, response, next) => {
+    if (response.locals.user !== undefined) return next();
 
-  application.server.get<
-    { passwordResetNonce: string },
-    HTML,
-    {},
-    { redirect?: string; invitation?: object },
-    ResponseLocalsSignedIn
-  >(
-    "/reset-password/:passwordResetNonce",
-    ...application.locals.middlewares.isSignedIn,
-    (request, response) => {
+    const userId = PasswordReset.get(request.params.passwordResetNonce);
+    if (userId === undefined) {
       application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "rose",
-        content: html`
-          You may not use this password reset link because you’re already signed
-          in.
-        `,
+        content: html`This password reset link is invalid or expired.`,
       });
       return response.redirect(
         303,
-        `https://${application.configuration.hostname}/${
-          typeof request.query.redirect === "string"
-            ? request.query.redirect
-            : ""
-        }`
+        `https://${
+          application.configuration.hostname
+        }/reset-password${qs.stringify(
+          {
+            redirect: request.query.redirect,
+            invitation: request.query.invitation,
+          },
+          { addQueryPrefix: true }
+        )}`
       );
     }
-  );
+
+    response.send(
+      application.server.locals.layouts.box({
+        request,
+        response,
+        head: html`
+          <title>
+            Reset Password · Courselore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="https://${application.configuration
+              .hostname}/reset-password/${request.params
+              .passwordResetNonce}${qs.stringify(
+              {
+                redirect: request.query.redirect,
+                invitation: request.query.invitation,
+              },
+              { addQueryPrefix: true }
+            )}"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                minlength="8"
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password Confirmation</p>
+              <input
+                type="password"
+                required
+                class="input--text"
+                onload="${javascript`
+                  this.onvalidate = () => {
+                    if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                      return "Password & Password Confirmation don’t match.";
+                  };
+                `}"
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-key-fill"></i>
+              Reset Password
+            </button>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.post<
     { passwordResetNonce: string },
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >(
     "/reset-password/:passwordResetNonce",
-    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
+      if (response.locals.user !== undefined) return next();
+
       if (
         typeof request.body.password !== "string" ||
         request.body.password.trim() === "" ||
@@ -1235,6 +1221,7 @@ export default async (application: Application): Promise<void> => {
           RETURNING *
         `
       )!;
+
       application.database.run(
         sql`
           INSERT INTO "sendEmailJobs" (
@@ -1283,11 +1270,13 @@ export default async (application: Application): Promise<void> => {
         .catch((error) => {
           response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
         });
+
       application.server.locals.helpers.Session.closeAllAndReopen({
         request,
         response,
         userId,
       });
+
       application.server.locals.helpers.Flash.set({
         request,
         response,
@@ -1310,170 +1299,148 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    ResponseLocalsBase
-  >(
-    "/sign-up",
-    ...application.locals.middlewares.isSignedOut,
-    (request, response) => {
-      response.send(
-        application.server.locals.layouts.box({
-          request,
-          response,
-          head: html`
-            <title>
-              Sign up · Courselore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="https://${application.configuration
-                .hostname}/sign-up${qs.stringify(
-                {
-                  redirect: request.query.redirect,
-                  invitation: request.query.invitation,
-                },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <label class="label">
-                <p class="label--text">Name</p>
-                <input
-                  type="text"
-                  name="name"
-                  value="${typeof request.query.invitation?.name === "string" &&
-                  request.query.invitation.name.trim() !== ""
-                    ? request.query.invitation.name
-                    : ""}"
-                  required
-                  autofocus
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${typeof request.query.invitation?.email ===
-                    "string" && request.query.invitation.email.trim() !== ""
-                    ? request.query.invitation.email
-                    : ""}"
-                  required
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  minlength="8"
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password Confirmation</p>
-                <input
-                  type="password"
-                  required
-                  class="input--text"
-                  onload="${javascript`
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+  >("/sign-up", (request, response, next) => {
+    if (response.locals.user !== undefined) return next();
+
+    response.send(
+      application.server.locals.layouts.box({
+        request,
+        response,
+        head: html`
+          <title>
+            Sign up · Courselore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="https://${application.configuration
+              .hostname}/sign-up${qs.stringify(
+              {
+                redirect: request.query.redirect,
+                invitation: request.query.invitation,
+              },
+              { addQueryPrefix: true }
+            )}"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Name</p>
+              <input
+                type="text"
+                name="name"
+                value="${typeof request.query.invitation?.name === "string" &&
+                request.query.invitation.name.trim() !== ""
+                  ? request.query.invitation.name
+                  : ""}"
+                required
+                autofocus
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${typeof request.query.invitation?.email === "string" &&
+                request.query.invitation.email.trim() !== ""
+                  ? request.query.invitation.email
+                  : ""}"
+                required
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                minlength="8"
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password Confirmation</p>
+              <input
+                type="password"
+                required
+                class="input--text"
+                onload="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };
               `}"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-person-plus-fill"></i>
-                Sign up
-              </button>
-            </form>
-            <div
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `)}"
-            >
-              <p>
-                Already have an account account?
-                <a
-                  href="https://${application.configuration
-                    .hostname}/sign-in${qs.stringify(
-                    {
-                      redirect: request.query.redirect,
-                      invitation: request.query.invitation,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >Sign in</a
-                >.
-              </p>
-              <p>
-                Forgot your password?
-                <a
-                  href="https://${application.configuration
-                    .hostname}/reset-password${qs.stringify(
-                    {
-                      redirect: request.query.redirect,
-                      invitation: request.query.invitation,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >Reset password</a
-                >.
-              </p>
-            </div>
-          `,
-        })
-      );
-    }
-  );
-
-  application.server.get<
-    {},
-    HTML,
-    {},
-    { redirect?: string },
-    ResponseLocalsSignedIn
-  >(
-    "/sign-up",
-    ...application.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/${
-          typeof request.query.redirect === "string"
-            ? request.query.redirect
-            : ""
-        }`
-      );
-    }
-  );
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-person-plus-fill"></i>
+              Sign up
+            </button>
+          </form>
+          <div
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `)}"
+          >
+            <p>
+              Already have an account account?
+              <a
+                href="https://${application.configuration
+                  .hostname}/sign-in${qs.stringify(
+                  {
+                    redirect: request.query.redirect,
+                    invitation: request.query.invitation,
+                  },
+                  { addQueryPrefix: true }
+                )}"
+                class="link"
+                >Sign in</a
+              >.
+            </p>
+            <p>
+              Forgot your password?
+              <a
+                href="https://${application.configuration
+                  .hostname}/reset-password${qs.stringify(
+                  {
+                    redirect: request.query.redirect,
+                    invitation: request.query.invitation,
+                  },
+                  { addQueryPrefix: true }
+                )}"
+                class="link"
+                >Reset password</a
+              >.
+            </p>
+          </div>
+        `,
+      })
+    );
+  });
 
   application.server.post<
     {},
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >(
     "/sign-up",
-    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
+      if (response.locals.user !== undefined) return next();
+
       if (
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
@@ -1575,11 +1542,13 @@ export default async (application: Application): Promise<void> => {
         userEmail: user.email,
         welcome: true,
       });
+
       application.server.locals.helpers.Session.open({
         request,
         response,
         userId: user.id,
       });
+
       response.redirect(
         303,
         `https://${application.configuration.hostname}/${
