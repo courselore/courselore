@@ -322,7 +322,7 @@ export default async (app: Courselore): Promise<void> => {
             $${name === true && user !== "no-longer-enrolled"
               ? html`
                   data-filterable-phrases="${JSON.stringify(
-                    app.locals.helpers.splitFilterablePhrases(user.name)
+                    app.server.locals.helpers.splitFilterablePhrases(user.name)
                   )}"
                 `
               : html``}
@@ -616,7 +616,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.redirect(
         303,
@@ -706,7 +706,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1007,7 +1007,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn
   >(
     "/settings/profile",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -1036,7 +1036,7 @@ export default async (app: Courselore): Promise<void> => {
           WHERE "id" = ${res.locals.user.id}
         `
       );
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1108,7 +1108,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/email-and-password",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1267,10 +1267,10 @@ export default async (app: Courselore): Promise<void> => {
           : "settings/email-and-password";
       next();
     },
-    ...app.locals.middlewares.hasPasswordConfirmation,
+    ...app.server.locals.middlewares.hasPasswordConfirmation,
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.email === "string") {
-        if (req.body.email.match(app.locals.helpers.emailRegExp) === null)
+        if (req.body.email.match(app.server.locals.helpers.emailRegExp) === null)
           return next("Validation");
         if (
           app.database.get<{}>(
@@ -1279,7 +1279,7 @@ export default async (app: Courselore): Promise<void> => {
             `
           ) !== undefined
         ) {
-          app.locals.helpers.Flash.set({
+          app.server.locals.helpers.Flash.set({
             req,
             res,
             theme: "rose",
@@ -1351,7 +1351,7 @@ export default async (app: Courselore): Promise<void> => {
           userId: res.locals.user.id,
           userEmail: req.body.email,
         });
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1422,12 +1422,12 @@ export default async (app: Courselore): Promise<void> => {
           .catch((error) => {
             response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
           });
-        app.locals.helpers.Session.closeAllAndReopen({
+        app.server.locals.helpers.Session.closeAllAndReopen({
           req,
           res,
           userId: res.locals.user.id,
         });
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1448,7 +1448,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/notifications",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1737,7 +1737,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn
   >(
     "/settings/notifications",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         ![undefined, "on"].includes(
@@ -1805,7 +1805,7 @@ export default async (app: Courselore): Promise<void> => {
        `
       );
 
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1821,7 +1821,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/account",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1898,7 +1898,7 @@ export default async (app: Courselore): Promise<void> => {
       res.locals.hasPasswordConfirmationRedirect = "settings/account";
       next();
     },
-    ...app.locals.middlewares.hasPasswordConfirmation,
+    ...app.server.locals.middlewares.hasPasswordConfirmation,
     (req, res) => {
       app.database.run(
         sql`
@@ -1907,7 +1907,7 @@ export default async (app: Courselore): Promise<void> => {
        `
       );
 
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1917,7 +1917,7 @@ export default async (app: Courselore): Promise<void> => {
         `,
       });
 
-      app.locals.helpers.Session.close({ req, res });
+      app.server.locals.helpers.Session.close({ req, res });
       res
         .header(
           "Clear-Site-Data",

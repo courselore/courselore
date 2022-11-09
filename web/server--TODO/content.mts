@@ -296,7 +296,7 @@ export default async (app: Courselore): Promise<void> => {
         const [courseReference, conversationReference, messageReference] =
           match.slice(1);
         if (courseReference !== res.locals.course.reference) continue;
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req: narrowReq,
           res: narrowRes,
           conversationReference,
@@ -315,7 +315,7 @@ export default async (app: Courselore): Promise<void> => {
           element.textContent = `#${conversation.reference}`;
           continue;
         }
-        const message = app.locals.helpers.getMessage({
+        const message = app.server.locals.helpers.getMessage({
           req: narrowReq,
           res: narrowRes,
           conversation,
@@ -443,7 +443,7 @@ export default async (app: Courselore): Promise<void> => {
           newNodeHTML = newNodeHTML.replace(
             /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
             (match, conversationReference, messageReference) => {
-              const conversation = app.locals.helpers.getConversation({
+              const conversation = app.server.locals.helpers.getConversation({
                 req: narrowReq,
                 res: narrowRes,
                 conversationReference,
@@ -460,7 +460,7 @@ export default async (app: Courselore): Promise<void> => {
                   )}"
                   >${match}</a
                 >`;
-              const message = app.locals.helpers.getMessage({
+              const message = app.server.locals.helpers.getMessage({
                 req: narrowReq,
                 res: narrowRes,
                 conversation,
@@ -515,7 +515,7 @@ export default async (app: Courselore): Promise<void> => {
           hrefMessageReference !== textContentMessageReference
         )
           continue;
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req: narrowReq,
           res: narrowRes,
           conversationReference: hrefConversationReference,
@@ -547,7 +547,7 @@ export default async (app: Courselore): Promise<void> => {
           );
           continue;
         }
-        const message = app.locals.helpers.getMessage({
+        const message = app.server.locals.helpers.getMessage({
           req: narrowReq,
           res: narrowRes,
           conversation,
@@ -594,7 +594,7 @@ export default async (app: Courselore): Promise<void> => {
           if (node.textContent === null || parentElement === null) return;
           parentElement.replaceChild(
             JSDOM.fragment(
-              app.locals.helpers.highlightSearchResult(
+              app.server.locals.helpers.highlightSearchResult(
                 html`${node.textContent}`,
                 search
               )
@@ -2268,7 +2268,7 @@ ${contentSource}</textarea
                             "enrollments"."course" = ${res.locals.course.id} AND
                             "users"."id" != ${res.locals.user.id}
             JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                          "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                          "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                             req.query.search,
                                             { prefix: true }
                                           )}
@@ -2369,7 +2369,7 @@ ${contentSource}</textarea
       ResponseLocalsCourseEnrolled
     >(
       "/courses/:courseReference/content-editor/mention-user-search",
-      ...app.locals.middlewares.isEnrolledInCourse,
+      ...app.server.locals.middlewares.isEnrolledInCourse,
       handler
     );
 
@@ -2381,7 +2381,7 @@ ${contentSource}</textarea
       IsConversationAccessibleLocals
     >(
       "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
-      ...app.locals.middlewares.isConversationAccessible,
+      ...app.server.locals.middlewares.isConversationAccessible,
       handler
     );
   })();
@@ -2394,7 +2394,7 @@ ${contentSource}</textarea
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2412,7 +2412,7 @@ ${contentSource}</textarea
             SELECT "conversations"."reference"
             FROM "conversations"
             JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-                                                  "conversationsReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                  "conversationsReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                                     req.query.search,
                                                     { prefix: true }
                                                   )}
@@ -2421,7 +2421,7 @@ ${contentSource}</textarea
             LIMIT 5
           `
         )) {
-          const conversation = app.locals.helpers.getConversation({
+          const conversation = app.server.locals.helpers.getConversation({
             req,
             res,
             conversationReference: conversationRow.reference,
@@ -2442,7 +2442,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${app.locals.helpers.highlightSearchResult(
+                  $${app.server.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${req.query.search}`,
                     { prefix: true }
@@ -2459,7 +2459,7 @@ ${contentSource}</textarea
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req,
           res,
           conversationReference,
@@ -2476,7 +2476,7 @@ ${contentSource}</textarea
                   ? sql``
                   : sql`
                     JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                                                     "messagesReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                     "messagesReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                                        messageReferenceSearch,
                                                        { prefix: true }
                                                      )}
@@ -2487,7 +2487,7 @@ ${contentSource}</textarea
               LIMIT 5
             `
           )) {
-            const message = app.locals.helpers.getMessage({
+            const message = app.server.locals.helpers.getMessage({
               req,
               res,
               conversation,
@@ -2510,7 +2510,7 @@ ${contentSource}</textarea
                 <div>
                   <div>
                     <span class="secondary">
-                      $${app.locals.helpers.highlightSearchResult(
+                      $${app.server.locals.helpers.highlightSearchResult(
                         `#${conversation.reference}/${message.reference}`,
                         `#${req.query.search}`,
                         { prefix: true }
@@ -2542,7 +2542,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${app.locals.helpers.highlightSearchResult(
+                  $${app.server.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${conversationReference}`
                   )}
@@ -2563,7 +2563,7 @@ ${contentSource}</textarea
                   highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
           FROM "conversations"
           JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-                                                   "conversationsTitleSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                   "conversationsTitleSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                                      req.query.search,
                                                      { prefix: true }
                                                    )}
@@ -2573,7 +2573,7 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req,
           res,
           conversationReference: conversationRow.reference,
@@ -2614,7 +2614,7 @@ ${contentSource}</textarea
           FROM "messages"
           JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
           JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-                                         "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                         "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                            req.query.search,
                                            { prefix: true }
                                          )}
@@ -2637,13 +2637,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req,
           res,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = app.locals.helpers.getMessage({
+        const message = app.server.locals.helpers.getMessage({
           req,
           res,
           conversation,
@@ -2703,7 +2703,7 @@ ${contentSource}</textarea
                  snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
           FROM "messages"
           JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-                                                "messagesContentSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
+                                                "messagesContentSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
                                                   req.query.search,
                                                   { prefix: true }
                                                 )}
@@ -2716,13 +2716,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req,
           res,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = app.locals.helpers.getMessage({
+        const message = app.server.locals.helpers.getMessage({
           req,
           res,
           conversation,
@@ -2777,7 +2777,7 @@ ${contentSource}</textarea
 
   app.server.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/content-editor/attachments",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("Validation");
       const attachments = Array.isArray(req.files.attachments)
@@ -2889,19 +2889,19 @@ ${contentSource}</textarea
       ResponseLocalsCourseEnrolled
     >(
       "/courses/:courseReference/content-editor/preview",
-      ...app.locals.middlewares.isEnrolledInCourse,
+      ...app.server.locals.middlewares.isEnrolledInCourse,
       handler
     );
 
     app.server.post<{}, any, { content?: string }, {}, ResponseLocalsSignedIn>(
       "/content-editor/preview",
-      ...app.locals.middlewares.isSignedIn,
+      ...app.server.locals.middlewares.isSignedIn,
       handler
     );
 
     app.server.post<{}, any, { content?: string }, {}, ResponseLocalsBase>(
       "/content-editor/preview",
-      ...app.locals.middlewares.isSignedOut,
+      ...app.server.locals.middlewares.isSignedOut,
       handler
     );
   })();

@@ -1394,13 +1394,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     }
 
     if (res.locals.user === undefined)
-      app.locals.helpers.Session.open({
+      app.server.locals.helpers.Session.open({
         req,
         res,
         userId: demonstrationUser.id,
       });
 
-    app.locals.helpers.Flash.set({
+    app.server.locals.helpers.Flash.set({
       req,
       res,
       theme: "green",
@@ -1417,7 +1417,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 
   app.server.post<{}, any, {}, {}, ResponseLocalsBase>(
     "/demonstration-data",
-    ...app.locals.middlewares.isSignedOut,
+    ...app.server.locals.middlewares.isSignedOut,
     handler
   );
 
@@ -1427,7 +1427,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;
       next();
     },
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     handler
   );
 };

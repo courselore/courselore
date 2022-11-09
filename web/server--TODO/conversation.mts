@@ -241,7 +241,7 @@ export default async (app: Courselore): Promise<void> => {
     const search =
       typeof req.query.conversations?.search === "string" &&
       req.query.conversations.search.trim() !== ""
-        ? app.locals.helpers.sanitizeSearch(req.query.conversations.search)
+        ? app.server.locals.helpers.sanitizeSearch(req.query.conversations.search)
         : undefined;
 
     const filters: {
@@ -523,7 +523,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       )
       .map((conversationWithSearchResult) => {
-        const conversation = app.locals.helpers.getConversation({
+        const conversation = app.server.locals.helpers.getConversation({
           req,
           res,
           conversationReference: conversationWithSearchResult.reference,
@@ -544,7 +544,7 @@ export default async (app: Courselore): Promise<void> => {
                 "string"
             ? ({
                 type: "messageAuthorUserName",
-                message: app.locals.helpers.getMessage({
+                message: app.server.locals.helpers.getMessage({
                   req,
                   res,
                   conversation,
@@ -560,7 +560,7 @@ export default async (app: Courselore): Promise<void> => {
                 "string"
             ? ({
                 type: "messageContent",
-                message: app.locals.helpers.getMessage({
+                message: app.server.locals.helpers.getMessage({
                   req,
                   res,
                   conversation,
@@ -2569,10 +2569,10 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.locals.middlewares.isConversationAccessible = [
-    ...app.locals.middlewares.isEnrolledInCourse,
+  app.server.locals.middlewares.isConversationAccessible = [
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      const conversation = app.locals.helpers.getConversation({
+      const conversation = app.server.locals.helpers.getConversation({
         req,
         res,
         conversationReference: req.params.conversationReference,
@@ -2591,7 +2591,7 @@ export default async (app: Courselore): Promise<void> => {
     IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
         res.locals.conversation.participants === "everyone" ||
@@ -2633,7 +2633,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.locals.helpers.getConversation = ({
+  app.server.locals.helpers.getConversation = ({
     req,
     res,
     conversationReference,
@@ -2962,7 +2962,7 @@ export default async (app: Courselore): Promise<void> => {
       res.locals.actionAllowedOnArchivedCourse = true;
       next();
     },
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       const messages = app.database.all<{ id: number }>(
         sql`
@@ -3039,8 +3039,8 @@ export default async (app: Courselore): Promise<void> => {
     `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
       "|"
     )}))?`,
-    ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.liveUpdates,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.liveUpdates,
     (req, res) => {
       const conversationDraft =
         typeof req.query.newConversation?.conversationDraftReference ===
@@ -4339,7 +4339,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/conversations",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (req.body.isDraft === "true") {
         // TODO: Conversation drafts: Validate inputs
@@ -4687,10 +4687,10 @@ export default async (app: Courselore): Promise<void> => {
         app.server.locals.helpers.emailNotifications({
           req,
           res,
-          message: app.locals.helpers.getMessage({
+          message: app.server.locals.helpers.getMessage({
             req,
             res,
-            conversation: app.locals.helpers.getConversation({
+            conversation: app.server.locals.helpers.getConversation({
               req,
               res,
               conversationReference: conversation.reference,
@@ -4723,7 +4723,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -4735,7 +4735,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/conversations/new",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.body.conversationDraftReference !== "string" ||
@@ -4807,8 +4807,8 @@ export default async (app: Courselore): Promise<void> => {
     IsConversationAccessibleLocals & ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.isConversationAccessible,
-    ...app.locals.middlewares.liveUpdates,
+    ...app.server.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.liveUpdates,
     (req, res) => {
       const beforeMessage =
         typeof req.query.messages?.messagesPage?.beforeMessageReference ===
@@ -4873,7 +4873,7 @@ export default async (app: Courselore): Promise<void> => {
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
-          app.locals.helpers.getMessage({
+          app.server.locals.helpers.getMessage({
             req,
             res,
             conversation: res.locals.conversation,
@@ -4977,7 +4977,7 @@ export default async (app: Courselore): Promise<void> => {
                               text-overflow: ellipsis;
                             `)}"
                           >
-                            $${app.locals.helpers.highlightSearchResult(
+                            $${app.server.locals.helpers.highlightSearchResult(
                               html`${res.locals.conversation.title}`,
                               typeof req.query.conversations?.search ===
                                 "string" &&
@@ -5052,7 +5052,7 @@ export default async (app: Courselore): Promise<void> => {
                                                 <form
                                                   key="conversation-type--${conversationType}"
                                                   method="PATCH"
-                                                  action="https://${app.locals
+                                                  action="https://${app.server.locals
                                                     .options
                                                     .hostname}/courses/${res
                                                     .locals.course
@@ -5620,7 +5620,7 @@ export default async (app: Courselore): Promise<void> => {
                         line-height: var(--line-height--lg);
                       `)}"
                     >
-                      $${app.locals.helpers.highlightSearchResult(
+                      $${app.server.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
                         typeof req.query.conversations?.search === "string" &&
                           req.query.conversations.search.trim() !== ""
@@ -5872,7 +5872,7 @@ export default async (app: Courselore): Promise<void> => {
                                           ? html`
                                               <div class="dropdown--menu">
                                                 <a
-                                                  href="https://${app.locals
+                                                  href="https://${app.server.locals
                                                     .options
                                                     .hostname}/courses/${res
                                                     .locals.course
@@ -5899,7 +5899,7 @@ export default async (app: Courselore): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="POST"
-                                                    action="https://${app.locals
+                                                    action="https://${app.server.locals
                                                       .options
                                                       .hostname}/courses/${res
                                                       .locals.course
@@ -5991,7 +5991,7 @@ export default async (app: Courselore): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="DELETE"
-                                                    action="https://${app.locals
+                                                    action="https://${app.server.locals
                                                       .options
                                                       .hostname}/courses/${res
                                                       .locals.course
@@ -7296,7 +7296,7 @@ export default async (app: Courselore): Promise<void> => {
 
                                                               this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("https://${
-                                                                  app.locals
+                                                                  app.server.locals
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
@@ -7331,7 +7331,7 @@ export default async (app: Courselore): Promise<void> => {
                                                             Permanent Link
                                                           </button>
 
-                                                          $${app.locals.helpers.mayEditMessage(
+                                                          $${app.server.locals.helpers.mayEditMessage(
                                                             {
                                                               req,
                                                               res,
@@ -7363,7 +7363,7 @@ export default async (app: Courselore): Promise<void> => {
                                                             .authorEnrollment
                                                             .courseRole ===
                                                             "student" &&
-                                                          app.locals.helpers.mayEditMessage(
+                                                          app.server.locals.helpers.mayEditMessage(
                                                             {
                                                               req,
                                                               res,
@@ -7614,7 +7614,7 @@ export default async (app: Courselore): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            app.locals.helpers.mayEditMessage({
+                                            app.server.locals.helpers.mayEditMessage({
                                               req,
                                               res,
                                               message,
@@ -7626,7 +7626,7 @@ export default async (app: Courselore): Promise<void> => {
                                             header += html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.locals
+                                                action="https://${app.server.locals
                                                   .options
                                                   .hostname}/courses/${res
                                                   .locals.course
@@ -7705,7 +7705,7 @@ export default async (app: Courselore): Promise<void> => {
                                             `;
 
                                           if (
-                                            app.locals.helpers.mayEndorseMessage(
+                                            app.server.locals.helpers.mayEndorseMessage(
                                               {
                                                 req,
                                                 res,
@@ -7727,7 +7727,7 @@ export default async (app: Courselore): Promise<void> => {
                                                 method="${isEndorsed
                                                   ? "DELETE"
                                                   : "POST"}"
-                                                action="https://${app.locals
+                                                action="https://${app.server.locals
                                                   .options
                                                   .hostname}/courses/${res
                                                   .locals.course
@@ -8036,7 +8036,7 @@ export default async (app: Courselore): Promise<void> => {
                                                       message.authorEnrollment ===
                                                       "no-longer-enrolled"
                                                         ? undefined
-                                                        : app.locals.helpers.highlightSearchResult(
+                                                        : app.server.locals.helpers.highlightSearchResult(
                                                             html`${message
                                                               .authorEnrollment
                                                               .user.name}`,
@@ -8257,7 +8257,7 @@ export default async (app: Courselore): Promise<void> => {
                                                     method="${isLiked
                                                       ? "DELETE"
                                                       : "POST"}"
-                                                    action="https://${app.locals
+                                                    action="https://${app.server.locals
                                                       .options
                                                       .hostname}/courses/${res
                                                       .locals.course
@@ -8356,7 +8356,7 @@ export default async (app: Courselore): Promise<void> => {
                                                               onShow: async () => {
                                                                 this.dropdown.setContent(loading);
                                                                 leafac.loadPartial(content, await (await fetch("https://${
-                                                                  app.locals
+                                                                  app.server.locals
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
@@ -8472,7 +8472,7 @@ export default async (app: Courselore): Promise<void> => {
                                           })()}
                                         </div>
 
-                                        $${app.locals.helpers.mayEditMessage({
+                                        $${app.server.locals.helpers.mayEditMessage({
                                           req,
                                           res,
                                           message,
@@ -8480,7 +8480,7 @@ export default async (app: Courselore): Promise<void> => {
                                           ? html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.locals
+                                                action="https://${app.server.locals
                                                   .options
                                                   .hostname}/courses/${res
                                                   .locals.course
@@ -9145,7 +9145,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     MayEditConversationLocals
   >[] = [
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (mayEditConversation({ req, res })) return next();
       next("route");
@@ -9336,7 +9336,7 @@ export default async (app: Courselore): Promise<void> => {
             `
           );
           if (req.body.isAnnouncement === "true") {
-            const message = app.locals.helpers.getMessage({
+            const message = app.server.locals.helpers.getMessage({
               req,
               res,
               conversation: res.locals.conversation,
@@ -9423,7 +9423,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -9438,13 +9438,13 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals & IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.isCourseStaff,
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isConversationAccessible,
     (req, res) => {
       app.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -9462,7 +9462,7 @@ export default async (app: Courselore): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 

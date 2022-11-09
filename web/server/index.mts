@@ -126,6 +126,7 @@ export type Application = {
           course: any;
           courses: any;
           courseArchived: any;
+          content: Function;
           contentEditor: any;
         };
         helpers: {
@@ -134,6 +135,7 @@ export type Application = {
           userEmailNotificationsForAllMessageses: ["example"];
           courseRoles: ["example"];
           enrollmentAccentColors: ["example"];
+          splitFilterablePhrases: Function;
         };
       };
     };

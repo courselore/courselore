@@ -120,7 +120,7 @@ export type EmailNotificationsMailer = ({
 }) => void;
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.helpers.getMessage = ({
+  app.server.locals.helpers.getMessage = ({
     req,
     res,
     conversation,
@@ -463,9 +463,9 @@ export default async (app: Courselore): Promise<void> => {
     {},
     MessageExistsLocals
   >[] = [
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      const message = app.locals.helpers.getMessage({
+      const message = app.server.locals.helpers.getMessage({
         req,
         res,
         conversation: res.locals.conversation,
@@ -477,7 +477,7 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.locals.helpers.mayEditMessage = ({ req, res, message }) =>
+  app.server.locals.helpers.mayEditMessage = ({ req, res, message }) =>
     res.locals.enrollment.courseRole === "staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === res.locals.enrollment.id);
@@ -494,7 +494,7 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res) => {
       res.send(
@@ -557,7 +557,7 @@ export default async (app: Courselore): Promise<void> => {
     IsConversationAccessibleLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.server.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
         ![undefined, "on"].includes(req.body.isAnswer) ||
@@ -571,7 +571,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      const mostRecentMessage = app.locals.helpers.getMessage({
+      const mostRecentMessage = app.server.locals.helpers.getMessage({
         req,
         res,
         conversation: res.locals.conversation,
@@ -693,7 +693,7 @@ export default async (app: Courselore): Promise<void> => {
       app.server.locals.helpers.emailNotifications({
         req,
         res,
-        message: app.locals.helpers.getMessage({
+        message: app.server.locals.helpers.getMessage({
           req,
           res,
           conversation: res.locals.conversation,
@@ -714,7 +714,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -740,7 +740,7 @@ export default async (app: Courselore): Promise<void> => {
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (
-        !app.locals.helpers.mayEditMessage({
+        !app.server.locals.helpers.mayEditMessage({
           req,
           res,
           message: res.locals.message,
@@ -856,7 +856,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -875,7 +875,7 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res, next) => {
       app.database.run(
@@ -893,7 +893,7 @@ export default async (app: Courselore): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -909,7 +909,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     ...messageExistsMiddleware,
     (req, res) => {
       res.send(
@@ -1011,7 +1011,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -1058,11 +1058,11 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
-  app.locals.helpers.mayEndorseMessage = ({ req, res, message }) =>
+  app.server.locals.helpers.mayEndorseMessage = ({ req, res, message }) =>
     res.locals.enrollment.courseRole === "staff" &&
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
@@ -1085,7 +1085,7 @@ export default async (app: Courselore): Promise<void> => {
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (
-        app.locals.helpers.mayEndorseMessage({
+        app.server.locals.helpers.mayEndorseMessage({
           req,
           res,
           message: res.locals.message,
@@ -1154,7 +1154,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -1199,7 +1199,7 @@ export default async (app: Courselore): Promise<void> => {
         )}`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -1669,7 +1669,7 @@ export default async (app: Courselore): Promise<void> => {
           await timers.setTimeout(100, undefined, { ref: false });
         }
 
-        app.locals.workers.sendEmail?.();
+        app.server.locals.workers.sendEmail?.();
 
         console.log(
           `${new Date().toISOString()}\t${

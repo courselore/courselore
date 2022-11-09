@@ -1009,9 +1009,9 @@ beforeEach(async () => {
     path.join(os.tmpdir(), "courselore-test-")
   );
   const app = await courselore(rootDirectory);
-  server = app.listen(new URL(app.locals.settings.url).port);
+  server = app.listen(new URL(app.server.locals.settings.url).port);
   client = got.default.extend({
-    prefixUrl: app.locals.settings.url,
+    prefixUrl: app.server.locals.settings.url,
     cookieJar: new toughCookie.CookieJar(undefined, {
       rejectPublicSuffixes: false,
     }),
@@ -1025,7 +1025,7 @@ beforeEach(async () => {
     (await client.get("demonstration-inbox")).body
   );
   const nonce = demonstrationInbox
-    .querySelector(`a[href^="${app.locals.settings.url}/authenticate/"]`)!
+    .querySelector(`a[href^="${app.server.locals.settings.url}/authenticate/"]`)!
     .getAttribute("href")!
     .match(/\/authenticate\/(\d+)/)!
     .pop();

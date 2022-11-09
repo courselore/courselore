@@ -22,21 +22,21 @@ export type HighlightSearchResultHelper = (
 export type SplitFilterablePhrasesHelper = (filterable: string) => string[];
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.helpers.emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+  app.server.locals.helpers.emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
-  app.locals.helpers.isDate = (string) =>
+  app.server.locals.helpers.isDate = (string) =>
     string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
     !isNaN(new Date(string).getTime());
 
-  app.locals.helpers.isExpired = (expiresAt) =>
+  app.server.locals.helpers.isExpired = (expiresAt) =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
-  app.locals.helpers.sanitizeSearch = (search, { prefix = false } = {}) =>
+  app.server.locals.helpers.sanitizeSearch = (search, { prefix = false } = {}) =>
     splitSearchPhrases(search)
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
 
-  app.locals.helpers.highlightSearchResult = (
+  app.server.locals.helpers.highlightSearchResult = (
     searchResult,
     searchPhrases,
     { prefix = false } = {}
@@ -59,6 +59,6 @@ export default async (app: Courselore): Promise<void> => {
   const splitSearchPhrases = (search: string): string[] =>
     search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
-  app.locals.helpers.splitFilterablePhrases = (filterable) =>
+  app.server.locals.helpers.splitFilterablePhrases = (filterable) =>
     filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
 };

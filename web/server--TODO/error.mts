@@ -11,7 +11,7 @@ import {
 export default async (app: Courselore): Promise<void> => {
   app.all<{}, HTML, {}, {}, ResponseLocalsBase>(
     "*",
-    ...app.locals.middlewares.isSignedOut,
+    ...app.server.locals.middlewares.isSignedOut,
     (req, res) => {
       res.redirect(
         303,
@@ -25,7 +25,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.all<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
     "*",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       if (typeof req.query.redirect === "string")
         return res.redirect(

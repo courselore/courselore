@@ -339,7 +339,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
@@ -459,7 +459,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     MayCreateCoursesLocals
   >[] = [
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (res.locals.mayCreateCourses) return next();
       next("route");
@@ -683,8 +683,8 @@ export default async (app: Courselore): Promise<void> => {
     return [...accentColorsAvailable][0];
   };
 
-  app.locals.middlewares.isEnrolledInCourse = [
-    ...app.locals.middlewares.isSignedIn,
+  app.server.locals.middlewares.isEnrolledInCourse = [
+    ...app.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       const actionAllowedOnArchivedCourse =
         res.locals.actionAllowedOnArchivedCourse;
@@ -755,7 +755,7 @@ export default async (app: Courselore): Promise<void> => {
         !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
         actionAllowedOnArchivedCourse !== true
       ) {
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "rose",
@@ -774,8 +774,8 @@ export default async (app: Courselore): Promise<void> => {
     },
   ];
 
-  app.locals.middlewares.isCourseStaff = [
-    ...app.locals.middlewares.isEnrolledInCourse,
+  app.server.locals.middlewares.isCourseStaff = [
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (res.locals.enrollment.courseRole === "staff") return next();
       next("route");
@@ -790,8 +790,8 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled & ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.liveUpdates,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.liveUpdates,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
@@ -879,7 +879,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.redirect(
         303,
@@ -999,7 +999,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/course-information",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -1261,7 +1261,7 @@ export default async (app: Courselore): Promise<void> => {
         req.body.code === undefined;
       next();
     },
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         (typeof req.body.isArchived !== "string" &&
@@ -1312,7 +1312,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.course.id}
           `
         );
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1328,7 +1328,7 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${res.locals.course.id}
           `
         );
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1344,13 +1344,13 @@ export default async (app: Courselore): Promise<void> => {
         `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
   app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/tags",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -1840,7 +1840,7 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals
   >(
     "/courses/:courseReference/settings/tags",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         !Array.isArray(req.body.tags) ||
@@ -1895,7 +1895,7 @@ export default async (app: Courselore): Promise<void> => {
             `
           );
 
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1907,13 +1907,13 @@ export default async (app: Courselore): Promise<void> => {
         `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/tags`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
   app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/invitations",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
       const invitations = app.database.all<{
         id: number;
@@ -2249,7 +2249,7 @@ export default async (app: Courselore): Promise<void> => {
               : html`
                   $${invitations.map((invitation) => {
                     const action = `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                    const isInvitationExpired = app.locals.helpers.isExpired(
+                    const isInvitationExpired = app.server.locals.helpers.isExpired(
                       invitation.expiresAt
                     );
                     const isUsed = invitation.usedAt !== null;
@@ -2986,15 +2986,15 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals
   >(
     "/courses/:courseReference/settings/invitations",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         typeof req.body.courseRole !== "string" ||
         !courseRoles.includes(req.body.courseRole) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            !app.locals.helpers.isDate(req.body.expiresAt) ||
-            app.locals.helpers.isExpired(req.body.expiresAt))) ||
+            !app.server.locals.helpers.isDate(req.body.expiresAt) ||
+            app.server.locals.helpers.isExpired(req.body.expiresAt))) ||
         typeof req.body.type !== "string" ||
         !["link", "email"].includes(req.body.type)
       )
@@ -3016,7 +3016,7 @@ export default async (app: Courselore): Promise<void> => {
           `
           )!;
 
-          app.locals.helpers.Flash.set({
+          app.server.locals.helpers.Flash.set({
             req,
             res,
             theme: "green",
@@ -3060,7 +3060,7 @@ export default async (app: Courselore): Promise<void> => {
             emails.length === 0 ||
             emails.some(
               ({ email }) =>
-                email.match(app.locals.helpers.emailRegExp) === null
+                email.match(app.server.locals.helpers.emailRegExp) === null
             )
           )
             return next("Validation");
@@ -3138,7 +3138,7 @@ export default async (app: Courselore): Promise<void> => {
             });
           }
 
-          app.locals.helpers.Flash.set({
+          app.server.locals.helpers.Flash.set({
             req,
             res,
             theme: "green",
@@ -3264,14 +3264,14 @@ export default async (app: Courselore): Promise<void> => {
     IsCourseStaffLocals & InvitationExistsLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     ...invitationExistsMiddleware,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("Validation");
 
       if (req.body.resend === "true") {
         if (
-          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          app.server.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
           return next("Validation");
@@ -3280,7 +3280,7 @@ export default async (app: Courselore): Promise<void> => {
           res,
           invitation: res.locals.invitation,
         });
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3290,7 +3290,7 @@ export default async (app: Courselore): Promise<void> => {
 
       if (req.body.courseRole !== undefined) {
         if (
-          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          app.server.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           !courseRoles.includes(req.body.courseRole)
         )
           return next("Validation");
@@ -3299,7 +3299,7 @@ export default async (app: Courselore): Promise<void> => {
           sql`UPDATE "invitations" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3310,8 +3310,8 @@ export default async (app: Courselore): Promise<void> => {
       if (req.body.expiresAt !== undefined) {
         if (
           typeof req.body.expiresAt !== "string" ||
-          !app.locals.helpers.isDate(req.body.expiresAt) ||
-          app.locals.helpers.isExpired(req.body.expiresAt)
+          !app.server.locals.helpers.isDate(req.body.expiresAt) ||
+          app.server.locals.helpers.isExpired(req.body.expiresAt)
         )
           return next("Validation");
 
@@ -3319,7 +3319,7 @@ export default async (app: Courselore): Promise<void> => {
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3336,7 +3336,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
 
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3353,7 +3353,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
 
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3370,7 +3370,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
     "/courses/:courseReference/settings/enrollments",
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
       const enrollments = app.database
         .all<{
@@ -3529,7 +3529,7 @@ export default async (app: Courselore): Promise<void> => {
                     <div>
                       <div
                         data-filterable-phrases="${JSON.stringify(
-                          app.locals.helpers.splitFilterablePhrases(
+                          app.server.locals.helpers.splitFilterablePhrases(
                             enrollment.user.name
                           )
                         )}"
@@ -3540,7 +3540,7 @@ export default async (app: Courselore): Promise<void> => {
                       <div class="secondary">
                         <span
                           data-filterable-phrases="${JSON.stringify(
-                            app.locals.helpers.splitFilterablePhrases(
+                            app.server.locals.helpers.splitFilterablePhrases(
                               enrollment.user.email
                             )
                           )}"
@@ -3883,7 +3883,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     MayManageEnrollmentLocals
   >[] = [
-    ...app.locals.middlewares.isCourseStaff,
+    ...app.server.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       const managedEnrollment = app.database.get<{
         id: number;
@@ -3934,7 +3934,7 @@ export default async (app: Courselore): Promise<void> => {
           sql`UPDATE "enrollments" SET "courseRole" = ${req.body.courseRole} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
-        app.locals.helpers.Flash.set({
+        app.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -3949,7 +3949,7 @@ export default async (app: Courselore): Promise<void> => {
           : `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -3967,7 +3967,7 @@ export default async (app: Courselore): Promise<void> => {
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -3986,7 +3986,7 @@ export default async (app: Courselore): Promise<void> => {
           : `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ req, res });
     }
   );
 
@@ -3998,7 +3998,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -4115,7 +4115,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.body.accentColor !== "string" ||
@@ -4127,7 +4127,7 @@ export default async (app: Courselore): Promise<void> => {
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
-      app.locals.helpers.Flash.set({
+      app.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -4220,7 +4220,7 @@ export default async (app: Courselore): Promise<void> => {
           })
         );
 
-      if (app.locals.helpers.isExpired(res.locals.invitation.expiresAt))
+      if (app.server.locals.helpers.isExpired(res.locals.invitation.expiresAt))
         return res.send(
           app.server.locals.layouts.box({
             req,
@@ -4378,7 +4378,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     ...isInvitationUsableMiddleware
   );
 
@@ -4390,7 +4390,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -4445,7 +4445,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.server.locals.middlewares.isEnrolledInCourse,
     ...isInvitationUsableMiddleware
   );
 
@@ -4457,7 +4457,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedIn,
+    ...app.server.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       app.database.run(
@@ -4499,7 +4499,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsBase & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedOut,
+    ...app.server.locals.middlewares.isSignedOut,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
