@@ -421,9 +421,6 @@ export default async (application: Application): Promise<void> => {
         `
       )!;
 
-      if (response.locals.user.emailVerifiedAt === null)
-        return next("Email Not Verified");
-
       response.locals.invitations = application.database
         .all<{
           id: number;
@@ -931,25 +928,7 @@ export default async (application: Application): Promise<void> => {
     { redirect?: string; invitation?: object },
     ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >("/reset-password", (request, response, next) => {
-    if (response.locals.user !== undefined) {
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "rose",
-        content: html`
-          You may not use this password reset link because you’re already signed
-          in.
-        `,
-      });
-      return response.redirect(
-        303,
-        `https://${application.configuration.hostname}/${
-          typeof request.query.redirect === "string"
-            ? request.query.redirect
-            : ""
-        }`
-      );
-    }
+    if (response.locals.user !== undefined) return next();
 
     if (
       typeof request.body.email !== "string" ||
@@ -1078,8 +1057,26 @@ export default async (application: Application): Promise<void> => {
     {},
     { redirect?: string; invitation?: object },
     ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
-  >("/reset-password/:passwordResetNonce", (request, response, next) => {
-    if (response.locals.user !== undefined) return next();
+  >("/reset-password/:passwordResetNonce", (request, response) => {
+    if (response.locals.user !== undefined) {
+      application.server.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "rose",
+        content: html`
+          You may not use this password reset link because you’re already signed
+          in.
+        `,
+      });
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : ""
+        }`
+      );
+    }
 
     const userId = PasswordReset.get(request.params.passwordResetNonce);
     if (userId === undefined) {
@@ -1566,52 +1563,33 @@ export default async (application: Application): Promise<void> => {
     {},
     { redirect?: string },
     ResponseLocalsSignedIn
-  >(
-    "/resend-email-verification",
-    (request, response, next) => {
-      response.locals.actionAllowedToUserWithUnverifiedEmail = true;
-      next();
-    },
-    ...application.locals.middlewares.isSignedIn,
-    (request, response) => {
-      if (response.locals.user.emailVerifiedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`Email already verified.`,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${
-            typeof request.query.redirect === "string"
-              ? request.query.redirect
-              : ""
-          }`
-        );
-      }
-      application.server.locals.helpers.emailVerification({
-        request,
-        response,
-        userId: response.locals.user.id,
-        userEmail: response.locals.user.email,
-      });
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "green",
-        content: html`Verification email resent.`,
-      });
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/${
-          typeof request.query.redirect === "string"
-            ? request.query.redirect
-            : ""
-        }`
-      );
-    }
-  );
+  >("/resend-email-verification", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt !== null
+    )
+      return next();
+
+    application.server.locals.helpers.emailVerification({
+      request,
+      response,
+      userId: response.locals.user.id,
+      userEmail: response.locals.user.email,
+    });
+
+    application.server.locals.helpers.Flash.set({
+      request,
+      response,
+      theme: "green",
+      content: html`Verification email resent.`,
+    });
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/${
+        typeof request.query.redirect === "string" ? request.query.redirect : ""
+      }`
+    );
+  });
 
   application.server.get<
     { emailVerificationNonce: string },
@@ -1622,11 +1600,25 @@ export default async (application: Application): Promise<void> => {
   >(
     "/email-verification/:emailVerificationNonce",
     (request, response, next) => {
-      response.locals.actionAllowedToUserWithUnverifiedEmail = true;
-      next();
-    },
-    ...application.locals.middlewares.isSignedIn,
-    (request, response) => {
+      if (response.locals.user === undefined) return next();
+
+      if (response.locals.user.emailVerifiedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`You have already verified your email.`,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${
+            typeof request.query.redirect === "string"
+              ? request.query.redirect
+              : ""
+          }`
+        );
+      }
+
       const emailVerification = application.database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
@@ -1648,6 +1640,7 @@ export default async (application: Application): Promise<void> => {
           }`
         );
       }
+
       if (emailVerification.user !== response.locals.user.id) {
         application.server.locals.helpers.Flash.set({
           request,
@@ -1666,6 +1659,7 @@ export default async (application: Application): Promise<void> => {
           }`
         );
       }
+
       application.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
@@ -1678,6 +1672,7 @@ export default async (application: Application): Promise<void> => {
           WHERE "id" = ${response.locals.user.id}
         `
       );
+
       application.server.locals.helpers.Flash.set({
         request,
         response,
@@ -1697,9 +1692,11 @@ export default async (application: Application): Promise<void> => {
 
   application.server.delete<{}, any, {}, {}, ResponseLocalsSignedIn>(
     "/sign-out",
-    ...application.locals.middlewares.isSignedIn,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.user === undefined) return next();
+
       application.server.locals.helpers.Session.close({ request, response });
+
       response
         .header(
           "Clear-Site-Data",
