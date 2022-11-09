@@ -107,7 +107,7 @@ export default async (app: Courselore): Promise<void> => {
             ${lodash.sample(userAvatarlessBackgroundColors)!},
             ${biographySource},
             ${
-              app.locals.partials.contentPreprocessed(biographySource)
+              app.server.locals.partials.contentPreprocessed(biographySource)
                 .contentPreprocessed
             },
             ${
@@ -1283,7 +1283,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
                 )
                 .join("\n\n");
           const contentPreprocessed =
-            app.locals.partials.contentPreprocessed(contentSource);
+            app.server.locals.partials.contentPreprocessed(contentSource);
           const message = app.database.get<{ id: number }>(
             sql`
               INSERT INTO "messages" (

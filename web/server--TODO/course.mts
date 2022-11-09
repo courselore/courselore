@@ -137,7 +137,7 @@ export default async (app: Courselore): Promise<void> => {
     staff: "text--sky",
   };
 
-  app.locals.partials.course = ({
+  app.server.locals.partials.course = ({
     req,
     res,
     course,
@@ -212,7 +212,7 @@ export default async (app: Courselore): Promise<void> => {
               `}
           $${course.archivedAt !== null
             ? html`
-                <div>$${app.locals.partials.courseArchived({ req, res })}</div>
+                <div>$${app.server.locals.partials.courseArchived({ req, res })}</div>
               `
             : html``}
         </div>
@@ -220,7 +220,7 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.locals.partials.courses = ({ req, res, tight = false }) => {
+  app.server.locals.partials.courses = ({ req, res, tight = false }) => {
     let courses = html``;
 
     const [unarchived, archived] = lodash.partition(
@@ -244,7 +244,7 @@ export default async (app: Courselore): Promise<void> => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                $${app.locals.partials.course({
+                $${app.server.locals.partials.course({
                   req,
                   res,
                   course: enrollment.course,
@@ -301,7 +301,7 @@ export default async (app: Courselore): Promise<void> => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                $${app.locals.partials.course({
+                $${app.server.locals.partials.course({
                   req,
                   res,
                   course: enrollment.course,
@@ -316,7 +316,7 @@ export default async (app: Courselore): Promise<void> => {
     return courses;
   };
 
-  app.locals.partials.courseArchived = ({ req, res }) => html`
+  app.server.locals.partials.courseArchived = ({ req, res }) => html`
     <div
       class="strong text--rose"
       css="${res.locals.css(css`
@@ -360,7 +360,7 @@ export default async (app: Courselore): Promise<void> => {
                   <h2 class="heading--display">Welcome to Courselore!</h2>
 
                   <div class="decorative-icon">
-                    $${app.locals.partials.logo({
+                    $${app.server.locals.partials.logo({
                       size: 144 /* var(--space--36) */,
                     })}
                   </div>
@@ -440,7 +440,7 @@ export default async (app: Courselore): Promise<void> => {
                       max-width: var(--space--80);
                     `)}"
                   >
-                    $${app.locals.partials.courses({ req, res })}
+                    $${app.server.locals.partials.courses({ req, res })}
                   </div>
                 </div>
               `,
@@ -3508,7 +3508,7 @@ export default async (app: Courselore): Promise<void> => {
                   `)}"
                 >
                   <div>
-                    $${app.locals.partials.user({
+                    $${app.server.locals.partials.user({
                       req,
                       res,
                       enrollment,
@@ -3850,7 +3850,7 @@ export default async (app: Courselore): Promise<void> => {
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            $${app.locals.partials.content({
+                            $${app.server.locals.partials.content({
                               req,
                               res,
                               contentPreprocessed:
@@ -4175,7 +4175,7 @@ export default async (app: Courselore): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${app.locals.partials.course({
+              $${app.server.locals.partials.course({
                 req,
                 res,
                 course: res.locals.invitation.course,
@@ -4209,7 +4209,7 @@ export default async (app: Courselore): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${app.locals.partials.course({
+              $${app.server.locals.partials.course({
                 req,
                 res,
                 course: res.locals.invitation.course,
@@ -4235,7 +4235,7 @@ export default async (app: Courselore): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${app.locals.partials.course({
+              $${app.server.locals.partials.course({
                 req,
                 res,
                 course: res.locals.invitation.course,
@@ -4270,7 +4270,7 @@ export default async (app: Courselore): Promise<void> => {
                   <i class="bi bi-journal-arrow-down"></i>
                   Invitation
                 </h2>
-                $${app.locals.partials.course({
+                $${app.server.locals.partials.course({
                   req,
                   res,
                   course: res.locals.invitation.course,
@@ -4407,7 +4407,7 @@ export default async (app: Courselore): Promise<void> => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${app.locals.partials.course({
+            $${app.server.locals.partials.course({
               req,
               res,
               course: res.locals.invitation.course,
@@ -4516,7 +4516,7 @@ export default async (app: Courselore): Promise<void> => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${app.locals.partials.course({
+            $${app.server.locals.partials.course({
               req,
               res,
               course: res.locals.invitation.course,

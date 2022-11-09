@@ -514,7 +514,7 @@ export default async (app: Courselore): Promise<void> => {
               $${res.locals.message.readings.reverse().map(
                 (reading) => html`
                   <div class="dropdown--menu--item">
-                    $${app.locals.partials.user({
+                    $${app.server.locals.partials.user({
                       req,
                       res,
                       enrollment: reading.enrollment,
@@ -592,7 +592,7 @@ export default async (app: Courselore): Promise<void> => {
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
         const contentPreprocessed =
-          app.locals.partials.contentPreprocessed(contentSource);
+          app.server.locals.partials.contentPreprocessed(contentSource);
         app.database.run(
           sql`
             UPDATE "conversations"
@@ -618,7 +618,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
       } else {
-        const contentPreprocessed = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
           req.body.content
         );
         app.database.run(
@@ -814,7 +814,7 @@ export default async (app: Courselore): Promise<void> => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("Validation");
-        const contentPreprocessed = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
           req.body.content
         );
         app.database.run(
@@ -929,7 +929,7 @@ export default async (app: Courselore): Promise<void> => {
               $${res.locals.message.likes.reverse().map(
                 (like) => html`
                   <div class="dropdown--menu--item">
-                    $${app.locals.partials.user({
+                    $${app.server.locals.partials.user({
                       req,
                       res,
                       enrollment: like.enrollment,
@@ -1447,9 +1447,9 @@ export default async (app: Courselore): Promise<void> => {
             nextConversationReference:
               messageRow.courseNextConversationReference,
           };
-          const contentProcessed = app.locals.partials.content({
+          const contentProcessed = app.server.locals.partials.content({
             req: { query: {} } as Parameters<
-              typeof app.locals.partials.content
+              typeof app.server.locals.partials.content
             >[0]["req"],
             res: {
               locals: {
@@ -1459,7 +1459,7 @@ export default async (app: Courselore): Promise<void> => {
                 enrollment: {},
                 course,
               },
-            } as Parameters<typeof app.locals.partials.content>[0]["res"],
+            } as Parameters<typeof app.server.locals.partials.content>[0]["res"],
             contentPreprocessed: message.contentPreprocessed,
             decorate: true,
           });

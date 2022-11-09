@@ -46,7 +46,7 @@ export default async (app: Courselore): Promise<void> => {
               If you think there should be something here, please contact your
               course staff or the system administrator at
               <a
-                href="${app.locals.partials.reportIssueHref}"
+                href="${app.server.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
                 >${app.configuration.administratorEmail}</a
@@ -283,7 +283,7 @@ export default async (app: Courselore): Promise<void> => {
                 ? "This request doesn’t appear to have come from Courselore. Please try again. If the issue persists, please report to the system administrator at"
                 : "This is an issue in Courselore. Please report to the system administrator at"}
               <a
-                href="${app.locals.partials.reportIssueHref}"
+                href="${app.server.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
                 >${app.configuration.administratorEmail}</a

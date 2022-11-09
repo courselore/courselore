@@ -98,7 +98,7 @@ export type UserPartial = ({
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.partials.user = ({
+  app.server.locals.partials.user = ({
     req,
     res,
     enrollment = undefined,
@@ -385,7 +385,7 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     <div>
-                      $${app.locals.partials.user({
+                      $${app.server.locals.partials.user({
                         req,
                         res,
                         enrollment,
@@ -503,7 +503,7 @@ export default async (app: Courselore): Promise<void> => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? app.locals.partials.content({
+                    ? app.server.locals.partials.content({
                         req,
                         res,
                         contentPreprocessed: user!.biographyPreprocessed,
@@ -803,7 +803,7 @@ export default async (app: Courselore): Promise<void> => {
                           }
                         `)}"
                       >
-                        $${app.locals.partials.user({
+                        $${app.server.locals.partials.user({
                           req,
                           res,
                           user: { ...res.locals.user, avatar: null },
@@ -900,7 +900,7 @@ export default async (app: Courselore): Promise<void> => {
                                 gap: var(--space--2);
                               `)}"
                             >
-                              $${app.locals.partials.spinner({ req, res })}
+                              $${app.server.locals.partials.spinner({ req, res })}
                               Uploading…
                             </div>
                           `
@@ -975,7 +975,7 @@ export default async (app: Courselore): Promise<void> => {
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${app.locals.partials.contentEditor({
+                $${app.server.locals.partials.contentEditor({
                   req,
                   res,
                   name: "biography",
@@ -1030,7 +1030,7 @@ export default async (app: Courselore): Promise<void> => {
               "biographyPreprocessed" = ${
                 req.body.biography.trim() === ""
                   ? null
-                  : app.locals.partials.contentPreprocessed(req.body.biography)
+                  : app.server.locals.partials.contentPreprocessed(req.body.biography)
                       .contentPreprocessed
               }
           WHERE "id" = ${res.locals.user.id}

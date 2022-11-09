@@ -422,7 +422,7 @@ export default async (app: Courselore): Promise<void> => {
                   `)}"
                 >
                   <div>
-                    $${app.locals.partials.user({
+                    $${app.server.locals.partials.user({
                       req,
                       res,
                       user,
@@ -672,7 +672,7 @@ export default async (app: Courselore): Promise<void> => {
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            $${app.locals.partials.content({
+                            $${app.server.locals.partials.content({
                               req,
                               res,
                               contentPreprocessed: user.biographyPreprocessed,

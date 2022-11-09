@@ -111,6 +111,15 @@ type ApplicationHelpers = {
     };
   };
 };
+type ApplicationContent = {
+  server: {
+    locals: {
+      partials: {
+        contentEditor: any;
+      };
+    };
+  };
+};
 
 export type Application = {
   name: string;
@@ -163,6 +172,7 @@ export type Application = {
   ApplicationAuthentication &
   ApplicationUser &
   ApplicationCourse &
+  ApplicationContent &
   ApplicationHelpers;
 
 if (

@@ -2068,7 +2068,7 @@ export default async (app: Courselore): Promise<void> => {
                                       max-width: 100%;
                                     `)}"
                                   >
-                                    $${app.locals.partials.conversation({
+                                    $${app.server.locals.partials.conversation({
                                       req,
                                       res,
                                       conversation,
@@ -2228,7 +2228,7 @@ export default async (app: Courselore): Promise<void> => {
     });
   };
 
-  app.locals.partials.conversation = ({
+  app.server.locals.partials.conversation = ({
     req,
     res,
     conversation,
@@ -2308,7 +2308,7 @@ export default async (app: Courselore): Promise<void> => {
                           align-items: center;
                         `)}"
                       >
-                        $${app.locals.partials.spinner({
+                        $${app.server.locals.partials.spinner({
                           req,
                           res,
                         })}
@@ -2351,7 +2351,7 @@ export default async (app: Courselore): Promise<void> => {
           $${conversation.selectedParticipants.length === 1
             ? html`
                 <div>
-                  ($${app.locals.partials.user({
+                  ($${app.server.locals.partials.user({
                     req,
                     res,
                     enrollment: conversation.selectedParticipants[0],
@@ -2393,7 +2393,7 @@ export default async (app: Courselore): Promise<void> => {
           line-height: var(--line-height--xs);
         `)}"
       >
-        $${app.locals.partials.user({
+        $${app.server.locals.partials.user({
           req,
           res,
           enrollment: conversation.authorEnrollment,
@@ -2500,7 +2500,7 @@ export default async (app: Courselore): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.locals.partials.user({
+                $${app.server.locals.partials.user({
                   req,
                   res,
                   enrollment: searchResult.message.authorEnrollment,
@@ -2519,7 +2519,7 @@ export default async (app: Courselore): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.locals.partials.user({
+                $${app.server.locals.partials.user({
                   req,
                   res,
                   enrollment: searchResult.message.authorEnrollment,
@@ -2542,7 +2542,7 @@ export default async (app: Courselore): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.locals.partials.user({
+                $${app.server.locals.partials.user({
                   req,
                   res,
                   enrollment: message.authorEnrollment,
@@ -2616,7 +2616,7 @@ export default async (app: Courselore): Promise<void> => {
               $${res.locals.conversation.selectedParticipants.map(
                 (selectedParticipant) => html`
                   <div class="dropdown--menu--item">
-                    $${app.locals.partials.user({
+                    $${app.server.locals.partials.user({
                       req,
                       res,
                       enrollment: selectedParticipant,
@@ -3246,7 +3246,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="input--text"
               />
 
-              $${app.locals.partials.contentEditor({
+              $${app.server.locals.partials.contentEditor({
                 req,
                 res,
                 contentSource:
@@ -3724,7 +3724,7 @@ export default async (app: Courselore): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
-                                                    $${app.locals.partials.user(
+                                                    $${app.server.locals.partials.user(
                                                       {
                                                         req,
                                                         res,
@@ -3739,7 +3739,7 @@ export default async (app: Courselore): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--blue"
                                                   >
-                                                    $${app.locals.partials.user(
+                                                    $${app.server.locals.partials.user(
                                                       {
                                                         req,
                                                         res,
@@ -3858,7 +3858,7 @@ export default async (app: Courselore): Promise<void> => {
                               };
                             `}"
                           >
-                            $${app.locals.partials.user({
+                            $${app.server.locals.partials.user({
                               req,
                               res,
                               enrollment,
@@ -4087,7 +4087,7 @@ export default async (app: Courselore): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${app.locals.partials.user({
+                                $${app.server.locals.partials.user({
                                   req,
                                   res,
                                   user: res.locals.user,
@@ -4113,7 +4113,7 @@ export default async (app: Courselore): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${app.locals.partials.user({
+                                $${app.server.locals.partials.user({
                                   req,
                                   res,
                                   name: false,
@@ -4641,7 +4641,7 @@ export default async (app: Courselore): Promise<void> => {
         );
 
       if (hasMessage) {
-        const contentPreprocessed = app.locals.partials.contentPreprocessed(
+        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
           req.body.content!
         );
         const message = app.database.get<{
@@ -5465,7 +5465,7 @@ export default async (app: Courselore): Promise<void> => {
                                                         );
                                                       `)}"
                                                     >
-                                                      $${app.locals.partials.user(
+                                                      $${app.server.locals.partials.user(
                                                         {
                                                           req,
                                                           res,
@@ -5495,7 +5495,7 @@ export default async (app: Courselore): Promise<void> => {
                                                         );
                                                       `)}"
                                                     >
-                                                      $${app.locals.partials.user(
+                                                      $${app.server.locals.partials.user(
                                                         {
                                                           req,
                                                           res,
@@ -6424,7 +6424,7 @@ export default async (app: Courselore): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--transparent"
                                                             >
-                                                              $${app.locals.partials.user(
+                                                              $${app.server.locals.partials.user(
                                                                 {
                                                                   req,
                                                                   res,
@@ -6440,7 +6440,7 @@ export default async (app: Courselore): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--blue"
                                                             >
-                                                              $${app.locals.partials.user(
+                                                              $${app.server.locals.partials.user(
                                                                 {
                                                                   req,
                                                                   res,
@@ -6556,7 +6556,7 @@ export default async (app: Courselore): Promise<void> => {
                                         };
                                       `}"
                                     >
-                                      $${app.locals.partials.user({
+                                      $${app.server.locals.partials.user({
                                         req,
                                         res,
                                         enrollment,
@@ -6633,7 +6633,7 @@ export default async (app: Courselore): Promise<void> => {
                                   $${res.locals.conversation.selectedParticipants.map(
                                     (selectedParticipant) => html`
                                       <div>
-                                        $${app.locals.partials.user({
+                                        $${app.server.locals.partials.user({
                                           req,
                                           res,
                                           enrollment: selectedParticipant,
@@ -7234,7 +7234,7 @@ export default async (app: Courselore): Promise<void> => {
                                                                           align-items: center;
                                                                         `)}"
                                                                       >
-                                                                        $${app.locals.partials.spinner(
+                                                                        $${app.server.locals.partials.spinner(
                                                                           {
                                                                             req,
                                                                             res,
@@ -7421,7 +7421,7 @@ export default async (app: Courselore): Promise<void> => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${app.locals.partials.user(
+                                                                            $${app.server.locals.partials.user(
                                                                               {
                                                                                 req,
                                                                                 res,
@@ -7456,7 +7456,7 @@ export default async (app: Courselore): Promise<void> => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${app.locals.partials.user(
+                                                                            $${app.server.locals.partials.user(
                                                                               {
                                                                                 req,
                                                                                 res,
@@ -8011,7 +8011,7 @@ export default async (app: Courselore): Promise<void> => {
                                                     );
                                                   `)}"
                                                 >
-                                                  $${app.locals.partials.user({
+                                                  $${app.server.locals.partials.user({
                                                     req,
                                                     res,
                                                     enrollment:
@@ -8210,7 +8210,7 @@ export default async (app: Courselore): Promise<void> => {
                                                 };
                                               `}"
                                             >
-                                              $${app.locals.partials.content({
+                                              $${app.server.locals.partials.content({
                                                 req,
                                                 res,
                                                 id: `message--${message.reference}`,
@@ -8334,7 +8334,7 @@ export default async (app: Courselore): Promise<void> => {
                                                                   align-items: center;
                                                                 `)}"
                                                               >
-                                                                $${app.locals.partials.spinner(
+                                                                $${app.server.locals.partials.spinner(
                                                                   {
                                                                     req,
                                                                     res,
@@ -8403,7 +8403,7 @@ export default async (app: Courselore): Promise<void> => {
                                                           align-items: center;
                                                         `)}"
                                                       >
-                                                        $${app.locals.partials.spinner(
+                                                        $${app.server.locals.partials.spinner(
                                                           {
                                                             req,
                                                             res,
@@ -8504,7 +8504,7 @@ export default async (app: Courselore): Promise<void> => {
                                                   gap: var(--space--2);
                                                 `)}"
                                               >
-                                                $${app.locals.partials.contentEditor(
+                                                $${app.server.locals.partials.contentEditor(
                                                   {
                                                     req,
                                                     res,
@@ -8746,7 +8746,7 @@ export default async (app: Courselore): Promise<void> => {
                                           line-height: var(--line-height--sm);
                                         `)}"
                                       >
-                                        $${app.locals.partials.user({
+                                        $${app.server.locals.partials.user({
                                           req,
                                           res,
                                           enrollment: {
@@ -8769,7 +8769,7 @@ export default async (app: Courselore): Promise<void> => {
                                                 );
                                               `)}"
                                             >
-                                              $${app.locals.partials.user({
+                                              $${app.server.locals.partials.user({
                                                 req,
                                                 res,
                                                 enrollment: {
@@ -8781,7 +8781,7 @@ export default async (app: Courselore): Promise<void> => {
                                             </div>
                                           `}
                                       <span>Sending…</span>
-                                      $${app.locals.partials.spinner({
+                                      $${app.server.locals.partials.spinner({
                                         req,
                                         res,
                                         size: 10,
@@ -8943,7 +8943,7 @@ export default async (app: Courselore): Promise<void> => {
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
                   >
-                    $${app.locals.partials.contentEditor({
+                    $${app.server.locals.partials.contentEditor({
                       req,
                       res,
                       compact: res.locals.conversation.type === "chat",
@@ -9039,7 +9039,7 @@ export default async (app: Courselore): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${app.locals.partials.user({
+                                  $${app.server.locals.partials.user({
                                     req,
                                     res,
                                     user: res.locals.user,
@@ -9065,7 +9065,7 @@ export default async (app: Courselore): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${app.locals.partials.user({
+                                  $${app.server.locals.partials.user({
                                     req,
                                     res,
                                     name: false,

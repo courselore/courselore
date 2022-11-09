@@ -100,7 +100,7 @@ export type ContentEditorPartial = ({
 }) => HTML;
 
 export default async (app: Courselore): Promise<void> => {
-  app.locals.partials.contentPreprocessed = await (async () => {
+  app.server.locals.partials.contentPreprocessed = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm, { singleTilde: false })
@@ -159,7 +159,7 @@ export default async (app: Courselore): Promise<void> => {
     };
   })();
 
-  app.locals.partials.content = ({
+  app.server.locals.partials.content = ({
     req,
     res,
     id = Math.random().toString(36).slice(2),
@@ -361,7 +361,7 @@ export default async (app: Courselore): Promise<void> => {
                   >`;
                   break;
                 case "anonymous":
-                  mentionHTML = html`@$${app.locals.partials.user({
+                  mentionHTML = html`@$${app.server.locals.partials.user({
                     req,
                     res,
                     avatar: false,
@@ -424,7 +424,7 @@ export default async (app: Courselore): Promise<void> => {
                     courseRole: enrollmentRow.courseRole,
                   };
                   mentions.add(enrollment.reference);
-                  mentionHTML = html`@$${app.locals.partials.user({
+                  mentionHTML = html`@$${app.server.locals.partials.user({
                     req,
                     res,
                     enrollment,
@@ -534,7 +534,7 @@ export default async (app: Courselore): Promise<void> => {
                         padding: var(--space--2);
                       `)}"
                     >
-                      $${app.locals.partials.conversation({
+                      $${app.server.locals.partials.conversation({
                         req: narrowReq,
                         res: narrowRes,
                         conversation,
@@ -569,7 +569,7 @@ export default async (app: Courselore): Promise<void> => {
                       gap: var(--space--2);
                     `)}"
                   >
-                    $${app.locals.partials.conversation({
+                    $${app.server.locals.partials.conversation({
                       req: narrowReq,
                       res: narrowRes,
                       conversation,
@@ -638,7 +638,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.locals.partials.contentEditor = ({
+  app.server.locals.partials.contentEditor = ({
     req,
     res,
     name = "content",
@@ -1828,7 +1828,7 @@ export default async (app: Courselore): Promise<void> => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.locals.partials.spinner({ req, res })}
+                          $${app.server.locals.partials.spinner({ req, res })}
                           Uploading…
                         </div>
                       `
@@ -2204,7 +2204,7 @@ ${contentSource}</textarea
                   gap: var(--space--2);
                 `)}"
               >
-                $${app.locals.partials.spinner({ req, res })} Loading…
+                $${app.server.locals.partials.spinner({ req, res })} Loading…
               </div>
 
               <div
@@ -2344,7 +2344,7 @@ ${contentSource}</textarea
                         };
                     `}"
                     >
-                      $${app.locals.partials.user({
+                      $${app.server.locals.partials.user({
                         req,
                         res,
                         enrollment,
@@ -2672,7 +2672,7 @@ ${contentSource}</textarea
               </div>
               <div class="secondary">
                 <div>
-                  $${app.locals.partials.user({
+                  $${app.server.locals.partials.user({
                     req,
                     res,
                     enrollment: message.authorEnrollment,
@@ -2869,10 +2869,10 @@ ${contentSource}</textarea
         app.server.locals.layouts.partial({
           req,
           res,
-          body: app.locals.partials.content({
+          body: app.server.locals.partials.content({
             req,
             res,
-            contentPreprocessed: app.locals.partials.contentPreprocessed(
+            contentPreprocessed: app.server.locals.partials.contentPreprocessed(
               req.body.content
             ).contentPreprocessed,
             decorate: true,
