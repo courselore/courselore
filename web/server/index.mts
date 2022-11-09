@@ -29,13 +29,7 @@ import about from "./about.mjs";
 import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
-// export {
-//   UserSystemRolesWhoMayCreateCourses,
-//   userSystemRolesWhoMayCreateCourseses,
-//   SystemRole,
-//   systemRoles,
-// } from "./administration.mjs";
-// import user from "./user.mjs";
+import user from "./user.mjs";
 // export {
 //   User,
 //   UserAvatarlessBackgroundColor,
@@ -285,7 +279,7 @@ if (
         await authentication(application);
         await about(application);
         await administration(application);
-        // await user(application);
+        await user(application);
         // await course(application);
         // await conversation(application);
         // await message(application);
