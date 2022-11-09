@@ -26,7 +26,9 @@ import authentication, {
 } from "./authentication.mjs";
 export { ResponseLocalsSignedIn } from "./authentication.mjs";
 import about from "./about.mjs";
-import administration from "./administration.mjs";
+import administration, {
+  ApplicationAdministration,
+} from "./administration.mjs";
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
 //   userSystemRolesWhoMayCreateCourseses,
@@ -66,60 +68,6 @@ import administration from "./administration.mjs";
 // import demonstration from "./demonstration.mjs";
 // import error from "./error.mjs";
 // import helpers from "./helpers.mjs";
-
-// TODO
-export type UserAvatarlessBackgroundColor = any;
-export const userAvatarlessBackgroundColors = [];
-export type UserSystemRolesWhoMayCreateCourses = any;
-export type UserEmailNotificationsForAllMessages = any;
-export type CourseRole = any;
-export type EnrollmentAccentColor = any;
-export type SystemRole = any;
-import { ResponseLocalsSignedIn } from "./authentication.mjs";
-export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
-  course: any;
-  enrollment: any;
-  enrollments: any;
-  invitations: any[];
-};
-type ApplicationUser = {
-  server: {
-    locals: {
-      partials: {
-        user: any;
-      };
-    };
-  };
-};
-type ApplicationCourse = {
-  server: {
-    locals: {
-      partials: {
-        course: any;
-        courses: any;
-        courseArchived: any;
-      };
-    };
-  };
-};
-type ApplicationHelpers = {
-  server: {
-    locals: {
-      helpers: {
-        emailRegExp: any;
-      };
-    };
-  };
-};
-type ApplicationContent = {
-  server: {
-    locals: {
-      partials: {
-        contentEditor: any;
-      };
-    };
-  };
-};
 
 export type Application = {
   name: string;
@@ -167,13 +115,32 @@ export type Application = {
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
-  // & ApplicationLiveUpdates
   ApplicationLayouts &
   ApplicationAuthentication &
-  ApplicationUser &
-  ApplicationCourse &
-  ApplicationContent &
-  ApplicationHelpers;
+  ApplicationAdministration & {
+    // TODO
+    server: {
+      locals: {
+        partials: {
+          user: any;
+          course: any;
+          courses: any;
+          courseArchived: any;
+          contentEditor: any;
+        };
+        helpers: {
+          emailRegExp: any;
+        };
+      };
+    };
+  };
+import { ResponseLocalsSignedIn } from "./authentication.mjs";
+export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
+  course: any;
+  enrollment: any;
+  enrollments: any;
+  invitations: any[];
+};
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))

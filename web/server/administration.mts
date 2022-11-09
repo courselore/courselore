@@ -8,23 +8,27 @@ import got from "got";
 import lodash from "lodash";
 import semver from "semver";
 import {
-  Courselore,
+  Application,
   ResponseLocalsSignedIn,
   UserAvatarlessBackgroundColor,
 } from "./index.mjs";
 
-export type UserSystemRolesWhoMayCreateCourses =
-  typeof userSystemRolesWhoMayCreateCourseses[number];
-export const userSystemRolesWhoMayCreateCourseses = [
-  "all",
-  "staff-and-administrators",
-  "administrators",
-] as const;
+export type ApplicationAdministration = {
+  server: {
+    locals: {
+      helpers: {
+        userSystemRolesWhoMayCreateCourseses: [
+          "all",
+          "staff-and-administrators",
+          "administrators"
+        ];
+        systemRoles: ["none", "staff", "administrator"];
+      };
+    };
+  };
+};
 
-export type SystemRole = typeof systemRoles[number];
-export const systemRoles = ["none", "staff", "administrator"] as const;
-
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   if (app.process.type === "worker")
     app.once("start", async () => {
       while (true) {
