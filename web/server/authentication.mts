@@ -580,7 +580,7 @@ export default async (application: Application): Promise<void> => {
     {},
     HTML,
     {},
-    {},
+    { redirect?: string; invitation?: { email?: string; name?: string } },
     ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >(["/", "/sign-in"], (request, response, next) => {
     if (
@@ -701,11 +701,12 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
   >(
     "/sign-in",
-    ...application.locals.middlewares.isSignedOut,
     asyncHandler(async (request, response, next) => {
+      if (response.locals.user !== undefined) return next();
+
       if (
         typeof request.body.email !== "string" ||
         request.body.email.match(
@@ -715,9 +716,11 @@ export default async (application: Application): Promise<void> => {
         request.body.password.trim() === ""
       )
         return next("Validation");
+
       const user = application.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${request.body.email}`
       );
+
       if (
         user === undefined ||
         !(await argon2.verify(user.password, request.body.password))
@@ -739,11 +742,13 @@ export default async (application: Application): Promise<void> => {
           )}`
         );
       }
+
       application.server.locals.helpers.Session.open({
         request,
         response,
         userId: user.id,
       });
+
       response.redirect(
         303,
         `https://${application.configuration.hostname}/${
