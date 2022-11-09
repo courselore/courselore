@@ -24,12 +24,8 @@ import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
-// export {
-//   ResponseLocalsBase,
-//   ResponseLocalsSignedIn,
-//   HasPasswordConfirmationLocals,
-// } from "./authentication.mjs";
-// import about from "./about.mjs";
+export { ResponseLocalsSignedIn } from "./authentication.mjs";
+import about from "./about.mjs";
 // import administration from "./administration.mjs";
 // export {
 //   UserSystemRolesWhoMayCreateCourses,
@@ -72,12 +68,6 @@ import authentication, {
 // import helpers from "./helpers.mjs";
 
 // TODO
-import { ResponseLocalsBase } from "./base.mjs";
-export type ResponseLocalsSignedIn = ResponseLocalsBase & {
-  user: any;
-  administrationOptions: any;
-  mayCreateCourses: any;
-};
 export type UserAvatarlessBackgroundColor = any;
 export const userAvatarlessBackgroundColors = [];
 export type UserSystemRolesWhoMayCreateCourses = any;
@@ -85,6 +75,7 @@ export type UserEmailNotificationsForAllMessages = any;
 export type CourseRole = any;
 export type EnrollmentAccentColor = any;
 export type SystemRole = any;
+import { ResponseLocalsSignedIn } from "./authentication.mjs";
 export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
   course: any;
   enrollment: any;
@@ -309,7 +300,7 @@ if (
         // await liveUpdates(application);
         await layouts(application);
         await authentication(application);
-        // await about(application);
+        await about(application);
         // await administration(application);
         // await user(application);
         // await course(application);
