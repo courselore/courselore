@@ -576,157 +576,125 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  (() => {
-    const handler: express.RequestHandler<
-      {},
-      HTML,
-      {},
-      { redirect?: string; invitation?: { email?: string; name?: string } },
-      ResponseLocalsBase
-    > = (request, response) => {
-      response.send(
-        application.locals.layouts.box({
-          request,
-          response,
-          head: html`
-            <title>
-              Sign in · Courselore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="https://${application.configuration
-                .hostname}/sign-in${qs.stringify(
-                {
-                  redirect: request.query.redirect,
-                  invitation: request.query.invitation,
-                },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <label class="label">
-                <p class="label--text">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${typeof request.query.invitation?.email ===
-                    "string" && request.query.invitation.email.trim() !== ""
-                    ? request.query.invitation.email
-                    : ""}"
-                  required
-                  autofocus
-                  class="input--text"
-                  onload="${javascript`
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+  >(["/", "/sign-in"], (request, response, next) => {
+    if (
+      response.locals.user !== undefined ||
+      (request.originalUrl === "/" &&
+        application.configuration.hostname ===
+          application.addresses.canonicalHostname)
+    )
+      return next();
+
+    response.send(
+      application.server.locals.layouts.box({
+        request,
+        response,
+        head: html`
+          <title>
+            Sign in · Courselore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="https://${application.configuration
+              .hostname}/sign-in${qs.stringify(
+              {
+                redirect: request.query.redirect,
+                invitation: request.query.invitation,
+              },
+              { addQueryPrefix: true }
+            )}"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${typeof request.query.invitation?.email === "string" &&
+                request.query.invitation.email.trim() !== ""
+                  ? request.query.invitation.email
+                  : ""}"
+                required
+                autofocus
+                class="input--text"
+                onload="${javascript`
                     this.isModified = false;
                   `}"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  class="input--text"
-                  onload="${javascript`
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                class="input--text"
+                onload="${javascript`
                     this.isModified = false;
                   `}"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-box-arrow-in-right"></i>
-                Sign in
-              </button>
-            </form>
-            <div
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `)}"
-            >
-              <p>
-                Don’t have an account?
-                <a
-                  href="https://${application.configuration
-                    .hostname}/sign-up${qs.stringify(
-                    {
-                      redirect: request.query.redirect,
-                      invitation: request.query.invitation,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >Sign up</a
-                >.
-              </p>
-              <p>
-                Forgot your password?
-                <a
-                  href="https://${application.configuration
-                    .hostname}/reset-password${qs.stringify(
-                    {
-                      redirect: request.query.redirect,
-                      invitation: request.query.invitation,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >Reset password</a
-                >.
-              </p>
-            </div>
-          `,
-        })
-      );
-    };
-
-    application.server.get<{}, HTML, {}, {}, ResponseLocalsBase>(
-      "/",
-      ...application.locals.middlewares.isSignedOut,
-      application.configuration.hostname ===
-        application.configuration.canonicalHostname
-        ? (request, response, next) => {
-            application.locals.handlers.about(request, response, next);
-          }
-        : handler
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign in
+            </button>
+          </form>
+          <div
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `)}"
+          >
+            <p>
+              Don’t have an account?
+              <a
+                href="https://${application.configuration
+                  .hostname}/sign-up${qs.stringify(
+                  {
+                    redirect: request.query.redirect,
+                    invitation: request.query.invitation,
+                  },
+                  { addQueryPrefix: true }
+                )}"
+                class="link"
+                >Sign up</a
+              >.
+            </p>
+            <p>
+              Forgot your password?
+              <a
+                href="https://${application.configuration
+                  .hostname}/reset-password${qs.stringify(
+                  {
+                    redirect: request.query.redirect,
+                    invitation: request.query.invitation,
+                  },
+                  { addQueryPrefix: true }
+                )}"
+                class="link"
+                >Reset password</a
+              >.
+            </p>
+          </div>
+        `,
+      })
     );
-
-    application.server.get<{}, HTML, {}, {}, ResponseLocalsBase>(
-      "/sign-in",
-      ...application.locals.middlewares.isSignedOut,
-      handler
-    );
-
-    application.server.get<
-      {},
-      HTML,
-      {},
-      { redirect?: string },
-      ResponseLocalsSignedIn
-    >(
-      "/sign-in",
-      ...application.locals.middlewares.isSignedIn,
-      (request, response) => {
-        response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${
-            typeof request.query.redirect === "string"
-              ? request.query.redirect
-              : ""
-          }`
-        );
-      }
-    );
-  })();
+  });
 
   application.server.post<
     {},
@@ -861,7 +829,7 @@ export default async (application: Application): Promise<void> => {
     ...application.locals.middlewares.isSignedOut,
     (request, response) => {
       response.send(
-        application.locals.layouts.box({
+        application.server.locals.layouts.box({
           request,
           response,
           head: html`
@@ -1070,7 +1038,7 @@ export default async (application: Application): Promise<void> => {
           content: html`Email resent.`,
         });
       response.send(
-        application.locals.layouts.box({
+        application.server.locals.layouts.box({
           request,
           response,
           head: html`
@@ -1140,7 +1108,7 @@ export default async (application: Application): Promise<void> => {
         );
       }
       response.send(
-        application.locals.layouts.box({
+        application.server.locals.layouts.box({
           request,
           response,
           head: html`
@@ -1368,7 +1336,7 @@ export default async (application: Application): Promise<void> => {
     ...application.locals.middlewares.isSignedOut,
     (request, response) => {
       response.send(
-        application.locals.layouts.box({
+        application.server.locals.layouts.box({
           request,
           response,
           head: html`

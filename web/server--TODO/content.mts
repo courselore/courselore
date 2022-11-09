@@ -2318,7 +2318,7 @@ ${contentSource}</textarea
         }));
 
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -2758,7 +2758,7 @@ ${contentSource}</textarea
       }
 
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -2866,7 +2866,7 @@ ${contentSource}</textarea
       )
         return next("Validation");
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: app.locals.partials.content({

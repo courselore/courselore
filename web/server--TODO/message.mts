@@ -498,7 +498,7 @@ export default async (app: Courselore): Promise<void> => {
     ...messageExistsMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -913,7 +913,7 @@ export default async (app: Courselore): Promise<void> => {
     ...messageExistsMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: html`

@@ -344,7 +344,7 @@ export default async (app: Courselore): Promise<void> => {
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            app.locals.layouts.main({
+            app.server.locals.layouts.main({
               req,
               res,
               head: html`<title>Courselore</title>`,
@@ -414,7 +414,7 @@ export default async (app: Courselore): Promise<void> => {
 
         default:
           res.send(
-            app.locals.layouts.main({
+            app.server.locals.layouts.main({
               req,
               res,
               head: html`<title>Courselore</title>`,
@@ -471,7 +471,7 @@ export default async (app: Courselore): Promise<void> => {
     ...mayCreateCoursesMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.main({
+        app.server.locals.layouts.main({
           req,
           res,
           head: html`<title>Create a New Course · Courselore</title>`,
@@ -795,7 +795,7 @@ export default async (app: Courselore): Promise<void> => {
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
-          app.locals.layouts.main({
+          app.server.locals.layouts.main({
             req,
             res,
             head: html`<title>${res.locals.course.name} · Courselore</title>`,
@@ -860,7 +860,7 @@ export default async (app: Courselore): Promise<void> => {
         );
 
       res.send(
-        app.locals.layouts.conversation({
+        app.server.locals.layouts.conversation({
           req,
           res,
           head: html`<title>${res.locals.course.name} · Courselore</title>`,
@@ -905,7 +905,7 @@ export default async (app: Courselore): Promise<void> => {
     head: HTML;
     body: HTML;
   }): HTML =>
-    app.locals.layouts.settings({
+    app.server.locals.layouts.settings({
       req,
       res,
       head,
@@ -4162,7 +4162,7 @@ export default async (app: Courselore): Promise<void> => {
           res.locals.user.email.toLowerCase()
       )
         return res.send(
-          app.locals.layouts.box({
+          app.server.locals.layouts.box({
             req,
             res,
             head: html`
@@ -4196,7 +4196,7 @@ export default async (app: Courselore): Promise<void> => {
 
       if (res.locals.invitation.usedAt !== null)
         return res.send(
-          app.locals.layouts.box({
+          app.server.locals.layouts.box({
             req,
             res,
             head: html`
@@ -4222,7 +4222,7 @@ export default async (app: Courselore): Promise<void> => {
 
       if (app.locals.helpers.isExpired(res.locals.invitation.expiresAt))
         return res.send(
-          app.locals.layouts.box({
+          app.server.locals.layouts.box({
             req,
             res,
             head: html`
@@ -4257,7 +4257,7 @@ export default async (app: Courselore): Promise<void> => {
         else {
           const link = `https://${app.configuration.hostname}/courses/${res.locals.invitation.course.reference}/invitations/${res.locals.invitation.reference}`;
           return res.send(
-            app.locals.layouts.box({
+            app.server.locals.layouts.box({
               req,
               res,
               head: html`
@@ -4394,7 +4394,7 @@ export default async (app: Courselore): Promise<void> => {
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        app.server.locals.layouts.box({
           req,
           res,
           head: html`
@@ -4503,7 +4503,7 @@ export default async (app: Courselore): Promise<void> => {
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        app.server.locals.layouts.box({
           req,
           res,
           head: html`
@@ -4607,7 +4607,7 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        app.server.locals.layouts.box({
           req,
           res,
           head: html` <title>Invitation · Courselore</title> `,

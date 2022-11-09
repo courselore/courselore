@@ -33,7 +33,7 @@ export default async (app: Courselore): Promise<void> => {
           `https://${app.configuration.hostname}/${req.query.redirect}`
         );
       res.status(404).send(
-        app.locals.layouts.box({
+        app.server.locals.layouts.box({
           req,
           res,
           head: html`<title>404 Not Found · Courselore</title>`,
@@ -60,7 +60,7 @@ export default async (app: Courselore): Promise<void> => {
 
   /*
         return response.send(
-          application.locals.layouts.box({
+          application.server.locals.layouts.box({
             request,
             response,
             head: html` <title>Email Verification · Courselore</title> `,
@@ -242,6 +242,18 @@ export default async (app: Courselore): Promise<void> => {
         
         */
 
+        /*
+
+        response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${
+            typeof request.query.redirect === "string"
+              ? request.query.redirect
+              : ""
+          }`
+        );
+        */
+
   app.use(((err, req, res, next) => {
     response.locals.log("ERROR", String(error));
 
@@ -256,7 +268,7 @@ export default async (app: Courselore): Promise<void> => {
           : 500
       )
       .send(
-        app.locals.layouts.box({
+        app.server.locals.layouts.box({
           req,
           res,
           head: html`<title>${err} Error · Courselore</title>`,

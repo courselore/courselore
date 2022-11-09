@@ -31,7 +31,7 @@ export default async (app: Courselore): Promise<void> => {
 
   app.locals.handlers.about = (req, res) => {
     res.send(
-      app.locals.layouts.base({
+      app.server.locals.layouts.base({
         req,
         res,
         head: html`

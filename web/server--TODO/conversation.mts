@@ -230,7 +230,7 @@ export default async (app: Courselore): Promise<void> => {
     "selected-people": html`Selected People`,
   };
 
-  app.locals.layouts.conversation = ({
+  app.server.locals.layouts.conversation = ({
     req,
     res,
     head,
@@ -672,7 +672,7 @@ export default async (app: Courselore): Promise<void> => {
     //     })
     // );
 
-    return app.locals.layouts.application({
+    return app.server.locals.layouts.application({
       req,
       res,
       head,
@@ -2600,7 +2600,7 @@ export default async (app: Courselore): Promise<void> => {
         return next("Validation");
 
       res.send(
-        app.locals.layouts.partial({
+        app.server.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -3077,8 +3077,8 @@ export default async (app: Courselore): Promise<void> => {
 
       res.send(
         (res.locals.conversationsCount === 0
-          ? app.locals.layouts.main
-          : app.locals.layouts.conversation)({
+          ? app.server.locals.layouts.main
+          : app.server.locals.layouts.conversation)({
           req,
           res,
           head: html`
@@ -4894,7 +4894,7 @@ export default async (app: Courselore): Promise<void> => {
         );
 
       res.send(
-        app.locals.layouts.conversation({
+        app.server.locals.layouts.conversation({
           req,
           res,
           head: html`

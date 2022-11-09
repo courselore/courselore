@@ -105,7 +105,7 @@ export default async (app: Courselore): Promise<void> => {
     head: HTML;
     body: HTML;
   }): HTML =>
-    app.locals.layouts.settings({
+    app.server.locals.layouts.settings({
       req,
       res,
       head,
