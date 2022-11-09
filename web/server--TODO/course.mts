@@ -17,7 +17,7 @@ import {
   ResponseLocalsBase,
   ResponseLocalsSignedIn,
   User,
-  UserAvatarlessBackgroundColor,
+  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
 } from "./index.mjs";
 
 export type Enrollment = {
@@ -3381,7 +3381,7 @@ export default async (app: Courselore): Promise<void> => {
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           reference: string;

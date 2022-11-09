@@ -29,14 +29,8 @@ import about from "./about.mjs";
 import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
-import user from "./user.mjs";
-// export {
-//   User,
-//   UserAvatarlessBackgroundColor,
-//   userAvatarlessBackgroundColors,
-//   UserEmailNotificationsForAllMessages,
-//   userEmailNotificationsForAllMessageses,
-// } from "./user.mjs";
+import user, { ApplicationUser } from "./user.mjs";
+export { User } from "./user.mjs";
 // import course from "./course.mjs";
 // export {
 //   Enrollment,
@@ -111,7 +105,8 @@ export type Application = {
   ApplicationBase &
   ApplicationLayouts &
   ApplicationAuthentication &
-  ApplicationAdministration & {
+  ApplicationAdministration &
+  ApplicationUser & {
     // TODO
     server: {
       locals: {
@@ -125,8 +120,6 @@ export type Application = {
         };
         helpers: {
           emailRegExp: RegExp;
-          userAvatarlessBackgroundColors: ["example"];
-          userEmailNotificationsForAllMessageses: ["example"];
           courseRoles: ["example"];
           enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
@@ -141,6 +134,7 @@ export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
   enrollments: any;
   invitations: any[];
 };
+export type MaybeEnrollment = any;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))

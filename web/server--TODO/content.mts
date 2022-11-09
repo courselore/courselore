@@ -34,7 +34,7 @@ import {
   ResponseLocalsBase,
   ResponseLocalsBase,
   ResponseLocalsSignedIn,
-  UserAvatarlessBackgroundColor,
+  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
   CourseRole,
   ResponseLocalsCourseEnrolled,
   IsConversationAccessibleLocals,
@@ -377,7 +377,7 @@ export default async (app: Courselore): Promise<void> => {
                     userEmail: string;
                     userName: string;
                     userAvatar: string | null;
-                    userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
@@ -2242,7 +2242,7 @@ ${contentSource}</textarea
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           userNameSearchResultHighlight: string;

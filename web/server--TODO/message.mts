@@ -7,8 +7,8 @@ import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
 import {
   Courselore,
-  UserAvatarlessBackgroundColor,
-  UserEmailNotificationsForAllMessages,
+  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
+  Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"],
   MaybeEnrollment,
   CourseRole,
   ResponseLocalsCourseEnrolled,
@@ -138,7 +138,7 @@ export default async (app: Courselore): Promise<void> => {
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
-      authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+      authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
@@ -162,7 +162,7 @@ export default async (app: Courselore): Promise<void> => {
                "authorUser"."email" AS "authorUserEmail",
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
-               "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
+               "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
                "authorUser"."biographySource" AS "authorUserBiographySource",
                "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
@@ -196,7 +196,7 @@ export default async (app: Courselore): Promise<void> => {
         messageRow.authorUserReference !== null &&
         messageRow.authorUserEmail !== null &&
         messageRow.authorUserName !== null &&
-        messageRow.authorUserAvatarlessBackgroundColor !== null &&
+        messageRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] !== null &&
         messageRow.authorEnrollmentReference !== null &&
         messageRow.authorEnrollmentCourseRole !== null
           ? {
@@ -209,7 +209,7 @@ export default async (app: Courselore): Promise<void> => {
                 name: messageRow.authorUserName,
                 avatar: messageRow.authorUserAvatar,
                 avatarlessBackgroundColor:
-                  messageRow.authorUserAvatarlessBackgroundColor,
+                  messageRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
                 biographySource: messageRow.authorUserBiographySource,
                 biographyPreprocessed:
                   messageRow.authorUserBiographyPreprocessed,
@@ -238,7 +238,7 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -309,7 +309,7 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -379,7 +379,7 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -1468,7 +1468,7 @@ export default async (app: Courselore): Promise<void> => {
             id: number;
             userId: number;
             userEmail: string;
-            userEmailNotificationsForAllMessages: UserEmailNotificationsForAllMessages;
+            userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"];
             reference: string;
             courseRole: CourseRole;
           }>(

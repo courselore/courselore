@@ -11,13 +11,82 @@ import sharp from "sharp";
 import argon2 from "argon2";
 import got from "got";
 import {
-  Courselore,
+  Application,
   ResponseLocalsBase,
   ResponseLocalsSignedIn,
-  HasPasswordConfirmationLocals,
-  MaybeEnrollment,
   ResponseLocalsCourseEnrolled,
+  MaybeEnrollment,
 } from "./index.mjs";
+
+export type ApplicationUser = {
+  server: {
+    locals: {
+      partials: {
+        user: ({
+          req,
+          res,
+          enrollment,
+          user,
+          anonymous,
+          avatar,
+          decorate,
+          name,
+          tooltip,
+          size,
+          bold,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          res: express.Response<
+            any,
+            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+          >;
+          enrollment?: MaybeEnrollment;
+          user?: User | "no-longer-enrolled";
+          anonymous?: boolean | "reveal";
+          avatar?: boolean;
+          decorate?: boolean;
+          name?: boolean | string;
+          tooltip?: boolean;
+          size?: "xs" | "sm" | "xl";
+          bold?: boolean;
+        }) => HTML;
+      };
+      helpers: {
+        userAvatarlessBackgroundColors: [
+          "red",
+          "orange",
+          "amber",
+          "yellow",
+          "lime",
+          "green",
+          "emerald",
+          "teal",
+          "cyan",
+          "sky",
+          "blue",
+          "indigo",
+          "violet",
+          "purple",
+          "fuchsia",
+          "pink",
+          "rose"
+        ];
+        userEmailNotificationsForAllMessageses: [
+          "none",
+          "instant",
+          "hourly-digests",
+          "daily-digests"
+        ];
+      };
+    };
+  };
+};
 
 export type User = {
   id: number;
@@ -26,79 +95,40 @@ export type User = {
   email: string;
   name: string;
   avatar: string | null;
-  avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+  avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
   biographySource: string | null;
   biographyPreprocessed: HTML | null;
 };
 
-export type UserAvatarlessBackgroundColor =
-  typeof userAvatarlessBackgroundColors[number];
-export const userAvatarlessBackgroundColors = [
-  "red",
-  "orange",
-  "amber",
-  "yellow",
-  "lime",
-  "green",
-  "emerald",
-  "teal",
-  "cyan",
-  "sky",
-  "blue",
-  "indigo",
-  "violet",
-  "purple",
-  "fuchsia",
-  "pink",
-  "rose",
-] as const;
+export default async (application: Application): Promise<void> => {
+  application.server.locals.helpers.userAvatarlessBackgroundColors = [
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
+  ];
 
-export type UserEmailNotificationsForAllMessages =
-  typeof userEmailNotificationsForAllMessageses[number];
-export const userEmailNotificationsForAllMessageses = [
-  "none",
-  "instant",
-  "hourly-digests",
-  "daily-digests",
-] as const;
+  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
+    "none",
+    "instant",
+    "hourly-digests",
+    "daily-digests",
+  ];
 
-export type UserPartial = ({
-  req,
-  res,
-  enrollment,
-  user,
-  anonymous,
-  avatar,
-  decorate,
-  name,
-  tooltip,
-  size,
-  bold,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  res: express.Response<
-    any,
-    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
-  >;
-  enrollment?: MaybeEnrollment;
-  user?: User | "no-longer-enrolled";
-  anonymous?: boolean | "reveal";
-  avatar?: boolean;
-  decorate?: boolean;
-  name?: boolean | string;
-  tooltip?: boolean;
-  size?: "xs" | "sm" | "xl";
-  bold?: boolean;
-}) => HTML;
-
-export default async (app: Courselore): Promise<void> => {
-  app.server.locals.partials.user = ({
+  application.server.locals.partials.user = ({
     req,
     res,
     enrollment = undefined,
@@ -322,7 +352,9 @@ export default async (app: Courselore): Promise<void> => {
             $${name === true && user !== "no-longer-enrolled"
               ? html`
                   data-filterable-phrases="${JSON.stringify(
-                    app.server.locals.helpers.splitFilterablePhrases(user.name)
+                    application.server.locals.helpers.splitFilterablePhrases(
+                      user.name
+                    )
                   )}"
                 `
               : html``}
@@ -385,7 +417,7 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     <div>
-                      $${app.server.locals.partials.user({
+                      $${application.server.locals.partials.user({
                         req,
                         res,
                         enrollment,
@@ -503,7 +535,7 @@ export default async (app: Courselore): Promise<void> => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? app.server.locals.partials.content({
+                    ? application.server.locals.partials.content({
                         req,
                         res,
                         contentPreprocessed: user!.biographyPreprocessed,
@@ -614,13 +646,13 @@ export default async (app: Courselore): Promise<void> => {
       : html``;
   };
 
-  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.redirect(
         303,
-        `https://${app.configuration.hostname}/settings/profile`
+        `https://${application.configuration.hostname}/settings/profile`
       );
     }
   );
@@ -636,7 +668,7 @@ export default async (app: Courselore): Promise<void> => {
     head: HTML;
     body: HTML;
   }): HTML =>
-    app.server.locals.layouts.settings({
+    application.server.locals.layouts.settings({
       req,
       res,
       head,
@@ -646,7 +678,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
       menu: html`
         <a
-          href="https://${app.configuration.hostname}/settings/profile"
+          href="https://${application.configuration.hostname}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/profile\/?$/i
           )
@@ -657,7 +689,7 @@ export default async (app: Courselore): Promise<void> => {
           Profile
         </a>
         <a
-          href="https://${app.configuration
+          href="https://${application.configuration
             .hostname}/settings/email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/email-and-password\/?$/i
@@ -673,7 +705,8 @@ export default async (app: Courselore): Promise<void> => {
           Email & Password
         </a>
         <a
-          href="https://${app.configuration.hostname}/settings/notifications"
+          href="https://${application.configuration
+            .hostname}/settings/notifications"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/notifications\/?$/i
           )
@@ -690,7 +723,7 @@ export default async (app: Courselore): Promise<void> => {
         <a
           hidden
           TODO
-          href="https://${app.configuration.hostname}/settings/account"
+          href="https://${application.configuration.hostname}/settings/account"
           class="dropdown--menu--item menu-box--item button ${req.path.match(
             /\/settings\/account\/?$/i
           )
@@ -704,9 +737,9 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -723,7 +756,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration.hostname}/settings/profile"
+              action="https://${application.configuration
+                .hostname}/settings/profile"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
@@ -803,7 +837,7 @@ export default async (app: Courselore): Promise<void> => {
                           }
                         `)}"
                       >
-                        $${app.server.locals.partials.user({
+                        $${application.server.locals.partials.user({
                           req,
                           res,
                           user: { ...res.locals.user, avatar: null },
@@ -900,7 +934,10 @@ export default async (app: Courselore): Promise<void> => {
                                 gap: var(--space--2);
                               `)}"
                             >
-                              $${app.server.locals.partials.spinner({ req, res })}
+                              $${application.server.locals.partials.spinner({
+                                req,
+                                res,
+                              })}
                               Uploading…
                             </div>
                           `
@@ -919,7 +956,7 @@ export default async (app: Courselore): Promise<void> => {
                         tippy.hideAll();
                         avatarChooser.uploadingIndicator.show();
                         const response = await fetch("https://${
-                          app.configuration.hostname
+                          application.configuration.hostname
                         }/settings/profile/avatar", {
                           cache: "no-store",
                           method: "POST",
@@ -975,7 +1012,7 @@ export default async (app: Courselore): Promise<void> => {
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${app.server.locals.partials.contentEditor({
+                $${application.server.locals.partials.contentEditor({
                   req,
                   res,
                   name: "biography",
@@ -999,7 +1036,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.patch<
+  application.server.patch<
     {},
     any,
     { name?: string; avatar?: string; biography?: string },
@@ -1007,7 +1044,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn
   >(
     "/settings/profile",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -1016,7 +1053,7 @@ export default async (app: Courselore): Promise<void> => {
         typeof req.body.biography !== "string"
       )
         return next("Validation");
-      app.database.run(
+      application.database.run(
         sql`
           UPDATE "users"
           SET "name" = ${req.body.name},
@@ -1030,13 +1067,14 @@ export default async (app: Courselore): Promise<void> => {
               "biographyPreprocessed" = ${
                 req.body.biography.trim() === ""
                   ? null
-                  : app.server.locals.partials.contentPreprocessed(req.body.biography)
-                      .contentPreprocessed
+                  : application.server.locals.partials.contentPreprocessed(
+                      req.body.biography
+                    ).contentPreprocessed
               }
           WHERE "id" = ${res.locals.user.id}
         `
       );
-      app.server.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1044,12 +1082,12 @@ export default async (app: Courselore): Promise<void> => {
       });
       res.redirect(
         303,
-        `https://${app.configuration.hostname}/settings/profile`
+        `https://${application.configuration.hostname}/settings/profile`
       );
     }
   );
 
-  app.server.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1065,7 +1103,10 @@ export default async (app: Courselore): Promise<void> => {
         type: "numeric",
       });
       await req.files.avatar.mv(
-        path.join(app.configuration.dataDirectory, `files/${folder}/${name}`)
+        path.join(
+          application.configuration.dataDirectory,
+          `files/${folder}/${name}`
+        )
       );
       const extension = path.extname(name);
       const nameAvatar = `${name.slice(
@@ -1082,7 +1123,7 @@ export default async (app: Courselore): Promise<void> => {
           })
           .toFile(
             path.join(
-              app.configuration.dataDirectory,
+              application.configuration.dataDirectory,
               `files/${folder}/${nameAvatar}`
             )
           );
@@ -1091,7 +1132,7 @@ export default async (app: Courselore): Promise<void> => {
       }
       res.send(
         `https://${
-          app.configuration.hostname
+          application.configuration.hostname
         }/files/${folder}/${encodeURIComponent(nameAvatar)}`
       );
     }),
@@ -1100,15 +1141,15 @@ export default async (app: Courselore): Promise<void> => {
         return res
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.configuration.administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
           );
       next(err);
     }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>
   );
 
-  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/email-and-password",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1127,7 +1168,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
@@ -1191,7 +1232,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/settings/email-and-password"
               novalidate
               css="${res.locals.css(css`
@@ -1249,7 +1290,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.patch<
+  application.server.patch<
     {},
     any,
     { passwordConfirmation?: string; email?: string; newPassword?: string },
@@ -1267,19 +1308,23 @@ export default async (app: Courselore): Promise<void> => {
           : "settings/email-and-password";
       next();
     },
-    ...app.server.locals.middlewares.hasPasswordConfirmation,
+    ...application.server.locals.middlewares.hasPasswordConfirmation,
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.email === "string") {
-        if (req.body.email.match(app.server.locals.helpers.emailRegExp) === null)
+        if (
+          req.body.email.match(
+            application.server.locals.helpers.emailRegExp
+          ) === null
+        )
           return next("Validation");
         if (
-          app.database.get<{}>(
+          application.database.get<{}>(
             sql`
               SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
             `
           ) !== undefined
         ) {
-          app.server.locals.helpers.Flash.set({
+          application.server.locals.helpers.Flash.set({
             req,
             res,
             theme: "rose",
@@ -1287,7 +1332,7 @@ export default async (app: Courselore): Promise<void> => {
           });
           return res.redirect(
             303,
-            `https://${app.configuration.hostname}/${
+            `https://${application.configuration.hostname}/${
               typeof req.query.redirect === "string"
                 ? req.query.redirect
                 : "settings/email-and-password"
@@ -1295,7 +1340,7 @@ export default async (app: Courselore): Promise<void> => {
           );
         }
 
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "users"
             SET "email" = ${req.body.email},
@@ -1304,7 +1349,7 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
         if (res.locals.user.emailVerifiedAt !== null)
-          app.database.run(
+          application.database.run(
             sql`
               INSERT INTO "sendEmailJobs" (
                 "createdAt",
@@ -1335,8 +1380,10 @@ export default async (app: Courselore): Promise<void> => {
                     <p>
                       If you did not perform this update, then please contact
                       the system administrator at
-                      <a href="mailto:${app.configuration.administratorEmail}"
-                        >${app.configuration.administratorEmail}</a
+                      <a
+                        href="mailto:${application.configuration
+                          .administratorEmail}"
+                        >${application.configuration.administratorEmail}</a
                       >
                       as soon as possible.
                     </p>
@@ -1345,13 +1392,13 @@ export default async (app: Courselore): Promise<void> => {
               )
             `
           );
-        app.server.locals.helpers.emailVerification({
+        application.server.locals.helpers.emailVerification({
           req,
           res,
           userId: res.locals.user.id,
           userEmail: req.body.email,
         });
-        app.server.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1366,17 +1413,17 @@ export default async (app: Courselore): Promise<void> => {
         )
           return next("Validation");
 
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               req.body.newPassword,
-              app.server.locals.configuration.argon2
+              application.server.locals.configuration.argon2
             )}
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "sendEmailJobs" (
               "createdAt",
@@ -1405,8 +1452,10 @@ export default async (app: Courselore): Promise<void> => {
                   <p>
                     If you did not perform this update, then please contact the
                     system administrator at
-                    <a href="mailto:${app.configuration.administratorEmail}"
-                      >${app.configuration.administratorEmail}</a
+                    <a
+                      href="mailto:${application.configuration
+                        .administratorEmail}"
+                      >${application.configuration.administratorEmail}</a
                     >
                     as soon as possible.
                   </p>
@@ -1422,12 +1471,12 @@ export default async (app: Courselore): Promise<void> => {
           .catch((error) => {
             response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
           });
-        app.server.locals.helpers.Session.closeAllAndReopen({
+        application.server.locals.helpers.Session.closeAllAndReopen({
           req,
           res,
           userId: res.locals.user.id,
         });
-        app.server.locals.helpers.Flash.set({
+        application.server.locals.helpers.Flash.set({
           req,
           res,
           theme: "green",
@@ -1437,7 +1486,7 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof req.query.redirect === "string"
             ? req.query.redirect
             : "settings/email-and-password"
@@ -1446,9 +1495,9 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/notifications",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1465,7 +1514,7 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="PATCH"
-              action="https://${app.configuration
+              action="https://${application.configuration
                 .hostname}/settings/notifications"
               novalidate
               css="${res.locals.css(css`
@@ -1720,7 +1769,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.patch<
+  application.server.patch<
     {},
     any,
     {
@@ -1737,7 +1786,7 @@ export default async (app: Courselore): Promise<void> => {
     ResponseLocalsSignedIn
   >(
     "/settings/notifications",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         ![undefined, "on"].includes(
@@ -1774,7 +1823,7 @@ export default async (app: Courselore): Promise<void> => {
       )
         return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           UPDATE "users"
           SET "emailNotificationsForAllMessages" = ${
@@ -1805,7 +1854,7 @@ export default async (app: Courselore): Promise<void> => {
        `
       );
 
-      app.server.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         req,
         res,
         theme: "green",
@@ -1814,14 +1863,14 @@ export default async (app: Courselore): Promise<void> => {
 
       res.redirect(
         303,
-        `https://${app.configuration.hostname}/settings/notifications`
+        `https://${application.configuration.hostname}/settings/notifications`
       );
     }
   );
 
-  app.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/settings/account",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -1838,7 +1887,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="DELETE"
-              action="https://${app.configuration.hostname}/settings/account"
+              action="https://${application.configuration
+                .hostname}/settings/account"
               novalidate
               css="${res.locals.css(css`
                 display: flex;
