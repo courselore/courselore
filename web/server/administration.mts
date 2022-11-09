@@ -79,11 +79,11 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.get<{}, HTML, {}, {}, IsAdministratorLocals>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/administration",
-    ...isAdministratorMiddleware,
-    (res, req) => {
-      req.redirect(
+    (request, response, next) => {
+      if (response.locals.user.systemRole === "administrator") return next();
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/administration/system-settings`
       );
@@ -91,19 +91,19 @@ export default async (application: Application): Promise<void> => {
   );
 
   const administrationLayout = ({
-    req,
-    res,
+    request,
+    response,
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, IsAdministratorLocals>;
-    res: express.Response<any, IsAdministratorLocals>;
+    request: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
+    response: express.Response<any, ResponseLocalsSignedIn>;
     head: HTML;
     body: HTML;
   }): HTML =>
     application.server.locals.layouts.settings({
-      req,
-      res,
+      request,
+      response,
       head,
       menuButton: html`
         <i class="bi bi-pc-display-horizontal"></i>
@@ -113,7 +113,7 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration
             .hostname}/administration/system-settings"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/administration\/system-settings\/?$/i
           )
             ? "button--blue"
@@ -125,14 +125,14 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration
             .hostname}/administration/users"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/administration\/users\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.match(/\/administration\/users\/?$/i)
+            class="bi ${request.path.match(/\/administration\/users\/?$/i)
               ? "bi-people-fill"
               : "bi-people"}"
           ></i>
@@ -142,14 +142,14 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<{}, HTML, {}, {}, IsAdministratorLocals>(
+  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/administration/system-settings",
     ...isAdministratorMiddleware,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         administrationLayout({
-          req,
-          res,
+          request,
+          response,
           head: html`
             <title>System Settings · Administration · Courselore</title>
           `,
@@ -166,7 +166,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/administration/system-settings"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -175,7 +175,7 @@ export default async (application: Application): Promise<void> => {
               <div class="label">
                 <p class="label--text">Users Who May Create Courses</p>
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -185,7 +185,7 @@ export default async (application: Application): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="all"
                       required
-                      $${res.locals.administrationOptions
+                      $${response.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses === "all"
                         ? html`checked`
                         : html``}
@@ -195,7 +195,7 @@ export default async (application: Application): Promise<void> => {
                   </label>
                 </div>
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -205,7 +205,7 @@ export default async (application: Application): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="staff-and-administrators"
                       required
-                      $${res.locals.administrationOptions
+                      $${response.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses ===
                       "staff-and-administrators"
                         ? html`checked`
@@ -216,7 +216,7 @@ export default async (application: Application): Promise<void> => {
                   </label>
                 </div>
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -226,7 +226,7 @@ export default async (application: Application): Promise<void> => {
                       name="userSystemRolesWhoMayCreateCourses"
                       value="administrators"
                       required
-                      $${res.locals.administrationOptions
+                      $${response.locals.administrationOptions
                         .userSystemRolesWhoMayCreateCourses === "administrators"
                         ? html`checked`
                         : html``}
@@ -259,15 +259,15 @@ export default async (application: Application): Promise<void> => {
       userSystemRolesWhoMayCreateCourses?: UserSystemRolesWhoMayCreateCourses;
     },
     {},
-    IsAdministratorLocals
+    ResponseLocalsSignedIn
   >(
     "/administration/system-settings",
     ...isAdministratorMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        typeof req.body.userSystemRolesWhoMayCreateCourses !== "string" ||
+        typeof request.body.userSystemRolesWhoMayCreateCourses !== "string" ||
         !userSystemRolesWhoMayCreateCourseses.includes(
-          req.body.userSystemRolesWhoMayCreateCourses
+          request.body.userSystemRolesWhoMayCreateCourses
         )
       )
         return next("Validation");
@@ -275,18 +275,18 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           UPDATE "administrationOptions"
-          SET "userSystemRolesWhoMayCreateCourses" = ${req.body.userSystemRolesWhoMayCreateCourses}
+          SET "userSystemRolesWhoMayCreateCourses" = ${request.body.userSystemRolesWhoMayCreateCourses}
         `
       )!;
 
       application.locals.helpers.Flash.set({
-        req,
-        res,
+        request,
+        response,
         theme: "green",
         content: html`System settings updated successfully.`,
       });
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/administration/system-settings`
       );
@@ -310,21 +310,24 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    IsAdministratorLocals
-  >("/administration/users", ...isAdministratorMiddleware, (req, res) => {
-    const users = application.database.all<{
-      id: number;
-      lastSeenOnlineAt: string;
-      reference: string;
-      email: string;
-      name: string;
-      avatar: string | null;
-      avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-      biographySource: string | null;
-      biographyPreprocessed: HTML | null;
-      systemRole: SystemRole;
-    }>(
-      sql`
+    ResponseLocalsSignedIn
+  >(
+    "/administration/users",
+    ...isAdministratorMiddleware,
+    (request, response) => {
+      const users = application.database.all<{
+        id: number;
+        lastSeenOnlineAt: string;
+        reference: string;
+        email: string;
+        name: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        biographySource: string | null;
+        biographyPreprocessed: HTML | null;
+        systemRole: SystemRole;
+      }>(
+        sql`
         SELECT "id",
                 "lastSeenOnlineAt",
                 "reference",
@@ -341,34 +344,34 @@ export default async (application: Application): Promise<void> => {
                   "systemRole" = 'none' DESC,
                   "users"."name" ASC
       `
-    );
+      );
 
-    res.send(
-      administrationLayout({
-        req,
-        res,
-        head: html`<title>Users · Administration · Courselore</title>`,
-        body: html`
-          <h2 class="heading">
-            <i class="bi bi-pc-display-horizontal"></i>
-            Administration ·
-            <i class="bi bi-people-fill"></i>
-            Users
-          </h2>
+      response.send(
+        administrationLayout({
+          request,
+          response,
+          head: html`<title>Users · Administration · Courselore</title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-pc-display-horizontal"></i>
+              Administration ·
+              <i class="bi bi-people-fill"></i>
+              Users
+            </h2>
 
-          <label
-            css="${res.locals.css(css`
-              display: flex;
-              gap: var(--space--2);
-              align-items: baseline;
-            `)}"
-          >
-            <i class="bi bi-funnel"></i>
-            <input
-              type="text"
-              class="input--text"
-              placeholder="Filter…"
-              onload="${javascript`
+            <label
+              css="${response.locals.css(css`
+                display: flex;
+                gap: var(--space--2);
+                align-items: baseline;
+              `)}"
+            >
+              <i class="bi bi-funnel"></i>
+              <input
+                type="text"
+                class="input--text"
+                placeholder="Filter…"
+                onload="${javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -395,83 +398,83 @@ export default async (application: Application): Promise<void> => {
                   }
                 };
               `}"
-            />
-          </label>
+              />
+            </label>
 
-          $${users.map((user) => {
-            const action = `https://${application.configuration.hostname}/users/${user.reference}`;
-            const isSelf = user.id === res.locals.user.id;
-            const isOnlyAdministrator =
-              isSelf &&
-              users.filter((user) => user.systemRole === "administrator")
-                .length === 1;
+            $${users.map((user) => {
+              const action = `https://${application.configuration.hostname}/users/${user.reference}`;
+              const isSelf = user.id === response.locals.user.id;
+              const isOnlyAdministrator =
+                isSelf &&
+                users.filter((user) => user.systemRole === "administrator")
+                  .length === 1;
 
-            return html`
-              <div
-                key="user--${user.reference}"
-                class="user"
-                css="${res.locals.css(css`
-                  padding-top: var(--space--2);
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                  display: flex;
-                  gap: var(--space--2);
-                `)}"
-              >
-                <div>
-                  $${application.server.locals.partials.user({
-                    req,
-                    res,
-                    user,
-                    name: false,
-                  })}
-                </div>
-
+              return html`
                 <div
-                  css="${res.locals.css(css`
-                    flex: 1;
-                    margin-top: var(--space--0-5);
+                  key="user--${user.reference}"
+                  class="user"
+                  css="${response.locals.css(css`
+                    padding-top: var(--space--2);
+                    border-top: var(--border-width--1) solid
+                      var(--color--gray--medium--200);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--gray--medium--700);
+                    }
                     display: flex;
-                    flex-direction: column;
                     gap: var(--space--2);
-                    min-width: var(--space--0);
                   `)}"
                 >
                   <div>
-                    <div
-                      data-filterable-phrases="${JSON.stringify(
-                        application.locals.helpers.splitFilterablePhrases(
-                          user.name
-                        )
-                      )}"
-                      class="strong"
-                    >
-                      ${user.name}
-                    </div>
-                    <div class="secondary">
-                      <span
+                    $${application.server.locals.partials.user({
+                      request,
+                      response,
+                      user,
+                      name: false,
+                    })}
+                  </div>
+
+                  <div
+                    css="${response.locals.css(css`
+                      flex: 1;
+                      margin-top: var(--space--0-5);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      min-width: var(--space--0);
+                    `)}"
+                  >
+                    <div>
+                      <div
                         data-filterable-phrases="${JSON.stringify(
                           application.locals.helpers.splitFilterablePhrases(
-                            user.email
+                            user.name
                           )
                         )}"
-                        css="${res.locals.css(css`
-                          margin-right: var(--space--2);
-                        `)}"
+                        class="strong"
                       >
-                        ${user.email}
-                      </span>
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        css="${res.locals.css(css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          display: inline-flex;
-                        `)}"
-                        onload="${javascript`
+                        ${user.name}
+                      </div>
+                      <div class="secondary">
+                        <span
+                          data-filterable-phrases="${JSON.stringify(
+                            application.locals.helpers.splitFilterablePhrases(
+                              user.email
+                            )
+                          )}"
+                          css="${response.locals.css(css`
+                            margin-right: var(--space--2);
+                          `)}"
+                        >
+                          ${user.email}
+                        </span>
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          css="${response.locals.css(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                            display: inline-flex;
+                          `)}"
+                          onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Copy Email",
@@ -491,49 +494,49 @@ export default async (application: Application): Promise<void> => {
                             this.copied.hide();
                           };
                         `}"
+                        >
+                          <i class="bi bi-stickies"></i>
+                        </button>
+                      </div>
+                      <div
+                        class="secondary"
+                        css="${response.locals.css(css`
+                          font-size: var(--font-size--xs);
+                        `)}"
                       >
-                        <i class="bi bi-stickies"></i>
-                      </button>
-                    </div>
-                    <div
-                      class="secondary"
-                      css="${res.locals.css(css`
-                        font-size: var(--font-size--xs);
-                      `)}"
-                    >
-                      <span>
-                        Last seen online
-                        <time
-                          datetime="${new Date(
-                            user.lastSeenOnlineAt
-                          ).toISOString()}"
-                          onload="${javascript`
+                        <span>
+                          Last seen online
+                          <time
+                            datetime="${new Date(
+                              user.lastSeenOnlineAt
+                            ).toISOString()}"
+                            onload="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `}"
-                        ></time>
-                      </span>
+                          ></time>
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div
-                    css="${res.locals.css(css`
-                      display: flex;
-                      flex-wrap: wrap;
-                      gap: var(--space--2);
-                    `)}"
-                  >
                     <div
-                      css="${res.locals.css(css`
-                        width: var(--space--28);
+                      css="${response.locals.css(css`
                         display: flex;
-                        justify-content: flex-start;
+                        flex-wrap: wrap;
+                        gap: var(--space--2);
                       `)}"
                     >
-                      <button
-                        class="button button--tight button--tight--inline button--transparent ${systemRoleTextColor[
-                          user.systemRole
-                        ]}"
-                        onload="${javascript`
+                      <div
+                        css="${response.locals.css(css`
+                          width: var(--space--28);
+                          display: flex;
+                          justify-content: flex-start;
+                        `)}"
+                      >
+                        <button
+                          class="button button--tight button--tight--inline button--transparent ${systemRoleTextColor[
+                            user.systemRole
+                          ]}"
+                          onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Update System Role",
@@ -542,7 +545,7 @@ export default async (application: Application): Promise<void> => {
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
-                            content: ${res.locals.html(
+                            content: ${response.locals.html(
                               html`
                                 <div class="dropdown--menu">
                                   $${systemRoles.map(
@@ -586,14 +589,14 @@ export default async (application: Application): Promise<void> => {
                                                         trigger: "click",
                                                         interactive: true,
                                                         appendTo: document.querySelector("body"),
-                                                        content: ${res.locals.html(
+                                                        content: ${response.locals.html(
                                                           html`
                                                             <form
                                                               key="role--${systemRole}"
                                                               method="PATCH"
                                                               action="${action}"
-                                                              css="${res.locals
-                                                                .css(css`
+                                                              css="${response
+                                                                .locals.css(css`
                                                                 padding: var(
                                                                   --space--2
                                                                 );
@@ -617,7 +620,7 @@ export default async (application: Application): Promise<void> => {
                                                               </p>
                                                               <p>
                                                                 <strong
-                                                                  css="${res
+                                                                  css="${response
                                                                     .locals
                                                                     .css(css`
                                                                     font-weight: var(
@@ -662,34 +665,35 @@ export default async (application: Application): Promise<void> => {
                             )},
                           });
                         `}"
-                      >
-                        $${systemRoleIcon[user.systemRole]}
-                        ${lodash.capitalize(user.systemRole)}
-                        <i class="bi bi-chevron-down"></i>
-                      </button>
+                        >
+                          $${systemRoleIcon[user.systemRole]}
+                          ${lodash.capitalize(user.systemRole)}
+                          <i class="bi bi-chevron-down"></i>
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  $${user.biographyPreprocessed !== null
-                    ? html`
-                        <details class="details">
-                          <summary>Biography</summary>
-                          $${application.server.locals.partials.content({
-                            req,
-                            res,
-                            contentPreprocessed: user.biographyPreprocessed,
-                          }).contentProcessed}
-                        </details>
-                      `
-                    : html``}
+                    $${user.biographyPreprocessed !== null
+                      ? html`
+                          <details class="details">
+                            <summary>Biography</summary>
+                            $${application.server.locals.partials.content({
+                              request,
+                              response,
+                              contentPreprocessed: user.biographyPreprocessed,
+                            }).contentProcessed}
+                          </details>
+                        `
+                      : html``}
+                  </div>
                 </div>
-              </div>
-            `;
-          })}
-        `,
-      })
-    );
-  });
+              `;
+            })}
+          `,
+        })
+      );
+    }
+  );
 
   application.server.patch<
     { userReference: string },
@@ -698,51 +702,55 @@ export default async (application: Application): Promise<void> => {
       role?: SystemRole;
     },
     {},
-    IsAdministratorLocals
-  >("/users/:userReference", ...isAdministratorMiddleware, (req, res, next) => {
-    const managedUser = application.database.get<{
-      id: number;
-    }>(
-      sql`
+    ResponseLocalsSignedIn
+  >(
+    "/users/:userReference",
+    ...isAdministratorMiddleware,
+    (request, response, next) => {
+      const managedUser = application.database.get<{
+        id: number;
+      }>(
+        sql`
         SELECT "id"
         FROM "users"
-        WHERE "reference" = ${req.params.userReference}
+        WHERE "reference" = ${request.params.userReference}
       `
-    );
-    if (managedUser === undefined) return next("route");
-    const isSelf = managedUser.id === res.locals.user.id;
-    if (
-      isSelf &&
-      application.database.get<{ count: number }>(
-        sql`
+      );
+      if (managedUser === undefined) return next("route");
+      const isSelf = managedUser.id === response.locals.user.id;
+      if (
+        isSelf &&
+        application.database.get<{ count: number }>(
+          sql`
           SELECT COUNT(*) AS "count"
           FROM "users"
           WHERE "systemRole" = 'administrator'
         `
-      )!.count === 1
-    )
-      return next("Validation");
+        )!.count === 1
+      )
+        return next("Validation");
 
-    if (typeof req.body.role === "string") {
-      if (!systemRoles.includes(req.body.role)) return next("Validation");
+      if (typeof request.body.role === "string") {
+        if (!systemRoles.includes(request.body.role)) return next("Validation");
 
-      application.database.run(
-        sql`UPDATE "users" SET "systemRole" = ${req.body.role} WHERE "id" = ${managedUser.id}`
+        application.database.run(
+          sql`UPDATE "users" SET "systemRole" = ${request.body.role} WHERE "id" = ${managedUser.id}`
+        );
+      }
+
+      application.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "green",
+        content: html`User updated successfully.`,
+      });
+
+      response.redirect(
+        303,
+        isSelf
+          ? `https://${application.configuration.hostname}`
+          : `https://${application.configuration.hostname}/administration/users`
       );
     }
-
-    application.locals.helpers.Flash.set({
-      req,
-      res,
-      theme: "green",
-      content: html`User updated successfully.`,
-    });
-
-    res.redirect(
-      303,
-      isSelf
-        ? `https://${application.configuration.hostname}`
-        : `https://${application.configuration.hostname}/administration/users`
-    );
-  });
+  );
 };
