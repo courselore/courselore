@@ -80,6 +80,7 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
 };
 export type UserAvatarlessBackgroundColor = any;
 export const userAvatarlessBackgroundColors = [];
+export type UserSystemRolesWhoMayCreateCourses = any;
 export type UserEmailNotificationsForAllMessages = any;
 export type CourseRole = any;
 export type EnrollmentAccentColor = any;

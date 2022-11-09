@@ -1,24 +1,3 @@
-//   UserSystemRolesWhoMayCreateCourses,
-
-//   administrationOptions: {
-//     latestVersion: string;
-//     userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
-//   };
-
-// res.locals.administrationOptions =
-// application.database.get<{
-//   latestVersion: string;
-//   userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
-// }>(
-//   sql`
-//     SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
-//     FROM "administrationOptions"
-//   `
-// ) ??
-// (() => {
-//   throw new Error("Failed to fetch ‘administrationOptions’.");
-// })();
-
 import path from "node:path";
 import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";

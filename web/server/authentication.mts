@@ -13,12 +13,13 @@ import got from "got";
 import {
   Application,
   ResponseLocalsBase,
+  UserSystemRolesWhoMayCreateCourses,
+  SystemRole,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotificationsForAllMessages,
   CourseRole,
   EnrollmentAccentColor,
-  SystemRole,
 } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -142,8 +143,12 @@ export type ResponseLocalsSignedIn = ResponseLocalsBase & {
     courseRole: CourseRole;
     accentColor: EnrollmentAccentColor;
   }[];
+  administrationOptions: {
+    latestVersion: string;
+    userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+  };
   mayCreateCourses: boolean;
-  confirmedPassword?: boolean;
+  passwordConfirmed?: boolean;
 };
 
 export default async (application: Application): Promise<void> => {
@@ -327,6 +332,7 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
+
     got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
@@ -358,13 +364,19 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.use<{}, any, {}, {}, ResponseLocalsSignedIn>(
-    (request, response, next) => {
+  application.server.use<
+    {},
+    any,
+    { passwordConfirmation?: string },
+    {},
+    ResponseLocalsSignedIn
+  >(
+    asyncHandler(async (request, response, next) => {
       const userId = application.server.locals.helpers.Session.get({
         request,
         response,
       });
-      if (userId === undefined) return next("route");
+      if (typeof userId !== "number") return next();
 
       response.locals.user = application.database.get<{
         id: number;
@@ -389,194 +401,29 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id",
-                  "lastSeenOnlineAt",
-                  "reference",
-                  "email",
-                  "password",
-                  "emailVerifiedAt",
-                  "name",
-                  "avatar",
-                  "avatarlessBackgroundColor",
-                  "biographySource",
-                  "biographyPreprocessed",
-                  "systemRole",
-                  "emailNotificationsForAllMessages",
-                  "emailNotificationsForAllMessagesDigestDeliveredAt",
-                  "emailNotificationsForMentionsAt",
-                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                  "emailNotificationsForMessagesInConversationsYouStartedAt"
+                 "lastSeenOnlineAt",
+                 "reference",
+                 "email",
+                 "password",
+                 "emailVerifiedAt",
+                 "name",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biographySource",
+                 "biographyPreprocessed",
+                 "systemRole",
+                 "emailNotificationsForAllMessages",
+                 "emailNotificationsForAllMessagesDigestDeliveredAt",
+                 "emailNotificationsForMentionsAt",
+                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                 "emailNotificationsForMessagesInConversationsYouStartedAt"
           FROM "users"
           WHERE "id" = ${userId}
         `
       )!;
 
-      if (
-        actionAllowedToUserWithUnverifiedEmail !== true &&
-        response.locals.user.emailVerifiedAt === null
-      )
-        return response.send(
-          application.locals.layouts.box({
-            request,
-            response,
-            head: html` <title>Email Verification · Courselore</title> `,
-            body: html`
-              <h2 class="heading">
-                <i class="bi bi-person-check-fill"></i>
-                Email Verification
-              </h2>
-
-              <p>
-                Please verify your email by following the link sent to
-                <span class="strong">${response.locals.user.email}</span>
-              </p>
-
-              <hr class="separator" />
-
-              <form
-                method="POST"
-                action="https://${application.configuration
-                  .hostname}/resend-email-verification${qs.stringify(
-                  { redirect: request.originalUrl.slice(1) },
-                  { addQueryPrefix: true }
-                )}"
-              >
-                Didn’t receive the email? Already checked your spam folder?
-                <button class="link">Resend</button>
-              </form>
-
-              <hr class="separator" />
-
-              <p>
-                Have the wrong email address?
-                <button
-                  class="link"
-                  onload="${javascript`
-                    this.onclick = () => {
-                      document.querySelector('[key="update-email"]').hidden = false;
-                    };
-                `}"
-                >
-                  Update email
-                </button>
-              </p>
-
-              <form
-                key="update-email"
-                method="PATCH"
-                action="https://${application.configuration
-                  .hostname}/settings/email-and-password${qs.stringify(
-                  { redirect: request.originalUrl.slice(1) },
-                  { addQueryPrefix: true }
-                )}"
-                hidden
-                novalidate
-                css="${response.locals.css(css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `)}"
-              >
-                <label class="label">
-                  <p class="label--text">Email</p>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="you@educational-institution.edu"
-                    value="${response.locals.user.email}"
-                    required
-                    class="input--text"
-                    onload="${javascript`
-                      this.onvalidate = () => {
-                        if (!leafac.isModified(this))
-                          return "Please provide the email address to which you’d like to update.";
-                      };
-                    `}"
-                  />
-                </label>
-                <div class="label">
-                  <p class="label--text">
-                    Password Confirmation
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          trigger: "click",
-                          content: "You must confirm your email because this is an important operation that affects your account.",
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </p>
-                  <input
-                    type="password"
-                    name="passwordConfirmation"
-                    required
-                    class="input--text"
-                  />
-                </div>
-
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-pencil-fill"></i>
-                    Update Email
-                  </button>
-                </div>
-              </form>
-
-              $${application.configuration.demonstration
-                ? (() => {
-                    let emailVerification = application.database.get<{
-                      nonce: string;
-                    }>(
-                      sql`
-                        SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                      `
-                    );
-                    if (emailVerification === undefined) {
-                      application.server.locals.helpers.emailVerification({
-                        request,
-                        response,
-                        userId: response.locals.user.id,
-                        userEmail: response.locals.user.email,
-                      });
-                      emailVerification = application.database.get<{
-                        nonce: string;
-                      }>(
-                        sql`
-                          SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                        `
-                      )!;
-                    }
-                    return html`
-                      <hr class="separator" />
-
-                      <p
-                        css="${response.locals.css(css`
-                          font-weight: var(--font-weight--bold);
-                        `)}"
-                      >
-                        This Courselore installation is running in demonstration
-                        mode and doesn’t send emails.
-                        <a
-                          href="https://${application.configuration
-                            .hostname}/email-verification/${emailVerification.nonce}${qs.stringify(
-                            { redirect: request.originalUrl.slice(1) },
-                            { addQueryPrefix: true }
-                          )}"
-                          class="link"
-                          >Verify email</a
-                        >
-                      </p>
-                    `;
-                  })()
-                : html``}
-            `,
-          })
-        );
+      if (response.locals.user.emailVerifiedAt === null)
+        return next("Email Not Verified");
 
       response.locals.invitations = application.database
         .all<{
@@ -595,17 +442,17 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT "invitations"."id",
-                    "courses"."id" AS "courseId",
-                    "courses"."reference" AS "courseReference",
-                    "courses"."archivedAt" AS "courseArchivedAt",
-                    "courses"."name" AS "courseName",
-                    "courses"."year" AS "courseYear",
-                    "courses"."term" AS "courseTerm",
-                    "courses"."institution" AS "courseInstitution",
-                    "courses"."code" AS "courseCode",
-                    "courses"."nextConversationReference" AS "courseNextConversationReference",
-                    "invitations"."reference",
-                    "invitations"."courseRole"
+                   "courses"."id" AS "courseId",
+                   "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
+                   "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "invitations"."reference",
+                   "invitations"."courseRole"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
@@ -652,18 +499,18 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT "enrollments"."id",
-                    "courses"."id" AS "courseId",
-                    "courses"."reference" AS "courseReference",
-                    "courses"."archivedAt" AS "courseArchivedAt",
-                    "courses"."name" AS "courseName",
-                    "courses"."year" AS "courseYear",
-                    "courses"."term" AS "courseTerm",
-                    "courses"."institution" AS "courseInstitution",
-                    "courses"."code" AS "courseCode",
-                    "courses"."nextConversationReference" AS "courseNextConversationReference",
-                    "enrollments"."reference",
-                    "enrollments"."courseRole",
-                    "enrollments"."accentColor"
+                   "courses"."id" AS "courseId",
+                   "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
+                   "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "enrollments"."reference",
+                   "enrollments"."courseRole",
+                   "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${response.locals.user.id}
@@ -689,6 +536,20 @@ export default async (application: Application): Promise<void> => {
           accentColor: enrollment.accentColor,
         }));
 
+      response.locals.administrationOptions =
+        application.database.get<{
+          latestVersion: string;
+          userSystemRolesWhoMayCreateCourses: UserSystemRolesWhoMayCreateCourses;
+        }>(
+          sql`
+            SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
+            FROM "administrationOptions"
+          `
+        ) ??
+        (() => {
+          throw new Error("Failed to get ‘administrationOptions’.");
+        })();
+
       response.locals.mayCreateCourses =
         response.locals.administrationOptions
           .userSystemRolesWhoMayCreateCourses === "all" ||
@@ -701,42 +562,19 @@ export default async (application: Application): Promise<void> => {
           .userSystemRolesWhoMayCreateCourses === "administrators" &&
           response.locals.user.systemRole === "administrator");
 
-      next();
-    }
-  );
-
-  application.locals.middlewares.hasPasswordConfirmation = [
-    ...application.locals.middlewares.isSignedIn,
-    asyncHandler(async (request, response, next) => {
       if (
-        typeof request.body.passwordConfirmation !== "string" ||
-        request.body.passwordConfirmation.trim() === ""
-      )
-        return next("Validation");
-
-      if (
-        !(await argon2.verify(
+        typeof request.body.passwordConfirmation === "string" &&
+        request.body.passwordConfirmation.trim() !== "" &&
+        (await argon2.verify(
           response.locals.user.password,
           request.body.passwordConfirmation
         ))
-      ) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`Incorrect password confirmation.`,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${
-            response.locals.hasPasswordConfirmationRedirect ?? ""
-          }`
-        );
-      }
+      )
+        response.locals.passwordConfirmed = true;
 
       next();
-    }),
-  ];
+    })
+  );
 
   (() => {
     const handler: express.RequestHandler<
