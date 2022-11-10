@@ -13,7 +13,6 @@ import { execa, ExecaChildProcess } from "execa";
 import caddyfile from "dedent";
 import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
-export { ResponseLocalsLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
@@ -104,7 +103,8 @@ export type Application = {
   ApplicationBase &
   ApplicationLayouts &
   ApplicationAuthentication &
-  ApplicationAdministration & { // ApplicationUser &
+  ApplicationAdministration & {
+    // ApplicationUser &
     // TODO
     server: {
       locals: {

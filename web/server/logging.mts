@@ -2,10 +2,15 @@ import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
   log(...messageParts: string[]): void;
-};
-
-export type ResponseLocalsLogging = {
-  log(...messageParts: string[]): void;
+  server: {
+    locals: {
+      ResponseLocals: {
+        Logging: {
+          log(...messageParts: string[]): void;
+        };
+      };
+    };
+  };
 };
 
 export default async (application: Application): Promise<void> => {
@@ -36,34 +41,38 @@ export default async (application: Application): Promise<void> => {
 
   application.server.enable("trust proxy");
 
-  application.server.use<{}, any, {}, {}, ResponseLocalsLogging>(
-    (request, response, next) => {
-      if (response.locals.log !== undefined) return next();
-      const id = Math.random().toString(36).slice(2);
-      const time = process.hrtime.bigint();
-      response.locals.log = (...messageParts) => {
-        application.log(
-          id,
-          `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
-          request.ip,
-          request.method,
-          request.originalUrl,
-          ...messageParts
-        );
-      };
-      const log = response.locals.log.bind(response);
-      log("STARTING...");
-      response.once("close", () => {
-        const contentLength = response.getHeader("Content-Length");
-        log(
-          "FINISHED",
-          String(response.statusCode),
-          ...(typeof contentLength === "string"
-            ? [`${Math.ceil(Number(contentLength) / 1000)}kB`]
-            : [])
-        );
-      });
-      next();
-    }
-  );
+  application.server.use<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+  >((request, response, next) => {
+    if (response.locals.log !== undefined) return next();
+    const id = Math.random().toString(36).slice(2);
+    const time = process.hrtime.bigint();
+    response.locals.log = (...messageParts) => {
+      application.log(
+        id,
+        `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
+        request.ip,
+        request.method,
+        request.originalUrl,
+        ...messageParts
+      );
+    };
+    const log = response.locals.log.bind(response);
+    log("STARTING...");
+    response.once("close", () => {
+      const contentLength = response.getHeader("Content-Length");
+      log(
+        "FINISHED",
+        String(response.statusCode),
+        ...(typeof contentLength === "string"
+          ? [`${Math.ceil(Number(contentLength) / 1000)}kB`]
+          : [])
+      );
+    });
+    next();
+  });
 };

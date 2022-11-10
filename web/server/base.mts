@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
-import { Application, ResponseLocalsLogging } from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ApplicationBase = {
   server: {
@@ -15,10 +15,11 @@ export type ApplicationBase = {
   };
 };
 
-export type ResponseLocalsBase = ResponseLocalsLogging & {
-  css: ReturnType<typeof localCSS>;
-  html: ReturnType<typeof HTMLForJavaScript>;
-};
+export type ResponseLocalsBase =
+  Application["server"]["locals"]["ResponseLocals"]["Logging"] & {
+    css: ReturnType<typeof localCSS>;
+    html: ReturnType<typeof HTMLForJavaScript>;
+  };
 
 export default async (application: Application): Promise<void> => {
   application.server.use<{}, any, {}, {}, ResponseLocalsBase>(
