@@ -824,12 +824,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference", (request, response, next) => {
-    if (
-      response.locals.user === undefined ||
-      response.locals.user.emailVerifiedAt === null ||
-      response.locals.course === undefined
-    )
-      return next();
+    if (response.locals.course === undefined) return next();
 
     if (response.locals.conversationsCount === 0)
       return response.send(
@@ -917,22 +912,20 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >(
-    "/courses/:courseReference/settings",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response) => {
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/courses/${
-          response.locals.course.reference
-        }/settings/${
-          response.locals.enrollment.courseRole === "staff"
-            ? "course-information"
-            : "your-enrollment"
-        }`
-      );
-    }
-  );
+  >("/courses/:courseReference/settings", (request, response, next) => {
+    if (response.locals.course === undefined) return next();
+
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/courses/${
+        response.locals.course.reference
+      }/settings/${
+        response.locals.enrollment.courseRole === "staff"
+          ? "course-information"
+          : "your-enrollment"
+      }`
+    );
+  });
 
   const courseSettingsLayout = ({
     request,

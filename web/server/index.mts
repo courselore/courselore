@@ -89,6 +89,9 @@ export type Application = {
     // TODO
     server: {
       locals: {
+        layouts: {
+          conversation: Function;
+        };
         partials: {
           contentPreprocessed: any;
           content: Function;
