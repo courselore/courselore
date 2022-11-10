@@ -18,7 +18,7 @@ import {
 
 export type Enrollment = {
   id: number;
-  user: User;
+  user: Application["server"]["locals"]["Types"]["User"];
   reference: string;
   courseRole: CourseRole;
 };
