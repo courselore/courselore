@@ -1139,15 +1139,27 @@ export default async (application: Application): Promise<void> => {
         request.files?.avatar === undefined ||
         Array.isArray(request.files.avatar)
       )
-        return next("Validation");
+        return response
+          .status(422)
+          .send(
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
+          );
+
+      const name = filenamify(request.files.avatar.name, { replacement: "-" });
+      if (name.trim() === "")
+        return response
+          .status(422)
+          .send(
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
+          );
+
       if (!request.files.avatar.mimetype.startsWith("image/"))
         return response.status(413).send("The avatar must be an image.");
       if (request.files.avatar.truncated)
         return response
           .status(413)
           .send("The avatar must be smaller than 10MB.");
-      const name = filenamify(request.files.avatar.name, { replacement: "-" });
-      if (name.trim() === "") return next("Validation");
+
       const folder = cryptoRandomString({
         length: 20,
         type: "numeric",
@@ -1155,9 +1167,12 @@ export default async (application: Application): Promise<void> => {
       await request.files.avatar.mv(
         path.join(
           application.configuration.dataDirectory,
-          `files/${folder}/${name}`
+          "files",
+          folder,
+          name
         )
       );
+
       const extension = path.extname(name);
       const nameAvatar = `${name.slice(
         0,
@@ -1174,33 +1189,25 @@ export default async (application: Application): Promise<void> => {
           .toFile(
             path.join(
               application.configuration.dataDirectory,
-              `files/${folder}/${nameAvatar}`
+              "files",
+              folder,
+              nameAvatar
             )
           );
       } catch (error) {
-        return next("Validation");
-      }
-      response.send(
-        `https://${
-          application.configuration.hostname
-        }/files/${folder}/${encodeURIComponent(nameAvatar)}`
-      );
-    }),
-    ((error, request, response, next) => {
-      if (error === "Validation")
         return response
           .status(422)
           .send(
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
           );
-      next(error);
-    }) as express.ErrorRequestHandler<
-      {},
-      any,
-      {},
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"]
-    >
+      }
+
+      response.send(
+        `https://${
+          application.configuration.hostname
+        }/files/${folder}/${encodeURIComponent(nameAvatar)}`
+      );
+    })
   );
 
   application.server.get<
