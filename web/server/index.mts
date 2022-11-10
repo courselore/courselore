@@ -89,7 +89,6 @@ export type Application = {
     server: {
       locals: {
         partials: {
-          user: any;
           course: any;
           courses: any;
           courseArchived: any;
@@ -97,8 +96,6 @@ export type Application = {
           contentEditor: any;
         };
         helpers: {
-          userAvatarlessBackgroundColors: ["example"];
-          userEmailNotificationsForAllMessageses: ["example"];
           courseRoles: ["example"];
           enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
