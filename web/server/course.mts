@@ -4115,7 +4115,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  type MayManageEnrollmentLocals =
+  type ResponseLocalsManagedEnrollment =
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
       managedEnrollment: {
         id: number;
@@ -4123,13 +4123,15 @@ export default async (application: Application): Promise<void> => {
         isSelf: boolean;
       };
     };
-  const mayManageEnrollmentMiddleware: express.RequestHandler<
+
+  application.server.use<
     { courseReference: string; enrollmentReference: string },
     any,
     {},
     {},
-    MayManageEnrollmentLocals
-  >[] = [
+    ResponseLocalsManagedEnrollment
+  >(
+    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
@@ -4149,11 +4151,12 @@ export default async (application: Application): Promise<void> => {
             "reference" = ${request.params.enrollmentReference}
         `
       );
-      if (managedEnrollment === undefined) return next("route");
+      if (managedEnrollment === undefined) return next();
       response.locals.managedEnrollment = {
         ...managedEnrollment,
         isSelf: managedEnrollment.id === response.locals.enrollment.id,
       };
+
       if (
         response.locals.managedEnrollment.isSelf &&
         application.database.get<{ count: number }>(
@@ -4167,9 +4170,10 @@ export default async (application: Application): Promise<void> => {
         )!.count === 1
       )
         return next("Validation");
+
       next();
-    },
-  ];
+    }
+  );
 
   application.server.patch<
     { courseReference: string; enrollmentReference: string },
@@ -4178,14 +4182,20 @@ export default async (application: Application): Promise<void> => {
       courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
     },
     {},
-    MayManageEnrollmentLocals
+    ResponseLocalsManagedEnrollment
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
     (request, response, next) => {
+      if (response.locals.managedEnrollment === undefined) return next();
+
       if (typeof request.body.courseRole === "string") {
-        if (!courseRoles.includes(request.body.courseRole))
+        if (
+          !application.server.locals.helpers.courseRoles.includes(
+            request.body.courseRole
+          )
+        )
           return next("Validation");
+
         application.database.run(
           sql`UPDATE "enrollments" SET "courseRole" = ${request.body.courseRole} WHERE "id" = ${response.locals.managedEnrollment.id}`
         );
@@ -4205,7 +4215,18 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -4214,11 +4235,12 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    MayManageEnrollmentLocals
+    ResponseLocalsManagedEnrollment
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.managedEnrollment === undefined) return next();
+
       application.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${response.locals.managedEnrollment.id}`
       );
@@ -4242,7 +4264,18 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -4254,8 +4287,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       response.send(
         layoutCourseSettings({
           request,
@@ -4309,7 +4343,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--2);
                   `)}"
                 >
-                  $${enrollmentAccentColors.map(
+                  $${application.server.locals.helpers.enrollmentAccentColors.map(
                     (accentColor) => html`
                       <input
                         type="radio"
@@ -4375,11 +4409,14 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       if (
         typeof request.body.accentColor !== "string" ||
-        !enrollmentAccentColors.includes(request.body.accentColor)
+        !application.server.locals.helpers.enrollmentAccentColors.includes(
+          request.body.accentColor
+        )
       )
         return next("Validation");
 
