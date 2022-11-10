@@ -82,7 +82,11 @@ export default async (application: Application): Promise<void> => {
   application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/administration",
     (request, response, next) => {
-      if (response.locals.user?.systemRole !== "administrator") return next();
+      if (
+        response.locals.user?.systemRole !== "administrator" ||
+        typeof response.locals.user?.emailVerifiedAt !== "string"
+      )
+        return next();
 
       response.redirect(
         303,
@@ -146,7 +150,11 @@ export default async (application: Application): Promise<void> => {
   application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
     "/administration/system-settings",
     (request, response, next) => {
-      if (response.locals.user?.systemRole !== "administrator") return next();
+      if (
+        response.locals.user?.systemRole !== "administrator" ||
+        typeof response.locals.user?.emailVerifiedAt !== "string"
+      )
+        return next();
 
       response.send(
         administrationLayout({
@@ -263,7 +271,11 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsSignedIn
   >("/administration/system-settings", (request, response, next) => {
-    if (response.locals.user?.systemRole !== "administrator") return next();
+    if (
+      response.locals.user?.systemRole !== "administrator" ||
+      typeof response.locals.user?.emailVerifiedAt !== "string"
+    )
+      return next();
 
     if (
       typeof request.body.userSystemRolesWhoMayCreateCourses !== "string" ||
@@ -316,7 +328,11 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsSignedIn
   >("/administration/users", (request, response, next) => {
-    if (response.locals.user?.systemRole !== "administrator") return next();
+    if (
+      response.locals.user?.systemRole !== "administrator" ||
+      typeof response.locals.user?.emailVerifiedAt !== "string"
+    )
+      return next();
 
     const users = application.database.all<{
       id: number;
@@ -708,7 +724,11 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsSignedIn
   >("/users/:userReference", (request, response, next) => {
-    if (response.locals.user?.systemRole !== "administrator") return next();
+    if (
+      response.locals.user?.systemRole !== "administrator" ||
+      typeof response.locals.user?.emailVerifiedAt !== "string"
+    )
+      return next();
 
     const managedUser = application.database.get<{
       id: number;
