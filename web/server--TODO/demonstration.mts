@@ -7,18 +7,7 @@ import casual from "casual";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import {
-  Courselore,
-  userAvatarlessBackgroundColors,
-  userEmailNotificationsForAllMessageses,
-  CourseRole,
-  courseRoles,
-  enrollmentAccentColors,
-  ConversationParticipants,
-  conversationParticipantses,
-  ConversationType,
-  conversationTypes,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
   if (!app.configuration.demonstration) return;
@@ -28,9 +17,13 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   > = asyncHandler(async (req, res) => {
-    const password = await argon2.hash("courselore", app.server.locals.configuration.argon2);
+    const password = await argon2.hash(
+      "courselore",
+      app.server.locals.configuration.argon2
+    );
     const avatarIndices = lodash.shuffle(lodash.range(250));
     const users = lodash.times(151, (userIndex) => {
       const name = casual.full_name;
@@ -217,7 +210,7 @@ export default async (app: Courselore): Promise<void> => {
       const enrollment = app.database.get<{
         id: number;
         reference: string;
-        courseRole: CourseRole;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
@@ -306,7 +299,7 @@ export default async (app: Courselore): Promise<void> => {
             app.database.get<{
               id: number;
               reference: string;
-              courseRole: CourseRole;
+              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
@@ -1413,13 +1406,25 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     res.redirect(303, `https://${app.configuration.hostname}`);
   });
 
-  app.server.post<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
+  app.server.post<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >(
     "/demonstration-data",
     ...app.server.locals.middlewares.isSignedOut,
     handler
   );
 
-  app.server.post<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  app.server.post<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/demonstration-data",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;

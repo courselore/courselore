@@ -29,12 +29,7 @@ import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import got from "got";
-import {
-  Courselore,
-  CourseRole,
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
-  IsConversationAccessibleLocals,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export type ContentPreprocessedPartial = (contentSource: string) => {
   contentPreprocessed: string;
@@ -54,9 +49,18 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >
   >;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>>;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >
+  >;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -80,13 +84,17 @@ export type ContentEditorPartial = ({
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]> &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      > &
       Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]> &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      > &
       Partial<IsConversationAccessibleLocals>
   >;
   name?: string;
@@ -276,7 +284,10 @@ export default async (app: Courselore): Promise<void> => {
         {},
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
-      const responseCourseEnrolled = res as express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+      const responseCourseEnrolled = res as express.Response<
+        any,
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >;
 
       for (const element of contentElement.querySelectorAll("a")) {
         const href = element.getAttribute("href");
@@ -377,7 +388,7 @@ export default async (app: Courselore): Promise<void> => {
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
-                    courseRole: CourseRole;
+                    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
                   }>(
                     sql`
                       SELECT
@@ -396,9 +407,7 @@ export default async (app: Courselore): Promise<void> => {
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${
-                        res.locals.course!.id
-                      } AND
+                        "enrollments"."course" = ${res.locals.course!.id} AND
                         "enrollments"."reference" = ${enrollmentReference}
                     `
                   );
@@ -467,8 +476,8 @@ export default async (app: Courselore): Promise<void> => {
               if (message === undefined) return match;
               return html`<a
                 class="reference"
-                href="https://${app.configuration.hostname}/courses/${res
-                  .locals.course!
+                href="https://${app.configuration.hostname}/courses/${res.locals
+                  .course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
                     conversations: req.query.conversations,
@@ -2223,7 +2232,8 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+        Partial<IsConversationAccessibleLocals>
     > = (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2245,7 +2255,7 @@ ${contentSource}</textarea
           userBiographyPreprocessed: HTML | null;
           userNameSearchResultHighlight: string;
           reference: string;
-          courseRole: CourseRole;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT
@@ -2631,9 +2641,7 @@ ${contentSource}</textarea
             )}
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${
-              res.locals.course.id
-            }
+            "conversations"."course" = ${res.locals.course.id}
           $${
             res.locals.enrollment.courseRole === "staff"
               ? sql``
@@ -2724,9 +2732,7 @@ ${contentSource}</textarea
             )}
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${
-              res.locals.course.id
-            }
+            "conversations"."course" = ${res.locals.course.id}
           ORDER BY
             "messagesContentSearchIndex"."rank" ASC,
             "messages"."id" DESC
@@ -2792,7 +2798,13 @@ ${contentSource}</textarea
     }
   );
 
-  app.server.post<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  app.server.post<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/content-editor/attachments",
     ...app.server.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
@@ -2875,7 +2887,10 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+      Application["server"]["locals"]["ResponseLocals"]["Base"] &
+        Partial<
+          Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        >
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2910,13 +2925,25 @@ ${contentSource}</textarea
       handler
     );
 
-    app.server.post<{}, any, { content?: string }, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+    app.server.post<
+      {},
+      any,
+      { content?: string },
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >(
       "/content-editor/preview",
       ...app.server.locals.middlewares.isSignedIn,
       handler
     );
 
-    app.server.post<{}, any, { content?: string }, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
+    app.server.post<
+      {},
+      any,
+      { content?: string },
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Base"]
+    >(
       "/content-editor/preview",
       ...app.server.locals.middlewares.isSignedOut,
       handler

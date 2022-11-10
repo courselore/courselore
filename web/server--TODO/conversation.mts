@@ -9,13 +9,7 @@ import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import {
-  Courselore,
-  ResponseLocalsLiveUpdates,
-  Enrollment,
-  CourseRole,
-  IsCourseStaffLocals,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export type ConversationParticipants =
   typeof conversationParticipantses[number];
@@ -150,7 +144,7 @@ export type GetConversationHelper = ({
       title: string;
       titleSearch: string;
       nextMessageReference: number;
-      selectedParticipants: Enrollment[];
+      selectedParticipants: Application["server"]["locals"]["Types"]["Enrollment"][];
       taggings: {
         id: number;
         tag: {
@@ -2686,7 +2680,7 @@ export default async (app: Courselore): Promise<void> => {
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentCourseRole: CourseRole | null;
+      authorEnrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
       participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
@@ -2808,7 +2802,7 @@ export default async (app: Courselore): Promise<void> => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string;
-              enrollmentCourseRole: CourseRole;
+              enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 SELECT
@@ -2929,7 +2923,7 @@ export default async (app: Courselore): Promise<void> => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
-              enrollmentCourseRole: CourseRole | null;
+              enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
             }>(
               sql`
                 SELECT
@@ -3480,7 +3474,7 @@ export default async (app: Courselore): Promise<void> => {
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
-                    courseRole: CourseRole;
+                    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
                   }>(
                     sql`
                       SELECT
@@ -4583,7 +4577,7 @@ export default async (app: Courselore): Promise<void> => {
           ? []
           : app.database.all<{
               id: number;
-              courseRole: CourseRole;
+              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 SELECT "id", "courseRole"
@@ -6153,7 +6147,7 @@ export default async (app: Courselore): Promise<void> => {
                               userBiographySource: string | null;
                               userBiographyPreprocessed: HTML | null;
                               reference: string;
-                              courseRole: CourseRole;
+                              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
                             }>(
                               sql`
                                 SELECT
@@ -9285,7 +9279,7 @@ export default async (app: Courselore): Promise<void> => {
             ? []
             : app.database.all<{
                 id: number;
-                courseRole: CourseRole;
+                courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
                   SELECT "id", "courseRole"

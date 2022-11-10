@@ -5,14 +5,7 @@ import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
-import {
-  Courselore,
-  CourseRole,
-  IsCourseStaffLocals,
-  ConversationParticipants,
-  ConversationType,
-  IsConversationAccessibleLocals,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export type GetMessageHelper = ({
   req,
@@ -167,7 +160,7 @@ export default async (app: Courselore): Promise<void> => {
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentCourseRole: CourseRole | null;
+      authorEnrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
@@ -272,7 +265,7 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: CourseRole | null;
+        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
       }>(
         sql`
           SELECT
@@ -346,7 +339,7 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: CourseRole | null;
+        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
       }>(
         sql`
           SELECT
@@ -419,7 +412,7 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: CourseRole | null;
+        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
       }>(
         sql`
           SELECT
@@ -1516,7 +1509,7 @@ export default async (app: Courselore): Promise<void> => {
             userEmail: string;
             userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
             reference: string;
-            courseRole: CourseRole;
+            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
           }>(
             sql`
               SELECT

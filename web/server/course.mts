@@ -10,129 +10,119 @@ import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import QRCode from "qrcode";
 import got from "got";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
-export type Enrollment = {
-  id: number;
-  user: Application["server"]["locals"]["Types"]["User"];
-  reference: string;
-  courseRole: CourseRole;
+export type ApplicationCourse = {
+  server: {
+    locals: {
+      Types: {
+        Enrollment: {
+          id: number;
+          user: Application["server"]["locals"]["Types"]["User"];
+          reference: string;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        };
+        MaybeEnrollment:
+          | Application["server"]["locals"]["Types"]["Enrollment"]
+          | "no-longer-enrolled";
+      };
+      ResponseLocals: {
+        CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+          actionAllowedOnArchivedCourse?: boolean;
+          enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+          course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+          courseEnrollmentsCount: number;
+          conversationsCount: number;
+          tags: {
+            id: number;
+            reference: string;
+            name: string;
+            staffOnlyAt: string | null;
+          }[];
+        };
+      };
+      partials: {
+        course({
+          req,
+          res,
+          course,
+          enrollment,
+          tight,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+          res: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+          course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+          enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+          tight?: boolean;
+        }): HTML;
+        courses({
+          req,
+          res,
+          tight,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
+          >;
+          res: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
+          >;
+          tight?: boolean;
+        }): HTML;
+        courseArchived({
+          req,
+          res,
+        }: {
+          req: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+          res: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+        }): HTML;
+      };
+      helpers: {
+        courseRoles: ["student", "staff"];
+        enrollmentAccentColors: [
+          "red",
+          "yellow",
+          "emerald",
+          "sky",
+          "violet",
+          "pink"
+        ];
+      };
+    };
+  };
 };
 
-// export type Application["server"]["locals"]["Types"]["MaybeEnrollment"] = Enrollment | "no-longer-enrolled";
-
-export type CourseRole = typeof courseRoles[number];
-export const courseRoles = ["student", "staff"] as const;
-
-export type EnrollmentAccentColor = typeof enrollmentAccentColors[number];
-export const enrollmentAccentColors = [
-  "red",
-  "yellow",
-  "emerald",
-  "sky",
-  "violet",
-  "pink",
-] as const;
-
-export type CoursePartial = ({
-  req,
-  res,
-  course,
-  enrollment,
-  tight,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >;
-  res: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >;
-  course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
-  enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
-  tight?: boolean;
-}) => HTML;
-
-export type CoursesPartial = ({
-  req,
-  res,
-  tight,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      >
-  >;
-  res: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      >
-  >;
-  tight?: boolean;
-}) => HTML;
-
-export type CourseArchivedPartial = ({
-  req,
-  res,
-}: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >;
-  res: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >;
-}) => HTML;
-
-export type IsEnrolledInCourseMiddleware = express.RequestHandler<
-  { courseReference: string },
-  any,
-  {},
-  {},
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
->[];
-// export type Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] = Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-//   actionAllowedOnArchivedCourse?: boolean;
-//   enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
-//   course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
-//   courseEnrollmentsCount: number;
-//   conversationsCount: number;
-//   tags: {
-//     id: number;
-//     reference: string;
-//     name: string;
-//     staffOnlyAt: string | null;
-//   }[];
-// };
-
-export type IsCourseStaffMiddleware = express.RequestHandler<
-  { courseReference: string },
-  any,
-  {},
-  {},
-  IsCourseStaffLocals
->[];
-export type IsCourseStaffLocals =
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"];
-
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   const courseRoleIcon: {
-    [courseRole in CourseRole]: {
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -148,7 +138,7 @@ export default async (app: Courselore): Promise<void> => {
   };
 
   const courseRoleTextColor: {
-    [courseRole in CourseRole]: string;
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
   } = {
     student: "",
     staff: "text--sky",
@@ -700,13 +690,13 @@ export default async (app: Courselore): Promise<void> => {
       any,
       Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
-  }): EnrollmentAccentColor => {
-    const accentColorsInUse = new Set<EnrollmentAccentColor>(
-      res.locals.enrollments.map((enrollment) => enrollment.accentColor)
-    );
-    const accentColorsAvailable = new Set<EnrollmentAccentColor>(
-      enrollmentAccentColors
-    );
+  }): Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number] => {
+    const accentColorsInUse = new Set<
+      Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number]
+    >(res.locals.enrollments.map((enrollment) => enrollment.accentColor));
+    const accentColorsAvailable = new Set<
+      Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number]
+    >(enrollmentAccentColors);
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
       if (accentColorsAvailable.size === 1) break;
@@ -1983,7 +1973,7 @@ export default async (app: Courselore): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: CourseRole;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "courseRole"
@@ -3047,7 +3037,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {
       type?: "link" | "email";
-      courseRole?: CourseRole;
+      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       expiresAt?: string;
       emails?: string;
     },
@@ -3183,7 +3173,7 @@ export default async (app: Courselore): Promise<void> => {
               reference: string;
               email: string;
               name: string | null;
-              courseRole: CourseRole;
+              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "courseRole")
@@ -3246,7 +3236,7 @@ export default async (app: Courselore): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: CourseRole;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       };
     };
   const invitationExistsMiddleware: express.RequestHandler<
@@ -3273,7 +3263,7 @@ export default async (app: Courselore): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: CourseRole;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT
@@ -3330,7 +3320,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {
       resend?: "true";
-      courseRole?: CourseRole;
+      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       expiresAt?: string;
       removeExpiration?: "true";
       expire?: "true";
@@ -3470,7 +3460,7 @@ export default async (app: Courselore): Promise<void> => {
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           reference: string;
-          courseRole: CourseRole;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT
@@ -4010,7 +4000,9 @@ export default async (app: Courselore): Promise<void> => {
   app.server.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
-    { courseRole?: CourseRole },
+    {
+      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+    },
     {},
     MayManageEnrollmentLocals
   >(
@@ -4200,7 +4192,9 @@ export default async (app: Courselore): Promise<void> => {
   app.server.patch<
     { courseReference: string },
     HTML,
-    { accentColor?: EnrollmentAccentColor },
+    {
+      accentColor?: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+    },
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(

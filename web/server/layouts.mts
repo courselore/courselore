@@ -14,7 +14,7 @@ export type ApplicationLayouts = {
   server: {
     locals: {
       layouts: {
-        base: ({
+        base({
           request,
           response,
           head,
@@ -41,8 +41,8 @@ export type ApplicationLayouts = {
           head: HTML;
           extraHeaders?: HTML;
           body: HTML;
-        }) => HTML;
-        box: ({
+        }): HTML;
+        box({
           request,
           response,
           head,
@@ -67,8 +67,8 @@ export type ApplicationLayouts = {
           >;
           head: HTML;
           body: HTML;
-        }) => HTML;
-        application: ({
+        }): HTML;
+        application({
           request,
           response,
           head,
@@ -97,8 +97,8 @@ export type ApplicationLayouts = {
           showCourseSwitcher?: boolean;
           extraHeaders?: HTML;
           body: HTML;
-        }) => HTML;
-        main: ({
+        }): HTML;
+        main({
           request,
           response,
           head,
@@ -125,8 +125,8 @@ export type ApplicationLayouts = {
           head: HTML;
           showCourseSwitcher?: boolean;
           body: HTML;
-        }) => HTML;
-        settings: ({
+        }): HTML;
+        settings({
           request,
           response,
           head,
@@ -149,8 +149,8 @@ export type ApplicationLayouts = {
           menuButton: HTML;
           menu: HTML;
           body: HTML;
-        }) => HTML;
-        partial: ({
+        }): HTML;
+        partial({
           request,
           response,
           body,
@@ -167,11 +167,11 @@ export type ApplicationLayouts = {
             Application["server"]["locals"]["ResponseLocals"]["Base"]
           >;
           body: HTML;
-        }) => HTML;
+        }): HTML;
       };
       partials: {
-        logo: (options?: { size?: number }) => HTML;
-        spinner: ({
+        logo(options?: { size?: number }): HTML;
+        spinner({
           request,
           response,
           size,
@@ -188,7 +188,7 @@ export type ApplicationLayouts = {
             Application["server"]["locals"]["ResponseLocals"]["Base"]
           >;
           size?: number;
-        }) => HTML;
+        }): HTML;
         reportIssueHref: string;
       };
       helpers: {
