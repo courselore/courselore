@@ -28,7 +28,6 @@ export type ApplicationCourse = {
       };
       ResponseLocals: {
         CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-          actionAllowedOnArchivedCourse?: boolean;
           enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
           course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
           courseEnrollmentsCount: number;
@@ -555,8 +554,8 @@ export default async (application: Application): Promise<void> => {
                   class="input--text"
                   autocomplete="off"
                   onload="${javascript`
-                      this.defaultValue = new Date().getFullYear().toString();
-                    `}"
+                    this.defaultValue = new Date().getFullYear().toString();
+                  `}"
                 />
               </label>
               <label class="label">
@@ -567,9 +566,9 @@ export default async (application: Application): Promise<void> => {
                   class="input--text"
                   autocomplete="off"
                   onload="${javascript`
-                      const month = new Date().getMonth() + 1;
-                      this.defaultValue = month < 4 || month > 9 ? "Spring" : "Fall";
-                    `}"
+                    const month = new Date().getMonth() + 1;
+                    this.defaultValue = month < 4 || month > 9 ? "Spring" : "Fall";
+                  `}"
                 />
               </label>
             </div>
@@ -642,67 +641,70 @@ export default async (application: Application): Promise<void> => {
     )
       return next("Validation");
 
-    const course = application.database.get<{
-      id: number;
-      reference: string;
-    }>(
-      sql`
-        INSERT INTO "courses" (
-          "createdAt",
-          "reference",
-          "name",
-          "year",
-          "term",
-          "institution",
-          "code",
-          "nextConversationReference"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${request.body.name},
-          ${
-            typeof request.body.year === "string" &&
-            request.body.year.trim() !== ""
-              ? request.body.year
-              : null
-          },
-          ${
-            typeof request.body.term === "string" &&
-            request.body.term.trim() !== ""
-              ? request.body.term
-              : null
-          },
-          ${
-            typeof request.body.institution === "string" &&
-            request.body.institution.trim() !== ""
-              ? request.body.institution
-              : null
-          },
-          ${
-            typeof request.body.code === "string" &&
-            request.body.code.trim() !== ""
-              ? request.body.code
-              : null
-          },
-          ${1}
-        )
-        RETURNING *
-      `
-    )!;
-    application.database.run(
-      sql`
-        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-        VALUES (
-          ${new Date().toISOString()},
-          ${response.locals.user.id},
-          ${course.id},
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${"staff"},
-          ${defaultAccentColor({ request, response })}
-        )
-      `
-    );
+    const course = application.database.executeTransaction(() => {
+      const course = application.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
+          INSERT INTO "courses" (
+            "createdAt",
+            "reference",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",
+            "nextConversationReference"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${request.body.name},
+            ${
+              typeof request.body.year === "string" &&
+              request.body.year.trim() !== ""
+                ? request.body.year
+                : null
+            },
+            ${
+              typeof request.body.term === "string" &&
+              request.body.term.trim() !== ""
+                ? request.body.term
+                : null
+            },
+            ${
+              typeof request.body.institution === "string" &&
+              request.body.institution.trim() !== ""
+                ? request.body.institution
+                : null
+            },
+            ${
+              typeof request.body.code === "string" &&
+              request.body.code.trim() !== ""
+                ? request.body.code
+                : null
+            },
+            ${1}
+          )
+          RETURNING *
+        `
+      )!;
+      application.database.run(
+        sql`
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+          VALUES (
+            ${new Date().toISOString()},
+            ${response.locals.user.id},
+            ${course.id},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${"staff"},
+            ${defaultAccentColor({ request, response })}
+          )
+        `
+      );
+      return course;
+    });
 
     response.redirect(
       303,
@@ -726,215 +728,188 @@ export default async (application: Application): Promise<void> => {
       Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
   }): Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number] => {
-    const accentColorsInUse = new Set<
-      Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number]
-    >(response.locals.enrollments.map((enrollment) => enrollment.accentColor));
-    const accentColorsAvailable = new Set<
-      Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number]
-    >(application.server.locals.helpers.enrollmentAccentColors);
-    for (const accentColorInUse of accentColorsInUse) {
-      accentColorsAvailable.delete(accentColorInUse);
+    const accentColorsAvailable = new Set(
+      application.server.locals.helpers.enrollmentAccentColors
+    );
+    for (const enrollment of response.locals.enrollments) {
+      accentColorsAvailable.delete(enrollment.accentColor);
       if (accentColorsAvailable.size === 1) break;
     }
     return [...accentColorsAvailable][0];
   };
 
-  application.server.locals.middlewares.isEnrolledInCourse = [
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response, next) => {
-      const actionAllowedOnArchivedCourse =
-        response.locals.actionAllowedOnArchivedCourse;
-      delete response.locals.actionAllowedOnArchivedCourse;
+  application.server.use<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >("/courses/:courseReference", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-      const enrollment = response.locals.enrollments.find(
-        (enrollment) =>
-          enrollment.course.reference === request.params.courseReference
-      );
-      if (enrollment === undefined) return next("route");
-      response.locals.enrollment = enrollment;
-      response.locals.course = enrollment.course;
+    const enrollment = response.locals.enrollments.find(
+      (enrollment) =>
+        enrollment.course.reference === request.params.courseReference
+    );
+    if (enrollment === undefined) return next();
+    response.locals.enrollment = enrollment;
+    response.locals.course = enrollment.course;
 
-      response.locals.courseEnrollmentsCount = application.database.get<{
-        count: number;
-      }>(
-        sql`
-          SELECT COUNT(*) AS "count"
-          FROM "enrollments"
-          WHERE "course" = ${response.locals.course.id}
-        `
-      )!.count;
+    response.locals.courseEnrollmentsCount = application.database.get<{
+      count: number;
+    }>(
+      sql`
+        SELECT COUNT(*) AS "count"
+        FROM "enrollments"
+        WHERE "course" = ${response.locals.course.id}
+      `
+    )!.count;
 
-      response.locals.conversationsCount = application.database.get<{
-        count: number;
-      }>(
-        sql`
-          SELECT COUNT(*) AS "count"
-          FROM "conversations"
-          WHERE
-            "course" = ${response.locals.course.id} AND (
-              "conversations"."participants" = 'everyone' $${
-                response.locals.enrollment.courseRole === "staff"
-                  ? sql`OR "conversations"."participants" = 'staff'`
-                  : sql``
-              } OR EXISTS(
-                SELECT TRUE
-                FROM "conversationSelectedParticipants"
-                WHERE
-                  "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                  "conversationSelectedParticipants"."enrollment" = ${
-                    response.locals.enrollment.id
-                  }
-              )
-            )
-        `
-      )!.count;
-
-      response.locals.tags = application.database.all<{
-        id: number;
-        reference: string;
-        name: string;
-        staffOnlyAt: string | null;
-      }>(
-        sql`
-          SELECT "id", "reference", "name", "staffOnlyAt"
-          FROM "tags"
-          WHERE
-            "course" = ${response.locals.course.id}
-            $${
-              response.locals.enrollment.courseRole === "student"
-                ? sql`AND "staffOnlyAt" IS NULL`
+    response.locals.conversationsCount = application.database.get<{
+      count: number;
+    }>(
+      sql`
+        SELECT COUNT(*) AS "count"
+        FROM "conversations"
+        WHERE
+          "course" = ${response.locals.course.id} AND (
+            "conversations"."participants" = 'everyone' $${
+              response.locals.enrollment.courseRole === "staff"
+                ? sql`OR "conversations"."participants" = 'staff'`
                 : sql``
-            }
-          ORDER BY "id" ASC
-        `
-      );
+            } OR EXISTS(
+              SELECT TRUE
+              FROM "conversationSelectedParticipants"
+              WHERE
+                "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                "conversationSelectedParticipants"."enrollment" = ${
+                  response.locals.enrollment.id
+                }
+            )
+          )
+      `
+    )!.count;
 
-      if (
-        response.locals.course.archivedAt !== null &&
-        !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
-        actionAllowedOnArchivedCourse !== true
-      ) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
+    response.locals.tags = application.database.all<{
+      id: number;
+      reference: string;
+      name: string;
+      staffOnlyAt: string | null;
+    }>(
+      sql`
+        SELECT "id", "reference", "name", "staffOnlyAt"
+        FROM "tags"
+        WHERE
+          "course" = ${response.locals.course.id}
+          $${
+            response.locals.enrollment.courseRole === "student"
+              ? sql`AND "staffOnlyAt" IS NULL`
+              : sql``
+          }
+        ORDER BY "id" ASC
+      `
+    );
 
-      next();
-    },
-  ];
-
-  application.server.locals.middlewares.isCourseStaff = [
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response, next) => {
-      if (response.locals.enrollment.courseRole === "staff") return next();
-      next("route");
-    },
-  ];
+    next();
+  });
 
   application.server.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      ResponseLocalsLiveUpdates
-  >(
-    "/courses/:courseReference",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    ...application.server.locals.middlewares.liveUpdates,
-    (request, response) => {
-      if (response.locals.conversationsCount === 0)
-        return response.send(
-          application.server.locals.layouts.main({
-            request,
-            response,
-            head: html`<title>
-              ${response.locals.course.name} · Courselore
-            </title>`,
-            body: html`
-              <div
-                css="${response.locals.css(css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                  align-items: center;
-                `)}"
-              >
-                <h2 class="heading--display">
-                  Welcome to ${response.locals.course.name}!
-                </h2>
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >("/courses/:courseReference", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.course === undefined
+    )
+      return next();
 
-                <div class="decorative-icon">
-                  <i class="bi bi-journal-text"></i>
-                </div>
-
-                <div class="menu-box">
-                  $${response.locals.enrollment.courseRole === "staff"
-                    ? html`
-                        <a
-                          href="https://${application.configuration
-                            .hostname}/courses/${response.locals.course
-                            .reference}/settings/tags"
-                          class="menu-box--item button button--blue"
-                        >
-                          <i class="bi bi-sliders"></i>
-                          Configure the Course
-                        </a>
-                      `
-                    : html``}
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/courses/${response.locals.course
-                      .reference}/conversations/new${qs.stringify(
-                      {
-                        newConversation: {
-                          type:
-                            response.locals.enrollment.courseRole === "staff"
-                              ? "note"
-                              : "question",
-                        },
-                      },
-                      { addQueryPrefix: true }
-                    )}"
-                    class="menu-box--item button ${response.locals.enrollment
-                      .courseRole === "staff"
-                      ? "button--transparent"
-                      : "button--blue"}"
-                  >
-                    $${response.locals.enrollment.courseRole === "staff"
-                      ? html`<i class="bi bi-chat-text"></i>`
-                      : html`<i class="bi bi-chat-text-fill"></i>`}
-                    Start the First Conversation
-                  </a>
-                </div>
-              </div>
-            `,
-          })
-        );
-
-      response.send(
-        application.server.locals.layouts.conversation({
+    if (response.locals.conversationsCount === 0)
+      return response.send(
+        application.server.locals.layouts.main({
           request,
           response,
           head: html`<title>
             ${response.locals.course.name} · Courselore
           </title>`,
-          sidebarOnSmallScreen: true,
-          body: html`<p class="secondary">No conversation selected.</p>`,
+          body: html`
+            <div
+              css="${response.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                align-items: center;
+              `)}"
+            >
+              <h2 class="heading--display">
+                Welcome to ${response.locals.course.name}!
+              </h2>
+
+              <div class="decorative-icon">
+                <i class="bi bi-journal-text"></i>
+              </div>
+
+              <div class="menu-box">
+                $${response.locals.enrollment.courseRole === "staff"
+                  ? html`
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/courses/${response.locals.course
+                          .reference}/settings/tags"
+                        class="menu-box--item button button--blue"
+                      >
+                        <i class="bi bi-sliders"></i>
+                        Configure the Course
+                      </a>
+                    `
+                  : html``}
+                <a
+                  href="https://${application.configuration
+                    .hostname}/courses/${response.locals.course
+                    .reference}/conversations/new${qs.stringify(
+                    {
+                      newConversation: {
+                        type:
+                          response.locals.enrollment.courseRole === "staff"
+                            ? "note"
+                            : "question",
+                      },
+                    },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="menu-box--item button ${response.locals.enrollment
+                    .courseRole === "staff"
+                    ? "button--transparent"
+                    : "button--blue"}"
+                >
+                  $${response.locals.enrollment.courseRole === "staff"
+                    ? html`<i class="bi bi-chat-text"></i>`
+                    : html`<i class="bi bi-chat-text-fill"></i>`}
+                  Start the First Conversation
+                </a>
+              </div>
+            </div>
+          `,
         })
       );
-    }
-  );
+
+    response.send(
+      application.server.locals.layouts.conversation({
+        request,
+        response,
+        head: html`<title>${response.locals.course.name} · Courselore</title>`,
+        sidebarOnSmallScreen: true,
+        body: html`<p class="secondary">No conversation selected.</p>`,
+      })
+    );
+  });
 
   application.server.get<
     { courseReference: string },
