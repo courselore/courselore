@@ -324,6 +324,7 @@ export default async (app: Application): Promise<void> => {
   `;
 
   app.server.locals.helpers.courseRoles = ["student", "staff"];
+
   app.server.locals.helpers.enrollmentAccentColors = [
     "red",
     "yellow",
