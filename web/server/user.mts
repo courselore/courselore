@@ -104,33 +104,6 @@ export type ApplicationUser = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.userAvatarlessBackgroundColors = [
-    "red",
-    "orange",
-    "amber",
-    "yellow",
-    "lime",
-    "green",
-    "emerald",
-    "teal",
-    "cyan",
-    "sky",
-    "blue",
-    "indigo",
-    "violet",
-    "purple",
-    "fuchsia",
-    "pink",
-    "rose",
-  ];
-
-  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
-    "none",
-    "instant",
-    "hourly-digests",
-    "daily-digests",
-  ];
-
   application.server.locals.partials.user = ({
     req,
     res,
@@ -648,6 +621,33 @@ export default async (application: Application): Promise<void> => {
       ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
       : html``;
   };
+
+  application.server.locals.helpers.userAvatarlessBackgroundColors = [
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
+  ];
+
+  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
+    "none",
+    "instant",
+    "hourly-digests",
+    "daily-digests",
+  ];
 
   application.server.get<
     {},
