@@ -14,7 +14,7 @@ import {
   ResponseLocalsLiveUpdates,
   Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
   Enrollment,
-  MaybeEnrollment,
+  Application["server"]["locals"]["Types"]["MaybeEnrollment"],
   CourseRole,
   Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
@@ -123,7 +123,7 @@ export type GetConversationHelper = ({
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollment: MaybeEnrollment;
+      authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
@@ -147,7 +147,7 @@ export type GetConversationHelper = ({
       readingsCount: number;
       endorsements: {
         id: number;
-        enrollment: MaybeEnrollment;
+        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       }[];
     }
   | undefined;

@@ -10,11 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import argon2 from "argon2";
 import got from "got";
-import {
-  Application,
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
-  MaybeEnrollment,
-} from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ApplicationUser = {
   server: {
@@ -39,14 +35,18 @@ export type ApplicationUser = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           res: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
-          enrollment?: MaybeEnrollment;
+          enrollment?: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
           user?: User | "no-longer-enrolled";
           anonymous?: boolean | "reveal";
           avatar?: boolean;
@@ -1876,10 +1876,10 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET
             "emailNotificationsForAllMessages" = ${
-            req.body.isEmailNotificationsForAllMessages === undefined
-              ? "none"
-              : "instant" /* TODO req.body.emailNotificationsForAllMessages */
-          },
+              req.body.isEmailNotificationsForAllMessages === undefined
+                ? "none"
+                : "instant" /* TODO req.body.emailNotificationsForAllMessages */
+            },
             "emailNotificationsForMentionsAt" = ${
               req.body.isEmailNotificationsForMentions === "on"
                 ? new Date().toISOString()

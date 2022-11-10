@@ -23,7 +23,7 @@ export type Enrollment = {
   courseRole: CourseRole;
 };
 
-export type MaybeEnrollment = Enrollment | "no-longer-enrolled";
+export type Application["server"]["locals"]["Types"]["MaybeEnrollment"] = Enrollment | "no-longer-enrolled";
 
 export type CourseRole = typeof courseRoles[number];
 export const courseRoles = ["student", "staff"] as const;

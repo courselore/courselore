@@ -9,7 +9,7 @@ import {
   Courselore,
   Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
   Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"],
-  MaybeEnrollment,
+  Application["server"]["locals"]["Types"]["MaybeEnrollment"],
   CourseRole,
   Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
@@ -36,7 +36,7 @@ export type GetMessageHelper = ({
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollment: MaybeEnrollment;
+      authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
@@ -46,16 +46,16 @@ export type GetMessageHelper = ({
       readings: {
         id: number;
         createdAt: string;
-        enrollment: MaybeEnrollment;
+        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       }[];
       endorsements: {
         id: number;
-        enrollment: MaybeEnrollment;
+        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       }[];
       likes: {
         id: number;
         createdAt: string;
-        enrollment: MaybeEnrollment;
+        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
       }[];
     }
   | undefined;
