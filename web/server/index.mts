@@ -26,7 +26,7 @@ import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
 import user, { ApplicationUser } from "./user.mjs";
-// import course, { ApplicationCourse } from "./course.mjs";
+import course, { ApplicationCourse } from "./course.mjs";
 // import conversation, { ApplicationConversation } from "./conversation.mjs";
 // import message from "./message.mjs";
 // import content from "./content.mjs";
@@ -84,32 +84,17 @@ export type Application = {
   ApplicationLayouts &
   ApplicationAuthentication &
   ApplicationAdministration &
-  ApplicationUser & {
+  ApplicationUser &
+  ApplicationCourse & {
     // TODO
     server: {
       locals: {
-        Types: {
-          MaybeEnrollment: any;
-        };
-        ResponseLocals: {
-          CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-            course: any;
-            enrollment: any;
-            enrollments: any;
-            invitations: any[];
-          };
-        };
         partials: {
-          course: any;
-          courses: any;
-          courseArchived: any;
           contentPreprocessed: any;
           content: Function;
           contentEditor: any;
         };
         helpers: {
-          courseRoles: ["example"];
-          enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
           emailRegExp: RegExp;
         };
@@ -255,7 +240,7 @@ if (
         await about(application);
         await administration(application);
         await user(application);
-        // await course(application);
+        await course(application);
         // await conversation(application);
         // await message(application);
         // await content(application);
