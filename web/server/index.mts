@@ -16,7 +16,6 @@ import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
-export { ResponseLocalsBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
 // export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";

@@ -10,7 +10,6 @@ import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
 import {
   Application,
-  ResponseLocalsBase,
   ResponseLocalsSignedIn,
   ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
@@ -31,11 +30,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           extraHeaders?: HTML;
@@ -52,11 +51,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           body: HTML;
@@ -127,8 +126,8 @@ export type ApplicationLayouts = {
           response,
           body,
         }: {
-          request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-          response: express.Response<any, ResponseLocalsBase>;
+          request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           body: HTML;
         }) => HTML;
       };
@@ -139,8 +138,8 @@ export type ApplicationLayouts = {
           response,
           size,
         }: {
-          request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-          response: express.Response<any, ResponseLocalsBase>;
+          request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           size?: number;
         }) => HTML;
         reportIssueHref: string;
@@ -154,8 +153,8 @@ export type ApplicationLayouts = {
             theme,
             content,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
             theme: string;
             content: HTML;
           }): void;
@@ -163,8 +162,8 @@ export type ApplicationLayouts = {
             request,
             response,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           }): { theme: string; content: HTML } | undefined;
         };
       };
@@ -909,7 +908,7 @@ export default async (application: Application): Promise<void> => {
   };
 
   if (application.configuration.environment !== "production")
-    application.server.delete<{}, any, {}, {}, ResponseLocalsBase>(
+    application.server.delete<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
       "/turn-off",
       (request, response) => {
         response.send(

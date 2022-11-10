@@ -12,7 +12,6 @@ import argon2 from "argon2";
 import got from "got";
 import {
   Application,
-  ResponseLocalsBase,
   ResponseLocalsSignedIn,
   ResponseLocalsCourseEnrolled,
   MaybeEnrollment,
@@ -40,11 +39,11 @@ export type ApplicationUser = {
             any,
             {},
             {},
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           res: express.Response<
             any,
-            ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
           >;
           enrollment?: MaybeEnrollment;
           user?: User | "no-longer-enrolled";
@@ -1145,7 +1144,7 @@ export default async (application: Application): Promise<void> => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>
   );
 
   application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(

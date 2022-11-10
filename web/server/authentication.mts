@@ -10,7 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
 import got from "got";
-import { Application, ResponseLocalsBase } from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
   server: {
@@ -26,31 +26,31 @@ export type ApplicationAuthentication = {
             response,
             userId,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
             userId: number;
           }): void;
           get({
             request,
             response,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           }): number | undefined;
           close({
             request,
             response,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           }): void;
           closeAllAndReopen({
             request,
             response,
             userId,
           }: {
-            request: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-            response: express.Response<any, ResponseLocalsBase>;
+            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
             userId: number;
           }): void;
         };
@@ -66,9 +66,9 @@ export type ApplicationAuthentication = {
             any,
             {},
             { redirect?: string },
-            ResponseLocalsBase
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
           >;
-          response: express.Response<any, ResponseLocalsBase>;
+          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
           userId: number;
           userEmail: string;
           welcome?: boolean;
@@ -78,7 +78,7 @@ export type ApplicationAuthentication = {
   };
 };
 
-export type ResponseLocalsSignedIn = ResponseLocalsBase & {
+export type ResponseLocalsSignedIn = Application["server"]["locals"]["ResponseLocals"]["Base"] & {
   user: {
     id: number;
     lastSeenOnlineAt: string;
@@ -567,7 +567,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >(["/", "/sign-in"], (request, response, next) => {
     if (
       response.locals.user !== undefined ||
@@ -687,7 +687,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >(
     "/sign-in",
     asyncHandler(async (request, response, next) => {
@@ -814,7 +814,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
@@ -916,7 +916,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { email?: string; resend?: "true" },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
@@ -1046,7 +1046,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >("/reset-password/:passwordResetNonce", (request, response) => {
     if (response.locals.user !== undefined) {
       application.server.locals.helpers.Flash.set({
@@ -1157,7 +1157,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >(
     "/reset-password/:passwordResetNonce",
     asyncHandler(async (request, response, next) => {
@@ -1286,7 +1286,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >("/sign-up", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
@@ -1422,7 +1422,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >(
     "/sign-up",
     asyncHandler(async (request, response, next) => {

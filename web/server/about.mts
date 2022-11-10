@@ -4,7 +4,6 @@ import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import {
   Application,
-  ResponseLocalsBase,
   ResponseLocalsSignedIn,
 } from "./index.mjs";
 
@@ -14,7 +13,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsBase & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
   >(["/", "/about"], (request, response, next) => {
     if (request.originalUrl === "/" && response.locals.user !== undefined)
       return next();

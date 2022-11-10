@@ -31,10 +31,7 @@ import lodash from "lodash";
 import got from "got";
 import {
   Courselore,
-  ResponseLocalsBase,
-  ResponseLocalsBase,
   ResponseLocalsSignedIn,
-  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
   CourseRole,
   ResponseLocalsCourseEnrolled,
   IsConversationAccessibleLocals,
@@ -58,9 +55,9 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
   >;
-  res: express.Response<any, ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>>;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -83,13 +80,13 @@ export type ContentEditorPartial = ({
     any,
     {},
     {},
-    ResponseLocalsBase &
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<ResponseLocalsCourseEnrolled> &
       Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
-    ResponseLocalsBase &
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<ResponseLocalsCourseEnrolled> &
       Partial<IsConversationAccessibleLocals>
   >;
@@ -2858,7 +2855,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      ResponseLocalsBase & Partial<ResponseLocalsCourseEnrolled>
+      Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2899,7 +2896,7 @@ ${contentSource}</textarea
       handler
     );
 
-    app.server.post<{}, any, { content?: string }, {}, ResponseLocalsBase>(
+    app.server.post<{}, any, { content?: string }, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
       "/content-editor/preview",
       ...app.server.locals.middlewares.isSignedOut,
       handler

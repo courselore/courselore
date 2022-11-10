@@ -5,17 +5,16 @@ import { sql } from "@leafac/sqlite";
 import got from "got";
 import {
   Application,
-  ResponseLocalsBase,
   ResponseLocalsCourseEnrolled,
 } from "./index.mjs";
 
 // TODO: "LIVE-UPDATES", liveUpdatesNonce
 
 // const liveConnections = new Set<{
-//   req: express.Request<{}, any, {}, {}, ResponseLocalsBase>;
-//   res: express.Response<any, ResponseLocalsBase>;
+//   req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+//   res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
 // }>();
-// app.server.get<{}, any, {}, {}, ResponseLocalsBase>(
+// app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
 //   "/live-connection",
 //   (req, res) => {
 //     const connection = { req, res };
@@ -327,7 +326,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.use<{}, any, {}, {}, ResponseLocalsBase>(
+  application.server.use<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
     (request, response, next) => {
       const nonce = request.header("Live-Updates-Abort");
       if (nonce === undefined) return next();

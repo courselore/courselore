@@ -3,13 +3,11 @@ import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import {
   Courselore,
-  ResponseLocalsBase,
-  ResponseLocalsBase,
   ResponseLocalsSignedIn,
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
-  app.all<{}, HTML, {}, {}, ResponseLocalsBase>(
+  app.all<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
     "*",
     ...app.server.locals.middlewares.isSignedOut,
     (req, res) => {
@@ -292,5 +290,5 @@ export default async (app: Courselore): Promise<void> => {
           `,
         })
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, ResponseLocalsBase>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>);
 };
