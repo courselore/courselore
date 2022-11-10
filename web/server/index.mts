@@ -29,8 +29,7 @@ import about from "./about.mjs";
 import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
-import user, { ApplicationUser } from "./user.mjs";
-export { User } from "./user.mjs";
+// import user, { ApplicationUser } from "./user.mjs";
 // import course from "./course.mjs";
 // export {
 //   Enrollment,
@@ -105,8 +104,7 @@ export type Application = {
   ApplicationBase &
   ApplicationLayouts &
   ApplicationAuthentication &
-  ApplicationAdministration &
-  ApplicationUser & {
+  ApplicationAdministration & { // ApplicationUser &
     // TODO
     server: {
       locals: {
@@ -273,7 +271,7 @@ if (
         await authentication(application);
         await about(application);
         await administration(application);
-        await user(application);
+        // await user(application);
         // await course(application);
         // await conversation(application);
         // await message(application);

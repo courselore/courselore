@@ -84,20 +84,21 @@ export type ApplicationUser = {
           "daily-digests"
         ];
       };
+      types: {
+        User: {
+          id: number;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          name: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+          biographySource: string | null;
+          biographyPreprocessed: HTML | null;
+        };
+      };
     };
   };
-};
-
-export type User = {
-  id: number;
-  lastSeenOnlineAt: string;
-  reference: string;
-  email: string;
-  name: string;
-  avatar: string | null;
-  avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
-  biographySource: string | null;
-  biographyPreprocessed: HTML | null;
 };
 
 export default async (application: Application): Promise<void> => {
