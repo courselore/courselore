@@ -269,14 +269,14 @@ export default async (app: Courselore): Promise<void> => {
     }
 
     if (decorate && res.locals.course !== undefined) {
-      const narrowReq = req as express.Request<
+      const requestCourseEnrolled = req as express.Request<
         {},
         any,
         {},
         {},
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
-      const narrowRes = res as express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+      const responseCourseEnrolled = res as express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
 
       for (const element of contentElement.querySelectorAll("a")) {
         const href = element.getAttribute("href");
@@ -293,8 +293,8 @@ export default async (app: Courselore): Promise<void> => {
           match.slice(1);
         if (courseReference !== res.locals.course.reference) continue;
         const conversation = app.server.locals.helpers.getConversation({
-          req: narrowReq,
-          res: narrowRes,
+          req: requestCourseEnrolled,
+          res: responseCourseEnrolled,
           conversationReference,
         });
         if (conversation === undefined) continue;
@@ -312,8 +312,8 @@ export default async (app: Courselore): Promise<void> => {
           continue;
         }
         const message = app.server.locals.helpers.getMessage({
-          req: narrowReq,
-          res: narrowRes,
+          req: requestCourseEnrolled,
+          res: responseCourseEnrolled,
           conversation,
           messageReference,
         });
@@ -442,8 +442,8 @@ export default async (app: Courselore): Promise<void> => {
             /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
             (match, conversationReference, messageReference) => {
               const conversation = app.server.locals.helpers.getConversation({
-                req: narrowReq,
-                res: narrowRes,
+                req: requestCourseEnrolled,
+                res: responseCourseEnrolled,
                 conversationReference,
               });
               if (conversation === undefined) return match;
@@ -459,8 +459,8 @@ export default async (app: Courselore): Promise<void> => {
                   >${match}</a
                 >`;
               const message = app.server.locals.helpers.getMessage({
-                req: narrowReq,
-                res: narrowRes,
+                req: requestCourseEnrolled,
+                res: responseCourseEnrolled,
                 conversation,
                 messageReference,
               });
@@ -514,8 +514,8 @@ export default async (app: Courselore): Promise<void> => {
         )
           continue;
         const conversation = app.server.locals.helpers.getConversation({
-          req: narrowReq,
-          res: narrowRes,
+          req: requestCourseEnrolled,
+          res: responseCourseEnrolled,
           conversationReference: hrefConversationReference,
         });
         if (conversation === undefined) continue;
@@ -533,8 +533,8 @@ export default async (app: Courselore): Promise<void> => {
                       `)}"
                     >
                       $${app.server.locals.partials.conversation({
-                        req: narrowReq,
-                        res: narrowRes,
+                        req: requestCourseEnrolled,
+                        res: responseCourseEnrolled,
                         conversation,
                       })}
                     </div>
@@ -546,8 +546,8 @@ export default async (app: Courselore): Promise<void> => {
           continue;
         }
         const message = app.server.locals.helpers.getMessage({
-          req: narrowReq,
-          res: narrowRes,
+          req: requestCourseEnrolled,
+          res: responseCourseEnrolled,
           conversation,
           messageReference: hrefMessageReference,
         });
@@ -568,8 +568,8 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     $${app.server.locals.partials.conversation({
-                      req: narrowReq,
-                      res: narrowRes,
+                      req: requestCourseEnrolled,
+                      res: responseCourseEnrolled,
                       conversation,
                       message,
                     })}

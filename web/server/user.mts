@@ -30,8 +30,8 @@ export type ApplicationUser = {
       };
       partials: {
         user: ({
-          req,
-          res,
+          request,
+          response,
           enrollment,
           user,
           anonymous,
@@ -42,7 +42,7 @@ export type ApplicationUser = {
           size,
           bold,
         }: {
-          req: express.Request<
+          request: express.Request<
             {},
             any,
             {},
@@ -52,7 +52,7 @@ export type ApplicationUser = {
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
-          res: express.Response<
+          response: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
               Partial<
@@ -105,8 +105,8 @@ export type ApplicationUser = {
 
 export default async (application: Application): Promise<void> => {
   application.server.locals.partials.user = ({
-    req,
-    res,
+    request,
+    response,
     enrollment = undefined,
     user = enrollment === undefined
       ? undefined
@@ -130,7 +130,7 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
                   @media (prefers-color-scheme: dark) {
@@ -158,7 +158,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <foreignObject x="2" y="-2" width="24" height="24">
                   <span
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       font-size: var(--font-size--xl);
                       line-height: var(--line-height--xl);
                     `)}"
@@ -172,7 +172,7 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   ${{
                     xs: css`
                       width: var(--space--4);
@@ -197,7 +197,7 @@ export default async (application: Application): Promise<void> => {
               />`
             : html`<svg
                 viewBox="0 0 24 24"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   color: var(--color--${user.avatarlessBackgroundColor}--700);
                   background-color: var(
                     --color--${user.avatarlessBackgroundColor}--200
@@ -231,7 +231,7 @@ export default async (application: Application): Promise<void> => {
                   x="12"
                   y="16"
                   text-anchor="middle"
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     font-size: var(--font-size--2xs);
                     line-height: var(--line-height--2xs);
                     font-weight: var(--font-weight--black);
@@ -251,7 +251,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
             $${userAvatar}
             <span
               hidden
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
@@ -318,7 +318,7 @@ export default async (application: Application): Promise<void> => {
       if (name !== false)
         userName = html`<span
           ><span
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               ${bold
                 ? css`
                     font-weight: var(--font-weight--bold);
@@ -373,10 +373,10 @@ export default async (application: Application): Promise<void> => {
             appendTo: document.querySelector("body"),
             delay: [1000, null],
             touch: ["hold", 1000],
-            content: ${res.locals.html(
+            content: ${response.locals.html(
               html`
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     max-height: var(--space--56);
                     padding: var(--space--1) var(--space--2);
                     overflow: auto;
@@ -386,7 +386,7 @@ export default async (application: Application): Promise<void> => {
                   `)}"
                 >
                   <div
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       display: flex;
                       gap: var(--space--4);
                       align-items: center;
@@ -394,8 +394,8 @@ export default async (application: Application): Promise<void> => {
                   >
                     <div>
                       $${application.server.locals.partials.user({
-                        req,
-                        res,
+                        request,
+                        response,
                         enrollment,
                         user,
                         name: false,
@@ -403,7 +403,7 @@ export default async (application: Application): Promise<void> => {
                       })}
                     </div>
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         padding-top: var(--space--0-5);
                         display: flex;
                         flex-direction: column;
@@ -417,12 +417,12 @@ export default async (application: Application): Promise<void> => {
                             : user!.name}
                         </div>
                         $${user !== "no-longer-enrolled" &&
-                        (res.locals.enrollment?.courseRole === "staff" ||
-                          res.locals.user?.id === user!.id)
+                        (response.locals.enrollment?.courseRole === "staff" ||
+                          response.locals.user?.id === user!.id)
                           ? html`
                               <div class="secondary">
                                 <span
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     margin-right: var(--space--2);
                                   `)}"
                                 >
@@ -430,7 +430,7 @@ export default async (application: Application): Promise<void> => {
                                 </span>
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     font-size: var(--font-size--xs);
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
@@ -470,7 +470,7 @@ export default async (application: Application): Promise<void> => {
                           : html`
                               <div
                                 class="secondary"
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                 `)}"
@@ -494,7 +494,7 @@ export default async (application: Application): Promise<void> => {
                           ? html`
                               <div
                                 class="text--sky"
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                   display: flex;
@@ -512,8 +512,8 @@ export default async (application: Application): Promise<void> => {
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
                     ? application.server.locals.partials.content({
-                        req,
-                        res,
+                        request,
+                        response,
                         contentPreprocessed: user!.biographyPreprocessed,
                       }).contentProcessed
                     : html``}
@@ -532,7 +532,7 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
@@ -560,7 +560,7 @@ export default async (application: Application): Promise<void> => {
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 font-size: var(--font-size--xl);
                 line-height: var(--line-height--xl);
               `)}"
@@ -572,7 +572,7 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             ${bold
               ? css`
                   font-weight: var(--font-weight--bold);
@@ -658,8 +658,8 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.redirect(
+    (request, response) => {
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/settings/profile`
       );
@@ -667,19 +667,19 @@ export default async (application: Application): Promise<void> => {
   );
 
   const userSettingsLayout = ({
-    req,
-    res,
+    request,
+    response,
     head,
     body,
   }: {
-    req: express.Request<
+    request: express.Request<
       {},
       any,
       {},
       {},
       Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
-    res: express.Response<
+    response: express.Response<
       any,
       Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
@@ -687,8 +687,8 @@ export default async (application: Application): Promise<void> => {
     body: HTML;
   }): HTML =>
     application.server.locals.layouts.settings({
-      req,
-      res,
+      request,
+      response,
       head,
       menuButton: html`
         <i class="bi bi-sliders"></i>
@@ -697,7 +697,7 @@ export default async (application: Application): Promise<void> => {
       menu: html`
         <a
           href="https://${application.configuration.hostname}/settings/profile"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/settings\/profile\/?$/i
           )
             ? "button--blue"
@@ -709,14 +709,16 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration
             .hostname}/settings/email-and-password"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/settings\/email-and-password\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.match(/\/settings\/email-and-password\/?$/i)
+            class="bi ${request.path.match(
+              /\/settings\/email-and-password\/?$/i
+            )
               ? "bi-key-fill"
               : "bi-key"}"
           ></i>
@@ -725,14 +727,14 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration
             .hostname}/settings/notifications"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/settings\/notifications\/?$/i
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
-            class="bi ${req.path.match(/\/settings\/notifications\/?$/i)
+            class="bi ${request.path.match(/\/settings\/notifications\/?$/i)
               ? "bi-bell-fill"
               : "bi-bell"}"
           ></i>
@@ -742,7 +744,7 @@ export default async (application: Application): Promise<void> => {
           hidden
           TODO
           href="https://${application.configuration.hostname}/settings/account"
-          class="dropdown--menu--item menu-box--item button ${req.path.match(
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/settings\/account\/?$/i
           )
             ? "button--blue"
@@ -764,11 +766,11 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/profile",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         userSettingsLayout({
-          req,
-          res,
+          request,
+          response,
           head: html`<title>Profile · User Settings · Courselore</title>`,
           body: html`
             <h2 class="heading">
@@ -783,14 +785,14 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/profile"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `)}"
             >
               <div
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   display: flex;
                   gap: var(--space--4);
                   @media (max-width: 400px) {
@@ -800,7 +802,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <div
                   key="avatar-chooser"
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -835,7 +837,9 @@ export default async (application: Application): Promise<void> => {
                 >
                   <div
                     key="avatar-chooser--empty"
-                    $${res.locals.user.avatar === null ? html`` : html`hidden`}
+                    $${response.locals.user.avatar === null
+                      ? html``
+                      : html`hidden`}
                   >
                     <button
                       type="button"
@@ -852,7 +856,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           width: var(--space--4);
                           height: var(--space--4);
                           transform: scale(8);
@@ -862,9 +866,9 @@ export default async (application: Application): Promise<void> => {
                         `)}"
                       >
                         $${application.server.locals.partials.user({
-                          req,
-                          res,
-                          user: { ...res.locals.user, avatar: null },
+                          request,
+                          response,
+                          user: { ...response.locals.user, avatar: null },
                           decorate: false,
                           name: false,
                           size: "xs",
@@ -874,7 +878,9 @@ export default async (application: Application): Promise<void> => {
                   </div>
                   <div
                     key="avatar-chooser--filled"
-                    $${res.locals.user.avatar === null ? html`hidden` : html``}
+                    $${response.locals.user.avatar === null
+                      ? html`hidden`
+                      : html``}
                   >
                     <button
                       type="button"
@@ -891,10 +897,10 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <img
-                        src="${res.locals.user.avatar ?? ""}"
+                        src="${response.locals.user.avatar ?? ""}"
                         alt="Avatar"
                         loading="lazy"
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
@@ -904,7 +910,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--rose"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         place-self: end;
@@ -950,17 +956,17 @@ export default async (application: Application): Promise<void> => {
                       (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${res.locals.html(
+                        content: ${response.locals.html(
                           html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 display: flex;
                                 gap: var(--space--2);
                               `)}"
                             >
                               $${application.server.locals.partials.spinner({
-                                req,
-                                res,
+                                request,
+                                response,
                               })}
                               Uploading…
                             </div>
@@ -1008,13 +1014,13 @@ export default async (application: Application): Promise<void> => {
                   <input
                     type="text"
                     name="avatar"
-                    value="${res.locals.user.avatar ?? ""}"
+                    value="${response.locals.user.avatar ?? ""}"
                     hidden
                   />
                 </div>
 
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     flex: 1;
                     display: flex;
                     flex-direction: column;
@@ -1026,7 +1032,7 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="text"
                       name="name"
-                      value="${res.locals.user.name}"
+                      value="${response.locals.user.name}"
                       required
                       class="input--text"
                     />
@@ -1037,10 +1043,10 @@ export default async (application: Application): Promise<void> => {
               <div class="label">
                 <p class="label--text">Biography</p>
                 $${application.server.locals.partials.contentEditor({
-                  req,
-                  res,
+                  request,
+                  response,
                   name: "biography",
-                  contentSource: res.locals.user.biographySource ?? "",
+                  contentSource: response.locals.user.biographySource ?? "",
                   required: false,
                 })}
               </div>
@@ -1069,43 +1075,45 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/profile",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        typeof req.body.name !== "string" ||
-        req.body.name.trim() === "" ||
-        typeof req.body.avatar !== "string" ||
-        typeof req.body.biography !== "string"
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === "" ||
+        typeof request.body.avatar !== "string" ||
+        typeof request.body.biography !== "string"
       )
         return next("Validation");
       application.database.run(
         sql`
           UPDATE "users"
           SET
-            "name" = ${req.body.name},
-            "nameSearch" = ${html`${req.body.name}`},
+            "name" = ${request.body.name},
+            "nameSearch" = ${html`${request.body.name}`},
             "avatar" = ${
-              req.body.avatar.trim() === "" ? null : req.body.avatar
+              request.body.avatar.trim() === "" ? null : request.body.avatar
             },
             "biographySource" = ${
-              req.body.biography.trim() === "" ? null : req.body.biography
+              request.body.biography.trim() === ""
+                ? null
+                : request.body.biography
             },
             "biographyPreprocessed" = ${
-              req.body.biography.trim() === ""
+              request.body.biography.trim() === ""
                 ? null
                 : application.server.locals.partials.contentPreprocessed(
-                    req.body.biography
+                    request.body.biography
                   ).contentPreprocessed
             }
-          WHERE "id" = ${res.locals.user.id}
+          WHERE "id" = ${response.locals.user.id}
         `
       );
       application.server.locals.helpers.Flash.set({
-        req,
-        res,
+        request,
+        response,
         theme: "green",
         content: html`Profile updated successfully.`,
       });
-      res.redirect(
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/settings/profile`
       );
@@ -1120,20 +1128,25 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/profile/avatar",
-    asyncHandler(async (req, res, next) => {
-      if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
+    asyncHandler(async (request, response, next) => {
+      if (
+        request.files?.avatar === undefined ||
+        Array.isArray(request.files.avatar)
+      )
         return next("Validation");
-      if (!req.files.avatar.mimetype.startsWith("image/"))
-        return res.status(413).send("The avatar must be an image.");
-      if (req.files.avatar.truncated)
-        return res.status(413).send("The avatar must be smaller than 10MB.");
-      const name = filenamify(req.files.avatar.name, { replacement: "-" });
+      if (!request.files.avatar.mimetype.startsWith("image/"))
+        return response.status(413).send("The avatar must be an image.");
+      if (request.files.avatar.truncated)
+        return response
+          .status(413)
+          .send("The avatar must be smaller than 10MB.");
+      const name = filenamify(request.files.avatar.name, { replacement: "-" });
       if (name.trim() === "") return next("Validation");
       const folder = cryptoRandomString({
         length: 20,
         type: "numeric",
       });
-      await req.files.avatar.mv(
+      await request.files.avatar.mv(
         path.join(
           application.configuration.dataDirectory,
           `files/${folder}/${name}`
@@ -1145,7 +1158,7 @@ export default async (application: Application): Promise<void> => {
         -extension.length
       )}--avatar${extension}`;
       try {
-        await sharp(req.files.avatar.data, { limitInputPixels: false })
+        await sharp(request.files.avatar.data, { limitInputPixels: false })
           .rotate()
           .resize({
             width: 256 /* var(--space--64) */,
@@ -1161,20 +1174,20 @@ export default async (application: Application): Promise<void> => {
       } catch (error) {
         return next("Validation");
       }
-      res.send(
+      response.send(
         `https://${
           application.configuration.hostname
         }/files/${folder}/${encodeURIComponent(nameAvatar)}`
       );
     }),
-    ((err, req, res, next) => {
-      if (err === "Validation")
-        return res
+    ((error, request, response, next) => {
+      if (error === "Validation")
+        return response
           .status(422)
           .send(
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
           );
-      next(err);
+      next(error);
     }) as express.ErrorRequestHandler<
       {},
       any,
@@ -1193,11 +1206,11 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/email-and-password",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         userSettingsLayout({
-          req,
-          res,
+          request,
+          response,
           head: html`<title>
             Email & Password · User Settings · Courselore
           </title>`,
@@ -1214,7 +1227,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/email-and-password"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1226,7 +1239,7 @@ export default async (application: Application): Promise<void> => {
                   type="email"
                   name="email"
                   placeholder="you@educational-institution.edu"
-                  value="${res.locals.user.email}"
+                  value="${response.locals.user.email}"
                   required
                   class="input--text"
                   onload="${javascript`
@@ -1278,7 +1291,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/email-and-password"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1341,21 +1354,21 @@ export default async (application: Application): Promise<void> => {
     HasPasswordConfirmationLocals
   >(
     "/settings/email-and-password",
-    (req, res, next) => {
-      res.locals.actionAllowedToUserWithUnverifiedEmail =
-        typeof req.body.email === "string" &&
-        req.body.newPassword === undefined;
-      res.locals.hasPasswordConfirmationRedirect =
-        typeof req.query.redirect === "string"
-          ? req.query.redirect
+    (request, response, next) => {
+      response.locals.actionAllowedToUserWithUnverifiedEmail =
+        typeof request.body.email === "string" &&
+        request.body.newPassword === undefined;
+      response.locals.hasPasswordConfirmationRedirect =
+        typeof request.query.redirect === "string"
+          ? request.query.redirect
           : "settings/email-and-password";
       next();
     },
     ...application.server.locals.middlewares.hasPasswordConfirmation,
-    asyncHandler(async (req, res, next) => {
-      if (typeof req.body.email === "string") {
+    asyncHandler(async (request, response, next) => {
+      if (typeof request.body.email === "string") {
         if (
-          req.body.email.match(
+          request.body.email.match(
             application.server.locals.helpers.emailRegExp
           ) === null
         )
@@ -1363,21 +1376,21 @@ export default async (application: Application): Promise<void> => {
         if (
           application.database.get<{}>(
             sql`
-              SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
+              SELECT TRUE FROM "users" WHERE "email" = ${request.body.email}
             `
           ) !== undefined
         ) {
           application.server.locals.helpers.Flash.set({
-            req,
-            res,
+            request,
+            response,
             theme: "rose",
             content: html`Email already taken.`,
           });
-          return res.redirect(
+          return response.redirect(
             303,
             `https://${application.configuration.hostname}/${
-              typeof req.query.redirect === "string"
-                ? req.query.redirect
+              typeof request.query.redirect === "string"
+                ? request.query.redirect
                 : "settings/email-and-password"
             }`
           );
@@ -1387,12 +1400,12 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "users"
             SET
-              "email" = ${req.body.email},
+              "email" = ${request.body.email},
               "emailVerifiedAt" = ${null}
-            WHERE "id" = ${res.locals.user.id}
+            WHERE "id" = ${response.locals.user.id}
           `
         );
-        if (res.locals.user.emailVerifiedAt !== null)
+        if (response.locals.user.emailVerifiedAt !== null)
           application.database.run(
             sql`
               INSERT INTO "sendEmailJobs" (
@@ -1406,14 +1419,14 @@ export default async (application: Application): Promise<void> => {
                 ${new Date().toISOString()},
                 ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
                 ${JSON.stringify({
-                  to: res.locals.user.email,
+                  to: response.locals.user.email,
                   subject: "Your Email Has Been Updated",
                   html: html`
                     <p>
-                      The <code>${res.locals.user.email}</code> email address
-                      was associated with a Courselore account that has been
-                      updated to use the <code>${req.body.email}</code> email
-                      address.
+                      The <code>${response.locals.user.email}</code> email
+                      address was associated with a Courselore account that has
+                      been updated to use the
+                      <code>${request.body.email}</code> email address.
                     </p>
 
                     <p>
@@ -1437,23 +1450,23 @@ export default async (application: Application): Promise<void> => {
             `
           );
         application.server.locals.helpers.emailVerification({
-          req,
-          res,
-          userId: res.locals.user.id,
-          userEmail: req.body.email,
+          request,
+          response,
+          userId: response.locals.user.id,
+          userEmail: request.body.email,
         });
         application.server.locals.helpers.Flash.set({
-          req,
-          res,
+          request,
+          response,
           theme: "green",
           content: html`Email updated successfully.`,
         });
       }
 
-      if (typeof req.body.newPassword === "string") {
+      if (typeof request.body.newPassword === "string") {
         if (
-          req.body.newPassword.trim() === "" ||
-          req.body.newPassword.length < 8
+          request.body.newPassword.trim() === "" ||
+          request.body.newPassword.length < 8
         )
           return next("Validation");
 
@@ -1461,10 +1474,10 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
-              req.body.newPassword,
+              request.body.newPassword,
               application.server.locals.configuration.argon2
             )}
-            WHERE "id" = ${res.locals.user.id}
+            WHERE "id" = ${response.locals.user.id}
           `
         );
         application.database.run(
@@ -1480,12 +1493,12 @@ export default async (application: Application): Promise<void> => {
               ${new Date().toISOString()},
               ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${JSON.stringify({
-                to: res.locals.user.email,
+                to: response.locals.user.email,
                 subject: "Your Password Has Been Updated",
                 html: html`
                   <p>
                     The password for the Courselore account with email address
-                    <code>${res.locals.user.email}</code> has been updated.
+                    <code>${response.locals.user.email}</code> has been updated.
                   </p>
 
                   <p>
@@ -1516,23 +1529,23 @@ export default async (application: Application): Promise<void> => {
             response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
           });
         application.server.locals.helpers.Session.closeAllAndReopen({
-          req,
-          res,
-          userId: res.locals.user.id,
+          request,
+          response,
+          userId: response.locals.user.id,
         });
         application.server.locals.helpers.Flash.set({
-          req,
-          res,
+          request,
+          response,
           theme: "green",
           content: html`Password updated successfully.`,
         });
       }
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/${
-          typeof req.query.redirect === "string"
-            ? req.query.redirect
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
             : "settings/email-and-password"
         }`
       );
@@ -1548,11 +1561,11 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/notifications",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         userSettingsLayout({
-          req,
-          res,
+          request,
+          response,
           head: html`<title>Notifications · User Settings · Courselore</title>`,
           body: html`
             <h2 class="heading">
@@ -1567,7 +1580,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/notifications"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1576,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
               <div key="isEmailNotificationsFor" class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1584,8 +1597,8 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="checkbox"
                       name="isEmailNotificationsForAllMessages"
-                      $${res.locals.user.emailNotificationsForAllMessages !==
-                      "none"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages !== "none"
                         ? html`checked`
                         : html``}
                       class="input--checkbox"
@@ -1610,7 +1623,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   hidden
                   TODO
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     margin-left: var(--space--10);
                     display: flex;
                     flex-wrap: wrap;
@@ -1619,7 +1632,7 @@ export default async (application: Application): Promise<void> => {
                   `)}"
                 >
                   <label
-                    class="button button--tight button--tight--inline ${res
+                    class="button button--tight button--tight--inline ${response
                       .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
@@ -1629,12 +1642,12 @@ export default async (application: Application): Promise<void> => {
                       name="emailNotificationsForAllMessages"
                       value="instant"
                       required
-                      $${res.locals.user.emailNotificationsForAllMessages ===
-                      "none"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages === "none"
                         ? html`disabled`
                         : html``}
-                      $${res.locals.user.emailNotificationsForAllMessages ===
-                      "instant"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages === "instant"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -1643,7 +1656,7 @@ export default async (application: Application): Promise<void> => {
                   </label>
 
                   <label
-                    class="button button--tight button--tight--inline ${res
+                    class="button button--tight button--tight--inline ${response
                       .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
@@ -1653,12 +1666,12 @@ export default async (application: Application): Promise<void> => {
                       name="emailNotificationsForAllMessages"
                       value="hourly-digests"
                       required
-                      $${res.locals.user.emailNotificationsForAllMessages ===
-                      "none"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages === "none"
                         ? html`disabled`
                         : html``}
-                      $${res.locals.user.emailNotificationsForAllMessages ===
-                      "hourly-digests"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages === "hourly-digests"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -1667,7 +1680,7 @@ export default async (application: Application): Promise<void> => {
                   </label>
 
                   <label
-                    class="button button--tight button--tight--inline ${res
+                    class="button button--tight button--tight--inline ${response
                       .locals.user.emailNotificationsForAllMessages === "none"
                       ? "disabled"
                       : ""}"
@@ -1677,12 +1690,12 @@ export default async (application: Application): Promise<void> => {
                       name="emailNotificationsForAllMessages"
                       value="daily-digests"
                       required
-                      $${res.locals.user.emailNotificationsForAllMessages ===
-                      "none"
+                      $${response.locals.user
+                        .emailNotificationsForAllMessages === "none"
                         ? html`disabled`
                         : html``}
                       $${["none", "daily-digests"].includes(
-                        res.locals.user.emailNotificationsForAllMessages
+                        response.locals.user.emailNotificationsForAllMessages
                       )
                         ? html`checked`
                         : html``}
@@ -1693,7 +1706,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1701,8 +1714,8 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="checkbox"
                       name="isEmailNotificationsForMentions"
-                      $${res.locals.user.emailNotificationsForMentionsAt !==
-                      null
+                      $${response.locals.user
+                        .emailNotificationsForMentionsAt !== null
                         ? html`checked`
                         : html``}
                       class="input--checkbox"
@@ -1721,7 +1734,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1729,7 +1742,7 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="checkbox"
                       name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"
-                      $${res.locals.user
+                      $${response.locals.user
                         .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt !==
                       null
                         ? html`checked`
@@ -1751,7 +1764,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1759,7 +1772,7 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="checkbox"
                       name="isEmailNotificationsForMessagesInConversationsYouStarted"
-                      $${res.locals.user
+                      $${response.locals.user
                         .emailNotificationsForMessagesInConversationsYouStartedAt !==
                       null
                         ? html`checked`
@@ -1781,7 +1794,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                   `)}"
                 >
@@ -1837,39 +1850,41 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/notifications",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
         ![undefined, "on"].includes(
-          req.body.isEmailNotificationsForAllMessages
+          request.body.isEmailNotificationsForAllMessages
         ) ||
-        (req.body.isEmailNotificationsForAllMessages === undefined &&
-          req.body.emailNotificationsForAllMessages !== undefined) ||
-        (req.body.isEmailNotificationsForAllMessages === "on" &&
-          (typeof req.body.emailNotificationsForAllMessages !== "string" ||
+        (request.body.isEmailNotificationsForAllMessages === undefined &&
+          request.body.emailNotificationsForAllMessages !== undefined) ||
+        (request.body.isEmailNotificationsForAllMessages === "on" &&
+          (typeof request.body.emailNotificationsForAllMessages !== "string" ||
             !["instant", "hourly-digests", "daily-digests"].includes(
-              req.body.emailNotificationsForAllMessages
+              request.body.emailNotificationsForAllMessages
             ))) ||
-        ![undefined, "on"].includes(req.body.isEmailNotificationsForMentions) ||
         ![undefined, "on"].includes(
-          req.body
+          request.body.isEmailNotificationsForMentions
+        ) ||
+        ![undefined, "on"].includes(
+          request.body
             .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
         ) ||
         ![undefined, "on"].includes(
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted
+          request.body.isEmailNotificationsForMessagesInConversationsYouStarted
         ) ||
-        (req.body.isEmailNotificationsForAllMessages === "on" &&
-          (req.body.isEmailNotificationsForMentions !== "on" ||
-            req.body
+        (request.body.isEmailNotificationsForAllMessages === "on" &&
+          (request.body.isEmailNotificationsForMentions !== "on" ||
+            request.body
               .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
               "on" ||
-            req.body
+            request.body
               .isEmailNotificationsForMessagesInConversationsYouStarted !==
               "on")) ||
-        (req.body
+        (request.body
           .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
           "on" &&
-          req.body.isEmailNotificationsForMessagesInConversationsYouStarted !==
-            "on")
+          request.body
+            .isEmailNotificationsForMessagesInConversationsYouStarted !== "on")
       )
         return next("Validation");
 
@@ -1878,41 +1893,41 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET
             "emailNotificationsForAllMessages" = ${
-              req.body.isEmailNotificationsForAllMessages === undefined
+              request.body.isEmailNotificationsForAllMessages === undefined
                 ? "none"
-                : "instant" /* TODO req.body.emailNotificationsForAllMessages */
+                : "instant" /* TODO request.body.emailNotificationsForAllMessages */
             },
             "emailNotificationsForMentionsAt" = ${
-              req.body.isEmailNotificationsForMentions === "on"
+              request.body.isEmailNotificationsForMentions === "on"
                 ? new Date().toISOString()
                 : null
             },
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
-              req.body
+              request.body
                 .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
               "on"
                 ? new Date().toISOString()
                 : null
             },
             "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-              req.body
+              request.body
                 .isEmailNotificationsForMessagesInConversationsYouStarted ===
               "on"
                 ? new Date().toISOString()
                 : null
             }
-          WHERE "id" = ${res.locals.user.id}
+          WHERE "id" = ${response.locals.user.id}
        `
       );
 
       application.server.locals.helpers.Flash.set({
-        req,
-        res,
+        request,
+        response,
         theme: "green",
         content: html`Notifications updated successfully.`,
       });
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${application.configuration.hostname}/settings/notifications`
       );
@@ -1928,11 +1943,11 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/account",
     ...application.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         userSettingsLayout({
-          req,
-          res,
+          request,
+          response,
           head: html`<title>Account · User Settings · Courselore</title>`,
           body: html`
             <h2 class="heading">
@@ -1947,7 +1962,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/account"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -2001,22 +2016,22 @@ export default async (application: Application): Promise<void> => {
   TODO
   app.server.delete<{}, any, {}, {}, HasPasswordConfirmationLocals>(
     "/settings/account",
-    (req, res, next) => {
-      res.locals.hasPasswordConfirmationRedirect = "settings/account";
+    (request, response, next) => {
+      response.locals.hasPasswordConfirmationRedirect = "settings/account";
       next();
     },
     ...app.server.locals.middlewares.hasPasswordConfirmation,
-    (req, res) => {
+    (request, response) => {
       app.database.run(
         sql`
           DELETE FROM "users"
-          WHERE "id" = ${res.locals.user.id}
+          WHERE "id" = ${response.locals.user.id}
        `
       );
 
       app.server.locals.helpers.Flash.set({
-        req,
-        res,
+        request,
+        response,
         theme: "green",
         content: html`
           Account deleted successfully.<br />
@@ -2024,8 +2039,8 @@ export default async (application: Application): Promise<void> => {
         `,
       });
 
-      app.server.locals.helpers.Session.close({ req, res });
-      res
+      app.server.locals.helpers.Session.close({ request, response });
+      response
         .header(
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
