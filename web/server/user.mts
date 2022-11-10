@@ -655,16 +655,18 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/settings/profile`
-      );
-    }
-  );
+  >("/settings", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/settings/profile`
+    );
+  });
 
   const userSettingsLayout = ({
     request,
@@ -763,308 +765,310 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/profile",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.send(
-        userSettingsLayout({
-          request,
-          response,
-          head: html`<title>Profile · User Settings · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-sliders"></i>
-              User Settings ·
-              <i class="bi bi-person-circle"></i>
-              Profile
-            </h2>
+  >("/settings/profile", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/settings/profile"
-              novalidate
+    response.send(
+      userSettingsLayout({
+        request,
+        response,
+        head: html`<title>Profile · User Settings · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-sliders"></i>
+            User Settings ·
+            <i class="bi bi-person-circle"></i>
+            Profile
+          </h2>
+
+          <form
+            method="PATCH"
+            action="https://${application.configuration
+              .hostname}/settings/profile"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <div
               css="${response.locals.css(css`
                 display: flex;
-                flex-direction: column;
                 gap: var(--space--4);
+                @media (max-width: 400px) {
+                  flex-direction: column;
+                }
               `)}"
             >
               <div
+                key="avatar-chooser"
                 css="${response.locals.css(css`
                   display: flex;
-                  gap: var(--space--4);
-                  @media (max-width: 400px) {
-                    flex-direction: column;
-                  }
-                `)}"
-              >
-                <div
-                  key="avatar-chooser"
-                  css="${response.locals.css(css`
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                  justify-content: center;
+                  align-items: center;
+                  & > * {
+                    width: var(--space--32);
+                    height: var(--space--32);
+                    display: grid;
                     & > * {
-                      width: var(--space--32);
-                      height: var(--space--32);
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                        position: relative;
-                        &:first-child {
-                          padding: var(--space--2);
-                          margin: var(--space---2);
-                          border-radius: var(--border-radius--circle);
-                          align-items: center;
-                        }
+                      grid-area: 1 / 1;
+                      position: relative;
+                      &:first-child {
+                        padding: var(--space--2);
+                        margin: var(--space---2);
+                        border-radius: var(--border-radius--circle);
+                        align-items: center;
                       }
                     }
-                  `)}"
-                  onload="${javascript`
-                    this.ondragover = (event) => {
-                      if (!event.dataTransfer.types.includes("Files")) return;
-                      event.preventDefault();
-                    };
+                  }
+                `)}"
+                onload="${javascript`
+                  this.ondragover = (event) => {
+                    if (!event.dataTransfer.types.includes("Files")) return;
+                    event.preventDefault();
+                  };
 
-                    this.ondrop = (event) => {
-                      if (event.dataTransfer.files.length === 0) return;
-                      event.preventDefault();
-                      this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
-                    };
-                  `}"
+                  this.ondrop = (event) => {
+                    if (event.dataTransfer.files.length === 0) return;
+                    event.preventDefault();
+                    this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
+                  };
+                `}"
+              >
+                <div
+                  key="avatar-chooser--empty"
+                  $${response.locals.user.avatar === null
+                    ? html``
+                    : html`hidden`}
                 >
-                  <div
-                    key="avatar-chooser--empty"
-                    $${response.locals.user.avatar === null
-                      ? html``
-                      : html`hidden`}
-                  >
-                    <button
-                      type="button"
-                      class="button button--transparent"
-                      onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          touch: false,
-                          content: "Add Avatar",
-                        });
-                        
-                        this.onclick = () => {
-                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
-                        };
-                      `}"
-                    >
-                      <div
-                        css="${response.locals.css(css`
-                          width: var(--space--4);
-                          height: var(--space--4);
-                          transform: scale(8);
-                          svg {
-                            vertical-align: var(--space--0);
-                          }
-                        `)}"
-                      >
-                        $${application.server.locals.partials.user({
-                          request,
-                          response,
-                          user: { ...response.locals.user, avatar: null },
-                          decorate: false,
-                          name: false,
-                          size: "xs",
-                        })}
-                      </div>
-                    </button>
-                  </div>
-                  <div
-                    key="avatar-chooser--filled"
-                    $${response.locals.user.avatar === null
-                      ? html`hidden`
-                      : html``}
-                  >
-                    <button
-                      type="button"
-                      class="button button--transparent"
-                      onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          touch: false,
-                          content: "Update Avatar",
-                        });
-                        
-                        this.onclick = () => {
-                          this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
-                        };
-                      `}"
-                    >
-                      <img
-                        src="${response.locals.user.avatar ?? ""}"
-                        alt="Avatar"
-                        loading="lazy"
-                        css="${response.locals.css(css`
-                          width: 100%;
-                          height: 100%;
-                          border-radius: var(--border-radius--circle);
-                        `)}"
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      class="button button--rose"
-                      css="${response.locals.css(css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        place-self: end;
-                        width: var(--font-size--2xl);
-                        height: var(--font-size--2xl);
-                        padding: var(--space--0);
-                        border-radius: var(--border-radius--circle);
-                        transform: translate(-20%, -20%);
-                        align-items: center;
-                      `)}"
-                      onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          theme: "rose",
-                          touch: false,
-                          content: "Remove Avatar",
-                        });
-                        
-                        this.onclick = () => {
-                          const form = this.closest("form");
-                          const avatar = form.querySelector('[name="avatar"]')
-                          avatar.value = "";
-                          form.querySelector('[key="avatar-chooser--empty"]').hidden = false;
-                          form.querySelector('[key="avatar-chooser--filled"]').hidden = true;
-                        };
-                      `}"
-                    >
-                      <i class="bi bi-trash-fill"></i>
-                    </button>
-                  </div>
-                  <input
-                    key="avatar-chooser--upload"
-                    type="file"
-                    accept="image/*"
-                    hidden
+                  <button
+                    type="button"
+                    class="button button--transparent"
                     onload="${javascript`
-                      this.isModified = false;
-
-                      const avatarChooser = this.closest('[key="avatar-chooser"]');
-                      const avatar = avatarChooser.querySelector('[name="avatar"]');
-                      const avatarEmpty = avatarChooser.querySelector('[key="avatar-chooser--empty"]');
-                      const avatarFilled = avatarChooser.querySelector('[key="avatar-chooser--filled"]');
-
-                      (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
-                        trigger: "manual",
-                        hideOnClick: false,
-                        content: ${response.locals.html(
-                          html`
-                            <div
-                              css="${response.locals.css(css`
-                                display: flex;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              $${application.server.locals.partials.spinner({
-                                request,
-                                response,
-                              })}
-                              Uploading…
-                            </div>
-                          `
-                        )},
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: "Add Avatar",
                       });
-
-                      (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
-                        theme: "rose",
-                        trigger: "manual",
-                      });
-
-                      this.upload = async (fileList) => {
-                        const body = new FormData();
-                        body.append("avatar", fileList[0]);
-                        this.value = "";
-                        tippy.hideAll();
-                        avatarChooser.uploadingIndicator.show();
-                        const response = await fetch("https://${
-                          application.configuration.hostname
-                        }/settings/profile/avatar", {
-                          cache: "no-store",
-                          method: "POST",
-                          headers: { "CSRF-Protection": "true", },
-                          body,
-                        });
-                        avatarChooser.uploadingIndicator.hide();
-                        if (!response.ok) {
-                          avatarChooser.uploadingError.setContent(await response.text());
-                          avatarChooser.uploadingError.show();
-                          return;
-                        }
-                        const avatarURL = await response.text();
-                        avatar.value = avatarURL;
-                        avatarEmpty.hidden = true;
-                        avatarFilled.hidden = false;
-                        avatarFilled.querySelector("img").setAttribute("src", avatarURL);
-                      };
-
-                      this.onchange = () => {
-                        this.upload(this.files);
+                      
+                      this.onclick = () => {
+                        this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                       };
                     `}"
-                  />
+                  >
+                    <div
+                      css="${response.locals.css(css`
+                        width: var(--space--4);
+                        height: var(--space--4);
+                        transform: scale(8);
+                        svg {
+                          vertical-align: var(--space--0);
+                        }
+                      `)}"
+                    >
+                      $${application.server.locals.partials.user({
+                        request,
+                        response,
+                        user: { ...response.locals.user, avatar: null },
+                        decorate: false,
+                        name: false,
+                        size: "xs",
+                      })}
+                    </div>
+                  </button>
+                </div>
+                <div
+                  key="avatar-chooser--filled"
+                  $${response.locals.user.avatar === null
+                    ? html`hidden`
+                    : html``}
+                >
+                  <button
+                    type="button"
+                    class="button button--transparent"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: "Update Avatar",
+                      });
+                      
+                      this.onclick = () => {
+                        this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
+                      };
+                    `}"
+                  >
+                    <img
+                      src="${response.locals.user.avatar ?? ""}"
+                      alt="Avatar"
+                      loading="lazy"
+                      css="${response.locals.css(css`
+                        width: 100%;
+                        height: 100%;
+                        border-radius: var(--border-radius--circle);
+                      `)}"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--rose"
+                    css="${response.locals.css(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      place-self: end;
+                      width: var(--font-size--2xl);
+                      height: var(--font-size--2xl);
+                      padding: var(--space--0);
+                      border-radius: var(--border-radius--circle);
+                      transform: translate(-20%, -20%);
+                      align-items: center;
+                    `)}"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        theme: "rose",
+                        touch: false,
+                        content: "Remove Avatar",
+                      });
+                      
+                      this.onclick = () => {
+                        const form = this.closest("form");
+                        const avatar = form.querySelector('[name="avatar"]')
+                        avatar.value = "";
+                        form.querySelector('[key="avatar-chooser--empty"]').hidden = false;
+                        form.querySelector('[key="avatar-chooser--filled"]').hidden = true;
+                      };
+                    `}"
+                  >
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+                <input
+                  key="avatar-chooser--upload"
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onload="${javascript`
+                    this.isModified = false;
+
+                    const avatarChooser = this.closest('[key="avatar-chooser"]');
+                    const avatar = avatarChooser.querySelector('[name="avatar"]');
+                    const avatarEmpty = avatarChooser.querySelector('[key="avatar-chooser--empty"]');
+                    const avatarFilled = avatarChooser.querySelector('[key="avatar-chooser--filled"]');
+
+                    (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
+                      trigger: "manual",
+                      hideOnClick: false,
+                      content: ${response.locals.html(
+                        html`
+                          <div
+                            css="${response.locals.css(css`
+                              display: flex;
+                              gap: var(--space--2);
+                            `)}"
+                          >
+                            $${application.server.locals.partials.spinner({
+                              request,
+                              response,
+                            })}
+                            Uploading…
+                          </div>
+                        `
+                      )},
+                    });
+
+                    (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
+                      theme: "rose",
+                      trigger: "manual",
+                    });
+
+                    this.upload = async (fileList) => {
+                      const body = new FormData();
+                      body.append("avatar", fileList[0]);
+                      this.value = "";
+                      tippy.hideAll();
+                      avatarChooser.uploadingIndicator.show();
+                      const response = await fetch("https://${
+                        application.configuration.hostname
+                      }/settings/profile/avatar", {
+                        cache: "no-store",
+                        method: "POST",
+                        headers: { "CSRF-Protection": "true", },
+                        body,
+                      });
+                      avatarChooser.uploadingIndicator.hide();
+                      if (!response.ok) {
+                        avatarChooser.uploadingError.setContent(await response.text());
+                        avatarChooser.uploadingError.show();
+                        return;
+                      }
+                      const avatarURL = await response.text();
+                      avatar.value = avatarURL;
+                      avatarEmpty.hidden = true;
+                      avatarFilled.hidden = false;
+                      avatarFilled.querySelector("img").setAttribute("src", avatarURL);
+                    };
+
+                    this.onchange = () => {
+                      this.upload(this.files);
+                    };
+                  `}"
+                />
+                <input
+                  type="text"
+                  name="avatar"
+                  value="${response.locals.user.avatar ?? ""}"
+                  hidden
+                />
+              </div>
+
+              <div
+                css="${response.locals.css(css`
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `)}"
+              >
+                <label class="label">
+                  <p class="label--text">Name</p>
                   <input
                     type="text"
-                    name="avatar"
-                    value="${response.locals.user.avatar ?? ""}"
-                    hidden
+                    name="name"
+                    value="${response.locals.user.name}"
+                    required
+                    class="input--text"
                   />
-                </div>
-
-                <div
-                  css="${response.locals.css(css`
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                  `)}"
-                >
-                  <label class="label">
-                    <p class="label--text">Name</p>
-                    <input
-                      type="text"
-                      name="name"
-                      value="${response.locals.user.name}"
-                      required
-                      class="input--text"
-                    />
-                  </label>
-                </div>
+                </label>
               </div>
+            </div>
 
-              <div class="label">
-                <p class="label--text">Biography</p>
-                $${application.server.locals.partials.contentEditor({
-                  request,
-                  response,
-                  name: "biography",
-                  contentSource: response.locals.user.biographySource ?? "",
-                  required: false,
-                })}
-              </div>
+            <div class="label">
+              <p class="label--text">Biography</p>
+              $${application.server.locals.partials.contentEditor({
+                request,
+                response,
+                name: "biography",
+                contentSource: response.locals.user.biographySource ?? "",
+                required: false,
+              })}
+            </div>
 
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update Profile
-                </button>
-              </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-pencil-fill"></i>
+                Update Profile
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.patch<
     {},
@@ -1072,53 +1076,55 @@ export default async (application: Application): Promise<void> => {
     { name?: string; avatar?: string; biography?: string },
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/profile",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response, next) => {
-      if (
-        typeof request.body.name !== "string" ||
-        request.body.name.trim() === "" ||
-        typeof request.body.avatar !== "string" ||
-        typeof request.body.biography !== "string"
-      )
-        return next("Validation");
-      application.database.run(
-        sql`
-          UPDATE "users"
-          SET
-            "name" = ${request.body.name},
-            "nameSearch" = ${html`${request.body.name}`},
-            "avatar" = ${
-              request.body.avatar.trim() === "" ? null : request.body.avatar
-            },
-            "biographySource" = ${
-              request.body.biography.trim() === ""
-                ? null
-                : request.body.biography
-            },
-            "biographyPreprocessed" = ${
-              request.body.biography.trim() === ""
-                ? null
-                : application.server.locals.partials.contentPreprocessed(
-                    request.body.biography
-                  ).contentPreprocessed
-            }
-          WHERE "id" = ${response.locals.user.id}
-        `
-      );
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "green",
-        content: html`Profile updated successfully.`,
-      });
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/settings/profile`
-      );
-    }
-  );
+  >("/settings/profile", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    if (
+      typeof request.body.name !== "string" ||
+      request.body.name.trim() === "" ||
+      typeof request.body.avatar !== "string" ||
+      typeof request.body.biography !== "string"
+    )
+      return next("Validation");
+
+    application.database.run(
+      sql`
+        UPDATE "users"
+        SET
+          "name" = ${request.body.name},
+          "nameSearch" = ${html`${request.body.name}`},
+          "avatar" = ${
+            request.body.avatar.trim() === "" ? null : request.body.avatar
+          },
+          "biographySource" = ${
+            request.body.biography.trim() === "" ? null : request.body.biography
+          },
+          "biographyPreprocessed" = ${
+            request.body.biography.trim() === ""
+              ? null
+              : application.server.locals.partials.contentPreprocessed(
+                  request.body.biography
+                ).contentPreprocessed
+          }
+        WHERE "id" = ${response.locals.user.id}
+      `
+    );
+
+    application.server.locals.helpers.Flash.set({
+      request,
+      response,
+      theme: "green",
+      content: html`Profile updated successfully.`,
+    });
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/settings/profile`
+    );
+  });
 
   application.server.post<
     {},
@@ -1203,148 +1209,150 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/email-and-password",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.send(
-        userSettingsLayout({
-          request,
-          response,
-          head: html`<title>
-            Email & Password · User Settings · Courselore
-          </title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-sliders"></i>
-              User Settings ·
-              <i class="bi bi-key-fill"></i>
-              Email & Password
-            </h2>
+  >("/settings/email-and-password", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/settings/email-and-password"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <label class="label">
-                <p class="label--text">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${response.locals.user.email}"
-                  required
-                  class="input--text"
-                  onload="${javascript`
-                    this.onvalidate = () => {
-                      if (!leafac.isModified(this))
-                        return "Please provide the email address to which you’d like to update.";
-                    };
-                  `}"
-                />
-              </label>
-              <div class="label">
-                <p class="label--text">
-                  Password Confirmation
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--transparent"
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "You must confirm your email because this is an important operation that affects your account.",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
-                </p>
-                <input
-                  type="password"
-                  name="passwordConfirmation"
-                  required
-                  class="input--text"
-                />
-              </div>
+    response.send(
+      userSettingsLayout({
+        request,
+        response,
+        head: html`<title>
+          Email & Password · User Settings · Courselore
+        </title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-sliders"></i>
+            User Settings ·
+            <i class="bi bi-key-fill"></i>
+            Email & Password
+          </h2>
 
-              <div>
+          <form
+            method="PATCH"
+            action="https://${application.configuration
+              .hostname}/settings/email-and-password"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${response.locals.user.email}"
+                required
+                class="input--text"
+                onload="${javascript`
+                  this.onvalidate = () => {
+                    if (!leafac.isModified(this))
+                      return "Please provide the email address to which you’d like to update.";
+                  };
+                `}"
+              />
+            </label>
+            <div class="label">
+              <p class="label--text">
+                Password Confirmation
                 <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update Email
-                </button>
-              </div>
-            </form>
-
-            <hr class="separator" />
-
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/settings/email-and-password"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <label class="label">
-                <p class="label--text">Current Password</p>
-                <input
-                  type="password"
-                  name="passwordConfirmation"
-                  required
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">New Password</p>
-                <input
-                  type="password"
-                  name="newPassword"
-                  required
-                  minlength="8"
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">New Password Confirmation</p>
-                <input
-                  type="password"
-                  required
-                  class="input--text"
+                  type="button"
+                  class="button button--tight button--tight--inline button--transparent"
                   onload="${javascript`
-                    this.onvalidate = () => {
-                      if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
-                        return "New Password & New Password Confirmation don’t match.";
-                    };
+                    (this.tooltip ??= tippy(this)).setProps({
+                      trigger: "click",
+                      content: "You must confirm your email because this is an important operation that affects your account.",
+                    });
                   `}"
-                />
-              </label>
-
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update Password
+                  <i class="bi bi-info-circle"></i>
                 </button>
-              </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+              </p>
+              <input
+                type="password"
+                name="passwordConfirmation"
+                required
+                class="input--text"
+              />
+            </div>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-pencil-fill"></i>
+                Update Email
+              </button>
+            </div>
+          </form>
+
+          <hr class="separator" />
+
+          <form
+            method="PATCH"
+            action="https://${application.configuration
+              .hostname}/settings/email-and-password"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Current Password</p>
+              <input
+                type="password"
+                name="passwordConfirmation"
+                required
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">New Password</p>
+              <input
+                type="password"
+                name="newPassword"
+                required
+                minlength="8"
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">New Password Confirmation</p>
+              <input
+                type="password"
+                required
+                class="input--text"
+                onload="${javascript`
+                  this.onvalidate = () => {
+                    if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
+                      return "New Password & New Password Confirmation don’t match.";
+                  };
+                `}"
+              />
+            </label>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-pencil-fill"></i>
+                Update Password
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.patch<
     {},
@@ -1558,279 +1566,281 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/notifications",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.send(
-        userSettingsLayout({
-          request,
-          response,
-          head: html`<title>Notifications · User Settings · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-sliders"></i>
-              User Settings ·
-              <i class="bi bi-bell-fill"></i>
-              Notifications
-            </h2>
+  >("/settings/notifications", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/settings/notifications"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <div key="isEmailNotificationsFor" class="label">
-                <p class="label--text">Email Notifications</p>
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="checkbox"
-                      name="isEmailNotificationsForAllMessages"
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages !== "none"
-                        ? html`checked`
-                        : html``}
-                      class="input--checkbox"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          if (this.checked) {
-                            this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
-                            this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = true;
-                            this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
-                          }
-                          for (const element of this.closest("form").querySelectorAll('[name="emailNotificationsForAllMessages"]')) {
-                            element.disabled = !this.checked;
-                            element.closest("label").classList[this.checked ? "remove" : "add"]("disabled");
-                          }
-                        };
-                      `}"
-                    />
-                    All messages
-                  </label>
-                </div>
+    response.send(
+      userSettingsLayout({
+        request,
+        response,
+        head: html`<title>Notifications · User Settings · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-sliders"></i>
+            User Settings ·
+            <i class="bi bi-bell-fill"></i>
+            Notifications
+          </h2>
 
-                <div
-                  hidden
-                  TODO
-                  css="${response.locals.css(css`
-                    margin-left: var(--space--10);
-                    display: flex;
-                    flex-wrap: wrap;
-                    column-gap: var(--space--8);
-                    row-gap: var(--space--1);
-                  `)}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline ${response
-                      .locals.user.emailNotificationsForAllMessages === "none"
-                      ? "disabled"
-                      : ""}"
-                  >
-                    <input
-                      type="radio"
-                      name="emailNotificationsForAllMessages"
-                      value="instant"
-                      required
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages === "none"
-                        ? html`disabled`
-                        : html``}
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages === "instant"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Instant
-                  </label>
-
-                  <label
-                    class="button button--tight button--tight--inline ${response
-                      .locals.user.emailNotificationsForAllMessages === "none"
-                      ? "disabled"
-                      : ""}"
-                  >
-                    <input
-                      type="radio"
-                      name="emailNotificationsForAllMessages"
-                      value="hourly-digests"
-                      required
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages === "none"
-                        ? html`disabled`
-                        : html``}
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages === "hourly-digests"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Hourly Digests
-                  </label>
-
-                  <label
-                    class="button button--tight button--tight--inline ${response
-                      .locals.user.emailNotificationsForAllMessages === "none"
-                      ? "disabled"
-                      : ""}"
-                  >
-                    <input
-                      type="radio"
-                      name="emailNotificationsForAllMessages"
-                      value="daily-digests"
-                      required
-                      $${response.locals.user
-                        .emailNotificationsForAllMessages === "none"
-                        ? html`disabled`
-                        : html``}
-                      $${["none", "daily-digests"].includes(
-                        response.locals.user.emailNotificationsForAllMessages
-                      )
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Daily Digests
-                  </label>
-                </div>
-
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="checkbox"
-                      name="isEmailNotificationsForMentions"
-                      $${response.locals.user
-                        .emailNotificationsForMentionsAt !== null
-                        ? html`checked`
-                        : html``}
-                      class="input--checkbox"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          if (!this.checked) {
-                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
-                            element.checked = false;
-                            element.onchange();
-                          }
-                        };
-                      `}"
-                    />
-                    @mentions
-                  </label>
-                </div>
-
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="checkbox"
-                      name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"
-                      $${response.locals.user
-                        .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt !==
-                      null
-                        ? html`checked`
-                        : html``}
-                      class="input--checkbox"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          if (!this.checked) {
-                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
-                            element.checked = false;
-                            element.onchange();
-                          }
-                          if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
-                        };
-                      `}"
-                    />
-                    Messages in conversations in which you participated
-                  </label>
-                </div>
-
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="checkbox"
-                      name="isEmailNotificationsForMessagesInConversationsYouStarted"
-                      $${response.locals.user
-                        .emailNotificationsForMessagesInConversationsYouStartedAt !==
-                      null
-                        ? html`checked`
-                        : html``}
-                      class="input--checkbox"
-                      onload="${javascript`
-                        this.onchange = () => {
-                          if (!this.checked) {
-                            const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
-                            element.checked = false;
-                            element.onchange();
-                          }
-                          if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
-                        };
-                      `}"
-                    />
-                    Messages in conversations you started
-                  </label>
-                </div>
-
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline disabled"
+          <form
+            method="PATCH"
+            action="https://${application.configuration
+              .hostname}/settings/notifications"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <div key="isEmailNotificationsFor" class="label">
+              <p class="label--text">Email Notifications</p>
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="checkbox"
+                    name="isEmailNotificationsForAllMessages"
+                    $${response.locals.user.emailNotificationsForAllMessages !==
+                    "none"
+                      ? html`checked`
+                      : html``}
+                    class="input--checkbox"
                     onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        content: "You always receive email notifications for staff announcements.",
-                      });
+                      this.onchange = () => {
+                        if (this.checked) {
+                          this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
+                          this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = true;
+                          this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                        }
+                        for (const element of this.closest("form").querySelectorAll('[name="emailNotificationsForAllMessages"]')) {
+                          element.disabled = !this.checked;
+                          element.closest("label").classList[this.checked ? "remove" : "add"]("disabled");
+                        }
+                      };
                     `}"
-                  >
-                    <input
-                      type="checkbox"
-                      disabled
-                      checked
-                      class="input--checkbox"
-                    />
-                    Staff announcements
-                  </label>
-                </div>
+                  />
+                  All messages
+                </label>
               </div>
 
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
+              <div
+                hidden
+                TODO
+                css="${response.locals.css(css`
+                  margin-left: var(--space--10);
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--1);
+                `)}"
+              >
+                <label
+                  class="button button--tight button--tight--inline ${response
+                    .locals.user.emailNotificationsForAllMessages === "none"
+                    ? "disabled"
+                    : ""}"
                 >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update Notifications
-                </button>
+                  <input
+                    type="radio"
+                    name="emailNotificationsForAllMessages"
+                    value="instant"
+                    required
+                    $${response.locals.user.emailNotificationsForAllMessages ===
+                    "none"
+                      ? html`disabled`
+                      : html``}
+                    $${response.locals.user.emailNotificationsForAllMessages ===
+                    "instant"
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  Instant
+                </label>
+
+                <label
+                  class="button button--tight button--tight--inline ${response
+                    .locals.user.emailNotificationsForAllMessages === "none"
+                    ? "disabled"
+                    : ""}"
+                >
+                  <input
+                    type="radio"
+                    name="emailNotificationsForAllMessages"
+                    value="hourly-digests"
+                    required
+                    $${response.locals.user.emailNotificationsForAllMessages ===
+                    "none"
+                      ? html`disabled`
+                      : html``}
+                    $${response.locals.user.emailNotificationsForAllMessages ===
+                    "hourly-digests"
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  Hourly Digests
+                </label>
+
+                <label
+                  class="button button--tight button--tight--inline ${response
+                    .locals.user.emailNotificationsForAllMessages === "none"
+                    ? "disabled"
+                    : ""}"
+                >
+                  <input
+                    type="radio"
+                    name="emailNotificationsForAllMessages"
+                    value="daily-digests"
+                    required
+                    $${response.locals.user.emailNotificationsForAllMessages ===
+                    "none"
+                      ? html`disabled`
+                      : html``}
+                    $${["none", "daily-digests"].includes(
+                      response.locals.user.emailNotificationsForAllMessages
+                    )
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  Daily Digests
+                </label>
               </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="checkbox"
+                    name="isEmailNotificationsForMentions"
+                    $${response.locals.user.emailNotificationsForMentionsAt !==
+                    null
+                      ? html`checked`
+                      : html``}
+                    class="input--checkbox"
+                    onload="${javascript`
+                      this.onchange = () => {
+                        if (!this.checked) {
+                          const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                          element.checked = false;
+                          element.onchange();
+                        }
+                      };
+                    `}"
+                  />
+                  @mentions
+                </label>
+              </div>
+
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="checkbox"
+                    name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"
+                    $${response.locals.user
+                      .emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt !==
+                    null
+                      ? html`checked`
+                      : html``}
+                    class="input--checkbox"
+                    onload="${javascript`
+                      this.onchange = () => {
+                        if (!this.checked) {
+                          const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                          element.checked = false;
+                          element.onchange();
+                        }
+                        if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                      };
+                    `}"
+                  />
+                  Messages in conversations in which you participated
+                </label>
+              </div>
+
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="checkbox"
+                    name="isEmailNotificationsForMessagesInConversationsYouStarted"
+                    $${response.locals.user
+                      .emailNotificationsForMessagesInConversationsYouStartedAt !==
+                    null
+                      ? html`checked`
+                      : html``}
+                    class="input--checkbox"
+                    onload="${javascript`
+                      this.onchange = () => {
+                        if (!this.checked) {
+                          const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
+                          element.checked = false;
+                          element.onchange();
+                        }
+                        if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                      };
+                    `}"
+                  />
+                  Messages in conversations you started
+                </label>
+              </div>
+
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label
+                  class="button button--tight button--tight--inline disabled"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      content: "You always receive email notifications for staff announcements.",
+                    });
+                  `}"
+                >
+                  <input
+                    type="checkbox"
+                    disabled
+                    checked
+                    class="input--checkbox"
+                  />
+                  Staff announcements
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-pencil-fill"></i>
+                Update Notifications
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.patch<
     {},
@@ -1847,92 +1857,93 @@ export default async (application: Application): Promise<void> => {
     },
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/notifications",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response, next) => {
-      if (
-        ![undefined, "on"].includes(
-          request.body.isEmailNotificationsForAllMessages
-        ) ||
-        (request.body.isEmailNotificationsForAllMessages === undefined &&
-          request.body.emailNotificationsForAllMessages !== undefined) ||
-        (request.body.isEmailNotificationsForAllMessages === "on" &&
-          (typeof request.body.emailNotificationsForAllMessages !== "string" ||
-            !["instant", "hourly-digests", "daily-digests"].includes(
-              request.body.emailNotificationsForAllMessages
-            ))) ||
-        ![undefined, "on"].includes(
-          request.body.isEmailNotificationsForMentions
-        ) ||
-        ![undefined, "on"].includes(
+  >("/settings/notifications", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    if (
+      ![undefined, "on"].includes(
+        request.body.isEmailNotificationsForAllMessages
+      ) ||
+      (request.body.isEmailNotificationsForAllMessages === undefined &&
+        request.body.emailNotificationsForAllMessages !== undefined) ||
+      (request.body.isEmailNotificationsForAllMessages === "on" &&
+        (typeof request.body.emailNotificationsForAllMessages !== "string" ||
+          !["instant", "hourly-digests", "daily-digests"].includes(
+            request.body.emailNotificationsForAllMessages
+          ))) ||
+      ![undefined, "on"].includes(
+        request.body.isEmailNotificationsForMentions
+      ) ||
+      ![undefined, "on"].includes(
+        request.body
+          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+      ) ||
+      ![undefined, "on"].includes(
+        request.body.isEmailNotificationsForMessagesInConversationsYouStarted
+      ) ||
+      (request.body.isEmailNotificationsForAllMessages === "on" &&
+        (request.body.isEmailNotificationsForMentions !== "on" ||
           request.body
-            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-        ) ||
-        ![undefined, "on"].includes(
-          request.body.isEmailNotificationsForMessagesInConversationsYouStarted
-        ) ||
-        (request.body.isEmailNotificationsForAllMessages === "on" &&
-          (request.body.isEmailNotificationsForMentions !== "on" ||
-            request.body
-              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
-              "on" ||
-            request.body
-              .isEmailNotificationsForMessagesInConversationsYouStarted !==
-              "on")) ||
-        (request.body
-          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-          "on" &&
+            .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated !==
+            "on" ||
           request.body
-            .isEmailNotificationsForMessagesInConversationsYouStarted !== "on")
-      )
-        return next("Validation");
+            .isEmailNotificationsForMessagesInConversationsYouStarted !==
+            "on")) ||
+      (request.body
+        .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+        "on" &&
+        request.body
+          .isEmailNotificationsForMessagesInConversationsYouStarted !== "on")
+    )
+      return next("Validation");
 
-      application.database.run(
-        sql`
-          UPDATE "users"
-          SET
-            "emailNotificationsForAllMessages" = ${
-              request.body.isEmailNotificationsForAllMessages === undefined
-                ? "none"
-                : "instant" /* TODO request.body.emailNotificationsForAllMessages */
-            },
-            "emailNotificationsForMentionsAt" = ${
-              request.body.isEmailNotificationsForMentions === "on"
-                ? new Date().toISOString()
-                : null
-            },
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
-              request.body
-                .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-              "on"
-                ? new Date().toISOString()
-                : null
-            },
-            "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-              request.body
-                .isEmailNotificationsForMessagesInConversationsYouStarted ===
-              "on"
-                ? new Date().toISOString()
-                : null
-            }
-          WHERE "id" = ${response.locals.user.id}
-       `
-      );
+    application.database.run(
+      sql`
+        UPDATE "users"
+        SET
+          "emailNotificationsForAllMessages" = ${
+            request.body.isEmailNotificationsForAllMessages === undefined
+              ? "none"
+              : "instant" /* TODO request.body.emailNotificationsForAllMessages */
+          },
+          "emailNotificationsForMentionsAt" = ${
+            request.body.isEmailNotificationsForMentions === "on"
+              ? new Date().toISOString()
+              : null
+          },
+          "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+            request.body
+              .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+            "on"
+              ? new Date().toISOString()
+              : null
+          },
+          "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+            request.body
+              .isEmailNotificationsForMessagesInConversationsYouStarted === "on"
+              ? new Date().toISOString()
+              : null
+          }
+        WHERE "id" = ${response.locals.user.id}
+      `
+    );
 
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "green",
-        content: html`Notifications updated successfully.`,
-      });
+    application.server.locals.helpers.Flash.set({
+      request,
+      response,
+      theme: "green",
+      content: html`Notifications updated successfully.`,
+    });
 
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/settings/notifications`
-      );
-    }
-  );
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/settings/notifications`
+    );
+  });
 
   application.server.get<
     {},
@@ -1940,77 +1951,79 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/settings/account",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      response.send(
-        userSettingsLayout({
-          request,
-          response,
-          head: html`<title>Account · User Settings · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-sliders"></i>
-              User Settings ·
-              <i class="bi bi-bell-fill"></i>
-              Account
-            </h2>
+  >("/settings/account", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-            <form
-              method="DELETE"
-              action="https://${application.configuration
-                .hostname}/settings/account"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <div class="label">
-                <p class="label--text">
-                  Password Confirmation
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--transparent"
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "You must confirm your email because this is an important operation that affects your account.",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
-                </p>
-                <input
-                  type="password"
-                  name="passwordConfirmation"
-                  required
-                  class="input--text"
-                />
-              </div>
+    response.send(
+      userSettingsLayout({
+        request,
+        response,
+        head: html`<title>Account · User Settings · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-sliders"></i>
+            User Settings ·
+            <i class="bi bi-bell-fill"></i>
+            Account
+          </h2>
 
-              <div>
+          <form
+            method="DELETE"
+            action="https://${application.configuration
+              .hostname}/settings/account"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <div class="label">
+              <p class="label--text">
+                Password Confirmation
                 <button
-                  class="button button--full-width-on-small-screen button--rose"
+                  type="button"
+                  class="button button--tight button--tight--inline button--transparent"
                   onload="${javascript`
-                    this.onclick = () => {
-                      localStorage.clear();
-                    };
+                    (this.tooltip ??= tippy(this)).setProps({
+                      trigger: "click",
+                      content: "You must confirm your email because this is an important operation that affects your account.",
+                    });
                   `}"
                 >
-                  <i class="bi bi-person-x-fill"></i>
-                  Remove Your Account
+                  <i class="bi bi-info-circle"></i>
                 </button>
-              </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+              </p>
+              <input
+                type="password"
+                name="passwordConfirmation"
+                required
+                class="input--text"
+              />
+            </div>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--rose"
+                onload="${javascript`
+                  this.onclick = () => {
+                    localStorage.clear();
+                  };
+                `}"
+              >
+                <i class="bi bi-person-x-fill"></i>
+                Remove Your Account
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   /*
   TODO
