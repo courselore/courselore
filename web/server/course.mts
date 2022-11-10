@@ -4438,23 +4438,28 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  type IsInvitationUsableLocals =
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Omit<
-        Partial<Application["server"]["locals"]["ResponseLocals"]["Base"]>,
-        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
-      > &
-      Omit<
-        Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>,
-        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
-      > &
-      Omit<
-        Partial<
-          Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-        >,
-        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
-      > &
-      ResponseLocalsInvitation;
+  application.server.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    { redirect?: string },
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      ResponseLocalsInvitation
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    (request, response, next) => {
+      if (response.locals.invitation === undefined) {
+        // TODO: Error message saying invitation doesn’t exist.
+      }
+
+      if (response.locals.course !== undefined) {
+        // TODO: You’re already enrolled.
+      }
+
+      // TODO: isInvitationUsableMiddleware
+    }
+  );
+
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
