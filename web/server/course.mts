@@ -373,122 +373,124 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      switch (response.locals.enrollments.length) {
-        case 0:
-          response.send(
-            application.server.locals.layouts.main({
-              request,
-              response,
-              head: html`<title>Courselore</title>`,
-              body: html`
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `)}"
-                >
-                  <h2 class="heading--display">Welcome to Courselore!</h2>
+  >("/", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
 
-                  <div class="decorative-icon">
-                    $${application.server.locals.partials.logo({
-                      size: 144 /* var(--space--36) */,
-                    })}
-                  </div>
+    switch (response.locals.enrollments.length) {
+      case 0:
+        response.send(
+          application.server.locals.layouts.main({
+            request,
+            response,
+            head: html`<title>Courselore</title>`,
+            body: html`
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  align-items: center;
+                `)}"
+              >
+                <h2 class="heading--display">Welcome to Courselore!</h2>
 
-                  <div class="menu-box">
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/settings/profile"
-                      class="menu-box--item button button--blue"
-                    >
-                      <i class="bi bi-person-circle"></i>
-                      Fill in Your Profile
-                    </a>
-                    <button
-                      class="menu-box--item button button--transparent"
-                      onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          trigger: "click",
-                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-journal-arrow-down"></i>
-                      Enroll in an Existing Course
-                    </button>
-                    $${response.locals.mayCreateCourses
-                      ? html`
-                          <a
-                            href="https://${application.configuration
-                              .hostname}/courses/new"
-                            class="menu-box--item button button--transparent"
-                          >
-                            <i class="bi bi-journal-plus"></i>
-                            Create a New Course
-                          </a>
-                        `
-                      : html``}
-                  </div>
+                <div class="decorative-icon">
+                  $${application.server.locals.partials.logo({
+                    size: 144 /* var(--space--36) */,
+                  })}
                 </div>
-              `,
-            })
-          );
-          break;
 
-        case 1:
-          response.redirect(
-            303,
-            `https://${application.configuration.hostname}/courses/${response.locals.enrollments[0].course.reference}`
-          );
-          break;
-
-        default:
-          response.send(
-            application.server.locals.layouts.main({
-              request,
-              response,
-              head: html`<title>Courselore</title>`,
-              showCourseSwitcher: false,
-              body: html`
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `)}"
-                >
-                  <div class="decorative-icon">
-                    <i class="bi bi-journal-text"></i>
-                  </div>
-
-                  <p class="secondary">Go to one of your courses.</p>
-
-                  <div
-                    class="menu-box"
-                    css="${response.locals.css(css`
-                      max-width: var(--space--80);
-                    `)}"
+                <div class="menu-box">
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/settings/profile"
+                    class="menu-box--item button button--blue"
                   >
-                    $${application.server.locals.partials.courses({
-                      request,
-                      response,
-                    })}
-                  </div>
+                    <i class="bi bi-person-circle"></i>
+                    Fill in Your Profile
+                  </a>
+                  <button
+                    class="menu-box--item button button--transparent"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-journal-arrow-down"></i>
+                    Enroll in an Existing Course
+                  </button>
+                  $${response.locals.mayCreateCourses
+                    ? html`
+                        <a
+                          href="https://${application.configuration
+                            .hostname}/courses/new"
+                          class="menu-box--item button button--transparent"
+                        >
+                          <i class="bi bi-journal-plus"></i>
+                          Create a New Course
+                        </a>
+                      `
+                    : html``}
                 </div>
-              `,
-            })
-          );
-          break;
-      }
+              </div>
+            `,
+          })
+        );
+        break;
+
+      case 1:
+        response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.enrollments[0].course.reference}`
+        );
+        break;
+
+      default:
+        response.send(
+          application.server.locals.layouts.main({
+            request,
+            response,
+            head: html`<title>Courselore</title>`,
+            showCourseSwitcher: false,
+            body: html`
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  align-items: center;
+                `)}"
+              >
+                <div class="decorative-icon">
+                  <i class="bi bi-journal-text"></i>
+                </div>
+
+                <p class="secondary">Go to one of your courses.</p>
+
+                <div
+                  class="menu-box"
+                  css="${response.locals.css(css`
+                    max-width: var(--space--80);
+                  `)}"
+                >
+                  $${application.server.locals.partials.courses({
+                    request,
+                    response,
+                  })}
+                </div>
+              </div>
+            `,
+          })
+        );
+        break;
     }
-  );
+  });
 
   type MayCreateCoursesLocals =
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"];
@@ -4567,9 +4569,14 @@ export default async (application: Application): Promise<void> => {
       IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...application.server.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
-    (request, response) => {
+    (request, response, next) => {
+      if (
+        response.locals.user === undefined ||
+        response.locals.user.emailVerifiedAt === null
+      )
+        return next();
+
       response.send(
         application.server.locals.layouts.box({
           request,
@@ -4639,9 +4646,14 @@ export default async (application: Application): Promise<void> => {
       IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...application.server.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
-    (request, response) => {
+    (request, response, next) => {
+      if (
+        response.locals.user === undefined ||
+        response.locals.user.emailVerifiedAt === null
+      )
+        return next();
+
       application.database.run(
         sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
