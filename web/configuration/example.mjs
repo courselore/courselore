@@ -6,9 +6,9 @@ export default {
   // The main hostname through which people may access Courselore.
   hostname: "YOUR-DOMAIN.EDU",
 
-  // The path to the folder in which Courselore stores data:
+  // The path to the directory in which Courselore stores data:
   // the database and the files uploaded by users (for example, user avatars and attachments in messages).
-  // With the line below this is a folder called ‘data/’ relative to this configuration file.
+  // With the line below this is a directory called ‘data/’ relative to this configuration file.
   // In most cases this is appropriate, but you may want to change it to an absolute path, for example, ‘/home/courselore/data/’.
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
 

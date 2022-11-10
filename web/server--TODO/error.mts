@@ -1,59 +1,61 @@
 import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
-import {
-  Courselore,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
-  app.all<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
-    "*",
-    ...app.server.locals.middlewares.isSignedOut,
-    (req, res) => {
-      res.redirect(
-        303,
-        `https://${app.configuration.hostname}/sign-in${qs.stringify(
-          { redirect: req.originalUrl.slice(1) },
-          { addQueryPrefix: true }
-        )}`
-      );
-    }
-  );
+  app.all<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >("*", ...app.server.locals.middlewares.isSignedOut, (req, res) => {
+    res.redirect(
+      303,
+      `https://${app.configuration.hostname}/sign-in${qs.stringify(
+        { redirect: req.originalUrl.slice(1) },
+        { addQueryPrefix: true }
+      )}`
+    );
+  });
 
-  app.all<{}, HTML, {}, { redirect?: string }, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
-    "*",
-    ...app.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      if (typeof req.query.redirect === "string")
-        return res.redirect(
-          303,
-          `https://${app.configuration.hostname}/${req.query.redirect}`
-        );
-      res.status(404).send(
-        app.server.locals.layouts.box({
-          req,
-          res,
-          head: html`<title>404 Not Found · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-question-diamond-fill"></i>
-              404 Not Found
-            </h2>
-            <p>
-              If you think there should be something here, please contact your
-              course staff or the system administrator at
-              <a
-                href="${app.server.locals.partials.reportIssueHref}"
-                target="_blank"
-                class="link"
-                >${app.configuration.administratorEmail}</a
-              >.
-            </p>
-          `,
-        })
+  app.all<
+    {},
+    HTML,
+    {},
+    { redirect?: string },
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("*", ...app.server.locals.middlewares.isSignedIn, (req, res) => {
+    if (typeof req.query.redirect === "string")
+      return res.redirect(
+        303,
+        `https://${app.configuration.hostname}/${req.query.redirect}`
       );
-    }
-  );
+    res.status(404).send(
+      app.server.locals.layouts.box({
+        req,
+        res,
+        head: html`<title>404 Not Found · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-question-diamond-fill"></i>
+            404 Not Found
+          </h2>
+          <p>
+            If you think there should be something here, please contact your
+            course staff or the system administrator at
+            <a
+              href="${app.server.locals.partials.reportIssueHref}"
+              target="_blank"
+              class="link"
+              >${app.configuration.administratorEmail}</a
+            >.
+          </p>
+        `,
+      })
+    );
+  });
 
   /*
         return response.send(
@@ -82,7 +84,7 @@ export default async (app: Courselore): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
               >
-                Didn’t receive the email? Already checked your spam folder?
+                Didn’t receive the email? Already checked your spam inbox?
                 <button class="link">Resend</button>
               </form>
 
@@ -222,7 +224,7 @@ export default async (app: Courselore): Promise<void> => {
 
   */
 
-        /*
+  /*
         if (request.method === "GET")
           response.redirect(
             303,

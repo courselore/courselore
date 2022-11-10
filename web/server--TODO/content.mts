@@ -2813,19 +2813,19 @@ ${contentSource}</textarea
       }
       let attachmentsContentSources = ``;
       for (const attachment of attachments) {
-        const folder = cryptoRandomString({
+        const directory = cryptoRandomString({
           length: 20,
           type: "numeric",
         });
         await attachment.mv(
           path.join(
             app.configuration.dataDirectory,
-            `files/${folder}/${attachment.name}`
+            `files/${directory}/${attachment.name}`
           )
         );
         const href = `https://${
           app.configuration.hostname
-        }/files/${folder}/${encodeURIComponent(attachment.name)}`;
+        }/files/${directory}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
             const image = sharp(attachment.data, { limitInputPixels: false });
@@ -2853,12 +2853,12 @@ ${contentSource}</textarea
               .toFile(
                 path.join(
                   app.configuration.dataDirectory,
-                  `files/${folder}/${nameThumbnail}`
+                  `files/${directory}/${nameThumbnail}`
                 )
               );
             attachmentsContentSources += `[<img src="https://${
               app.configuration.hostname
-            }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
+            }/files/${directory}/${encodeURIComponent(nameThumbnail)}" alt="${
               attachment.name
             }" width="${maximumWidth / 2}" />](${href})\n\n`;
             continue;

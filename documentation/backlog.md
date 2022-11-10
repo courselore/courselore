@@ -480,7 +480,7 @@ new Notification('Example');
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 - Dragging an image from another website and dropping it in the content editor results in a 422.
-- Dragging a folder from Finder makes the request fail without even an error code(!)
+- Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
 ## Content Processor
@@ -858,11 +858,11 @@ const { app, BrowserWindow } = require("electron");
 - Windows development:
   - `global.css` is regenerated (probably because of line endings)
   - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
-- Exclude `assets/` folder from build?
+- Exclude `assets/` directory from build?
 - Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
-- Do things break if you’re trying to run Courselore from a folder that includes spaces & weird characters?
+- Do things break if you’re trying to run Courselore from a directory that includes spaces & weird characters?
   - Note Caddy’s configuration and the serving of static files.
   - Test development.
   - Test binary.

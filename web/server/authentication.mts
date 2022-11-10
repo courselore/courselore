@@ -1081,7 +1081,7 @@ export default async (application: Application): Promise<void> => {
             <input type="hidden" name="email" value="${request.body.email}" />
             <input type="hidden" name="resend" value="true" />
             <p>
-              Didn’t receive the email? Already checked your spam folder?
+              Didn’t receive the email? Already checked your spam inbox?
               <button class="link">Resend</button>.
             </p>
           </form>

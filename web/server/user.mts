@@ -1134,7 +1134,7 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/profile/avatar",
-    asyncHandler(async (request, response, next) => {
+    asyncHandler(async (request, response) => {
       if (
         request.files?.avatar === undefined ||
         Array.isArray(request.files.avatar)
@@ -1160,7 +1160,7 @@ export default async (application: Application): Promise<void> => {
           .status(413)
           .send("The avatar must be smaller than 10MB.");
 
-      const folder = cryptoRandomString({
+      const directory = cryptoRandomString({
         length: 20,
         type: "numeric",
       });
@@ -1168,7 +1168,7 @@ export default async (application: Application): Promise<void> => {
         path.join(
           application.configuration.dataDirectory,
           "files",
-          folder,
+          directory,
           name
         )
       );
@@ -1190,11 +1190,11 @@ export default async (application: Application): Promise<void> => {
             path.join(
               application.configuration.dataDirectory,
               "files",
-              folder,
+              directory,
               nameAvatar
             )
           );
-      } catch (error) {
+      } catch {
         return response
           .status(422)
           .send(
@@ -1205,7 +1205,7 @@ export default async (application: Application): Promise<void> => {
       response.send(
         `https://${
           application.configuration.hostname
-        }/files/${folder}/${encodeURIComponent(nameAvatar)}`
+        }/files/${directory}/${encodeURIComponent(nameAvatar)}`
       );
     })
   );
