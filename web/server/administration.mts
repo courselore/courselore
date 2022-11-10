@@ -87,8 +87,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration", (request, response, next) => {
     if (
-      response.locals.user?.systemRole !== "administrator" ||
-      typeof response.locals.user?.emailVerifiedAt !== "string"
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
     )
       return next();
 
@@ -167,8 +168,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/system-settings", (request, response, next) => {
     if (
-      response.locals.user?.systemRole !== "administrator" ||
-      typeof response.locals.user?.emailVerifiedAt !== "string"
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
     )
       return next();
 
@@ -287,8 +289,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/system-settings", (request, response, next) => {
     if (
-      response.locals.user?.systemRole !== "administrator" ||
-      typeof response.locals.user?.emailVerifiedAt !== "string"
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
     )
       return next();
 
@@ -344,8 +347,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/users", (request, response, next) => {
     if (
-      response.locals.user?.systemRole !== "administrator" ||
-      typeof response.locals.user?.emailVerifiedAt !== "string"
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
     )
       return next();
 
@@ -740,8 +744,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/users/:userReference", (request, response, next) => {
     if (
-      response.locals.user?.systemRole !== "administrator" ||
-      typeof response.locals.user?.emailVerifiedAt !== "string"
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
     )
       return next();
 
