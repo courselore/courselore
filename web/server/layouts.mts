@@ -8,7 +8,7 @@ import dedent from "dedent";
 import qs from "qs";
 import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
-import { Application, ResponseLocalsCourseEnrolled } from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ApplicationLayouts = {
   server: {
@@ -27,12 +27,16 @@ export type ApplicationLayouts = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           response: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           head: HTML;
           extraHeaders?: HTML;
@@ -50,12 +54,16 @@ export type ApplicationLayouts = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           response: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           head: HTML;
           body: HTML;
@@ -74,12 +82,16 @@ export type ApplicationLayouts = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           response: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           head: HTML;
           showCourseSwitcher?: boolean;
@@ -99,12 +111,16 @@ export type ApplicationLayouts = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           response: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           head: HTML;
           showCourseSwitcher?: boolean;

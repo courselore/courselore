@@ -11,7 +11,7 @@ import {
   Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"],
   MaybeEnrollment,
   CourseRole,
-  ResponseLocalsCourseEnrolled,
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
   ConversationParticipants,
   ConversationType,
@@ -24,8 +24,8 @@ export type GetMessageHelper = ({
   conversation,
   messageReference,
 }: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-  res: express.Response<any, ResponseLocalsCourseEnrolled>;
+  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -103,8 +103,8 @@ export type CourseLiveUpdater = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-  res: express.Response<any, ResponseLocalsCourseEnrolled>;
+  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
 }) => Promise<void>;
 
 export type EmailNotificationsMailer = ({
@@ -112,8 +112,8 @@ export type EmailNotificationsMailer = ({
   res,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-  res: express.Response<any, ResponseLocalsCourseEnrolled>;
+  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -906,7 +906,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsCourseEnrolled & MessageExistsLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...app.server.locals.middlewares.isEnrolledInCourse,

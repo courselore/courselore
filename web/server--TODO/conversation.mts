@@ -16,7 +16,7 @@ import {
   Enrollment,
   MaybeEnrollment,
   CourseRole,
-  ResponseLocalsCourseEnrolled,
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
 } from "./index.mjs";
 
@@ -61,11 +61,11 @@ export type ConversationLayout = ({
       messages?: object;
       newConversation?: object;
     },
-    ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     HTML,
-    ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
   >;
   head: HTML;
   sidebarOnSmallScreen?: boolean;
@@ -80,8 +80,8 @@ export type ConversationPartial = ({
   searchResult,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-  res: express.Response<any, ResponseLocalsCourseEnrolled>;
+  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -114,8 +114,8 @@ export type GetConversationHelper = ({
   res,
   conversationReference,
 }: {
-  req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-  res: express.Response<any, ResponseLocalsCourseEnrolled>;
+  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
   conversationReference: string;
 }) =>
   | {
@@ -159,7 +159,7 @@ export type IsConversationAccessibleMiddleware = express.RequestHandler<
   {},
   IsConversationAccessibleLocals
 >[];
-export type IsConversationAccessibleLocals = ResponseLocalsCourseEnrolled & {
+export type IsConversationAccessibleLocals = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -2955,7 +2955,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     { redirect?: string },
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (req, res, next) => {
@@ -3034,7 +3034,7 @@ export default async (app: Courselore): Promise<void> => {
         isPinned?: "true";
       };
     },
-    ResponseLocalsCourseEnrolled & ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & ResponseLocalsLiveUpdates
   >(
     `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
       "|"
@@ -4336,7 +4336,7 @@ export default async (app: Courselore): Promise<void> => {
       conversationDraftReference?: string;
     },
     { conversations?: object },
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4732,7 +4732,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { conversationDraftReference?: string },
     { conversations?: object },
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/new",
     ...app.server.locals.middlewares.isEnrolledInCourse,

@@ -62,11 +62,11 @@ export type CoursesPartial = ({
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<ResponseLocalsCourseEnrolled>
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
   >;
   res: express.Response<
     any,
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<ResponseLocalsCourseEnrolled>
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
   >;
   tight?: boolean;
 }) => HTML;
@@ -84,9 +84,9 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  ResponseLocalsCourseEnrolled
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
 >[];
-export type ResponseLocalsCourseEnrolled = Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+export type Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] = Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
   actionAllowedOnArchivedCourse?: boolean;
   enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
   course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
@@ -107,7 +107,7 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
   {},
   IsCourseStaffLocals
 >[];
-export type IsCourseStaffLocals = ResponseLocalsCourseEnrolled;
+export type IsCourseStaffLocals = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"];
 
 export default async (app: Courselore): Promise<void> => {
   const courseRoleIcon: {
@@ -783,7 +783,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsCourseEnrolled & ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -872,7 +872,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -896,8 +896,8 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-    res: express.Response<any, ResponseLocalsCourseEnrolled>;
+    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -3991,7 +3991,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4108,7 +4108,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     { accentColor?: EnrollmentAccentColor },
     {},
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4140,7 +4140,7 @@ export default async (app: Courselore): Promise<void> => {
   type IsInvitationUsableLocals = Application["server"]["locals"]["ResponseLocals"]["Base"] &
     Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["Base"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
     Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
-    Omit<Partial<ResponseLocalsCourseEnrolled>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
+    Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
     InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
@@ -4371,7 +4371,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4438,7 +4438,7 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    ResponseLocalsCourseEnrolled & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,

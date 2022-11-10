@@ -5,7 +5,7 @@ import { sql } from "@leafac/sqlite";
 import got from "got";
 import {
   Application,
-  ResponseLocalsCourseEnrolled,
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
 } from "./index.mjs";
 
 // TODO: "LIVE-UPDATES", liveUpdatesNonce
@@ -76,16 +76,16 @@ export type ApplicationLiveUpdates = {
             any,
             {},
             {},
-            ResponseLocalsCourseEnrolled
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
-          response: express.Response<any, ResponseLocalsCourseEnrolled>;
+          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
         }): Promise<void>;
       };
     };
   };
 };
 
-export type ResponseLocalsLiveUpdates = ResponseLocalsCourseEnrolled & {
+export type ResponseLocalsLiveUpdates = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
   liveUpdatesNonce: string | undefined;
 };
 
@@ -267,8 +267,8 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
   }: {
-    request: express.Request<{}, any, {}, {}, ResponseLocalsCourseEnrolled>;
-    response: express.Response<any, ResponseLocalsCourseEnrolled>;
+    request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+    response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
   }) => {
     application.database.run(
       sql`

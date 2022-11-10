@@ -12,7 +12,7 @@ import argon2 from "argon2";
 import got from "got";
 import {
   Application,
-  ResponseLocalsCourseEnrolled,
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   MaybeEnrollment,
 } from "./index.mjs";
 
@@ -39,12 +39,12 @@ export type ApplicationUser = {
             {},
             {},
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
           >;
           res: express.Response<
             any,
             Application["server"]["locals"]["ResponseLocals"]["Base"] &
-              Partial<ResponseLocalsCourseEnrolled>
+              Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
           >;
           enrollment?: MaybeEnrollment;
           user?: User | "no-longer-enrolled";

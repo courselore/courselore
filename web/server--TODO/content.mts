@@ -32,7 +32,7 @@ import got from "got";
 import {
   Courselore,
   CourseRole,
-  ResponseLocalsCourseEnrolled,
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsConversationAccessibleLocals,
 } from "./index.mjs";
 
@@ -54,9 +54,9 @@ export type ContentPartial = ({
     any,
     {},
     { conversations?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
   >;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>>;
+  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>>;
   id?: string;
   contentPreprocessed: HTML;
   decorate?: boolean;
@@ -80,13 +80,13 @@ export type ContentEditorPartial = ({
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<ResponseLocalsCourseEnrolled> &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]> &
       Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<ResponseLocalsCourseEnrolled> &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]> &
       Partial<IsConversationAccessibleLocals>
   >;
   name?: string;
@@ -274,9 +274,9 @@ export default async (app: Courselore): Promise<void> => {
         any,
         {},
         {},
-        ResponseLocalsCourseEnrolled
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
-      const narrowRes = res as express.Response<any, ResponseLocalsCourseEnrolled>;
+      const narrowRes = res as express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
 
       for (const element of contentElement.querySelectorAll("a")) {
         const href = element.getAttribute("href");
@@ -2221,7 +2221,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      ResponseLocalsCourseEnrolled & Partial<IsConversationAccessibleLocals>
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
     > = (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2362,7 +2362,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      ResponseLocalsCourseEnrolled
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >(
       "/courses/:courseReference/content-editor/mention-user-search",
       ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -2387,7 +2387,7 @@ ${contentSource}</textarea
     any,
     {},
     { search?: string },
-    ResponseLocalsCourseEnrolled
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -2854,7 +2854,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+      Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
     > = (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2882,7 +2882,7 @@ ${contentSource}</textarea
       any,
       { content?: string },
       {},
-      ResponseLocalsCourseEnrolled
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >(
       "/courses/:courseReference/content-editor/preview",
       ...app.server.locals.middlewares.isEnrolledInCourse,
