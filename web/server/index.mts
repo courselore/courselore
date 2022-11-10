@@ -17,7 +17,6 @@ import database, { ApplicationDatabase } from "./database.mjs";
 import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
 // import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
-// export { ResponseLocalsLiveUpdates } from "./live-updates.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -27,31 +26,14 @@ import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
 // import user, { ApplicationUser } from "./user.mjs";
-// import course from "./course.mjs";
-// export {
-//   Enrollment,
-//   MaybeEnrollment,
-//   CourseRole,
-//   courseRoles,
-//   EnrollmentAccentColor,
-//   enrollmentAccentColors,
-//   ResponseLocalsCourseEnrolled,
-//   IsCourseStaffLocals,
-// } from "./course.mjs";
-// import conversation from "./conversation.mjs";
-// export {
-//   ConversationParticipants,
-//   conversationParticipantses,
-//   ConversationType,
-//   conversationTypes,
-//   IsConversationAccessibleLocals,
-// } from "./conversation.mjs";
+// import course, { ApplicationCourse } from "./course.mjs";
+// import conversation, { ApplicationConversation } from "./conversation.mjs";
 // import message from "./message.mjs";
 // import content from "./content.mjs";
 // import email from "./email.mjs";
 // import demonstration from "./demonstration.mjs";
 // import error from "./error.mjs";
-// import helpers from "./helpers.mjs";
+// import helpers, { ApplicationHelpers } from "./helpers.mjs";
 
 export type Application = {
   name: string;
@@ -120,17 +102,20 @@ export type Application = {
           enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
         };
+        ResponseLocals: {
+          CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+            course: any;
+            enrollment: any;
+            enrollments: any;
+            invitations: any[];
+          };
+        };
+        Types: {
+          MaybeEnrollment: any;
+        };
       };
     };
   };
-export type ResponseLocalsCourseEnrolled =
-  Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-    course: any;
-    enrollment: any;
-    enrollments: any;
-    invitations: any[];
-  };
-export type MaybeEnrollment = any;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
