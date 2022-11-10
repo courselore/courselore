@@ -244,7 +244,7 @@ export default async (application: Application): Promise<void> => {
     extraHeaders = html``,
     body,
   }) => {
-    const baseLayoutBody = html`
+    const layoutBaseBody = html`
       <body
         css="${response.locals.css(css`
           font-family: "Public SansVariable", var(--font-family--sans-serif);
@@ -967,7 +967,7 @@ export default async (application: Application): Promise<void> => {
 
           $${head}
         </head>
-        $${baseLayoutBody}
+        $${layoutBaseBody}
       </html>
     `;
   };

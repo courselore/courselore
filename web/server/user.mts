@@ -668,7 +668,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  const userSettingsLayout = ({
+  const layoutUserSettings = ({
     request,
     response,
     head,
@@ -773,7 +773,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      userSettingsLayout({
+      layoutUserSettings({
         request,
         response,
         head: html`<title>Profile · User Settings · Courselore</title>`,
@@ -1224,7 +1224,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      userSettingsLayout({
+      layoutUserSettings({
         request,
         response,
         head: html`<title>
@@ -1595,7 +1595,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      userSettingsLayout({
+      layoutUserSettings({
         request,
         response,
         head: html`<title>Notifications · User Settings · Courselore</title>`,
@@ -1980,7 +1980,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      userSettingsLayout({
+      layoutUserSettings({
         request,
         response,
         head: html`<title>Account · User Settings · Courselore</title>`,

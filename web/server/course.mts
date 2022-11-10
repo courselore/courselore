@@ -927,7 +927,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  const courseSettingsLayout = ({
+  const layoutCourseSettings = ({
     request,
     response,
     head,
@@ -1062,7 +1062,7 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       response.send(
-        courseSettingsLayout({
+        layoutCourseSettings({
           request,
           response,
           head: html`
@@ -1460,7 +1460,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      courseSettingsLayout({
+      layoutCourseSettings({
         request,
         response,
         head: html`
@@ -2081,7 +2081,7 @@ export default async (application: Application): Promise<void> => {
       );
 
       response.send(
-        courseSettingsLayout({
+        layoutCourseSettings({
           request,
           response,
           head: html`
@@ -3652,7 +3652,7 @@ export default async (application: Application): Promise<void> => {
         }));
 
       response.send(
-        courseSettingsLayout({
+        layoutCourseSettings({
           request,
           response,
           head: html`
@@ -4239,7 +4239,7 @@ export default async (application: Application): Promise<void> => {
     ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response) => {
       response.send(
-        courseSettingsLayout({
+        layoutCourseSettings({
           request,
           response,
           head: html`

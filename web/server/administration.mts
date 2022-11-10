@@ -98,7 +98,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  const administrationLayout = ({
+  const layoutAdministration = ({
     request,
     response,
     head,
@@ -173,7 +173,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      administrationLayout({
+      layoutAdministration({
         request,
         response,
         head: html`
@@ -383,7 +383,7 @@ export default async (application: Application): Promise<void> => {
     );
 
     response.send(
-      administrationLayout({
+      layoutAdministration({
         request,
         response,
         head: html`<title>Users · Administration · Courselore</title>`,
