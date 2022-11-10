@@ -78,7 +78,7 @@ export type ApplicationAuthentication = {
             userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
           };
           mayCreateCourses: boolean;
-          passwordConfirmation: boolean;
+          passwordConfirmed: boolean;
         };
       };
       configuration: {
@@ -594,7 +594,7 @@ export default async (application: Application): Promise<void> => {
           .userSystemRolesWhoMayCreateCourses === "administrators" &&
           response.locals.user.systemRole === "administrator");
 
-      response.locals.passwordConfirmation =
+      response.locals.passwordConfirmed =
         typeof request.body.passwordConfirmation === "string" &&
         request.body.passwordConfirmation.trim() !== "" &&
         (await argon2.verify(

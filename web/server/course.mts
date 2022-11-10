@@ -492,132 +492,125 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  type MayCreateCoursesLocals =
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"];
-  const mayCreateCoursesMiddleware: express.RequestHandler<
+  application.server.get<
     {},
-    any,
+    HTML,
     {},
     {},
-    MayCreateCoursesLocals
-  >[] = [
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response, next) => {
-      if (response.locals.mayCreateCourses) return next();
-      next("route");
-    },
-  ];
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/courses/new", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      !response.locals.mayCreateCourses
+    )
+      return next();
 
-  application.server.get<{}, HTML, {}, {}, MayCreateCoursesLocals>(
-    "/courses/new",
-    ...mayCreateCoursesMiddleware,
-    (request, response) => {
-      response.send(
-        application.server.locals.layouts.main({
-          request,
-          response,
-          head: html`<title>Create a New Course · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-journal-plus"></i>
-              Create a New Course
-            </h2>
+    response.send(
+      application.server.locals.layouts.main({
+        request,
+        response,
+        head: html`<title>Create a New Course · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-journal-plus"></i>
+            Create a New Course
+          </h2>
 
-            <form
-              method="POST"
-              action="https://${application.configuration.hostname}/courses"
-              novalidate
+          <form
+            method="POST"
+            action="https://${application.configuration.hostname}/courses"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <label class="label">
+              <p class="label--text">Name</p>
+              <input
+                type="text"
+                name="name"
+                class="input--text"
+                required
+                autocomplete="off"
+                autofocus
+              />
+            </label>
+            <div
               css="${response.locals.css(css`
                 display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
+                gap: var(--space--2);
+                & > * {
+                  flex: 1;
+                }
               `)}"
             >
               <label class="label">
-                <p class="label--text">Name</p>
+                <p class="label--text">Year</p>
                 <input
                   type="text"
-                  name="name"
+                  name="year"
                   class="input--text"
-                  required
                   autocomplete="off"
-                  autofocus
-                />
-              </label>
-              <div
-                css="${response.locals.css(css`
-                  display: flex;
-                  gap: var(--space--2);
-                  & > * {
-                    flex: 1;
-                  }
-                `)}"
-              >
-                <label class="label">
-                  <p class="label--text">Year</p>
-                  <input
-                    type="text"
-                    name="year"
-                    class="input--text"
-                    autocomplete="off"
-                    onload="${javascript`
+                  onload="${javascript`
                       this.defaultValue = new Date().getFullYear().toString();
                     `}"
-                  />
-                </label>
-                <label class="label">
-                  <p class="label--text">Term</p>
-                  <input
-                    type="text"
-                    name="term"
-                    class="input--text"
-                    autocomplete="off"
-                    onload="${javascript`
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Term</p>
+                <input
+                  type="text"
+                  name="term"
+                  class="input--text"
+                  autocomplete="off"
+                  onload="${javascript`
                       const month = new Date().getMonth() + 1;
                       this.defaultValue = month < 4 || month > 9 ? "Spring" : "Fall";
                     `}"
-                  />
-                </label>
-              </div>
-              <label class="label">
-                <p class="label--text">Institution</p>
-                <input
-                  type="text"
-                  name="institution"
-                  class="input--text"
-                  autocomplete="off"
-                  placeholder="Your University"
-                  value="${response.locals.enrollments.length > 0
-                    ? response.locals.enrollments[
-                        response.locals.enrollments.length - 1
-                      ].course.institution ?? ""
-                    : ""}"
                 />
               </label>
-              <label class="label">
-                <p class="label--text">Code</p>
-                <input
-                  type="text"
-                  name="code"
-                  class="input--text"
-                  autocomplete="off"
-                  placeholder="CS 601.426"
-                />
-              </label>
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-journal-plus"></i>
-                  Create Course
-                </button>
-              </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+            </div>
+            <label class="label">
+              <p class="label--text">Institution</p>
+              <input
+                type="text"
+                name="institution"
+                class="input--text"
+                autocomplete="off"
+                placeholder="Your University"
+                value="${response.locals.enrollments.length > 0
+                  ? response.locals.enrollments[
+                      response.locals.enrollments.length - 1
+                    ].course.institution ?? ""
+                  : ""}"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Code</p>
+              <input
+                type="text"
+                name="code"
+                class="input--text"
+                autocomplete="off"
+                placeholder="CS 601.426"
+              />
+            </label>
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-journal-plus"></i>
+                Create Course
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.post<
     {},
@@ -630,8 +623,15 @@ export default async (application: Application): Promise<void> => {
       code?: string;
     },
     {},
-    MayCreateCoursesLocals
-  >("/courses", ...mayCreateCoursesMiddleware, (request, response, next) => {
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/courses", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      !response.locals.mayCreateCourses
+    )
+      return next();
+
     if (
       typeof request.body.name !== "string" ||
       request.body.name.trim() === "" ||
@@ -703,6 +703,7 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
+
     response.redirect(
       303,
       `https://${application.configuration.hostname}/courses/${course.reference}`
