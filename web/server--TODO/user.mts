@@ -38,11 +38,13 @@ export type ApplicationUser = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           res: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           enrollment?: MaybeEnrollment;
           user?: User | "no-longer-enrolled";
@@ -82,7 +84,7 @@ export type ApplicationUser = {
           "daily-digests"
         ];
       };
-      types: {
+      Types: {
         User: {
           id: number;
           lastSeenOnlineAt: string;
@@ -645,7 +647,13 @@ export default async (application: Application): Promise<void> => {
       : html``;
   };
 
-  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -662,8 +670,17 @@ export default async (application: Application): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
-    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
+    res: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -736,7 +753,13 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/profile",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1086,7 +1109,13 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.post<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.post<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1143,10 +1172,22 @@ export default async (application: Application): Promise<void> => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>
+    }) as express.ErrorRequestHandler<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Base"]
+    >
   );
 
-  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/email-and-password",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1494,7 +1535,13 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/notifications",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1867,7 +1914,13 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/account",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
