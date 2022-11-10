@@ -3475,6 +3475,22 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (response.locals.invitation.usedAt !== null) return next("Validation");
 
       if (request.body.resend === "true") {
@@ -3485,11 +3501,13 @@ export default async (application: Application): Promise<void> => {
           response.locals.invitation.email === null
         )
           return next("Validation");
+
         sendInvitationEmail({
           request,
           response,
           invitation: response.locals.invitation,
         });
+
         application.server.locals.helpers.Flash.set({
           request,
           response,
@@ -3859,7 +3877,7 @@ export default async (application: Application): Promise<void> => {
                               content: ${response.locals.html(
                                 html`
                                   <div class="dropdown--menu">
-                                    $${courseRoles.map(
+                                    $${application.server.locals.helpers.courseRoles.map(
                                       (courseRole) =>
                                         html`
                                           <form
