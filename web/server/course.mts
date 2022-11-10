@@ -121,29 +121,6 @@ export type ApplicationCourse = {
 };
 
 export default async (app: Application): Promise<void> => {
-  const courseRoleIcon: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
-      regular: HTML;
-      fill: HTML;
-    };
-  } = {
-    student: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
-  };
-
-  const courseRoleTextColor: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
-  } = {
-    student: "",
-    staff: "text--sky",
-  };
-
   app.server.locals.partials.course = ({
     req,
     res,
@@ -345,6 +322,39 @@ export default async (app: Application): Promise<void> => {
       Archived
     </div>
   `;
+
+  app.server.locals.helpers.courseRoles = ["student", "staff"];
+  app.server.locals.helpers.enrollmentAccentColors = [
+    "red",
+    "yellow",
+    "emerald",
+    "sky",
+    "violet",
+    "pink",
+  ];
+
+  const courseRoleIcon: {
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
+
+  const courseRoleTextColor: {
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
+  } = {
+    student: "",
+    staff: "text--sky",
+  };
 
   app.server.get<
     {},
