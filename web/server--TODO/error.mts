@@ -222,23 +222,6 @@ export default async (app: Courselore): Promise<void> => {
 
   */
 
-  /*
-
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`Incorrect password confirmation.`,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${
-            response.locals.hasPasswordConfirmationRedirect ?? ""
-          }`
-        );
-        
-        */
-
         /*
         if (request.method === "GET")
           response.redirect(

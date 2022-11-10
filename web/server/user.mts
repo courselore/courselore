@@ -1357,23 +1357,31 @@ export default async (application: Application): Promise<void> => {
   application.server.patch<
     {},
     any,
-    { passwordConfirmation?: string; email?: string; newPassword?: string },
+    { email?: string; newPassword?: string },
     { redirect?: string },
-    HasPasswordConfirmationLocals
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/email-and-password",
-    (request, response, next) => {
-      response.locals.actionAllowedToUserWithUnverifiedEmail =
-        typeof request.body.email === "string" &&
-        request.body.newPassword === undefined;
-      response.locals.hasPasswordConfirmationRedirect =
-        typeof request.query.redirect === "string"
-          ? request.query.redirect
-          : "settings/email-and-password";
-      next();
-    },
-    ...application.server.locals.middlewares.hasPasswordConfirmation,
     asyncHandler(async (request, response, next) => {
+      if (response.locals.user === undefined) return next();
+
+      if (response.locals.passwordConfirmed !== true) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`Incorrect password confirmation.`,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${
+            typeof request.query.redirect === "string"
+              ? request.query.redirect
+              : "settings/email-and-password"
+          }`
+        );
+      }
+
       if (typeof request.body.email === "string") {
         if (
           request.body.email.match(
@@ -1381,6 +1389,7 @@ export default async (application: Application): Promise<void> => {
           ) === null
         )
           return next("Validation");
+
         if (
           application.database.get<{}>(
             sql`
@@ -1413,6 +1422,7 @@ export default async (application: Application): Promise<void> => {
             WHERE "id" = ${response.locals.user.id}
           `
         );
+
         if (response.locals.user.emailVerifiedAt !== null)
           application.database.run(
             sql`
@@ -1463,6 +1473,7 @@ export default async (application: Application): Promise<void> => {
           userId: response.locals.user.id,
           userEmail: request.body.email,
         });
+
         application.server.locals.helpers.Flash.set({
           request,
           response,
@@ -1488,6 +1499,7 @@ export default async (application: Application): Promise<void> => {
             WHERE "id" = ${response.locals.user.id}
           `
         );
+
         application.database.run(
           sql`
             INSERT INTO "sendEmailJobs" (
@@ -1536,11 +1548,13 @@ export default async (application: Application): Promise<void> => {
           .catch((error) => {
             response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
           });
+
         application.server.locals.helpers.Session.closeAllAndReopen({
           request,
           response,
           userId: response.locals.user.id,
         });
+
         application.server.locals.helpers.Flash.set({
           request,
           response,

@@ -103,6 +103,7 @@ export type Application = {
           course: any;
           courses: any;
           courseArchived: any;
+          contentPreprocessed: any;
           content: Function;
           contentEditor: any;
         };
