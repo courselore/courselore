@@ -47,7 +47,9 @@ export type ApplicationUser = {
               >
           >;
           enrollment?: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-          user?: Application["server"]["locals"]["Types"]["User"] | "no-longer-enrolled";
+          user?:
+            | Application["server"]["locals"]["Types"]["User"]
+            | "no-longer-enrolled";
           anonymous?: boolean | "reveal";
           avatar?: boolean;
           decorate?: boolean;
