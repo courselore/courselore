@@ -1365,7 +1365,7 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (response.locals.user === undefined) return next();
 
-      if (response.locals.passwordConfirmed !== true) {
+      if (!response.locals.passwordConfirmation) {
         application.server.locals.helpers.Flash.set({
           request,
           response,
