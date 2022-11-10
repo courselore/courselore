@@ -88,6 +88,17 @@ export type Application = {
     // TODO
     server: {
       locals: {
+        Types: {
+          MaybeEnrollment: any;
+        };
+        ResponseLocals: {
+          CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+            course: any;
+            enrollment: any;
+            enrollments: any;
+            invitations: any[];
+          };
+        };
         partials: {
           course: any;
           courses: any;
@@ -100,17 +111,6 @@ export type Application = {
           enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
           emailRegExp: RegExp;
-        };
-        ResponseLocals: {
-          CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-            course: any;
-            enrollment: any;
-            enrollments: any;
-            invitations: any[];
-          };
-        };
-        Types: {
-          MaybeEnrollment: any;
         };
       };
     };
