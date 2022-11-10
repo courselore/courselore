@@ -731,7 +731,7 @@ export default async (application: Application): Promise<void> => {
     >(response.locals.enrollments.map((enrollment) => enrollment.accentColor));
     const accentColorsAvailable = new Set<
       Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number]
-    >(enrollmentAccentColors);
+    >(application.server.locals.helpers.enrollmentAccentColors);
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
       if (accentColorsAvailable.size === 1) break;
