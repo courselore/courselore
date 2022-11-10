@@ -101,6 +101,7 @@ export type Application = {
           splitFilterablePhrases: Function;
           emailRegExp: RegExp;
           isExpired: Function;
+          isDate: Function;
         };
       };
     };

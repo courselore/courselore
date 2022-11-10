@@ -3072,7 +3072,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  const invitationMailer = ({
+  const sendInvitationEmail = ({
     request,
     response,
     invitation,
@@ -3157,9 +3157,27 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (
         typeof request.body.courseRole !== "string" ||
-        !courseRoles.includes(request.body.courseRole) ||
+        !application.server.locals.helpers.courseRoles.includes(
+          request.body.courseRole
+        ) ||
         (request.body.expiresAt !== undefined &&
           (typeof request.body.expiresAt !== "string" ||
             !application.server.locals.helpers.isDate(request.body.expiresAt) ||
@@ -3304,7 +3322,7 @@ export default async (application: Application): Promise<void> => {
               `
             )!;
 
-            invitationMailer({
+            sendInvitationEmail({
               request,
               response,
               invitation: {
@@ -3462,7 +3480,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.invitation.email === null
         )
           return next("Validation");
-        invitationMailer({
+        sendInvitationEmail({
           request,
           response,
           invitation: response.locals.invitation,
@@ -3480,7 +3498,9 @@ export default async (application: Application): Promise<void> => {
           application.server.locals.helpers.isExpired(
             response.locals.invitation.expiresAt
           ) ||
-          !courseRoles.includes(request.body.courseRole)
+          !application.server.locals.helpers.courseRoles.includes(
+            request.body.courseRole
+          )
         )
           return next("Validation");
 
