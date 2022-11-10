@@ -97,10 +97,12 @@ export type Application = {
           contentEditor: any;
         };
         helpers: {
-          emailRegExp: RegExp;
+          userAvatarlessBackgroundColors: ["example"];
+          userEmailNotificationsForAllMessageses: ["example"];
           courseRoles: ["example"];
           enrollmentAccentColors: ["example"];
           splitFilterablePhrases: Function;
+          emailRegExp: RegExp;
         };
         ResponseLocals: {
           CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
