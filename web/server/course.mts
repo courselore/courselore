@@ -1314,21 +1314,37 @@ export default async (application: Application): Promise<void> => {
   >(
     "/courses/:courseReference/settings/course-information",
     (request, response, next) => {
-      response.locals.actionAllowedOnArchivedCourse =
-        typeof request.body.isArchived === "string" &&
-        request.body.name === undefined &&
-        request.body.year === undefined &&
-        request.body.term === undefined &&
-        request.body.institution === undefined &&
-        request.body.code === undefined;
-      next();
-    },
-    (request, response, next) => {
       if (
         response.locals.course === undefined ||
         response.locals.enrollment.courseRole !== "staff"
       )
         return next();
+
+      if (
+        response.locals.course.archivedAt !== null &&
+        !(
+          typeof request.body.isArchived === "string" &&
+          request.body.name === undefined &&
+          request.body.year === undefined &&
+          request.body.term === undefined &&
+          request.body.institution === undefined &&
+          request.body.code === undefined
+        )
+      ) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       if (
         (typeof request.body.isArchived !== "string" &&
@@ -1341,11 +1357,7 @@ export default async (application: Application): Promise<void> => {
             ) ||
             !["string", "undefined"].includes(typeof request.body.code))) ||
         (typeof request.body.isArchived === "string" &&
-          (!["true", "false"].includes(request.body.isArchived) ||
-            (request.body.isArchived === "true" &&
-              response.locals.course.archivedAt !== null) ||
-            (request.body.isArchived === "false" &&
-              response.locals.course.archivedAt === null)))
+          !["true", "false"].includes(request.body.isArchived))
       )
         return next("Validation");
 
@@ -1382,6 +1394,7 @@ export default async (application: Application): Promise<void> => {
             WHERE "id" = ${response.locals.course.id}
           `
         );
+
         application.server.locals.helpers.Flash.set({
           request,
           response,
@@ -1400,6 +1413,7 @@ export default async (application: Application): Promise<void> => {
             WHERE "id" = ${response.locals.course.id}
           `
         );
+
         application.server.locals.helpers.Flash.set({
           request,
           response,
