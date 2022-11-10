@@ -1952,6 +1952,22 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
+    if (response.locals.course.archivedAt !== null) {
+      application.server.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "rose",
+        content: html`
+          This action isn’t allowed because the course is archived, which means
+          it’s read-only.
+        `,
+      });
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+      );
+    }
+
     if (
       !Array.isArray(request.body.tags) ||
       request.body.tags.length === 0 ||
@@ -2018,7 +2034,18 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/tags`
     );
 
-    application.server.locals.helpers.liveUpdates({ request, response });
+    for (const port of application.ports.serverEvents)
+      got
+        .post(`http://127.0.0.1:${port}/live-updates`, {
+          form: { url: `/courses/${response.locals.course.reference}` },
+        })
+        .catch((error) => {
+          response.locals.log(
+            "LIVE-UPDATES ",
+            "ERROR EMITTING POST EVENT",
+            error
+          );
+        });
   });
 
   application.server.get<
@@ -2237,7 +2264,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--8);
                   `)}"
                 >
-                  $${courseRoles.map(
+                  $${application.server.locals.helpers.courseRoles.map(
                     (courseRole) =>
                       html`
                         <label
@@ -2672,7 +2699,7 @@ export default async (application: Application): Promise<void> => {
                                     content: ${response.locals.html(
                                       html`
                                         <div class="dropdown--menu">
-                                          $${courseRoles.map(
+                                          $${application.server.locals.helpers.courseRoles.map(
                                             (courseRole) =>
                                               html`
                                                 <form

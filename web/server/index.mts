@@ -100,6 +100,7 @@ export type Application = {
         helpers: {
           splitFilterablePhrases: Function;
           emailRegExp: RegExp;
+          isExpired: Function;
         };
       };
     };
