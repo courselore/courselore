@@ -373,7 +373,7 @@ export default async (app: Courselore): Promise<void> => {
                     userEmail: string;
                     userName: string;
                     userAvatar: string | null;
-                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
@@ -2240,7 +2240,7 @@ ${contentSource}</textarea
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           userNameSearchResultHighlight: string;

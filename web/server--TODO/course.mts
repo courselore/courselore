@@ -10,11 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import QRCode from "qrcode";
 import got from "got";
-import {
-  Courselore,
-  ResponseLocalsLiveUpdates,
-  User,
-} from "./index.mjs";
+import { Courselore } from "./index.mjs";
 
 export type Enrollment = {
   id: number;
@@ -23,7 +19,7 @@ export type Enrollment = {
   courseRole: CourseRole;
 };
 
-export type Application["server"]["locals"]["Types"]["MaybeEnrollment"] = Enrollment | "no-longer-enrolled";
+// export type Application["server"]["locals"]["Types"]["MaybeEnrollment"] = Enrollment | "no-longer-enrolled";
 
 export type CourseRole = typeof courseRoles[number];
 export const courseRoles = ["student", "staff"] as const;
@@ -45,8 +41,17 @@ export type CoursePartial = ({
   enrollment,
   tight,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >;
   course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
   enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
   tight?: boolean;
@@ -62,11 +67,17 @@ export type CoursesPartial = ({
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >
   >;
   res: express.Response<
     any,
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >
   >;
   tight?: boolean;
 }) => HTML;
@@ -75,8 +86,17 @@ export type CourseArchivedPartial = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["Base"]
+  >;
 }) => HTML;
 
 export type IsEnrolledInCourseMiddleware = express.RequestHandler<
@@ -86,19 +106,19 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   {},
   Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
 >[];
-export type Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] = Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-  actionAllowedOnArchivedCourse?: boolean;
-  enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
-  course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
-  courseEnrollmentsCount: number;
-  conversationsCount: number;
-  tags: {
-    id: number;
-    reference: string;
-    name: string;
-    staffOnlyAt: string | null;
-  }[];
-};
+// export type Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] = Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+//   actionAllowedOnArchivedCourse?: boolean;
+//   enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+//   course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+//   courseEnrollmentsCount: number;
+//   conversationsCount: number;
+//   tags: {
+//     id: number;
+//     reference: string;
+//     name: string;
+//     staffOnlyAt: string | null;
+//   }[];
+// };
 
 export type IsCourseStaffMiddleware = express.RequestHandler<
   { courseReference: string },
@@ -107,7 +127,8 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
   {},
   IsCourseStaffLocals
 >[];
-export type IsCourseStaffLocals = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"];
+export type IsCourseStaffLocals =
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"];
 
 export default async (app: Courselore): Promise<void> => {
   const courseRoleIcon: {
@@ -208,7 +229,9 @@ export default async (app: Courselore): Promise<void> => {
               `}
           $${course.archivedAt !== null
             ? html`
-                <div>$${app.server.locals.partials.courseArchived({ req, res })}</div>
+                <div>
+                  $${app.server.locals.partials.courseArchived({ req, res })}
+                </div>
               `
             : html``}
         </div>
@@ -333,121 +356,124 @@ export default async (app: Courselore): Promise<void> => {
     </div>
   `;
 
-  app.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
-    "/",
-    ...app.server.locals.middlewares.isSignedIn,
-    (req, res) => {
-      switch (res.locals.enrollments.length) {
-        case 0:
-          res.send(
-            app.server.locals.layouts.main({
-              req,
-              res,
-              head: html`<title>Courselore</title>`,
-              body: html`
-                <div
-                  css="${res.locals.css(css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `)}"
-                >
-                  <h2 class="heading--display">Welcome to Courselore!</h2>
+  app.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/", ...app.server.locals.middlewares.isSignedIn, (req, res) => {
+    switch (res.locals.enrollments.length) {
+      case 0:
+        res.send(
+          app.server.locals.layouts.main({
+            req,
+            res,
+            head: html`<title>Courselore</title>`,
+            body: html`
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  align-items: center;
+                `)}"
+              >
+                <h2 class="heading--display">Welcome to Courselore!</h2>
 
-                  <div class="decorative-icon">
-                    $${app.server.locals.partials.logo({
-                      size: 144 /* var(--space--36) */,
-                    })}
-                  </div>
+                <div class="decorative-icon">
+                  $${app.server.locals.partials.logo({
+                    size: 144 /* var(--space--36) */,
+                  })}
+                </div>
 
-                  <div class="menu-box">
-                    <a
-                      href="https://${app.configuration
-                        .hostname}/settings/profile"
-                      class="menu-box--item button button--blue"
-                    >
-                      <i class="bi bi-person-circle"></i>
-                      Fill in Your Profile
-                    </a>
-                    <button
-                      class="menu-box--item button button--transparent"
-                      onload="${javascript`
+                <div class="menu-box">
+                  <a
+                    href="https://${app.configuration
+                      .hostname}/settings/profile"
+                    class="menu-box--item button button--blue"
+                  >
+                    <i class="bi bi-person-circle"></i>
+                    Fill in Your Profile
+                  </a>
+                  <button
+                    class="menu-box--item button button--transparent"
+                    onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         });
                       `}"
-                    >
-                      <i class="bi bi-journal-arrow-down"></i>
-                      Enroll in an Existing Course
-                    </button>
-                    $${res.locals.mayCreateCourses
-                      ? html`
-                          <a
-                            href="https://${app.configuration
-                              .hostname}/courses/new"
-                            class="menu-box--item button button--transparent"
-                          >
-                            <i class="bi bi-journal-plus"></i>
-                            Create a New Course
-                          </a>
-                        `
-                      : html``}
-                  </div>
+                  >
+                    <i class="bi bi-journal-arrow-down"></i>
+                    Enroll in an Existing Course
+                  </button>
+                  $${res.locals.mayCreateCourses
+                    ? html`
+                        <a
+                          href="https://${app.configuration
+                            .hostname}/courses/new"
+                          class="menu-box--item button button--transparent"
+                        >
+                          <i class="bi bi-journal-plus"></i>
+                          Create a New Course
+                        </a>
+                      `
+                    : html``}
                 </div>
-              `,
-            })
-          );
-          break;
+              </div>
+            `,
+          })
+        );
+        break;
 
-        case 1:
-          res.redirect(
-            303,
-            `https://${app.configuration.hostname}/courses/${res.locals.enrollments[0].course.reference}`
-          );
-          break;
+      case 1:
+        res.redirect(
+          303,
+          `https://${app.configuration.hostname}/courses/${res.locals.enrollments[0].course.reference}`
+        );
+        break;
 
-        default:
-          res.send(
-            app.server.locals.layouts.main({
-              req,
-              res,
-              head: html`<title>Courselore</title>`,
-              showCourseSwitcher: false,
-              body: html`
+      default:
+        res.send(
+          app.server.locals.layouts.main({
+            req,
+            res,
+            head: html`<title>Courselore</title>`,
+            showCourseSwitcher: false,
+            body: html`
+              <div
+                css="${res.locals.css(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  align-items: center;
+                `)}"
+              >
+                <div class="decorative-icon">
+                  <i class="bi bi-journal-text"></i>
+                </div>
+
+                <p class="secondary">Go to one of your courses.</p>
+
                 <div
+                  class="menu-box"
                   css="${res.locals.css(css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                    align-items: center;
+                    max-width: var(--space--80);
                   `)}"
                 >
-                  <div class="decorative-icon">
-                    <i class="bi bi-journal-text"></i>
-                  </div>
-
-                  <p class="secondary">Go to one of your courses.</p>
-
-                  <div
-                    class="menu-box"
-                    css="${res.locals.css(css`
-                      max-width: var(--space--80);
-                    `)}"
-                  >
-                    $${app.server.locals.partials.courses({ req, res })}
-                  </div>
+                  $${app.server.locals.partials.courses({ req, res })}
                 </div>
-              `,
-            })
-          );
-          break;
-      }
+              </div>
+            `,
+          })
+        );
+        break;
     }
-  );
+  });
 
-  type MayCreateCoursesLocals = Application["server"]["locals"]["ResponseLocals"]["SignedIn"];
+  type MayCreateCoursesLocals =
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"];
   const mayCreateCoursesMiddleware: express.RequestHandler<
     {},
     any,
@@ -663,8 +689,17 @@ export default async (app: Courselore): Promise<void> => {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
-    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
+    res: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
   }): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
       res.locals.enrollments.map((enrollment) => enrollment.accentColor)
@@ -786,7 +821,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -899,8 +935,17 @@ export default async (app: Courselore): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
+    res: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -996,7 +1041,13 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffLocals
+  >(
     "/courses/:courseReference/settings/course-information",
     ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1286,14 +1337,12 @@ export default async (app: Courselore): Promise<void> => {
             SET
               "name" = ${req.body.name},
               "year" = ${
-                typeof req.body.year === "string" &&
-                req.body.year.trim() !== ""
+                typeof req.body.year === "string" && req.body.year.trim() !== ""
                   ? req.body.year
                   : null
               },
               "term" = ${
-                typeof req.body.term === "string" &&
-                req.body.term.trim() !== ""
+                typeof req.body.term === "string" && req.body.term.trim() !== ""
                   ? req.body.term
                   : null
               },
@@ -1304,8 +1353,7 @@ export default async (app: Courselore): Promise<void> => {
                   : null
               },
               "code" = ${
-                typeof req.body.code === "string" &&
-                req.body.code.trim() !== ""
+                typeof req.body.code === "string" && req.body.code.trim() !== ""
                   ? req.body.code
                   : null
               }
@@ -1348,7 +1396,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffLocals
+  >(
     "/courses/:courseReference/settings/tags",
     ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -1912,7 +1966,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffLocals
+  >(
     "/courses/:courseReference/settings/invitations",
     ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -2250,9 +2310,8 @@ export default async (app: Courselore): Promise<void> => {
               : html`
                   $${invitations.map((invitation) => {
                     const action = `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                    const isInvitationExpired = app.server.locals.helpers.isExpired(
-                      invitation.expiresAt
-                    );
+                    const isInvitationExpired =
+                      app.server.locals.helpers.isExpired(invitation.expiresAt);
                     const isUsed = invitation.usedAt !== null;
 
                     return html`
@@ -2923,8 +2982,17 @@ export default async (app: Courselore): Promise<void> => {
     res,
     invitation,
   }: {
-    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Base"]
+    >;
+    res: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["Base"]
+    >;
     invitation: InvitationExistsLocals["invitation"];
   }): void => {
     const link = `https://${app.configuration.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
@@ -3158,28 +3226,29 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  type InvitationExistsLocals = Application["server"]["locals"]["ResponseLocals"]["Base"] & {
-    invitation: {
-      id: number;
-      expiresAt: string | null;
-      usedAt: string | null;
-      course: {
+  type InvitationExistsLocals =
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & {
+      invitation: {
         id: number;
+        expiresAt: string | null;
+        usedAt: string | null;
+        course: {
+          id: number;
+          reference: string;
+          archivedAt: string | null;
+          name: string;
+          year: string | null;
+          term: string | null;
+          institution: string | null;
+          code: string | null;
+          nextConversationReference: number;
+        };
         reference: string;
-        archivedAt: string | null;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
+        email: string | null;
+        name: string | null;
+        courseRole: CourseRole;
       };
-      reference: string;
-      email: string | null;
-      name: string | null;
-      courseRole: CourseRole;
     };
-  };
   const invitationExistsMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
@@ -3277,7 +3346,9 @@ export default async (app: Courselore): Promise<void> => {
 
       if (req.body.resend === "true") {
         if (
-          app.server.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          app.server.locals.helpers.isExpired(
+            res.locals.invitation.expiresAt
+          ) ||
           res.locals.invitation.email === null
         )
           return next("Validation");
@@ -3296,7 +3367,9 @@ export default async (app: Courselore): Promise<void> => {
 
       if (req.body.courseRole !== undefined) {
         if (
-          app.server.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          app.server.locals.helpers.isExpired(
+            res.locals.invitation.expiresAt
+          ) ||
           !courseRoles.includes(req.body.courseRole)
         )
           return next("Validation");
@@ -3374,7 +3447,13 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.get<{ courseReference: string }, HTML, {}, {}, IsCourseStaffLocals>(
+  app.server.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffLocals
+  >(
     "/courses/:courseReference/settings/enrollments",
     ...app.server.locals.middlewares.isCourseStaff,
     (req, res) => {
@@ -3387,7 +3466,7 @@ export default async (app: Courselore): Promise<void> => {
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           reference: string;
@@ -4152,11 +4231,23 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  type IsInvitationUsableLocals = Application["server"]["locals"]["ResponseLocals"]["Base"] &
-    Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["Base"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
-    Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
-    Omit<Partial<Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>, keyof Application["server"]["locals"]["ResponseLocals"]["Base"]> &
-    InvitationExistsLocals;
+  type IsInvitationUsableLocals =
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Omit<
+        Partial<Application["server"]["locals"]["ResponseLocals"]["Base"]>,
+        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
+      > &
+      Omit<
+        Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>,
+        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
+      > &
+      Omit<
+        Partial<
+          Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        >,
+        keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
+      > &
+      InvitationExistsLocals;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
@@ -4386,7 +4477,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4398,7 +4490,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+      IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isSignedIn,
@@ -4453,7 +4546,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -4465,7 +4559,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+      IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isSignedIn,
@@ -4507,7 +4602,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & IsInvitationUsableLocals
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      IsInvitationUsableLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.server.locals.middlewares.isSignedOut,

@@ -7,11 +7,7 @@ import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
 import {
   Courselore,
-  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
-  Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"],
-  Application["server"]["locals"]["Types"]["MaybeEnrollment"],
   CourseRole,
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
   ConversationParticipants,
   ConversationType,
@@ -24,8 +20,17 @@ export type GetMessageHelper = ({
   conversation,
   messageReference,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -103,8 +108,17 @@ export type CourseLiveUpdater = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
 }) => Promise<void>;
 
 export type EmailNotificationsMailer = ({
@@ -112,8 +126,17 @@ export type EmailNotificationsMailer = ({
   res,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -138,7 +161,9 @@ export default async (app: Courselore): Promise<void> => {
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
-      authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+      authorUserAvatarlessBackgroundColors:
+        | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+        | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
@@ -163,7 +188,7 @@ export default async (app: Courselore): Promise<void> => {
           "authorUser"."email" AS "authorUserEmail",
           "authorUser"."name" AS "authorUserName",
           "authorUser"."avatar" AS "authorUserAvatar",
-          "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
+          "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColors",
           "authorUser"."biographySource" AS "authorUserBiographySource",
           "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
           "authorEnrollment"."reference" AS "authorEnrollmentReference",
@@ -199,7 +224,7 @@ export default async (app: Courselore): Promise<void> => {
         messageRow.authorUserReference !== null &&
         messageRow.authorUserEmail !== null &&
         messageRow.authorUserName !== null &&
-        messageRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] !== null &&
+        messageRow.authorUserAvatarlessBackgroundColors !== null &&
         messageRow.authorEnrollmentReference !== null &&
         messageRow.authorEnrollmentCourseRole !== null
           ? {
@@ -212,7 +237,7 @@ export default async (app: Courselore): Promise<void> => {
                 name: messageRow.authorUserName,
                 avatar: messageRow.authorUserAvatar,
                 avatarlessBackgroundColor:
-                  messageRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
+                  messageRow.authorUserAvatarlessBackgroundColors,
                 biographySource: messageRow.authorUserBiographySource,
                 biographyPreprocessed:
                   messageRow.authorUserBiographyPreprocessed,
@@ -241,7 +266,9 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+        userAvatarlessBackgroundColor:
+          | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+          | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -313,7 +340,9 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+        userAvatarlessBackgroundColor:
+          | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+          | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -384,7 +413,9 @@ export default async (app: Courselore): Promise<void> => {
         userEmail: string | null;
         userName: string | null;
         userAvatar: string | null;
-        userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+        userAvatarlessBackgroundColor:
+          | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+          | null;
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
@@ -626,9 +657,8 @@ export default async (app: Courselore): Promise<void> => {
           `
         );
       } else {
-        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
-          req.body.content
-        );
+        const contentPreprocessed =
+          app.server.locals.partials.contentPreprocessed(req.body.content);
         app.database.run(
           sql`
             UPDATE "conversations"
@@ -823,9 +853,8 @@ export default async (app: Courselore): Promise<void> => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("Validation");
-        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
-          req.body.content
-        );
+        const contentPreprocessed =
+          app.server.locals.partials.contentPreprocessed(req.body.content);
         app.database.run(
           sql`
             UPDATE "messages"
@@ -916,7 +945,8 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & MessageExistsLocals
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -1473,7 +1503,9 @@ export default async (app: Courselore): Promise<void> => {
                 enrollment: {},
                 course,
               },
-            } as Parameters<typeof app.server.locals.partials.content>[0]["res"],
+            } as Parameters<
+              typeof app.server.locals.partials.content
+            >[0]["res"],
             contentPreprocessed: message.contentPreprocessed,
             decorate: true,
           });
@@ -1482,7 +1514,7 @@ export default async (app: Courselore): Promise<void> => {
             id: number;
             userId: number;
             userEmail: string;
-            userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"];
+            userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
             reference: string;
             courseRole: CourseRole;
           }>(
@@ -1505,9 +1537,7 @@ export default async (app: Courselore): Promise<void> => {
                   FROM "emailNotificationDeliveries"
                   WHERE
                     "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
-                    "emailNotificationDeliveries"."message" = ${
-                      message.id
-                    }
+                    "emailNotificationDeliveries"."message" = ${message.id}
                 ) $${
                   conversation.participants === "everyone"
                     ? sql``
@@ -1535,11 +1565,11 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     : sql``
                 } $${
-          conversation.type === "note" &&
-          conversation.announcementAt !== null &&
-          message.reference === "1"
-            ? sql``
-            : sql`
+              conversation.type === "note" &&
+              conversation.announcementAt !== null &&
+              message.reference === "1"
+                ? sql``
+                : sql`
                 AND (
                   "users"."emailNotificationsForAllMessages" != 'none' OR (
                     "users"."emailNotificationsForMentionsAt" IS NOT NULL

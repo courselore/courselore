@@ -23,7 +23,7 @@ export type ApplicationUser = {
           email: string;
           name: string;
           avatar: string | null;
-          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           biographySource: string | null;
           biographyPreprocessed: HTML | null;
         };

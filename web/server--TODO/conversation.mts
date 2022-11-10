@@ -12,11 +12,8 @@ import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   ResponseLocalsLiveUpdates,
-  Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
   Enrollment,
-  Application["server"]["locals"]["Types"]["MaybeEnrollment"],
   CourseRole,
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
   IsCourseStaffLocals,
 } from "./index.mjs";
 
@@ -61,11 +58,13 @@ export type ConversationLayout = ({
       messages?: object;
       newConversation?: object;
     },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      Partial<IsConversationAccessibleLocals>
   >;
   res: express.Response<
     HTML,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & Partial<IsConversationAccessibleLocals>
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      Partial<IsConversationAccessibleLocals>
   >;
   head: HTML;
   sidebarOnSmallScreen?: boolean;
@@ -80,8 +79,17 @@ export type ConversationPartial = ({
   searchResult,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -114,8 +122,17 @@ export type GetConversationHelper = ({
   res,
   conversationReference,
 }: {
-  req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-  res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
+  res: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >;
   conversationReference: string;
 }) =>
   | {
@@ -159,11 +176,12 @@ export type IsConversationAccessibleMiddleware = express.RequestHandler<
   {},
   IsConversationAccessibleLocals
 >[];
-export type IsConversationAccessibleLocals = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
-  conversation: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-  >;
-};
+export type IsConversationAccessibleLocals =
+  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+    conversation: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+    >;
+  };
 
 export default async (app: Courselore): Promise<void> => {
   const conversationTypeIcon: {
@@ -241,7 +259,9 @@ export default async (app: Courselore): Promise<void> => {
     const search =
       typeof req.query.conversations?.search === "string" &&
       req.query.conversations.search.trim() !== ""
-        ? app.server.locals.helpers.sanitizeSearch(req.query.conversations.search)
+        ? app.server.locals.helpers.sanitizeSearch(
+            req.query.conversations.search
+          )
         : undefined;
 
     const filters: {
@@ -380,8 +400,7 @@ export default async (app: Courselore): Promise<void> => {
                   JOIN "messages" ON
                     "enrollments"."id" = "messages"."authorEnrollment"
                     $${
-                      res.locals.enrollment.courseRole ===
-                      "staff"
+                      res.locals.enrollment.courseRole === "staff"
                         ? sql``
                         : sql`
                             AND (
@@ -446,14 +465,14 @@ export default async (app: Courselore): Promise<void> => {
               filters.isUnread === undefined
                 ? sql``
                 : sql`
-                    AND $${filters.isUnread === "true" ? sql`` : sql`NOT`} EXISTS(
+                    AND $${
+                      filters.isUnread === "true" ? sql`` : sql`NOT`
+                    } EXISTS(
                       SELECT TRUE
                       FROM "messages"
                       LEFT JOIN "readings" ON
                         "messages"."id" = "readings"."message" AND
-                        "readings"."enrollment" = ${
-                          res.locals.enrollment.id
-                        }
+                        "readings"."enrollment" = ${res.locals.enrollment.id}
                       WHERE
                         "conversations"."id" = "messages"."conversation" AND
                         "readings"."id" IS NULL
@@ -2661,7 +2680,9 @@ export default async (app: Courselore): Promise<void> => {
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
-      authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+      authorUserAvatarlessBackgroundColor:
+        | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+        | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
@@ -2689,7 +2710,7 @@ export default async (app: Courselore): Promise<void> => {
           "authorUser"."email" AS "authorUserEmail",
           "authorUser"."name" AS "authorUserName",
           "authorUser"."avatar" AS "authorUserAvatar",
-          "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
+          "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
           "authorUser"."biographySource" AS "authorUserBiographySource",
           "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
           "authorEnrollment"."reference" AS "authorEnrollmentReference",
@@ -2738,7 +2759,7 @@ export default async (app: Courselore): Promise<void> => {
         conversationRow.authorUserReference !== null &&
         conversationRow.authorUserEmail !== null &&
         conversationRow.authorUserName !== null &&
-        conversationRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] !== null &&
+        conversationRow.authorUserAvatarlessBackgroundColor !== null &&
         conversationRow.authorEnrollmentReference !== null &&
         conversationRow.authorEnrollmentCourseRole !== null
           ? {
@@ -2751,7 +2772,7 @@ export default async (app: Courselore): Promise<void> => {
                 name: conversationRow.authorUserName,
                 avatar: conversationRow.authorUserAvatar,
                 avatarlessBackgroundColor:
-                  conversationRow.authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"],
+                  conversationRow.authorUserAvatarlessBackgroundColor,
                 biographySource: conversationRow.authorUserBiographySource,
                 biographyPreprocessed:
                   conversationRow.authorUserBiographyPreprocessed,
@@ -2783,7 +2804,7 @@ export default async (app: Courselore): Promise<void> => {
               userEmail: string;
               userName: string;
               userAvatar: string | null;
-              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string;
@@ -2902,7 +2923,9 @@ export default async (app: Courselore): Promise<void> => {
               userEmail: string | null;
               userName: string | null;
               userAvatar: string | null;
-              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"] | null;
+              userAvatarlessBackgroundColor:
+                | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+                | null;
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
@@ -2996,14 +3019,10 @@ export default async (app: Courselore): Promise<void> => {
           FROM "messages"
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${
-              res.locals.course.id
-            }
+            "conversations"."course" = ${res.locals.course.id}
           LEFT JOIN "readings" ON
             "messages"."id" = "readings"."message" AND
-            "readings"."enrollment" = ${
-              res.locals.enrollment.id
-            }
+            "readings"."enrollment" = ${res.locals.enrollment.id}
           WHERE
             "readings"."id" IS NULL AND (
             "conversations"."participants" = 'everyone' $${
@@ -3064,7 +3083,8 @@ export default async (app: Courselore): Promise<void> => {
         isPinned?: "true";
       };
     },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      ResponseLocalsLiveUpdates
   >(
     `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
       "|"
@@ -3171,8 +3191,8 @@ export default async (app: Courselore): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.configuration.hostname}/courses/${res
-                .locals.course.reference}/conversations${qs.stringify(
+              action="https://${app.configuration.hostname}/courses/${res.locals
+                .course.reference}/conversations${qs.stringify(
                 { conversations: req.query.conversations },
                 { addQueryPrefix: true }
               )}"
@@ -3456,7 +3476,7 @@ export default async (app: Courselore): Promise<void> => {
                     userEmail: string;
                     userName: string;
                     userAvatar: string | null;
-                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
@@ -4678,9 +4698,8 @@ export default async (app: Courselore): Promise<void> => {
         );
 
       if (hasMessage) {
-        const contentPreprocessed = app.server.locals.partials.contentPreprocessed(
-          req.body.content!
-        );
+        const contentPreprocessed =
+          app.server.locals.partials.contentPreprocessed(req.body.content!);
         const message = app.database.get<{
           id: number;
           reference: string;
@@ -5094,8 +5113,8 @@ export default async (app: Courselore): Promise<void> => {
                                                 <form
                                                   key="conversation-type--${conversationType}"
                                                   method="PATCH"
-                                                  action="https://${app.server.locals
-                                                    .options
+                                                  action="https://${app.server
+                                                    .locals.options
                                                     .hostname}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
@@ -5914,8 +5933,8 @@ export default async (app: Courselore): Promise<void> => {
                                           ? html`
                                               <div class="dropdown--menu">
                                                 <a
-                                                  href="https://${app.server.locals
-                                                    .options
+                                                  href="https://${app.server
+                                                    .locals.options
                                                     .hostname}/courses/${res
                                                     .locals.course
                                                     .reference}/settings/tags"
@@ -5941,8 +5960,8 @@ export default async (app: Courselore): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="POST"
-                                                    action="https://${app.server.locals
-                                                      .options
+                                                    action="https://${app.server
+                                                      .locals.options
                                                       .hostname}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
@@ -6033,8 +6052,8 @@ export default async (app: Courselore): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="DELETE"
-                                                    action="https://${app.server.locals
-                                                      .options
+                                                    action="https://${app.server
+                                                      .locals.options
                                                       .hostname}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
@@ -6130,7 +6149,7 @@ export default async (app: Courselore): Promise<void> => {
                               userEmail: string;
                               userName: string;
                               userAvatar: string | null;
-                              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+                              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                               userBiographySource: string | null;
                               userBiographyPreprocessed: HTML | null;
                               reference: string;
@@ -7342,7 +7361,8 @@ export default async (app: Courselore): Promise<void> => {
 
                                                               this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("https://${
-                                                                  app.server.locals
+                                                                  app.server
+                                                                    .locals
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
@@ -7660,11 +7680,13 @@ export default async (app: Courselore): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            app.server.locals.helpers.mayEditMessage({
-                                              req,
-                                              res,
-                                              message,
-                                            }) &&
+                                            app.server.locals.helpers.mayEditMessage(
+                                              {
+                                                req,
+                                                res,
+                                                message,
+                                              }
+                                            ) &&
                                             message.reference !== "1" &&
                                             res.locals.conversation.type ===
                                               "question"
@@ -7672,8 +7694,8 @@ export default async (app: Courselore): Promise<void> => {
                                             header += html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.server.locals
-                                                  .options
+                                                action="https://${app.server
+                                                  .locals.options
                                                   .hostname}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
@@ -7773,8 +7795,8 @@ export default async (app: Courselore): Promise<void> => {
                                                 method="${isEndorsed
                                                   ? "DELETE"
                                                   : "POST"}"
-                                                action="https://${app.server.locals
-                                                  .options
+                                                action="https://${app.server
+                                                  .locals.options
                                                   .hostname}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
@@ -8057,47 +8079,51 @@ export default async (app: Courselore): Promise<void> => {
                                                     );
                                                   `)}"
                                                 >
-                                                  $${app.server.locals.partials.user({
-                                                    req,
-                                                    res,
-                                                    enrollment:
-                                                      message.authorEnrollment,
-                                                    anonymous:
-                                                      message.anonymousAt ===
-                                                      null
-                                                        ? false
-                                                        : res.locals.enrollment
-                                                            .courseRole ===
-                                                            "staff" ||
-                                                          (message.authorEnrollment !==
-                                                            "no-longer-enrolled" &&
-                                                            message
-                                                              .authorEnrollment
-                                                              .id ===
-                                                              res.locals
-                                                                .enrollment.id)
-                                                        ? "reveal"
-                                                        : true,
-                                                    name:
-                                                      message.authorEnrollment ===
-                                                      "no-longer-enrolled"
-                                                        ? undefined
-                                                        : app.server.locals.helpers.highlightSearchResult(
-                                                            html`${message
-                                                              .authorEnrollment
-                                                              .user.name}`,
-                                                            typeof req.query
-                                                              .conversations
-                                                              ?.search ===
-                                                              "string" &&
-                                                              req.query.conversations.search.trim() !==
-                                                                ""
-                                                              ? req.query
-                                                                  .conversations
-                                                                  .search
-                                                              : undefined
-                                                          ),
-                                                  })}
+                                                  $${app.server.locals.partials.user(
+                                                    {
+                                                      req,
+                                                      res,
+                                                      enrollment:
+                                                        message.authorEnrollment,
+                                                      anonymous:
+                                                        message.anonymousAt ===
+                                                        null
+                                                          ? false
+                                                          : res.locals
+                                                              .enrollment
+                                                              .courseRole ===
+                                                              "staff" ||
+                                                            (message.authorEnrollment !==
+                                                              "no-longer-enrolled" &&
+                                                              message
+                                                                .authorEnrollment
+                                                                .id ===
+                                                                res.locals
+                                                                  .enrollment
+                                                                  .id)
+                                                          ? "reveal"
+                                                          : true,
+                                                      name:
+                                                        message.authorEnrollment ===
+                                                        "no-longer-enrolled"
+                                                          ? undefined
+                                                          : app.server.locals.helpers.highlightSearchResult(
+                                                              html`${message
+                                                                .authorEnrollment
+                                                                .user.name}`,
+                                                              typeof req.query
+                                                                .conversations
+                                                                ?.search ===
+                                                                "string" &&
+                                                                req.query.conversations.search.trim() !==
+                                                                  ""
+                                                                ? req.query
+                                                                    .conversations
+                                                                    .search
+                                                                : undefined
+                                                            ),
+                                                    }
+                                                  )}
                                                 </div>
 
                                                 <time
@@ -8256,22 +8282,25 @@ export default async (app: Courselore): Promise<void> => {
                                                 };
                                               `}"
                                             >
-                                              $${app.server.locals.partials.content({
-                                                req,
-                                                res,
-                                                id: `message--${message.reference}`,
-                                                contentPreprocessed:
-                                                  message.contentPreprocessed,
-                                                decorate: true,
-                                                search:
-                                                  typeof req.query.conversations
-                                                    ?.search === "string" &&
-                                                  req.query.conversations.search.trim() !==
-                                                    ""
-                                                    ? req.query.conversations
-                                                        .search
-                                                    : undefined,
-                                              }).contentProcessed}
+                                              $${app.server.locals.partials.content(
+                                                {
+                                                  req,
+                                                  res,
+                                                  id: `message--${message.reference}`,
+                                                  contentPreprocessed:
+                                                    message.contentPreprocessed,
+                                                  decorate: true,
+                                                  search:
+                                                    typeof req.query
+                                                      .conversations?.search ===
+                                                      "string" &&
+                                                    req.query.conversations.search.trim() !==
+                                                      ""
+                                                      ? req.query.conversations
+                                                          .search
+                                                      : undefined,
+                                                }
+                                              ).contentProcessed}
                                             </div>
                                           </div>
 
@@ -8303,8 +8332,8 @@ export default async (app: Courselore): Promise<void> => {
                                                     method="${isLiked
                                                       ? "DELETE"
                                                       : "POST"}"
-                                                    action="https://${app.server.locals
-                                                      .options
+                                                    action="https://${app.server
+                                                      .locals.options
                                                       .hostname}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
@@ -8402,7 +8431,8 @@ export default async (app: Courselore): Promise<void> => {
                                                               onShow: async () => {
                                                                 this.dropdown.setContent(loading);
                                                                 leafac.loadPartial(content, await (await fetch("https://${
-                                                                  app.server.locals
+                                                                  app.server
+                                                                    .locals
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
@@ -8518,16 +8548,18 @@ export default async (app: Courselore): Promise<void> => {
                                           })()}
                                         </div>
 
-                                        $${app.server.locals.helpers.mayEditMessage({
-                                          req,
-                                          res,
-                                          message,
-                                        })
+                                        $${app.server.locals.helpers.mayEditMessage(
+                                          {
+                                            req,
+                                            res,
+                                            message,
+                                          }
+                                        )
                                           ? html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.server.locals
-                                                  .options
+                                                action="https://${app.server
+                                                  .locals.options
                                                   .hostname}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
@@ -8815,15 +8847,17 @@ export default async (app: Courselore): Promise<void> => {
                                                 );
                                               `)}"
                                             >
-                                              $${app.server.locals.partials.user({
-                                                req,
-                                                res,
-                                                enrollment: {
-                                                  ...res.locals.enrollment,
-                                                  user: res.locals.user,
-                                                },
-                                                anonymous: "reveal",
-                                              })}
+                                              $${app.server.locals.partials.user(
+                                                {
+                                                  req,
+                                                  res,
+                                                  enrollment: {
+                                                    ...res.locals.enrollment,
+                                                    user: res.locals.user,
+                                                  },
+                                                  anonymous: "reveal",
+                                                }
+                                              )}
                                             </div>
                                           `}
                                       <span>Sending…</span>
@@ -9393,7 +9427,11 @@ export default async (app: Courselore): Promise<void> => {
               messageReference: "1",
             });
             if (message !== undefined)
-              app.server.locals.helpers.emailNotifications({ req, res, message });
+              app.server.locals.helpers.emailNotifications({
+                req,
+                res,
+                message,
+              });
           }
         }
 
@@ -9418,9 +9456,7 @@ export default async (app: Courselore): Promise<void> => {
                     : sql``
                 }
                 "pinnedAt" = ${
-                  req.body.isPinned === "true"
-                    ? new Date().toISOString()
-                    : null
+                  req.body.isPinned === "true" ? new Date().toISOString() : null
                 }
               WHERE "id" = ${res.locals.conversation.id}
             `
