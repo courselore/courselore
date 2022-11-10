@@ -3088,7 +3088,7 @@ export default async (application: Application): Promise<void> => {
       any,
       Application["server"]["locals"]["ResponseLocals"]["Base"]
     >;
-    invitation: InvitationExistsLocals["invitation"];
+    invitation: ResponseLocalsInvitation["invitation"];
   }): void => {
     const link = `https://${application.configuration.hostname}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     application.database.run(
@@ -3348,7 +3348,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  type InvitationExistsLocals =
+  type ResponseLocalsInvitation =
     Application["server"]["locals"]["ResponseLocals"]["Base"] & {
       invitation: {
         id: number;
@@ -3371,13 +3371,18 @@ export default async (application: Application): Promise<void> => {
         courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       };
     };
-  const invitationExistsMiddleware: express.RequestHandler<
+
+  application.server.use<
     { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    InvitationExistsLocals
-  >[] = [
+    ResponseLocalsInvitation
+  >(
+    [
+      "/courses/:courseReference/settings/invitations/:invitationReference",
+      "/courses/:courseReference/invitations/:invitationReference",
+    ],
     (request, response, next) => {
       const invitation = application.database.get<{
         id: number;
@@ -3422,7 +3427,7 @@ export default async (application: Application): Promise<void> => {
           WHERE "invitations"."reference" = ${request.params.invitationReference}
         `
       );
-      if (invitation === undefined) return next("route");
+      if (invitation === undefined) return next();
       response.locals.invitation = {
         id: invitation.id,
         expiresAt: invitation.expiresAt,
@@ -3444,8 +3449,8 @@ export default async (application: Application): Promise<void> => {
         courseRole: invitation.courseRole,
       };
       next();
-    },
-  ];
+    }
+  );
 
   application.server.patch<
     { courseReference: string; invitationReference: string },
@@ -3459,14 +3464,14 @@ export default async (application: Application): Promise<void> => {
     },
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      InvitationExistsLocals
+      ResponseLocalsInvitation
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
-    ...invitationExistsMiddleware,
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "staff" ||
+        response.locals.invitation === undefined
       )
         return next();
 
@@ -4394,7 +4399,7 @@ export default async (application: Application): Promise<void> => {
         >,
         keyof Application["server"]["locals"]["ResponseLocals"]["Base"]
       > &
-      InvitationExistsLocals;
+      ResponseLocalsInvitation;
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
