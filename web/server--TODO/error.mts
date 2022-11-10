@@ -236,16 +236,16 @@ export default async (app: Courselore): Promise<void> => {
           );
         */
 
-  app.use(((err, req, res, next) => {
+  app.use(((error, req, res, next) => {
     response.locals.log("ERROR", String(error));
 
-    if (!["Cross-Site Request Forgery", "Validation"].includes(err))
-      err = "Server";
+    if (!["Cross-Site Request Forgery", "Validation"].includes(error))
+      error = "Server";
     res
       .status(
-        err === "Cross-Site Request Forgery"
+        error === "Cross-Site Request Forgery"
           ? 403
-          : err === "Validation"
+          : error === "Validation"
           ? 422
           : 500
       )
@@ -253,15 +253,15 @@ export default async (app: Courselore): Promise<void> => {
         app.server.locals.layouts.box({
           req,
           res,
-          head: html`<title>${err} Error · Courselore</title>`,
+          head: html`<title>${error} Error · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-bug-fill"></i>
-              ${err} Error
+              ${error} Error
             </h2>
 
             <p>
-              ${err === "Cross-Site Request Forgery"
+              ${error === "Cross-Site Request Forgery"
                 ? "This request doesn’t appear to have come from Courselore. Please try again. If the issue persists, please report to the system administrator at"
                 : "This is an issue in Courselore. Please report to the system administrator at"}
               <a
