@@ -22,7 +22,6 @@ import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
-export { ResponseLocalsSignedIn } from "./authentication.mjs";
 import about from "./about.mjs";
 import administration, {
   ApplicationAdministration,
@@ -124,13 +123,13 @@ export type Application = {
       };
     };
   };
-import { ResponseLocalsSignedIn } from "./authentication.mjs";
-export type ResponseLocalsCourseEnrolled = ResponseLocalsSignedIn & {
-  course: any;
-  enrollment: any;
-  enrollments: any;
-  invitations: any[];
-};
+export type ResponseLocalsCourseEnrolled =
+  Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
+    course: any;
+    enrollment: any;
+    enrollments: any;
+    invitations: any[];
+  };
 export type MaybeEnrollment = any;
 
 if (

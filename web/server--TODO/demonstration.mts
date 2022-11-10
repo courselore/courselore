@@ -9,7 +9,6 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  ResponseLocalsSignedIn,
   userAvatarlessBackgroundColors,
   userEmailNotificationsForAllMessageses,
   CourseRole,
@@ -29,7 +28,7 @@ export default async (app: Courselore): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   > = asyncHandler(async (req, res) => {
     const password = await argon2.hash("courselore", app.server.locals.configuration.argon2);
     const avatarIndices = lodash.shuffle(lodash.range(250));
@@ -1420,7 +1419,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     handler
   );
 
-  app.server.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  app.server.post<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/demonstration-data",
     (req, res, next) => {
       res.locals.actionAllowedToUserWithUnverifiedEmail = true;

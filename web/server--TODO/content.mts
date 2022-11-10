@@ -31,7 +31,6 @@ import lodash from "lodash";
 import got from "got";
 import {
   Courselore,
-  ResponseLocalsSignedIn,
   CourseRole,
   ResponseLocalsCourseEnrolled,
   IsConversationAccessibleLocals,
@@ -2772,7 +2771,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.server.post<{}, any, {}, {}, ResponseLocalsSignedIn>(
+  app.server.post<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/content-editor/attachments",
     ...app.server.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
@@ -2890,7 +2889,7 @@ ${contentSource}</textarea
       handler
     );
 
-    app.server.post<{}, any, { content?: string }, {}, ResponseLocalsSignedIn>(
+    app.server.post<{}, any, { content?: string }, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
       "/content-editor/preview",
       ...app.server.locals.middlewares.isSignedIn,
       handler

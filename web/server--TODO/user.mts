@@ -12,7 +12,6 @@ import argon2 from "argon2";
 import got from "got";
 import {
   Application,
-  ResponseLocalsSignedIn,
   ResponseLocalsCourseEnrolled,
   MaybeEnrollment,
 } from "./index.mjs";
@@ -646,7 +645,7 @@ export default async (application: Application): Promise<void> => {
       : html``;
   };
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -663,8 +662,8 @@ export default async (application: Application): Promise<void> => {
     head,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
-    res: express.Response<any, ResponseLocalsSignedIn>;
+    req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
+    res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -737,7 +736,7 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings/profile",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1041,7 +1040,7 @@ export default async (application: Application): Promise<void> => {
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    ResponseLocalsSignedIn
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/profile",
     ...application.server.locals.middlewares.isSignedIn,
@@ -1087,7 +1086,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.post<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.post<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
@@ -1147,7 +1146,7 @@ export default async (application: Application): Promise<void> => {
     }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>
   );
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings/email-and-password",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1495,7 +1494,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings/notifications",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1783,7 +1782,7 @@ export default async (application: Application): Promise<void> => {
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
     },
     {},
-    ResponseLocalsSignedIn
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/notifications",
     ...application.server.locals.middlewares.isSignedIn,
@@ -1868,7 +1867,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
+  application.server.get<{}, HTML, {}, {}, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "/settings/account",
     ...application.server.locals.middlewares.isSignedIn,
     (req, res) => {

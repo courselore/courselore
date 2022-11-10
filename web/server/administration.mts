@@ -7,7 +7,7 @@ import { javascript } from "@leafac/javascript";
 import got from "got";
 import lodash from "lodash";
 import semver from "semver";
-import { Application, ResponseLocalsSignedIn } from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ApplicationAdministration = {
   server: {
@@ -79,21 +79,24 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
-    "/administration",
-    (request, response, next) => {
-      if (
-        response.locals.user?.systemRole !== "administrator" ||
-        typeof response.locals.user?.emailVerifiedAt !== "string"
-      )
-        return next();
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/administration", (request, response, next) => {
+    if (
+      response.locals.user?.systemRole !== "administrator" ||
+      typeof response.locals.user?.emailVerifiedAt !== "string"
+    )
+      return next();
 
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/administration/system-settings`
-      );
-    }
-  );
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/administration/system-settings`
+    );
+  });
 
   const administrationLayout = ({
     request,
@@ -101,8 +104,17 @@ export default async (application: Application): Promise<void> => {
     head,
     body,
   }: {
-    request: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
-    response: express.Response<any, ResponseLocalsSignedIn>;
+    request: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
+    response: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
     head: HTML;
     body: HTML;
   }): HTML =>
@@ -147,120 +159,123 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<{}, HTML, {}, {}, ResponseLocalsSignedIn>(
-    "/administration/system-settings",
-    (request, response, next) => {
-      if (
-        response.locals.user?.systemRole !== "administrator" ||
-        typeof response.locals.user?.emailVerifiedAt !== "string"
-      )
-        return next();
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/administration/system-settings", (request, response, next) => {
+    if (
+      response.locals.user?.systemRole !== "administrator" ||
+      typeof response.locals.user?.emailVerifiedAt !== "string"
+    )
+      return next();
 
-      response.send(
-        administrationLayout({
-          request,
-          response,
-          head: html`
-            <title>System Settings · Administration · Courselore</title>
-          `,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-pc-display-horizontal"></i>
-              Administration ·
-              <i class="bi bi-sliders"></i>
-              System Settings
-            </h2>
+    response.send(
+      administrationLayout({
+        request,
+        response,
+        head: html`
+          <title>System Settings · Administration · Courselore</title>
+        `,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-pc-display-horizontal"></i>
+            Administration ·
+            <i class="bi bi-sliders"></i>
+            System Settings
+          </h2>
 
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/administration/system-settings"
-              novalidate
-              css="${response.locals.css(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <div class="label">
-                <p class="label--text">Users Who May Create Courses</p>
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="userSystemRolesWhoMayCreateCourses"
-                      value="all"
-                      required
-                      $${response.locals.administrationOptions
-                        .userSystemRolesWhoMayCreateCourses === "all"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    All
-                  </label>
-                </div>
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="userSystemRolesWhoMayCreateCourses"
-                      value="staff-and-administrators"
-                      required
-                      $${response.locals.administrationOptions
-                        .userSystemRolesWhoMayCreateCourses ===
-                      "staff-and-administrators"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Staff & Administrators
-                  </label>
-                </div>
-                <div
-                  css="${response.locals.css(css`
-                    display: flex;
-                  `)}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="radio"
-                      name="userSystemRolesWhoMayCreateCourses"
-                      value="administrators"
-                      required
-                      $${response.locals.administrationOptions
-                        .userSystemRolesWhoMayCreateCourses === "administrators"
-                        ? html`checked`
-                        : html``}
-                      class="input--radio"
-                    />
-                    Administrators
-                  </label>
-                </div>
+          <form
+            method="PATCH"
+            action="https://${application.configuration
+              .hostname}/administration/system-settings"
+            novalidate
+            css="${response.locals.css(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <div class="label">
+              <p class="label--text">Users Who May Create Courses</p>
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="radio"
+                    name="userSystemRolesWhoMayCreateCourses"
+                    value="all"
+                    required
+                    $${response.locals.administrationOptions
+                      .userSystemRolesWhoMayCreateCourses === "all"
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  All
+                </label>
               </div>
-
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-pencil-fill"></i>
-                  Update System Settings
-                </button>
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="radio"
+                    name="userSystemRolesWhoMayCreateCourses"
+                    value="staff-and-administrators"
+                    required
+                    $${response.locals.administrationOptions
+                      .userSystemRolesWhoMayCreateCourses ===
+                    "staff-and-administrators"
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  Staff & Administrators
+                </label>
               </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                `)}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="radio"
+                    name="userSystemRolesWhoMayCreateCourses"
+                    value="administrators"
+                    required
+                    $${response.locals.administrationOptions
+                      .userSystemRolesWhoMayCreateCourses === "administrators"
+                      ? html`checked`
+                      : html``}
+                    class="input--radio"
+                  />
+                  Administrators
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-pencil-fill"></i>
+                Update System Settings
+              </button>
+            </div>
+          </form>
+        `,
+      })
+    );
+  });
 
   application.server.patch<
     {},
@@ -269,7 +284,7 @@ export default async (application: Application): Promise<void> => {
       userSystemRolesWhoMayCreateCourses?: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
     },
     {},
-    ResponseLocalsSignedIn
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/system-settings", (request, response, next) => {
     if (
       response.locals.user?.systemRole !== "administrator" ||
@@ -326,7 +341,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsSignedIn
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/users", (request, response, next) => {
     if (
       response.locals.user?.systemRole !== "administrator" ||
@@ -722,7 +737,7 @@ export default async (application: Application): Promise<void> => {
       role?: Application["server"]["locals"]["helpers"]["systemRoles"][number];
     },
     {},
-    ResponseLocalsSignedIn
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/users/:userReference", (request, response, next) => {
     if (
       response.locals.user?.systemRole !== "administrator" ||

@@ -3,7 +3,6 @@ import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import {
   Courselore,
-  ResponseLocalsSignedIn,
 } from "./index.mjs";
 
 export default async (app: Courselore): Promise<void> => {
@@ -21,7 +20,7 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.all<{}, HTML, {}, { redirect?: string }, ResponseLocalsSignedIn>(
+  app.all<{}, HTML, {}, { redirect?: string }, Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>(
     "*",
     ...app.server.locals.middlewares.isSignedIn,
     (req, res) => {

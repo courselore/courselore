@@ -8,11 +8,7 @@ import dedent from "dedent";
 import qs from "qs";
 import cryptoRandomString from "crypto-random-string";
 import semver from "semver";
-import {
-  Application,
-  ResponseLocalsSignedIn,
-  ResponseLocalsCourseEnrolled,
-} from "./index.mjs";
+import { Application, ResponseLocalsCourseEnrolled } from "./index.mjs";
 
 export type ApplicationLayouts = {
   server: {
@@ -30,11 +26,13 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           extraHeaders?: HTML;
@@ -51,11 +49,13 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           body: HTML;
@@ -73,11 +73,13 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           showCourseSwitcher?: boolean;
@@ -96,11 +98,13 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           response: express.Response<
             any,
-            ResponseLocalsSignedIn & Partial<ResponseLocalsCourseEnrolled>
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+              Partial<ResponseLocalsCourseEnrolled>
           >;
           head: HTML;
           showCourseSwitcher?: boolean;
@@ -114,8 +118,17 @@ export type ApplicationLayouts = {
           menu,
           body,
         }: {
-          request: express.Request<{}, any, {}, {}, ResponseLocalsSignedIn>;
-          response: express.Response<any, ResponseLocalsSignedIn>;
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
           head: HTML;
           menuButton: HTML;
           menu: HTML;
@@ -126,8 +139,17 @@ export type ApplicationLayouts = {
           response,
           body,
         }: {
-          request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
           body: HTML;
         }) => HTML;
       };
@@ -138,8 +160,17 @@ export type ApplicationLayouts = {
           response,
           size,
         }: {
-          request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-          response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"]
+          >;
           size?: number;
         }) => HTML;
         reportIssueHref: string;
@@ -153,8 +184,17 @@ export type ApplicationLayouts = {
             theme,
             content,
           }: {
-            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            request: express.Request<
+              {},
+              any,
+              {},
+              {},
+              Application["server"]["locals"]["ResponseLocals"]["Base"]
+            >;
+            response: express.Response<
+              any,
+              Application["server"]["locals"]["ResponseLocals"]["Base"]
+            >;
             theme: string;
             content: HTML;
           }): void;
@@ -162,8 +202,17 @@ export type ApplicationLayouts = {
             request,
             response,
           }: {
-            request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-            response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+            request: express.Request<
+              {},
+              any,
+              {},
+              {},
+              Application["server"]["locals"]["ResponseLocals"]["Base"]
+            >;
+            response: express.Response<
+              any,
+              Application["server"]["locals"]["ResponseLocals"]["Base"]
+            >;
           }): { theme: string; content: HTML } | undefined;
         };
       };
@@ -908,41 +957,44 @@ export default async (application: Application): Promise<void> => {
   };
 
   if (application.configuration.environment !== "production")
-    application.server.delete<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
-      "/turn-off",
-      (request, response) => {
-        response.send(
-          application.server.locals.layouts.box({
-            request,
-            response,
-            head: html`
-              <title>
-                Thanks for trying Courselore! · Courselore · Communication
-                Platform for Education
-              </title>
-            `,
-            body: html`
-              <p class="strong">Thanks for trying Courselore!</p>
-              <p>
-                Next steps:
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
-                  class="link"
-                  >Learn how to install Courselore on your own server</a
-                >
-                or
-                <a
-                  href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
-                  class="link"
-                  >learn how to setup for development</a
-                >.
-              </p>
-            `,
-          })
-        );
-        process.exit();
-      }
-    );
+    application.server.delete<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Base"]
+    >("/turn-off", (request, response) => {
+      response.send(
+        application.server.locals.layouts.box({
+          request,
+          response,
+          head: html`
+            <title>
+              Thanks for trying Courselore! · Courselore · Communication
+              Platform for Education
+            </title>
+          `,
+          body: html`
+            <p class="strong">Thanks for trying Courselore!</p>
+            <p>
+              Next steps:
+              <a
+                href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md"
+                class="link"
+                >Learn how to install Courselore on your own server</a
+              >
+              or
+              <a
+                href="https://github.com/courselore/courselore/blob/main/documentation/setting-up-for-development.md"
+                class="link"
+                >learn how to setup for development</a
+              >.
+            </p>
+          `,
+        })
+      );
+      process.exit();
+    });
 
   application.server.locals.layouts.box = ({ request, response, head, body }) =>
     application.server.locals.layouts.base({

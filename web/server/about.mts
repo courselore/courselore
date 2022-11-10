@@ -2,10 +2,7 @@ import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
-import {
-  Application,
-  ResponseLocalsSignedIn,
-} from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
   application.server.get<
@@ -13,7 +10,8 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & Partial<ResponseLocalsSignedIn>
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(["/", "/about"], (request, response, next) => {
     if (request.originalUrl === "/" && response.locals.user !== undefined)
       return next();
