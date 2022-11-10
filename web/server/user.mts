@@ -15,6 +15,19 @@ import { Application } from "./index.mjs";
 export type ApplicationUser = {
   server: {
     locals: {
+      Types: {
+        User: {
+          id: number;
+          lastSeenOnlineAt: string;
+          reference: string;
+          email: string;
+          name: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
+          biographySource: string | null;
+          biographyPreprocessed: HTML | null;
+        };
+      };
       partials: {
         user: ({
           req,
@@ -85,19 +98,6 @@ export type ApplicationUser = {
           "hourly-digests",
           "daily-digests"
         ];
-      };
-      Types: {
-        User: {
-          id: number;
-          lastSeenOnlineAt: string;
-          reference: string;
-          email: string;
-          name: string;
-          avatar: string | null;
-          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"];
-          biographySource: string | null;
-          biographyPreprocessed: HTML | null;
-        };
       };
     };
   };

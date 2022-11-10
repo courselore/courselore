@@ -8,14 +8,14 @@ import { Application } from "./index.mjs";
 export type ApplicationBase = {
   server: {
     locals: {
-      configuration: {
-        cookies: express.CookieOptions;
-      };
       ResponseLocals: {
         Base: Application["server"]["locals"]["ResponseLocals"]["Logging"] & {
           css: ReturnType<typeof localCSS>;
           html: ReturnType<typeof HTMLForJavaScript>;
         };
+      };
+      configuration: {
+        cookies: express.CookieOptions;
       };
     };
   };

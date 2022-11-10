@@ -15,6 +15,72 @@ import { Application } from "./index.mjs";
 export type ApplicationAuthentication = {
   server: {
     locals: {
+      ResponseLocals: {
+        SignedIn: Application["server"]["locals"]["ResponseLocals"]["Base"] & {
+          user: {
+            id: number;
+            lastSeenOnlineAt: string;
+            reference: string;
+            email: string;
+            password: string;
+            emailVerifiedAt: string | null;
+            name: string;
+            avatar: string | null;
+            avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+            biographySource: string | null;
+            biographyPreprocessed: HTML | null;
+            systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+            emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
+            emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
+            emailNotificationsForMentionsAt: string | null;
+            emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+              | string
+              | null;
+            emailNotificationsForMessagesInConversationsYouStartedAt:
+              | string
+              | null;
+          };
+          invitations: {
+            id: number;
+            course: {
+              id: number;
+              reference: string;
+              archivedAt: string | null;
+              name: string;
+              year: string | null;
+              term: string | null;
+              institution: string | null;
+              code: string | null;
+              nextConversationReference: number;
+            };
+            reference: string;
+            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          }[];
+          enrollments: {
+            id: number;
+            course: {
+              id: number;
+              reference: string;
+              archivedAt: string | null;
+              name: string;
+              year: string | null;
+              term: string | null;
+              institution: string | null;
+              code: string | null;
+              nextConversationReference: number;
+            };
+            reference: string;
+            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+            accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+          }[];
+          administrationOptions: {
+            latestVersion: string;
+            userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+          };
+          mayCreateCourses: boolean;
+          passwordConfirmed?: boolean;
+        };
+      };
       configuration: {
         argon2: argon2.Options & { raw?: false };
       };
@@ -112,72 +178,6 @@ export type ApplicationAuthentication = {
           userEmail: string;
           welcome?: boolean;
         }) => void;
-      };
-      ResponseLocals: {
-        SignedIn: Application["server"]["locals"]["ResponseLocals"]["Base"] & {
-          user: {
-            id: number;
-            lastSeenOnlineAt: string;
-            reference: string;
-            email: string;
-            password: string;
-            emailVerifiedAt: string | null;
-            name: string;
-            avatar: string | null;
-            avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
-            biographySource: string | null;
-            biographyPreprocessed: HTML | null;
-            systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
-            emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
-            emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
-            emailNotificationsForMentionsAt: string | null;
-            emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-              | string
-              | null;
-            emailNotificationsForMessagesInConversationsYouStartedAt:
-              | string
-              | null;
-          };
-          invitations: {
-            id: number;
-            course: {
-              id: number;
-              reference: string;
-              archivedAt: string | null;
-              name: string;
-              year: string | null;
-              term: string | null;
-              institution: string | null;
-              code: string | null;
-              nextConversationReference: number;
-            };
-            reference: string;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-          }[];
-          enrollments: {
-            id: number;
-            course: {
-              id: number;
-              reference: string;
-              archivedAt: string | null;
-              name: string;
-              year: string | null;
-              term: string | null;
-              institution: string | null;
-              code: string | null;
-              nextConversationReference: number;
-            };
-            reference: string;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-            accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
-          }[];
-          administrationOptions: {
-            latestVersion: string;
-            userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
-          };
-          mayCreateCourses: boolean;
-          passwordConfirmed?: boolean;
-        };
       };
     };
   };
