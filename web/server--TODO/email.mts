@@ -114,8 +114,9 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id", "mailOptions"
                 FROM "sendEmailJobs"
-                WHERE "startAt" <= ${new Date().toISOString()} AND
-                      "startedAt" IS NULL
+                WHERE
+                  "startAt" <= ${new Date().toISOString()} AND
+                  "startedAt" IS NULL
                 ORDER BY "startAt" ASC
                 LIMIT 1
               `
@@ -150,10 +151,11 @@ export default async (app: Courselore): Promise<void> => {
             app.database.run(
               sql`
                 UPDATE "sendEmailJobs"
-                SET "startAt" = ${new Date(
-                  Date.now() + 5 * 60 * 1000
-                ).toISOString()},
-                    "startedAt" = NULL
+                SET
+                  "startAt" = ${new Date(
+                    Date.now() + 5 * 60 * 1000
+                  ).toISOString()},
+                  "startedAt" = NULL
                 WHERE "id" = ${job.id}
               `
             );

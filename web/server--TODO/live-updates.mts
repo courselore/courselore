@@ -194,8 +194,9 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               UPDATE "liveUpdates"
-              SET "expiresAt" = NULL,
-                  "shouldLiveUpdateOnConnectionAt" = NULL
+              SET
+                "expiresAt" = NULL,
+                "shouldLiveUpdateOnConnectionAt" = NULL
               WHERE "nonce" = ${response.locals.liveUpdatesNonce}
             `
           );
@@ -274,8 +275,9 @@ export default async (application: Application): Promise<void> => {
       sql`
         UPDATE "liveUpdates"
         SET "shouldLiveUpdateOnConnectionAt" = ${new Date().toISOString()}
-        WHERE "course" = ${response.locals.course.id} AND
-              "expiresAt" IS NOT NULL
+        WHERE
+          "course" = ${response.locals.course.id} AND
+          "expiresAt" IS NOT NULL
       `
     );
 
@@ -311,8 +313,9 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT "nonce"
           FROM "liveUpdates"
-          WHERE "course" = ${request.body.courseId} AND
-                "expiresAt" IS NULL
+          WHERE
+            "course" = ${request.body.courseId} AND
+            "expiresAt" IS NULL
         `
       )) {
         const connection = connections.get(liveUpdates.nonce);

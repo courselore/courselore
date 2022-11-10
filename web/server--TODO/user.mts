@@ -1078,21 +1078,22 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           UPDATE "users"
-          SET "name" = ${req.body.name},
-              "nameSearch" = ${html`${req.body.name}`},
-              "avatar" = ${
-                req.body.avatar.trim() === "" ? null : req.body.avatar
-              },
-              "biographySource" = ${
-                req.body.biography.trim() === "" ? null : req.body.biography
-              },
-              "biographyPreprocessed" = ${
-                req.body.biography.trim() === ""
-                  ? null
-                  : application.server.locals.partials.contentPreprocessed(
-                      req.body.biography
-                    ).contentPreprocessed
-              }
+          SET
+            "name" = ${req.body.name},
+            "nameSearch" = ${html`${req.body.name}`},
+            "avatar" = ${
+              req.body.avatar.trim() === "" ? null : req.body.avatar
+            },
+            "biographySource" = ${
+              req.body.biography.trim() === "" ? null : req.body.biography
+            },
+            "biographyPreprocessed" = ${
+              req.body.biography.trim() === ""
+                ? null
+                : application.server.locals.partials.contentPreprocessed(
+                    req.body.biography
+                  ).contentPreprocessed
+            }
           WHERE "id" = ${res.locals.user.id}
         `
       );
@@ -1383,8 +1384,9 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             UPDATE "users"
-            SET "email" = ${req.body.email},
-                "emailVerifiedAt" = ${null}
+            SET
+              "email" = ${req.body.email},
+              "emailVerifiedAt" = ${null}
             WHERE "id" = ${res.locals.user.id}
           `
         );
@@ -1872,30 +1874,31 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           UPDATE "users"
-          SET "emailNotificationsForAllMessages" = ${
+          SET
+            "emailNotificationsForAllMessages" = ${
             req.body.isEmailNotificationsForAllMessages === undefined
               ? "none"
               : "instant" /* TODO req.body.emailNotificationsForAllMessages */
           },
-              "emailNotificationsForMentionsAt" = ${
-                req.body.isEmailNotificationsForMentions === "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
-                req.body
-                  .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
-                "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
-                req.body
-                  .isEmailNotificationsForMessagesInConversationsYouStarted ===
-                "on"
-                  ? new Date().toISOString()
-                  : null
-              }
+            "emailNotificationsForMentionsAt" = ${
+              req.body.isEmailNotificationsForMentions === "on"
+                ? new Date().toISOString()
+                : null
+            },
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" = ${
+              req.body
+                .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ===
+              "on"
+                ? new Date().toISOString()
+                : null
+            },
+            "emailNotificationsForMessagesInConversationsYouStartedAt" = ${
+              req.body
+                .isEmailNotificationsForMessagesInConversationsYouStarted ===
+              "on"
+                ? new Date().toISOString()
+                : null
+            }
           WHERE "id" = ${res.locals.user.id}
        `
       );

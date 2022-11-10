@@ -380,24 +380,26 @@ export default async (app: Courselore): Promise<void> => {
                     courseRole: CourseRole;
                   }>(
                     sql`
-                      SELECT "enrollments"."id",
-                             "users"."id" AS "userId",
-                             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                             "users"."reference" AS "userReference",
-                             "users"."email" AS "userEmail",
-                             "users"."name" AS "userName",
-                             "users"."avatar" AS "userAvatar",
-                             "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
-                             "users"."biographySource" AS "userBiographySource",
-                             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                             "enrollments"."reference",
-                             "enrollments"."courseRole"
+                      SELECT
+                        "enrollments"."id",
+                        "users"."id" AS "userId",
+                        "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                        "users"."reference" AS "userReference",
+                        "users"."email" AS "userEmail",
+                        "users"."name" AS "userName",
+                        "users"."avatar" AS "userAvatar",
+                        "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
+                        "users"."biographySource" AS "userBiographySource",
+                        "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                        "enrollments"."reference",
+                        "enrollments"."courseRole"
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
-                      WHERE "enrollments"."course" = ${
+                      WHERE
+                        "enrollments"."course" = ${
                         res.locals.course!.id
                       } AND
-                            "enrollments"."reference" = ${enrollmentReference}
+                        "enrollments"."reference" = ${enrollmentReference}
                     `
                   );
                   if (enrollmentRow === undefined) return match;
@@ -2246,52 +2248,58 @@ ${contentSource}</textarea
           courseRole: CourseRole;
         }>(
           sql`
-            SELECT "enrollments"."id",
-                   "users"."id" AS "userId",
-                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                   "users"."reference" AS "userReference",
-                   "users"."email" AS "userEmail",
-                   "users"."name" AS "userName",
-                   "users"."avatar" AS "userAvatar",
-                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                   "users"."biographySource" AS "userBiographySource",
-                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                   highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole"
+            SELECT
+              "enrollments"."id",
+              "users"."id" AS "userId",
+              "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+              "users"."reference" AS "userReference",
+              "users"."email" AS "userEmail",
+              "users"."name" AS "userName",
+              "users"."avatar" AS "userAvatar",
+              "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+              "users"."biographySource" AS "userBiographySource",
+              "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+              highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
+              "enrollments"."reference",
+              "enrollments"."courseRole"
             FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                            "enrollments"."course" = ${res.locals.course.id} AND
-                            "users"."id" != ${res.locals.user.id}
-            JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                          "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                            req.query.search,
-                                            { prefix: true }
-                                          )}
+            JOIN "users" ON
+              "enrollments"."user" = "users"."id" AND
+              "enrollments"."course" = ${res.locals.course.id} AND
+              "users"."id" != ${res.locals.user.id}
+            JOIN "usersNameSearchIndex" ON
+              "users"."id" = "usersNameSearchIndex"."rowid" AND
+              "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+                req.query.search,
+                { prefix: true }
+              )}
             $${
               res.locals.conversation !== undefined
                 ? sql`
                     WHERE EXISTS(
                       SELECT TRUE
                       FROM "conversations"
-                      WHERE "conversations"."id" = ${res.locals.conversation.id} AND (
-                              "conversations"."participants" = 'everyone' OR (
-                                "conversations"."participants" = 'staff' AND
-                                "enrollments"."courseRole" = 'staff'
-                              ) OR
-                              EXISTS(
-                                SELECT TRUE
-                                FROM "conversationSelectedParticipants"
-                                WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                              )
-                            )
+                      WHERE
+                        "conversations"."id" = ${res.locals.conversation.id} AND (
+                        "conversations"."participants" = 'everyone' OR (
+                          "conversations"."participants" = 'staff' AND
+                          "enrollments"."courseRole" = 'staff'
+                        ) OR
+                        EXISTS(
+                          SELECT TRUE
+                          FROM "conversationSelectedParticipants"
+                          WHERE
+                            "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                            "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                        )
+                      )
                     )
                   `
                 : sql``
             }
-            ORDER BY "usersNameSearchIndex"."rank" ASC,
-                    "users"."name" ASC
+            ORDER BY
+              "usersNameSearchIndex"."rank" ASC,
+              "users"."name" ASC
             LIMIT 5
           `
         )
@@ -2407,11 +2415,12 @@ ${contentSource}</textarea
           sql`
             SELECT "conversations"."reference"
             FROM "conversations"
-            JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-                                                  "conversationsReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                                    req.query.search,
-                                                    { prefix: true }
-                                                  )}
+            JOIN "conversationsReferenceIndex" ON
+              "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
+              "conversationsReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+                req.query.search,
+                { prefix: true }
+              )}
             WHERE "conversations"."course" = ${res.locals.course.id}
             ORDER BY "conversations"."id" ASC
             LIMIT 5
@@ -2471,12 +2480,13 @@ ${contentSource}</textarea
                 messageReferenceSearch === ""
                   ? sql``
                   : sql`
-                    JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                                                     "messagesReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                                       messageReferenceSearch,
-                                                       { prefix: true }
-                                                     )}
-                  `
+                      JOIN "messagesReferenceIndex" ON
+                        "messages"."id" = "messagesReferenceIndex"."rowid" AND
+                        "messagesReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+                          messageReferenceSearch,
+                          { prefix: true }
+                        )}
+                    `
               }
               WHERE "messages"."conversation" = ${conversation.id}
               ORDER BY "messages"."id" ASC
@@ -2555,17 +2565,20 @@ ${contentSource}</textarea
         conversationTitleSearchResultHighlight: string;
       }>(
         sql`
-          SELECT "conversations"."reference",
-                  highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
+          SELECT
+            "conversations"."reference",
+            highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
           FROM "conversations"
-          JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-                                                   "conversationsTitleSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                                     req.query.search,
-                                                     { prefix: true }
-                                                   )}
+          JOIN "conversationsTitleSearchIndex" ON
+            "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
+            "conversationsTitleSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+              req.query.search,
+              { prefix: true }
+            )}
           WHERE "conversations"."course" = ${res.locals.course.id}
-          ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
-                    "conversations"."id" DESC
+          ORDER BY
+            "conversationsTitleSearchIndex"."rank" ASC,
+            "conversations"."id" DESC
           LIMIT 5
         `
       )) {
@@ -2604,20 +2617,23 @@ ${contentSource}</textarea
         messageAuthorUserNameSearchResultHighlight: string;
       }>(
         sql`
-          SELECT "messages"."reference" AS "messageReference",
-                 "conversations"."reference" AS "conversationReference",
-                 highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
+          SELECT
+            "messages"."reference" AS "messageReference",
+            "conversations"."reference" AS "conversationReference",
+            highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
           FROM "messages"
           JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
-          JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-                                         "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                           req.query.search,
-                                           { prefix: true }
-                                         )}
-          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                  "conversations"."course" = ${
-                                    res.locals.course.id
-                                  }
+          JOIN "usersNameSearchIndex" ON
+            "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
+            "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+              req.query.search,
+              { prefix: true }
+            )}
+          JOIN "conversations" ON
+            "messages"."conversation" = "conversations"."id" AND
+            "conversations"."course" = ${
+              res.locals.course.id
+            }
           $${
             res.locals.enrollment.courseRole === "staff"
               ? sql``
@@ -2628,8 +2644,9 @@ ${contentSource}</textarea
                   )
                 `
           }
-          ORDER BY "usersNameSearchIndex"."rank" ASC,
-                    "messages"."id" DESC
+          ORDER BY
+            "usersNameSearchIndex"."rank" ASC,
+            "messages"."id" DESC
           LIMIT 5
         `
       )) {
@@ -2694,21 +2711,25 @@ ${contentSource}</textarea
         messageContentSearchResultSnippet: string;
       }>(
         sql`
-          SELECT "messages"."reference" AS "messageReference",
-                 "conversations"."reference" AS "conversationReference",
-                 snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
+          SELECT
+            "messages"."reference" AS "messageReference",
+            "conversations"."reference" AS "conversationReference",
+            snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
           FROM "messages"
-          JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-                                                "messagesContentSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                                                  req.query.search,
-                                                  { prefix: true }
-                                                )}
-          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                  "conversations"."course" = ${
-                                    res.locals.course.id
-                                  }
-          ORDER BY "messagesContentSearchIndex"."rank" ASC,
-                    "messages"."id" DESC
+          JOIN "messagesContentSearchIndex" ON
+            "messages"."id" = "messagesContentSearchIndex"."rowid" AND
+            "messagesContentSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+              req.query.search,
+              { prefix: true }
+            )}
+          JOIN "conversations" ON
+            "messages"."conversation" = "conversations"."id" AND
+            "conversations"."course" = ${
+              res.locals.course.id
+            }
+          ORDER BY
+            "messagesContentSearchIndex"."rank" ASC,
+            "messages"."id" DESC
           LIMIT 5
         `
       )) {

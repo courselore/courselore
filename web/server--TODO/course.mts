@@ -710,20 +710,22 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT COUNT(*) AS "count"
           FROM "conversations"
-          WHERE "course" = ${res.locals.course.id} AND (
-            "conversations"."participants" = 'everyone' $${
-              res.locals.enrollment.courseRole === "staff"
-                ? sql`OR "conversations"."participants" = 'staff'`
-                : sql``
-            } OR EXISTS(
-              SELECT TRUE
-              FROM "conversationSelectedParticipants"
-              WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationSelectedParticipants"."enrollment" = ${
-                      res.locals.enrollment.id
-                    }
+          WHERE
+            "course" = ${res.locals.course.id} AND (
+              "conversations"."participants" = 'everyone' $${
+                res.locals.enrollment.courseRole === "staff"
+                  ? sql`OR "conversations"."participants" = 'staff'`
+                  : sql``
+              } OR EXISTS(
+                SELECT TRUE
+                FROM "conversationSelectedParticipants"
+                WHERE
+                  "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                  "conversationSelectedParticipants"."enrollment" = ${
+                    res.locals.enrollment.id
+                  }
+              )
             )
-          )
         `
       )!.count;
 
@@ -736,12 +738,13 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "id", "reference", "name", "staffOnlyAt"
           FROM "tags"
-          WHERE "course" = ${res.locals.course.id}
-                $${
-                  res.locals.enrollment.courseRole === "student"
-                    ? sql`AND "staffOnlyAt" IS NULL`
-                    : sql``
-                }
+          WHERE
+            "course" = ${res.locals.course.id}
+            $${
+              res.locals.enrollment.courseRole === "student"
+                ? sql`AND "staffOnlyAt" IS NULL`
+                : sql``
+            }
           ORDER BY "id" ASC
         `
       );
@@ -1280,31 +1283,32 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             UPDATE "courses"
-            SET "name" = ${req.body.name},
-                "year" = ${
-                  typeof req.body.year === "string" &&
-                  req.body.year.trim() !== ""
-                    ? req.body.year
-                    : null
-                },
-                "term" = ${
-                  typeof req.body.term === "string" &&
-                  req.body.term.trim() !== ""
-                    ? req.body.term
-                    : null
-                },
-                "institution" = ${
-                  typeof req.body.institution === "string" &&
-                  req.body.institution.trim() !== ""
-                    ? req.body.institution
-                    : null
-                },
-                "code" = ${
-                  typeof req.body.code === "string" &&
-                  req.body.code.trim() !== ""
-                    ? req.body.code
-                    : null
-                }
+            SET
+              "name" = ${req.body.name},
+              "year" = ${
+                typeof req.body.year === "string" &&
+                req.body.year.trim() !== ""
+                  ? req.body.year
+                  : null
+              },
+              "term" = ${
+                typeof req.body.term === "string" &&
+                req.body.term.trim() !== ""
+                  ? req.body.term
+                  : null
+              },
+              "institution" = ${
+                typeof req.body.institution === "string" &&
+                req.body.institution.trim() !== ""
+                  ? req.body.institution
+                  : null
+              },
+              "code" = ${
+                typeof req.body.code === "string" &&
+                req.body.code.trim() !== ""
+                  ? req.body.code
+                  : null
+              }
             WHERE "id" = ${res.locals.course.id}
           `
         );
@@ -1883,10 +1887,11 @@ export default async (app: Courselore): Promise<void> => {
           app.database.run(
             sql`
               UPDATE "tags"
-              SET "name" = ${tag.name},
-                  "staffOnlyAt" = ${
-                    tag.isStaffOnly === "on" ? new Date().toISOString() : null
-                  }
+              SET
+                "name" = ${tag.name},
+                "staffOnlyAt" = ${
+                  tag.isStaffOnly === "on" ? new Date().toISOString() : null
+                }
               WHERE "reference" = ${tag.reference}
             `
           );
@@ -3067,8 +3072,9 @@ export default async (app: Courselore): Promise<void> => {
                 sql`
                   SELECT TRUE
                   FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                                  "users"."email" = ${email}
+                  JOIN "users" ON
+                    "enrollments"."user" = "users"."id" AND
+                    "users"."email" = ${email}
                   WHERE "enrollments"."course" = ${res.locals.course.id}
                 `
               ) !== undefined
@@ -3082,18 +3088,20 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id", "name"
                 FROM "invitations"
-                WHERE "course" = ${res.locals.course.id} AND
-                      "email" = ${email} AND
-                      "usedAt" IS NULL
+                WHERE
+                  "course" = ${res.locals.course.id} AND
+                  "email" = ${email} AND
+                  "usedAt" IS NULL
               `
             );
             if (existingUnusedInvitation !== undefined) {
               app.database.run(
                 sql`
                   UPDATE "invitations"
-                  SET "expiresAt" = ${req.body.expiresAt},
-                      "name" = ${name ?? existingUnusedInvitation.name},
-                      "courseRole" = ${req.body.courseRole}
+                  SET
+                    "expiresAt" = ${req.body.expiresAt},
+                    "name" = ${name ?? existingUnusedInvitation.name},
+                    "courseRole" = ${req.body.courseRole}
                   WHERE "id" = ${existingUnusedInvitation.id}
                 `
               );
@@ -3199,25 +3207,27 @@ export default async (app: Courselore): Promise<void> => {
         courseRole: CourseRole;
       }>(
         sql`
-          SELECT "invitations"."id",
-                 "invitations"."expiresAt",
-                 "invitations"."usedAt",
-                 "courses"."id" AS "courseId",
-                 "courses"."reference" AS "courseReference",
-                 "courses"."archivedAt" AS "courseArchivedAt",
-                 "courses"."name" AS "courseName",
-                 "courses"."year" AS "courseYear",
-                 "courses"."term" AS "courseTerm",
-                 "courses"."institution" AS "courseInstitution",
-                 "courses"."code" AS "courseCode",
-                 "courses"."nextConversationReference" AS "courseNextConversationReference",
-                 "invitations"."reference",
-                 "invitations"."email",
-                 "invitations"."name",
-                 "invitations"."courseRole"
+          SELECT
+            "invitations"."id",
+            "invitations"."expiresAt",
+            "invitations"."usedAt",
+            "courses"."id" AS "courseId",
+            "courses"."reference" AS "courseReference",
+            "courses"."archivedAt" AS "courseArchivedAt",
+            "courses"."name" AS "courseName",
+            "courses"."year" AS "courseYear",
+            "courses"."term" AS "courseTerm",
+            "courses"."institution" AS "courseInstitution",
+            "courses"."code" AS "courseCode",
+            "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "invitations"."reference",
+            "invitations"."email",
+            "invitations"."name",
+            "invitations"."courseRole"
           FROM "invitations"
-          JOIN "courses" ON "invitations"."course" = "courses"."id" AND
-                            "courses"."reference" = ${req.params.courseReference}
+          JOIN "courses" ON
+            "invitations"."course" = "courses"."id" AND
+            "courses"."reference" = ${req.params.courseReference}
           WHERE "invitations"."reference" = ${req.params.invitationReference}
         `
       );
@@ -3384,22 +3394,25 @@ export default async (app: Courselore): Promise<void> => {
           courseRole: CourseRole;
         }>(
           sql`
-            SELECT "enrollments"."id",
-                   "users"."id" AS "userId",
-                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                   "users"."reference" AS "userReference",
-                   "users"."email" AS "userEmail",
-                   "users"."name" AS "userName",
-                   "users"."avatar" AS "userAvatar",
-                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                   "users"."biographySource" AS "userBiographySource",
-                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole"
+            SELECT
+              "enrollments"."id",
+              "users"."id" AS "userId",
+              "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+              "users"."reference" AS "userReference",
+              "users"."email" AS "userEmail",
+              "users"."name" AS "userName",
+              "users"."avatar" AS "userAvatar",
+              "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+              "users"."biographySource" AS "userBiographySource",
+              "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+              "enrollments"."reference",
+              "enrollments"."courseRole"
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
             WHERE "enrollments"."course" = ${res.locals.course.id}
-            ORDER BY "enrollments"."courseRole" ASC, "users"."name" ASC
+            ORDER BY
+              "enrollments"."courseRole" ASC,
+              "users"."name" ASC
           `
         )
         .map((enrollment) => ({
@@ -3888,8 +3901,9 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "id", "reference"
           FROM "enrollments"
-          WHERE "course" = ${res.locals.course.id} AND
-                "reference" = ${req.params.enrollmentReference}
+          WHERE
+            "course" = ${res.locals.course.id} AND
+            "reference" = ${req.params.enrollmentReference}
         `
       );
       if (managedEnrollment === undefined) return next("route");
@@ -3903,8 +3917,9 @@ export default async (app: Courselore): Promise<void> => {
           sql`
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
-            WHERE "course" = ${res.locals.course.id} AND
-                  "courseRole" = ${"staff"}
+            WHERE
+              "course" = ${res.locals.course.id} AND
+              "courseRole" = ${"staff"}
           `
         )!.count === 1
       )

@@ -329,17 +329,20 @@ export default async (application: Application): Promise<void> => {
       DELETE FROM "readings" WHERE "id" IN (
         SELECT "readings"."id"
         FROM "readings"
-        JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id" AND
-                              "enrollments"."role" = 'student'
+        JOIN "enrollments" ON
+          "readings"."enrollment" = "enrollments"."id" AND
+          "enrollments"."role" = 'student'
         JOIN "messages" ON "readings"."message" = "messages"."id"
-        JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                "conversations"."staffOnlyAt" IS NOT NULL AND
-                                NOT EXISTS(
-                                  SELECT TRUE
-                                  FROM "messages"
-                                  WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
-                                        "conversations"."id" = "messages"."conversation"
-                                )
+        JOIN "conversations" ON
+          "messages"."conversation" = "conversations"."id" AND
+          "conversations"."staffOnlyAt" IS NOT NULL AND
+          NOT EXISTS(
+            SELECT TRUE
+            FROM "messages"
+            WHERE
+              "enrollments"."id" = "messages"."authorEnrollment" AND
+              "conversations"."id" = "messages"."conversation"
+          )
       );
     `,
 
@@ -373,12 +376,13 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               UPDATE "users"
-              SET "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                user.biographySource
-              )},
-                  "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                    user.biographyPreprocessed
-                  )}
+              SET
+                "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                  user.biographySource
+                )},
+                "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                  user.biographyPreprocessed
+                )}
               WHERE "id" = ${user.id}
             `
           );
@@ -397,15 +401,16 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             UPDATE "messages"
-            SET "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-              message.contentSource
-            )},
-                "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  message.contentPreprocessed
-                )},
-                "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  message.contentSearch
-                )}
+            SET
+              "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                message.contentSource
+              )},
+              "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                message.contentPreprocessed
+              )},
+              "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                message.contentSearch
+              )}
             WHERE "id" = ${message.id}
           `
         );
@@ -495,12 +500,13 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               UPDATE "users"
-              SET "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
-                user.biographySource
-              )},
-                  "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                    user.biographyPreprocessed
-                  )}
+              SET
+                "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  user.biographySource
+                )},
+                "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  user.biographyPreprocessed
+                )}
               WHERE "id" = ${user.id}
             `
           );
@@ -519,15 +525,16 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             UPDATE "messages"
-            SET "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
-              message.contentSource
-            )},
-                "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  message.contentPreprocessed
-                )},
-                "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  message.contentSearch
-                )}
+            SET
+              "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
+                message.contentSource
+              )},
+              "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                message.contentPreprocessed
+              )},
+              "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
+                message.contentSearch
+              )}
             WHERE "id" = ${message.id}
           `
         );
@@ -591,19 +598,20 @@ export default async (application: Application): Promise<void> => {
         emailNotifications: string;
       }>(
         sql`
-          SELECT "id",
-                 "createdAt",
-                 "lastSeenOnlineAt",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "nameSearch",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "emailNotifications"
+          SELECT
+            "id",
+            "createdAt",
+            "lastSeenOnlineAt",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "nameSearch",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "emailNotifications"
           FROM "users"
         `
       ))
@@ -703,20 +711,21 @@ export default async (application: Application): Promise<void> => {
         emailNotifications: "all-messages" | "mentions" | "none";
       }>(
         sql`
-          SELECT "id",
-                 "createdAt",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "nameSearch",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "emailNotifications"
+          SELECT
+            "id",
+            "createdAt",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "nameSearch",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "emailNotifications"
           FROM "users"
         `
       ))
@@ -861,24 +870,25 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
       }>(
         sql`
-          SELECT "id",
-                 "createdAt",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "nameSearch",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "emailNotificationsForAllMessagesAt",
-                 "emailNotificationsForMentionsAt",
-                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "emailNotificationsForMessagesInConversationsYouStartedAt",
-                 "emailNotificationsDigestsFrequency"
+          SELECT
+            "id",
+            "createdAt",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "nameSearch",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt",
+            "emailNotificationsDigestsFrequency"
           FROM "users"
         `
       ))
@@ -1051,25 +1061,26 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsDigestsFrequency: "hourly" | "daily" | null;
       }>(
         sql`
-          SELECT "id",
-                 "createdAt",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "nameSearch",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "systemRole",
-                 "emailNotificationsForAllMessagesAt",
-                 "emailNotificationsForMentionsAt",
-                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "emailNotificationsForMessagesInConversationsYouStartedAt",
-                 "emailNotificationsDigestsFrequency"
+          SELECT
+            "id",
+            "createdAt",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "nameSearch",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "systemRole",
+            "emailNotificationsForAllMessagesAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt",
+            "emailNotificationsDigestsFrequency"
           FROM "users"
         `
       ))
@@ -1242,20 +1253,21 @@ export default async (application: Application): Promise<void> => {
         resolvedAt: string | null;
       }>(
         sql`
-          SELECT "id",
-                 "createdAt",
-                 "updatedAt",
-                 "course",
-                 "reference",
-                 "authorEnrollment",
-                 "anonymousAt",
-                 "type",
-                 "pinnedAt",
-                 "staffOnlyAt",
-                 "title",
-                 "titleSearch",
-                 "nextMessageReference",
-                 "resolvedAt"
+          SELECT
+            "id",
+            "createdAt",
+            "updatedAt",
+            "course",
+            "reference",
+            "authorEnrollment",
+            "anonymousAt",
+            "type",
+            "pinnedAt",
+            "staffOnlyAt",
+            "title",
+            "titleSearch",
+            "nextMessageReference",
+            "resolvedAt"
           FROM "conversations"
         `
       )) {
@@ -1301,14 +1313,17 @@ export default async (application: Application): Promise<void> => {
             sql`
               SELECT "enrollments"."id"
               FROM "enrollments"
-              LEFT JOIN "conversations" ON "enrollments"."id" = "conversations"."authorEnrollment" AND
-                                          "conversations"."id" = ${conversation.id}
-              LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                      "messages"."conversation" = ${conversation.id}
-              WHERE "enrollments"."courseRole" = 'student' AND (
-                      "conversations"."id" IS NOT NULL OR
-                      "messages"."id" IS NOT NULL
-                    )
+              LEFT JOIN "conversations" ON
+                "enrollments"."id" = "conversations"."authorEnrollment" AND
+                "conversations"."id" = ${conversation.id}
+              LEFT JOIN "messages" ON
+                "enrollments"."id" = "messages"."authorEnrollment" AND
+                "messages"."conversation" = ${conversation.id}
+              WHERE
+                "enrollments"."courseRole" = 'student' AND (
+                  "conversations"."id" IS NOT NULL OR
+                  "messages"."id" IS NOT NULL
+                )
               GROUP BY "enrollments"."id"
             `
           ))

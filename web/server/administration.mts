@@ -302,9 +302,9 @@ export default async (application: Application): Promise<void> => {
 
     application.database.run(
       sql`
-          UPDATE "administrationOptions"
-          SET "userSystemRolesWhoMayCreateCourses" = ${request.body.userSystemRolesWhoMayCreateCourses}
-        `
+        UPDATE "administrationOptions"
+        SET "userSystemRolesWhoMayCreateCourses" = ${request.body.userSystemRolesWhoMayCreateCourses}
+      `
     )!;
 
     application.server.locals.helpers.Flash.set({
@@ -778,7 +778,11 @@ export default async (application: Application): Promise<void> => {
         return next("Validation");
 
       application.database.run(
-        sql`UPDATE "users" SET "systemRole" = ${request.body.role} WHERE "id" = ${managedUser.id}`
+        sql`
+          UPDATE "users"
+          SET "systemRole" = ${request.body.role}
+          WHERE "id" = ${managedUser.id}
+        `
       );
     }
 

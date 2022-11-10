@@ -151,35 +151,38 @@ export default async (app: Courselore): Promise<void> => {
       readingId: number | null;
     }>(
       sql`
-        SELECT "messages"."id",
-               "messages"."createdAt",
-               "messages"."updatedAt",
-               "messages"."reference",
-               "authorEnrollment"."id" AS "authorEnrollmentId",
-               "authorUser"."id" AS "authorUserId",
-               "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
-               "authorUser"."reference" AS "authorUserReference",
-               "authorUser"."email" AS "authorUserEmail",
-               "authorUser"."name" AS "authorUserName",
-               "authorUser"."avatar" AS "authorUserAvatar",
-               "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
-               "authorUser"."biographySource" AS "authorUserBiographySource",
-               "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-               "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
-               "messages"."anonymousAt",
-               "messages"."answerAt",
-               "messages"."contentSource",
-               "messages"."contentPreprocessed",
-               "messages"."contentSearch",
-               "readings"."id" AS "readingId"
+        SELECT
+          "messages"."id",
+          "messages"."createdAt",
+          "messages"."updatedAt",
+          "messages"."reference",
+          "authorEnrollment"."id" AS "authorEnrollmentId",
+          "authorUser"."id" AS "authorUserId",
+          "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
+          "authorUser"."reference" AS "authorUserReference",
+          "authorUser"."email" AS "authorUserEmail",
+          "authorUser"."name" AS "authorUserName",
+          "authorUser"."avatar" AS "authorUserAvatar",
+          "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
+          "authorUser"."biographySource" AS "authorUserBiographySource",
+          "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
+          "authorEnrollment"."reference" AS "authorEnrollmentReference",
+          "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
+          "messages"."anonymousAt",
+          "messages"."answerAt",
+          "messages"."contentSource",
+          "messages"."contentPreprocessed",
+          "messages"."contentSearch",
+          "readings"."id" AS "readingId"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
-                                "readings"."enrollment" = ${res.locals.enrollment.id}
-        WHERE "messages"."conversation" = ${conversation.id} AND
-              "messages"."reference" = ${messageReference}
+        LEFT JOIN "readings" ON
+          "messages"."id" = "readings"."message" AND
+          "readings"."enrollment" = ${res.locals.enrollment.id}
+        WHERE
+          "messages"."conversation" = ${conversation.id} AND
+          "messages"."reference" = ${messageReference}
         ORDER BY "messages"."id" ASC
       `
     );
@@ -245,20 +248,21 @@ export default async (app: Courselore): Promise<void> => {
         enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
-          SELECT "readings"."id",
-                 "readings"."createdAt",
-                 "enrollments"."id" AS "enrollmentId",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."reference" AS "userReference",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."courseRole" AS "enrollmentCourseRole"
+          SELECT
+            "readings"."id",
+            "readings"."createdAt",
+            "enrollments"."id" AS "enrollmentId",
+            "users"."id" AS "userId",
+            "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+            "users"."reference" AS "userReference",
+            "users"."email" AS "userEmail",
+            "users"."name" AS "userName",
+            "users"."avatar" AS "userAvatar",
+            "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+            "users"."biographySource" AS "userBiographySource",
+            "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+            "enrollments"."reference" AS "enrollmentReference",
+            "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "readings"
           JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -316,19 +320,20 @@ export default async (app: Courselore): Promise<void> => {
         enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
-          SELECT "endorsements"."id",
-                 "enrollments"."id" AS "enrollmentId",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."reference" AS "userReference",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."courseRole" AS "enrollmentCourseRole"
+          SELECT
+            "endorsements"."id",
+            "enrollments"."id" AS "enrollmentId",
+            "users"."id" AS "userId",
+            "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+            "users"."reference" AS "userReference",
+            "users"."email" AS "userEmail",
+            "users"."name" AS "userName",
+            "users"."avatar" AS "userAvatar",
+            "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+            "users"."biographySource" AS "userBiographySource",
+            "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+            "enrollments"."reference" AS "enrollmentReference",
+            "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "endorsements"
           JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -386,20 +391,21 @@ export default async (app: Courselore): Promise<void> => {
         enrollmentCourseRole: CourseRole | null;
       }>(
         sql`
-          SELECT "likes"."id",
-                 "likes"."createdAt",
-                 "enrollments"."id" AS "enrollmentId",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."reference" AS "userReference",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."courseRole" AS "enrollmentCourseRole"
+          SELECT
+            "likes"."id",
+            "likes"."createdAt",
+            "enrollments"."id" AS "enrollmentId",
+            "users"."id" AS "userId",
+            "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+            "users"."reference" AS "userReference",
+            "users"."email" AS "userEmail",
+            "users"."name" AS "userName",
+            "users"."avatar" AS "userAvatar",
+            "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+            "users"."biographySource" AS "userBiographySource",
+            "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+            "enrollments"."reference" AS "enrollmentReference",
+            "enrollments"."courseRole" AS "enrollmentCourseRole"
           FROM "likes"
           LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
           LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -603,9 +609,10 @@ export default async (app: Courselore): Promise<void> => {
         message = app.database.get<{ id: number; reference: string }>(
           sql`
             UPDATE "messages"
-            SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
-                "contentSearch" = ${contentPreprocessed.contentSearch}
+            SET
+              "contentSource" = ${contentSource},
+              "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
+              "contentSearch" = ${contentPreprocessed.contentSearch}
             WHERE "id" = ${mostRecentMessage.id}
             RETURNING *
           `
@@ -613,8 +620,9 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             DELETE FROM "readings"
-            WHERE "message" = ${mostRecentMessage.id} AND
-                  "enrollment" != ${res.locals.enrollment.id}
+            WHERE
+              "message" = ${mostRecentMessage.id} AND
+              "enrollment" != ${res.locals.enrollment.id}
           `
         );
       } else {
@@ -624,26 +632,27 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             UPDATE "conversations"
-            SET "updatedAt" = ${new Date().toISOString()},
-                "nextMessageReference" = ${
-                  res.locals.conversation.nextMessageReference + 1
-                }
-                $${
-                  res.locals.conversation.type === "question" &&
-                  res.locals.enrollment.courseRole === "staff" &&
-                  req.body.isAnswer === "on" &&
-                  res.locals.conversation.resolvedAt === null
-                    ? sql`,
-                        "resolvedAt" = ${new Date().toISOString()}
-                      `
-                    : res.locals.conversation.type === "question" &&
-                      res.locals.enrollment.courseRole === "student" &&
-                      req.body.isAnswer !== "on"
-                    ? sql`,
-                        "resolvedAt" = ${null}
-                      `
-                    : sql``
-                }
+            SET
+              "updatedAt" = ${new Date().toISOString()},
+              "nextMessageReference" = ${
+                res.locals.conversation.nextMessageReference + 1
+              }
+              $${
+                res.locals.conversation.type === "question" &&
+                res.locals.enrollment.courseRole === "staff" &&
+                req.body.isAnswer === "on" &&
+                res.locals.conversation.resolvedAt === null
+                  ? sql`,
+                      "resolvedAt" = ${new Date().toISOString()}
+                    `
+                  : res.locals.conversation.type === "question" &&
+                    res.locals.enrollment.courseRole === "student" &&
+                    req.body.isAnswer !== "on"
+                  ? sql`,
+                      "resolvedAt" = ${null}
+                    `
+                  : sql``
+              }
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
@@ -820,12 +829,13 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             UPDATE "messages"
-            SET "contentSource" = ${req.body.content},
-                "contentPreprocessed" = ${
-                  contentPreprocessed.contentPreprocessed
-                },
-                "contentSearch" = ${contentPreprocessed.contentSearch},
-                "updatedAt" = ${new Date().toISOString()}
+            SET
+              "contentSource" = ${req.body.content},
+              "contentPreprocessed" = ${
+                contentPreprocessed.contentPreprocessed
+              },
+              "contentSearch" = ${contentPreprocessed.contentSearch},
+              "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `
         );
@@ -1231,8 +1241,9 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "id"
           FROM "emailNotificationMessageJobs"
-          WHERE "message" = ${message.id} AND
-                "startedAt" IS NULL
+          WHERE
+            "message" = ${message.id} AND
+            "startedAt" IS NULL
         `
       );
       if (job === undefined)
@@ -1258,12 +1269,13 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             UPDATE "emailNotificationMessageJobs"
-            SET "startAt" = ${new Date(
-              Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
-            ).toISOString()},
-                "expiresAt" = ${new Date(
-                  Date.now() + 5 * 60 * 60 * 1000
-                ).toISOString()}
+            SET
+              "startAt" = ${new Date(
+                Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
+              ).toISOString()},
+              "expiresAt" = ${new Date(
+                Date.now() + 5 * 60 * 60 * 1000
+              ).toISOString()}
             WHERE "id" = ${job.id}
           `
         );
@@ -1344,8 +1356,9 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id", "message"
                 FROM "emailNotificationMessageJobs"
-                WHERE "startAt" <= ${new Date().toISOString()} AND
-                      "startedAt" IS NULL
+                WHERE
+                  "startAt" <= ${new Date().toISOString()} AND
+                  "startedAt" IS NULL
                 ORDER BY "startAt" ASC
                 LIMIT 1
               `
@@ -1385,26 +1398,27 @@ export default async (app: Courselore): Promise<void> => {
             contentPreprocessed: string;
           }>(
             sql`
-              SELECT "messages"."id",
-                    "conversations"."id" AS "conversationId",
-                    "courses"."id" AS "courseId",
-                    "courses"."reference" AS "courseReference",
-                    "courses"."archivedAt" AS "courseArchivedAt",
-                    "courses"."name" AS "courseName",
-                    "courses"."year" AS "courseYear",
-                    "courses"."term" AS "courseTerm",
-                    "courses"."institution" AS "courseInstitution",
-                    "courses"."code" AS "courseCode",
-                    "courses"."nextConversationReference" AS "courseNextConversationReference",
-                    "conversations"."reference" AS "conversationReference",
-                    "conversations"."participants" AS "conversationParticipants",
-                    "conversations"."type" AS "conversationType",
-                    "conversations"."announcementAt" AS "conversationAnnouncementAt",
-                    "conversations"."title" AS "conversationTitle",
-                    "messages"."reference",
-                    "authorUser"."name" AS "authorUserName",
-                    "messages"."anonymousAt",
-                    "messages"."contentPreprocessed"
+              SELECT
+                "messages"."id",
+                "conversations"."id" AS "conversationId",
+                "courses"."id" AS "courseId",
+                "courses"."reference" AS "courseReference",
+                "courses"."archivedAt" AS "courseArchivedAt",
+                "courses"."name" AS "courseName",
+                "courses"."year" AS "courseYear",
+                "courses"."term" AS "courseTerm",
+                "courses"."institution" AS "courseInstitution",
+                "courses"."code" AS "courseCode",
+                "courses"."nextConversationReference" AS "courseNextConversationReference",
+                "conversations"."reference" AS "conversationReference",
+                "conversations"."participants" AS "conversationParticipants",
+                "conversations"."type" AS "conversationType",
+                "conversations"."announcementAt" AS "conversationAnnouncementAt",
+                "conversations"."title" AS "conversationTitle",
+                "messages"."reference",
+                "authorUser"."name" AS "authorUserName",
+                "messages"."anonymousAt",
+                "messages"."contentPreprocessed"
               FROM "messages"
               JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
               JOIN "courses" ON "conversations"."course" = "courses"."id"
@@ -1473,94 +1487,102 @@ export default async (app: Courselore): Promise<void> => {
             courseRole: CourseRole;
           }>(
             sql`
-              SELECT "enrollments"."id",
-                    "users"."id" AS "userId",
-                    "users"."email" AS "userEmail",
-                    "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
-                    "enrollments"."reference",
-                    "enrollments"."courseRole"
+              SELECT
+                "enrollments"."id",
+                "users"."id" AS "userId",
+                "users"."email" AS "userEmail",
+                "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
+                "enrollments"."reference",
+                "enrollments"."courseRole"
               FROM "enrollments"
-              JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                              "users"."emailVerifiedAt" IS NOT NULL
-              WHERE "enrollments"."course" = ${course.id} AND
-                    NOT EXISTS(
-                      SELECT TRUE
-                      FROM "emailNotificationDeliveries"
-                      WHERE "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
-                            "emailNotificationDeliveries"."message" = ${
-                              message.id
-                            }
-                    ) $${
-                      conversation.participants === "everyone"
-                        ? sql``
-                        : conversation.participants === "staff"
-                        ? sql`
-                            AND (
-                              "enrollments"."courseRole" = 'staff' OR EXISTS(
-                                SELECT TRUE
-                                FROM "conversationSelectedParticipants"
-                                WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+              JOIN "users" ON
+                "enrollments"."user" = "users"."id" AND
+                "users"."emailVerifiedAt" IS NOT NULL
+              WHERE
+                "enrollments"."course" = ${course.id} AND
+                NOT EXISTS(
+                  SELECT TRUE
+                  FROM "emailNotificationDeliveries"
+                  WHERE
+                    "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                    "emailNotificationDeliveries"."message" = ${
+                      message.id
+                    }
+                ) $${
+                  conversation.participants === "everyone"
+                    ? sql``
+                    : conversation.participants === "staff"
+                    ? sql`
+                        AND (
+                          "enrollments"."courseRole" = 'staff' OR EXISTS(
+                            SELECT TRUE
+                            FROM "conversationSelectedParticipants"
+                            WHERE
+                              "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                              "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                          )
+                        )
+                      `
+                    : conversation.participants === "selected-people"
+                    ? sql`
+                        AND EXISTS(
+                          SELECT TRUE
+                          FROM "conversationSelectedParticipants"
+                          WHERE
+                            "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                            "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                        )
+                      `
+                    : sql``
+                } $${
+          conversation.type === "note" &&
+          conversation.announcementAt !== null &&
+          message.reference === "1"
+            ? sql``
+            : sql`
+                AND (
+                  "users"."emailNotificationsForAllMessages" != 'none' OR (
+                    "users"."emailNotificationsForMentionsAt" IS NOT NULL
+                      $${
+                        contentProcessed.mentions.has("everyone")
+                          ? sql``
+                          : contentProcessed.mentions.has("staff")
+                          ? sql`
+                              AND (
+                                "enrollments"."courseRole" = 'staff' OR
+                                "enrollments"."reference" IN ${contentProcessed.mentions}
                               )
-                            )
-                          `
-                        : conversation.participants === "selected-people"
-                        ? sql`
-                            AND EXISTS(
-                              SELECT TRUE
-                              FROM "conversationSelectedParticipants"
-                              WHERE "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                                    "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                            )
-                          `
-                        : sql``
-                    } $${
-              conversation.type === "note" &&
-              conversation.announcementAt !== null &&
-              message.reference === "1"
-                ? sql``
-                : sql`
-                    AND (
-                      "users"."emailNotificationsForAllMessages" != 'none' OR (
-                        "users"."emailNotificationsForMentionsAt" IS NOT NULL
-                          $${
-                            contentProcessed.mentions.has("everyone")
-                              ? sql``
-                              : contentProcessed.mentions.has("staff")
-                              ? sql`
-                                  AND (
-                                    "enrollments"."courseRole" = 'staff' OR
-                                    "enrollments"."reference" IN ${contentProcessed.mentions}
-                                  )
-                                `
-                              : contentProcessed.mentions.has("students")
-                              ? sql`
-                                  AND (
-                                    "enrollments"."courseRole" = 'student' OR
-                                    "enrollments"."reference" IN ${contentProcessed.mentions}
-                                  )
-                                `
-                              : sql`
-                                  AND "enrollments"."reference" IN ${contentProcessed.mentions}
-                                `
-                          }
-                      ) OR (
-                        "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
-                          SELECT TRUE
-                          FROM "messages"
-                          WHERE "conversation" = ${conversation.id} AND
-                                "authorEnrollment" = "enrollments"."id"
-                        )
-                      ) OR (
-                        "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
-                          SELECT TRUE
-                          FROM "conversations"
-                          WHERE "id" = ${conversation.id} AND
-                                "authorEnrollment" = "enrollments"."id"
-                        )
-                      )
+                            `
+                          : contentProcessed.mentions.has("students")
+                          ? sql`
+                              AND (
+                                "enrollments"."courseRole" = 'student' OR
+                                "enrollments"."reference" IN ${contentProcessed.mentions}
+                              )
+                            `
+                          : sql`
+                              AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                            `
+                      }
+                  ) OR (
+                    "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
+                      SELECT TRUE
+                      FROM "messages"
+                      WHERE
+                        "conversation" = ${conversation.id} AND
+                        "authorEnrollment" = "enrollments"."id"
                     )
-                  `
+                  ) OR (
+                    "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
+                      SELECT TRUE
+                      FROM "conversations"
+                      WHERE
+                        "id" = ${conversation.id} AND
+                        "authorEnrollment" = "enrollments"."id"
+                    )
+                  )
+                )
+              `
             }
             `
           );

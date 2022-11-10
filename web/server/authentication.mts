@@ -431,23 +431,24 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
       }>(
         sql`
-          SELECT "id",
-                 "lastSeenOnlineAt",
-                 "reference",
-                 "email",
-                 "password",
-                 "emailVerifiedAt",
-                 "name",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biographySource",
-                 "biographyPreprocessed",
-                 "systemRole",
-                 "emailNotificationsForAllMessages",
-                 "emailNotificationsForAllMessagesDigestDeliveredAt",
-                 "emailNotificationsForMentionsAt",
-                 "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                 "emailNotificationsForMessagesInConversationsYouStartedAt"
+          SELECT
+            "id",
+            "lastSeenOnlineAt",
+            "reference",
+            "email",
+            "password",
+            "emailVerifiedAt",
+            "name",
+            "avatar",
+            "avatarlessBackgroundColor",
+            "biographySource",
+            "biographyPreprocessed",
+            "systemRole",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForAllMessagesDigestDeliveredAt",
+            "emailNotificationsForMentionsAt",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+            "emailNotificationsForMessagesInConversationsYouStartedAt"
           FROM "users"
           WHERE "id" = ${userId}
         `
@@ -469,25 +470,27 @@ export default async (application: Application): Promise<void> => {
           courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
-            SELECT "invitations"."id",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "invitations"."reference",
-                   "invitations"."courseRole"
+            SELECT
+              "invitations"."id",
+              "courses"."id" AS "courseId",
+              "courses"."reference" AS "courseReference",
+              "courses"."archivedAt" AS "courseArchivedAt",
+              "courses"."name" AS "courseName",
+              "courses"."year" AS "courseYear",
+              "courses"."term" AS "courseTerm",
+              "courses"."institution" AS "courseInstitution",
+              "courses"."code" AS "courseCode",
+              "courses"."nextConversationReference" AS "courseNextConversationReference",
+              "invitations"."reference",
+              "invitations"."courseRole"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
-            WHERE "invitations"."usedAt" IS NULL AND (
-                  "invitations"."expiresAt" IS NULL OR
-                  ${new Date().toISOString()} < "invitations"."expiresAt"
-                ) AND
-                "invitations"."email" = ${response.locals.user.email}
+            WHERE
+              "invitations"."usedAt" IS NULL AND (
+                "invitations"."expiresAt" IS NULL OR
+                ${new Date().toISOString()} < "invitations"."expiresAt"
+              ) AND
+              "invitations"."email" = ${response.locals.user.email}
             ORDER BY "invitations"."id" DESC
           `
         )
@@ -526,19 +529,20 @@ export default async (application: Application): Promise<void> => {
           accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
         }>(
           sql`
-            SELECT "enrollments"."id",
-                   "courses"."id" AS "courseId",
-                   "courses"."reference" AS "courseReference",
-                   "courses"."archivedAt" AS "courseArchivedAt",
-                   "courses"."name" AS "courseName",
-                   "courses"."year" AS "courseYear",
-                   "courses"."term" AS "courseTerm",
-                   "courses"."institution" AS "courseInstitution",
-                   "courses"."code" AS "courseCode",
-                   "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "enrollments"."reference",
-                   "enrollments"."courseRole",
-                   "enrollments"."accentColor"
+            SELECT
+              "enrollments"."id",
+              "courses"."id" AS "courseId",
+              "courses"."reference" AS "courseReference",
+              "courses"."archivedAt" AS "courseArchivedAt",
+              "courses"."name" AS "courseName",
+              "courses"."year" AS "courseYear",
+              "courses"."term" AS "courseTerm",
+              "courses"."institution" AS "courseInstitution",
+              "courses"."code" AS "courseCode",
+              "courses"."nextConversationReference" AS "courseNextConversationReference",
+              "enrollments"."reference",
+              "enrollments"."courseRole",
+              "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${response.locals.user.id}
@@ -820,10 +824,11 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT "createdAt", "user"
           FROM "passwordResets"
-          WHERE "nonce" = ${nonce} AND
-                "createdAt" > ${new Date(
-                  Date.now() - PasswordReset.maxAge
-                ).toISOString()}
+          WHERE
+            "nonce" = ${nonce} AND
+            "createdAt" > ${new Date(
+              Date.now() - PasswordReset.maxAge
+            ).toISOString()}
         `
       )?.user;
     },

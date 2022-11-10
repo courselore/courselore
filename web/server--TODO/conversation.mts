@@ -340,60 +340,65 @@ export default async (app: Courselore): Promise<void> => {
         messageContentSearchResultSnippet?: string | null;
       }>(
         sql`
-          SELECT "conversations"."reference"
-                 $${
-                   search === undefined
-                     ? sql``
-                     : sql`
-                         ,
-                         "conversationTitleSearchResult"."highlight" AS "conversationTitleSearchResultHighlight",
-                         "messageAuthorUserNameSearchResult"."messageReference" AS "messageAuthorUserNameSearchResultMessageReference",
-                         "messageAuthorUserNameSearchResult"."highlight" AS "messageAuthorUserNameSearchResultHighlight",
-                         "messageContentSearchResult"."messageReference" AS "messageContentSearchResultMessageReference",
-                         "messageContentSearchResult"."snippet" AS "messageContentSearchResultSnippet"
-                       `
-                 }
+          SELECT
+            "conversations"."reference"
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                    ,
+                    "conversationTitleSearchResult"."highlight" AS "conversationTitleSearchResultHighlight",
+                    "messageAuthorUserNameSearchResult"."messageReference" AS "messageAuthorUserNameSearchResultMessageReference",
+                    "messageAuthorUserNameSearchResult"."highlight" AS "messageAuthorUserNameSearchResultHighlight",
+                    "messageContentSearchResult"."messageReference" AS "messageContentSearchResultMessageReference",
+                    "messageContentSearchResult"."snippet" AS "messageContentSearchResultSnippet"
+                  `
+            }
           FROM "conversations"
           $${
             search === undefined
               ? sql``
               : sql`
                 LEFT JOIN (
-                  SELECT "rowid",
-                         "rank",
-                         highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
+                  SELECT
+                    "rowid",
+                    "rank",
+                    highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "conversationsTitleSearchIndex"
                   WHERE "conversationsTitleSearchIndex" MATCH ${search}
                 ) AS "conversationTitleSearchResult" ON "conversations"."id" = "conversationTitleSearchResult"."rowid"
 
                 LEFT JOIN (
-                  SELECT "messages"."reference" AS  "messageReference",
-                         "messages"."conversation" AS "conversationId",
-                         "usersNameSearchIndex"."rank" AS "rank",
-                         highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
+                  SELECT
+                    "messages"."reference" AS  "messageReference",
+                    "messages"."conversation" AS "conversationId",
+                    "usersNameSearchIndex"."rank" AS "rank",
+                    highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "usersNameSearchIndex"
                   JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
-                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
-                                     $${
-                                       res.locals.enrollment.courseRole ===
-                                       "staff"
-                                         ? sql``
-                                         : sql`
-                                             AND (
-                                               "messages"."anonymousAt" IS NULL OR
-                                               "messages"."authorEnrollment" = ${res.locals.enrollment.id}
-                                             )
-                                           `
-                                     }
+                  JOIN "messages" ON
+                    "enrollments"."id" = "messages"."authorEnrollment"
+                    $${
+                      res.locals.enrollment.courseRole ===
+                      "staff"
+                        ? sql``
+                        : sql`
+                            AND (
+                              "messages"."anonymousAt" IS NULL OR
+                              "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                            )
+                          `
+                    }
                   WHERE "usersNameSearchIndex" MATCH ${search}
                 ) AS "messageAuthorUserNameSearchResult" ON "conversations"."id" = "messageAuthorUserNameSearchResult"."conversationId"
 
                 LEFT JOIN (
-                  SELECT "messages"."reference" AS "messageReference",
-                         "messages"."conversation" AS "conversationId",
-                         "messagesContentSearchIndex"."rank" AS "rank",
-                         snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "snippet"
+                  SELECT
+                    "messages"."reference" AS "messageReference",
+                    "messages"."conversation" AS "conversationId",
+                    "messagesContentSearchIndex"."rank" AS "rank",
+                    snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "snippet"
                   FROM "messagesContentSearchIndex"
                   JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
                   WHERE "messagesContentSearchIndex" MATCH ${search}
@@ -405,118 +410,124 @@ export default async (app: Courselore): Promise<void> => {
               ? sql``
               : sql`
                   JOIN "taggings" ON "conversations"."id" = "taggings"."conversation"
-                  JOIN "tags" ON "taggings"."tag" = "tags"."id" AND
-                                 "tags"."reference" IN ${filters.tagsReferences}
+                  JOIN "tags" ON
+                    "taggings"."tag" = "tags"."id" AND
+                    "tags"."reference" IN ${filters.tagsReferences}
                 `
           }
-          WHERE "conversations"."course" = ${res.locals.course.id} AND (
-            "conversations"."participants" = 'everyone' $${
-              res.locals.enrollment.courseRole === "staff"
-                ? sql`OR "conversations"."participants" = 'staff'`
-                : sql``
-            } OR EXISTS(
-              SELECT TRUE
-              FROM "conversationSelectedParticipants"
-              WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                    "conversationSelectedParticipants"."enrollment" = ${
-                      res.locals.enrollment.id
-                    }
+          WHERE
+            "conversations"."course" = ${res.locals.course.id} AND (
+              "conversations"."participants" = 'everyone' $${
+                res.locals.enrollment.courseRole === "staff"
+                  ? sql`OR "conversations"."participants" = 'staff'`
+                  : sql``
+              } OR EXISTS(
+                SELECT TRUE
+                FROM "conversationSelectedParticipants"
+                WHERE
+                  "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                  "conversationSelectedParticipants"."enrollment" = ${
+                    res.locals.enrollment.id
+                  }
+              )
             )
-          )
-          $${
-            search === undefined
-              ? sql``
-              : sql`
-                  AND (
-                    "conversationTitleSearchResult"."rank" IS NOT NULL OR
-                    "messageAuthorUserNameSearchResult"."rank" IS NOT NULL OR
-                    "messageContentSearchResult"."rank" IS NOT NULL
-                  )
-                `
-          }
-          $${
-            filters.isUnread === undefined
-              ? sql``
-              : sql`
-                  AND $${filters.isUnread === "true" ? sql`` : sql`NOT`} EXISTS(
-                    SELECT TRUE
-                    FROM "messages"
-                    LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
-                                            "readings"."enrollment" = ${
-                                              res.locals.enrollment.id
-                                            }
-                    WHERE "conversations"."id" = "messages"."conversation" AND
-                          "readings"."id" IS NULL
-                  )
-                `
-          }
-          $${
-            filters.types === undefined
-              ? sql``
-              : sql`
-                  AND "conversations"."type" IN ${filters.types}
-                `
-          }
-          $${
-            filters.isResolved === undefined
-              ? sql``
-              : sql`
-                  AND (
-                    (
-                      "conversations"."type" = 'question' AND
-                      "conversations"."resolvedAt" IS $${
-                        filters.isResolved === "true" ? sql`NOT` : sql``
-                      } NULL
-                    ) OR
-                    "conversations"."type" != 'question'
-                  )
-                `
-          }
-          $${
-            filters.isAnnouncement === undefined
-              ? sql``
-              : sql`
-                  AND (
-                    (
-                      "conversations"."type" = 'note' AND
-                      "conversations"."announcementAt" IS $${
-                        filters.isAnnouncement === "true" ? sql`NOT` : sql``
-                      } NULL
-                    ) OR
-                    "conversations"."type" != 'note'
-                  )
-                `
-          }
-          $${
-            filters.participantses === undefined
-              ? sql``
-              : sql`
-                  AND "conversations"."participants" IN ${filters.participantses}
-                `
-          }
-          $${
-            filters.isPinned === undefined
-              ? sql``
-              : sql`
-                  AND "conversations"."pinnedAt" IS $${
-                    filters.isPinned === "true" ? sql`NOT` : sql``
-                  } NULL
-                `
-          }
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                    AND (
+                      "conversationTitleSearchResult"."rank" IS NOT NULL OR
+                      "messageAuthorUserNameSearchResult"."rank" IS NOT NULL OR
+                      "messageContentSearchResult"."rank" IS NOT NULL
+                    )
+                  `
+            }
+            $${
+              filters.isUnread === undefined
+                ? sql``
+                : sql`
+                    AND $${filters.isUnread === "true" ? sql`` : sql`NOT`} EXISTS(
+                      SELECT TRUE
+                      FROM "messages"
+                      LEFT JOIN "readings" ON
+                        "messages"."id" = "readings"."message" AND
+                        "readings"."enrollment" = ${
+                          res.locals.enrollment.id
+                        }
+                      WHERE
+                        "conversations"."id" = "messages"."conversation" AND
+                        "readings"."id" IS NULL
+                    )
+                  `
+            }
+            $${
+              filters.types === undefined
+                ? sql``
+                : sql`
+                    AND "conversations"."type" IN ${filters.types}
+                  `
+            }
+            $${
+              filters.isResolved === undefined
+                ? sql``
+                : sql`
+                    AND (
+                      (
+                        "conversations"."type" = 'question' AND
+                        "conversations"."resolvedAt" IS $${
+                          filters.isResolved === "true" ? sql`NOT` : sql``
+                        } NULL
+                      ) OR
+                      "conversations"."type" != 'question'
+                    )
+                  `
+            }
+            $${
+              filters.isAnnouncement === undefined
+                ? sql``
+                : sql`
+                    AND (
+                      (
+                        "conversations"."type" = 'note' AND
+                        "conversations"."announcementAt" IS $${
+                          filters.isAnnouncement === "true" ? sql`NOT` : sql``
+                        } NULL
+                      ) OR
+                      "conversations"."type" != 'note'
+                    )
+                  `
+            }
+            $${
+              filters.participantses === undefined
+                ? sql``
+                : sql`
+                    AND "conversations"."participants" IN ${filters.participantses}
+                  `
+            }
+            $${
+              filters.isPinned === undefined
+                ? sql``
+                : sql`
+                    AND "conversations"."pinnedAt" IS $${
+                      filters.isPinned === "true" ? sql`NOT` : sql``
+                    } NULL
+                  `
+            }
           GROUP BY "conversations"."id"
-          ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
-                    $${
-                      search === undefined
-                        ? sql``
-                        : sql`
-                            min(
-                              coalesce("conversationTitleSearchResult"."rank", 0),
-                              coalesce("messageAuthorUserNameSearchResult"."rank", 0),
-                              coalesce("messageContentSearchResult"."rank", 0)
-                            ) ASC,
-                          `
-                    }
-                    coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
+          ORDER BY
+            "conversations"."pinnedAt" IS NOT NULL DESC,
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                    min(
+                      coalesce("conversationTitleSearchResult"."rank", 0),
+                      coalesce("messageAuthorUserNameSearchResult"."rank", 0),
+                      coalesce("messageContentSearchResult"."rank", 0)
+                    ) ASC,
+                  `
+            }
+            coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
           LIMIT ${conversationsPageSize + 1} OFFSET ${
           (conversationsPage - 1) * conversationsPageSize
         }
@@ -2666,49 +2677,52 @@ export default async (app: Courselore): Promise<void> => {
       nextMessageReference: number;
     }>(
       sql`
-        SELECT "conversations"."id",
-               "conversations"."createdAt",
-               "conversations"."updatedAt",
-               "conversations"."reference",
-               "authorEnrollment"."id" AS "authorEnrollmentId",
-               "authorUser"."id" AS "authorUserId",
-               "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
-               "authorUser"."reference" AS "authorUserReference",
-               "authorUser"."email" AS "authorUserEmail",
-               "authorUser"."name" AS "authorUserName",
-               "authorUser"."avatar" AS "authorUserAvatar",
-               "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
-               "authorUser"."biographySource" AS "authorUserBiographySource",
-               "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-               "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
-               "conversations"."participants",
-               "conversations"."anonymousAt",
-               "conversations"."type",
-               "conversations"."resolvedAt",
-               "conversations"."announcementAt",
-               "conversations"."pinnedAt",
-               "conversations"."title",
-               "conversations"."titleSearch",
-               "conversations"."nextMessageReference"
+        SELECT
+          "conversations"."id",
+          "conversations"."createdAt",
+          "conversations"."updatedAt",
+          "conversations"."reference",
+          "authorEnrollment"."id" AS "authorEnrollmentId",
+          "authorUser"."id" AS "authorUserId",
+          "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
+          "authorUser"."reference" AS "authorUserReference",
+          "authorUser"."email" AS "authorUserEmail",
+          "authorUser"."name" AS "authorUserName",
+          "authorUser"."avatar" AS "authorUserAvatar",
+          "authorUser"."avatarlessBackgroundColor" AS "authorApplication["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"]",
+          "authorUser"."biographySource" AS "authorUserBiographySource",
+          "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
+          "authorEnrollment"."reference" AS "authorEnrollmentReference",
+          "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
+          "conversations"."participants",
+          "conversations"."anonymousAt",
+          "conversations"."type",
+          "conversations"."resolvedAt",
+          "conversations"."announcementAt",
+          "conversations"."pinnedAt",
+          "conversations"."title",
+          "conversations"."titleSearch",
+          "conversations"."nextMessageReference"
         FROM "conversations"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        WHERE "conversations"."course" = ${res.locals.course.id} AND
-              "conversations"."reference" = ${conversationReference} AND (
-                "conversations"."participants" = 'everyone' $${
-                  res.locals.enrollment.courseRole === "staff"
-                    ? sql`OR "conversations"."participants" = 'staff'`
-                    : sql``
-                } OR EXISTS(
-                  SELECT TRUE
-                  FROM "conversationSelectedParticipants"
-                  WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                        "conversationSelectedParticipants"."enrollment" = ${
-                          res.locals.enrollment.id
-                        }
-                )
-              )
+        WHERE
+          "conversations"."course" = ${res.locals.course.id} AND
+          "conversations"."reference" = ${conversationReference} AND (
+            "conversations"."participants" = 'everyone' $${
+              res.locals.enrollment.courseRole === "staff"
+                ? sql`OR "conversations"."participants" = 'staff'`
+                : sql``
+            } OR EXISTS(
+              SELECT TRUE
+              FROM "conversationSelectedParticipants"
+              WHERE
+                "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                "conversationSelectedParticipants"."enrollment" = ${
+                  res.locals.enrollment.id
+                }
+            )
+          )
       `
     );
     if (conversationRow === undefined) return undefined;
@@ -2776,24 +2790,28 @@ export default async (app: Courselore): Promise<void> => {
               enrollmentCourseRole: CourseRole;
             }>(
               sql`
-                SELECT "enrollments"."id" AS "enrollmentId",
-                       "users"."id" AS "userId",
-                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                       "users"."reference" AS "userReference",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "users"."avatar" AS "userAvatar",
-                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                       "users"."biographySource" AS "userBiographySource",
-                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                       "enrollments"."reference" AS "enrollmentReference",
-                       "enrollments"."courseRole" AS "enrollmentCourseRole"
+                SELECT
+                  "enrollments"."id" AS "enrollmentId",
+                  "users"."id" AS "userId",
+                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                  "users"."reference" AS "userReference",
+                  "users"."email" AS "userEmail",
+                  "users"."name" AS "userName",
+                  "users"."avatar" AS "userAvatar",
+                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                  "users"."biographySource" AS "userBiographySource",
+                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                  "enrollments"."reference" AS "enrollmentReference",
+                  "enrollments"."courseRole" AS "enrollmentCourseRole"
                 FROM "conversationSelectedParticipants"
                 JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
                 JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "conversation" = ${conversation.id} AND
-                      "enrollments"."id" != ${res.locals.enrollment.id}
-                ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+                WHERE
+                  "conversation" = ${conversation.id} AND
+                  "enrollments"."id" != ${res.locals.enrollment.id}
+                ORDER BY
+                  "enrollments"."courseRole" = 'staff' DESC,
+                  "users"."name" ASC
               `
             )
             .map((selectedParticipant) => ({
@@ -2824,11 +2842,12 @@ export default async (app: Courselore): Promise<void> => {
         tagStaffOnlyAt: string | null;
       }>(
         sql`
-          SELECT "taggings"."id",
-                 "tags"."id" AS "tagId",
-                 "tags"."reference" AS "tagReference",
-                 "tags"."name" AS "tagName",
-                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+          SELECT
+            "taggings"."id",
+            "tags"."id" AS "tagId",
+            "tags"."reference" AS "tagReference",
+            "tags"."name" AS "tagName",
+            "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           $${
@@ -2853,15 +2872,20 @@ export default async (app: Courselore): Promise<void> => {
     const messagesCount = app.database.get<{
       messagesCount: number;
     }>(
-      sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
+      sql`
+        SELECT COUNT(*) AS "messagesCount"
+        FROM "messages"
+        WHERE "messages"."conversation" = ${conversation.id}
+      `
     )!.messagesCount;
 
     const readingsCount = app.database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
-        JOIN "messages" ON "readings"."message" = "messages"."id" AND
-                           "messages"."conversation" = ${conversation.id}
+        JOIN "messages" ON
+          "readings"."message" = "messages"."id" AND
+          "messages"."conversation" = ${conversation.id}
         WHERE "readings"."enrollment" = ${res.locals.enrollment.id}
       `
     )!.readingsCount;
@@ -2885,24 +2909,26 @@ export default async (app: Courselore): Promise<void> => {
               enrollmentCourseRole: CourseRole | null;
             }>(
               sql`
-                SELECT "endorsements"."id",
-                       "enrollments"."id" AS "enrollmentId",
-                       "users"."id" AS "userId",
-                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                       "users"."reference" AS "userReference",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "users"."avatar" AS "userAvatar",
-                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                       "users"."biographySource" AS "userBiographySource",
-                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                       "enrollments"."reference" AS "enrollmentReference",
-                       "enrollments"."courseRole" AS "enrollmentCourseRole"
+                SELECT
+                  "endorsements"."id",
+                  "enrollments"."id" AS "enrollmentId",
+                  "users"."id" AS "userId",
+                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                  "users"."reference" AS "userReference",
+                  "users"."email" AS "userEmail",
+                  "users"."name" AS "userName",
+                  "users"."avatar" AS "userAvatar",
+                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                  "users"."biographySource" AS "userBiographySource",
+                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                  "enrollments"."reference" AS "enrollmentReference",
+                  "enrollments"."courseRole" AS "enrollmentCourseRole"
                 FROM "endorsements"
                 JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
                 JOIN "users" ON "enrollments"."user" = "users"."id"
-                JOIN "messages" ON "endorsements"."message" = "messages"."id" AND
-                                  "messages"."conversation" = ${conversation.id}
+                JOIN "messages" ON
+                  "endorsements"."message" = "messages"."id" AND
+                  "messages"."conversation" = ${conversation.id}
                 ORDER BY "endorsements"."id" ASC
               `
             )
@@ -2968,31 +2994,35 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "messages"."id"
           FROM "messages"
-          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                  "conversations"."course" = ${
-                                    res.locals.course.id
-                                  }
-          LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
-                                  "readings"."enrollment" = ${
-                                    res.locals.enrollment.id
-                                  }
-          WHERE "readings"."id" IS NULL AND (
-                  "conversations"."participants" = 'everyone' $${
-                    res.locals.enrollment.courseRole === "staff"
-                      ? sql`
-                          OR "conversations"."participants" = 'staff'
-                        `
-                      : sql`
-                    `
-                  } OR EXISTS(
-                    SELECT TRUE
-                    FROM "conversationSelectedParticipants"
-                    WHERE "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
-                          "conversationSelectedParticipants"."enrollment" = ${
-                            res.locals.enrollment.id
-                          }
-                  )
-                )
+          JOIN "conversations" ON
+            "messages"."conversation" = "conversations"."id" AND
+            "conversations"."course" = ${
+              res.locals.course.id
+            }
+          LEFT JOIN "readings" ON
+            "messages"."id" = "readings"."message" AND
+            "readings"."enrollment" = ${
+              res.locals.enrollment.id
+            }
+          WHERE
+            "readings"."id" IS NULL AND (
+            "conversations"."participants" = 'everyone' $${
+              res.locals.enrollment.courseRole === "staff"
+                ? sql`
+                    OR "conversations"."participants" = 'staff'
+                  `
+                : sql`
+              `
+            } OR EXISTS(
+              SELECT TRUE
+              FROM "conversationSelectedParticipants"
+              WHERE
+                "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
+                "conversationSelectedParticipants"."enrollment" = ${
+                  res.locals.enrollment.id
+                }
+            )
+          )
           ORDER BY "messages"."id" ASC
         `
       );
@@ -3058,19 +3088,21 @@ export default async (app: Courselore): Promise<void> => {
               tagsReferences: string | null;
             }>(
               sql`
-                SELECT "createdAt",
-                       "updatedAt",
-                       "reference",
-                       "type",
-                       "isPinned",
-                       "isStaffOnly",
-                       "title",
-                       "content",
-                       "tagsReferences"
+                SELECT
+                  "createdAt",
+                  "updatedAt",
+                  "reference",
+                  "type",
+                  "isPinned",
+                  "isStaffOnly",
+                  "title",
+                  "content",
+                  "tagsReferences"
                 FROM "conversationDrafts"
-                WHERE "course" = ${res.locals.course.id} AND
-                      "reference" = ${req.query.newConversation.conversationDraftReference} AND
-                      "authorEnrollment" = ${res.locals.enrollment.id}
+                WHERE
+                  "course" = ${res.locals.course.id} AND
+                  "reference" = ${req.query.newConversation.conversationDraftReference} AND
+                  "authorEnrollment" = ${res.locals.enrollment.id}
               `
             )
           : undefined;
@@ -3431,24 +3463,28 @@ export default async (app: Courselore): Promise<void> => {
                     courseRole: CourseRole;
                   }>(
                     sql`
-                          SELECT "enrollments"."id",
-                                 "users"."id" AS "userId",
-                                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                 "users"."reference" AS "userReference",
-                                 "users"."email" AS "userEmail",
-                                 "users"."name" AS "userName",
-                                 "users"."avatar" AS "userAvatar",
-                                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                                 "users"."biographySource" AS "userBiographySource",
-                                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                 "enrollments"."reference",
-                                 "enrollments"."courseRole"
-                          FROM "enrollments"
-                          JOIN "users" ON "enrollments"."user" = "users"."id"
-                          WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                                "enrollments"."id" != ${res.locals.enrollment.id}
-                          ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
-                        `
+                      SELECT
+                        "enrollments"."id",
+                        "users"."id" AS "userId",
+                        "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                        "users"."reference" AS "userReference",
+                        "users"."email" AS "userEmail",
+                        "users"."name" AS "userName",
+                        "users"."avatar" AS "userAvatar",
+                        "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                        "users"."biographySource" AS "userBiographySource",
+                        "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                        "enrollments"."reference",
+                        "enrollments"."courseRole"
+                      FROM "enrollments"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      WHERE
+                        "enrollments"."course" = ${res.locals.course.id} AND
+                        "enrollments"."id" != ${res.locals.enrollment.id}
+                      ORDER BY
+                        "enrollments"."courseRole" = 'staff' DESC,
+                        "users"."name" ASC
+                    `
                   )
                   .map((enrollment) => ({
                     id: enrollment.id,
@@ -4532,8 +4568,9 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id", "courseRole"
                 FROM "enrollments"
-                WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                      "reference" IN ${req.body.selectedParticipantsReferences}
+                WHERE
+                  "enrollments"."course" = ${res.locals.course.id} AND
+                  "reference" IN ${req.body.selectedParticipantsReferences}
               `
             );
 
@@ -4707,9 +4744,10 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             DELETE FROM "conversationDrafts"
-            WHERE "course" = ${res.locals.course.id} AND
-                  "reference" = ${req.body.conversationDraftReference} AND
-                  "authorEnrollment" = ${res.locals.enrollment.id}
+            WHERE
+              "course" = ${res.locals.course.id} AND
+              "reference" = ${req.body.conversationDraftReference} AND
+              "authorEnrollment" = ${res.locals.enrollment.id}
           `
         );
 
@@ -4748,9 +4786,10 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "id"
           FROM "conversationDrafts"
-          WHERE "course" = ${res.locals.course.id} AND
-                "reference" = ${req.body.conversationDraftReference} AND
-                "authorEnrollment" = ${res.locals.enrollment.id}
+          WHERE
+            "course" = ${res.locals.course.id} AND
+            "reference" = ${req.body.conversationDraftReference} AND
+            "authorEnrollment" = ${res.locals.enrollment.id}
         `
       );
       if (conversationDraft === undefined) return next("Validation");
@@ -4818,8 +4857,9 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id"
                 FROM "messages"
-                WHERE "conversation" = ${res.locals.conversation.id} AND
-                      "reference" = ${req.query.messages.messagesPage.beforeMessageReference}
+                WHERE
+                  "conversation" = ${res.locals.conversation.id} AND
+                  "reference" = ${req.query.messages.messagesPage.beforeMessageReference}
                 LIMIT 1
               `
             )
@@ -4833,8 +4873,9 @@ export default async (app: Courselore): Promise<void> => {
               sql`
                 SELECT "id"
                 FROM "messages"
-                WHERE "conversation" = ${res.locals.conversation.id} AND
-                      "reference" = ${req.query.messages.messagesPage.afterMessageReference}
+                WHERE
+                  "conversation" = ${res.locals.conversation.id} AND
+                  "reference" = ${req.query.messages.messagesPage.afterMessageReference}
                 LIMIT 1
               `
             )
@@ -4849,21 +4890,22 @@ export default async (app: Courselore): Promise<void> => {
         sql`
           SELECT "reference"
           FROM "messages"
-          WHERE "conversation" = ${res.locals.conversation.id}
-                $${
-                  beforeMessage !== undefined
-                    ? sql`
-                        AND "id" < ${beforeMessage.id}
-                      `
-                    : sql``
-                }
-                $${
-                  afterMessage !== undefined
-                    ? sql`
-                        AND "id" > ${afterMessage.id}
-                      `
-                    : sql``
-                }
+          WHERE
+            "conversation" = ${res.locals.conversation.id}
+            $${
+              beforeMessage !== undefined
+                ? sql`
+                    AND "id" < ${beforeMessage.id}
+                  `
+                : sql``
+            }
+            $${
+              afterMessage !== undefined
+                ? sql`
+                    AND "id" > ${afterMessage.id}
+                  `
+                : sql``
+            }
           ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
           LIMIT ${messagesPageSize + 1}
         `
@@ -6095,23 +6137,27 @@ export default async (app: Courselore): Promise<void> => {
                               courseRole: CourseRole;
                             }>(
                               sql`
-                                SELECT "enrollments"."id",
-                                       "users"."id" AS "userId",
-                                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                       "users"."reference" AS "userReference",
-                                       "users"."email" AS "userEmail",
-                                       "users"."name" AS "userName",
-                                       "users"."avatar" AS "userAvatar",
-                                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                                       "users"."biographySource" AS "userBiographySource",
-                                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                       "enrollments"."reference",
-                                       "enrollments"."courseRole"
+                                SELECT
+                                  "enrollments"."id",
+                                  "users"."id" AS "userId",
+                                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                  "users"."reference" AS "userReference",
+                                  "users"."email" AS "userEmail",
+                                  "users"."name" AS "userName",
+                                  "users"."avatar" AS "userAvatar",
+                                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                                  "users"."biographySource" AS "userBiographySource",
+                                  "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                                  "enrollments"."reference",
+                                  "enrollments"."courseRole"
                                 FROM "enrollments"
                                 JOIN "users" ON "enrollments"."user" = "users"."id"
-                                WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                                      "enrollments"."id" != ${res.locals.enrollment.id}
-                                ORDER BY "enrollments"."courseRole" = 'staff' DESC, "users"."name" ASC
+                                WHERE
+                                  "enrollments"."course" = ${res.locals.course.id} AND
+                                  "enrollments"."id" != ${res.locals.enrollment.id}
+                                ORDER BY
+                                  "enrollments"."courseRole" = 'staff' DESC,
+                                  "users"."name" ASC
                               `
                             )
                             .map((enrollment) => ({
@@ -9210,8 +9256,9 @@ export default async (app: Courselore): Promise<void> => {
                 sql`
                   SELECT "id", "courseRole"
                   FROM "enrollments"
-                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                        "reference" IN ${req.body.selectedParticipantsReferences}
+                  WHERE
+                    "enrollments"."course" = ${res.locals.course.id} AND
+                    "reference" IN ${req.body.selectedParticipantsReferences}
                 `
               );
 
@@ -9236,10 +9283,11 @@ export default async (app: Courselore): Promise<void> => {
         app.database.run(
           sql`
             DELETE FROM "conversationSelectedParticipants"
-            WHERE "conversation" = ${res.locals.conversation.id} AND
-                  "enrollment" NOT IN ${selectedParticipants.map(
-                    (selectedParticipant) => selectedParticipant.id
-                  )}
+            WHERE
+              "conversation" = ${res.locals.conversation.id} AND
+              "enrollment" NOT IN ${selectedParticipants.map(
+                (selectedParticipant) => selectedParticipant.id
+              )}
           `
         );
         for (const selectedParticipant of selectedParticipants)
@@ -9286,11 +9334,12 @@ export default async (app: Courselore): Promise<void> => {
                   ? new Date().toISOString()
                   : null
               }
-              WHERE "conversation" = ${res.locals.conversation.id} AND
-                    "reference" = '1' AND
-                    "authorEnrollment" = ${
-                      res.locals.conversation.authorEnrollment.id
-                    }
+              WHERE
+                "conversation" = ${res.locals.conversation.id} AND
+                "reference" = '1' AND
+                "authorEnrollment" = ${
+                  res.locals.conversation.authorEnrollment.id
+                }
             `
           );
         }
@@ -9322,16 +9371,17 @@ export default async (app: Courselore): Promise<void> => {
           app.database.run(
             sql`
               UPDATE "conversations"
-              SET $${
-                req.body.isAnnouncement === "true"
-                  ? sql`"updatedAt" = ${new Date().toISOString()},`
-                  : sql``
-              }
-                  "announcementAt" = ${
-                    req.body.isAnnouncement === "true"
-                      ? new Date().toISOString()
-                      : null
-                  }
+              SET
+                $${
+                  req.body.isAnnouncement === "true"
+                    ? sql`"updatedAt" = ${new Date().toISOString()},`
+                    : sql``
+                }
+                "announcementAt" = ${
+                  req.body.isAnnouncement === "true"
+                    ? new Date().toISOString()
+                    : null
+                }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
@@ -9361,16 +9411,17 @@ export default async (app: Courselore): Promise<void> => {
           app.database.run(
             sql`
               UPDATE "conversations"
-              SET $${
-                req.body.isPinned === "true"
-                  ? sql`"updatedAt" = ${new Date().toISOString()},`
-                  : sql``
-              }
-                  "pinnedAt" = ${
-                    req.body.isPinned === "true"
-                      ? new Date().toISOString()
-                      : null
-                  }
+              SET
+                $${
+                  req.body.isPinned === "true"
+                    ? sql`"updatedAt" = ${new Date().toISOString()},`
+                    : sql``
+                }
+                "pinnedAt" = ${
+                  req.body.isPinned === "true"
+                    ? new Date().toISOString()
+                    : null
+                }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
@@ -9403,9 +9454,10 @@ export default async (app: Courselore): Promise<void> => {
           app.database.run(
             sql`
               UPDATE "conversations"
-              SET "updatedAt" = ${new Date().toISOString()},
-                  "title" = ${req.body.title},
-                  "titleSearch" = ${html`${req.body.title}`}
+              SET
+                "updatedAt" = ${new Date().toISOString()},
+                "title" = ${req.body.title},
+                "titleSearch" = ${html`${req.body.title}`}
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
@@ -9550,12 +9602,13 @@ export default async (app: Courselore): Promise<void> => {
       app.database.run(
         sql`
           DELETE FROM "taggings"
-          WHERE "conversation" = ${res.locals.conversation.id} AND
-                "tag" = ${
-                  res.locals.tags.find(
-                    (tag) => req.body.reference === tag.reference
-                  )!.id
-                }
+          WHERE
+            "conversation" = ${res.locals.conversation.id} AND
+            "tag" = ${
+              res.locals.tags.find(
+                (tag) => req.body.reference === tag.reference
+              )!.id
+            }
         `
       );
 
