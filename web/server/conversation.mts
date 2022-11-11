@@ -9903,6 +9903,21 @@ export default async (application: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
+
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -9978,6 +9993,21 @@ export default async (application: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
+
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 };
