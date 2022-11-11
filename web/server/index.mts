@@ -30,7 +30,7 @@ import course, { ApplicationCourse } from "./course.mjs";
 import conversation, { ApplicationConversation } from "./conversation.mjs";
 import message, { ApplicationMessage } from "./message.mjs";
 import content, { ApplicationContent } from "./content.mjs";
-// import email from "./email.mjs";
+import email from "./email.mjs";
 // import demonstration from "./demonstration.mjs";
 // import error from "./error.mjs";
 // import helpers, { ApplicationHelpers } from "./helpers.mjs";
@@ -247,7 +247,7 @@ if (
         await conversation(application);
         await message(application);
         await content(application);
-        // await email(application);
+        await email(application);
         // await demonstration(application);
         // await error(application);
         // await helpers(application);
