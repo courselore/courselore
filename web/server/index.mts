@@ -27,7 +27,7 @@ import administration, {
 } from "./administration.mjs";
 import user, { ApplicationUser } from "./user.mjs";
 import course, { ApplicationCourse } from "./course.mjs";
-// import conversation, { ApplicationConversation } from "./conversation.mjs";
+import conversation, { ApplicationConversation } from "./conversation.mjs";
 // import message from "./message.mjs";
 // import content from "./content.mjs";
 // import email from "./email.mjs";
@@ -85,13 +85,11 @@ export type Application = {
   ApplicationAuthentication &
   ApplicationAdministration &
   ApplicationUser &
-  ApplicationCourse & {
+  ApplicationCourse &
+  ApplicationConversation & {
     // TODO
     server: {
       locals: {
-        layouts: {
-          conversation: Function;
-        };
         partials: {
           contentPreprocessed: any;
           content: Function;
@@ -246,7 +244,7 @@ if (
         await administration(application);
         await user(application);
         await course(application);
-        // await conversation(application);
+        await conversation(application);
         // await message(application);
         // await content(application);
         // await email(application);
