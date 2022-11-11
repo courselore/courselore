@@ -4,66 +4,58 @@ import { HTML, html } from "@leafac/html";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.all<
+  application.server.all<
     {},
     HTML,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >(
-    "*",
-    ...application.server.locals.middlewares.isSignedOut,
-    (request, response) => {
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/sign-in${qs.stringify(
-          { redirect: request.originalUrl.slice(1) },
-          { addQueryPrefix: true }
-        )}`
-      );
-    }
-  );
+  >("*", (request, response) => {
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/sign-in${qs.stringify(
+        { redirect: request.originalUrl.slice(1) },
+        { addQueryPrefix: true }
+      )}`
+    );
+  });
 
-  application.all<
+  application.server.all<
     {},
     HTML,
     {},
     { redirect?: string },
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "*",
-    ...application.server.locals.middlewares.isSignedIn,
-    (request, response) => {
-      if (typeof request.query.redirect === "string")
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/${request.query.redirect}`
-        );
-      response.status(404).send(
-        application.server.locals.layouts.box({
-          request,
-          response,
-          head: html`<title>404 Not Found · Courselore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-question-diamond-fill"></i>
-              404 Not Found
-            </h2>
-            <p>
-              If you think there should be something here, please contact your
-              course staff or the system administrator at
-              <a
-                href="${application.server.locals.partials.reportIssueHref}"
-                target="_blank"
-                class="link"
-                >${application.configuration.administratorEmail}</a
-              >.
-            </p>
-          `,
-        })
+  >("*", (request, response) => {
+    if (typeof request.query.redirect === "string")
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${request.query.redirect}`
       );
-    }
-  );
+    response.status(404).send(
+      application.server.locals.layouts.box({
+        request,
+        response,
+        head: html`<title>404 Not Found · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-question-diamond-fill"></i>
+            404 Not Found
+          </h2>
+          <p>
+            If you think there should be something here, please contact your
+            course staff or the system administrator at
+            <a
+              href="${application.server.locals.partials.reportIssueHref}"
+              target="_blank"
+              class="link"
+              >${application.configuration.administratorEmail}</a
+            >.
+          </p>
+        `,
+      })
+    );
+  });
 
   /*
         return response.send(
@@ -244,11 +236,12 @@ export default async (application: Application): Promise<void> => {
           );
         */
 
-  application.use(((error, request, response, next) => {
+  application.server.use(((error, request, response, next) => {
     response.locals.log("ERROR", String(error));
 
     if (!["Cross-Site Request Forgery", "Validation"].includes(error))
       error = "Server";
+
     response
       .status(
         error === "Cross-Site Request Forgery"
