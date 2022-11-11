@@ -1954,11 +1954,7 @@ export default async (application: Application): Promise<void> => {
 
   application.workerEvents.once("start", async () => {
     while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘flashes’\tSTARTING...`
-      );
+      application.log("CLEAN EXPIRED ‘flashes’", "STARTING...");
       application.database.run(
         sql`
           DELETE FROM "flashes"
@@ -1967,11 +1963,7 @@ export default async (application: Application): Promise<void> => {
           ).toISOString()}
         `
       );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘flashes’\tFINISHED`
-      );
+      application.log("CLEAN EXPIRED ‘flashes’", "FINISHED");
       await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
     }
   });

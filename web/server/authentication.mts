@@ -294,11 +294,7 @@ export default async (application: Application): Promise<void> => {
 
   application.workerEvents.once("start", async () => {
     while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘sessions’\tSTARTING...`
-      );
+      application.log("CLEAN EXPIRED ‘sessions’", "STARTING...");
       application.database.run(
         sql`
           DELETE FROM "sessions"
@@ -307,11 +303,7 @@ export default async (application: Application): Promise<void> => {
           ).toISOString()}
         `
       );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘sessions’\tFINISHED`
-      );
+      application.log("CLEAN EXPIRED ‘sessions’", "FINISHED");
       await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
     }
   });
@@ -755,11 +747,7 @@ export default async (application: Application): Promise<void> => {
 
   application.workerEvents.once("start", async () => {
     while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘passwordResets’\tSTARTING...`
-      );
+      application.log("CLEAN EXPIRED ‘passwordResets’", "STARTING...");
       application.database.run(
         sql`
           DELETE FROM "passwordResets"
@@ -768,11 +756,7 @@ export default async (application: Application): Promise<void> => {
           ).toISOString()}
         `
       );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘passwordResets’\tFINISHED`
-      );
+      application.log("CLEAN EXPIRED ‘passwordResets’", "FINISHED");
       await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
     }
   });
@@ -1591,11 +1575,7 @@ export default async (application: Application): Promise<void> => {
 
   application.workerEvents.once("start", async () => {
     while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
-      );
+      application.log("CLEAN EXPIRED ‘emailVerifications’", "STARTING...");
       application.database.run(
         sql`
           DELETE FROM "emailVerifications"
@@ -1604,11 +1584,7 @@ export default async (application: Application): Promise<void> => {
           ).toISOString()}
         `
       );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
-      );
+      application.log("CLEAN EXPIRED ‘emailVerifications’", "FINISHED");
       await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
     }
   });

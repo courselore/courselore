@@ -41,11 +41,7 @@ export default async (application: Application): Promise<void> => {
   application.workerEvents.once("start", async () => {
     while (true) {
       try {
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\tCHECK FOR UPDATES\tSTARTING...`
-        );
+        application.log("CHECK FOR UPDATES", "STARTING...");
         const latestVersion = semver.clean(
           (
             (await got(
@@ -60,21 +56,16 @@ export default async (application: Application): Promise<void> => {
             UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
           `
         );
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\tCHECK FOR UPDATES\t${
-            semver.gt(latestVersion, application.version)
-              ? `NEW VERSION AVAILABLE: ${application.version} → ${latestVersion}`
-              : `CURRENT VERSION ${application.version} IS THE LATEST`
-          }`
+        application.log(
+          "CHECK FOR UPDATES",
+          ...(semver.gt(latestVersion, application.version)
+            ? [
+                `NEW VERSION AVAILABLE: ${application.version} → ${latestVersion}`,
+              ]
+            : [`CURRENT VERSION ${application.version} IS THE LATEST`])
         );
       } catch (error) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\tCHECK FOR UPDATES\tERROR\n${error}`
-        );
+        application.log("CHECK FOR UPDATES", "ERROR", String(error));
       }
       await timers.setTimeout(5 * 60 * 1000, undefined, { ref: false });
     }
