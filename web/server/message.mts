@@ -135,6 +135,41 @@ export type ApplicationMessage = {
 };
 
 export default async (application: Application): Promise<void> => {
+  type ResponseLocalsMessage =
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
+      message: NonNullable<
+        ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+      >;
+    };
+
+  application.server.use<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    ResponseLocalsMessage
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
+    (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
+      const message = application.server.locals.helpers.getMessage({
+        request,
+        response,
+        conversation: response.locals.conversation,
+        messageReference: request.params.messageReference,
+      });
+      if (message === undefined) return next();
+      response.locals.message = message;
+
+      next();
+    }
+  );
+
   application.server.locals.helpers.getMessage = ({
     request,
     response,
@@ -484,38 +519,6 @@ export default async (application: Application): Promise<void> => {
     };
   };
 
-  type MessageExistsLocals =
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
-      message: NonNullable<
-        ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
-      >;
-    };
-  const messageExistsMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-      messageReference: string;
-    },
-    any,
-    {},
-    {},
-    MessageExistsLocals
-  >[] = [
-    (request, response, next) => {
-      if (response.locals.conversation === undefined) return next();
-
-      const message = application.server.locals.helpers.getMessage({
-        request,
-        response,
-        conversation: response.locals.conversation,
-        messageReference: request.params.messageReference,
-      });
-      if (message === undefined) return next("route");
-      response.locals.message = message;
-      next();
-    },
-  ];
-
   application.server.locals.helpers.mayEditMessage = ({
     request,
     response,
@@ -534,10 +537,9 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    MessageExistsLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
-    ...messageExistsMiddleware,
     (request, response, next) => {
       if (
         response.locals.message === undefined ||
@@ -792,19 +794,19 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...messageExistsMiddleware,
     (request, response, next) => {
       if (
+        response.locals.message === undefined ||
         !application.server.locals.helpers.mayEditMessage({
           request,
           response,
           message: response.locals.message,
         })
       )
-        return next("route");
+        return next();
 
       if (typeof request.body.isAnswer === "string")
         if (
@@ -935,10 +937,9 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...messageExistsMiddleware,
     (request, response, next) => {
       if (
         response.locals.message === undefined ||
@@ -975,12 +976,11 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      MessageExistsLocals
+      ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...messageExistsMiddleware,
     (request, response, next) => {
-      if (response.locals.course === undefined) return next();
+      if (response.locals.message === undefined) return next();
 
       response.send(
         application.server.locals.layouts.partial({
@@ -1043,11 +1043,12 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...messageExistsMiddleware,
     (request, response, next) => {
+      if (response.locals.message === undefined) return next();
+
       if (
         response.locals.message.likes.some(
           (like) =>
@@ -1097,11 +1098,12 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MessageExistsLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...messageExistsMiddleware,
     (request, response, next) => {
+      if (response.locals.message === undefined) return next();
+
       const like = response.locals.message.likes.find(
         (like) =>
           like.enrollment !== "no-longer-enrolled" &&
@@ -1144,7 +1146,7 @@ export default async (application: Application): Promise<void> => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.courseRole !== "staff");
 
-  type MayEndorseMessageLocals = MessageExistsLocals;
+  type MayEndorseMessageLocals = ResponseLocalsMessage;
   const mayEndorseMessageMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -1156,8 +1158,9 @@ export default async (application: Application): Promise<void> => {
     {},
     MayEndorseMessageLocals
   >[] = [
-    ...messageExistsMiddleware,
     (request, response, next) => {
+      if (response.locals.message === undefined) return next();
+
       if (
         application.server.locals.helpers.mayEndorseMessage({
           request,
