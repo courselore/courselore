@@ -183,70 +183,6 @@ export type ApplicationConversation = {
 };
 
 export default async (application: Application): Promise<void> => {
-  const conversationTypeIcon: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: {
-      regular: HTML;
-      fill: HTML;
-    };
-  } = {
-    question: {
-      regular: html`<i class="bi bi-patch-question"></i>`,
-      fill: html`<i class="bi bi-patch-question-fill"></i>`,
-    },
-    note: {
-      regular: html`<i class="bi bi-sticky"></i>`,
-      fill: html`<i class="bi bi-sticky-fill"></i>`,
-    },
-    chat: {
-      regular: html`<i class="bi bi-chat-text"></i>`,
-      fill: html`<i class="bi bi-chat-text-fill"></i>`,
-    },
-  };
-
-  const conversationTypeTextColor: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: string;
-  } = {
-    question: "text--rose",
-    note: "text--fuchsia",
-    chat: "text--cyan",
-  };
-
-  const conversationParticipantsIcon: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
-      regular: HTML;
-      fill: HTML;
-    };
-  } = {
-    everyone: {
-      regular: html`<i class="bi bi-people"></i>`,
-      fill: html`<i class="bi bi-people-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
-    "selected-people": {
-      regular: html`<i class="bi bi-door-closed"></i>`,
-      fill: html`<i class="bi bi-door-closed-fill"></i>`,
-    },
-  };
-
-  const conversationParticipantsTextColor: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
-  } = {
-    everyone: "text--green",
-    staff: "text--sky",
-    "selected-people": "text--purple",
-  };
-
-  const conversationParticipantsLabel: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
-  } = {
-    everyone: html`Everyone`,
-    staff: html`Staff`,
-    "selected-people": html`Selected People`,
-  };
-
   application.server.locals.layouts.conversation = ({
     request,
     response,
@@ -2614,78 +2550,16 @@ export default async (application: Application): Promise<void> => {
     </div>
   `;
 
-  /*
-    export type IsConversationAccessibleMiddleware = express.RequestHandler<
-      { courseReference: string; conversationReference: string },
-      HTML,
-      {},
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-    >[];
-  */
-  application.server.locals.middlewares.isConversationAccessible = [
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response, next) => {
-      const conversation = application.server.locals.helpers.getConversation({
-        request,
-        response,
-        conversationReference: request.params.conversationReference,
-      });
-      if (conversation === undefined) return next("route");
-      response.locals.conversation = conversation;
-      next();
-    },
+  application.server.locals.helpers.conversationParticipantses = [
+    "everyone",
+    "staff",
+    "selected-people",
   ];
-
-  application.server.get<
-    { courseReference: string; conversationReference: string },
-    HTML,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-  >(
-    "/courses/:courseReference/conversations/:conversationReference/selected-participants",
-    ...application.server.locals.middlewares.isConversationAccessible,
-    (request, response, next) => {
-      if (
-        response.locals.conversation.participants === "everyone" ||
-        response.locals.conversation.selectedParticipants.length <= 1
-      )
-        return next("Validation");
-
-      response.send(
-        application.server.locals.layouts.partial({
-          request,
-          response,
-          body: html`
-            <div
-              class="dropdown--menu"
-              css="${response.locals.css(css`
-                max-height: var(--space--56);
-                padding: var(--space--1) var(--space--0);
-                overflow: auto;
-                gap: var(--space--2);
-              `)}"
-            >
-              $${response.locals.conversation.selectedParticipants.map(
-                (selectedParticipant) => html`
-                  <div class="dropdown--menu--item">
-                    $${application.server.locals.partials.user({
-                      request,
-                      response,
-                      enrollment: selectedParticipant,
-                      size: "xs",
-                      bold: false,
-                    })}
-                  </div>
-                `
-              )}
-            </div>
-          `,
-        })
-      );
-    }
-  );
+  application.server.locals.helpers.conversationTypes = [
+    "question",
+    "note",
+    "chat",
+  ];
 
   application.server.locals.helpers.getConversation = ({
     request,
@@ -3026,6 +2900,143 @@ export default async (application: Application): Promise<void> => {
       endorsements,
     };
   };
+
+  const conversationTypeIcon: {
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    question: {
+      regular: html`<i class="bi bi-patch-question"></i>`,
+      fill: html`<i class="bi bi-patch-question-fill"></i>`,
+    },
+    note: {
+      regular: html`<i class="bi bi-sticky"></i>`,
+      fill: html`<i class="bi bi-sticky-fill"></i>`,
+    },
+    chat: {
+      regular: html`<i class="bi bi-chat-text"></i>`,
+      fill: html`<i class="bi bi-chat-text-fill"></i>`,
+    },
+  };
+
+  const conversationTypeTextColor: {
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: string;
+  } = {
+    question: "text--rose",
+    note: "text--fuchsia",
+    chat: "text--cyan",
+  };
+
+  const conversationParticipantsIcon: {
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    everyone: {
+      regular: html`<i class="bi bi-people"></i>`,
+      fill: html`<i class="bi bi-people-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+    "selected-people": {
+      regular: html`<i class="bi bi-door-closed"></i>`,
+      fill: html`<i class="bi bi-door-closed-fill"></i>`,
+    },
+  };
+
+  const conversationParticipantsTextColor: {
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
+  } = {
+    everyone: "text--green",
+    staff: "text--sky",
+    "selected-people": "text--purple",
+  };
+
+  const conversationParticipantsLabel: {
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
+  } = {
+    everyone: html`Everyone`,
+    staff: html`Staff`,
+    "selected-people": html`Selected People`,
+  };
+
+  /*
+    export type IsConversationAccessibleMiddleware = express.RequestHandler<
+      { courseReference: string; conversationReference: string },
+      HTML,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    >[];
+  */
+  application.server.locals.middlewares.isConversationAccessible = [
+    ...application.server.locals.middlewares.isEnrolledInCourse,
+    (request, response, next) => {
+      const conversation = application.server.locals.helpers.getConversation({
+        request,
+        response,
+        conversationReference: request.params.conversationReference,
+      });
+      if (conversation === undefined) return next("route");
+      response.locals.conversation = conversation;
+      next();
+    },
+  ];
+
+  application.server.get<
+    { courseReference: string; conversationReference: string },
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/selected-participants",
+    ...application.server.locals.middlewares.isConversationAccessible,
+    (request, response, next) => {
+      if (
+        response.locals.conversation.participants === "everyone" ||
+        response.locals.conversation.selectedParticipants.length <= 1
+      )
+        return next("Validation");
+
+      response.send(
+        application.server.locals.layouts.partial({
+          request,
+          response,
+          body: html`
+            <div
+              class="dropdown--menu"
+              css="${response.locals.css(css`
+                max-height: var(--space--56);
+                padding: var(--space--1) var(--space--0);
+                overflow: auto;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${response.locals.conversation.selectedParticipants.map(
+                (selectedParticipant) => html`
+                  <div class="dropdown--menu--item">
+                    $${application.server.locals.partials.user({
+                      request,
+                      response,
+                      enrollment: selectedParticipant,
+                      size: "xs",
+                      bold: false,
+                    })}
+                  </div>
+                `
+              )}
+            </div>
+          `,
+        })
+      );
+    }
+  );
 
   application.server.post<
     { courseReference: string },
