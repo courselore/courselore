@@ -1146,32 +1146,6 @@ export default async (application: Application): Promise<void> => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.courseRole !== "staff");
 
-  const mayEndorseMessageMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-      messageReference: string;
-    },
-    any,
-    {},
-    {},
-    ResponseLocalsMessage
-  >[] = [
-    (request, response, next) => {
-      if (response.locals.message === undefined) return next();
-
-      if (
-        application.server.locals.helpers.mayEndorseMessage({
-          request,
-          response,
-          message: response.locals.message,
-        })
-      )
-        return next();
-      next("route");
-    },
-  ];
-
   application.server.post<
     {
       courseReference: string;
@@ -1187,8 +1161,17 @@ export default async (application: Application): Promise<void> => {
     ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...mayEndorseMessageMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.conversation === undefined ||
+        !application.server.locals.helpers.mayEndorseMessage({
+          request,
+          response,
+          message: response.locals.message,
+        })
+      )
+        return next();
+
       if (
         response.locals.message.endorsements.some(
           (endorsement) =>
@@ -1249,8 +1232,17 @@ export default async (application: Application): Promise<void> => {
     ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...mayEndorseMessageMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.conversation === undefined ||
+        !application.server.locals.helpers.mayEndorseMessage({
+          request,
+          response,
+          message: response.locals.message,
+        })
+      )
+        return next();
+
       const endorsement = response.locals.message.endorsements.find(
         (endorsement) =>
           endorsement.enrollment !== "no-longer-enrolled" &&
