@@ -92,14 +92,15 @@ export type Application = {
       locals: {
         partials: {
           contentPreprocessed: any;
-          content: Function;
+          content: (..._: any) => any;
           contentEditor: any;
         };
         helpers: {
-          splitFilterablePhrases: Function;
+          getMessage: (..._: any) => any;
+          splitFilterablePhrases: (..._: any) => any;
           emailRegExp: RegExp;
-          isExpired: Function;
-          isDate: Function;
+          isExpired: (..._: any) => any;
+          isDate: (..._: any) => any;
         };
       };
     };

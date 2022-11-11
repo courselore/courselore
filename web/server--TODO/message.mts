@@ -1411,8 +1411,8 @@ export default async (app: Courselore): Promise<void> => {
             courseCode: string | null;
             courseNextConversationReference: number;
             conversationReference: string;
-            conversationParticipants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
-            conversationType: Application["server"]["locals"]["helpers"]["conversationTypes"];
+            conversationParticipants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+            conversationType: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
             conversationAnnouncementAt: string | null;
             conversationTitle: string;
             reference: string;

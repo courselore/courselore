@@ -42,10 +42,10 @@ export type ApplicationConversation = {
                 filters?: {
                   isQuick?: "true";
                   isUnread?: "true" | "false";
-                  types?: Application["server"]["locals"]["helpers"]["conversationTypes"][];
+                  types?: Application["server"]["locals"]["helpers"]["conversationTypes"][number][];
                   isResolved?: "true" | "false";
                   isAnnouncement?: "true" | "false";
-                  participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][];
+                  participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number][];
                   isPinned?: "true" | "false";
                   tagsReferences?: string[];
                 };
@@ -150,9 +150,9 @@ export type ApplicationConversation = {
               updatedAt: string | null;
               reference: string;
               authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-              participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+              participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
               anonymousAt: string | null;
-              type: Application["server"]["locals"]["helpers"]["conversationTypes"];
+              type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
               resolvedAt: string | null;
               announcementAt: string | null;
               pinnedAt: string | null;
@@ -182,13 +182,9 @@ export type ApplicationConversation = {
   };
 };
 
-// Application["server"]["locals"]["helpers"]["conversationParticipantses"]
-// Application["server"]["locals"]["helpers"]["conversationTypes"]
-// Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-
-export default async (app: Application): Promise<void> => {
+export default async (application: Application): Promise<void> => {
   const conversationTypeIcon: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"]]: {
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -208,7 +204,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationTypeTextColor: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"]]: string;
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: string;
   } = {
     question: "text--rose",
     note: "text--fuchsia",
@@ -216,7 +212,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsIcon: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: {
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -236,7 +232,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsTextColor: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: string;
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: "text--green",
     staff: "text--sky",
@@ -244,14 +240,14 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsLabel: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: string;
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: html`Everyone`,
     staff: html`Staff`,
     "selected-people": html`Selected People`,
   };
 
-  app.server.locals.layouts.conversation = ({
+  application.server.locals.layouts.conversation = ({
     request,
     response,
     head,
@@ -262,7 +258,7 @@ export default async (app: Application): Promise<void> => {
     const search =
       typeof request.query.conversations?.search === "string" &&
       request.query.conversations.search.trim() !== ""
-        ? app.server.locals.helpers.sanitizeSearch(
+        ? application.server.locals.helpers.sanitizeSearch(
             request.query.conversations.search
           )
         : undefined;
@@ -270,10 +266,10 @@ export default async (app: Application): Promise<void> => {
     const filters: {
       isQuick?: "true";
       isUnread?: "true" | "false";
-      types?: Application["server"]["locals"]["helpers"]["conversationTypes"][];
+      types?: Application["server"]["locals"]["helpers"]["conversationTypes"][number][];
       isResolved?: "true" | "false";
       isAnnouncement?: "true" | "false";
-      participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][];
+      participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number][];
       isPinned?: "true" | "false";
       tagsReferences?: string[];
     } = {};
@@ -359,7 +355,7 @@ export default async (app: Application): Promise<void> => {
         ? Number(request.query.conversations.conversationsPage)
         : 1;
 
-    const conversationsWithSearchResults = app.database
+    const conversationsWithSearchResults = application.database
       .all<{
         reference: string;
         conversationTitleSearchResultHighlight?: string | null;
@@ -564,7 +560,7 @@ export default async (app: Application): Promise<void> => {
         `
       )
       .map((conversationWithSearchResult) => {
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request,
           response,
           conversationReference: conversationWithSearchResult.reference,
@@ -585,7 +581,7 @@ export default async (app: Application): Promise<void> => {
                 "string"
             ? ({
                 type: "messageAuthorUserName",
-                message: app.server.locals.helpers.getMessage({
+                message: application.server.locals.helpers.getMessage({
                   request,
                   response,
                   conversation,
@@ -601,7 +597,7 @@ export default async (app: Application): Promise<void> => {
                 "string"
             ? ({
                 type: "messageContent",
-                message: app.server.locals.helpers.getMessage({
+                message: application.server.locals.helpers.getMessage({
                   request,
                   response,
                   conversation,
@@ -713,7 +709,7 @@ export default async (app: Application): Promise<void> => {
     //     })
     // );
 
-    return app.server.locals.layouts.application({
+    return application.server.locals.layouts.application({
       request,
       response,
       head,
@@ -735,7 +731,7 @@ export default async (app: Application): Promise<void> => {
                   `)}"
                 >
                   <a
-                    href="https://${app.configuration
+                    href="https://${application.configuration
                       .hostname}/courses/${response.locals.course.reference}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
@@ -838,7 +834,7 @@ export default async (app: Application): Promise<void> => {
                     $${response.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: request.query.conversations },
@@ -849,7 +845,7 @@ export default async (app: Application): Promise<void> => {
                             $${conversationTypeIcon.note.fill} Note
                           </a>
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: request.query.conversations },
@@ -860,7 +856,7 @@ export default async (app: Application): Promise<void> => {
                             $${conversationTypeIcon.question.regular} Question
                           </a>
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: request.query.conversations },
@@ -873,7 +869,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: request.query.conversations },
@@ -884,7 +880,7 @@ export default async (app: Application): Promise<void> => {
                             $${conversationTypeIcon.question.fill} Question
                           </a>
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: request.query.conversations },
@@ -895,7 +891,7 @@ export default async (app: Application): Promise<void> => {
                             $${conversationTypeIcon.note.regular} Note
                           </a>
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: request.query.conversations },
@@ -942,7 +938,7 @@ export default async (app: Application): Promise<void> => {
                           )
                             ? html`
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: {
@@ -966,7 +962,7 @@ export default async (app: Application): Promise<void> => {
                               `
                             : html`
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}${request.path}${qs.stringify(
                                     {
                                       messages: request.query.messages,
@@ -993,7 +989,7 @@ export default async (app: Application): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
@@ -1016,7 +1012,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 messages: request.query.messages,
@@ -1041,7 +1037,7 @@ export default async (app: Application): Promise<void> => {
                           )
                             ? html`
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: {
@@ -1064,7 +1060,7 @@ export default async (app: Application): Promise<void> => {
                               `
                             : html`
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}${request.path}${qs.stringify(
                                     {
                                       messages: request.query.messages,
@@ -1090,7 +1086,7 @@ export default async (app: Application): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
@@ -1112,7 +1108,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 messages: request.query.messages,
@@ -1135,7 +1131,7 @@ export default async (app: Application): Promise<void> => {
                     )
                       ? html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
@@ -1157,7 +1153,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html`
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}${request.path}${qs.stringify(
                               {
                                 messages: request.query.messages,
@@ -1270,7 +1266,7 @@ export default async (app: Application): Promise<void> => {
                         ? html`
                             <form
                               method="POST"
-                              action="https://${app.configuration
+                              action="https://${application.configuration
                                 .hostname}/courses/${response.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
                                 { redirect: request.originalUrl.slice(1) },
@@ -1291,7 +1287,7 @@ export default async (app: Application): Promise<void> => {
                     <form
                       key="search-and-filters--form"
                       method="GET"
-                      action="https://${app.configuration
+                      action="https://${application.configuration
                         .hostname}${request.path}${qs.stringify(
                         {
                           messages: request.query.messages,
@@ -1347,7 +1343,7 @@ export default async (app: Application): Promise<void> => {
                         $${search !== undefined
                           ? html`
                               <a
-                                href="https://${app.configuration
+                                href="https://${application.configuration
                                   .hostname}${request.path}${qs.stringify(
                                   {
                                     conversations: {
@@ -1944,7 +1940,7 @@ export default async (app: Application): Promise<void> => {
                           $${Object.keys(filters).length > 0
                             ? html`
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: { search },
@@ -2056,7 +2052,7 @@ export default async (app: Application): Promise<void> => {
                                 ? javascript`
                                     window.setTimeout(() => {
                                       if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                        `https://${app.configuration.hostname}/courses/${response.locals.course.reference}`
+                                        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
                                       )})) return;
                                       this.querySelector('[key="conversation--${
                                         response.locals.conversation.reference
@@ -2075,7 +2071,7 @@ export default async (app: Application): Promise<void> => {
                               return html`
                                 <a
                                   key="conversation--${conversation.reference}"
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}/courses/${response.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     {
@@ -2114,12 +2110,14 @@ export default async (app: Application): Promise<void> => {
                                       max-width: 100%;
                                     `)}"
                                   >
-                                    $${app.server.locals.partials.conversation({
-                                      request,
-                                      response,
-                                      conversation,
-                                      searchResult,
-                                    })}
+                                    $${application.server.locals.partials.conversation(
+                                      {
+                                        request,
+                                        response,
+                                        conversation,
+                                        searchResult,
+                                      }
+                                    )}
                                   </div>
                                   <div
                                     css="${response.locals.css(css`
@@ -2274,7 +2272,7 @@ export default async (app: Application): Promise<void> => {
     });
   };
 
-  app.server.locals.partials.conversation = ({
+  application.server.locals.partials.conversation = ({
     request,
     response,
     conversation,
@@ -2354,7 +2352,7 @@ export default async (app: Application): Promise<void> => {
                           align-items: center;
                         `)}"
                       >
-                        $${app.server.locals.partials.spinner({
+                        $${application.server.locals.partials.spinner({
                           request,
                           response,
                         })}
@@ -2373,7 +2371,7 @@ export default async (app: Application): Promise<void> => {
                       onShow: async () => {
                         this.tooltip.setContent(loading);
                         leafac.loadPartial(content, await (await fetch("https://${
-                          app.configuration.hostname
+                          application.configuration.hostname
                         }/courses/${
                     response.locals.course.reference
                   }/conversations/${
@@ -2397,7 +2395,7 @@ export default async (app: Application): Promise<void> => {
           $${conversation.selectedParticipants.length === 1
             ? html`
                 <div>
-                  ($${app.server.locals.partials.user({
+                  ($${application.server.locals.partials.user({
                     request,
                     response,
                     enrollment: conversation.selectedParticipants[0],
@@ -2439,7 +2437,7 @@ export default async (app: Application): Promise<void> => {
           line-height: var(--line-height--xs);
         `)}"
       >
-        $${app.server.locals.partials.user({
+        $${application.server.locals.partials.user({
           request,
           response,
           enrollment: conversation.authorEnrollment,
@@ -2547,7 +2545,7 @@ export default async (app: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.server.locals.partials.user({
+                $${application.server.locals.partials.user({
                   request,
                   response,
                   enrollment: searchResult.message.authorEnrollment,
@@ -2566,7 +2564,7 @@ export default async (app: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.server.locals.partials.user({
+                $${application.server.locals.partials.user({
                   request,
                   response,
                   enrollment: searchResult.message.authorEnrollment,
@@ -2589,7 +2587,7 @@ export default async (app: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${app.server.locals.partials.user({
+                $${application.server.locals.partials.user({
                   request,
                   response,
                   enrollment: message.authorEnrollment,
@@ -2625,10 +2623,10 @@ export default async (app: Application): Promise<void> => {
       Application["server"]["locals"]["ResponseLocals"]["Conversation"]
     >[];
   */
-  app.server.locals.middlewares.isConversationAccessible = [
-    ...app.server.locals.middlewares.isEnrolledInCourse,
+  application.server.locals.middlewares.isConversationAccessible = [
+    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
-      const conversation = app.server.locals.helpers.getConversation({
+      const conversation = application.server.locals.helpers.getConversation({
         request,
         response,
         conversationReference: request.params.conversationReference,
@@ -2639,7 +2637,7 @@ export default async (app: Application): Promise<void> => {
     },
   ];
 
-  app.server.get<
+  application.server.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -2647,7 +2645,7 @@ export default async (app: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
-    ...app.server.locals.middlewares.isConversationAccessible,
+    ...application.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
       if (
         response.locals.conversation.participants === "everyone" ||
@@ -2656,7 +2654,7 @@ export default async (app: Application): Promise<void> => {
         return next("Validation");
 
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -2672,7 +2670,7 @@ export default async (app: Application): Promise<void> => {
               $${response.locals.conversation.selectedParticipants.map(
                 (selectedParticipant) => html`
                   <div class="dropdown--menu--item">
-                    $${app.server.locals.partials.user({
+                    $${application.server.locals.partials.user({
                       request,
                       response,
                       enrollment: selectedParticipant,
@@ -2689,12 +2687,12 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.locals.helpers.getConversation = ({
+  application.server.locals.helpers.getConversation = ({
     request,
     response,
     conversationReference,
   }) => {
-    const conversationRow = app.database.get<{
+    const conversationRow = application.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -2715,9 +2713,9 @@ export default async (app: Application): Promise<void> => {
       authorEnrollmentCourseRole:
         | Application["server"]["locals"]["helpers"]["courseRoles"][number]
         | null;
-      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
       anonymousAt: string | null;
-      type: Application["server"]["locals"]["helpers"]["conversationTypes"];
+      type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
       resolvedAt: string | null;
       announcementAt: string | null;
       pinnedAt: string | null;
@@ -2823,7 +2821,7 @@ export default async (app: Application): Promise<void> => {
     const selectedParticipants =
       conversation.participants === "everyone"
         ? []
-        : app.database
+        : application.database
             .all<{
               enrollmentId: number;
               userId: number;
@@ -2882,7 +2880,7 @@ export default async (app: Application): Promise<void> => {
               courseRole: selectedParticipant.enrollmentCourseRole,
             }));
 
-    const taggings = app.database
+    const taggings = application.database
       .all<{
         id: number;
         tagId: number;
@@ -2918,7 +2916,7 @@ export default async (app: Application): Promise<void> => {
         },
       }));
 
-    const messagesCount = app.database.get<{
+    const messagesCount = application.database.get<{
       messagesCount: number;
     }>(
       sql`
@@ -2928,7 +2926,7 @@ export default async (app: Application): Promise<void> => {
       `
     )!.messagesCount;
 
-    const readingsCount = app.database.get<{ readingsCount: number }>(
+    const readingsCount = application.database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
@@ -2941,7 +2939,7 @@ export default async (app: Application): Promise<void> => {
 
     const endorsements =
       conversation.type === "question"
-        ? app.database
+        ? application.database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -3029,7 +3027,7 @@ export default async (app: Application): Promise<void> => {
     };
   };
 
-  app.server.post<
+  application.server.post<
     { courseReference: string },
     any,
     {},
@@ -3041,9 +3039,9 @@ export default async (app: Application): Promise<void> => {
       response.locals.actionAllowedOnArchivedCourse = true;
       next();
     },
-    ...app.server.locals.middlewares.isEnrolledInCourse,
+    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response) => {
-      const messages = app.database.all<{ id: number }>(
+      const messages = application.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
           FROM "messages"
@@ -3076,7 +3074,7 @@ export default async (app: Application): Promise<void> => {
         `
       );
       for (const message of messages)
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -3088,7 +3086,7 @@ export default async (app: Application): Promise<void> => {
         );
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/${
+        `https://${application.configuration.hostname}/${
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
@@ -3097,10 +3095,10 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.get<
+  application.server.get<
     {
       courseReference: string;
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
     },
     HTML,
     {},
@@ -3112,7 +3110,7 @@ export default async (app: Application): Promise<void> => {
         title?: string;
         content?: string;
         tagsReferences?: string[];
-        participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+        participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
         selectedParticipants?: string[];
         isAnnouncement?: "true";
         isPinned?: "true";
@@ -3124,8 +3122,8 @@ export default async (app: Application): Promise<void> => {
     `/courses/:courseReference/conversations/new(/:type(${application.server.locals.helpers.conversationTypes.join(
       "|"
     )}))?`,
-    ...app.server.locals.middlewares.isEnrolledInCourse,
-    ...app.server.locals.middlewares.liveUpdates,
+    ...application.server.locals.middlewares.isEnrolledInCourse,
+    ...application.server.locals.middlewares.liveUpdates,
     (request, response) => {
       const conversationDraft =
         typeof request.query.newConversation?.conversationDraftReference ===
@@ -3133,7 +3131,7 @@ export default async (app: Application): Promise<void> => {
         request.query.newConversation.conversationDraftReference.match(
           /^[0-9]+$/
         )
-          ? app.database.get<{
+          ? application.database.get<{
               createdAt: string;
               updatedAt: string | null;
               reference: string;
@@ -3166,8 +3164,8 @@ export default async (app: Application): Promise<void> => {
 
       response.send(
         (response.locals.conversationsCount === 0
-          ? app.server.locals.layouts.main
-          : app.server.locals.layouts.conversation)({
+          ? application.server.locals.layouts.main
+          : application.server.locals.layouts.conversation)({
           request,
           response,
           head: html`
@@ -3236,8 +3234,9 @@ export default async (app: Application): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.configuration.hostname}/courses/${response
-                .locals.course.reference}/conversations${qs.stringify(
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/conversations${qs.stringify(
                 { conversations: request.query.conversations },
                 { addQueryPrefix: true }
               )}"
@@ -3346,7 +3345,7 @@ export default async (app: Application): Promise<void> => {
                 class="input--text"
               />
 
-              $${app.server.locals.partials.contentEditor({
+              $${application.server.locals.partials.contentEditor({
                 request,
                 response,
                 contentSource:
@@ -3400,7 +3399,7 @@ export default async (app: Application): Promise<void> => {
                                 `)}"
                               >
                                 <a
-                                  href="https://${app.configuration
+                                  href="https://${application.configuration
                                     .hostname}/courses/${response.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
@@ -3425,7 +3424,7 @@ export default async (app: Application): Promise<void> => {
                         response.locals.enrollment.courseRole === "staff"
                           ? html`
                               <a
-                                href="https://${app.configuration
+                                href="https://${application.configuration
                                   .hostname}/courses/${response.locals.course
                                   .reference}/settings/tags"
                                 target="_blank"
@@ -3517,7 +3516,7 @@ export default async (app: Application): Promise<void> => {
                     </div>
                   `}
               $${(() => {
-                const enrollments = app.database
+                const enrollments = application.database
                   .all<{
                     id: number;
                     userId: number;
@@ -3835,7 +3834,7 @@ export default async (app: Application): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
-                                                    $${app.server.locals.partials.user(
+                                                    $${application.server.locals.partials.user(
                                                       {
                                                         request,
                                                         response,
@@ -3850,7 +3849,7 @@ export default async (app: Application): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--blue"
                                                   >
-                                                    $${app.server.locals.partials.user(
+                                                    $${application.server.locals.partials.user(
                                                       {
                                                         request,
                                                         response,
@@ -3969,7 +3968,7 @@ export default async (app: Application): Promise<void> => {
                               };
                             `}"
                           >
-                            $${app.server.locals.partials.user({
+                            $${application.server.locals.partials.user({
                               request,
                               response,
                               enrollment,
@@ -4198,7 +4197,7 @@ export default async (app: Application): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${app.server.locals.partials.user({
+                                $${application.server.locals.partials.user({
                                   request,
                                   response,
                                   user: response.locals.user,
@@ -4224,7 +4223,7 @@ export default async (app: Application): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${app.server.locals.partials.user({
+                                $${application.server.locals.partials.user({
                                   request,
                                   response,
                                   name: false,
@@ -4378,7 +4377,7 @@ export default async (app: Application): Promise<void> => {
                       <button
                         class="link text--rose"
                         formmethod="DELETE"
-                        formaction="https://${app.configuration
+                        formaction="https://${application.configuration
                           .hostname}/courses/${response.locals.course
                           .reference}/conversations/new${qs.stringify(
                           { conversations: request.query.conversations },
@@ -4430,15 +4429,15 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.post<
+  application.server.post<
     { courseReference: string },
     HTML,
     {
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
       selectedParticipantsReferences?: string[];
       isAnnouncement?: "on";
       isPinned?: "on";
@@ -4450,7 +4449,7 @@ export default async (app: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations",
-    ...app.server.locals.middlewares.isEnrolledInCourse,
+    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
       if (request.body.isDraft === "true") {
         // TODO: Conversation drafts: Validate inputs
@@ -4567,7 +4566,7 @@ export default async (app: Application): Promise<void> => {
         //   );
         return response.redirect(
           303,
-          `https://${app.configuration.hostname}/courses/${
+          `https://${application.configuration.hostname}/courses/${
             response.locals.course.reference
           }/conversations/new${qs.stringify(
             {
@@ -4641,7 +4640,7 @@ export default async (app: Application): Promise<void> => {
       const selectedParticipants =
         request.body.selectedParticipantsReferences.length === 0
           ? []
-          : app.database.all<{
+          : application.database.all<{
               id: number;
               courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
@@ -4678,7 +4677,7 @@ export default async (app: Application): Promise<void> => {
         typeof request.body.content === "string" &&
         request.body.content.trim() !== "";
 
-      app.database.run(
+      application.database.run(
         sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
@@ -4688,11 +4687,11 @@ export default async (app: Application): Promise<void> => {
         `
       );
 
-      const conversation = app.database.get<{
+      const conversation = application.database.get<{
         id: number;
         reference: string;
-        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
-        type: Application["server"]["locals"]["helpers"]["conversationTypes"];
+        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+        type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
         title: string;
       }>(
         sql`
@@ -4737,7 +4736,7 @@ export default async (app: Application): Promise<void> => {
       )!;
 
       for (const selectedParticipant of selectedParticipants)
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
             VALUES (
@@ -4749,7 +4748,7 @@ export default async (app: Application): Promise<void> => {
         );
 
       for (const tagReference of request.body.tagsReferences)
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
@@ -4766,8 +4765,10 @@ export default async (app: Application): Promise<void> => {
 
       if (hasMessage) {
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(request.body.content!);
-        const message = app.database.get<{
+          application.server.locals.partials.contentPreprocessed(
+            request.body.content!
+          );
+        const message = application.database.get<{
           id: number;
           reference: string;
         }>(
@@ -4799,7 +4800,7 @@ export default async (app: Application): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -4809,13 +4810,13 @@ export default async (app: Application): Promise<void> => {
             )
           `
         );
-        app.server.locals.helpers.emailNotifications({
+        application.server.locals.helpers.emailNotifications({
           request,
           response,
-          message: app.server.locals.helpers.getMessage({
+          message: application.server.locals.helpers.getMessage({
             request,
             response,
-            conversation: app.server.locals.helpers.getConversation({
+            conversation: application.server.locals.helpers.getConversation({
               request,
               response,
               conversationReference: conversation.reference,
@@ -4829,7 +4830,7 @@ export default async (app: Application): Promise<void> => {
         typeof request.body.conversationDraftReference === "string" &&
         request.body.conversationDraftReference.match(/^[0-9]+$/)
       )
-        app.database.run(
+        application.database.run(
           sql`
             DELETE FROM "conversationDrafts"
             WHERE
@@ -4841,7 +4842,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${conversation.reference}${qs.stringify(
           { conversations: request.query.conversations },
@@ -4849,11 +4850,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     { courseReference: string },
     HTML,
     { conversationDraftReference?: string },
@@ -4861,14 +4862,14 @@ export default async (app: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/new",
-    ...app.server.locals.middlewares.isEnrolledInCourse,
+    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
       if (
         typeof request.body.conversationDraftReference !== "string" ||
         !request.body.conversationDraftReference.match(/^[0-9]+$/)
       )
         return next("Validation");
-      const conversationDraft = app.database.get<{
+      const conversationDraft = application.database.get<{
         id: number;
       }>(
         sql`
@@ -4881,14 +4882,14 @@ export default async (app: Application): Promise<void> => {
         `
       );
       if (conversationDraft === undefined) return next("Validation");
-      app.database.run(
+      application.database.run(
         sql`
           DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
         `
       );
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/new${qs.stringify(
           { conversations: request.query.conversations },
@@ -4919,7 +4920,7 @@ export default async (app: Application): Promise<void> => {
       response.locals.conversation.authorEnrollment.id ===
         response.locals.enrollment.id);
 
-  app.server.get<
+  application.server.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -4939,14 +4940,14 @@ export default async (app: Application): Promise<void> => {
       ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.server.locals.middlewares.isConversationAccessible,
-    ...app.server.locals.middlewares.liveUpdates,
+    ...application.server.locals.middlewares.isConversationAccessible,
+    ...application.server.locals.middlewares.liveUpdates,
     (request, response) => {
       const beforeMessage =
         typeof request.query.messages?.messagesPage?.beforeMessageReference ===
           "string" &&
         request.query.messages.messagesPage.beforeMessageReference.trim() !== ""
-          ? app.database.get<{ id: number }>(
+          ? application.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -4962,7 +4963,7 @@ export default async (app: Application): Promise<void> => {
         typeof request.query.messages?.messagesPage?.afterMessageReference ===
           "string" &&
         request.query.messages.messagesPage.afterMessageReference.trim() !== ""
-          ? app.database.get<{ id: number }>(
+          ? application.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -4980,7 +4981,7 @@ export default async (app: Application): Promise<void> => {
 
       const messagesPageSize = 999999; // TODO: Pagination: 25
 
-      const messagesRows = app.database.all<{ reference: string }>(
+      const messagesRows = application.database.all<{ reference: string }>(
         sql`
           SELECT "reference"
           FROM "messages"
@@ -5009,7 +5010,7 @@ export default async (app: Application): Promise<void> => {
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
-          app.server.locals.helpers.getMessage({
+          application.server.locals.helpers.getMessage({
             request,
             response,
             conversation: response.locals.conversation,
@@ -5018,7 +5019,7 @@ export default async (app: Application): Promise<void> => {
       );
 
       for (const message of messages)
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -5030,7 +5031,7 @@ export default async (app: Application): Promise<void> => {
         );
 
       response.send(
-        app.server.locals.layouts.conversation({
+        application.server.locals.layouts.conversation({
           request,
           response,
           head: html`
@@ -5113,7 +5114,7 @@ export default async (app: Application): Promise<void> => {
                               text-overflow: ellipsis;
                             `)}"
                           >
-                            $${app.server.locals.helpers.highlightSearchResult(
+                            $${application.server.locals.helpers.highlightSearchResult(
                               html`${response.locals.conversation.title}`,
                               typeof request.query.conversations?.search ===
                                 "string" &&
@@ -5189,8 +5190,8 @@ export default async (app: Application): Promise<void> => {
                                                 <form
                                                   key="conversation-type--${conversationType}"
                                                   method="PATCH"
-                                                  action="https://${app.server
-                                                    .locals.options
+                                                  action="https://${application
+                                                    .server.locals.options
                                                     .hostname}/courses/${response
                                                     .locals.course
                                                     .reference}/conversations/${response
@@ -5270,7 +5271,8 @@ export default async (app: Application): Promise<void> => {
                                 ? html`
                                     <form
                                       method="PATCH"
-                                      action="https://${app.configuration
+                                      action="https://${application
+                                        .configuration
                                         .hostname}/courses/${response.locals
                                         .course
                                         .reference}/conversations/${response
@@ -5369,7 +5371,8 @@ export default async (app: Application): Promise<void> => {
                                 ? html`
                                     <form
                                       method="PATCH"
-                                      action="https://${app.configuration
+                                      action="https://${application
+                                        .configuration
                                         .hostname}/courses/${response.locals
                                         .course
                                         .reference}/conversations/${response
@@ -5444,7 +5447,7 @@ export default async (app: Application): Promise<void> => {
                           ? html`
                               <form
                                 method="PATCH"
-                                action="https://${app.configuration
+                                action="https://${application.configuration
                                   .hostname}/courses/${response.locals.course
                                   .reference}/conversations/${response.locals
                                   .conversation.reference}${qs.stringify(
@@ -5539,7 +5542,7 @@ export default async (app: Application): Promise<void> => {
                                         });
 
                                         this.onclick = async () => {
-                                          await navigator.clipboard.writeText("https://${app.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}");
+                                          await navigator.clipboard.writeText("https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}");
                                           this.copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           this.copied.hide();
@@ -5579,7 +5582,8 @@ export default async (app: Application): Promise<void> => {
                                       ? html`
                                           <form
                                             method="PATCH"
-                                            action="https://${app.configuration
+                                            action="https://${application
+                                              .configuration
                                               .hostname}/courses/${response
                                               .locals.course
                                               .reference}/conversations/${response
@@ -5615,7 +5619,7 @@ export default async (app: Application): Promise<void> => {
                                                         );
                                                       `)}"
                                                     >
-                                                      $${app.server.locals.partials.user(
+                                                      $${application.server.locals.partials.user(
                                                         {
                                                           request,
                                                           response,
@@ -5646,7 +5650,7 @@ export default async (app: Application): Promise<void> => {
                                                         );
                                                       `)}"
                                                     >
-                                                      $${app.server.locals.partials.user(
+                                                      $${application.server.locals.partials.user(
                                                         {
                                                           request,
                                                           response,
@@ -5691,7 +5695,7 @@ export default async (app: Application): Promise<void> => {
                                                     html`
                                                       <form
                                                         method="DELETE"
-                                                        action="https://${app
+                                                        action="https://${application
                                                           .configuration
                                                           .hostname}/courses/${response
                                                           .locals.course
@@ -5774,7 +5778,7 @@ export default async (app: Application): Promise<void> => {
                         line-height: var(--line-height--lg);
                       `)}"
                     >
-                      $${app.server.locals.helpers.highlightSearchResult(
+                      $${application.server.locals.helpers.highlightSearchResult(
                         html`${response.locals.conversation.title}`,
                         typeof request.query.conversations?.search ===
                           "string" &&
@@ -5788,7 +5792,7 @@ export default async (app: Application): Promise<void> => {
                       ? html`
                           <form
                             method="PATCH"
-                            action="https://${app.configuration
+                            action="https://${application.configuration
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/${response.locals
                               .conversation.reference}${qs.stringify(
@@ -5941,7 +5945,7 @@ export default async (app: Application): Promise<void> => {
                             <form
                               key="tagging--${tagging.tag.reference}"
                               method="DELETE"
-                              action="https://${app.configuration
+                              action="https://${application.configuration
                                 .hostname}/courses/${response.locals.course
                                 .reference}/conversations/${response.locals
                                 .conversation.reference}/taggings${qs.stringify(
@@ -6028,8 +6032,8 @@ export default async (app: Application): Promise<void> => {
                                           ? html`
                                               <div class="dropdown--menu">
                                                 <a
-                                                  href="https://${app.server
-                                                    .locals.options
+                                                  href="https://${application
+                                                    .server.locals.options
                                                     .hostname}/courses/${response
                                                     .locals.course
                                                     .reference}/settings/tags"
@@ -6055,8 +6059,8 @@ export default async (app: Application): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="POST"
-                                                    action="https://${app.server
-                                                      .locals.options
+                                                    action="https://${application
+                                                      .server.locals.options
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -6148,8 +6152,8 @@ export default async (app: Application): Promise<void> => {
                                                   <form
                                                     key="tag--${tag.reference}"
                                                     method="DELETE"
-                                                    action="https://${app.server
-                                                      .locals.options
+                                                    action="https://${application
+                                                      .server.locals.options
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -6237,7 +6241,7 @@ export default async (app: Application): Promise<void> => {
                     })()}
                     $${mayEditConversation({ request, response })
                       ? (() => {
-                          const enrollments = app.database
+                          const enrollments = application.database
                             .all<{
                               id: number;
                               userId: number;
@@ -6299,7 +6303,7 @@ export default async (app: Application): Promise<void> => {
                           return html`
                             <form
                               method="PATCH"
-                              action="https://${app.configuration
+                              action="https://${application.configuration
                                 .hostname}/courses/${response.locals.course
                                 .reference}/conversations/${response.locals
                                 .conversation.reference}${qs.stringify(
@@ -6590,7 +6594,7 @@ export default async (app: Application): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--transparent"
                                                             >
-                                                              $${app.server.locals.partials.user(
+                                                              $${application.server.locals.partials.user(
                                                                 {
                                                                   request,
                                                                   response,
@@ -6606,7 +6610,7 @@ export default async (app: Application): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--blue"
                                                             >
-                                                              $${app.server.locals.partials.user(
+                                                              $${application.server.locals.partials.user(
                                                                 {
                                                                   request,
                                                                   response,
@@ -6722,15 +6726,17 @@ export default async (app: Application): Promise<void> => {
                                         };
                                       `}"
                                     >
-                                      $${app.server.locals.partials.user({
-                                        request,
-                                        response,
-                                        enrollment,
-                                        user: enrollment.user,
-                                        tooltip: false,
-                                        size: "xs",
-                                        bold: false,
-                                      })}
+                                      $${application.server.locals.partials.user(
+                                        {
+                                          request,
+                                          response,
+                                          enrollment,
+                                          user: enrollment.user,
+                                          tooltip: false,
+                                          size: "xs",
+                                          bold: false,
+                                        }
+                                      )}
                                     </button>
                                   `
                                 )}
@@ -6799,14 +6805,16 @@ export default async (app: Application): Promise<void> => {
                                   $${response.locals.conversation.selectedParticipants.map(
                                     (selectedParticipant) => html`
                                       <div>
-                                        $${app.server.locals.partials.user({
-                                          request,
-                                          response,
-                                          enrollment: selectedParticipant,
-                                          user: selectedParticipant.user,
-                                          size: "xs",
-                                          bold: false,
-                                        })}
+                                        $${application.server.locals.partials.user(
+                                          {
+                                            request,
+                                            response,
+                                            enrollment: selectedParticipant,
+                                            user: selectedParticipant.user,
+                                            size: "xs",
+                                            bold: false,
+                                          }
+                                        )}
                                       </div>
                                     `
                                   )}
@@ -6970,7 +6978,8 @@ export default async (app: Application): Promise<void> => {
                                       `)}"
                                     >
                                       <a
-                                        href="https://${app.configuration
+                                        href="https://${application
+                                          .configuration
                                           .hostname}/courses/${response.locals
                                           .course
                                           .reference}/conversations/${response
@@ -7289,7 +7298,7 @@ export default async (app: Application): Promise<void> => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="https://${app
+                                                                  action="https://${application
                                                                     .locals
                                                                     .options
                                                                     .hostname}/courses/${response
@@ -7403,7 +7412,7 @@ export default async (app: Application): Promise<void> => {
                                                                           align-items: center;
                                                                         `)}"
                                                                       >
-                                                                        $${app.server.locals.partials.spinner(
+                                                                        $${application.server.locals.partials.spinner(
                                                                           {
                                                                             request,
                                                                             response,
@@ -7425,7 +7434,7 @@ export default async (app: Application): Promise<void> => {
                                                                       onShow: async () => {
                                                                         this.tooltip.setContent(loading);
                                                                         leafac.loadPartial(content, await (await fetch("https://${
-                                                                          app
+                                                                          application
                                                                             .locals
                                                                             .options
                                                                             .hostname
@@ -7467,7 +7476,8 @@ export default async (app: Application): Promise<void> => {
 
                                                               this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("https://${
-                                                                  app.server
+                                                                  application
+                                                                    .server
                                                                     .locals
                                                                     .options
                                                                     .hostname
@@ -7504,7 +7514,7 @@ export default async (app: Application): Promise<void> => {
                                                             Permanent Link
                                                           </button>
 
-                                                          $${app.server.locals.helpers.mayEditMessage(
+                                                          $${application.server.locals.helpers.mayEditMessage(
                                                             {
                                                               request,
                                                               response,
@@ -7536,7 +7546,7 @@ export default async (app: Application): Promise<void> => {
                                                             .authorEnrollment
                                                             .courseRole ===
                                                             "student" &&
-                                                          app.server.locals.helpers.mayEditMessage(
+                                                          application.server.locals.helpers.mayEditMessage(
                                                             {
                                                               request,
                                                               response,
@@ -7546,7 +7556,7 @@ export default async (app: Application): Promise<void> => {
                                                             ? html`
                                                                 <form
                                                                   method="PATCH"
-                                                                  action="https://${app
+                                                                  action="https://${application
                                                                     .locals
                                                                     .options
                                                                     .hostname}/courses/${response
@@ -7594,7 +7604,7 @@ export default async (app: Application): Promise<void> => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${app.server.locals.partials.user(
+                                                                            $${application.server.locals.partials.user(
                                                                               {
                                                                                 request,
                                                                                 response,
@@ -7629,7 +7639,7 @@ export default async (app: Application): Promise<void> => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${app.server.locals.partials.user(
+                                                                            $${application.server.locals.partials.user(
                                                                               {
                                                                                 request,
                                                                                 response,
@@ -7680,7 +7690,7 @@ export default async (app: Application): Promise<void> => {
                                                                           html`
                                                                             <form
                                                                               method="DELETE"
-                                                                              action="https://${app
+                                                                              action="https://${application
                                                                                 .locals
                                                                                 .options
                                                                                 .hostname}/courses/${response
@@ -7787,7 +7797,7 @@ export default async (app: Application): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            app.server.locals.helpers.mayEditMessage(
+                                            application.server.locals.helpers.mayEditMessage(
                                               {
                                                 request,
                                                 response,
@@ -7801,8 +7811,8 @@ export default async (app: Application): Promise<void> => {
                                             header += html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.server
-                                                  .locals.options
+                                                action="https://${application
+                                                  .server.locals.options
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -7881,7 +7891,7 @@ export default async (app: Application): Promise<void> => {
                                             `;
 
                                           if (
-                                            app.server.locals.helpers.mayEndorseMessage(
+                                            application.server.locals.helpers.mayEndorseMessage(
                                               {
                                                 request,
                                                 response,
@@ -7904,8 +7914,8 @@ export default async (app: Application): Promise<void> => {
                                                 method="${isEndorsed
                                                   ? "DELETE"
                                                   : "POST"}"
-                                                action="https://${app.server
-                                                  .locals.options
+                                                action="https://${application
+                                                  .server.locals.options
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -8193,7 +8203,7 @@ export default async (app: Application): Promise<void> => {
                                                     );
                                                   `)}"
                                                 >
-                                                  $${app.server.locals.partials.user(
+                                                  $${application.server.locals.partials.user(
                                                     {
                                                       request,
                                                       response,
@@ -8221,7 +8231,7 @@ export default async (app: Application): Promise<void> => {
                                                         message.authorEnrollment ===
                                                         "no-longer-enrolled"
                                                           ? undefined
-                                                          : app.server.locals.helpers.highlightSearchResult(
+                                                          : application.server.locals.helpers.highlightSearchResult(
                                                               html`${message
                                                                 .authorEnrollment
                                                                 .user.name}`,
@@ -8397,7 +8407,7 @@ export default async (app: Application): Promise<void> => {
                                                 };
                                               `}"
                                             >
-                                              $${app.server.locals.partials.content(
+                                              $${application.server.locals.partials.content(
                                                 {
                                                   request,
                                                   response,
@@ -8448,8 +8458,8 @@ export default async (app: Application): Promise<void> => {
                                                     method="${isLiked
                                                       ? "DELETE"
                                                       : "POST"}"
-                                                    action="https://${app.server
-                                                      .locals.options
+                                                    action="https://${application
+                                                      .server.locals.options
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -8526,7 +8536,7 @@ export default async (app: Application): Promise<void> => {
                                                                   align-items: center;
                                                                 `)}"
                                                               >
-                                                                $${app.server.locals.partials.spinner(
+                                                                $${application.server.locals.partials.spinner(
                                                                   {
                                                                     request,
                                                                     response,
@@ -8548,7 +8558,8 @@ export default async (app: Application): Promise<void> => {
                                                               onShow: async () => {
                                                                 this.dropdown.setContent(loading);
                                                                 leafac.loadPartial(content, await (await fetch("https://${
-                                                                  app.server
+                                                                  application
+                                                                    .server
                                                                     .locals
                                                                     .options
                                                                     .hostname
@@ -8596,7 +8607,7 @@ export default async (app: Application): Promise<void> => {
                                                           align-items: center;
                                                         `)}"
                                                       >
-                                                        $${app.server.locals.partials.spinner(
+                                                        $${application.server.locals.partials.spinner(
                                                           {
                                                             request,
                                                             response,
@@ -8618,7 +8629,8 @@ export default async (app: Application): Promise<void> => {
                                                       onShow: async () => {
                                                         this.tooltip.setContent(loading);
                                                         leafac.loadPartial(content, await (await fetch("https://${
-                                                          app.configuration
+                                                          application
+                                                            .configuration
                                                             .hostname
                                                         }/courses/${
                                                     response.locals.course
@@ -8667,7 +8679,7 @@ export default async (app: Application): Promise<void> => {
                                           })()}
                                         </div>
 
-                                        $${app.server.locals.helpers.mayEditMessage(
+                                        $${application.server.locals.helpers.mayEditMessage(
                                           {
                                             request,
                                             response,
@@ -8677,8 +8689,8 @@ export default async (app: Application): Promise<void> => {
                                           ? html`
                                               <form
                                                 method="PATCH"
-                                                action="https://${app.server
-                                                  .locals.options
+                                                action="https://${application
+                                                  .server.locals.options
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -8702,7 +8714,7 @@ export default async (app: Application): Promise<void> => {
                                                   gap: var(--space--2);
                                                 `)}"
                                               >
-                                                $${app.server.locals.partials.contentEditor(
+                                                $${application.server.locals.partials.contentEditor(
                                                   {
                                                     request,
                                                     response,
@@ -8828,7 +8840,8 @@ export default async (app: Application): Promise<void> => {
                                       `)}"
                                     >
                                       <a
-                                        href="https://${app.configuration
+                                        href="https://${application
+                                          .configuration
                                           .hostname}/courses/${response.locals
                                           .course
                                           .reference}/conversations/${response
@@ -8950,14 +8963,16 @@ export default async (app: Application): Promise<void> => {
                                           line-height: var(--line-height--sm);
                                         `)}"
                                       >
-                                        $${app.server.locals.partials.user({
-                                          request,
-                                          response,
-                                          enrollment: {
-                                            ...response.locals.enrollment,
-                                            user: response.locals.user,
-                                          },
-                                        })}
+                                        $${application.server.locals.partials.user(
+                                          {
+                                            request,
+                                            response,
+                                            enrollment: {
+                                              ...response.locals.enrollment,
+                                              user: response.locals.user,
+                                            },
+                                          }
+                                        )}
                                       </div>
                                       $${response.locals.enrollment
                                         .courseRole === "staff"
@@ -8973,7 +8988,7 @@ export default async (app: Application): Promise<void> => {
                                                 );
                                               `)}"
                                             >
-                                              $${app.server.locals.partials.user(
+                                              $${application.server.locals.partials.user(
                                                 {
                                                   request,
                                                   response,
@@ -8988,11 +9003,13 @@ export default async (app: Application): Promise<void> => {
                                             </div>
                                           `}
                                       <span>Sending…</span>
-                                      $${app.server.locals.partials.spinner({
-                                        request,
-                                        response,
-                                        size: 10,
-                                      })}
+                                      $${application.server.locals.partials.spinner(
+                                        {
+                                          request,
+                                          response,
+                                          size: 10,
+                                        }
+                                      )}
                                     </div>
                                   </div>
                                   <div
@@ -9012,9 +9029,10 @@ export default async (app: Application): Promise<void> => {
 
               <form
                 method="POST"
-                action="https://${app.configuration.hostname}/courses/${response
-                  .locals.course.reference}/conversations/${response.locals
-                  .conversation.reference}/messages${qs.stringify(
+                action="https://${application.configuration
+                  .hostname}/courses/${response.locals.course
+                  .reference}/conversations/${response.locals.conversation
+                  .reference}/messages${qs.stringify(
                   {
                     conversations: request.query.conversations,
                     messages: request.query.messages,
@@ -9151,7 +9169,7 @@ export default async (app: Application): Promise<void> => {
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
                   >
-                    $${app.server.locals.partials.contentEditor({
+                    $${application.server.locals.partials.contentEditor({
                       request,
                       response,
                       compact: response.locals.conversation.type === "chat",
@@ -9247,7 +9265,7 @@ export default async (app: Application): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${app.server.locals.partials.user({
+                                  $${application.server.locals.partials.user({
                                     request,
                                     response,
                                     user: response.locals.user,
@@ -9273,7 +9291,7 @@ export default async (app: Application): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${app.server.locals.partials.user({
+                                  $${application.server.locals.partials.user({
                                     request,
                                     response,
                                     name: false,
@@ -9354,21 +9372,21 @@ export default async (app: Application): Promise<void> => {
     {},
     MayEditConversationLocals
   >[] = [
-    ...app.server.locals.middlewares.isConversationAccessible,
+    ...application.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
       if (mayEditConversation({ request, response })) return next();
       next("route");
     },
   ];
 
-  app.server.patch<
+  application.server.patch<
     { courseReference: string; conversationReference: string },
     HTML,
     {
-      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
       selectedParticipantsReferences?: string[];
       isAnonymous?: "true" | "false";
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
       isAnnouncement?: "true" | "false";
       isPinned?: "true" | "false";
       isResolved?: "true" | "false";
@@ -9414,7 +9432,7 @@ export default async (app: Application): Promise<void> => {
         const selectedParticipants =
           request.body.selectedParticipantsReferences.length === 0
             ? []
-            : app.database.all<{
+            : application.database.all<{
                 id: number;
                 courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
               }>(
@@ -9438,14 +9456,14 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
 
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "conversations"
             SET "participants" = ${request.body.participants}
             WHERE "id" = ${response.locals.conversation.id}
           `
         );
-        app.database.run(
+        application.database.run(
           sql`
             DELETE FROM "conversationSelectedParticipants"
             WHERE
@@ -9456,7 +9474,7 @@ export default async (app: Application): Promise<void> => {
           `
         );
         for (const selectedParticipant of selectedParticipants)
-          app.database.run(
+          application.database.run(
             sql`
               INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
@@ -9482,7 +9500,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET "anonymousAt" = ${
@@ -9493,7 +9511,7 @@ export default async (app: Application): Promise<void> => {
               WHERE "id" = ${response.locals.conversation.id}
             `
           );
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -9519,7 +9537,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET "type" = ${request.body.type}
@@ -9539,7 +9557,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET
@@ -9557,14 +9575,14 @@ export default async (app: Application): Promise<void> => {
             `
           );
           if (request.body.isAnnouncement === "true") {
-            const message = app.server.locals.helpers.getMessage({
+            const message = application.server.locals.helpers.getMessage({
               request,
               response,
               conversation: response.locals.conversation,
               messageReference: "1",
             });
             if (message !== undefined)
-              app.server.locals.helpers.emailNotifications({
+              application.server.locals.helpers.emailNotifications({
                 request,
                 response,
                 message,
@@ -9583,7 +9601,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET
@@ -9613,7 +9631,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET "resolvedAt" = ${
@@ -9628,7 +9646,7 @@ export default async (app: Application): Promise<void> => {
       if (typeof request.body.title === "string")
         if (request.body.title.trim() === "") return next("Validation");
         else
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "conversations"
               SET
@@ -9641,7 +9659,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -9652,11 +9670,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -9668,13 +9686,13 @@ export default async (app: Application): Promise<void> => {
       Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.server.locals.middlewares.isCourseStaff,
-    ...app.server.locals.middlewares.isConversationAccessible,
+    ...application.server.locals.middlewares.isCourseStaff,
+    ...application.server.locals.middlewares.isConversationAccessible,
     (request, response) => {
-      app.database.run(
+      application.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
-      app.server.locals.helpers.Flash.set({
+      application.server.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -9682,7 +9700,7 @@ export default async (app: Application): Promise<void> => {
       });
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }${qs.stringify(
           {
@@ -9692,11 +9710,11 @@ export default async (app: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.post<
+  application.server.post<
     {
       courseReference: string;
       conversationReference: string;
@@ -9723,7 +9741,7 @@ export default async (app: Application): Promise<void> => {
       )
         return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
@@ -9740,7 +9758,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -9753,7 +9771,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     {
       courseReference: string;
       conversationReference: string;
@@ -9779,7 +9797,7 @@ export default async (app: Application): Promise<void> => {
       )
         return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           DELETE FROM "taggings"
           WHERE
@@ -9794,7 +9812,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {

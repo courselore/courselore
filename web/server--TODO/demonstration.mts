@@ -1166,9 +1166,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         const conversation = app.database.get<{
           id: number;
           authorEnrollment: number | null;
-          participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+          participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
           anonymousAt: string | null;
-          type: Application["server"]["locals"]["helpers"]["conversationTypes"];
+          type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
           title: string;
         }>(
           sql`
