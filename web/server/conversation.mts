@@ -3046,10 +3046,6 @@ export default async (application: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (request, response, next) => {
-      response.locals.actionAllowedOnArchivedCourse = true;
-      next();
-    },
-    (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
       const messages = application.database.all<{ id: number }>(
@@ -3095,6 +3091,7 @@ export default async (application: Application): Promise<void> => {
             )
           `
         );
+
       response.redirect(
         303,
         `https://${application.configuration.hostname}/${
