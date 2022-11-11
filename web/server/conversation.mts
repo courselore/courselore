@@ -9,7 +9,7 @@ import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
 export type ConversationParticipants =
   typeof conversationParticipantses[number];
@@ -85,7 +85,7 @@ export type ConversationPartial = ({
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
   conversation: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+    ReturnType<Application["locals"]["helpers"]["getConversation"]>
   >;
   searchResult?:
     | {
@@ -95,19 +95,19 @@ export type ConversationPartial = ({
     | {
         type: "messageAuthorUserName";
         message: NonNullable<
-          ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+          ReturnType<Application["locals"]["helpers"]["getMessage"]>
         >;
         highlight: HTML;
       }
     | {
         type: "messageContent";
         message: NonNullable<
-          ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+          ReturnType<Application["locals"]["helpers"]["getMessage"]>
         >;
         snippet: HTML;
       };
   message?: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+    ReturnType<Application["locals"]["helpers"]["getMessage"]>
   >;
 }) => HTML;
 
@@ -173,11 +173,11 @@ export type IsConversationAccessibleMiddleware = express.RequestHandler<
 export type IsConversationAccessibleLocals =
   Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
     conversation: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+      ReturnType<Application["locals"]["helpers"]["getConversation"]>
     >;
   };
 
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   const conversationTypeIcon: {
     [conversationType in ConversationType]: {
       regular: HTML;
