@@ -97,6 +97,7 @@ export type Application = {
         };
         helpers: {
           getMessage: (..._: any) => any;
+          emailNotifications: (..._: any) => any;
           splitFilterablePhrases: (..._: any) => any;
           emailRegExp: RegExp;
           isExpired: (..._: any) => any;

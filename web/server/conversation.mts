@@ -8,6 +8,7 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
+import { got } from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationConversation = {
@@ -3130,7 +3131,30 @@ export default async (application: Application): Promise<void> => {
       "|"
     )}))?`,
     (request, response, next) => {
-      if (response.locals.course === undefined) return next();
+      if (
+        response.locals.course === undefined ||
+        ![
+          undefined,
+          ...application.server.locals.helpers.conversationTypes,
+        ].includes(request.params.type)
+      )
+        return next();
+
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       const conversationDraft =
         typeof request.query.newConversation?.conversationDraftReference ===
@@ -3255,10 +3279,7 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <div
-                $${typeof request.params.type === "string" &&
-                application.server.locals.helpers.conversationTypes.includes(
-                  request.params.type
-                )
+                $${typeof request.params.type === "string"
                   ? html`hidden`
                   : html``}
                 class="label"
@@ -4457,6 +4478,22 @@ export default async (application: Application): Promise<void> => {
   >("/courses/:courseReference/conversations", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
+    if (response.locals.course.archivedAt !== null) {
+      application.server.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "rose",
+        content: html`
+          This action isn’t allowed because the course is archived, which means
+          it’s read-only.
+        `,
+      });
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+      );
+    }
+
     if (request.body.isDraft === "true") {
       // TODO: Conversation drafts: Validate inputs
       // let conversationDraft =
@@ -4651,12 +4688,12 @@ export default async (application: Application): Promise<void> => {
             courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
           }>(
             sql`
-                SELECT "id", "courseRole"
-                FROM "enrollments"
-                WHERE
-                  "enrollments"."course" = ${response.locals.course.id} AND
-                  "reference" IN ${request.body.selectedParticipantsReferences}
-              `
+              SELECT "id", "courseRole"
+              FROM "enrollments"
+              WHERE
+                "enrollments"."course" = ${response.locals.course.id} AND
+                "reference" IN ${request.body.selectedParticipantsReferences}
+            `
           );
 
     if (
@@ -4683,24 +4720,25 @@ export default async (application: Application): Promise<void> => {
       typeof request.body.content === "string" &&
       request.body.content.trim() !== "";
 
-    application.database.run(
-      sql`
+    const conversation = application.database.executeTransaction(() => {
+      application.database.run(
+        sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
             response.locals.course.nextConversationReference + 1
           }
           WHERE "id" = ${response.locals.course.id}
         `
-    );
+      );
 
-    const conversation = application.database.get<{
-      id: number;
-      reference: string;
-      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
-      type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
-      title: string;
-    }>(
-      sql`
+      const conversation = application.database.get<{
+        id: number;
+        reference: string;
+        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+        type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+        title: string;
+      }>(
+        sql`
           INSERT INTO "conversations" (
             "createdAt",
             "course",
@@ -4734,16 +4772,16 @@ export default async (application: Application): Promise<void> => {
             },
             ${request.body.isPinned === "on" ? new Date().toISOString() : null},
             ${request.body.title},
-            ${html`${request.body.title}`},
+            ${html`${request.body.title!}`},
             ${hasMessage ? 2 : 1}
           )
           RETURNING *
         `
-    )!;
+      )!;
 
-    for (const selectedParticipant of selectedParticipants)
-      application.database.run(
-        sql`
+      for (const selectedParticipant of selectedParticipants)
+        application.database.run(
+          sql`
             INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
             VALUES (
               ${new Date().toISOString()},
@@ -4751,11 +4789,11 @@ export default async (application: Application): Promise<void> => {
               ${selectedParticipant.id}
             )
           `
-      );
+        );
 
-    for (const tagReference of request.body.tagsReferences)
-      application.database.run(
-        sql`
+      for (const tagReference of request.body.tagsReferences!)
+        application.database.run(
+          sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
               ${new Date().toISOString()},
@@ -4767,18 +4805,18 @@ export default async (application: Application): Promise<void> => {
               }
             )
           `
-      );
-
-    if (hasMessage) {
-      const contentPreprocessed =
-        application.server.locals.partials.contentPreprocessed(
-          request.body.content!
         );
-      const message = application.database.get<{
-        id: number;
-        reference: string;
-      }>(
-        sql`
+
+      if (hasMessage) {
+        const contentPreprocessed =
+          application.server.locals.partials.contentPreprocessed(
+            request.body.content!
+          );
+        const message = application.database.get<{
+          id: number;
+          reference: string;
+        }>(
+          sql`
             INSERT INTO "messages" (
               "createdAt",
               "conversation",
@@ -4805,9 +4843,9 @@ export default async (application: Application): Promise<void> => {
             )
             RETURNING *
           `
-      )!;
-      application.database.run(
-        sql`
+        )!;
+        application.database.run(
+          sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
               ${new Date().toISOString()},
@@ -4815,36 +4853,39 @@ export default async (application: Application): Promise<void> => {
               ${response.locals.enrollment.id}
             )
           `
-      );
-      application.server.locals.helpers.emailNotifications({
-        request,
-        response,
-        message: application.server.locals.helpers.getMessage({
+        );
+        application.server.locals.helpers.emailNotifications({
           request,
           response,
-          conversation: application.server.locals.helpers.getConversation({
+          message: application.server.locals.helpers.getMessage({
             request,
             response,
-            conversationReference: conversation.reference,
+            conversation: application.server.locals.helpers.getConversation({
+              request,
+              response,
+              conversationReference: conversation.reference,
+            })!,
+            messageReference: message.reference,
           })!,
-          messageReference: message.reference,
-        })!,
-      });
-    }
+        });
+      }
 
-    if (
-      typeof request.body.conversationDraftReference === "string" &&
-      request.body.conversationDraftReference.match(/^[0-9]+$/)
-    )
-      application.database.run(
-        sql`
+      if (
+        typeof request.body.conversationDraftReference === "string" &&
+        request.body.conversationDraftReference.match(/^[0-9]+$/)
+      )
+        application.database.run(
+          sql`
             DELETE FROM "conversationDrafts"
             WHERE
               "course" = ${response.locals.course.id} AND
               "reference" = ${request.body.conversationDraftReference} AND
               "authorEnrollment" = ${response.locals.enrollment.id}
           `
-      );
+        );
+
+      return conversation;
+    });
 
     response.redirect(
       303,
@@ -4856,7 +4897,18 @@ export default async (application: Application): Promise<void> => {
       )}`
     );
 
-    application.server.locals.helpers.liveUpdates({ request, response });
+    for (const port of application.ports.serverEvents)
+      got
+        .post(`http://127.0.0.1:${port}/live-updates`, {
+          form: { url: `/courses/${response.locals.course.reference}` },
+        })
+        .catch((error) => {
+          response.locals.log(
+            "LIVE-UPDATES ",
+            "ERROR EMITTING POST EVENT",
+            error
+          );
+        });
   });
 
   application.server.delete<
