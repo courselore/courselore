@@ -2,24 +2,24 @@ import escapeStringRegexp from "escape-string-regexp";
 import { HTML, html } from "@leafac/html";
 import { Application } from "./index.mjs";
 
-export type EmailRegExpHelper = RegExp;
-
-export type IsDateHelper = (string: string) => boolean;
-
-export type IsExpiredHelper = (expiresAt: string | null) => boolean;
-
-export type SanitizeSearchHelper = (
-  search: string,
-  options?: { prefix?: boolean }
-) => string;
-
-export type HighlightSearchResultHelper = (
-  searchResult: string,
-  searchPhrases: string | string[] | undefined,
-  options?: { prefix?: boolean }
-) => HTML;
-
-export type SplitFilterablePhrasesHelper = (filterable: string) => string[];
+export type ApplicationHelpers = {
+  server: {
+    locals: {
+      helpers: {
+        emailRegExp: RegExp;
+        isDate(string: string): boolean;
+        isExpired(expiresAt: string | null): boolean;
+        sanitizeSearch(search: string, options?: { prefix?: boolean }): string;
+        highlightSearchResult(
+          searchResult: string,
+          searchPhrases: string | string[] | undefined,
+          options?: { prefix?: boolean }
+        ): HTML;
+        splitFilterablePhrases(filterable: string): string[];
+      };
+    };
+  };
+};
 
 export default async (application: Application): Promise<void> => {
   application.server.locals.helpers.emailRegExp =
