@@ -1163,7 +1163,7 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     (request, response, next) => {
       if (
-        response.locals.conversation === undefined ||
+        response.locals.message === undefined ||
         !application.server.locals.helpers.mayEndorseMessage({
           request,
           response,
@@ -1234,7 +1234,7 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     (request, response, next) => {
       if (
-        response.locals.conversation === undefined ||
+        response.locals.message === undefined ||
         !application.server.locals.helpers.mayEndorseMessage({
           request,
           response,
