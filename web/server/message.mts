@@ -134,14 +134,14 @@ export type ApplicationMessage = {
   };
 };
 
-export default async (app: Application): Promise<void> => {
-  app.server.locals.helpers.getMessage = ({
+export default async (application: Application): Promise<void> => {
+  application.server.locals.helpers.getMessage = ({
     request,
     response,
     conversation,
     messageReference,
   }) => {
-    const messageRow = app.database.get<{
+    const messageRow = application.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -249,7 +249,7 @@ export default async (app: Application): Promise<void> => {
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
 
-    const readings = app.database
+    const readings = application.database
       .all<{
         id: number;
         createdAt: string;
@@ -326,7 +326,7 @@ export default async (app: Application): Promise<void> => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const endorsements = app.database
+    const endorsements = application.database
       .all<{
         id: number;
         enrollmentId: number | null;
@@ -400,7 +400,7 @@ export default async (app: Application): Promise<void> => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const likes = app.database
+    const likes = application.database
       .all<{
         id: number;
         createdAt: string;
@@ -504,7 +504,7 @@ export default async (app: Application): Promise<void> => {
     (request, response, next) => {
       if (response.locals.conversation === undefined) return next();
 
-      const message = app.server.locals.helpers.getMessage({
+      const message = application.server.locals.helpers.getMessage({
         request,
         response,
         conversation: response.locals.conversation,
@@ -516,12 +516,16 @@ export default async (app: Application): Promise<void> => {
     },
   ];
 
-  app.server.locals.helpers.mayEditMessage = ({ request, response, message }) =>
+  application.server.locals.helpers.mayEditMessage = ({
+    request,
+    response,
+    message,
+  }) =>
     response.locals.enrollment.courseRole === "staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === response.locals.enrollment.id);
 
-  app.server.get<
+  application.server.get<
     {
       courseReference: string;
       conversationReference: string;
@@ -542,7 +546,7 @@ export default async (app: Application): Promise<void> => {
         return next();
 
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -558,7 +562,7 @@ export default async (app: Application): Promise<void> => {
               $${response.locals.message.readings.reverse().map(
                 (reading) => html`
                   <div class="dropdown--menu--item">
-                    $${app.server.locals.partials.user({
+                    $${application.server.locals.partials.user({
                       request,
                       response,
                       enrollment: reading.enrollment,
@@ -590,7 +594,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.post<
+  application.server.post<
     { courseReference: string; conversationReference: string },
     HTML,
     { isAnswer?: "on"; content?: string; isAnonymous?: "on" },
@@ -616,7 +620,7 @@ export default async (app: Application): Promise<void> => {
       )
         return next("Validation");
 
-      const mostRecentMessage = app.server.locals.helpers.getMessage({
+      const mostRecentMessage = application.server.locals.helpers.getMessage({
         request,
         response,
         conversation: response.locals.conversation,
@@ -638,15 +642,15 @@ export default async (app: Application): Promise<void> => {
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${request.body.content}`;
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(contentSource);
-        app.database.run(
+          application.server.locals.partials.contentPreprocessed(contentSource);
+        application.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${response.locals.conversation.id}
           `
         );
-        message = app.database.get<{ id: number; reference: string }>(
+        message = application.database.get<{ id: number; reference: string }>(
           sql`
             UPDATE "messages"
             SET
@@ -657,7 +661,7 @@ export default async (app: Application): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.database.run(
+        application.database.run(
           sql`
             DELETE FROM "readings"
             WHERE
@@ -667,8 +671,10 @@ export default async (app: Application): Promise<void> => {
         );
       } else {
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(request.body.content);
-        app.database.run(
+          application.server.locals.partials.contentPreprocessed(
+            request.body.content
+          );
+        application.database.run(
           sql`
             UPDATE "conversations"
             SET
@@ -695,7 +701,7 @@ export default async (app: Application): Promise<void> => {
             WHERE "id" = ${response.locals.conversation.id}
           `
         );
-        message = app.database.get<{
+        message = application.database.get<{
           id: number;
           reference: string;
         }>(
@@ -731,7 +737,7 @@ export default async (app: Application): Promise<void> => {
             RETURNING *
           `
         )!;
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -742,10 +748,10 @@ export default async (app: Application): Promise<void> => {
           `
         );
       }
-      app.server.locals.helpers.emailNotifications({
+      application.server.locals.helpers.emailNotifications({
         request,
         response,
-        message: app.server.locals.helpers.getMessage({
+        message: application.server.locals.helpers.getMessage({
           request,
           response,
           conversation: response.locals.conversation,
@@ -755,7 +761,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -766,11 +772,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.patch<
+  application.server.patch<
     {
       courseReference: string;
       conversationReference: string;
@@ -792,7 +798,7 @@ export default async (app: Application): Promise<void> => {
     ...messageExistsMiddleware,
     (request, response, next) => {
       if (
-        !app.server.locals.helpers.mayEditMessage({
+        !application.server.locals.helpers.mayEditMessage({
           request,
           response,
           message: response.locals.message,
@@ -812,7 +818,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
@@ -836,7 +842,7 @@ export default async (app: Application): Promise<void> => {
         )
           return next("Validation");
         else {
-          app.database.run(
+          application.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -854,7 +860,7 @@ export default async (app: Application): Promise<void> => {
             response.locals.conversation.authorEnrollment.id ===
               response.locals.message.authorEnrollment.id
           )
-            app.database.run(
+            application.database.run(
               sql`
                 UPDATE "conversations"
                 SET "anonymousAt" = ${
@@ -870,8 +876,10 @@ export default async (app: Application): Promise<void> => {
       if (typeof request.body.content === "string") {
         if (request.body.content.trim() === "") return next("Validation");
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(request.body.content);
-        app.database.run(
+          application.server.locals.partials.contentPreprocessed(
+            request.body.content
+          );
+        application.database.run(
           sql`
             UPDATE "messages"
             SET
@@ -884,14 +892,14 @@ export default async (app: Application): Promise<void> => {
             WHERE "id" = ${response.locals.message.id}
           `
         );
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${response.locals.conversation.id}
           `
         );
-        app.server.locals.helpers.emailNotifications({
+        application.server.locals.helpers.emailNotifications({
           request,
           response,
           message: response.locals.message,
@@ -900,7 +908,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -911,11 +919,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     {
       courseReference: string;
       conversationReference: string;
@@ -938,12 +946,12 @@ export default async (app: Application): Promise<void> => {
       )
         return next();
 
-      app.database.run(
+      application.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`
       );
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -953,11 +961,11 @@ export default async (app: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.get<
+  application.server.get<
     {
       courseReference: string;
       conversationReference: string;
@@ -975,7 +983,7 @@ export default async (app: Application): Promise<void> => {
       if (response.locals.course === undefined) return next();
 
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -991,7 +999,7 @@ export default async (app: Application): Promise<void> => {
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
                   <div class="dropdown--menu--item">
-                    $${app.server.locals.partials.user({
+                    $${application.server.locals.partials.user({
                       request,
                       response,
                       enrollment: like.enrollment,
@@ -1023,7 +1031,7 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  app.server.post<
+  application.server.post<
     {
       courseReference: string;
       conversationReference: string;
@@ -1049,7 +1057,7 @@ export default async (app: Application): Promise<void> => {
       )
         return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           INSERT INTO "likes" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1062,7 +1070,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -1073,11 +1081,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     {
       courseReference: string;
       conversationReference: string;
@@ -1101,7 +1109,7 @@ export default async (app: Application): Promise<void> => {
       );
       if (like === undefined) return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           DELETE FROM "likes" WHERE "id" = ${like.id}
         `
@@ -1109,7 +1117,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -1120,11 +1128,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.locals.helpers.mayEndorseMessage = ({
+  application.server.locals.helpers.mayEndorseMessage = ({
     request,
     response,
     message,
@@ -1151,7 +1159,7 @@ export default async (app: Application): Promise<void> => {
     ...messageExistsMiddleware,
     (request, response, next) => {
       if (
-        app.server.locals.helpers.mayEndorseMessage({
+        application.server.locals.helpers.mayEndorseMessage({
           request,
           response,
           message: response.locals.message,
@@ -1162,7 +1170,7 @@ export default async (app: Application): Promise<void> => {
     },
   ];
 
-  app.server.post<
+  application.server.post<
     {
       courseReference: string;
       conversationReference: string;
@@ -1188,7 +1196,7 @@ export default async (app: Application): Promise<void> => {
       )
         return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`
           INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1199,7 +1207,7 @@ export default async (app: Application): Promise<void> => {
         `
       );
       if (response.locals.conversation.resolvedAt === null)
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "conversations"
             SET "resolvedAt" = ${new Date().toISOString()}
@@ -1209,7 +1217,7 @@ export default async (app: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -1220,11 +1228,11 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.delete<
+  application.server.delete<
     {
       courseReference: string;
       conversationReference: string;
@@ -1248,13 +1256,13 @@ export default async (app: Application): Promise<void> => {
       );
       if (endorsement === undefined) return next("Validation");
 
-      app.database.run(
+      application.database.run(
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
       response.redirect(
         303,
-        `https://${app.configuration.hostname}/courses/${
+        `https://${application.configuration.hostname}/courses/${
           response.locals.course.reference
         }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
@@ -1265,17 +1273,17 @@ export default async (app: Application): Promise<void> => {
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ request, response });
+      application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.locals.helpers.emailNotifications = ({
+  application.server.locals.helpers.emailNotifications = ({
     request,
     response,
     message,
   }) => {
-    app.database.executeTransaction(() => {
-      app.database.run(
+    application.database.executeTransaction(() => {
+      application.database.run(
         sql`
           INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1286,7 +1294,7 @@ export default async (app: Application): Promise<void> => {
         `
       );
       if (message.authorEnrollment !== "no-longer-enrolled")
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
             VALUES (
@@ -1297,7 +1305,7 @@ export default async (app: Application): Promise<void> => {
           `
         );
 
-      const job = app.database.get<{ id: number }>(
+      const job = application.database.get<{ id: number }>(
         sql`
           SELECT "id"
           FROM "emailNotificationMessageJobs"
@@ -1307,7 +1315,7 @@ export default async (app: Application): Promise<void> => {
         `
       );
       if (job === undefined)
-        app.database.run(
+        application.database.run(
           sql`
             INSERT INTO "emailNotificationMessageJobs" (
               "createdAt",
@@ -1326,7 +1334,7 @@ export default async (app: Application): Promise<void> => {
           `
         );
       else
-        app.database.run(
+        application.database.run(
           sql`
             UPDATE "emailNotificationMessageJobs"
             SET
@@ -1342,17 +1350,17 @@ export default async (app: Application): Promise<void> => {
     });
   };
 
-  if (app.process.type === "worker")
-    app.once("start", async () => {
+  if (application.process.type === "worker")
+    application.once("start", async () => {
       while (true) {
         console.log(
           `${new Date().toISOString()}\t${
-            app.process.type
+            application.process.type
           }\temailNotificationMessageJobs\tSTARTED...`
         );
 
-        app.database.executeTransaction(() => {
-          for (const job of app.database.all<{
+        application.database.executeTransaction(() => {
+          for (const job of application.database.all<{
             id: number;
             message: number;
           }>(
@@ -1362,14 +1370,14 @@ export default async (app: Application): Promise<void> => {
               WHERE "expiresAt" < ${new Date().toISOString()}
             `
           )) {
-            app.database.run(
+            application.database.run(
               sql`
                 DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
               `
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.process.type
+                application.process.type
               }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
                 job.message
               }`
@@ -1377,8 +1385,8 @@ export default async (app: Application): Promise<void> => {
           }
         });
 
-        app.database.executeTransaction(() => {
-          for (const job of app.database.all<{
+        application.database.executeTransaction(() => {
+          for (const job of application.database.all<{
             id: number;
             message: number;
           }>(
@@ -1390,7 +1398,7 @@ export default async (app: Application): Promise<void> => {
               ).toISOString()}
             `
           )) {
-            app.database.run(
+            application.database.run(
               sql`
                 UPDATE "emailNotificationMessageJobs"
                 SET "startedAt" = NULL
@@ -1399,7 +1407,7 @@ export default async (app: Application): Promise<void> => {
             );
             console.log(
               `${new Date().toISOString()}\t${
-                app.process.type
+                application.process.type
               }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
                 job.message
               }`
@@ -1408,8 +1416,8 @@ export default async (app: Application): Promise<void> => {
         });
 
         while (true) {
-          const job = app.database.executeTransaction(() => {
-            const job = app.database.get<{
+          const job = application.database.executeTransaction(() => {
+            const job = application.database.get<{
               id: number;
               message: string;
             }>(
@@ -1424,7 +1432,7 @@ export default async (app: Application): Promise<void> => {
               `
             );
             if (job !== undefined)
-              app.database.run(
+              application.database.run(
                 sql`
                   UPDATE "emailNotificationMessageJobs"
                   SET "startedAt" = ${new Date().toISOString()}
@@ -1435,7 +1443,7 @@ export default async (app: Application): Promise<void> => {
           });
           if (job === undefined) break;
 
-          const messageRow = app.database.get<{
+          const messageRow = application.database.get<{
             id: number;
             conversationId: number;
             courseId: number;
@@ -1521,9 +1529,9 @@ export default async (app: Application): Promise<void> => {
             nextConversationReference:
               messageRow.courseNextConversationReference,
           };
-          const contentProcessed = app.server.locals.partials.content({
+          const contentProcessed = application.server.locals.partials.content({
             request: { query: {} } as Parameters<
-              typeof app.server.locals.partials.content
+              typeof application.server.locals.partials.content
             >[0]["request"],
             response: {
               locals: {
@@ -1534,13 +1542,13 @@ export default async (app: Application): Promise<void> => {
                 course,
               },
             } as Parameters<
-              typeof app.server.locals.partials.content
+              typeof application.server.locals.partials.content
             >[0]["response"],
             contentPreprocessed: message.contentPreprocessed,
             decorate: true,
           });
 
-          const enrollments = app.database.all<{
+          const enrollments = application.database.all<{
             id: number;
             userId: number;
             userEmail: string;
@@ -1657,7 +1665,7 @@ export default async (app: Application): Promise<void> => {
             //   case "daily-digests":
             //     break;
             // }
-            app.database.run(
+            application.database.run(
               sql`
                 INSERT INTO "sendEmailJobs" (
                   "createdAt",
@@ -1671,17 +1679,18 @@ export default async (app: Application): Promise<void> => {
                   ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
                   ${JSON.stringify({
                     from: {
-                      name: `${course.name} · ${app.configuration.email.defaults.from.name}`,
-                      address: app.configuration.email.defaults.from.address,
+                      name: `${course.name} · ${application.configuration.email.defaults.from.name}`,
+                      address:
+                        application.configuration.email.defaults.from.address,
                     },
                     to: enrollment.userEmail,
-                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${app.configuration.hostname}`,
-                    references: `courses/${course.reference}/conversations/${conversation.reference}@${app.configuration.hostname}`,
+                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
+                    references: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
                     subject: conversation.title,
                     html: html`
                       <p>
                         <a
-                          href="https://${app.configuration
+                          href="https://${application.configuration
                             .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
                             {
                               messages: {
@@ -1712,7 +1721,7 @@ export default async (app: Application): Promise<void> => {
                       <p>
                         <small>
                           <a
-                            href="https://${app.configuration
+                            href="https://${application.configuration
                               .hostname}/settings/notifications-preferences"
                             >Change Notifications Preferences</a
                           >
@@ -1724,7 +1733,7 @@ export default async (app: Application): Promise<void> => {
               `
             );
 
-            app.database.run(
+            application.database.run(
               sql`
                 INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
                 VALUES (
@@ -1736,14 +1745,14 @@ export default async (app: Application): Promise<void> => {
             );
           }
 
-          app.database.run(
+          application.database.run(
             sql`
               DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
             `
           );
           console.log(
             `${new Date().toISOString()}\t${
-              app.process.type
+              application.process.type
             }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
               job.message
             }`
@@ -1751,11 +1760,11 @@ export default async (app: Application): Promise<void> => {
           await timers.setTimeout(100, undefined, { ref: false });
         }
 
-        app.server.locals.workers.sendEmail?.();
+        application.server.locals.workers.sendEmail?.();
 
         console.log(
           `${new Date().toISOString()}\t${
-            app.process.type
+            application.process.type
           }\temailNotificationMessageJobs\tFINISHED`
         );
 
