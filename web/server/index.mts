@@ -32,7 +32,7 @@ import message, { ApplicationMessage } from "./message.mjs";
 import content, { ApplicationContent } from "./content.mjs";
 import email from "./email.mjs";
 import demonstration from "./demonstration.mjs";
-// import error from "./error.mjs";
+import error from "./error.mjs";
 // import helpers, { ApplicationHelpers } from "./helpers.mjs";
 
 export type Application = {
@@ -249,7 +249,7 @@ if (
         await content(application);
         await email(application);
         await demonstration(application);
-        // await error(application);
+        await error(application);
         // await helpers(application);
 
         switch (application.process.type) {
