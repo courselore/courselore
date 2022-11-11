@@ -3124,13 +3124,11 @@ export default async (application: Application): Promise<void> => {
         isPinned?: "true";
       };
     },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     `/courses/:courseReference/conversations/new(/:type(${application.server.locals.helpers.conversationTypes.join(
       "|"
     )}))?`,
-    ...application.server.locals.middlewares.liveUpdates,
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
@@ -4944,11 +4942,9 @@ export default async (application: Application): Promise<void> => {
         };
       };
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"] &
-      ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...application.server.locals.middlewares.liveUpdates,
     (request, response, next) => {
       if (response.locals.conversation === undefined) return next();
 
