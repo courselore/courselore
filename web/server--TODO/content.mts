@@ -37,14 +37,14 @@ export type ContentPreprocessedPartial = (contentSource: string) => {
 };
 
 export type ContentPartial = ({
-  req,
-  res,
+  request,
+  response,
   id,
   contentPreprocessed,
   decorate,
   search,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
@@ -54,7 +54,7 @@ export type ContentPartial = ({
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<
@@ -71,14 +71,14 @@ export type ContentPartial = ({
 };
 
 export type ContentEditorPartial = ({
-  req,
-  res,
+  request,
+  response,
   name,
   contentSource,
   required,
   compact,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
@@ -89,7 +89,7 @@ export type ContentEditorPartial = ({
       > &
       Partial<IsConversationAccessibleLocals>
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<
@@ -164,8 +164,8 @@ export default async (app: Courselore): Promise<void> => {
   })();
 
   app.server.locals.partials.content = ({
-    req,
-    res,
+    request,
+    response,
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
     decorate = false,
@@ -265,7 +265,7 @@ export default async (app: Courselore): Promise<void> => {
           javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
-              content: ${res.locals.html(
+              content: ${response.locals.html(
                 href.startsWith("mailto:")
                   ? html`Send email to
                       <code class="code">${href.slice("mailto:".length)}</code>`
@@ -276,15 +276,15 @@ export default async (app: Courselore): Promise<void> => {
         );
     }
 
-    if (decorate && res.locals.course !== undefined) {
-      const requestCourseEnrolled = req as express.Request<
+    if (decorate && response.locals.course !== undefined) {
+      const requestCourseEnrolled = request as express.Request<
         {},
         any,
         {},
         {},
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
-      const responseCourseEnrolled = res as express.Response<
+      const responseCourseEnrolled = response as express.Response<
         any,
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
@@ -302,10 +302,10 @@ export default async (app: Courselore): Promise<void> => {
         if (match === null) continue;
         const [courseReference, conversationReference, messageReference] =
           match.slice(1);
-        if (courseReference !== res.locals.course.reference) continue;
+        if (courseReference !== response.locals.course.reference) continue;
         const conversation = app.server.locals.helpers.getConversation({
-          req: requestCourseEnrolled,
-          res: responseCourseEnrolled,
+          request: requestCourseEnrolled,
+          response: responseCourseEnrolled,
           conversationReference,
         });
         if (conversation === undefined) continue;
@@ -313,7 +313,7 @@ export default async (app: Courselore): Promise<void> => {
         url.search = qs.stringify(
           {
             ...Object.fromEntries(url.searchParams),
-            conversations: req.query.conversations,
+            conversations: request.query.conversations,
           },
           { addQueryPrefix: true }
         );
@@ -323,8 +323,8 @@ export default async (app: Courselore): Promise<void> => {
           continue;
         }
         const message = app.server.locals.helpers.getMessage({
-          req: requestCourseEnrolled,
-          res: responseCourseEnrolled,
+          request: requestCourseEnrolled,
+          response: responseCourseEnrolled,
           conversation,
           messageReference,
         });
@@ -369,8 +369,8 @@ export default async (app: Courselore): Promise<void> => {
                   break;
                 case "anonymous":
                   mentionHTML = html`@$${app.server.locals.partials.user({
-                    req,
-                    res,
+                    request,
+                    response,
                     avatar: false,
                   })}`;
                   break;
@@ -407,7 +407,7 @@ export default async (app: Courselore): Promise<void> => {
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${res.locals.course!.id} AND
+                        "enrollments"."course" = ${response.locals.course!.id} AND
                         "enrollments"."reference" = ${enrollmentReference}
                     `
                   );
@@ -432,12 +432,12 @@ export default async (app: Courselore): Promise<void> => {
                   };
                   mentions.add(enrollment.reference);
                   mentionHTML = html`@$${app.server.locals.partials.user({
-                    req,
-                    res,
+                    request,
+                    response,
                     enrollment,
                     avatar: false,
                   })}`;
-                  if (enrollment.user.id === res.locals.user!.id)
+                  if (enrollment.user.id === response.locals.user!.id)
                     mentionHTML = html`<mark class="mark"
                       >$${mentionHTML}</mark
                     >`;
@@ -451,36 +451,36 @@ export default async (app: Courselore): Promise<void> => {
             /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
             (match, conversationReference, messageReference) => {
               const conversation = app.server.locals.helpers.getConversation({
-                req: requestCourseEnrolled,
-                res: responseCourseEnrolled,
+                request: requestCourseEnrolled,
+                response: responseCourseEnrolled,
                 conversationReference,
               });
               if (conversation === undefined) return match;
               if (messageReference === undefined)
                 return html`<a
                   class="reference"
-                  href="https://${app.configuration.hostname}/courses/${res
+                  href="https://${app.configuration.hostname}/courses/${response
                     .locals.course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
-                    { conversations: req.query.conversations },
+                    { conversations: request.query.conversations },
                     { addQueryPrefix: true }
                   )}"
                   >${match}</a
                 >`;
               const message = app.server.locals.helpers.getMessage({
-                req: requestCourseEnrolled,
-                res: responseCourseEnrolled,
+                request: requestCourseEnrolled,
+                response: responseCourseEnrolled,
                 conversation,
                 messageReference,
               });
               if (message === undefined) return match;
               return html`<a
                 class="reference"
-                href="https://${app.configuration.hostname}/courses/${res.locals
+                href="https://${app.configuration.hostname}/courses/${response.locals
                   .course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
-                    conversations: req.query.conversations,
+                    conversations: request.query.conversations,
                     messages: { messageReference: message.reference },
                   },
                   { addQueryPrefix: true }
@@ -510,7 +510,7 @@ export default async (app: Courselore): Promise<void> => {
           hrefConversationReference,
           hrefMessageReference,
         ] = hrefMatch.slice(1);
-        if (hrefCourseReference !== res.locals.course.reference) continue;
+        if (hrefCourseReference !== response.locals.course.reference) continue;
         const textContentMatch = element
           .textContent!.trim()
           .match(/^#(\d+)(?:\/(\d+))?$/);
@@ -523,8 +523,8 @@ export default async (app: Courselore): Promise<void> => {
         )
           continue;
         const conversation = app.server.locals.helpers.getConversation({
-          req: requestCourseEnrolled,
-          res: responseCourseEnrolled,
+          request: requestCourseEnrolled,
+          response: responseCourseEnrolled,
           conversationReference: hrefConversationReference,
         });
         if (conversation === undefined) continue;
@@ -534,16 +534,16 @@ export default async (app: Courselore): Promise<void> => {
             javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
-                content: ${res.locals.html(
+                content: ${response.locals.html(
                   html`
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         padding: var(--space--2);
                       `)}"
                     >
                       $${app.server.locals.partials.conversation({
-                        req: requestCourseEnrolled,
-                        res: responseCourseEnrolled,
+                        request: requestCourseEnrolled,
+                        response: responseCourseEnrolled,
                         conversation,
                       })}
                     </div>
@@ -555,8 +555,8 @@ export default async (app: Courselore): Promise<void> => {
           continue;
         }
         const message = app.server.locals.helpers.getMessage({
-          req: requestCourseEnrolled,
-          res: responseCourseEnrolled,
+          request: requestCourseEnrolled,
+          response: responseCourseEnrolled,
           conversation,
           messageReference: hrefMessageReference,
         });
@@ -566,10 +566,10 @@ export default async (app: Courselore): Promise<void> => {
           javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
-              content: ${res.locals.html(
+              content: ${response.locals.html(
                 html`
                   <div
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       padding: var(--space--2);
                       display: flex;
                       flex-direction: column;
@@ -577,8 +577,8 @@ export default async (app: Courselore): Promise<void> => {
                     `)}"
                   >
                     $${app.server.locals.partials.conversation({
-                      req: requestCourseEnrolled,
-                      res: responseCourseEnrolled,
+                      request: requestCourseEnrolled,
+                      response: responseCourseEnrolled,
                       conversation,
                       message,
                     })}
@@ -616,17 +616,17 @@ export default async (app: Courselore): Promise<void> => {
 
   app.server.get<{}, any, {}, { url?: string }, {}>(
     "/content/image-proxy",
-    asyncHandler(async (req, res) => {
+    asyncHandler(async (request, response) => {
       if (
-        typeof req.query.url !== "string" ||
+        typeof request.query.url !== "string" ||
         !["http://", "https://"].some((urlPrefix) =>
-          req.query.url!.toLowerCase().startsWith(urlPrefix)
+          request.query.url!.toLowerCase().startsWith(urlPrefix)
         )
       )
-        return res.status(422).end();
+        return response.status(422).end();
       await stream.pipeline(
         got
-          .stream(req.query.url, {
+          .stream(request.query.url, {
             throwHttpErrors: false,
             retry: { limit: 0 },
             timeout: { request: 10000 },
@@ -640,14 +640,14 @@ export default async (app: Courselore): Promise<void> => {
               )
                 delete response.headers[header];
           }),
-        res
+        response
       );
     })
   );
 
   app.server.locals.partials.contentEditor = ({
-    req,
-    res,
+    request,
+    response,
     name = "content",
     contentSource = "",
     required = true,
@@ -656,7 +656,7 @@ export default async (app: Courselore): Promise<void> => {
     <div
       key="content-editor"
       class="content-editor"
-      css="${res.locals.css(css`
+      css="${response.locals.css(css`
         min-width: var(--space--0);
       `)}"
     >
@@ -664,7 +664,7 @@ export default async (app: Courselore): Promise<void> => {
         ? html``
         : html`
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 gap: var(--space--1);
 
@@ -745,9 +745,9 @@ export default async (app: Courselore): Promise<void> => {
                         await (
                           await fetch(${JSON.stringify(
                             `https://${app.configuration.hostname}${
-                              res.locals.course === undefined
+                              response.locals.course === undefined
                                 ? ""
-                                : `/courses/${res.locals.course.reference}`
+                                : `/courses/${response.locals.course.reference}`
                             }/content-editor/preview`
                           )}, {
                             cache: "no-store",
@@ -768,7 +768,7 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.html(
+                      content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -801,7 +801,7 @@ export default async (app: Courselore): Promise<void> => {
             </div>
           `}
       <div
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           background-color: var(--color--gray--medium--100);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--800);
@@ -812,7 +812,7 @@ export default async (app: Courselore): Promise<void> => {
         <div class="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               padding: var(--space--1) var(--space--0);
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
@@ -844,7 +844,7 @@ export default async (app: Courselore): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         <p>
                           You may style text with
@@ -877,7 +877,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Heading 1
                         <span class="keyboard-shortcut">
@@ -917,7 +917,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Heading 2
                         <span class="keyboard-shortcut">
@@ -957,7 +957,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Heading 3
                         <span class="keyboard-shortcut">
@@ -999,7 +999,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Bold
                         <span class="keyboard-shortcut">
@@ -1038,7 +1038,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Italic
                         <span class="keyboard-shortcut">
@@ -1077,7 +1077,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Underline
                         <span class="keyboard-shortcut">
@@ -1116,7 +1116,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Strikethrough
                         <span class="keyboard-shortcut">
@@ -1156,7 +1156,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Link
                         <span class="keyboard-shortcut">
@@ -1197,7 +1197,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Bulleted List
                         <span class="keyboard-shortcut">
@@ -1237,7 +1237,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Numbered List
                         <span class="keyboard-shortcut">
@@ -1277,7 +1277,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Checklist
                         <span class="keyboard-shortcut">
@@ -1319,7 +1319,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Quote
                         <span class="keyboard-shortcut">
@@ -1358,7 +1358,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Table
                         <span class="keyboard-shortcut">
@@ -1399,7 +1399,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Disclosure
                         <span class="keyboard-shortcut">
@@ -1439,7 +1439,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Footnote
                         <span class="keyboard-shortcut">
@@ -1481,7 +1481,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Inline Code
                         <span class="keyboard-shortcut">
@@ -1520,7 +1520,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Code Block
                         <span class="keyboard-shortcut">
@@ -1562,7 +1562,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Inline Equation
                         <span class="keyboard-shortcut">
@@ -1602,7 +1602,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Equation Block
                         <span class="keyboard-shortcut">
@@ -1637,7 +1637,7 @@ export default async (app: Courselore): Promise<void> => {
                 <i class="bi bi-calculator-fill"></i>
               </button>
             </div>
-            $${res.locals.course !== undefined
+            $${response.locals.course !== undefined
               ? html`
                   <div>
                     <button
@@ -1646,7 +1646,7 @@ export default async (app: Courselore): Promise<void> => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               Mention User
                               <span class="keyboard-shortcut">(@)</span>
@@ -1670,7 +1670,7 @@ export default async (app: Courselore): Promise<void> => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               Refer to Conversation or Message
                               <span class="keyboard-shortcut">(#)</span>
@@ -1698,7 +1698,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Image
                         <span class="keyboard-shortcut">
@@ -1738,7 +1738,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Attachment
                         <span class="keyboard-shortcut">
@@ -1805,7 +1805,7 @@ export default async (app: Courselore): Promise<void> => {
                   };
 
                   const checkIsSignedIn = ${
-                    res.locals.user === undefined
+                    response.locals.user === undefined
                       ? javascript`
                           (() => {
                             (textarea.tooltip ??= tippy(textarea)).setProps({
@@ -1827,15 +1827,15 @@ export default async (app: Courselore): Promise<void> => {
                   (textarea.uploadingIndicator ??= tippy(textarea)).setProps({
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             display: flex;
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.server.locals.partials.spinner({ req, res })}
+                          $${app.server.locals.partials.spinner({ request, response })}
                           Uploading…
                         </div>
                       `
@@ -1858,7 +1858,7 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${res.locals.html(
+                    content: ${response.locals.html(
                       html`
                         Programmer Mode
                         <span class="secondary">(Monospaced Font)</span>
@@ -1911,13 +1911,13 @@ export default async (app: Courselore): Promise<void> => {
             </div>
           </div>
           <div
-            css="${res.locals.css(css`
+            css="${response.locals.css(css`
               position: relative;
             `)}"
           >
             <div
               class="content-editor--write--textarea--dropdown-menu-target"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
                 position: absolute;
@@ -1927,7 +1927,7 @@ export default async (app: Courselore): Promise<void> => {
               name="${name}"
               $${required ? html`required` : html``}
               class="content-editor--write--textarea input--text input--text--textarea"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 ${compact
                   ? css`
                       height: var(--space--14);
@@ -1979,7 +1979,7 @@ export default async (app: Courselore): Promise<void> => {
                 };
 
                 ${
-                  res.locals.course !== undefined
+                  response.locals.course !== undefined
                     ? javascript`
                         const dropdownMenuTarget = this.closest(".content-editor").querySelector(".content-editor--write--textarea--dropdown-menu-target");
 
@@ -1987,10 +1987,10 @@ export default async (app: Courselore): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   width: var(--space--56);
                                   max-height: var(--space--44);
                                   overflow: auto;
@@ -2045,10 +2045,10 @@ export default async (app: Courselore): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   width: var(--space--72);
                                   max-height: var(--space--44);
                                   overflow: auto;
@@ -2071,10 +2071,10 @@ export default async (app: Courselore): Promise<void> => {
                             trigger: "@",
                             route: ${JSON.stringify(
                               `https://${app.configuration.hostname}/courses/${
-                                res.locals.course.reference
+                                response.locals.course.reference
                               }/${
-                                res.locals.conversation !== undefined
-                                  ? `conversations/${res.locals.conversation.reference}/`
+                                response.locals.conversation !== undefined
+                                  ? `conversations/${response.locals.conversation.reference}/`
                                   : ``
                               }content-editor/mention-user-search`
                             )},
@@ -2083,7 +2083,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `https://${app.configuration.hostname}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${app.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
@@ -2203,7 +2203,7 @@ ${contentSource}</textarea
               <div
                 hidden
                 class="content-editor--loading strong"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   padding: var(--space--4);
                   display: flex;
                   justify-content: center;
@@ -2211,13 +2211,13 @@ ${contentSource}</textarea
                   gap: var(--space--2);
                 `)}"
               >
-                $${app.server.locals.partials.spinner({ req, res })} Loading…
+                $${app.server.locals.partials.spinner({ request, response })} Loading…
               </div>
 
               <div
                 hidden
                 class="content-editor--preview"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   padding: var(--space--4);
                 `)}"
               ></div>
@@ -2234,10 +2234,10 @@ ${contentSource}</textarea
       { search?: string },
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
         Partial<IsConversationAccessibleLocals>
-    > = (req, res, next) => {
+    > = (request, response, next) => {
       if (
-        typeof req.query.search !== "string" ||
-        req.query.search.trim() === ""
+        typeof request.query.search !== "string" ||
+        request.query.search.trim() === ""
       )
         return next("Validation");
 
@@ -2275,22 +2275,22 @@ ${contentSource}</textarea
             FROM "enrollments"
             JOIN "users" ON
               "enrollments"."user" = "users"."id" AND
-              "enrollments"."course" = ${res.locals.course.id} AND
-              "users"."id" != ${res.locals.user.id}
+              "enrollments"."course" = ${response.locals.course.id} AND
+              "users"."id" != ${response.locals.user.id}
             JOIN "usersNameSearchIndex" ON
               "users"."id" = "usersNameSearchIndex"."rowid" AND
               "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                req.query.search,
+                request.query.search,
                 { prefix: true }
               )}
             $${
-              res.locals.conversation !== undefined
+              response.locals.conversation !== undefined
                 ? sql`
                     WHERE EXISTS(
                       SELECT TRUE
                       FROM "conversations"
                       WHERE
-                        "conversations"."id" = ${res.locals.conversation.id} AND (
+                        "conversations"."id" = ${response.locals.conversation.id} AND (
                         "conversations"."participants" = 'everyone' OR (
                           "conversations"."participants" = 'staff' AND
                           "enrollments"."courseRole" = 'staff'
@@ -2331,10 +2331,10 @@ ${contentSource}</textarea
           courseRole: enrollment.courseRole,
         }));
 
-      res.send(
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: html`
             $${enrollments.length === 0
               ? html`
@@ -2359,8 +2359,8 @@ ${contentSource}</textarea
                     `}"
                     >
                       $${app.server.locals.partials.user({
-                        req,
-                        res,
+                        request,
+                        response,
                         enrollment,
                         name: enrollment.user.nameSearchResultHighlight,
                         tooltip: false,
@@ -2409,16 +2409,16 @@ ${contentSource}</textarea
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     ...app.server.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        typeof req.query.search !== "string" ||
-        req.query.search.trim() === ""
+        typeof request.query.search !== "string" ||
+        request.query.search.trim() === ""
       )
         return next("Validation");
 
       let results = html``;
 
-      if (req.query.search.match(/^\d+$/) !== null)
+      if (request.query.search.match(/^\d+$/) !== null)
         for (const conversationRow of app.database.all<{
           reference: string;
         }>(
@@ -2428,17 +2428,17 @@ ${contentSource}</textarea
             JOIN "conversationsReferenceIndex" ON
               "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
               "conversationsReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-                req.query.search,
+                request.query.search,
                 { prefix: true }
               )}
-            WHERE "conversations"."course" = ${res.locals.course.id}
+            WHERE "conversations"."course" = ${response.locals.course.id}
             ORDER BY "conversations"."id" ASC
             LIMIT 5
           `
         )) {
           const conversation = app.server.locals.helpers.getConversation({
-            req,
-            res,
+            request,
+            response,
             conversationReference: conversationRow.reference,
           });
           if (conversation === undefined) continue;
@@ -2459,7 +2459,7 @@ ${contentSource}</textarea
                 <span class="secondary">
                   $${app.server.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
-                    `#${req.query.search}`,
+                    `#${request.query.search}`,
                     { prefix: true }
                   )}
                 </span>
@@ -2470,13 +2470,13 @@ ${contentSource}</textarea
         }
 
       const messageReferenceSearchMatch =
-        req.query.search.match(/^(\d+)\/(\d*)$/);
+        request.query.search.match(/^(\d+)\/(\d*)$/);
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
         const conversation = app.server.locals.helpers.getConversation({
-          req,
-          res,
+          request,
+          response,
           conversationReference,
         });
         if (conversation !== undefined) {
@@ -2504,8 +2504,8 @@ ${contentSource}</textarea
             `
           )) {
             const message = app.server.locals.helpers.getMessage({
-              req,
-              res,
+              request,
+              response,
               conversation,
               messageReference: messageRow.reference,
             });
@@ -2528,7 +2528,7 @@ ${contentSource}</textarea
                     <span class="secondary">
                       $${app.server.locals.helpers.highlightSearchResult(
                         `#${conversation.reference}/${message.reference}`,
-                        `#${req.query.search}`,
+                        `#${request.query.search}`,
                         { prefix: true }
                       )}
                     </span>
@@ -2582,10 +2582,10 @@ ${contentSource}</textarea
           JOIN "conversationsTitleSearchIndex" ON
             "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
             "conversationsTitleSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-              req.query.search,
+              request.query.search,
               { prefix: true }
             )}
-          WHERE "conversations"."course" = ${res.locals.course.id}
+          WHERE "conversations"."course" = ${response.locals.course.id}
           ORDER BY
             "conversationsTitleSearchIndex"."rank" ASC,
             "conversations"."id" DESC
@@ -2593,8 +2593,8 @@ ${contentSource}</textarea
         `
       )) {
         const conversation = app.server.locals.helpers.getConversation({
-          req,
-          res,
+          request,
+          response,
           conversationReference: conversationRow.reference,
         });
         if (conversation === undefined) continue;
@@ -2636,19 +2636,19 @@ ${contentSource}</textarea
           JOIN "usersNameSearchIndex" ON
             "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
             "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-              req.query.search,
+              request.query.search,
               { prefix: true }
             )}
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${res.locals.course.id}
+            "conversations"."course" = ${response.locals.course.id}
           $${
-            res.locals.enrollment.courseRole === "staff"
+            response.locals.enrollment.courseRole === "staff"
               ? sql``
               : sql`
                   WHERE (
                     "messages"."anonymousAt" IS NULL OR
-                    "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                    "messages"."authorEnrollment" = ${response.locals.enrollment.id}
                   )
                 `
           }
@@ -2659,14 +2659,14 @@ ${contentSource}</textarea
         `
       )) {
         const conversation = app.server.locals.helpers.getConversation({
-          req,
-          res,
+          request,
+          response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
         const message = app.server.locals.helpers.getMessage({
-          req,
-          res,
+          request,
+          response,
           conversation,
           messageReference: messageRow.messageReference,
         });
@@ -2694,8 +2694,8 @@ ${contentSource}</textarea
               <div class="secondary">
                 <div>
                   $${app.server.locals.partials.user({
-                    req,
-                    res,
+                    request,
+                    response,
                     enrollment: message.authorEnrollment,
                     name: messageRow.messageAuthorUserNameSearchResultHighlight,
                     tooltip: false,
@@ -2727,12 +2727,12 @@ ${contentSource}</textarea
           JOIN "messagesContentSearchIndex" ON
             "messages"."id" = "messagesContentSearchIndex"."rowid" AND
             "messagesContentSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
-              req.query.search,
+              request.query.search,
               { prefix: true }
             )}
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${res.locals.course.id}
+            "conversations"."course" = ${response.locals.course.id}
           ORDER BY
             "messagesContentSearchIndex"."rank" ASC,
             "messages"."id" DESC
@@ -2740,14 +2740,14 @@ ${contentSource}</textarea
         `
       )) {
         const conversation = app.server.locals.helpers.getConversation({
-          req,
-          res,
+          request,
+          response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
         const message = app.server.locals.helpers.getMessage({
-          req,
-          res,
+          request,
+          response,
           conversation,
           messageReference: messageRow.messageReference,
         });
@@ -2780,10 +2780,10 @@ ${contentSource}</textarea
         `;
       }
 
-      res.send(
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: html`
             $${results === html``
               ? html`
@@ -2807,15 +2807,15 @@ ${contentSource}</textarea
   >(
     "/content-editor/attachments",
     ...app.server.locals.middlewares.isSignedIn,
-    asyncHandler(async (req, res, next) => {
-      if (req.files?.attachments === undefined) return next("Validation");
-      const attachments = Array.isArray(req.files.attachments)
-        ? req.files.attachments
-        : [req.files.attachments];
+    asyncHandler(async (request, response, next) => {
+      if (request.files?.attachments === undefined) return next("Validation");
+      const attachments = Array.isArray(request.files.attachments)
+        ? request.files.attachments
+        : [request.files.attachments];
       if (attachments.length === 0) return next("Validation");
       for (const attachment of attachments) {
         if (attachment.truncated)
-          return res
+          return response
             .status(413)
             .send(
               `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`
@@ -2877,7 +2877,7 @@ ${contentSource}</textarea
           } catch {}
         attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
-      res.send(`\n\n${attachmentsContentSources}`);
+      response.send(`\n\n${attachmentsContentSources}`);
     })
   );
 
@@ -2891,21 +2891,21 @@ ${contentSource}</textarea
         Partial<
           Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
         >
-    > = (req, res, next) => {
+    > = (request, response, next) => {
       if (
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === ""
       )
         return next("Validation");
-      res.send(
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: app.server.locals.partials.content({
-            req,
-            res,
+            request,
+            response,
             contentPreprocessed: app.server.locals.partials.contentPreprocessed(
-              req.body.content
+              request.body.content
             ).contentPreprocessed,
             decorate: true,
           }).contentProcessed,

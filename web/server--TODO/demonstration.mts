@@ -19,7 +19,7 @@ export default async (app: Courselore): Promise<void> => {
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
-  > = asyncHandler(async (req, res) => {
+  > = asyncHandler(async (request, response) => {
     const password = await argon2.hash(
       "courselore",
       app.server.locals.configuration.argon2
@@ -138,7 +138,7 @@ export default async (app: Courselore): Promise<void> => {
         `
       )!;
     });
-    const demonstrationUser = res.locals.user ?? users.shift()!;
+    const demonstrationUser = response.locals.user ?? users.shift()!;
 
     const year = new Date().getFullYear().toString();
     const month = new Date().getMonth() + 1;
@@ -1384,16 +1384,16 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
       }
     }
 
-    if (res.locals.user === undefined)
+    if (response.locals.user === undefined)
       app.server.locals.helpers.Session.open({
-        req,
-        res,
+        request,
+        response,
         userId: demonstrationUser.id,
       });
 
     app.server.locals.helpers.Flash.set({
-      req,
-      res,
+      request,
+      response,
       theme: "green",
       content: html`
         Demonstration data including users, courses, conversations, and so
@@ -1403,7 +1403,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         password is “courselore”.
       `,
     });
-    res.redirect(303, `https://${app.configuration.hostname}`);
+    response.redirect(303, `https://${app.configuration.hostname}`);
   });
 
   app.server.post<
@@ -1426,8 +1426,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/demonstration-data",
-    (req, res, next) => {
-      res.locals.actionAllowedToUserWithUnverifiedEmail = true;
+    (request, response, next) => {
+      response.locals.actionAllowedToUserWithUnverifiedEmail = true;
       next();
     },
     ...app.server.locals.middlewares.isSignedIn,

@@ -25,7 +25,7 @@
             $${app.configuration.host === app.configuration.canonicalHost
               ? html`
                   <div
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       color: var(--color--green--700);
                       background-color: var(--color--green--100);
                       @media (prefers-color-scheme: dark) {
@@ -60,7 +60,7 @@
                     `)}"
                   >
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -523,7 +523,7 @@ new Notification('Example');
     - Page containing the currently open conversation
 - Load pages on scroll instead of button
 - Deal with delete messages/conversations at the edges (before and after)
-  - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
+  - `CAST("reference" AS INTEGER) >= CAST(${request.query.beforeMessageReference} AS INTEGER)`
     - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
 - On sending message on non-chat, it’s scrolling back to the first page.
 - The “mark as read” button doesn’t work because it doesn’t visit all pages.
@@ -917,9 +917,9 @@ const { app, BrowserWindow } = require("electron");
   - Automatic: One transaction per request
     - We shouldn’t keep the transaction open across ticks of the event loop, which entails that it would only work for request handlers that are synchronous.
     - When to commit the transaction:
-      - Listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
-      - Maybe just call `next()` and then look at the `res.statusCode`?
-      - Or maybe overwrite `res.send()` and `res.redirect()`, like we do for logging.
+      - Listen to the `response.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
+      - Maybe just call `next()` and then look at the `response.statusCode`?
+      - Or maybe overwrite `response.send()` and `response.redirect()`, like we do for logging.
   - Manual: Probably the only sensible approach, given the constraint above related to asynchronous handlers
 - Look into using `db.pragma("synchronous = NORMAL");` to improve performance. (<https://github.com/WiseLibs/better-sqlite3/issues/334>)
 - Auto-updater.
@@ -946,7 +946,7 @@ const { app, BrowserWindow } = require("electron");
     - Alternative approach that doesn’t work: Using Caddy. That would be nice because it would reduce the load on the application. But it could be limiting moving forward because it’d be more difficult to do HMAC, and so forth. But none of this matters, Caddy doesn’t seem to support proxying to arbitrary upstreams.
     - Alternative approach: Use a standalone image proxy & fire it up behind Caddy, alongside the main application.
     - Alternative approach: `await` on headers & only pipe the body?
-      - `res.set(msg.headers);`
+      - `response.set(msg.headers);`
       - https://github.com/sindresorhus/got/commit/83bc44c536f0c0ffb743e20e04bf569c51fa5d69
   - Tests:
     ```

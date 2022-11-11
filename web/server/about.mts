@@ -633,8 +633,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.server.locals.partials.contentEditor({
-                req: request,
-                res: response,
+                request: request,
+                response: response,
                 contentSource: dedent`
                   # Reasons to **Love** Courselore’s Message Editor
 

@@ -10,11 +10,11 @@ export default async (app: Courselore): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >("*", ...app.server.locals.middlewares.isSignedOut, (req, res) => {
-    res.redirect(
+  >("*", ...app.server.locals.middlewares.isSignedOut, (request, response) => {
+    response.redirect(
       303,
       `https://${app.configuration.hostname}/sign-in${qs.stringify(
-        { redirect: req.originalUrl.slice(1) },
+        { redirect: request.originalUrl.slice(1) },
         { addQueryPrefix: true }
       )}`
     );
@@ -26,16 +26,16 @@ export default async (app: Courselore): Promise<void> => {
     {},
     { redirect?: string },
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >("*", ...app.server.locals.middlewares.isSignedIn, (req, res) => {
-    if (typeof req.query.redirect === "string")
-      return res.redirect(
+  >("*", ...app.server.locals.middlewares.isSignedIn, (request, response) => {
+    if (typeof request.query.redirect === "string")
+      return response.redirect(
         303,
-        `https://${app.configuration.hostname}/${req.query.redirect}`
+        `https://${app.configuration.hostname}/${request.query.redirect}`
       );
-    res.status(404).send(
+    response.status(404).send(
       app.server.locals.layouts.box({
-        req,
-        res,
+        request,
+        response,
         head: html`<title>404 Not Found · Courselore</title>`,
         body: html`
           <h2 class="heading">
@@ -236,12 +236,12 @@ export default async (app: Courselore): Promise<void> => {
           );
         */
 
-  app.use(((error, req, res, next) => {
+  app.use(((error, request, response, next) => {
     response.locals.log("ERROR", String(error));
 
     if (!["Cross-Site Request Forgery", "Validation"].includes(error))
       error = "Server";
-    res
+    response
       .status(
         error === "Cross-Site Request Forgery"
           ? 403
@@ -251,8 +251,8 @@ export default async (app: Courselore): Promise<void> => {
       )
       .send(
         app.server.locals.layouts.box({
-          req,
-          res,
+          request,
+          response,
           head: html`<title>${error} Error · Courselore</title>`,
           body: html`
             <h2 class="heading">

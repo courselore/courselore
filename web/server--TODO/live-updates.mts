@@ -11,20 +11,20 @@ import {
 // TODO: "LIVE-UPDATES", liveUpdatesNonce
 
 // const liveConnections = new Set<{
-//   req: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-//   res: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+//   request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+//   response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
 // }>();
 // app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
 //   "/live-connection",
-//   (req, res) => {
-//     const connection = { req, res };
+//   (request, response) => {
+//     const connection = { request, response };
 //     liveConnections.add(connection);
-//     res.header("Version", app.version);
-//     res.contentType("text/plain");
+//     response.header("Version", app.version);
+//     response.contentType("text/plain");
 //     const heartbeatAbortController = new AbortController();
 //     (async () => {
 //       while (true) {
-//         res.write("\n");
+//         response.write("\n");
 //         try {
 //           await timers.setTimeout(15 * 1000, undefined, {
 //             ref: false,
@@ -35,14 +35,14 @@ import {
 //         }
 //       }
 //     })();
-//     res.once("close", () => {
+//     response.once("close", () => {
 //       liveConnections.delete(connection);
 //       heartbeatAbortController.abort();
 //       console.log(
 //         `${new Date().toISOString()}\t${app.process.type}\t${
-//           req.ip
-//         }\t${req.method}\t${req.originalUrl}\t${res.statusCode}\t${
-//           (process.hrtime.bigint() - res.locals.responseStartTime) /
+//           request.ip
+//         }\t${request.method}\t${request.originalUrl}\t${response.statusCode}\t${
+//           (process.hrtime.bigint() - response.locals.responseStartTime) /
 //           1_000_000n
 //         }ms`
 //       );
@@ -51,7 +51,7 @@ import {
 // );
 // if (app.process.type === "server")
 //   app.once("stop", () => {
-//     for (const { req, res } of liveConnections) res.end();
+//     for (const { request, response } of liveConnections) response.end();
 //   });
 
 export type ApplicationLiveUpdates = {

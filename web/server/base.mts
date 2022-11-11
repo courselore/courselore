@@ -28,12 +28,12 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >((req, res, next) => {
-    res.locals.css = localCSS();
-    res.locals.html = HTMLForJavaScript();
+  >((request, response, next) => {
+    response.locals.css = localCSS();
+    response.locals.html = HTMLForJavaScript();
     if (
-      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(req.method) &&
-      req.header("CSRF-Protection") !== "true"
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
+      request.header("CSRF-Protection") !== "true"
     )
       next("Cross-Site Request Forgery");
     next();

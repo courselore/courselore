@@ -8,19 +8,19 @@ import { javascript, HTMLForJavaScript } from "@leafac/javascript";
 import { Courselore } from "./index.mjs";
 
 export type GetMessageHelper = ({
-  req,
-  res,
+  request,
+  response,
   conversation,
   messageReference,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
@@ -59,29 +59,29 @@ export type GetMessageHelper = ({
   | undefined;
 
 export type MayEditMessageHelper = ({
-  req,
-  res,
+  request,
+  response,
   message,
 }: {
-  req: express.Request<
+  request: express.Request<
     { courseReference: string; conversationReference: string },
     any,
     {},
     {},
     IsConversationAccessibleLocals
   >;
-  res: express.Response<any, IsConversationAccessibleLocals>;
+  response: express.Response<any, IsConversationAccessibleLocals>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
 }) => boolean;
 
 export type MayEndorseMessageHelper = ({
-  req,
-  res,
+  request,
+  response,
   message,
 }: {
-  req: express.Request<
+  request: express.Request<
     {
       courseReference: string;
       conversationReference: string;
@@ -91,42 +91,42 @@ export type MayEndorseMessageHelper = ({
     {},
     IsConversationAccessibleLocals
   >;
-  res: express.Response<any, IsConversationAccessibleLocals>;
+  response: express.Response<any, IsConversationAccessibleLocals>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
 }) => boolean;
 
 export type CourseLiveUpdater = ({
-  req,
-  res,
+  request,
+  response,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
 }) => Promise<void>;
 
 export type EmailNotificationsMailer = ({
-  req,
-  res,
+  request,
+  response,
   message,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
@@ -137,8 +137,8 @@ export type EmailNotificationsMailer = ({
 
 export default async (app: Courselore): Promise<void> => {
   app.server.locals.helpers.getMessage = ({
-    req,
-    res,
+    request,
+    response,
     conversation,
     messageReference,
   }) => {
@@ -197,7 +197,7 @@ export default async (app: Courselore): Promise<void> => {
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         LEFT JOIN "readings" ON
           "messages"."id" = "readings"."message" AND
-          "readings"."enrollment" = ${res.locals.enrollment.id}
+          "readings"."enrollment" = ${response.locals.enrollment.id}
         WHERE
           "messages"."conversation" = ${conversation.id} AND
           "messages"."reference" = ${messageReference}
@@ -494,23 +494,23 @@ export default async (app: Courselore): Promise<void> => {
     MessageExistsLocals
   >[] = [
     ...app.server.locals.middlewares.isConversationAccessible,
-    (req, res, next) => {
+    (request, response, next) => {
       const message = app.server.locals.helpers.getMessage({
-        req,
-        res,
-        conversation: res.locals.conversation,
-        messageReference: req.params.messageReference,
+        request,
+        response,
+        conversation: response.locals.conversation,
+        messageReference: request.params.messageReference,
       });
       if (message === undefined) return next("route");
-      res.locals.message = message;
+      response.locals.message = message;
       next();
     },
   ];
 
-  app.server.locals.helpers.mayEditMessage = ({ req, res, message }) =>
-    res.locals.enrollment.courseRole === "staff" ||
+  app.server.locals.helpers.mayEditMessage = ({ request, response, message }) =>
+    response.locals.enrollment.courseRole === "staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
-      message.authorEnrollment.id === res.locals.enrollment.id);
+      message.authorEnrollment.id === response.locals.enrollment.id);
 
   app.server.get<
     {
@@ -526,27 +526,27 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
     ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: html`
             <div
               class="dropdown--menu"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
               `)}"
             >
-              $${res.locals.message.readings.reverse().map(
+              $${response.locals.message.readings.reverse().map(
                 (reading) => html`
                   <div class="dropdown--menu--item">
                     $${app.server.locals.partials.user({
-                      req,
-                      res,
+                      request,
+                      response,
                       enrollment: reading.enrollment,
                       size: "xs",
                       bold: false,
@@ -554,7 +554,7 @@ export default async (app: Courselore): Promise<void> => {
                      
                     <span
                       class="secondary"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                       `)}"
@@ -588,46 +588,46 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
     ...app.server.locals.middlewares.isConversationAccessible,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        ![undefined, "on"].includes(req.body.isAnswer) ||
-        (req.body.isAnswer === "on" &&
-          res.locals.conversation.type !== "question") ||
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === "" ||
-        ![undefined, "on"].includes(req.body.isAnonymous) ||
-        (req.body.isAnonymous === "on" &&
-          res.locals.enrollment.courseRole === "staff")
+        ![undefined, "on"].includes(request.body.isAnswer) ||
+        (request.body.isAnswer === "on" &&
+          response.locals.conversation.type !== "question") ||
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === "" ||
+        ![undefined, "on"].includes(request.body.isAnonymous) ||
+        (request.body.isAnonymous === "on" &&
+          response.locals.enrollment.courseRole === "staff")
       )
         return next("Validation");
 
       const mostRecentMessage = app.server.locals.helpers.getMessage({
-        req,
-        res,
-        conversation: res.locals.conversation,
+        request,
+        response,
+        conversation: response.locals.conversation,
         messageReference: String(
-          res.locals.conversation.nextMessageReference - 1
+          response.locals.conversation.nextMessageReference - 1
         ),
       });
       let message: { id: number; reference: string };
       if (
-        res.locals.conversation.type === "chat" &&
+        response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
         mostRecentMessage.authorEnrollment !== "no-longer-enrolled" &&
-        res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
+        response.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
         mostRecentMessage.anonymousAt === null &&
-        req.body.isAnonymous !== "on" &&
+        request.body.isAnonymous !== "on" &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
           5 * 60 * 1000
       ) {
-        const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
+        const contentSource = `${mostRecentMessage.contentSource}\n\n${request.body.content}`;
         const contentPreprocessed =
           app.server.locals.partials.contentPreprocessed(contentSource);
         app.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${res.locals.conversation.id}
+            WHERE "id" = ${response.locals.conversation.id}
           `
         );
         message = app.database.get<{ id: number; reference: string }>(
@@ -646,37 +646,37 @@ export default async (app: Courselore): Promise<void> => {
             DELETE FROM "readings"
             WHERE
               "message" = ${mostRecentMessage.id} AND
-              "enrollment" != ${res.locals.enrollment.id}
+              "enrollment" != ${response.locals.enrollment.id}
           `
         );
       } else {
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(req.body.content);
+          app.server.locals.partials.contentPreprocessed(request.body.content);
         app.database.run(
           sql`
             UPDATE "conversations"
             SET
               "updatedAt" = ${new Date().toISOString()},
               "nextMessageReference" = ${
-                res.locals.conversation.nextMessageReference + 1
+                response.locals.conversation.nextMessageReference + 1
               }
               $${
-                res.locals.conversation.type === "question" &&
-                res.locals.enrollment.courseRole === "staff" &&
-                req.body.isAnswer === "on" &&
-                res.locals.conversation.resolvedAt === null
+                response.locals.conversation.type === "question" &&
+                response.locals.enrollment.courseRole === "staff" &&
+                request.body.isAnswer === "on" &&
+                response.locals.conversation.resolvedAt === null
                   ? sql`,
                       "resolvedAt" = ${new Date().toISOString()}
                     `
-                  : res.locals.conversation.type === "question" &&
-                    res.locals.enrollment.courseRole === "student" &&
-                    req.body.isAnswer !== "on"
+                  : response.locals.conversation.type === "question" &&
+                    response.locals.enrollment.courseRole === "student" &&
+                    request.body.isAnswer !== "on"
                   ? sql`,
                       "resolvedAt" = ${null}
                     `
                   : sql``
               }
-            WHERE "id" = ${res.locals.conversation.id}
+            WHERE "id" = ${response.locals.conversation.id}
           `
         );
         message = app.database.get<{
@@ -697,14 +697,14 @@ export default async (app: Courselore): Promise<void> => {
             )
             VALUES (
               ${new Date().toISOString()},
-              ${res.locals.conversation.id},
-              ${String(res.locals.conversation.nextMessageReference)},
-              ${res.locals.enrollment.id},
+              ${response.locals.conversation.id},
+              ${String(response.locals.conversation.nextMessageReference)},
+              ${response.locals.enrollment.id},
               ${
-                req.body.isAnonymous === "on" ? new Date().toISOString() : null
+                request.body.isAnonymous === "on" ? new Date().toISOString() : null
               },
-              ${req.body.isAnswer === "on" ? new Date().toISOString() : null},
-              ${req.body.content},
+              ${request.body.isAnswer === "on" ? new Date().toISOString() : null},
+              ${request.body.content},
               ${contentPreprocessed.contentPreprocessed},
               ${contentPreprocessed.contentSearch}
             )
@@ -717,36 +717,36 @@ export default async (app: Courselore): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${res.locals.enrollment.id}
+              ${response.locals.enrollment.id}
             )
           `
         );
       }
       app.server.locals.helpers.emailNotifications({
-        req,
-        res,
+        request,
+        response,
         message: app.server.locals.helpers.getMessage({
-          req,
-          res,
-          conversation: res.locals.conversation,
+          request,
+          response,
+          conversation: response.locals.conversation,
           messageReference: message.reference,
         })!,
       });
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -770,25 +770,25 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...messageExistsMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
         !app.server.locals.helpers.mayEditMessage({
-          req,
-          res,
-          message: res.locals.message,
+          request,
+          response,
+          message: response.locals.message,
         })
       )
         return next("route");
 
-      if (typeof req.body.isAnswer === "string")
+      if (typeof request.body.isAnswer === "string")
         if (
-          !["true", "false"].includes(req.body.isAnswer) ||
-          res.locals.message.reference === "1" ||
-          res.locals.conversation.type !== "question" ||
-          (req.body.isAnswer === "true" &&
-            res.locals.message.answerAt !== null) ||
-          (req.body.isAnswer === "false" &&
-            res.locals.message.answerAt === null)
+          !["true", "false"].includes(request.body.isAnswer) ||
+          response.locals.message.reference === "1" ||
+          response.locals.conversation.type !== "question" ||
+          (request.body.isAnswer === "true" &&
+            response.locals.message.answerAt !== null) ||
+          (request.body.isAnswer === "false" &&
+            response.locals.message.answerAt === null)
         )
           return next("Validation");
         else
@@ -796,21 +796,21 @@ export default async (app: Courselore): Promise<void> => {
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
-                req.body.isAnswer === "true" ? new Date().toISOString() : null
+                request.body.isAnswer === "true" ? new Date().toISOString() : null
               }
-              WHERE "id" = ${res.locals.message.id}
+              WHERE "id" = ${response.locals.message.id}
             `
           );
 
-      if (typeof req.body.isAnonymous === "string")
+      if (typeof request.body.isAnonymous === "string")
         if (
-          !["true", "false"].includes(req.body.isAnonymous) ||
-          res.locals.message.authorEnrollment === "no-longer-enrolled" ||
-          res.locals.message.authorEnrollment.courseRole === "staff" ||
-          (req.body.isAnonymous === "true" &&
-            res.locals.message.anonymousAt !== null) ||
-          (req.body.isAnonymous === "false" &&
-            res.locals.message.anonymousAt === null)
+          !["true", "false"].includes(request.body.isAnonymous) ||
+          response.locals.message.authorEnrollment === "no-longer-enrolled" ||
+          response.locals.message.authorEnrollment.courseRole === "staff" ||
+          (request.body.isAnonymous === "true" &&
+            response.locals.message.anonymousAt !== null) ||
+          (request.body.isAnonymous === "false" &&
+            response.locals.message.anonymousAt === null)
         )
           return next("Validation");
         else {
@@ -818,77 +818,77 @@ export default async (app: Courselore): Promise<void> => {
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
-                req.body.isAnonymous === "true"
+                request.body.isAnonymous === "true"
                   ? new Date().toISOString()
                   : null
               }
-              WHERE "id" = ${res.locals.message.id}
+              WHERE "id" = ${response.locals.message.id}
             `
           );
           if (
-            res.locals.message.reference === "1" &&
-            res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
-            res.locals.conversation.authorEnrollment.id ===
-              res.locals.message.authorEnrollment.id
+            response.locals.message.reference === "1" &&
+            response.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
+            response.locals.conversation.authorEnrollment.id ===
+              response.locals.message.authorEnrollment.id
           )
             app.database.run(
               sql`
                 UPDATE "conversations"
                 SET "anonymousAt" = ${
-                  req.body.isAnonymous === "true"
+                  request.body.isAnonymous === "true"
                     ? new Date().toISOString()
                     : null
                 }
-                WHERE "id" = ${res.locals.conversation.id}
+                WHERE "id" = ${response.locals.conversation.id}
               `
             );
         }
 
-      if (typeof req.body.content === "string") {
-        if (req.body.content.trim() === "") return next("Validation");
+      if (typeof request.body.content === "string") {
+        if (request.body.content.trim() === "") return next("Validation");
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(req.body.content);
+          app.server.locals.partials.contentPreprocessed(request.body.content);
         app.database.run(
           sql`
             UPDATE "messages"
             SET
-              "contentSource" = ${req.body.content},
+              "contentSource" = ${request.body.content},
               "contentPreprocessed" = ${
                 contentPreprocessed.contentPreprocessed
               },
               "contentSearch" = ${contentPreprocessed.contentSearch},
               "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${res.locals.message.id}
+            WHERE "id" = ${response.locals.message.id}
           `
         );
         app.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${res.locals.conversation.id}
+            WHERE "id" = ${response.locals.conversation.id}
           `
         );
         app.server.locals.helpers.emailNotifications({
-          req,
-          res,
-          message: res.locals.message,
+          request,
+          response,
+          message: response.locals.message,
         });
       }
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -909,23 +909,23 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       app.database.run(
-        sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
+        sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`
       );
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -944,27 +944,27 @@ export default async (app: Courselore): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...app.server.locals.middlewares.isEnrolledInCourse,
     ...messageExistsMiddleware,
-    (req, res) => {
-      res.send(
+    (request, response) => {
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: html`
             <div
               class="dropdown--menu"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
               `)}"
             >
-              $${res.locals.message.likes.reverse().map(
+              $${response.locals.message.likes.reverse().map(
                 (like) => html`
                   <div class="dropdown--menu--item">
                     $${app.server.locals.partials.user({
-                      req,
-                      res,
+                      request,
+                      response,
                       enrollment: like.enrollment,
                       size: "xs",
                       bold: false,
@@ -972,7 +972,7 @@ export default async (app: Courselore): Promise<void> => {
                      
                     <span
                       class="secondary"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                       `)}"
@@ -1010,12 +1010,12 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...messageExistsMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        res.locals.message.likes.some(
+        response.locals.message.likes.some(
           (like) =>
             like.enrollment !== "no-longer-enrolled" &&
-            like.enrollment.id === res.locals.enrollment.id
+            like.enrollment.id === response.locals.enrollment.id
         )
       )
         return next("Validation");
@@ -1025,26 +1025,26 @@ export default async (app: Courselore): Promise<void> => {
           INSERT INTO "likes" ("createdAt", "message", "enrollment")
           VALUES (
             ${new Date().toISOString()},
-            ${res.locals.message.id},
-            ${res.locals.enrollment.id}
+            ${response.locals.message.id},
+            ${response.locals.enrollment.id}
           )
         `
       );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -1064,11 +1064,11 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     ...messageExistsMiddleware,
-    (req, res, next) => {
-      const like = res.locals.message.likes.find(
+    (request, response, next) => {
+      const like = response.locals.message.likes.find(
         (like) =>
           like.enrollment !== "no-longer-enrolled" &&
-          like.enrollment.id === res.locals.enrollment.id
+          like.enrollment.id === response.locals.enrollment.id
       );
       if (like === undefined) return next("Validation");
 
@@ -1078,26 +1078,26 @@ export default async (app: Courselore): Promise<void> => {
         `
       );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.locals.helpers.mayEndorseMessage = ({ req, res, message }) =>
-    res.locals.enrollment.courseRole === "staff" &&
-    res.locals.conversation.type === "question" &&
+  app.server.locals.helpers.mayEndorseMessage = ({ request, response, message }) =>
+    response.locals.enrollment.courseRole === "staff" &&
+    response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.answerAt !== null &&
     (message.authorEnrollment === "no-longer-enrolled" ||
@@ -1116,12 +1116,12 @@ export default async (app: Courselore): Promise<void> => {
     MayEndorseMessageLocals
   >[] = [
     ...messageExistsMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
         app.server.locals.helpers.mayEndorseMessage({
-          req,
-          res,
-          message: res.locals.message,
+          request,
+          response,
+          message: response.locals.message,
         })
       )
         return next();
@@ -1145,12 +1145,12 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        res.locals.message.endorsements.some(
+        response.locals.message.endorsements.some(
           (endorsement) =>
             endorsement.enrollment !== "no-longer-enrolled" &&
-            endorsement.enrollment.id === res.locals.enrollment.id
+            endorsement.enrollment.id === response.locals.enrollment.id
         )
       )
         return next("Validation");
@@ -1160,34 +1160,34 @@ export default async (app: Courselore): Promise<void> => {
           INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
           VALUES (
             ${new Date().toISOString()},
-            ${res.locals.message.id},
-            ${res.locals.enrollment.id}
+            ${response.locals.message.id},
+            ${response.locals.enrollment.id}
           )
         `
       );
-      if (res.locals.conversation.resolvedAt === null)
+      if (response.locals.conversation.resolvedAt === null)
         app.database.run(
           sql`
             UPDATE "conversations"
             SET "resolvedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${res.locals.conversation.id}
+            WHERE "id" = ${response.locals.conversation.id}
           `
         );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -1207,11 +1207,11 @@ export default async (app: Courselore): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,
-    (req, res, next) => {
-      const endorsement = res.locals.message.endorsements.find(
+    (request, response, next) => {
+      const endorsement = response.locals.message.endorsements.find(
         (endorsement) =>
           endorsement.enrollment !== "no-longer-enrolled" &&
-          endorsement.enrollment.id === res.locals.enrollment.id
+          endorsement.enrollment.id === response.locals.enrollment.id
       );
       if (endorsement === undefined) return next("Validation");
 
@@ -1219,24 +1219,24 @@ export default async (app: Courselore): Promise<void> => {
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
-  app.server.locals.helpers.emailNotifications = ({ req, res, message }) => {
+  app.server.locals.helpers.emailNotifications = ({ request, response, message }) => {
     app.database.executeTransaction(() => {
       app.database.run(
         sql`
@@ -1244,7 +1244,7 @@ export default async (app: Courselore): Promise<void> => {
           VALUES (
             ${new Date().toISOString()},
             ${message.id},
-            ${res.locals.enrollment.id}
+            ${response.locals.enrollment.id}
           )
         `
       );
@@ -1485,10 +1485,10 @@ export default async (app: Courselore): Promise<void> => {
               messageRow.courseNextConversationReference,
           };
           const contentProcessed = app.server.locals.partials.content({
-            req: { query: {} } as Parameters<
+            request: { query: {} } as Parameters<
               typeof app.server.locals.partials.content
-            >[0]["req"],
-            res: {
+            >[0]["request"],
+            response: {
               locals: {
                 css: localCSS(),
                 html: HTMLForJavaScript(),
@@ -1498,7 +1498,7 @@ export default async (app: Courselore): Promise<void> => {
               },
             } as Parameters<
               typeof app.server.locals.partials.content
-            >[0]["res"],
+            >[0]["response"],
             contentPreprocessed: message.contentPreprocessed,
             decorate: true,
           });
