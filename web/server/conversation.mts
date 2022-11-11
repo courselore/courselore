@@ -23,14 +23,14 @@ export type ConversationType = typeof conversationTypes[number];
 export const conversationTypes = ["question", "note", "chat"] as const;
 
 export type ConversationLayout = ({
-  req,
-  res,
+  request,
+  response,
   head,
   sidebarOnSmallScreen,
   mainIsAScrollingPane,
   body,
 }: {
-  req: express.Request<
+  request: express.Request<
     { courseReference: string; conversationReference?: string },
     HTML,
     {},
@@ -55,7 +55,7 @@ export type ConversationLayout = ({
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
       Partial<IsConversationAccessibleLocals>
   >;
-  res: express.Response<
+  response: express.Response<
     HTML,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
       Partial<IsConversationAccessibleLocals>
@@ -67,20 +67,20 @@ export type ConversationLayout = ({
 }) => HTML;
 
 export type ConversationPartial = ({
-  req,
-  res,
+  request,
+  response,
   conversation,
   searchResult,
   message,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
@@ -112,18 +112,18 @@ export type ConversationPartial = ({
 }) => HTML;
 
 export type GetConversationHelper = ({
-  req,
-  res,
+  request,
+  response,
   conversationReference,
 }: {
-  req: express.Request<
+  request: express.Request<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
-  res: express.Response<
+  response: express.Response<
     any,
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >;
@@ -243,18 +243,18 @@ export default async (app: Application): Promise<void> => {
   };
 
   app.server.locals.layouts.conversation = ({
-    req,
-    res,
+    request,
+    response,
     head,
     sidebarOnSmallScreen = false,
     mainIsAScrollingPane = false,
     body,
   }) => {
     const search =
-      typeof req.query.conversations?.search === "string" &&
-      req.query.conversations.search.trim() !== ""
+      typeof request.query.conversations?.search === "string" &&
+      request.query.conversations.search.trim() !== ""
         ? app.server.locals.helpers.sanitizeSearch(
-            req.query.conversations.search
+            request.query.conversations.search
           )
         : undefined;
 
@@ -269,18 +269,18 @@ export default async (app: Application): Promise<void> => {
       tagsReferences?: string[];
     } = {};
     if (
-      typeof req.query.conversations?.filters === "object" &&
-      req.query.conversations.filters !== null
+      typeof request.query.conversations?.filters === "object" &&
+      request.query.conversations.filters !== null
     ) {
       if (
-        typeof req.query.conversations.filters.isUnread === "string" &&
-        ["true", "false"].includes(req.query.conversations.filters.isUnread)
+        typeof request.query.conversations.filters.isUnread === "string" &&
+        ["true", "false"].includes(request.query.conversations.filters.isUnread)
       )
-        filters.isUnread = req.query.conversations.filters.isUnread;
-      if (Array.isArray(req.query.conversations.filters.types)) {
+        filters.isUnread = request.query.conversations.filters.isUnread;
+      if (Array.isArray(request.query.conversations.filters.types)) {
         const types = [
           ...new Set(
-            req.query.conversations.filters.types.filter((type) =>
+            request.query.conversations.filters.types.filter((type) =>
               conversationTypes.includes(type)
             )
           ),
@@ -289,22 +289,26 @@ export default async (app: Application): Promise<void> => {
       }
       if (
         filters.types?.includes("question") &&
-        typeof req.query.conversations.filters.isResolved === "string" &&
-        ["true", "false"].includes(req.query.conversations.filters.isResolved)
-      )
-        filters.isResolved = req.query.conversations.filters.isResolved;
-      if (
-        filters.types?.includes("note") &&
-        typeof req.query.conversations.filters.isAnnouncement === "string" &&
+        typeof request.query.conversations.filters.isResolved === "string" &&
         ["true", "false"].includes(
-          req.query.conversations.filters.isAnnouncement
+          request.query.conversations.filters.isResolved
         )
       )
-        filters.isAnnouncement = req.query.conversations.filters.isAnnouncement;
-      if (Array.isArray(req.query.conversations.filters.participantses)) {
+        filters.isResolved = request.query.conversations.filters.isResolved;
+      if (
+        filters.types?.includes("note") &&
+        typeof request.query.conversations.filters.isAnnouncement ===
+          "string" &&
+        ["true", "false"].includes(
+          request.query.conversations.filters.isAnnouncement
+        )
+      )
+        filters.isAnnouncement =
+          request.query.conversations.filters.isAnnouncement;
+      if (Array.isArray(request.query.conversations.filters.participantses)) {
         const participantses = [
           ...new Set(
-            req.query.conversations.filters.participantses.filter(
+            request.query.conversations.filters.participantses.filter(
               (conversationParticipants) =>
                 conversationParticipantses.includes(conversationParticipants)
             )
@@ -313,16 +317,16 @@ export default async (app: Application): Promise<void> => {
         if (participantses.length > 0) filters.participantses = participantses;
       }
       if (
-        typeof req.query.conversations.filters.isPinned === "string" &&
-        ["true", "false"].includes(req.query.conversations.filters.isPinned)
+        typeof request.query.conversations.filters.isPinned === "string" &&
+        ["true", "false"].includes(request.query.conversations.filters.isPinned)
       )
-        filters.isPinned = req.query.conversations.filters.isPinned;
-      if (Array.isArray(req.query.conversations.filters.tagsReferences)) {
+        filters.isPinned = request.query.conversations.filters.isPinned;
+      if (Array.isArray(request.query.conversations.filters.tagsReferences)) {
         const tagsReferences = [
           ...new Set(
-            req.query.conversations.filters.tagsReferences.filter(
+            request.query.conversations.filters.tagsReferences.filter(
               (tagReference) =>
-                res.locals.tags.find(
+                response.locals.tags.find(
                   (tag) => tagReference === tag.reference
                 ) !== undefined
             )
@@ -332,16 +336,16 @@ export default async (app: Application): Promise<void> => {
       }
       if (
         Object.keys(filters).length > 0 &&
-        req.query.conversations.filters.isQuick === "true"
+        request.query.conversations.filters.isQuick === "true"
       )
-        filters.isQuick = req.query.conversations.filters.isQuick;
+        filters.isQuick = request.query.conversations.filters.isQuick;
     }
 
     const conversationsPageSize = 999999; // TODO: Pagination: 15
     const conversationsPage =
-      typeof req.query.conversations?.conversationsPage === "string" &&
-      req.query.conversations.conversationsPage.match(/^[1-9][0-9]*$/)
-        ? Number(req.query.conversations.conversationsPage)
+      typeof request.query.conversations?.conversationsPage === "string" &&
+      request.query.conversations.conversationsPage.match(/^[1-9][0-9]*$/)
+        ? Number(request.query.conversations.conversationsPage)
         : 1;
 
     const conversationsWithSearchResults = app.database
@@ -394,12 +398,12 @@ export default async (app: Application): Promise<void> => {
                   JOIN "messages" ON
                     "enrollments"."id" = "messages"."authorEnrollment"
                     $${
-                      res.locals.enrollment.courseRole === "staff"
+                      response.locals.enrollment.courseRole === "staff"
                         ? sql``
                         : sql`
                             AND (
                               "messages"."anonymousAt" IS NULL OR
-                              "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                              "messages"."authorEnrollment" = ${response.locals.enrollment.id}
                             )
                           `
                     }
@@ -429,9 +433,9 @@ export default async (app: Application): Promise<void> => {
                 `
           }
           WHERE
-            "conversations"."course" = ${res.locals.course.id} AND (
+            "conversations"."course" = ${response.locals.course.id} AND (
               "conversations"."participants" = 'everyone' $${
-                res.locals.enrollment.courseRole === "staff"
+                response.locals.enrollment.courseRole === "staff"
                   ? sql`OR "conversations"."participants" = 'staff'`
                   : sql``
               } OR EXISTS(
@@ -440,7 +444,7 @@ export default async (app: Application): Promise<void> => {
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
                   "conversationSelectedParticipants"."enrollment" = ${
-                    res.locals.enrollment.id
+                    response.locals.enrollment.id
                   }
               )
             )
@@ -466,7 +470,9 @@ export default async (app: Application): Promise<void> => {
                       FROM "messages"
                       LEFT JOIN "readings" ON
                         "messages"."id" = "readings"."message" AND
-                        "readings"."enrollment" = ${res.locals.enrollment.id}
+                        "readings"."enrollment" = ${
+                          response.locals.enrollment.id
+                        }
                       WHERE
                         "conversations"."id" = "messages"."conversation" AND
                         "readings"."id" IS NULL
@@ -548,8 +554,8 @@ export default async (app: Application): Promise<void> => {
       )
       .map((conversationWithSearchResult) => {
         const conversation = app.server.locals.helpers.getConversation({
-          req,
-          res,
+          request,
+          response,
           conversationReference: conversationWithSearchResult.reference,
         });
         assert(conversation !== undefined);
@@ -569,8 +575,8 @@ export default async (app: Application): Promise<void> => {
             ? ({
                 type: "messageAuthorUserName",
                 message: app.server.locals.helpers.getMessage({
-                  req,
-                  res,
+                  request,
+                  response,
                   conversation,
                   messageReference:
                     conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
@@ -585,8 +591,8 @@ export default async (app: Application): Promise<void> => {
             ? ({
                 type: "messageContent",
                 message: app.server.locals.helpers.getMessage({
-                  req,
-                  res,
+                  request,
+                  response,
                   conversation,
                   messageReference:
                     conversationWithSearchResult.messageContentSearchResultMessageReference,
@@ -629,8 +635,8 @@ export default async (app: Application): Promise<void> => {
     //               "content",
     //               "tagsReferences"
     //         FROM "conversationDrafts"
-    //         WHERE "course" = ${res.locals.course.id} AND
-    //               "authorEnrollment" = ${res.locals.enrollment.id}
+    //         WHERE "course" = ${response.locals.course.id} AND
+    //               "authorEnrollment" = ${response.locals.enrollment.id}
     //         ORDER BY coalesce("updatedAt", "createdAt") DESC
     //       `
     //     )
@@ -648,9 +654,9 @@ export default async (app: Application): Promise<void> => {
     //                   "name",
     //                   "staffOnlyAt"
     //             FROM "tags"
-    //             WHERE "course" = ${res.locals.course.id}
+    //             WHERE "course" = ${response.locals.course.id}
     //                   $${
-    //                     res.locals.enrollment.courseRole === "student"
+    //                     response.locals.enrollment.courseRole === "student"
     //                       ? sql`AND "tags"."staffOnlyAt" IS NULL`
     //                       : sql``
     //                   }
@@ -673,7 +679,7 @@ export default async (app: Application): Promise<void> => {
     //           createdAt: conversationDraft.createdAt,
     //           updatedAt: conversationDraft.updatedAt,
     //           reference: conversationDraft.reference,
-    //           authorEnrollment: res.locals.enrollment,
+    //           authorEnrollment: response.locals.enrollment,
     //           anonymousAt: null,
     //           type: conversationDraft.type,
     //           resolvedAt: null,
@@ -697,8 +703,8 @@ export default async (app: Application): Promise<void> => {
     // );
 
     return app.server.locals.layouts.application({
-      req,
-      res,
+      request,
+      response,
       head,
       extraHeaders: html`
         $${sidebarOnSmallScreen
@@ -706,20 +712,20 @@ export default async (app: Application): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   @media (min-width: 900px) {
                     display: none;
                   }
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     padding: var(--space--1) var(--space--0);
                   `)}"
                 >
                   <a
-                    href="https://${app.configuration.hostname}/courses/${res
-                      .locals.course.reference}"
+                    href="https://${app.configuration
+                      .hostname}/courses/${response.locals.course.reference}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>
@@ -733,15 +739,16 @@ export default async (app: Application): Promise<void> => {
       body: html`
         <div
           key="layout--conversation"
-          css="${res.locals.css(css`
+          css="${response.locals.css(css`
             width: 100%;
             height: 100%;
             display: flex;
           `)}"
         >
           <div
-            key="layout--conversation--sidebar--/${res.locals.course.reference}"
-            css="${res.locals.css(css`
+            key="layout--conversation--sidebar--/${response.locals.course
+              .reference}"
+            css="${response.locals.css(css`
               display: flex;
               flex-direction: column;
               @media (max-width: 899px) {
@@ -763,7 +770,7 @@ export default async (app: Application): Promise<void> => {
             `)}"
           >
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -778,7 +785,7 @@ export default async (app: Application): Promise<void> => {
               `)}"
             >
               <div
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
@@ -787,7 +794,7 @@ export default async (app: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -799,7 +806,7 @@ export default async (app: Application): Promise<void> => {
                   `)}"
                 >
                   <div
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -810,20 +817,20 @@ export default async (app: Application): Promise<void> => {
                   >
                     <div
                       class="strong"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
                       `)}"
                     >
                       New:
                     </div>
-                    $${res.locals.enrollment.courseRole === "staff"
+                    $${response.locals.enrollment.courseRole === "staff"
                       ? html`
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--blue"
@@ -832,9 +839,9 @@ export default async (app: Application): Promise<void> => {
                           </a>
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -843,9 +850,9 @@ export default async (app: Application): Promise<void> => {
                           </a>
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -856,9 +863,9 @@ export default async (app: Application): Promise<void> => {
                       : html`
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--blue"
@@ -867,9 +874,9 @@ export default async (app: Application): Promise<void> => {
                           </a>
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -878,9 +885,9 @@ export default async (app: Application): Promise<void> => {
                           </a>
                           <a
                             href="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
+                              .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
-                              { conversations: req.query.conversations },
+                              { conversations: request.query.conversations },
                               { addQueryPrefix: true }
                             )}"
                             class="button button--transparent"
@@ -893,7 +900,7 @@ export default async (app: Application): Promise<void> => {
                   <hr class="separator" />
 
                   <div
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -905,17 +912,17 @@ export default async (app: Application): Promise<void> => {
                   >
                     <div
                       class="strong"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
                       `)}"
                     >
                       Quick Filters:
                     </div>
-                    $${res.locals.enrollment.courseRole === "staff"
+                    $${response.locals.enrollment.courseRole === "staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
-                            req.query.conversations?.filters,
+                            request.query.conversations?.filters,
                             {
                               isQuick: "true",
                               types: ["question"],
@@ -925,7 +932,7 @@ export default async (app: Application): Promise<void> => {
                             ? html`
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}${req.path}${qs.stringify(
+                                    .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: {
                                         filters: {
@@ -934,9 +941,9 @@ export default async (app: Application): Promise<void> => {
                                           isResolved: "false",
                                         },
                                       },
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -949,11 +956,11 @@ export default async (app: Application): Promise<void> => {
                             : html`
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}${req.path}${qs.stringify(
+                                    .hostname}${request.path}${qs.stringify(
                                     {
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -966,7 +973,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html``}
                     $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
+                      request.query.conversations?.filters,
                       {
                         isQuick: "true",
                         types: ["note"],
@@ -976,7 +983,7 @@ export default async (app: Application): Promise<void> => {
                       ? html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -985,8 +992,8 @@ export default async (app: Application): Promise<void> => {
                                     isAnnouncement: "true",
                                   },
                                 },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -999,10 +1006,10 @@ export default async (app: Application): Promise<void> => {
                       : html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -1012,10 +1019,10 @@ export default async (app: Application): Promise<void> => {
                             Announcements
                           </a>
                         `}
-                    $${res.locals.enrollment.courseRole === "student"
+                    $${response.locals.enrollment.courseRole === "student"
                       ? html`
                           $${!util.isDeepStrictEqual(
-                            req.query.conversations?.filters,
+                            request.query.conversations?.filters,
                             {
                               isQuick: "true",
                               types: ["question"],
@@ -1024,7 +1031,7 @@ export default async (app: Application): Promise<void> => {
                             ? html`
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}${req.path}${qs.stringify(
+                                    .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: {
                                         filters: {
@@ -1032,9 +1039,9 @@ export default async (app: Application): Promise<void> => {
                                           types: ["question"],
                                         },
                                       },
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -1047,11 +1054,11 @@ export default async (app: Application): Promise<void> => {
                             : html`
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}${req.path}${qs.stringify(
+                                    .hostname}${request.path}${qs.stringify(
                                     {
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -1064,7 +1071,7 @@ export default async (app: Application): Promise<void> => {
                         `
                       : html``}
                     $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
+                      request.query.conversations?.filters,
                       {
                         isQuick: "true",
                         types: ["chat"],
@@ -1073,7 +1080,7 @@ export default async (app: Application): Promise<void> => {
                       ? html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -1081,8 +1088,8 @@ export default async (app: Application): Promise<void> => {
                                     types: ["chat"],
                                   },
                                 },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -1095,10 +1102,10 @@ export default async (app: Application): Promise<void> => {
                       : html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -1109,7 +1116,7 @@ export default async (app: Application): Promise<void> => {
                           </a>
                         `}
                     $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
+                      request.query.conversations?.filters,
                       {
                         isQuick: "true",
                         isUnread: "true",
@@ -1118,7 +1125,7 @@ export default async (app: Application): Promise<void> => {
                       ? html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
                                 conversations: {
                                   filters: {
@@ -1126,8 +1133,8 @@ export default async (app: Application): Promise<void> => {
                                     isUnread: "true",
                                   },
                                 },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -1140,10 +1147,10 @@ export default async (app: Application): Promise<void> => {
                       : html`
                           <a
                             href="https://${app.configuration
-                              .hostname}${req.path}${qs.stringify(
+                              .hostname}${request.path}${qs.stringify(
                               {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
+                                messages: request.query.messages,
+                                newConversation: request.query.newConversation,
                               },
                               { addQueryPrefix: true }
                             )}"
@@ -1159,7 +1166,7 @@ export default async (app: Application): Promise<void> => {
 
                   <div
                     key="search-and-filters"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -1168,7 +1175,7 @@ export default async (app: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         display: flex;
                         column-gap: var(--space--4);
                         row-gap: var(--space--2);
@@ -1242,7 +1249,7 @@ export default async (app: Application): Promise<void> => {
                           Filters
                         </span>
                       </label>
-                      $${req.query.conversations === undefined &&
+                      $${request.query.conversations === undefined &&
                       conversationsWithSearchResults.length > 0 &&
                       conversationsWithSearchResults.some(
                         ({ conversation }) =>
@@ -1253,9 +1260,9 @@ export default async (app: Application): Promise<void> => {
                             <form
                               method="POST"
                               action="https://${app.configuration
-                                .hostname}/courses/${res.locals.course
+                                .hostname}/courses/${response.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
-                                { redirect: req.originalUrl.slice(1) },
+                                { redirect: request.originalUrl.slice(1) },
                                 { addQueryPrefix: true }
                               )}"
                             >
@@ -1274,10 +1281,10 @@ export default async (app: Application): Promise<void> => {
                       key="search-and-filters--form"
                       method="GET"
                       action="https://${app.configuration
-                        .hostname}${req.path}${qs.stringify(
+                        .hostname}${request.path}${qs.stringify(
                         {
-                          messages: req.query.messages,
-                          newConversation: req.query.newConversation,
+                          messages: request.query.messages,
+                          newConversation: request.query.newConversation,
                         },
                         { addQueryPrefix: true }
                       )}"
@@ -1287,7 +1294,7 @@ export default async (app: Application): Promise<void> => {
                         filters.isQuick !== "true")
                         ? html``
                         : html`hidden`}
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--1);
@@ -1299,7 +1306,7 @@ export default async (app: Application): Promise<void> => {
                       <div
                         key="search"
                         $${search !== undefined ? html`` : html`hidden`}
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
@@ -1309,7 +1316,7 @@ export default async (app: Application): Promise<void> => {
                           type="text"
                           name="conversations[search]"
                           value="${search !== undefined
-                            ? req.query.conversations!.search!
+                            ? request.query.conversations!.search!
                             : ""}"
                           placeholder="Search…"
                           $${search !== undefined ? html`` : html`disabled`}
@@ -1330,13 +1337,15 @@ export default async (app: Application): Promise<void> => {
                           ? html`
                               <a
                                 href="https://${app.configuration
-                                  .hostname}${req.path}${qs.stringify(
+                                  .hostname}${request.path}${qs.stringify(
                                   {
                                     conversations: {
-                                      filters: req.query.conversations?.filters,
+                                      filters:
+                                        request.query.conversations?.filters,
                                     },
-                                    messages: req.query.messages,
-                                    newConversation: req.query.newConversation,
+                                    messages: request.query.messages,
+                                    newConversation:
+                                      request.query.newConversation,
                                   },
                                   { addQueryPrefix: true }
                                 )}"
@@ -1360,7 +1369,7 @@ export default async (app: Application): Promise<void> => {
                         filters.isQuick !== "true"
                           ? html``
                           : html`hidden`}
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
@@ -1369,7 +1378,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="label">
                           <div class="label--text">Unread</div>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1383,7 +1392,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isUnread]"
                                 value="true"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isUnread === "true"
                                   ? html`checked`
                                   : html``}
@@ -1414,7 +1423,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isUnread]"
                                 value="false"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isUnread === "false"
                                   ? html`checked`
                                   : html``}
@@ -1444,7 +1453,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1460,7 +1469,7 @@ export default async (app: Application): Promise<void> => {
                                     type="checkbox"
                                     name="conversations[filters][types][]"
                                     value="${conversationType}"
-                                    $${req.query.conversations?.filters?.types?.includes(
+                                    $${request.query.conversations?.filters?.types?.includes(
                                       conversationType
                                     )
                                       ? html`checked`
@@ -1515,7 +1524,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Question Resolved</p>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1529,7 +1538,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isResolved]"
                                 value="false"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isResolved === "false"
                                   ? html`checked`
                                   : html``}
@@ -1563,7 +1572,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isResolved]"
                                 value="true"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isResolved === "true"
                                   ? html`checked`
                                   : html``}
@@ -1596,7 +1605,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Announcement</p>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1610,7 +1619,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isAnnouncement]"
                                 value="false"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isAnnouncement === "false"
                                   ? html`checked`
                                   : html``}
@@ -1644,7 +1653,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isAnnouncement]"
                                 value="true"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isAnnouncement === "true"
                                   ? html`checked`
                                   : html``}
@@ -1677,7 +1686,7 @@ export default async (app: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Participants</p>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1693,7 +1702,7 @@ export default async (app: Application): Promise<void> => {
                                     type="checkbox"
                                     name="conversations[filters][participantses][]"
                                     value="${conversationParticipants}"
-                                    $${req.query.conversations?.filters?.participantses?.includes(
+                                    $${request.query.conversations?.filters?.participantses?.includes(
                                       conversationParticipants
                                     )
                                       ? html`checked`
@@ -1747,7 +1756,7 @@ export default async (app: Application): Promise<void> => {
                             </button>
                           </div>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1761,7 +1770,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isPinned]"
                                 value="true"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isPinned === "true"
                                   ? html`checked`
                                   : html``}
@@ -1792,7 +1801,7 @@ export default async (app: Application): Promise<void> => {
                                 type="checkbox"
                                 name="conversations[filters][isPinned]"
                                 value="false"
-                                $${req.query.conversations?.filters
+                                $${request.query.conversations?.filters
                                   ?.isPinned === "false"
                                   ? html`checked`
                                   : html``}
@@ -1819,7 +1828,7 @@ export default async (app: Application): Promise<void> => {
                           </div>
                         </div>
 
-                        $${res.locals.tags.length === 0
+                        $${response.locals.tags.length === 0
                           ? html``
                           : html`
                               <div class="label">
@@ -1839,18 +1848,18 @@ export default async (app: Application): Promise<void> => {
                                   </button>
                                 </div>
                                 <div
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     display: flex;
                                     flex-wrap: wrap;
                                     column-gap: var(--space--6);
                                     row-gap: var(--space--2);
                                   `)}"
                                 >
-                                  $${res.locals.tags.map(
+                                  $${response.locals.tags.map(
                                     (tag) => html`
                                       <div
                                         key="tag--${tag.reference}"
-                                        css="${res.locals.css(css`
+                                        css="${response.locals.css(css`
                                           display: flex;
                                           gap: var(--space--2);
                                         `)}"
@@ -1862,7 +1871,7 @@ export default async (app: Application): Promise<void> => {
                                             type="checkbox"
                                             name="conversations[filters][tagsReferences][]"
                                             value="${tag.reference}"
-                                            $${req.query.conversations?.filters?.tagsReferences?.includes(
+                                            $${request.query.conversations?.filters?.tagsReferences?.includes(
                                               tag.reference
                                             )
                                               ? html`checked`
@@ -1906,7 +1915,7 @@ export default async (app: Application): Promise<void> => {
                               </div>
                             `}
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             margin-top: var(--space--2);
                             display: flex;
                             gap: var(--space--2);
@@ -1925,12 +1934,12 @@ export default async (app: Application): Promise<void> => {
                             ? html`
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}${req.path}${qs.stringify(
+                                    .hostname}${request.path}${qs.stringify(
                                     {
                                       conversations: { search },
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -1950,13 +1959,13 @@ export default async (app: Application): Promise<void> => {
             </div>
 
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 flex: 1;
                 overflow: auto;
               `)}"
             >
               <div
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
@@ -1965,7 +1974,7 @@ export default async (app: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -1979,7 +1988,7 @@ export default async (app: Application): Promise<void> => {
                   $${conversationsWithSearchResults.length === 0
                     ? html`
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             display: flex;
                             flex-direction: column;
                             align-items: center;
@@ -1995,7 +2004,7 @@ export default async (app: Application): Promise<void> => {
                         $${conversationsPage > 1
                           ? html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   display: flex;
                                   justify-content: center;
                                 `)}"
@@ -2004,13 +2013,13 @@ export default async (app: Application): Promise<void> => {
                                   href="${qs.stringify(
                                     {
                                       conversations: {
-                                        ...req.query.conversations,
+                                        ...request.query.conversations,
                                         conversationsPage:
                                           conversationsPage - 1,
                                       },
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -2027,19 +2036,19 @@ export default async (app: Application): Promise<void> => {
 
                         <div
                           key="conversations"
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             margin-top: var(--space---2);
                           `)}"
                           onload="${javascript`
                             ${
-                              res.locals.conversation !== undefined
+                              response.locals.conversation !== undefined
                                 ? javascript`
                                     window.setTimeout(() => {
                                       if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                        `https://${app.configuration.hostname}/courses/${res.locals.course.reference}`
+                                        `https://${app.configuration.hostname}/courses/${response.locals.course.reference}`
                                       )})) return;
                                       this.querySelector('[key="conversation--${
-                                        res.locals.conversation.reference
+                                        response.locals.conversation.reference
                                       }"]')?.scrollIntoView({ block: "center" });
                                     });
                                   `
@@ -2050,15 +2059,17 @@ export default async (app: Application): Promise<void> => {
                           $${conversationsWithSearchResults.map(
                             ({ conversation, searchResult }) => {
                               const isSelected =
-                                conversation.id === res.locals.conversation?.id;
+                                conversation.id ===
+                                response.locals.conversation?.id;
                               return html`
                                 <a
                                   key="conversation--${conversation.reference}"
                                   href="https://${app.configuration
-                                    .hostname}/courses/${res.locals.course
+                                    .hostname}/courses/${response.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     {
-                                      conversations: req.query.conversations,
+                                      conversations:
+                                        request.query.conversations,
                                       messages: {
                                         messageReference:
                                           searchResult?.message?.reference,
@@ -2069,7 +2080,7 @@ export default async (app: Application): Promise<void> => {
                                   class="button ${isSelected
                                     ? "button--blue"
                                     : "button--transparent"}"
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
                                     );
@@ -2087,20 +2098,20 @@ export default async (app: Application): Promise<void> => {
                                   `)}"
                                 >
                                   <div
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       flex: 1;
                                       max-width: 100%;
                                     `)}"
                                   >
                                     $${app.server.locals.partials.conversation({
-                                      req,
-                                      res,
+                                      request,
+                                      response,
                                       conversation,
                                       searchResult,
                                     })}
                                   </div>
                                   <div
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       width: var(--space--4);
                                       display: flex;
                                       justify-content: flex-end;
@@ -2112,12 +2123,12 @@ export default async (app: Application): Promise<void> => {
                                         conversation.readingsCount;
                                       return unreadCount === 0 ||
                                         conversation.id ===
-                                          res.locals.conversation?.id
+                                          response.locals.conversation?.id
                                         ? html``
                                         : html`
                                             <button
                                               class="button button--tight button--blue"
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 font-size: var(
                                                   --font-size--2xs
                                                 );
@@ -2150,7 +2161,7 @@ export default async (app: Application): Promise<void> => {
                           ).join(html`
                             <hr
                               class="separator"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 margin: var(--space---px) var(--space--0);
                               `)}"
                             />
@@ -2161,7 +2172,7 @@ export default async (app: Application): Promise<void> => {
                               <hr class="separator" />
 
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   display: flex;
                                   justify-content: center;
                                 `)}"
@@ -2170,13 +2181,13 @@ export default async (app: Application): Promise<void> => {
                                   href="${qs.stringify(
                                     {
                                       conversations: {
-                                        ...req.query.conversations,
+                                        ...request.query.conversations,
                                         conversationsPage:
                                           conversationsPage + 1,
                                       },
-                                      messages: req.query.messages,
+                                      messages: request.query.messages,
                                       newConversation:
-                                        req.query.newConversation,
+                                        request.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
@@ -2195,8 +2206,8 @@ export default async (app: Application): Promise<void> => {
           </div>
 
           <div
-            key="layout--conversation--main--${req.path}"
-            css="${res.locals.css(css`
+            key="layout--conversation--main--${request.path}"
+            css="${response.locals.css(css`
               overflow: auto;
               flex: 1;
               ${sidebarOnSmallScreen
@@ -2209,7 +2220,7 @@ export default async (app: Application): Promise<void> => {
             `)}"
           >
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
@@ -2231,7 +2242,7 @@ export default async (app: Application): Promise<void> => {
                 ? body
                 : html`
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         min-width: var(--width--0);
                         max-width: var(--width--prose);
                         display: flex;
@@ -2253,22 +2264,22 @@ export default async (app: Application): Promise<void> => {
   };
 
   app.server.locals.partials.conversation = ({
-    req,
-    res,
+    request,
+    response,
     conversation,
     searchResult = undefined,
     message = undefined,
   }) => html`
     <div
       key="partial--conversation--${conversation.reference}"
-      css="${res.locals.css(css`
+      css="${response.locals.css(css`
         display: flex;
         flex-direction: column;
         gap: var(--space--1);
       `)}"
     >
       <div
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2324,24 +2335,24 @@ export default async (app: Application): Promise<void> => {
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
-                    const loading = ${res.locals.html(html`
+                    const loading = ${response.locals.html(html`
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
                         `)}"
                       >
                         $${app.server.locals.partials.spinner({
-                          req,
-                          res,
+                          request,
+                          response,
                         })}
                         Loading…
                       </div>
                     `)};
                     loading.remove();
                     
-                    const content = ${res.locals.html(html``)};
+                    const content = ${response.locals.html(html``)};
                     content.remove();
                     
                     (this.tooltip ??= tippy(this)).setProps({
@@ -2353,7 +2364,7 @@ export default async (app: Application): Promise<void> => {
                         leafac.loadPartial(content, await (await fetch("https://${
                           app.configuration.hostname
                         }/courses/${
-                    res.locals.course.reference
+                    response.locals.course.reference
                   }/conversations/${
                     conversation.reference
                   }/selected-participants", { cache: "no-store" })).text());
@@ -2376,8 +2387,8 @@ export default async (app: Application): Promise<void> => {
             ? html`
                 <div>
                   ($${app.server.locals.partials.user({
-                    req,
-                    res,
+                    request,
+                    response,
                     enrollment: conversation.selectedParticipants[0],
                     size: "xs",
                     bold: false,
@@ -2412,21 +2423,22 @@ export default async (app: Application): Promise<void> => {
 
       <div
         class="secondary"
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
         `)}"
       >
         $${app.server.locals.partials.user({
-          req,
-          res,
+          request,
+          response,
           enrollment: conversation.authorEnrollment,
           anonymous:
             conversation.anonymousAt === null
               ? false
-              : res.locals.enrollment.courseRole === "staff" ||
+              : response.locals.enrollment.courseRole === "staff" ||
                 (conversation.authorEnrollment !== "no-longer-enrolled" &&
-                  conversation.authorEnrollment.id === res.locals.enrollment.id)
+                  conversation.authorEnrollment.id ===
+                    response.locals.enrollment.id)
               ? "reveal"
               : true,
           size: "xs",
@@ -2435,7 +2447,7 @@ export default async (app: Application): Promise<void> => {
 
       <div
         class="secondary"
-        css="${res.locals.css(css`
+        css="${response.locals.css(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2481,7 +2493,7 @@ export default async (app: Application): Promise<void> => {
         ? html``
         : html`
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 display: flex;
@@ -2525,8 +2537,8 @@ export default async (app: Application): Promise<void> => {
             <div>
               <div>
                 $${app.server.locals.partials.user({
-                  req,
-                  res,
+                  request,
+                  response,
                   enrollment: searchResult.message.authorEnrollment,
                   name: searchResult.highlight,
                 })}
@@ -2544,17 +2556,17 @@ export default async (app: Application): Promise<void> => {
             <div>
               <div>
                 $${app.server.locals.partials.user({
-                  req,
-                  res,
+                  request,
+                  response,
                   enrollment: searchResult.message.authorEnrollment,
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
-                      : res.locals.enrollment.courseRole === "staff" ||
+                      : response.locals.enrollment.courseRole === "staff" ||
                         (searchResult.message.authorEnrollment !==
                           "no-longer-enrolled" &&
                           searchResult.message.authorEnrollment.id ===
-                            res.locals.enrollment.id)
+                            response.locals.enrollment.id)
                       ? "reveal"
                       : true,
                 })}
@@ -2567,16 +2579,16 @@ export default async (app: Application): Promise<void> => {
             <div>
               <div>
                 $${app.server.locals.partials.user({
-                  req,
-                  res,
+                  request,
+                  response,
                   enrollment: message.authorEnrollment,
                   anonymous:
                     message.anonymousAt === null
                       ? false
-                      : res.locals.enrollment.courseRole === "staff" ||
+                      : response.locals.enrollment.courseRole === "staff" ||
                         (message.authorEnrollment !== "no-longer-enrolled" &&
                           message.authorEnrollment.id ===
-                            res.locals.enrollment.id)
+                            response.locals.enrollment.id)
                       ? "reveal"
                       : true,
                 })}
@@ -2595,14 +2607,14 @@ export default async (app: Application): Promise<void> => {
 
   app.server.locals.middlewares.isConversationAccessible = [
     ...app.server.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
+    (request, response, next) => {
       const conversation = app.server.locals.helpers.getConversation({
-        req,
-        res,
-        conversationReference: req.params.conversationReference,
+        request,
+        response,
+        conversationReference: request.params.conversationReference,
       });
       if (conversation === undefined) return next("route");
-      res.locals.conversation = conversation;
+      response.locals.conversation = conversation;
       next();
     },
   ];
@@ -2616,33 +2628,33 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
     ...app.server.locals.middlewares.isConversationAccessible,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        res.locals.conversation.participants === "everyone" ||
-        res.locals.conversation.selectedParticipants.length <= 1
+        response.locals.conversation.participants === "everyone" ||
+        response.locals.conversation.selectedParticipants.length <= 1
       )
         return next("Validation");
 
-      res.send(
+      response.send(
         app.server.locals.layouts.partial({
-          req,
-          res,
+          request,
+          response,
           body: html`
             <div
               class="dropdown--menu"
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
               `)}"
             >
-              $${res.locals.conversation.selectedParticipants.map(
+              $${response.locals.conversation.selectedParticipants.map(
                 (selectedParticipant) => html`
                   <div class="dropdown--menu--item">
                     $${app.server.locals.partials.user({
-                      req,
-                      res,
+                      request,
+                      response,
                       enrollment: selectedParticipant,
                       size: "xs",
                       bold: false,
@@ -2658,8 +2670,8 @@ export default async (app: Application): Promise<void> => {
   );
 
   app.server.locals.helpers.getConversation = ({
-    req,
-    res,
+    request,
+    response,
     conversationReference,
   }) => {
     const conversationRow = app.database.get<{
@@ -2680,7 +2692,9 @@ export default async (app: Application): Promise<void> => {
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+      authorEnrollmentCourseRole:
+        | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+        | null;
       participants: ConversationParticipants;
       anonymousAt: string | null;
       type: ConversationType;
@@ -2722,10 +2736,10 @@ export default async (app: Application): Promise<void> => {
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         WHERE
-          "conversations"."course" = ${res.locals.course.id} AND
+          "conversations"."course" = ${response.locals.course.id} AND
           "conversations"."reference" = ${conversationReference} AND (
             "conversations"."participants" = 'everyone' $${
-              res.locals.enrollment.courseRole === "staff"
+              response.locals.enrollment.courseRole === "staff"
                 ? sql`OR "conversations"."participants" = 'staff'`
                 : sql``
             } OR EXISTS(
@@ -2734,7 +2748,7 @@ export default async (app: Application): Promise<void> => {
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
                 "conversationSelectedParticipants"."enrollment" = ${
-                  res.locals.enrollment.id
+                  response.locals.enrollment.id
                 }
             )
           )
@@ -2823,7 +2837,7 @@ export default async (app: Application): Promise<void> => {
                 JOIN "users" ON "enrollments"."user" = "users"."id"
                 WHERE
                   "conversation" = ${conversation.id} AND
-                  "enrollments"."id" != ${res.locals.enrollment.id}
+                  "enrollments"."id" != ${response.locals.enrollment.id}
                 ORDER BY
                   "enrollments"."courseRole" = 'staff' DESC,
                   "users"."name" ASC
@@ -2866,7 +2880,7 @@ export default async (app: Application): Promise<void> => {
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           $${
-            res.locals.enrollment.courseRole === "student"
+            response.locals.enrollment.courseRole === "student"
               ? sql`AND "tags"."staffOnlyAt" IS NULL`
               : sql``
           }
@@ -2901,7 +2915,7 @@ export default async (app: Application): Promise<void> => {
         JOIN "messages" ON
           "readings"."message" = "messages"."id" AND
           "messages"."conversation" = ${conversation.id}
-        WHERE "readings"."enrollment" = ${res.locals.enrollment.id}
+        WHERE "readings"."enrollment" = ${response.locals.enrollment.id}
       `
     )!.readingsCount;
 
@@ -2923,7 +2937,9 @@ export default async (app: Application): Promise<void> => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
-              enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+              enrollmentCourseRole:
+                | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+                | null;
             }>(
               sql`
                 SELECT
@@ -3001,26 +3017,26 @@ export default async (app: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
-    (req, res, next) => {
-      res.locals.actionAllowedOnArchivedCourse = true;
+    (request, response, next) => {
+      response.locals.actionAllowedOnArchivedCourse = true;
       next();
     },
     ...app.server.locals.middlewares.isEnrolledInCourse,
-    (req, res) => {
+    (request, response) => {
       const messages = app.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
           FROM "messages"
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
-            "conversations"."course" = ${res.locals.course.id}
+            "conversations"."course" = ${response.locals.course.id}
           LEFT JOIN "readings" ON
             "messages"."id" = "readings"."message" AND
-            "readings"."enrollment" = ${res.locals.enrollment.id}
+            "readings"."enrollment" = ${response.locals.enrollment.id}
           WHERE
             "readings"."id" IS NULL AND (
             "conversations"."participants" = 'everyone' $${
-              res.locals.enrollment.courseRole === "staff"
+              response.locals.enrollment.courseRole === "staff"
                 ? sql`
                     OR "conversations"."participants" = 'staff'
                   `
@@ -3032,7 +3048,7 @@ export default async (app: Application): Promise<void> => {
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
                 "conversationSelectedParticipants"."enrollment" = ${
-                  res.locals.enrollment.id
+                  response.locals.enrollment.id
                 }
             )
           )
@@ -3046,14 +3062,16 @@ export default async (app: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${res.locals.enrollment.id}
+              ${response.locals.enrollment.id}
             )
           `
         );
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/${
-          typeof req.query.redirect === "string" ? req.query.redirect : ""
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : ""
         }`
       );
     }
@@ -3085,11 +3103,13 @@ export default async (app: Application): Promise<void> => {
     )}))?`,
     ...app.server.locals.middlewares.isEnrolledInCourse,
     ...app.server.locals.middlewares.liveUpdates,
-    (req, res) => {
+    (request, response) => {
       const conversationDraft =
-        typeof req.query.newConversation?.conversationDraftReference ===
+        typeof request.query.newConversation?.conversationDraftReference ===
           "string" &&
-        req.query.newConversation.conversationDraftReference.match(/^[0-9]+$/)
+        request.query.newConversation.conversationDraftReference.match(
+          /^[0-9]+$/
+        )
           ? app.database.get<{
               createdAt: string;
               updatedAt: string | null;
@@ -3114,61 +3134,69 @@ export default async (app: Application): Promise<void> => {
                   "tagsReferences"
                 FROM "conversationDrafts"
                 WHERE
-                  "course" = ${res.locals.course.id} AND
-                  "reference" = ${req.query.newConversation.conversationDraftReference} AND
-                  "authorEnrollment" = ${res.locals.enrollment.id}
+                  "course" = ${response.locals.course.id} AND
+                  "reference" = ${request.query.newConversation.conversationDraftReference} AND
+                  "authorEnrollment" = ${response.locals.enrollment.id}
               `
             )
           : undefined;
 
-      res.send(
-        (res.locals.conversationsCount === 0
+      response.send(
+        (response.locals.conversationsCount === 0
           ? app.server.locals.layouts.main
           : app.server.locals.layouts.conversation)({
-          req,
-          res,
+          request,
+          response,
           head: html`
             <title>
-              ${req.params.type === "note"
+              ${request.params.type === "note"
                 ? `Post ${
-                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                    response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"
                   } Note`
-                : req.params.type === "question"
+                : request.params.type === "question"
                 ? `Ask ${
-                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                    response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"
                   } Question`
-                : req.params.type === "chat"
+                : request.params.type === "chat"
                 ? `Start ${
-                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                    response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"
                   } Chat`
                 : `Start ${
-                    res.locals.conversationsCount === 0 ? "the First" : "a New"
+                    response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"
                   } Conversation`}
-              · ${res.locals.course.name} · Courselore
+              · ${response.locals.course.name} · Courselore
             </title>
           `,
           body: html`
             <h2 class="heading">
-              $${req.params.type === "note"
+              $${request.params.type === "note"
                 ? html`
                     $${conversationTypeIcon.note.fill} Post
-                    ${res.locals.conversationsCount === 0
+                    ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
                     Note
                   `
-                : req.params.type === "question"
+                : request.params.type === "question"
                 ? html`
                     $${conversationTypeIcon.question.fill} Ask
-                    ${res.locals.conversationsCount === 0
+                    ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
                     Question
                   `
-                : req.params.type === "chat"
+                : request.params.type === "chat"
                 ? html`
                     $${conversationTypeIcon.chat.fill} Start
-                    ${res.locals.conversationsCount === 0
+                    ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
                     Chat
@@ -3176,7 +3204,7 @@ export default async (app: Application): Promise<void> => {
                 : html`
                     <i class="bi bi-chat-text-fill"></i>
                     Start
-                    ${res.locals.conversationsCount === 0
+                    ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
                     Conversation
@@ -3185,28 +3213,28 @@ export default async (app: Application): Promise<void> => {
 
             <form
               method="POST"
-              action="https://${app.configuration.hostname}/courses/${res.locals
-                .course.reference}/conversations${qs.stringify(
-                { conversations: req.query.conversations },
+              action="https://${app.configuration.hostname}/courses/${response
+                .locals.course.reference}/conversations${qs.stringify(
+                { conversations: request.query.conversations },
                 { addQueryPrefix: true }
               )}"
               novalidate
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `)}"
             >
               <div
-                $${typeof req.params.type === "string" &&
-                conversationTypes.includes(req.params.type)
+                $${typeof request.params.type === "string" &&
+                conversationTypes.includes(request.params.type)
                   ? html`hidden`
                   : html``}
                 class="label"
               >
                 <p class="label--text">Type</p>
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                     flex-wrap: wrap;
                     column-gap: var(--space--8);
@@ -3223,11 +3251,11 @@ export default async (app: Application): Promise<void> => {
                           name="type"
                           value="${conversationType}"
                           required
-                          $${req.params.type === conversationType ||
-                          (req.params.type === undefined &&
+                          $${request.params.type === conversationType ||
+                          (request.params.type === undefined &&
                             (conversationDraft?.type === conversationType ||
                               (conversationDraft === undefined &&
-                                req.query.newConversation?.type ===
+                                request.query.newConversation?.type ===
                                   conversationType)))
                             ? html`checked`
                             : html``}
@@ -3241,7 +3269,8 @@ export default async (app: Application): Promise<void> => {
                                 )};
 
                               ${
-                                res.locals.enrollment.courseRole === "staff"
+                                response.locals.enrollment.courseRole ===
+                                "staff"
                                   ? javascript`
                                       const notification = form.querySelector('[key="new-conversation--announcement"]');
                                       notification.hidden = ${JSON.stringify(
@@ -3282,9 +3311,9 @@ export default async (app: Application): Promise<void> => {
                 conversationDraft.title.trim() !== ""
                   ? html`value="${conversationDraft.title}"`
                   : conversationDraft === undefined &&
-                    typeof req.query.newConversation?.title === "string" &&
-                    req.query.newConversation.title.trim() !== ""
-                  ? html`value="${req.query.newConversation.title}"`
+                    typeof request.query.newConversation?.title === "string" &&
+                    request.query.newConversation.title.trim() !== ""
+                  ? html`value="${request.query.newConversation.title}"`
                   : html``}
                 placeholder="Title…"
                 autocomplete="off"
@@ -3293,30 +3322,31 @@ export default async (app: Application): Promise<void> => {
               />
 
               $${app.server.locals.partials.contentEditor({
-                req,
-                res,
+                request,
+                response,
                 contentSource:
                   typeof conversationDraft?.content === "string" &&
                   conversationDraft.content.trim() !== ""
                     ? conversationDraft.content
                     : conversationDraft === undefined &&
-                      typeof req.query.newConversation?.content === "string" &&
-                      req.query.newConversation.content.trim() !== ""
-                    ? req.query.newConversation.content
+                      typeof request.query.newConversation?.content ===
+                        "string" &&
+                      request.query.newConversation.content.trim() !== ""
+                    ? request.query.newConversation.content
                     : undefined,
                 required:
                   // TODO: Drafts
-                  (typeof req.params.type === "string" &&
-                    ["question", "note"].includes(req.params.type)) ||
-                  (req.params.type === undefined &&
-                    ((typeof req.query.newConversation?.type === "string" &&
+                  (typeof request.params.type === "string" &&
+                    ["question", "note"].includes(request.params.type)) ||
+                  (request.params.type === undefined &&
+                    ((typeof request.query.newConversation?.type === "string" &&
                       ["question", "note"].includes(
-                        req.query.newConversation.type
+                        request.query.newConversation.type
                       )) ||
-                      req.query.newConversation?.type === undefined)),
+                      request.query.newConversation?.type === undefined)),
               })}
-              $${res.locals.tags.length === 0 &&
-              res.locals.enrollment.courseRole !== "staff"
+              $${response.locals.tags.length === 0 &&
+              response.locals.enrollment.courseRole !== "staff"
                 ? html``
                 : html`
                     <div class="label">
@@ -3334,11 +3364,11 @@ export default async (app: Application): Promise<void> => {
                         >
                           <i class="bi bi-info-circle"></i>
                         </button>
-                        $${res.locals.tags.length > 0 &&
-                        res.locals.enrollment.courseRole === "staff"
+                        $${response.locals.tags.length > 0 &&
+                        response.locals.enrollment.courseRole === "staff"
                           ? html`
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   flex: 1;
                                   display: flex;
                                   justify-content: flex-end;
@@ -3346,7 +3376,7 @@ export default async (app: Application): Promise<void> => {
                               >
                                 <a
                                   href="https://${app.configuration
-                                    .hostname}/courses/${res.locals.course
+                                    .hostname}/courses/${response.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
                                   class="button button--tight button--tight--inline button--transparent secondary"
@@ -3359,19 +3389,19 @@ export default async (app: Application): Promise<void> => {
                           : html``}
                       </div>
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--8);
                           row-gap: var(--space--2);
                         `)}"
                       >
-                        $${res.locals.tags.length === 0 &&
-                        res.locals.enrollment.courseRole === "staff"
+                        $${response.locals.tags.length === 0 &&
+                        response.locals.enrollment.courseRole === "staff"
                           ? html`
                               <a
                                 href="https://${app.configuration
-                                  .hostname}/courses/${res.locals.course
+                                  .hostname}/courses/${response.locals.course
                                   .reference}/settings/tags"
                                 target="_blank"
                                 class="button button--tight button--tight--inline button--inline button--transparent secondary"
@@ -3380,11 +3410,11 @@ export default async (app: Application): Promise<void> => {
                                 Create the First Tag
                               </a>
                             `
-                          : res.locals.tags.map(
+                          : response.locals.tags.map(
                               (tag) => html`
                                 <div
                                   key="tag--${tag.reference}"
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     display: flex;
                                     gap: var(--space--2);
                                   `)}"
@@ -3403,28 +3433,29 @@ export default async (app: Application): Promise<void> => {
                                         ).includes(tag.reference)) ||
                                       (conversationDraft === undefined &&
                                         Array.isArray(
-                                          req.query.newConversation
+                                          request.query.newConversation
                                             ?.tagsReferences
                                         ) &&
-                                        req.query.newConversation!.tagsReferences.includes(
+                                        request.query.newConversation!.tagsReferences.includes(
                                           tag.reference
                                         ))
                                         ? html`checked`
                                         : html``}
                                       $${
                                         // TODO: Drafts
-                                        (typeof req.params.type === "string" &&
+                                        (typeof request.params.type ===
+                                          "string" &&
                                           ["question", "note"].includes(
-                                            req.params.type
+                                            request.params.type
                                           )) ||
-                                        (req.params.type === undefined &&
-                                          ((typeof req.query.newConversation
+                                        (request.params.type === undefined &&
+                                          ((typeof request.query.newConversation
                                             ?.type === "string" &&
                                             ["question", "note"].includes(
-                                              req.query.newConversation.type
+                                              request.query.newConversation.type
                                             )) ||
-                                            req.query.newConversation?.type ===
-                                              undefined))
+                                            request.query.newConversation
+                                              ?.type === undefined))
                                           ? html`required`
                                           : html``
                                       }
@@ -3493,8 +3524,8 @@ export default async (app: Application): Promise<void> => {
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${res.locals.course.id} AND
-                        "enrollments"."id" != ${res.locals.enrollment.id}
+                        "enrollments"."course" = ${response.locals.course.id} AND
+                        "enrollments"."id" != ${response.locals.enrollment.id}
                       ORDER BY
                         "enrollments"."courseRole" = 'staff' DESC,
                         "users"."name" ASC
@@ -3523,7 +3554,7 @@ export default async (app: Application): Promise<void> => {
                   <div class="label">
                     <div class="label--text">Participants</div>
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         display: flex;
                         flex-wrap: wrap;
                         column-gap: var(--space--8);
@@ -3536,11 +3567,11 @@ export default async (app: Application): Promise<void> => {
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
-                            content: ${res.locals.html(
+                            content: ${response.locals.html(
                               html`
                                 <div
                                   key="participants--dropdown"
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
@@ -3554,15 +3585,17 @@ export default async (app: Application): Promise<void> => {
                                             type="radio"
                                             name="participants--dropdown--participants"
                                             value="${conversationParticipants}"
-                                            $${req.query.newConversation
+                                            $${request.query.newConversation
                                               ?.participants ===
                                               conversationParticipants ||
-                                            (req.query.newConversation
+                                            (request.query.newConversation
                                               ?.participants === undefined &&
-                                              ((req.params.type === "chat" &&
+                                              ((request.params.type ===
+                                                "chat" &&
                                                 conversationParticipants ===
                                                   "selected-people") ||
-                                                (req.params.type !== "chat" &&
+                                                (request.params.type !==
+                                                  "chat" &&
                                                   conversationParticipants ===
                                                     "everyone")))
                                               ? html`checked`
@@ -3644,17 +3677,18 @@ export default async (app: Application): Promise<void> => {
 
                                   <div
                                     key="participants--dropdown--selected-participants"
-                                    $${(typeof req.query.newConversation
+                                    $${(typeof request.query.newConversation
                                       ?.participants === "string" &&
                                       ["staff", "selected-people"].includes(
-                                        req.query.newConversation.participants
+                                        request.query.newConversation
+                                          .participants
                                       )) ||
-                                    (req.query.newConversation?.participants ===
-                                      undefined &&
-                                      req.params.type === "chat")
+                                    (request.query.newConversation
+                                      ?.participants === undefined &&
+                                      request.params.type === "chat")
                                       ? html``
                                       : html`hidden`}
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       display: flex;
                                       flex-direction: column;
                                       gap: var(--space--2);
@@ -3662,11 +3696,12 @@ export default async (app: Application): Promise<void> => {
                                   >
                                     <hr class="dropdown--separator" />
 
-                                    $${res.locals.courseEnrollmentsCount === 1
+                                    $${response.locals
+                                      .courseEnrollmentsCount === 1
                                       ? html`
                                           <p
                                             class="secondary"
-                                            css="${res.locals.css(css`
+                                            css="${response.locals.css(css`
                                               padding: var(--space--0)
                                                 var(--space--2) var(--space--2);
                                             `)}"
@@ -3678,13 +3713,13 @@ export default async (app: Application): Promise<void> => {
                                         `
                                       : html`
                                           <div
-                                            css="${res.locals.css(css`
+                                            css="${response.locals.css(css`
                                               padding: var(--space--0)
                                                 var(--space--2);
                                             `)}"
                                           >
                                             <label
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 display: flex;
                                                 gap: var(--space--2);
                                                 align-items: baseline;
@@ -3735,7 +3770,7 @@ export default async (app: Application): Promise<void> => {
 
                                           <div
                                             class="dropdown--menu"
-                                            css="${res.locals.css(css`
+                                            css="${response.locals.css(css`
                                               height: var(--space--40);
                                               overflow: auto;
                                             `)}"
@@ -3745,7 +3780,8 @@ export default async (app: Application): Promise<void> => {
                                                 <label
                                                   key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
                                                   data-enrollment-course-role="${enrollment.courseRole}"
-                                                  $${req.query.newConversation
+                                                  $${request.query
+                                                    .newConversation
                                                     ?.participants ===
                                                     "staff" &&
                                                   enrollment.courseRole ===
@@ -3757,7 +3793,7 @@ export default async (app: Application): Promise<void> => {
                                                     type="checkbox"
                                                     name="participants--dropdown--selected-participants[]"
                                                     value="${enrollment.reference}"
-                                                    $${req.query.newConversation?.selectedParticipants?.includes(
+                                                    $${request.query.newConversation?.selectedParticipants?.includes(
                                                       enrollment.reference
                                                     )
                                                       ? html`checked`
@@ -3776,8 +3812,8 @@ export default async (app: Application): Promise<void> => {
                                                   >
                                                     $${app.server.locals.partials.user(
                                                       {
-                                                        req,
-                                                        res,
+                                                        request,
+                                                        response,
                                                         enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
@@ -3791,8 +3827,8 @@ export default async (app: Application): Promise<void> => {
                                                   >
                                                     $${app.server.locals.partials.user(
                                                       {
-                                                        req,
-                                                        res,
+                                                        request,
+                                                        response,
                                                         enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
@@ -3819,14 +3855,14 @@ export default async (app: Application): Promise<void> => {
                               type="radio"
                               name="participants"
                               value="${conversationParticipants}"
-                              $${req.query.newConversation?.participants ===
+                              $${request.query.newConversation?.participants ===
                                 conversationParticipants ||
-                              (req.query.newConversation?.participants ===
+                              (request.query.newConversation?.participants ===
                                 undefined &&
-                                ((req.params.type === "chat" &&
+                                ((request.params.type === "chat" &&
                                   conversationParticipants ===
                                     "selected-people") ||
-                                  (req.params.type !== "chat" &&
+                                  (request.params.type !== "chat" &&
                                     conversationParticipants === "everyone")))
                                 ? html`checked`
                                 : html``}
@@ -3873,19 +3909,19 @@ export default async (app: Application): Promise<void> => {
                             name="selectedParticipantsReferences[]"
                             value="${enrollment.reference}"
                             data-enrollment-course-role="${enrollment.courseRole}"
-                            $${req.query.newConversation?.selectedParticipants?.includes(
+                            $${request.query.newConversation?.selectedParticipants?.includes(
                               enrollment.reference
                             )
                               ? html`checked`
                               : html``}
-                            $${(req.query.newConversation?.participants ===
+                            $${(request.query.newConversation?.participants ===
                               "staff" &&
                               enrollment.courseRole !== "staff") ||
-                            req.query.newConversation?.participants ===
+                            request.query.newConversation?.participants ===
                               "selected-people" ||
-                            (req.query.newConversation?.participants ===
+                            (request.query.newConversation?.participants ===
                               undefined &&
-                              req.params.type === "chat")
+                              request.params.type === "chat")
                               ? html``
                               : html`disabled`}
                             tabindex="-1"
@@ -3909,8 +3945,8 @@ export default async (app: Application): Promise<void> => {
                             `}"
                           >
                             $${app.server.locals.partials.user({
-                              req,
-                              res,
+                              request,
+                              response,
                               enrollment,
                               user: enrollment.user,
                               tooltip: false,
@@ -3926,26 +3962,26 @@ export default async (app: Application): Promise<void> => {
               })()}
 
               <div
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   display: flex;
                   flex-wrap: wrap;
                   column-gap: var(--space--8);
                   row-gap: var(--space--4);
                 `)}"
               >
-                $${res.locals.enrollment.courseRole === "staff"
+                $${response.locals.enrollment.courseRole === "staff"
                   ? html`
                       <div
                         key="new-conversation--announcement"
-                        $${req.params.type === "note" ||
-                        (req.params.type === undefined &&
+                        $${request.params.type === "note" ||
+                        (request.params.type === undefined &&
                           (conversationDraft?.type === "note" ||
                             (conversationDraft === undefined &&
-                              req.query.newConversation?.type === "note")))
+                              request.query.newConversation?.type === "note")))
                           ? html``
                           : html`hidden`}
                         class="label"
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           width: var(--space--44);
                         `)}"
                       >
@@ -3965,7 +4001,7 @@ export default async (app: Application): Promise<void> => {
                           </button>
                         </div>
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             display: flex;
                           `)}"
                         >
@@ -3975,11 +4011,11 @@ export default async (app: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="isAnnouncement"
-                              $${req.params.type === "note" ||
-                              (req.params.type === undefined &&
+                              $${request.params.type === "note" ||
+                              (request.params.type === undefined &&
                                 (conversationDraft?.type === "note" ||
                                   (conversationDraft === undefined &&
-                                    req.query.newConversation?.type ===
+                                    request.query.newConversation?.type ===
                                       "note")))
                                 ? html``
                                 : html`disabled`}
@@ -3988,10 +4024,10 @@ export default async (app: Application): Promise<void> => {
                               ) /* TODO: Conversation drafts */
                                 ?.isAnnouncement === "true" ||
                               (conversationDraft === undefined &&
-                                (req.query.newConversation?.isAnnouncement ===
-                                  "true" ||
-                                  req.query.newConversation?.isAnnouncement ===
-                                    undefined))
+                                (request.query.newConversation
+                                  ?.isAnnouncement === "true" ||
+                                  request.query.newConversation
+                                    ?.isAnnouncement === undefined))
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -4030,7 +4066,7 @@ export default async (app: Application): Promise<void> => {
 
                       <div
                         class="label"
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           width: var(--space--24);
                         `)}"
                       >
@@ -4050,7 +4086,7 @@ export default async (app: Application): Promise<void> => {
                           </button>
                         </div>
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             display: flex;
                           `)}"
                         >
@@ -4062,11 +4098,11 @@ export default async (app: Application): Promise<void> => {
                               name="isPinned"
                               $${conversationDraft?.isPinned === "true" ||
                               (conversationDraft === undefined &&
-                                (req.query.newConversation?.isPinned ===
+                                (request.query.newConversation?.isPinned ===
                                   "true" ||
-                                  (req.query.newConversation?.isPinned ===
+                                  (request.query.newConversation?.isPinned ===
                                     undefined &&
-                                    req.params.type === "note")))
+                                    request.params.type === "note")))
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -4101,13 +4137,13 @@ export default async (app: Application): Promise<void> => {
                   : html`
                       <div
                         class="label"
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           width: var(--space--60);
                         `)}"
                       >
                         <p class="label--text">Anonymity</p>
                         <div
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             display: flex;
                           `)}"
                         >
@@ -4138,15 +4174,15 @@ export default async (app: Application): Promise<void> => {
                             >
                               <span>
                                 $${app.server.locals.partials.user({
-                                  req,
-                                  res,
-                                  user: res.locals.user,
+                                  request,
+                                  response,
+                                  user: response.locals.user,
                                   decorate: false,
                                   name: false,
                                   size: "xs",
                                 })}
                                 <span
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     margin-left: var(--space--1);
                                   `)}"
                                 >
@@ -4164,13 +4200,13 @@ export default async (app: Application): Promise<void> => {
                             >
                               <span>
                                 $${app.server.locals.partials.user({
-                                  req,
-                                  res,
+                                  request,
+                                  response,
                                   name: false,
                                   size: "xs",
                                 })}
                                 <span
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     margin-left: var(--space--1);
                                   `)}"
                                 >
@@ -4190,7 +4226,7 @@ export default async (app: Application): Promise<void> => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.html(
+                      content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -4220,26 +4256,26 @@ export default async (app: Application): Promise<void> => {
                     };
                   `}"
                 >
-                  $${req.params.type === "note"
+                  $${request.params.type === "note"
                     ? html`
                         $${conversationTypeIcon.note.fill} Post
-                        ${res.locals.conversationsCount === 0
+                        ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
                         Note
                       `
-                    : req.params.type === "question"
+                    : request.params.type === "question"
                     ? html`
                         $${conversationTypeIcon.question.fill} Ask
-                        ${res.locals.conversationsCount === 0
+                        ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
                         Question
                       `
-                    : req.params.type === "chat"
+                    : request.params.type === "chat"
                     ? html`
                         $${conversationTypeIcon.chat.fill} Start
-                        ${res.locals.conversationsCount === 0
+                        ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
                         Chat
@@ -4247,7 +4283,7 @@ export default async (app: Application): Promise<void> => {
                     : html`
                         <i class="bi bi-chat-text-fill"></i>
                         Start
-                        ${res.locals.conversationsCount === 0
+                        ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
                         Conversation
@@ -4258,7 +4294,7 @@ export default async (app: Application): Promise<void> => {
               <div
                 hidden
                 class="secondary"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   display: flex;
@@ -4274,7 +4310,7 @@ export default async (app: Application): Promise<void> => {
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${res.locals.html(
+                      content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
@@ -4318,9 +4354,9 @@ export default async (app: Application): Promise<void> => {
                         class="link text--rose"
                         formmethod="DELETE"
                         formaction="https://${app.configuration
-                          .hostname}/courses/${res.locals.course
+                          .hostname}/courses/${response.locals.course
                           .reference}/conversations/new${qs.stringify(
-                          { conversations: req.query.conversations },
+                          { conversations: request.query.conversations },
                           { addQueryPrefix: true }
                         )}"
                         onload="${javascript`
@@ -4390,21 +4426,21 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations",
     ...app.server.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
-      if (req.body.isDraft === "true") {
+    (request, response, next) => {
+      if (request.body.isDraft === "true") {
         // TODO: Conversation drafts: Validate inputs
         // let conversationDraft =
-        //   typeof req.body.conversationDraftReference === "string" &&
-        //   req.body.conversationDraftReference.match(/^[0-9]+$/)
+        //   typeof request.body.conversationDraftReference === "string" &&
+        //   request.body.conversationDraftReference.match(/^[0-9]+$/)
         //     ? app.database.get<{
         //         reference: string;
         //       }>(
         //         sql`
         //           SELECT "reference"
         //           FROM "conversationDrafts"
-        //           WHERE "course" = ${res.locals.course.id} AND
-        //                 "reference" = ${req.body.conversationDraftReference} AND
-        //                 "authorEnrollment" = ${res.locals.enrollment.id}
+        //           WHERE "course" = ${response.locals.course.id} AND
+        //                 "reference" = ${request.body.conversationDraftReference} AND
+        //                 "authorEnrollment" = ${response.locals.enrollment.id}
         //         `
         //       )
         //     : undefined;
@@ -4427,37 +4463,37 @@ export default async (app: Application): Promise<void> => {
         //       )
         //       VALUES (
         //         ${new Date().toISOString()},
-        //         ${res.locals.course.id},
+        //         ${response.locals.course.id},
         //         ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //         ${res.locals.enrollment.id},
+        //         ${response.locals.enrollment.id},
         //         ${
-        //           typeof req.body.type === "string" &&
-        //           req.body.type.trim() !== ""
-        //             ? req.body.type
+        //           typeof request.body.type === "string" &&
+        //           request.body.type.trim() !== ""
+        //             ? request.body.type
         //             : null
         //         },
-        //         ${req.body.isPinned === "on" ? "true" : null},
-        //         ${req.body.isStaffOnly === "on" ? "true" : null},
+        //         ${request.body.isPinned === "on" ? "true" : null},
+        //         ${request.body.isStaffOnly === "on" ? "true" : null},
         //         ${
-        //           typeof req.body.title === "string" &&
-        //           req.body.title.trim() !== ""
-        //             ? req.body.title
-        //             : null
-        //         },
-        //         ${
-        //           typeof req.body.content === "string" &&
-        //           req.body.content.trim() !== ""
-        //             ? req.body.content
+        //           typeof request.body.title === "string" &&
+        //           request.body.title.trim() !== ""
+        //             ? request.body.title
         //             : null
         //         },
         //         ${
-        //           Array.isArray(req.body.tagsReferences) &&
-        //           req.body.tagsReferences.every(
+        //           typeof request.body.content === "string" &&
+        //           request.body.content.trim() !== ""
+        //             ? request.body.content
+        //             : null
+        //         },
+        //         ${
+        //           Array.isArray(request.body.tagsReferences) &&
+        //           request.body.tagsReferences.every(
         //             (tagReference) =>
         //               typeof tagReference === "string" &&
         //               tagReference.trim() !== ""
         //           )
-        //             ? JSON.stringify(req.body.tagsReferences)
+        //             ? JSON.stringify(request.body.tagsReferences)
         //             : null
         //         }
         //       )
@@ -4470,47 +4506,47 @@ export default async (app: Application): Promise<void> => {
         //       UPDATE "conversationDrafts"
         //       SET "updatedAt" = ${new Date().toISOString()},
         //           "type" = ${
-        //             typeof req.body.type === "string" &&
-        //             req.body.type.trim() !== ""
-        //               ? req.body.type
+        //             typeof request.body.type === "string" &&
+        //             request.body.type.trim() !== ""
+        //               ? request.body.type
         //               : null
         //           },
-        //           "isPinned" = ${req.body.isPinned === "on" ? "true" : null},
+        //           "isPinned" = ${request.body.isPinned === "on" ? "true" : null},
         //           "isStaffOnly" = ${
-        //             req.body.isStaffOnly === "on" ? "true" : null
+        //             request.body.isStaffOnly === "on" ? "true" : null
         //           },
         //           "title" = ${
-        //             typeof req.body.title === "string" &&
-        //             req.body.title.trim() !== ""
-        //               ? req.body.title
+        //             typeof request.body.title === "string" &&
+        //             request.body.title.trim() !== ""
+        //               ? request.body.title
         //               : null
         //           },
         //           "content" = ${
-        //             typeof req.body.content === "string" &&
-        //             req.body.content.trim() !== ""
-        //               ? req.body.content
+        //             typeof request.body.content === "string" &&
+        //             request.body.content.trim() !== ""
+        //               ? request.body.content
         //               : null
         //           },
         //           "tagsReferences" = ${
-        //             Array.isArray(req.body.tagsReferences) &&
-        //             req.body.tagsReferences.every(
+        //             Array.isArray(request.body.tagsReferences) &&
+        //             request.body.tagsReferences.every(
         //               (tagReference) =>
         //                 typeof tagReference === "string" &&
         //                 tagReference.trim() !== ""
         //             )
-        //               ? JSON.stringify(req.body.tagsReferences)
+        //               ? JSON.stringify(request.body.tagsReferences)
         //               : null
         //           }
         //       WHERE "reference" = ${conversationDraft.reference}
         //     `
         //   );
-        return res.redirect(
+        return response.redirect(
           303,
           `https://${app.configuration.hostname}/courses/${
-            res.locals.course.reference
+            response.locals.course.reference
           }/conversations/new${qs.stringify(
             {
-              conversations: req.query.conversations,
+              conversations: request.query.conversations,
               newConversation: {
                 // conversationDraftReference: conversationDraft.reference,
               },
@@ -4520,60 +4556,61 @@ export default async (app: Application): Promise<void> => {
         );
       }
 
-      req.body.tagsReferences ??= [];
-      req.body.selectedParticipantsReferences ??= [];
+      request.body.tagsReferences ??= [];
+      request.body.selectedParticipantsReferences ??= [];
       if (
-        typeof req.body.type !== "string" ||
-        !conversationTypes.includes(req.body.type) ||
-        typeof req.body.title !== "string" ||
-        req.body.title.trim() === "" ||
-        (req.body.type !== "chat" &&
-          (typeof req.body.content !== "string" ||
-            req.body.content.trim() === "")) ||
-        (req.body.type === "chat" &&
-          req.body.content !== undefined &&
-          typeof req.body.content !== "string") ||
-        !Array.isArray(req.body.tagsReferences) ||
-        (res.locals.tags.length === 0 &&
-          req.body.tagsReferences.length !== 0) ||
-        (res.locals.tags.length !== 0 &&
-          ((req.body.type !== "chat" && req.body.tagsReferences.length === 0) ||
-            req.body.tagsReferences.some(
+        typeof request.body.type !== "string" ||
+        !conversationTypes.includes(request.body.type) ||
+        typeof request.body.title !== "string" ||
+        request.body.title.trim() === "" ||
+        (request.body.type !== "chat" &&
+          (typeof request.body.content !== "string" ||
+            request.body.content.trim() === "")) ||
+        (request.body.type === "chat" &&
+          request.body.content !== undefined &&
+          typeof request.body.content !== "string") ||
+        !Array.isArray(request.body.tagsReferences) ||
+        (response.locals.tags.length === 0 &&
+          request.body.tagsReferences.length !== 0) ||
+        (response.locals.tags.length !== 0 &&
+          ((request.body.type !== "chat" &&
+            request.body.tagsReferences.length === 0) ||
+            request.body.tagsReferences.some(
               (tagReference) => typeof tagReference !== "string"
             ) ||
-            req.body.tagsReferences.length !==
-              new Set(req.body.tagsReferences).size ||
-            req.body.tagsReferences.length !==
+            request.body.tagsReferences.length !==
+              new Set(request.body.tagsReferences).size ||
+            request.body.tagsReferences.length !==
               lodash.intersection(
-                req.body.tagsReferences,
-                res.locals.tags.map((tag) => tag.reference)
+                request.body.tagsReferences,
+                response.locals.tags.map((tag) => tag.reference)
               ).length)) ||
-        typeof req.body.participants !== "string" ||
-        !conversationParticipantses.includes(req.body.participants) ||
-        !Array.isArray(req.body.selectedParticipantsReferences) ||
-        (req.body.participants === "everyone" &&
-          req.body.selectedParticipantsReferences.length > 0) ||
-        (req.body.participants === "selected-people" &&
-          req.body.selectedParticipantsReferences.length === 0) ||
-        req.body.selectedParticipantsReferences.some(
+        typeof request.body.participants !== "string" ||
+        !conversationParticipantses.includes(request.body.participants) ||
+        !Array.isArray(request.body.selectedParticipantsReferences) ||
+        (request.body.participants === "everyone" &&
+          request.body.selectedParticipantsReferences.length > 0) ||
+        (request.body.participants === "selected-people" &&
+          request.body.selectedParticipantsReferences.length === 0) ||
+        request.body.selectedParticipantsReferences.some(
           (selectedParticipantReference) =>
             typeof selectedParticipantReference !== "string"
         ) ||
-        req.body.selectedParticipantsReferences.length !==
-          new Set(req.body.selectedParticipantsReferences).size
+        request.body.selectedParticipantsReferences.length !==
+          new Set(request.body.selectedParticipantsReferences).size
       )
         return next("Validation");
 
       if (
-        (req.body.participants === "staff" &&
-          res.locals.enrollment.courseRole !== "staff") ||
-        req.body.participants === "selected-people"
+        (request.body.participants === "staff" &&
+          response.locals.enrollment.courseRole !== "staff") ||
+        request.body.participants === "selected-people"
       )
-        req.body.selectedParticipantsReferences.push(
-          res.locals.enrollment.reference
+        request.body.selectedParticipantsReferences.push(
+          response.locals.enrollment.reference
         );
       const selectedParticipants =
-        req.body.selectedParticipantsReferences.length === 0
+        request.body.selectedParticipantsReferences.length === 0
           ? []
           : app.database.all<{
               id: number;
@@ -4583,41 +4620,42 @@ export default async (app: Application): Promise<void> => {
                 SELECT "id", "courseRole"
                 FROM "enrollments"
                 WHERE
-                  "enrollments"."course" = ${res.locals.course.id} AND
-                  "reference" IN ${req.body.selectedParticipantsReferences}
+                  "enrollments"."course" = ${response.locals.course.id} AND
+                  "reference" IN ${request.body.selectedParticipantsReferences}
               `
             );
 
       if (
-        req.body.selectedParticipantsReferences.length !==
+        request.body.selectedParticipantsReferences.length !==
           selectedParticipants.length ||
-        (req.body.participants === "staff" &&
+        (request.body.participants === "staff" &&
           selectedParticipants.some(
             (selectedParticipant) => selectedParticipant.courseRole === "staff"
           )) ||
-        ![undefined, "on"].includes(req.body.isAnnouncement) ||
-        (req.body.isAnnouncement === "on" &&
-          (res.locals.enrollment.courseRole !== "staff" ||
-            req.body.type !== "note")) ||
-        ![undefined, "on"].includes(req.body.isPinned) ||
-        (req.body.isPinned === "on" &&
-          res.locals.enrollment.courseRole !== "staff") ||
-        ![undefined, "on"].includes(req.body.isAnonymous) ||
-        (req.body.isAnonymous === "on" &&
-          res.locals.enrollment.courseRole === "staff")
+        ![undefined, "on"].includes(request.body.isAnnouncement) ||
+        (request.body.isAnnouncement === "on" &&
+          (response.locals.enrollment.courseRole !== "staff" ||
+            request.body.type !== "note")) ||
+        ![undefined, "on"].includes(request.body.isPinned) ||
+        (request.body.isPinned === "on" &&
+          response.locals.enrollment.courseRole !== "staff") ||
+        ![undefined, "on"].includes(request.body.isAnonymous) ||
+        (request.body.isAnonymous === "on" &&
+          response.locals.enrollment.courseRole === "staff")
       )
         return next("Validation");
 
       const hasMessage =
-        typeof req.body.content === "string" && req.body.content.trim() !== "";
+        typeof request.body.content === "string" &&
+        request.body.content.trim() !== "";
 
       app.database.run(
         sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
-            res.locals.course.nextConversationReference + 1
+            response.locals.course.nextConversationReference + 1
           }
-          WHERE "id" = ${res.locals.course.id}
+          WHERE "id" = ${response.locals.course.id}
         `
       );
 
@@ -4645,18 +4683,24 @@ export default async (app: Application): Promise<void> => {
           )
           VALUES (
             ${new Date().toISOString()},
-            ${res.locals.course.id},
-            ${String(res.locals.course.nextConversationReference)},
-            ${res.locals.enrollment.id},
-            ${req.body.participants},
-            ${req.body.isAnonymous === "on" ? new Date().toISOString() : null},
-            ${req.body.type},
+            ${response.locals.course.id},
+            ${String(response.locals.course.nextConversationReference)},
+            ${response.locals.enrollment.id},
+            ${request.body.participants},
             ${
-              req.body.isAnnouncement === "on" ? new Date().toISOString() : null
+              request.body.isAnonymous === "on"
+                ? new Date().toISOString()
+                : null
             },
-            ${req.body.isPinned === "on" ? new Date().toISOString() : null},
-            ${req.body.title},
-            ${html`${req.body.title}`},
+            ${request.body.type},
+            ${
+              request.body.isAnnouncement === "on"
+                ? new Date().toISOString()
+                : null
+            },
+            ${request.body.isPinned === "on" ? new Date().toISOString() : null},
+            ${request.body.title},
+            ${html`${request.body.title}`},
             ${hasMessage ? 2 : 1}
           )
           RETURNING *
@@ -4675,7 +4719,7 @@ export default async (app: Application): Promise<void> => {
           `
         );
 
-      for (const tagReference of req.body.tagsReferences)
+      for (const tagReference of request.body.tagsReferences)
         app.database.run(
           sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
@@ -4683,7 +4727,7 @@ export default async (app: Application): Promise<void> => {
               ${new Date().toISOString()},
               ${conversation.id},
               ${
-                res.locals.tags.find(
+                response.locals.tags.find(
                   (existingTag) => existingTag.reference === tagReference
                 )!.id
               }
@@ -4693,7 +4737,7 @@ export default async (app: Application): Promise<void> => {
 
       if (hasMessage) {
         const contentPreprocessed =
-          app.server.locals.partials.contentPreprocessed(req.body.content!);
+          app.server.locals.partials.contentPreprocessed(request.body.content!);
         const message = app.database.get<{
           id: number;
           reference: string;
@@ -4713,11 +4757,13 @@ export default async (app: Application): Promise<void> => {
               ${new Date().toISOString()},
               ${conversation.id},
               ${"1"},
-              ${res.locals.enrollment.id},
+              ${response.locals.enrollment.id},
               ${
-                req.body.isAnonymous === "on" ? new Date().toISOString() : null
+                request.body.isAnonymous === "on"
+                  ? new Date().toISOString()
+                  : null
               },
-              ${req.body.content},
+              ${request.body.content},
               ${contentPreprocessed.contentPreprocessed},
               ${contentPreprocessed.contentSearch}
             )
@@ -4730,19 +4776,19 @@ export default async (app: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${res.locals.enrollment.id}
+              ${response.locals.enrollment.id}
             )
           `
         );
         app.server.locals.helpers.emailNotifications({
-          req,
-          res,
+          request,
+          response,
           message: app.server.locals.helpers.getMessage({
-            req,
-            res,
+            request,
+            response,
             conversation: app.server.locals.helpers.getConversation({
-              req,
-              res,
+              request,
+              response,
               conversationReference: conversation.reference,
             })!,
             messageReference: message.reference,
@@ -4751,30 +4797,30 @@ export default async (app: Application): Promise<void> => {
       }
 
       if (
-        typeof req.body.conversationDraftReference === "string" &&
-        req.body.conversationDraftReference.match(/^[0-9]+$/)
+        typeof request.body.conversationDraftReference === "string" &&
+        request.body.conversationDraftReference.match(/^[0-9]+$/)
       )
         app.database.run(
           sql`
             DELETE FROM "conversationDrafts"
             WHERE
-              "course" = ${res.locals.course.id} AND
-              "reference" = ${req.body.conversationDraftReference} AND
-              "authorEnrollment" = ${res.locals.enrollment.id}
+              "course" = ${response.locals.course.id} AND
+              "reference" = ${request.body.conversationDraftReference} AND
+              "authorEnrollment" = ${response.locals.enrollment.id}
           `
         );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
+          response.locals.course.reference
         }/conversations/${conversation.reference}${qs.stringify(
-          { conversations: req.query.conversations },
+          { conversations: request.query.conversations },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -4787,10 +4833,10 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/new",
     ...app.server.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        typeof req.body.conversationDraftReference !== "string" ||
-        !req.body.conversationDraftReference.match(/^[0-9]+$/)
+        typeof request.body.conversationDraftReference !== "string" ||
+        !request.body.conversationDraftReference.match(/^[0-9]+$/)
       )
         return next("Validation");
       const conversationDraft = app.database.get<{
@@ -4800,9 +4846,9 @@ export default async (app: Application): Promise<void> => {
           SELECT "id"
           FROM "conversationDrafts"
           WHERE
-            "course" = ${res.locals.course.id} AND
-            "reference" = ${req.body.conversationDraftReference} AND
-            "authorEnrollment" = ${res.locals.enrollment.id}
+            "course" = ${response.locals.course.id} AND
+            "reference" = ${request.body.conversationDraftReference} AND
+            "authorEnrollment" = ${response.locals.enrollment.id}
         `
       );
       if (conversationDraft === undefined) return next("Validation");
@@ -4811,12 +4857,12 @@ export default async (app: Application): Promise<void> => {
           DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
         `
       );
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
+          response.locals.course.reference
         }/conversations/new${qs.stringify(
-          { conversations: req.query.conversations },
+          { conversations: request.query.conversations },
           { addQueryPrefix: true }
         )}`
       );
@@ -4824,21 +4870,22 @@ export default async (app: Application): Promise<void> => {
   );
 
   const mayEditConversation = ({
-    req,
-    res,
+    request,
+    response,
   }: {
-    req: express.Request<
+    request: express.Request<
       { courseReference: string; conversationReference: string },
       any,
       {},
       {},
       IsConversationAccessibleLocals
     >;
-    res: express.Response<any, IsConversationAccessibleLocals>;
+    response: express.Response<any, IsConversationAccessibleLocals>;
   }): boolean =>
-    res.locals.enrollment.courseRole === "staff" ||
-    (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
-      res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
+    response.locals.enrollment.courseRole === "staff" ||
+    (response.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
+      response.locals.conversation.authorEnrollment.id ===
+        response.locals.enrollment.id);
 
   app.server.get<
     { courseReference: string; conversationReference: string },
@@ -4861,41 +4908,42 @@ export default async (app: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.server.locals.middlewares.isConversationAccessible,
     ...app.server.locals.middlewares.liveUpdates,
-    (req, res) => {
+    (request, response) => {
       const beforeMessage =
-        typeof req.query.messages?.messagesPage?.beforeMessageReference ===
+        typeof request.query.messages?.messagesPage?.beforeMessageReference ===
           "string" &&
-        req.query.messages.messagesPage.beforeMessageReference.trim() !== ""
+        request.query.messages.messagesPage.beforeMessageReference.trim() !== ""
           ? app.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
                 WHERE
-                  "conversation" = ${res.locals.conversation.id} AND
-                  "reference" = ${req.query.messages.messagesPage.beforeMessageReference}
+                  "conversation" = ${response.locals.conversation.id} AND
+                  "reference" = ${request.query.messages.messagesPage.beforeMessageReference}
                 LIMIT 1
               `
             )
           : undefined;
       const afterMessage =
         beforeMessage === undefined &&
-        typeof req.query.messages?.messagesPage?.afterMessageReference ===
+        typeof request.query.messages?.messagesPage?.afterMessageReference ===
           "string" &&
-        req.query.messages.messagesPage.afterMessageReference.trim() !== ""
+        request.query.messages.messagesPage.afterMessageReference.trim() !== ""
           ? app.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
                 WHERE
-                  "conversation" = ${res.locals.conversation.id} AND
-                  "reference" = ${req.query.messages.messagesPage.afterMessageReference}
+                  "conversation" = ${response.locals.conversation.id} AND
+                  "reference" = ${request.query.messages.messagesPage.afterMessageReference}
                 LIMIT 1
               `
             )
           : undefined;
       const messagesReverse =
         beforeMessage !== undefined ||
-        (afterMessage === undefined && res.locals.conversation.type === "chat");
+        (afterMessage === undefined &&
+          response.locals.conversation.type === "chat");
 
       const messagesPageSize = 999999; // TODO: Pagination: 25
 
@@ -4904,7 +4952,7 @@ export default async (app: Application): Promise<void> => {
           SELECT "reference"
           FROM "messages"
           WHERE
-            "conversation" = ${res.locals.conversation.id}
+            "conversation" = ${response.locals.conversation.id}
             $${
               beforeMessage !== undefined
                 ? sql`
@@ -4929,9 +4977,9 @@ export default async (app: Application): Promise<void> => {
       const messages = messagesRows.map(
         (message) =>
           app.server.locals.helpers.getMessage({
-            req,
-            res,
-            conversation: res.locals.conversation,
+            request,
+            response,
+            conversation: response.locals.conversation,
             messageReference: message.reference,
           })!
       );
@@ -4943,25 +4991,25 @@ export default async (app: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${res.locals.enrollment.id}
+              ${response.locals.enrollment.id}
             )
           `
         );
 
-      res.send(
+      response.send(
         app.server.locals.layouts.conversation({
-          req,
-          res,
+          request,
+          response,
           head: html`
             <title>
-              ${res.locals.conversation.title} · ${res.locals.course.name} ·
-              Courselore
+              ${response.locals.conversation.title} ·
+              ${response.locals.course.name} · Courselore
             </title>
           `,
-          mainIsAScrollingPane: res.locals.conversation.type === "chat",
+          mainIsAScrollingPane: response.locals.conversation.type === "chat",
           body: html`
             <div
-              css="${res.locals.css(css`
+              css="${response.locals.css(css`
                 flex: 1;
                 display: flex;
                 flex-direction: column;
@@ -4970,14 +5018,14 @@ export default async (app: Application): Promise<void> => {
             >
               <div
                 class="conversation--header"
-                css="${res.locals.css(css`
+                css="${response.locals.css(css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                  ${res.locals.conversation.type === "chat"
+                  ${response.locals.conversation.type === "chat"
                     ? css`
                         padding-top: var(--space--4);
                         padding-right: var(--space--4);
@@ -4994,8 +5042,8 @@ export default async (app: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${res.locals.css(css`
-                    ${res.locals.conversation.type === "chat"
+                  css="${response.locals.css(css`
+                    ${response.locals.conversation.type === "chat"
                       ? css`
                           flex: 1;
                           min-width: var(--width--0);
@@ -5008,11 +5056,11 @@ export default async (app: Application): Promise<void> => {
                       : css``}
                   `)}"
                 >
-                  $${res.locals.conversation.type === "chat"
+                  $${response.locals.conversation.type === "chat"
                     ? html`
                         <button
                           class="conversation--header--compact button button--tight button--tight--inline button--transparent strong"
-                          css="${res.locals.css(css`
+                          css="${response.locals.css(css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
@@ -5024,7 +5072,7 @@ export default async (app: Application): Promise<void> => {
                           `}"
                         >
                           <span
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               flex: 1;
                               text-align: left;
                               white-space: nowrap;
@@ -5033,11 +5081,11 @@ export default async (app: Application): Promise<void> => {
                             `)}"
                           >
                             $${app.server.locals.helpers.highlightSearchResult(
-                              html`${res.locals.conversation.title}`,
-                              typeof req.query.conversations?.search ===
+                              html`${response.locals.conversation.title}`,
+                              typeof request.query.conversations?.search ===
                                 "string" &&
-                                req.query.conversations.search.trim() !== ""
-                                ? req.query.conversations.search
+                                request.query.conversations.search.trim() !== ""
+                                ? request.query.conversations.search
                                 : undefined
                             )}
                           </span>
@@ -5047,18 +5095,18 @@ export default async (app: Application): Promise<void> => {
                     : html``}
 
                   <div
-                    $${res.locals.conversation.type === "chat"
+                    $${response.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
                     class="conversation--header--full"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
                     `)}"
                   >
                     <div
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         display: flex;
@@ -5066,7 +5114,7 @@ export default async (app: Application): Promise<void> => {
                       `)}"
                     >
                       <div
-                        css="${res.locals.css(css`
+                        css="${response.locals.css(css`
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
@@ -5079,16 +5127,17 @@ export default async (app: Application): Promise<void> => {
                           }
                         `)}"
                       >
-                        $${mayEditConversation({ req, res })
+                        $${mayEditConversation({ request, response })
                           ? html`
                               <div>
                                 <button
-                                  class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent ${response
                                     .locals.conversation.type === "question" &&
-                                  res.locals.conversation.resolvedAt !== null
+                                  response.locals.conversation.resolvedAt !==
+                                    null
                                     ? "text--emerald"
                                     : conversationTypeTextColor[
-                                        res.locals.conversation.type
+                                        response.locals.conversation.type
                                       ]}"
                                   onload="${javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
@@ -5099,7 +5148,7 @@ export default async (app: Application): Promise<void> => {
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${res.locals.html(
+                                      content: ${response.locals.html(
                                         html`
                                           <div class="dropdown--menu">
                                             $${conversationTypes.map(
@@ -5109,16 +5158,17 @@ export default async (app: Application): Promise<void> => {
                                                   method="PATCH"
                                                   action="https://${app.server
                                                     .locals.options
-                                                    .hostname}/courses/${res
+                                                    .hostname}/courses/${response
                                                     .locals.course
-                                                    .reference}/conversations/${res
+                                                    .reference}/conversations/${response
                                                     .locals.conversation
                                                     .reference}${qs.stringify(
                                                     {
                                                       conversations:
-                                                        req.query.conversations,
+                                                        request.query
+                                                          .conversations,
                                                       messages:
-                                                        req.query.messages,
+                                                        request.query.messages,
                                                     },
                                                     { addQueryPrefix: true }
                                                   )}"
@@ -5130,7 +5180,8 @@ export default async (app: Application): Promise<void> => {
                                                   />
                                                   <button
                                                     class="dropdown--menu--item button ${conversationType ===
-                                                    res.locals.conversation.type
+                                                    response.locals.conversation
+                                                      .type
                                                       ? "button--blue"
                                                       : "button--transparent"} ${conversationTypeTextColor[
                                                       conversationType
@@ -5153,52 +5204,55 @@ export default async (app: Application): Promise<void> => {
                                   `}"
                                 >
                                   $${conversationTypeIcon[
-                                    res.locals.conversation.type
+                                    response.locals.conversation.type
                                   ].fill}
                                   $${lodash.capitalize(
-                                    res.locals.conversation.type
+                                    response.locals.conversation.type
                                   )}
                                 </button>
                               </div>
                             `
                           : html`
                               <div
-                                class="${res.locals.conversation.type ===
+                                class="${response.locals.conversation.type ===
                                   "question" &&
-                                res.locals.conversation.resolvedAt !== null
+                                response.locals.conversation.resolvedAt !== null
                                   ? "text--emerald"
                                   : conversationTypeTextColor[
-                                      res.locals.conversation.type
+                                      response.locals.conversation.type
                                     ]}"
                               >
                                 $${conversationTypeIcon[
-                                  res.locals.conversation.type
+                                  response.locals.conversation.type
                                 ].fill}
                                 $${lodash.capitalize(
-                                  res.locals.conversation.type
+                                  response.locals.conversation.type
                                 )}
                               </div>
                             `}
-                        $${res.locals.conversation.type === "question"
+                        $${response.locals.conversation.type === "question"
                           ? html`
-                              $${res.locals.enrollment.courseRole === "staff"
+                              $${response.locals.enrollment.courseRole ===
+                              "staff"
                                 ? html`
                                     <form
                                       method="PATCH"
                                       action="https://${app.configuration
-                                        .hostname}/courses/${res.locals.course
-                                        .reference}/conversations/${res.locals
-                                        .conversation.reference}${qs.stringify(
+                                        .hostname}/courses/${response.locals
+                                        .course
+                                        .reference}/conversations/${response
+                                        .locals.conversation
+                                        .reference}${qs.stringify(
                                         {
                                           conversations:
-                                            req.query.conversations,
-                                          messages: req.query.messages,
+                                            request.query.conversations,
+                                          messages: request.query.messages,
                                         },
                                         { addQueryPrefix: true }
                                       )}"
                                     >
-                                      $${res.locals.conversation.resolvedAt ===
-                                      null
+                                      $${response.locals.conversation
+                                        .resolvedAt === null
                                         ? html`
                                             <input
                                               key="isResolved--true"
@@ -5245,11 +5299,12 @@ export default async (app: Application): Promise<void> => {
                                           `}
                                     </form>
                                   `
-                                : res.locals.conversation.resolvedAt === null
+                                : response.locals.conversation.resolvedAt ===
+                                  null
                                 ? html`
                                     <div
                                       class="text--rose"
-                                      css="${res.locals.css(css`
+                                      css="${response.locals.css(css`
                                         display: flex;
                                         gap: var(--space--1);
                                       `)}"
@@ -5263,7 +5318,7 @@ export default async (app: Application): Promise<void> => {
                                 : html`
                                     <div
                                       class="text--emerald"
-                                      css="${res.locals.css(css`
+                                      css="${response.locals.css(css`
                                         display: flex;
                                         gap: var(--space--1);
                                       `)}"
@@ -5274,25 +5329,28 @@ export default async (app: Application): Promise<void> => {
                                   `}
                             `
                           : html``}
-                        $${res.locals.conversation.type === "note"
+                        $${response.locals.conversation.type === "note"
                           ? html`
-                              $${res.locals.enrollment.courseRole === "staff"
+                              $${response.locals.enrollment.courseRole ===
+                              "staff"
                                 ? html`
                                     <form
                                       method="PATCH"
                                       action="https://${app.configuration
-                                        .hostname}/courses/${res.locals.course
-                                        .reference}/conversations/${res.locals
-                                        .conversation.reference}${qs.stringify(
+                                        .hostname}/courses/${response.locals
+                                        .course
+                                        .reference}/conversations/${response
+                                        .locals.conversation
+                                        .reference}${qs.stringify(
                                         {
                                           conversations:
-                                            req.query.conversations,
-                                          messages: req.query.messages,
+                                            request.query.conversations,
+                                          messages: request.query.messages,
                                         },
                                         { addQueryPrefix: true }
                                       )}"
                                     >
-                                      $${res.locals.conversation
+                                      $${response.locals.conversation
                                         .announcementAt === null
                                         ? html`
                                             <input
@@ -5338,8 +5396,8 @@ export default async (app: Application): Promise<void> => {
                                           `}
                                     </form>
                                   `
-                                : res.locals.conversation.announcementAt !==
-                                  null
+                                : response.locals.conversation
+                                    .announcementAt !== null
                                 ? html`
                                     <div class="text--orange">
                                       <i class="bi bi-megaphone-fill"></i>
@@ -5349,22 +5407,23 @@ export default async (app: Application): Promise<void> => {
                                 : html``}
                             `
                           : html``}
-                        $${res.locals.enrollment.courseRole === "staff"
+                        $${response.locals.enrollment.courseRole === "staff"
                           ? html`
                               <form
                                 method="PATCH"
                                 action="https://${app.configuration
-                                  .hostname}/courses/${res.locals.course
-                                  .reference}/conversations/${res.locals
+                                  .hostname}/courses/${response.locals.course
+                                  .reference}/conversations/${response.locals
                                   .conversation.reference}${qs.stringify(
                                   {
-                                    conversations: req.query.conversations,
-                                    messages: req.query.messages,
+                                    conversations: request.query.conversations,
+                                    messages: request.query.messages,
                                   },
                                   { addQueryPrefix: true }
                                 )}"
                               >
-                                $${res.locals.conversation.pinnedAt === null
+                                $${response.locals.conversation.pinnedAt ===
+                                null
                                   ? html`
                                       <input
                                         key="isPinned--true"
@@ -5407,7 +5466,7 @@ export default async (app: Application): Promise<void> => {
                                     `}
                               </form>
                             `
-                          : res.locals.conversation.pinnedAt !== null
+                          : response.locals.conversation.pinnedAt !== null
                           ? html`
                               <div class="text--amber">
                                 <i class="bi bi-pin-fill"></i>
@@ -5429,12 +5488,12 @@ export default async (app: Application): Promise<void> => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${res.locals.html(
+                              content: ${response.locals.html(
                                 html`
                                   <h3 class="heading">
                                     <i class="bi bi-chat-text-fill"></i>
                                     Conversation
-                                    #${res.locals.conversation.reference}
+                                    #${response.locals.conversation.reference}
                                   </h3>
                                   <div class="dropdown--menu">
                                     <button
@@ -5447,7 +5506,7 @@ export default async (app: Application): Promise<void> => {
                                         });
 
                                         this.onclick = async () => {
-                                          await navigator.clipboard.writeText("https://${app.configuration.hostname}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                          await navigator.clipboard.writeText("https://${app.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}");
                                           this.copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           this.copied.hide();
@@ -5458,8 +5517,8 @@ export default async (app: Application): Promise<void> => {
                                       Copy Conversation Permanent Link
                                     </button>
                                     $${mayEditConversation({
-                                      req,
-                                      res,
+                                      request,
+                                      response,
                                     })
                                       ? html`
                                           <button
@@ -5477,31 +5536,33 @@ export default async (app: Application): Promise<void> => {
                                           </button>
                                         `
                                       : html``}
-                                    $${res.locals.conversation
+                                    $${response.locals.conversation
                                       .authorEnrollment !==
                                       "no-longer-enrolled" &&
-                                    res.locals.conversation.authorEnrollment
-                                      .courseRole === "student" &&
-                                    mayEditConversation({ req, res })
+                                    response.locals.conversation
+                                      .authorEnrollment.courseRole ===
+                                      "student" &&
+                                    mayEditConversation({ request, response })
                                       ? html`
                                           <form
                                             method="PATCH"
                                             action="https://${app.configuration
-                                              .hostname}/courses/${res.locals
-                                              .course
-                                              .reference}/conversations/${res
+                                              .hostname}/courses/${response
+                                              .locals.course
+                                              .reference}/conversations/${response
                                               .locals.conversation
                                               .reference}${qs.stringify(
                                               {
                                                 conversations:
-                                                  req.query.conversations,
-                                                messages: req.query.messages,
+                                                  request.query.conversations,
+                                                messages:
+                                                  request.query.messages,
                                               },
                                               { addQueryPrefix: true }
                                             )}"
                                             class="dropdown--menu"
                                           >
-                                            $${res.locals.conversation
+                                            $${response.locals.conversation
                                               .anonymousAt === null
                                               ? html`
                                                   <input
@@ -5514,7 +5575,8 @@ export default async (app: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
@@ -5522,8 +5584,8 @@ export default async (app: Application): Promise<void> => {
                                                     >
                                                       $${app.server.locals.partials.user(
                                                         {
-                                                          req,
-                                                          res,
+                                                          request,
+                                                          response,
                                                           name: false,
                                                           size: "xs",
                                                         }
@@ -5544,7 +5606,8 @@ export default async (app: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
@@ -5552,9 +5615,9 @@ export default async (app: Application): Promise<void> => {
                                                     >
                                                       $${app.server.locals.partials.user(
                                                         {
-                                                          req,
-                                                          res,
-                                                          user: res.locals
+                                                          request,
+                                                          response,
+                                                          user: response.locals
                                                             .conversation
                                                             .authorEnrollment
                                                             .user,
@@ -5565,11 +5628,14 @@ export default async (app: Application): Promise<void> => {
                                                       )}
                                                     </span>
                                                     Set as Signed by
-                                                    ${res.locals.conversation
+                                                    ${response.locals
+                                                      .conversation
                                                       .authorEnrollment.id ===
-                                                    res.locals.enrollment.id
+                                                    response.locals.enrollment
+                                                      .id
                                                       ? "You"
-                                                      : res.locals.conversation
+                                                      : response.locals
+                                                          .conversation
                                                           .authorEnrollment.user
                                                           .name}
                                                   </button>
@@ -5577,7 +5643,7 @@ export default async (app: Application): Promise<void> => {
                                           </form>
                                         `
                                       : html``}
-                                    $${res.locals.enrollment.courseRole ===
+                                    $${response.locals.enrollment.courseRole ===
                                     "staff"
                                       ? html`
                                           <div>
@@ -5588,20 +5654,20 @@ export default async (app: Application): Promise<void> => {
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${res.locals.html(
+                                                  content: ${response.locals.html(
                                                     html`
                                                       <form
                                                         method="DELETE"
                                                         action="https://${app
                                                           .configuration
-                                                          .hostname}/courses/${res
+                                                          .hostname}/courses/${response
                                                           .locals.course
-                                                          .reference}/conversations/${res
+                                                          .reference}/conversations/${response
                                                           .locals.conversation
                                                           .reference}${qs.stringify(
                                                           {
                                                             conversations:
-                                                              req.query
+                                                              request.query
                                                                 .conversations,
                                                           },
                                                           {
@@ -5609,7 +5675,7 @@ export default async (app: Application): Promise<void> => {
                                                               true,
                                                           }
                                                         )}"
-                                                        css="${res.locals
+                                                        css="${response.locals
                                                           .css(css`
                                                           padding: var(
                                                             --space--2
@@ -5626,8 +5692,8 @@ export default async (app: Application): Promise<void> => {
                                                         </p>
                                                         <p>
                                                           <strong
-                                                            css="${res.locals
-                                                              .css(css`
+                                                            css="${response
+                                                              .locals.css(css`
                                                               font-weight: var(
                                                                 --font-weight--bold
                                                               );
@@ -5670,38 +5736,39 @@ export default async (app: Application): Promise<void> => {
 
                     <h2
                       class="title--show strong"
-                      css="${res.locals.css(css`
+                      css="${response.locals.css(css`
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `)}"
                     >
                       $${app.server.locals.helpers.highlightSearchResult(
-                        html`${res.locals.conversation.title}`,
-                        typeof req.query.conversations?.search === "string" &&
-                          req.query.conversations.search.trim() !== ""
-                          ? req.query.conversations.search
+                        html`${response.locals.conversation.title}`,
+                        typeof request.query.conversations?.search ===
+                          "string" &&
+                          request.query.conversations.search.trim() !== ""
+                          ? request.query.conversations.search
                           : undefined
                       )}
                     </h2>
 
-                    $${mayEditConversation({ req, res })
+                    $${mayEditConversation({ request, response })
                       ? html`
                           <form
                             method="PATCH"
                             action="https://${app.configuration
-                              .hostname}/courses/${res.locals.course
-                              .reference}/conversations/${res.locals
+                              .hostname}/courses/${response.locals.course
+                              .reference}/conversations/${response.locals
                               .conversation.reference}${qs.stringify(
                               {
-                                conversations: req.query.conversations,
-                                messages: req.query.messages,
+                                conversations: request.query.conversations,
+                                messages: request.query.messages,
                               },
                               { addQueryPrefix: true }
                             )}"
                             novalidate
                             hidden
                             class="title--edit"
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
@@ -5710,14 +5777,14 @@ export default async (app: Application): Promise<void> => {
                             <input
                               type="text"
                               name="title"
-                              value="${res.locals.conversation.title}"
+                              value="${response.locals.conversation.title}"
                               required
                               autocomplete="off"
                               class="input--text"
                             />
                             <button
                               class="button button--tight button--tight--inline button--transparent text--green"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 flex: 1;
                               `)}"
                               onload="${javascript`
@@ -5737,7 +5804,7 @@ export default async (app: Application): Promise<void> => {
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
-                                  content: ${res.locals.html(
+                                  content: ${response.locals.html(
                                     html`
                                       Cancel
                                       <span class="keyboard-shortcut">
@@ -5776,10 +5843,11 @@ export default async (app: Application): Promise<void> => {
                     $${(() => {
                       let tags = html``;
 
-                      for (const tagging of res.locals.conversation.taggings)
-                        if (!mayEditConversation({ req, res }))
+                      for (const tagging of response.locals.conversation
+                        .taggings)
+                        if (!mayEditConversation({ request, response }))
                           tags += html`
-                            $${res.locals.conversation.taggings.map(
+                            $${response.locals.conversation.taggings.map(
                               (tagging) => html`
                                 <div class="text--teal">
                                   <i class="bi bi-tag-fill"></i>
@@ -5789,19 +5857,19 @@ export default async (app: Application): Promise<void> => {
                             )}
                           `;
                         else if (
-                          res.locals.conversation.taggings.length === 1 &&
-                          res.locals.conversation.type !== "chat"
+                          response.locals.conversation.taggings.length === 1 &&
+                          response.locals.conversation.type !== "chat"
                         )
                           tags += html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 display: flex;
                                 gap: var(--space--2);
                               `)}"
                             >
                               <span
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled"
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   color: var(--color--teal--600);
                                   @media (prefers-color-scheme: dark) {
                                     color: var(--color--teal--500);
@@ -5841,16 +5909,16 @@ export default async (app: Application): Promise<void> => {
                               key="tagging--${tagging.tag.reference}"
                               method="DELETE"
                               action="https://${app.configuration
-                                .hostname}/courses/${res.locals.course
-                                .reference}/conversations/${res.locals
+                                .hostname}/courses/${response.locals.course
+                                .reference}/conversations/${response.locals
                                 .conversation.reference}/taggings${qs.stringify(
                                 {
-                                  conversations: req.query.conversations,
-                                  messages: req.query.messages,
+                                  conversations: request.query.conversations,
+                                  messages: request.query.messages,
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 display: flex;
                                 gap: var(--space--2);
                               `)}"
@@ -5862,7 +5930,7 @@ export default async (app: Application): Promise<void> => {
                               />
                               <button
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   text-align: left;
                                 `)}"
                                 onload="${javascript`
@@ -5894,9 +5962,9 @@ export default async (app: Application): Promise<void> => {
                           `;
 
                       if (
-                        res.locals.enrollment.courseRole === "staff" ||
-                        (mayEditConversation({ req, res }) &&
-                          res.locals.tags.length > 0)
+                        response.locals.enrollment.courseRole === "staff" ||
+                        (mayEditConversation({ request, response }) &&
+                          response.locals.tags.length > 0)
                       )
                         tags += html`
                           <div>
@@ -5911,10 +5979,10 @@ export default async (app: Application): Promise<void> => {
                                 (this.dropdown ??= tippy(this)).setProps({
                                   trigger: "click",
                                   interactive: true,
-                                  content: ${res.locals.html(
+                                  content: ${response.locals.html(
                                     html`
                                       <div
-                                        css="${res.locals.css(css`
+                                        css="${response.locals.css(css`
                                           max-height: var(--space--40);
                                           overflow: auto;
                                           display: flex;
@@ -5922,14 +5990,14 @@ export default async (app: Application): Promise<void> => {
                                           gap: var(--space--2);
                                         `)}"
                                       >
-                                        $${res.locals.enrollment.courseRole ===
-                                        "staff"
+                                        $${response.locals.enrollment
+                                          .courseRole === "staff"
                                           ? html`
                                               <div class="dropdown--menu">
                                                 <a
                                                   href="https://${app.server
                                                     .locals.options
-                                                    .hostname}/courses/${res
+                                                    .hostname}/courses/${response
                                                     .locals.course
                                                     .reference}/settings/tags"
                                                   target="_blank"
@@ -5945,8 +6013,8 @@ export default async (app: Application): Promise<void> => {
                                           : html``}
 
                                         <div class="dropdown--menu">
-                                          $${res.locals.tags.map((tag) =>
-                                            !res.locals.conversation.taggings.some(
+                                          $${response.locals.tags.map((tag) =>
+                                            !response.locals.conversation.taggings.some(
                                               (tagging) =>
                                                 tagging.tag.id === tag.id
                                             )
@@ -5956,17 +6024,18 @@ export default async (app: Application): Promise<void> => {
                                                     method="POST"
                                                     action="https://${app.server
                                                       .locals.options
-                                                      .hostname}/courses/${res
+                                                      .hostname}/courses/${response
                                                       .locals.course
-                                                      .reference}/conversations/${res
+                                                      .reference}/conversations/${response
                                                       .locals.conversation
                                                       .reference}/taggings${qs.stringify(
                                                       {
                                                         conversations:
-                                                          req.query
+                                                          request.query
                                                             .conversations,
                                                         messages:
-                                                          req.query.messages,
+                                                          request.query
+                                                            .messages,
                                                       },
                                                       { addQueryPrefix: true }
                                                     )}"
@@ -6004,10 +6073,10 @@ export default async (app: Application): Promise<void> => {
                                                     </button>
                                                   </form>
                                                 `
-                                              : res.locals.conversation.taggings
-                                                  .length === 1 &&
-                                                res.locals.conversation.type !==
-                                                  "chat"
+                                              : response.locals.conversation
+                                                  .taggings.length === 1 &&
+                                                response.locals.conversation
+                                                  .type !== "chat"
                                               ? html`
                                                   <div
                                                     class="dropdown--menu--item button button--blue text--teal disabled"
@@ -6048,17 +6117,18 @@ export default async (app: Application): Promise<void> => {
                                                     method="DELETE"
                                                     action="https://${app.server
                                                       .locals.options
-                                                      .hostname}/courses/${res
+                                                      .hostname}/courses/${response
                                                       .locals.course
-                                                      .reference}/conversations/${res
+                                                      .reference}/conversations/${response
                                                       .locals.conversation
                                                       .reference}/taggings${qs.stringify(
                                                       {
                                                         conversations:
-                                                          req.query
+                                                          request.query
                                                             .conversations,
                                                         messages:
-                                                          req.query.messages,
+                                                          request.query
+                                                            .messages,
                                                       },
                                                       { addQueryPrefix: true }
                                                     )}"
@@ -6113,7 +6183,7 @@ export default async (app: Application): Promise<void> => {
                       return tags !== html``
                         ? html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -6132,7 +6202,7 @@ export default async (app: Application): Promise<void> => {
                           `
                         : html``;
                     })()}
-                    $${mayEditConversation({ req, res })
+                    $${mayEditConversation({ request, response })
                       ? (() => {
                           const enrollments = app.database
                             .all<{
@@ -6166,8 +6236,8 @@ export default async (app: Application): Promise<void> => {
                                 FROM "enrollments"
                                 JOIN "users" ON "enrollments"."user" = "users"."id"
                                 WHERE
-                                  "enrollments"."course" = ${res.locals.course.id} AND
-                                  "enrollments"."id" != ${res.locals.enrollment.id}
+                                  "enrollments"."course" = ${response.locals.course.id} AND
+                                  "enrollments"."id" != ${response.locals.enrollment.id}
                                 ORDER BY
                                   "enrollments"."courseRole" = 'staff' DESC,
                                   "users"."name" ASC
@@ -6197,16 +6267,16 @@ export default async (app: Application): Promise<void> => {
                             <form
                               method="PATCH"
                               action="https://${app.configuration
-                                .hostname}/courses/${res.locals.course
-                                .reference}/conversations/${res.locals
+                                .hostname}/courses/${response.locals.course
+                                .reference}/conversations/${response.locals
                                 .conversation.reference}${qs.stringify(
                                 {
-                                  conversations: req.query.conversations,
-                                  messages: req.query.messages,
+                                  conversations: request.query.conversations,
+                                  messages: request.query.messages,
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -6215,7 +6285,7 @@ export default async (app: Application): Promise<void> => {
                               `)}"
                             >
                               <div
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   max-height: var(--space--24);
                                   padding: var(--space--1);
                                   margin: var(--space---1);
@@ -6233,11 +6303,11 @@ export default async (app: Application): Promise<void> => {
                                       trigger: "click",
                                       interactive: true,
                                       placement: "bottom",
-                                      content: ${res.locals.html(
+                                      content: ${response.locals.html(
                                         html`
                                           <div
                                             key="participants--dropdown"
-                                            css="${res.locals.css(css`
+                                            css="${response.locals.css(css`
                                               display: flex;
                                               flex-direction: column;
                                               gap: var(--space--2);
@@ -6253,7 +6323,8 @@ export default async (app: Application): Promise<void> => {
                                                       type="radio"
                                                       name="participants--dropdown--participants"
                                                       value="${conversationParticipants}"
-                                                      $${res.locals.conversation
+                                                      $${response.locals
+                                                        .conversation
                                                         .participants ===
                                                       conversationParticipants
                                                         ? html`checked`
@@ -6341,12 +6412,12 @@ export default async (app: Application): Promise<void> => {
                                                 "staff",
                                                 "selected-people",
                                               ].includes(
-                                                res.locals.conversation
+                                                response.locals.conversation
                                                   .participants
                                               )
                                                 ? html``
                                                 : html`hidden`}
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 display: flex;
                                                 flex-direction: column;
                                                 gap: var(--space--2);
@@ -6354,12 +6425,13 @@ export default async (app: Application): Promise<void> => {
                                             >
                                               <hr class="dropdown--separator" />
 
-                                              $${res.locals
+                                              $${response.locals
                                                 .courseEnrollmentsCount === 1
                                                 ? html`
                                                     <p
                                                       class="secondary"
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         padding: var(--space--0)
                                                           var(--space--2)
                                                           var(--space--2);
@@ -6373,13 +6445,14 @@ export default async (app: Application): Promise<void> => {
                                                   `
                                                 : html`
                                                     <div
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         padding: var(--space--0)
                                                           var(--space--2);
                                                       `)}"
                                                     >
                                                       <label
-                                                        css="${res.locals
+                                                        css="${response.locals
                                                           .css(css`
                                                           display: flex;
                                                           gap: var(--space--2);
@@ -6435,7 +6508,8 @@ export default async (app: Application): Promise<void> => {
 
                                                     <div
                                                       class="dropdown--menu"
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         height: var(
                                                           --space--40
                                                         );
@@ -6447,7 +6521,7 @@ export default async (app: Application): Promise<void> => {
                                                           <label
                                                             key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
                                                             data-enrollment-course-role="${enrollment.courseRole}"
-                                                            $${res.locals
+                                                            $${response.locals
                                                               .conversation
                                                               .participants ===
                                                               "staff" &&
@@ -6460,7 +6534,7 @@ export default async (app: Application): Promise<void> => {
                                                               type="checkbox"
                                                               name="participants--dropdown--selected-participants[]"
                                                               value="${enrollment.reference}"
-                                                              $${res.locals.conversation.selectedParticipants.find(
+                                                              $${response.locals.conversation.selectedParticipants.find(
                                                                 (
                                                                   selectedParticipant
                                                                 ) =>
@@ -6485,8 +6559,8 @@ export default async (app: Application): Promise<void> => {
                                                             >
                                                               $${app.server.locals.partials.user(
                                                                 {
-                                                                  req,
-                                                                  res,
+                                                                  request,
+                                                                  response,
                                                                   enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
@@ -6501,8 +6575,8 @@ export default async (app: Application): Promise<void> => {
                                                             >
                                                               $${app.server.locals.partials.user(
                                                                 {
-                                                                  req,
-                                                                  res,
+                                                                  request,
+                                                                  response,
                                                                   enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
@@ -6530,7 +6604,7 @@ export default async (app: Application): Promise<void> => {
                                         type="radio"
                                         name="participants"
                                         value="${conversationParticipants}"
-                                        $${res.locals.conversation
+                                        $${response.locals.conversation
                                           .participants ===
                                         conversationParticipants
                                           ? html`checked`
@@ -6579,18 +6653,18 @@ export default async (app: Application): Promise<void> => {
                                       name="selectedParticipantsReferences[]"
                                       value="${enrollment.reference}"
                                       data-enrollment-course-role="${enrollment.courseRole}"
-                                      $${res.locals.conversation.selectedParticipants.find(
+                                      $${response.locals.conversation.selectedParticipants.find(
                                         (selectedParticipant) =>
                                           selectedParticipant.id ===
                                           enrollment.id
                                       ) !== undefined
                                         ? html`checked`
                                         : html``}
-                                      $${(res.locals.conversation
+                                      $${(response.locals.conversation
                                         .participants === "staff" &&
                                         enrollment.courseRole !== "staff") ||
-                                      res.locals.conversation.participants ===
-                                        "selected-people"
+                                      response.locals.conversation
+                                        .participants === "selected-people"
                                         ? html``
                                         : html`disabled`}
                                       tabindex="-1"
@@ -6616,8 +6690,8 @@ export default async (app: Application): Promise<void> => {
                                       `}"
                                     >
                                       $${app.server.locals.partials.user({
-                                        req,
-                                        res,
+                                        request,
+                                        response,
                                         enrollment,
                                         user: enrollment.user,
                                         tooltip: false,
@@ -6632,7 +6706,7 @@ export default async (app: Application): Promise<void> => {
                               <div
                                 key="submit"
                                 hidden
-                                css="${res.locals.css(
+                                css="${response.locals.css(
                                   css`
                                     display: flex;
                                   `
@@ -6648,7 +6722,7 @@ export default async (app: Application): Promise<void> => {
                         })()
                       : html`
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
                               max-height: var(--space--24);
@@ -6668,7 +6742,7 @@ export default async (app: Application): Promise<void> => {
                           >
                             <div
                               class="${conversationParticipantsTextColor[
-                                res.locals.conversation.participants
+                                response.locals.conversation.participants
                               ]}"
                               onload="${javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
@@ -6678,23 +6752,23 @@ export default async (app: Application): Promise<void> => {
                               `}"
                             >
                               $${conversationParticipantsIcon[
-                                res.locals.conversation.participants
+                                response.locals.conversation.participants
                               ].fill}
                               $${conversationParticipantsLabel[
-                                res.locals.conversation.participants
+                                response.locals.conversation.participants
                               ]}
                             </div>
 
                             $${["staff", "selected-people"].includes(
-                              res.locals.conversation.participants
+                              response.locals.conversation.participants
                             )
                               ? html`
-                                  $${res.locals.conversation.selectedParticipants.map(
+                                  $${response.locals.conversation.selectedParticipants.map(
                                     (selectedParticipant) => html`
                                       <div>
                                         $${app.server.locals.partials.user({
-                                          req,
-                                          res,
+                                          request,
+                                          response,
                                           enrollment: selectedParticipant,
                                           user: selectedParticipant.user,
                                           size: "xs",
@@ -6707,7 +6781,7 @@ export default async (app: Application): Promise<void> => {
                               : html``}
                           </div>
                         `}
-                    $${res.locals.conversation.type === "chat"
+                    $${response.locals.conversation.type === "chat"
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
@@ -6733,8 +6807,8 @@ export default async (app: Application): Promise<void> => {
 
                 return html`
                   <div
-                    css="${res.locals.css(css`
-                      ${res.locals.conversation.type === "chat"
+                    css="${response.locals.css(css`
+                      ${response.locals.conversation.type === "chat"
                         ? css`
                             flex: 1;
                             padding-right: var(--space--4);
@@ -6757,11 +6831,12 @@ export default async (app: Application): Promise<void> => {
                           !event?.detail?.liveUpdate
                         ) {
                           ${
-                            typeof req.query.messages?.messageReference ===
+                            typeof request.query.messages?.messageReference ===
                               "string" &&
-                            req.query.messages.messageReference.trim() !== ""
+                            request.query.messages.messageReference.trim() !==
+                              ""
                               ? javascript`
-                                  const element = this.querySelector('[key="message--${req.query.messages.messageReference}"]');
+                                  const element = this.querySelector('[key="message--${request.query.messages.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
                                   const messageHighlight = element.querySelector(".message--highlight");
@@ -6775,7 +6850,7 @@ export default async (app: Application): Promise<void> => {
                               ? javascript`
                                   this.querySelector('[key="message--${firstUnreadMessage.reference}"]')?.scrollIntoView();
                                 `
-                              : res.locals.conversation.type === "chat" &&
+                              : response.locals.conversation.type === "chat" &&
                                 messages.length > 0 &&
                                 afterMessage === undefined
                               ? javascript`
@@ -6785,7 +6860,7 @@ export default async (app: Application): Promise<void> => {
                           }
                         }
                         ${
-                          res.locals.conversation.type === "chat"
+                          response.locals.conversation.type === "chat"
                             ? javascript`
                                 else if (this.shouldScrollConversationToBottom) {
                                   this.scroll(0, this.scrollHeight);
@@ -6807,8 +6882,8 @@ export default async (app: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      css="${res.locals.css(css`
-                        ${res.locals.conversation.type === "chat"
+                      css="${response.locals.css(css`
+                        ${response.locals.conversation.type === "chat"
                           ? css`
                               flex: 1;
                               min-width: var(--width--0);
@@ -6820,7 +6895,7 @@ export default async (app: Application): Promise<void> => {
                       $${messages.length === 0
                         ? html`
                             <div
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 padding: var(--space--4) var(--space--0);
                                 display: flex;
                                 flex-direction: column;
@@ -6835,7 +6910,7 @@ export default async (app: Application): Promise<void> => {
                                 ${afterMessage !== undefined ||
                                 beforeMessage !== undefined
                                   ? "No more messages."
-                                  : res.locals.conversation.type === "chat"
+                                  : response.locals.conversation.type === "chat"
                                   ? "Start the chat by sending the first message!"
                                   : "All messages in this conversation have been deleted."}
                               </p>
@@ -6844,8 +6919,8 @@ export default async (app: Application): Promise<void> => {
                         : html`
                             <div
                               key="messages"
-                              css="${res.locals.css(css`
-                                ${res.locals.conversation.type === "chat"
+                              css="${response.locals.css(css`
+                                ${response.locals.conversation.type === "chat"
                                   ? css`
                                       padding: var(--space--4) var(--space--0);
                                     `
@@ -6856,22 +6931,23 @@ export default async (app: Application): Promise<void> => {
                               (moreMessagesExist && messagesReverse)
                                 ? html`
                                     <div
-                                      css="${res.locals.css(css`
+                                      css="${response.locals.css(css`
                                         display: flex;
                                         justify-content: center;
                                       `)}"
                                     >
                                       <a
                                         href="https://${app.configuration
-                                          .hostname}/courses/${res.locals.course
-                                          .reference}/conversations/${res.locals
-                                          .conversation
+                                          .hostname}/courses/${response.locals
+                                          .course
+                                          .reference}/conversations/${response
+                                          .locals.conversation
                                           .reference}${qs.stringify(
                                           {
                                             conversations:
-                                              req.query.conversations,
+                                              request.query.conversations,
                                             messages: {
-                                              ...req.query.messages,
+                                              ...request.query.messages,
                                               messagesPage: {
                                                 beforeMessageReference:
                                                   messages[0].reference,
@@ -6897,8 +6973,8 @@ export default async (app: Application): Promise<void> => {
                                         message.contentSource
                                       )}"
                                       class="message"
-                                      css="${res.locals.css(css`
-                                        ${res.locals.conversation.type ===
+                                      css="${response.locals.css(css`
+                                        ${response.locals.conversation.type ===
                                         "chat"
                                           ? css``
                                           : css`
@@ -6920,7 +6996,7 @@ export default async (app: Application): Promise<void> => {
                                         ? html`
                                             <button
                                               class="message--new-separator button button--transparent"
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 width: calc(
                                                   var(--space--2) + 100% +
                                                     var(--space--2)
@@ -6953,7 +7029,7 @@ export default async (app: Application): Promise<void> => {
                                             >
                                               <hr
                                                 class="separator"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -6968,16 +7044,16 @@ export default async (app: Application): Promise<void> => {
                                               <span class="heading text--rose">
                                                 <i class="bi bi-fire"></i>
                                                 ${String(
-                                                  res.locals.conversation
+                                                  response.locals.conversation
                                                     .messagesCount -
-                                                    res.locals.conversation
+                                                    response.locals.conversation
                                                       .readingsCount
                                                 )}
                                                 New
                                               </span>
                                               <hr
                                                 class="separator"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -6992,12 +7068,13 @@ export default async (app: Application): Promise<void> => {
                                             </button>
                                           `
                                         : html``}
-                                      $${res.locals.conversation.type === "chat"
+                                      $${response.locals.conversation.type ===
+                                      "chat"
                                         ? html`
                                             <div
                                               hidden
                                               key="message--date-separator"
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 margin: var(--space--2)
                                                   var(--space--0);
                                                 display: flex;
@@ -7007,7 +7084,7 @@ export default async (app: Application): Promise<void> => {
                                             >
                                               <hr
                                                 class="separator"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   flex: 1;
                                                 `)}"
                                               />
@@ -7038,7 +7115,7 @@ export default async (app: Application): Promise<void> => {
                                               </span>
                                               <hr
                                                 class="separator"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   flex: 1;
                                                 `)}"
                                               />
@@ -7048,10 +7125,10 @@ export default async (app: Application): Promise<void> => {
 
                                       <div
                                         class="message--highlight"
-                                        css="${res.locals.css(css`
+                                        css="${response.locals.css(css`
                                           padding: var(--space--2);
-                                          ${res.locals.conversation.type ===
-                                          "chat"
+                                          ${response.locals.conversation
+                                            .type === "chat"
                                             ? css``
                                             : css`
                                                 padding-bottom: var(--space--4);
@@ -7061,8 +7138,8 @@ export default async (app: Application): Promise<void> => {
                                             var(--space---2);
                                           display: flex;
                                           flex-direction: column;
-                                          ${res.locals.conversation.type ===
-                                          "chat"
+                                          ${response.locals.conversation
+                                            .type === "chat"
                                             ? css`
                                                 gap: var(--space--1);
                                               `
@@ -7088,8 +7165,8 @@ export default async (app: Application): Promise<void> => {
                                             }
                                           }
 
-                                          ${res.locals.conversation.type ===
-                                          "chat"
+                                          ${response.locals.conversation
+                                            .type === "chat"
                                             ? css`
                                                 transition-property: var(
                                                   --transition-property--colors
@@ -7120,14 +7197,14 @@ export default async (app: Application): Promise<void> => {
                                             <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
                                                   line-height: var(
                                                     --line-height--xs
                                                   );
-                                                  ${res.locals.conversation
+                                                  ${response.locals.conversation
                                                     .type === "chat"
                                                     ? css`
                                                         transition-property: var(
@@ -7157,21 +7234,21 @@ export default async (app: Application): Promise<void> => {
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
-                                                    content: ${res.locals.html(
+                                                    content: ${response.locals.html(
                                                       html`
                                                         <h3 class="heading">
                                                           <i
                                                             class="bi bi-chat-text-fill"
                                                           ></i>
                                                           Message
-                                                          #${res.locals
+                                                          #${response.locals
                                                             .conversation
                                                             .reference}/${message.reference}
                                                         </h3>
                                                         <div
                                                           class="dropdown--menu"
                                                         >
-                                                          $${res.locals
+                                                          $${response.locals
                                                             .conversation
                                                             .type === "chat" &&
                                                           message.likes
@@ -7182,20 +7259,20 @@ export default async (app: Application): Promise<void> => {
                                                                   action="https://${app
                                                                     .locals
                                                                     .options
-                                                                    .hostname}/courses/${res
+                                                                    .hostname}/courses/${response
                                                                     .locals
                                                                     .course
-                                                                    .reference}/conversations/${res
+                                                                    .reference}/conversations/${response
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes${qs.stringify(
                                                                     {
                                                                       conversations:
-                                                                        req
+                                                                        request
                                                                           .query
                                                                           .conversations,
                                                                       messages:
-                                                                        req
+                                                                        request
                                                                           .query
                                                                           .messages,
                                                                     },
@@ -7249,7 +7326,7 @@ export default async (app: Application): Promise<void> => {
                                                                         } · " +
                                                                       `
                                                                   } "#" + ${JSON.stringify(
-                                                              res.locals
+                                                              response.locals
                                                                 .conversation
                                                                 .reference
                                                             )} + "/" + ${JSON.stringify(
@@ -7268,22 +7345,22 @@ export default async (app: Application): Promise<void> => {
                                                             Reply
                                                           </button>
 
-                                                          $${res.locals
+                                                          $${response.locals
                                                             .enrollment
                                                             .courseRole ===
                                                             "staff" &&
-                                                          res.locals
+                                                          response.locals
                                                             .conversation
                                                             .type === "chat"
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
                                                                   onload="${javascript`
-                                                                    const loading = ${res
+                                                                    const loading = ${response
                                                                       .locals
                                                                       .html(html`
                                                                       <div
-                                                                        css="${res
+                                                                        css="${response
                                                                           .locals
                                                                           .css(css`
                                                                           display: flex;
@@ -7295,8 +7372,8 @@ export default async (app: Application): Promise<void> => {
                                                                       >
                                                                         $${app.server.locals.partials.spinner(
                                                                           {
-                                                                            req,
-                                                                            res,
+                                                                            request,
+                                                                            response,
                                                                           }
                                                                         )}
                                                                         Loading…
@@ -7304,7 +7381,7 @@ export default async (app: Application): Promise<void> => {
                                                                     `)};
                                                                     loading.remove();
                 
-                                                                    const content = ${res.locals.html(
+                                                                    const content = ${response.locals.html(
                                                                       html``
                                                                     )};
                                                                     content.remove();
@@ -7320,11 +7397,13 @@ export default async (app: Application): Promise<void> => {
                                                                             .options
                                                                             .hostname
                                                                         }/courses/${
-                                                                    res.locals
+                                                                    response
+                                                                      .locals
                                                                       .course
                                                                       .reference
                                                                   }/conversations/${
-                                                                    res.locals
+                                                                    response
+                                                                      .locals
                                                                       .conversation
                                                                       .reference
                                                                   }/messages/${
@@ -7360,10 +7439,11 @@ export default async (app: Application): Promise<void> => {
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
-                                                              res.locals.course
+                                                              response.locals
+                                                                .course
                                                                 .reference
                                                             }/conversations/${
-                                                              res.locals
+                                                              response.locals
                                                                 .conversation
                                                                 .reference
                                                             }${qs.stringify(
@@ -7393,8 +7473,8 @@ export default async (app: Application): Promise<void> => {
 
                                                           $${app.server.locals.helpers.mayEditMessage(
                                                             {
-                                                              req,
-                                                              res,
+                                                              request,
+                                                              response,
                                                               message,
                                                             }
                                                           )
@@ -7425,8 +7505,8 @@ export default async (app: Application): Promise<void> => {
                                                             "student" &&
                                                           app.server.locals.helpers.mayEditMessage(
                                                             {
-                                                              req,
-                                                              res,
+                                                              request,
+                                                              response,
                                                               message,
                                                             }
                                                           )
@@ -7436,20 +7516,20 @@ export default async (app: Application): Promise<void> => {
                                                                   action="https://${app
                                                                     .locals
                                                                     .options
-                                                                    .hostname}/courses/${res
+                                                                    .hostname}/courses/${response
                                                                     .locals
                                                                     .course
-                                                                    .reference}/conversations/${res
+                                                                    .reference}/conversations/${response
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}${qs.stringify(
                                                                     {
                                                                       conversations:
-                                                                        req
+                                                                        request
                                                                           .query
                                                                           .conversations,
                                                                       messages:
-                                                                        req
+                                                                        request
                                                                           .query
                                                                           .messages,
                                                                     },
@@ -7473,7 +7553,7 @@ export default async (app: Application): Promise<void> => {
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
                                                                           <span
-                                                                            css="${res
+                                                                            css="${response
                                                                               .locals
                                                                               .css(css`
                                                                               margin-left: var(
@@ -7483,8 +7563,8 @@ export default async (app: Application): Promise<void> => {
                                                                           >
                                                                             $${app.server.locals.partials.user(
                                                                               {
-                                                                                req,
-                                                                                res,
+                                                                                request,
+                                                                                response,
                                                                                 name: false,
                                                                                 size: "xs",
                                                                               }
@@ -7508,7 +7588,7 @@ export default async (app: Application): Promise<void> => {
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
                                                                           <span
-                                                                            css="${res
+                                                                            css="${response
                                                                               .locals
                                                                               .css(css`
                                                                               margin-left: var(
@@ -7518,8 +7598,8 @@ export default async (app: Application): Promise<void> => {
                                                                           >
                                                                             $${app.server.locals.partials.user(
                                                                               {
-                                                                                req,
-                                                                                res,
+                                                                                request,
+                                                                                response,
                                                                                 user: message
                                                                                   .authorEnrollment
                                                                                   .user,
@@ -7536,7 +7616,7 @@ export default async (app: Application): Promise<void> => {
                                                                           ${message
                                                                             .authorEnrollment
                                                                             .id ===
-                                                                          res
+                                                                          response
                                                                             .locals
                                                                             .enrollment
                                                                             .id
@@ -7550,7 +7630,7 @@ export default async (app: Application): Promise<void> => {
                                                                 </form>
                                                               `
                                                             : html``}
-                                                          $${res.locals
+                                                          $${response.locals
                                                             .enrollment
                                                             .courseRole ===
                                                           "staff"
@@ -7563,27 +7643,27 @@ export default async (app: Application): Promise<void> => {
                                                                         theme: "rose",
                                                                         trigger: "click",
                                                                         interactive: true,
-                                                                        content: ${res.locals.html(
+                                                                        content: ${response.locals.html(
                                                                           html`
                                                                             <form
                                                                               method="DELETE"
                                                                               action="https://${app
                                                                                 .locals
                                                                                 .options
-                                                                                .hostname}/courses/${res
+                                                                                .hostname}/courses/${response
                                                                                 .locals
                                                                                 .course
-                                                                                .reference}/conversations/${res
+                                                                                .reference}/conversations/${response
                                                                                 .locals
                                                                                 .conversation
                                                                                 .reference}/messages/${message.reference}${qs.stringify(
                                                                                 {
                                                                                   conversations:
-                                                                                    req
+                                                                                    request
                                                                                       .query
                                                                                       .conversations,
                                                                                   messages:
-                                                                                    req
+                                                                                    request
                                                                                       .query
                                                                                       .messages,
                                                                                 },
@@ -7592,7 +7672,7 @@ export default async (app: Application): Promise<void> => {
                                                                                     true,
                                                                                 }
                                                                               )}"
-                                                                              css="${res
+                                                                              css="${response
                                                                                 .locals
                                                                                 .css(css`
                                                                                 padding: var(
@@ -7618,7 +7698,7 @@ export default async (app: Application): Promise<void> => {
                                                                               </p>
                                                                               <p>
                                                                                 <strong
-                                                                                  css="${res
+                                                                                  css="${response
                                                                                     .locals
                                                                                     .css(css`
                                                                                     font-weight: var(
@@ -7676,30 +7756,31 @@ export default async (app: Application): Promise<void> => {
                                           if (
                                             app.server.locals.helpers.mayEditMessage(
                                               {
-                                                req,
-                                                res,
+                                                request,
+                                                response,
                                                 message,
                                               }
                                             ) &&
                                             message.reference !== "1" &&
-                                            res.locals.conversation.type ===
-                                              "question"
+                                            response.locals.conversation
+                                              .type === "question"
                                           )
                                             header += html`
                                               <form
                                                 method="PATCH"
                                                 action="https://${app.server
                                                   .locals.options
-                                                  .hostname}/courses/${res
+                                                  .hostname}/courses/${response
                                                   .locals.course
-                                                  .reference}/conversations/${res
+                                                  .reference}/conversations/${response
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
                                                   {
                                                     conversations:
-                                                      req.query.conversations,
+                                                      request.query
+                                                        .conversations,
                                                     messages:
-                                                      req.query.messages,
+                                                      request.query.messages,
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}"
@@ -7753,8 +7834,8 @@ export default async (app: Application): Promise<void> => {
                                             `;
                                           else if (
                                             message.reference !== "1" &&
-                                            res.locals.conversation.type ===
-                                              "question" &&
+                                            response.locals.conversation
+                                              .type === "question" &&
                                             message.answerAt !== null
                                           )
                                             header += html`
@@ -7769,8 +7850,8 @@ export default async (app: Application): Promise<void> => {
                                           if (
                                             app.server.locals.helpers.mayEndorseMessage(
                                               {
-                                                req,
-                                                res,
+                                                request,
+                                                response,
                                                 message,
                                               }
                                             )
@@ -7781,7 +7862,8 @@ export default async (app: Application): Promise<void> => {
                                                   endorsement.enrollment !==
                                                     "no-longer-enrolled" &&
                                                   endorsement.enrollment.id ===
-                                                    res.locals.enrollment.id
+                                                    response.locals.enrollment
+                                                      .id
                                               );
 
                                             header += html`
@@ -7791,16 +7873,17 @@ export default async (app: Application): Promise<void> => {
                                                   : "POST"}"
                                                 action="https://${app.server
                                                   .locals.options
-                                                  .hostname}/courses/${res
+                                                  .hostname}/courses/${response
                                                   .locals.course
-                                                  .reference}/conversations/${res
+                                                  .reference}/conversations/${response
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}/endorsements${qs.stringify(
                                                   {
                                                     conversations:
-                                                      req.query.conversations,
+                                                      request.query
+                                                        .conversations,
                                                     messages:
-                                                      req.query.messages,
+                                                      request.query.messages,
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}"
@@ -7823,7 +7906,8 @@ export default async (app: Application): Promise<void> => {
                                                                     endorsement
                                                                       .enrollment
                                                                       .id !==
-                                                                      res.locals
+                                                                      response
+                                                                        .locals
                                                                         .enrollment
                                                                         .id
                                                                 ).length > 0
@@ -7842,7 +7926,7 @@ export default async (app: Application): Promise<void> => {
                                                                             endorsement
                                                                               .enrollment
                                                                               .id !==
-                                                                              res
+                                                                              response
                                                                                 .locals
                                                                                 .enrollment
                                                                                 .id
@@ -7938,8 +8022,8 @@ export default async (app: Application): Promise<void> => {
                                               </form>
                                             `;
                                           } else if (
-                                            res.locals.conversation.type ===
-                                              "question" &&
+                                            response.locals.conversation
+                                              .type === "question" &&
                                             (message.authorEnrollment ===
                                               "no-longer-enrolled" ||
                                               message.authorEnrollment
@@ -8004,7 +8088,8 @@ export default async (app: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--header"
-                                                    css="${res.locals.css(css`
+                                                    css="${response.locals
+                                                      .css(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8016,7 +8101,8 @@ export default async (app: Application): Promise<void> => {
                                                     `)}"
                                                   >
                                                     <div
-                                                      css="${res.locals.css(css`
+                                                      css="${response.locals
+                                                        .css(css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -8040,14 +8126,14 @@ export default async (app: Application): Promise<void> => {
                                               : html``}
 
                                             <div
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 display: flex;
                                                 gap: var(--space--2);
                                               `)}"
                                             >
                                               <div
                                                 class="secondary"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -8064,7 +8150,8 @@ export default async (app: Application): Promise<void> => {
                                               >
                                                 <div
                                                   class="strong"
-                                                  css="${res.locals.css(css`
+                                                  css="${response.locals
+                                                    .css(css`
                                                     font-size: var(
                                                       --font-size--sm
                                                     );
@@ -8075,15 +8162,15 @@ export default async (app: Application): Promise<void> => {
                                                 >
                                                   $${app.server.locals.partials.user(
                                                     {
-                                                      req,
-                                                      res,
+                                                      request,
+                                                      response,
                                                       enrollment:
                                                         message.authorEnrollment,
                                                       anonymous:
                                                         message.anonymousAt ===
                                                         null
                                                           ? false
-                                                          : res.locals
+                                                          : response.locals
                                                               .enrollment
                                                               .courseRole ===
                                                               "staff" ||
@@ -8092,7 +8179,7 @@ export default async (app: Application): Promise<void> => {
                                                               message
                                                                 .authorEnrollment
                                                                 .id ===
-                                                                res.locals
+                                                                response.locals
                                                                   .enrollment
                                                                   .id)
                                                           ? "reveal"
@@ -8105,13 +8192,14 @@ export default async (app: Application): Promise<void> => {
                                                               html`${message
                                                                 .authorEnrollment
                                                                 .user.name}`,
-                                                              typeof req.query
+                                                              typeof request
+                                                                .query
                                                                 .conversations
                                                                 ?.search ===
                                                                 "string" &&
-                                                                req.query.conversations.search.trim() !==
+                                                                request.query.conversations.search.trim() !==
                                                                   ""
-                                                                ? req.query
+                                                                ? request.query
                                                                     .conversations
                                                                     .search
                                                                 : undefined
@@ -8155,7 +8243,7 @@ export default async (app: Application): Promise<void> => {
 
                                         <div
                                           class="message--show"
-                                          css="${res.locals.css(css`
+                                          css="${response.locals.css(css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
@@ -8163,13 +8251,13 @@ export default async (app: Application): Promise<void> => {
                                         >
                                           <div
                                             class="message--show--content-area"
-                                            css="${res.locals.css(css`
+                                            css="${response.locals.css(css`
                                               position: relative;
                                             `)}"
                                           >
                                             <div
                                               class="message--show--content-area--dropdown-menu-target"
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
                                                 position: absolute;
@@ -8182,7 +8270,7 @@ export default async (app: Application): Promise<void> => {
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
                                                   interactive: true,
-                                                  content: ${res.locals.html(
+                                                  content: ${response.locals.html(
                                                     html`
                                                       <div
                                                         class="dropdown--menu"
@@ -8235,7 +8323,7 @@ export default async (app: Application): Promise<void> => {
                                                                       } · " +
                                                                     `
                                                                 } "#" + ${JSON.stringify(
-                                                            res.locals
+                                                            response.locals
                                                               .conversation
                                                               .reference
                                                           )} + "/" + ${JSON.stringify(
@@ -8278,20 +8366,20 @@ export default async (app: Application): Promise<void> => {
                                             >
                                               $${app.server.locals.partials.content(
                                                 {
-                                                  req,
-                                                  res,
+                                                  request,
+                                                  response,
                                                   id: `message--${message.reference}`,
                                                   contentPreprocessed:
                                                     message.contentPreprocessed,
                                                   decorate: true,
                                                   search:
-                                                    typeof req.query
+                                                    typeof request.query
                                                       .conversations?.search ===
                                                       "string" &&
-                                                    req.query.conversations.search.trim() !==
+                                                    request.query.conversations.search.trim() !==
                                                       ""
-                                                      ? req.query.conversations
-                                                          .search
+                                                      ? request.query
+                                                          .conversations.search
                                                       : undefined,
                                                 }
                                               ).contentProcessed}
@@ -8306,18 +8394,19 @@ export default async (app: Application): Promise<void> => {
                                                 like.enrollment !==
                                                   "no-longer-enrolled" &&
                                                 like.enrollment.id ===
-                                                  res.locals.enrollment.id
+                                                  response.locals.enrollment.id
                                             );
                                             const likesCount =
                                               message.likes.length;
                                             if (
-                                              res.locals.conversation.type !==
-                                                "chat" ||
+                                              response.locals.conversation
+                                                .type !== "chat" ||
                                               likesCount > 0
                                             )
                                               messageShowFooter += html`
                                                 <div
-                                                  css="${res.locals.css(css`
+                                                  css="${response.locals
+                                                    .css(css`
                                                     display: flex;
                                                     gap: var(--space--1);
                                                   `)}"
@@ -8328,17 +8417,18 @@ export default async (app: Application): Promise<void> => {
                                                       : "POST"}"
                                                     action="https://${app.server
                                                       .locals.options
-                                                      .hostname}/courses/${res
+                                                      .hostname}/courses/${response
                                                       .locals.course
-                                                      .reference}/conversations/${res
+                                                      .reference}/conversations/${response
                                                       .locals.conversation
                                                       .reference}/messages/${message.reference}/likes${qs.stringify(
                                                       {
                                                         conversations:
-                                                          req.query
+                                                          request.query
                                                             .conversations,
                                                         messages:
-                                                          req.query.messages,
+                                                          request.query
+                                                            .messages,
                                                       },
                                                       { addQueryPrefix: true }
                                                     )}"
@@ -8390,10 +8480,10 @@ export default async (app: Application): Promise<void> => {
                                                               content: "See people who liked",
                                                             });
 
-                                                            const loading = ${res
+                                                            const loading = ${response
                                                               .locals.html(html`
                                                               <div
-                                                                css="${res
+                                                                css="${response
                                                                   .locals
                                                                   .css(css`
                                                                   display: flex;
@@ -8405,8 +8495,8 @@ export default async (app: Application): Promise<void> => {
                                                               >
                                                                 $${app.server.locals.partials.spinner(
                                                                   {
-                                                                    req,
-                                                                    res,
+                                                                    request,
+                                                                    response,
                                                                   }
                                                                 )}
                                                                 Loading…
@@ -8414,7 +8504,7 @@ export default async (app: Application): Promise<void> => {
                                                             `)};
                                                             loading.remove();
 
-                                                            const content = ${res.locals.html(
+                                                            const content = ${response.locals.html(
                                                               html``
                                                             )};
                                                             content.remove();
@@ -8430,10 +8520,10 @@ export default async (app: Application): Promise<void> => {
                                                                     .options
                                                                     .hostname
                                                                 }/courses/${
-                                                            res.locals.course
-                                                              .reference
+                                                            response.locals
+                                                              .course.reference
                                                           }/conversations/${
-                                                            res.locals
+                                                            response.locals
                                                               .conversation
                                                               .reference
                                                           }/messages/${
@@ -8454,19 +8544,19 @@ export default async (app: Application): Promise<void> => {
                                               `;
 
                                             if (
-                                              res.locals.enrollment
+                                              response.locals.enrollment
                                                 .courseRole === "staff" &&
-                                              res.locals.conversation.type !==
-                                                "chat"
+                                              response.locals.conversation
+                                                .type !== "chat"
                                             )
                                               messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
-                                                    const loading = ${res.locals
-                                                      .html(html`
+                                                    const loading = ${response
+                                                      .locals.html(html`
                                                       <div
-                                                        css="${res.locals
+                                                        css="${response.locals
                                                           .css(css`
                                                           display: flex;
                                                           gap: var(--space--2);
@@ -8475,8 +8565,8 @@ export default async (app: Application): Promise<void> => {
                                                       >
                                                         $${app.server.locals.partials.spinner(
                                                           {
-                                                            req,
-                                                            res,
+                                                            request,
+                                                            response,
                                                           }
                                                         )}
                                                         Loading…
@@ -8484,7 +8574,7 @@ export default async (app: Application): Promise<void> => {
                                                     `)};
                                                     loading.remove();
 
-                                                    const content = ${res.locals.html(
+                                                    const content = ${response.locals.html(
                                                       html``
                                                     )};
                                                     content.remove();
@@ -8498,9 +8588,10 @@ export default async (app: Application): Promise<void> => {
                                                           app.configuration
                                                             .hostname
                                                         }/courses/${
-                                                    res.locals.course.reference
+                                                    response.locals.course
+                                                      .reference
                                                   }/conversations/${
-                                                    res.locals.conversation
+                                                    response.locals.conversation
                                                       .reference
                                                   }/messages/${
                                                     message.reference
@@ -8520,7 +8611,8 @@ export default async (app: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--show--footer"
-                                                    css="${res.locals.css(css`
+                                                    css="${response.locals
+                                                      .css(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8544,8 +8636,8 @@ export default async (app: Application): Promise<void> => {
 
                                         $${app.server.locals.helpers.mayEditMessage(
                                           {
-                                            req,
-                                            res,
+                                            request,
+                                            response,
                                             message,
                                           }
                                         )
@@ -8554,23 +8646,24 @@ export default async (app: Application): Promise<void> => {
                                                 method="PATCH"
                                                 action="https://${app.server
                                                   .locals.options
-                                                  .hostname}/courses/${res
+                                                  .hostname}/courses/${response
                                                   .locals.course
-                                                  .reference}/conversations/${res
+                                                  .reference}/conversations/${response
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
                                                   {
                                                     conversations:
-                                                      req.query.conversations,
+                                                      request.query
+                                                        .conversations,
                                                     messages:
-                                                      req.query.messages,
+                                                      request.query.messages,
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}"
                                                 novalidate
                                                 hidden
                                                 class="message--edit"
-                                                css="${res.locals.css(css`
+                                                css="${response.locals.css(css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
@@ -8578,18 +8671,20 @@ export default async (app: Application): Promise<void> => {
                                               >
                                                 $${app.server.locals.partials.contentEditor(
                                                   {
-                                                    req,
-                                                    res,
+                                                    request,
+                                                    response,
                                                     contentSource:
                                                       message.contentSource,
                                                     compact:
-                                                      res.locals.conversation
-                                                        .type === "chat",
+                                                      response.locals
+                                                        .conversation.type ===
+                                                      "chat",
                                                   }
                                                 )}
 
                                                 <div
-                                                  css="${res.locals.css(css`
+                                                  css="${response.locals
+                                                    .css(css`
                                                     display: flex;
                                                     gap: var(--space--2);
                                                     @media (max-width: 400px) {
@@ -8602,7 +8697,7 @@ export default async (app: Application): Promise<void> => {
                                                     onload="${javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
-                                                        content: ${res.locals.html(
+                                                        content: ${response.locals.html(
                                                           html`
                                                             <span
                                                               class="keyboard-shortcut"
@@ -8645,7 +8740,7 @@ export default async (app: Application): Promise<void> => {
                                                     onload="${javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
-                                                        content: ${res.locals.html(
+                                                        content: ${response.locals.html(
                                                           html`
                                                             <span
                                                               class="keyboard-shortcut"
@@ -8694,22 +8789,23 @@ export default async (app: Application): Promise<void> => {
                               (moreMessagesExist && !messagesReverse)
                                 ? html`
                                     <div
-                                      css="${res.locals.css(css`
+                                      css="${response.locals.css(css`
                                         display: flex;
                                         justify-content: center;
                                       `)}"
                                     >
                                       <a
                                         href="https://${app.configuration
-                                          .hostname}/courses/${res.locals.course
-                                          .reference}/conversations/${res.locals
-                                          .conversation
+                                          .hostname}/courses/${response.locals
+                                          .course
+                                          .reference}/conversations/${response
+                                          .locals.conversation
                                           .reference}${qs.stringify(
                                           {
                                             conversations:
-                                              req.query.conversations,
+                                              request.query.conversations,
                                             messages: {
-                                              ...req.query.messages,
+                                              ...request.query.messages,
                                               messagesPage: {
                                                 afterMessageReference:
                                                   messages[messages.length - 1]
@@ -8730,9 +8826,9 @@ export default async (app: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
-                                css="${res.locals.css(css`
+                                css="${response.locals.css(css`
                                   opacity: var(--opacity--50);
-                                  ${res.locals.conversation.type === "chat"
+                                  ${response.locals.conversation.type === "chat"
                                     ? css``
                                     : css`
                                         border-bottom: var(--border-width--4)
@@ -8746,9 +8842,10 @@ export default async (app: Application): Promise<void> => {
                                 `)}"
                               >
                                 <div
-                                  css="${res.locals.css(css`
+                                  css="${response.locals.css(css`
                                     padding: var(--space--2);
-                                    ${res.locals.conversation.type === "chat"
+                                    ${response.locals.conversation.type ===
+                                    "chat"
                                       ? css``
                                       : css`
                                           padding-bottom: var(--space--4);
@@ -8757,7 +8854,8 @@ export default async (app: Application): Promise<void> => {
                                     margin: var(--space--0) var(--space---2);
                                     display: flex;
                                     flex-direction: column;
-                                    ${res.locals.conversation.type === "chat"
+                                    ${response.locals.conversation.type ===
+                                    "chat"
                                       ? css`
                                           gap: var(--space--1);
                                         `
@@ -8765,7 +8863,8 @@ export default async (app: Application): Promise<void> => {
                                           gap: var(--space--2);
                                         `}
 
-                                    ${res.locals.conversation.type === "chat"
+                                    ${response.locals.conversation.type ===
+                                    "chat"
                                       ? css`
                                           transition-property: var(
                                             --transition-property--colors
@@ -8792,14 +8891,14 @@ export default async (app: Application): Promise<void> => {
                                   `)}"
                                 >
                                   <div
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       display: flex;
                                       gap: var(--space--2);
                                     `)}"
                                   >
                                     <div
                                       class="secondary"
-                                      css="${res.locals.css(css`
+                                      css="${response.locals.css(css`
                                         font-size: var(--font-size--xs);
                                         line-height: var(--line-height--xs);
                                         flex: 1;
@@ -8813,28 +8912,28 @@ export default async (app: Application): Promise<void> => {
                                       <div
                                         key="message--new-message--placeholder--anonymous--false"
                                         class="strong"
-                                        css="${res.locals.css(css`
+                                        css="${response.locals.css(css`
                                           font-size: var(--font-size--sm);
                                           line-height: var(--line-height--sm);
                                         `)}"
                                       >
                                         $${app.server.locals.partials.user({
-                                          req,
-                                          res,
+                                          request,
+                                          response,
                                           enrollment: {
-                                            ...res.locals.enrollment,
-                                            user: res.locals.user,
+                                            ...response.locals.enrollment,
+                                            user: response.locals.user,
                                           },
                                         })}
                                       </div>
-                                      $${res.locals.enrollment.courseRole ===
-                                      "staff"
+                                      $${response.locals.enrollment
+                                        .courseRole === "staff"
                                         ? html``
                                         : html`
                                             <div
                                               key="message--new-message--placeholder--anonymous--true"
                                               class="strong"
-                                              css="${res.locals.css(css`
+                                              css="${response.locals.css(css`
                                                 font-size: var(--font-size--sm);
                                                 line-height: var(
                                                   --line-height--sm
@@ -8843,11 +8942,12 @@ export default async (app: Application): Promise<void> => {
                                             >
                                               $${app.server.locals.partials.user(
                                                 {
-                                                  req,
-                                                  res,
+                                                  request,
+                                                  response,
                                                   enrollment: {
-                                                    ...res.locals.enrollment,
-                                                    user: res.locals.user,
+                                                    ...response.locals
+                                                      .enrollment,
+                                                    user: response.locals.user,
                                                   },
                                                   anonymous: "reveal",
                                                 }
@@ -8856,15 +8956,15 @@ export default async (app: Application): Promise<void> => {
                                           `}
                                       <span>Sending…</span>
                                       $${app.server.locals.partials.spinner({
-                                        req,
-                                        res,
+                                        request,
+                                        response,
                                         size: 10,
                                       })}
                                     </div>
                                   </div>
                                   <div
                                     key="message--new-message--placeholder--content"
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       white-space: pre-line;
                                     `)}"
                                   ></div>
@@ -8879,18 +8979,18 @@ export default async (app: Application): Promise<void> => {
 
               <form
                 method="POST"
-                action="https://${app.configuration.hostname}/courses/${res
-                  .locals.course.reference}/conversations/${res.locals
+                action="https://${app.configuration.hostname}/courses/${response
+                  .locals.course.reference}/conversations/${response.locals
                   .conversation.reference}/messages${qs.stringify(
                   {
-                    conversations: req.query.conversations,
-                    messages: req.query.messages,
+                    conversations: request.query.conversations,
+                    messages: request.query.messages,
                   },
                   { addQueryPrefix: true }
                 )}"
                 novalidate
-                css="${res.locals.css(css`
-                  ${res.locals.conversation.type === "chat"
+                css="${response.locals.css(css`
+                  ${response.locals.conversation.type === "chat"
                     ? css`
                         padding-right: var(--space--4);
                         padding-bottom: var(--space--4);
@@ -8913,7 +9013,7 @@ export default async (app: Application): Promise<void> => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
                       ${
-                        res.locals.enrollment.courseRole === "staff"
+                        response.locals.enrollment.courseRole === "staff"
                           ? javascript``
                           : javascript`
                               const isAnonymous = this.querySelector('[name="isAnonymous"]');
@@ -8930,10 +9030,10 @@ export default async (app: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  css="${res.locals.css(css`
+                  css="${response.locals.css(css`
                     display: flex;
                     flex-direction: column;
-                    ${res.locals.conversation.type === "chat"
+                    ${response.locals.conversation.type === "chat"
                       ? css`
                           gap: var(--space--2);
                           flex: 1;
@@ -8945,12 +9045,12 @@ export default async (app: Application): Promise<void> => {
                         `}
                   `)}"
                 >
-                  $${res.locals.conversation.type === "question"
+                  $${response.locals.conversation.type === "question"
                     ? html`
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                             `)}"
                           >
@@ -8960,7 +9060,8 @@ export default async (app: Application): Promise<void> => {
                               <input
                                 type="checkbox"
                                 name="isAnswer"
-                                $${res.locals.enrollment.courseRole === "staff"
+                                $${response.locals.enrollment.courseRole ===
+                                "staff"
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -8999,13 +9100,13 @@ export default async (app: Application): Promise<void> => {
 
                   <div
                     class="new-message"
-                    css="${res.locals.css(css`
+                    css="${response.locals.css(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
                       }
 
-                      ${res.locals.conversation.type === "chat"
+                      ${response.locals.conversation.type === "chat"
                         ? css`
                             textarea {
                               padding-right: var(--space--8);
@@ -9018,15 +9119,15 @@ export default async (app: Application): Promise<void> => {
                     `}"
                   >
                     $${app.server.locals.partials.contentEditor({
-                      req,
-                      res,
-                      compact: res.locals.conversation.type === "chat",
+                      request,
+                      response,
+                      compact: response.locals.conversation.type === "chat",
                     })}
-                    $${res.locals.conversation.type === "chat"
+                    $${response.locals.conversation.type === "chat"
                       ? html`
                           <button
                             class="button button--blue"
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               position: relative;
                               place-self: end;
                               width: var(--font-size--2xl);
@@ -9039,7 +9140,7 @@ export default async (app: Application): Promise<void> => {
                             onload="${javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
-                                content: ${res.locals.html(
+                                content: ${response.locals.html(
                                   html`
                                     Send Message
                                     <span class="keyboard-shortcut">
@@ -9064,7 +9165,7 @@ export default async (app: Application): Promise<void> => {
                           >
                             <i
                               class="bi bi-send-fill"
-                              css="${res.locals.css(css`
+                              css="${response.locals.css(css`
                                 position: relative;
                                 top: var(--space--px);
                                 right: var(--space--px);
@@ -9075,15 +9176,15 @@ export default async (app: Application): Promise<void> => {
                       : html``}
                   </div>
 
-                  $${res.locals.enrollment.courseRole === "staff"
+                  $${response.locals.enrollment.courseRole === "staff"
                     ? html``
                     : html`
                         <div class="label">
-                          $${res.locals.conversation.type === "chat"
+                          $${response.locals.conversation.type === "chat"
                             ? html``
                             : html`<p class="label--text">Anonymity</p>`}
                           <div
-                            css="${res.locals.css(css`
+                            css="${response.locals.css(css`
                               display: flex;
                             `)}"
                           >
@@ -9114,15 +9215,15 @@ export default async (app: Application): Promise<void> => {
                               >
                                 <span>
                                   $${app.server.locals.partials.user({
-                                    req,
-                                    res,
-                                    user: res.locals.user,
+                                    request,
+                                    response,
+                                    user: response.locals.user,
                                     decorate: false,
                                     name: false,
                                     size: "xs",
                                   })}
                                   <span
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       margin-left: var(--space--1);
                                     `)}"
                                   >
@@ -9140,13 +9241,13 @@ export default async (app: Application): Promise<void> => {
                               >
                                 <span>
                                   $${app.server.locals.partials.user({
-                                    req,
-                                    res,
+                                    request,
+                                    response,
                                     name: false,
                                     size: "xs",
                                   })}
                                   <span
-                                    css="${res.locals.css(css`
+                                    css="${response.locals.css(css`
                                       margin-left: var(--space--1);
                                     `)}"
                                   >
@@ -9160,7 +9261,7 @@ export default async (app: Application): Promise<void> => {
                       `}
 
                   <div
-                    $${res.locals.conversation.type === "chat"
+                    $${response.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
                   >
@@ -9169,7 +9270,7 @@ export default async (app: Application): Promise<void> => {
                       onload="${javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${res.locals.html(
+                          content: ${response.locals.html(
                             html`
                               <span class="keyboard-shortcut">
                                 <span
@@ -9220,8 +9321,8 @@ export default async (app: Application): Promise<void> => {
     MayEditConversationLocals
   >[] = [
     ...app.server.locals.middlewares.isConversationAccessible,
-    (req, res, next) => {
-      if (mayEditConversation({ req, res })) return next();
+    (request, response, next) => {
+      if (mayEditConversation({ request, response })) return next();
       next("route");
     },
   ];
@@ -9247,35 +9348,35 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
-    (req, res, next) => {
-      if (typeof req.body.participants === "string") {
-        req.body.selectedParticipantsReferences ??= [];
+    (request, response, next) => {
+      if (typeof request.body.participants === "string") {
+        request.body.selectedParticipantsReferences ??= [];
         if (
-          !conversationParticipantses.includes(req.body.participants) ||
-          !Array.isArray(req.body.selectedParticipantsReferences) ||
-          (req.body.participants === "everyone" &&
-            req.body.selectedParticipantsReferences.length > 0) ||
-          (req.body.participants === "selected-people" &&
-            req.body.selectedParticipantsReferences.length === 0) ||
-          req.body.selectedParticipantsReferences.some(
+          !conversationParticipantses.includes(request.body.participants) ||
+          !Array.isArray(request.body.selectedParticipantsReferences) ||
+          (request.body.participants === "everyone" &&
+            request.body.selectedParticipantsReferences.length > 0) ||
+          (request.body.participants === "selected-people" &&
+            request.body.selectedParticipantsReferences.length === 0) ||
+          request.body.selectedParticipantsReferences.some(
             (selectedParticipantReference) =>
               typeof selectedParticipantReference !== "string"
           ) ||
-          req.body.selectedParticipantsReferences.length !==
-            new Set(req.body.selectedParticipantsReferences).size
+          request.body.selectedParticipantsReferences.length !==
+            new Set(request.body.selectedParticipantsReferences).size
         )
           return next("Validation");
 
         if (
-          (req.body.participants === "staff" &&
-            res.locals.enrollment.courseRole !== "staff") ||
-          req.body.participants === "selected-people"
+          (request.body.participants === "staff" &&
+            response.locals.enrollment.courseRole !== "staff") ||
+          request.body.participants === "selected-people"
         )
-          req.body.selectedParticipantsReferences.push(
-            res.locals.enrollment.reference
+          request.body.selectedParticipantsReferences.push(
+            response.locals.enrollment.reference
           );
         const selectedParticipants =
-          req.body.selectedParticipantsReferences.length === 0
+          request.body.selectedParticipantsReferences.length === 0
             ? []
             : app.database.all<{
                 id: number;
@@ -9285,15 +9386,15 @@ export default async (app: Application): Promise<void> => {
                   SELECT "id", "courseRole"
                   FROM "enrollments"
                   WHERE
-                    "enrollments"."course" = ${res.locals.course.id} AND
-                    "reference" IN ${req.body.selectedParticipantsReferences}
+                    "enrollments"."course" = ${response.locals.course.id} AND
+                    "reference" IN ${request.body.selectedParticipantsReferences}
                 `
               );
 
         if (
-          req.body.selectedParticipantsReferences.length !==
+          request.body.selectedParticipantsReferences.length !==
             selectedParticipants.length ||
-          (req.body.participants === "staff" &&
+          (request.body.participants === "staff" &&
             selectedParticipants.some(
               (selectedParticipant) =>
                 selectedParticipant.courseRole === "staff"
@@ -9304,15 +9405,15 @@ export default async (app: Application): Promise<void> => {
         app.database.run(
           sql`
             UPDATE "conversations"
-            SET "participants" = ${req.body.participants}
-            WHERE "id" = ${res.locals.conversation.id}
+            SET "participants" = ${request.body.participants}
+            WHERE "id" = ${response.locals.conversation.id}
           `
         );
         app.database.run(
           sql`
             DELETE FROM "conversationSelectedParticipants"
             WHERE
-              "conversation" = ${res.locals.conversation.id} AND
+              "conversation" = ${response.locals.conversation.id} AND
               "enrollment" NOT IN ${selectedParticipants.map(
                 (selectedParticipant) => selectedParticipant.id
               )}
@@ -9324,22 +9425,24 @@ export default async (app: Application): Promise<void> => {
               INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
               VALUES (
                 ${new Date().toISOString()},
-                ${res.locals.conversation.id},
+                ${response.locals.conversation.id},
                 ${selectedParticipant.id}
               )
             `
           );
       }
 
-      if (typeof req.body.isAnonymous === "string")
+      if (typeof request.body.isAnonymous === "string")
         if (
-          !["true", "false"].includes(req.body.isAnonymous) ||
-          res.locals.conversation.authorEnrollment === "no-longer-enrolled" ||
-          res.locals.conversation.authorEnrollment.courseRole === "staff" ||
-          (req.body.isAnonymous === "true" &&
-            res.locals.conversation.anonymousAt !== null) ||
-          (req.body.isAnonymous === "false" &&
-            res.locals.conversation.anonymousAt === null)
+          !["true", "false"].includes(request.body.isAnonymous) ||
+          response.locals.conversation.authorEnrollment ===
+            "no-longer-enrolled" ||
+          response.locals.conversation.authorEnrollment.courseRole ===
+            "staff" ||
+          (request.body.isAnonymous === "true" &&
+            response.locals.conversation.anonymousAt !== null) ||
+          (request.body.isAnonymous === "false" &&
+            response.locals.conversation.anonymousAt === null)
         )
           return next("Validation");
         else {
@@ -9347,52 +9450,52 @@ export default async (app: Application): Promise<void> => {
             sql`
               UPDATE "conversations"
               SET "anonymousAt" = ${
-                req.body.isAnonymous === "true"
+                request.body.isAnonymous === "true"
                   ? new Date().toISOString()
                   : null
               }
-              WHERE "id" = ${res.locals.conversation.id}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
           app.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
-                req.body.isAnonymous === "true"
+                request.body.isAnonymous === "true"
                   ? new Date().toISOString()
                   : null
               }
               WHERE
-                "conversation" = ${res.locals.conversation.id} AND
+                "conversation" = ${response.locals.conversation.id} AND
                 "reference" = '1' AND
                 "authorEnrollment" = ${
-                  res.locals.conversation.authorEnrollment.id
+                  response.locals.conversation.authorEnrollment.id
                 }
             `
           );
         }
 
-      if (typeof req.body.type === "string")
-        if (!conversationTypes.includes(req.body.type))
+      if (typeof request.body.type === "string")
+        if (!conversationTypes.includes(request.body.type))
           return next("Validation");
         else
           app.database.run(
             sql`
               UPDATE "conversations"
-              SET "type" = ${req.body.type}
-              WHERE "id" = ${res.locals.conversation.id}
+              SET "type" = ${request.body.type}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
 
-      if (typeof req.body.isAnnouncement === "string")
+      if (typeof request.body.isAnnouncement === "string")
         if (
-          !["true", "false"].includes(req.body.isAnnouncement) ||
-          res.locals.enrollment.courseRole !== "staff" ||
-          res.locals.conversation.type !== "note" ||
-          (req.body.isAnnouncement === "true" &&
-            res.locals.conversation.announcementAt !== null) ||
-          (req.body.isAnnouncement === "false" &&
-            res.locals.conversation.announcementAt === null)
+          !["true", "false"].includes(request.body.isAnnouncement) ||
+          response.locals.enrollment.courseRole !== "staff" ||
+          response.locals.conversation.type !== "note" ||
+          (request.body.isAnnouncement === "true" &&
+            response.locals.conversation.announcementAt !== null) ||
+          (request.body.isAnnouncement === "false" &&
+            response.locals.conversation.announcementAt === null)
         )
           return next("Validation");
         else {
@@ -9401,42 +9504,42 @@ export default async (app: Application): Promise<void> => {
               UPDATE "conversations"
               SET
                 $${
-                  req.body.isAnnouncement === "true"
+                  request.body.isAnnouncement === "true"
                     ? sql`"updatedAt" = ${new Date().toISOString()},`
                     : sql``
                 }
                 "announcementAt" = ${
-                  req.body.isAnnouncement === "true"
+                  request.body.isAnnouncement === "true"
                     ? new Date().toISOString()
                     : null
                 }
-              WHERE "id" = ${res.locals.conversation.id}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
-          if (req.body.isAnnouncement === "true") {
+          if (request.body.isAnnouncement === "true") {
             const message = app.server.locals.helpers.getMessage({
-              req,
-              res,
-              conversation: res.locals.conversation,
+              request,
+              response,
+              conversation: response.locals.conversation,
               messageReference: "1",
             });
             if (message !== undefined)
               app.server.locals.helpers.emailNotifications({
-                req,
-                res,
+                request,
+                response,
                 message,
               });
           }
         }
 
-      if (typeof req.body.isPinned === "string")
+      if (typeof request.body.isPinned === "string")
         if (
-          !["true", "false"].includes(req.body.isPinned) ||
-          res.locals.enrollment.courseRole !== "staff" ||
-          (req.body.isPinned === "true" &&
-            res.locals.conversation.pinnedAt !== null) ||
-          (req.body.isPinned === "false" &&
-            res.locals.conversation.pinnedAt === null)
+          !["true", "false"].includes(request.body.isPinned) ||
+          response.locals.enrollment.courseRole !== "staff" ||
+          (request.body.isPinned === "true" &&
+            response.locals.conversation.pinnedAt !== null) ||
+          (request.body.isPinned === "false" &&
+            response.locals.conversation.pinnedAt === null)
         )
           return next("Validation");
         else
@@ -9445,26 +9548,28 @@ export default async (app: Application): Promise<void> => {
               UPDATE "conversations"
               SET
                 $${
-                  req.body.isPinned === "true"
+                  request.body.isPinned === "true"
                     ? sql`"updatedAt" = ${new Date().toISOString()},`
                     : sql``
                 }
                 "pinnedAt" = ${
-                  req.body.isPinned === "true" ? new Date().toISOString() : null
+                  request.body.isPinned === "true"
+                    ? new Date().toISOString()
+                    : null
                 }
-              WHERE "id" = ${res.locals.conversation.id}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
 
-      if (typeof req.body.isResolved === "string")
+      if (typeof request.body.isResolved === "string")
         if (
-          res.locals.conversation.type !== "question" ||
-          !["true", "false"].includes(req.body.isResolved) ||
-          res.locals.enrollment.courseRole !== "staff" ||
-          (req.body.isResolved === "true" &&
-            res.locals.conversation.resolvedAt !== null) ||
-          (req.body.isResolved === "false" &&
-            res.locals.conversation.resolvedAt === null)
+          response.locals.conversation.type !== "question" ||
+          !["true", "false"].includes(request.body.isResolved) ||
+          response.locals.enrollment.courseRole !== "staff" ||
+          (request.body.isResolved === "true" &&
+            response.locals.conversation.resolvedAt !== null) ||
+          (request.body.isResolved === "false" &&
+            response.locals.conversation.resolvedAt === null)
         )
           return next("Validation");
         else
@@ -9472,40 +9577,42 @@ export default async (app: Application): Promise<void> => {
             sql`
               UPDATE "conversations"
               SET "resolvedAt" = ${
-                req.body.isResolved === "true" ? new Date().toISOString() : null
+                request.body.isResolved === "true"
+                  ? new Date().toISOString()
+                  : null
               }
-              WHERE "id" = ${res.locals.conversation.id}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
 
-      if (typeof req.body.title === "string")
-        if (req.body.title.trim() === "") return next("Validation");
+      if (typeof request.body.title === "string")
+        if (request.body.title.trim() === "") return next("Validation");
         else
           app.database.run(
             sql`
               UPDATE "conversations"
               SET
                 "updatedAt" = ${new Date().toISOString()},
-                "title" = ${req.body.title},
-                "titleSearch" = ${html`${req.body.title}`}
-              WHERE "id" = ${res.locals.conversation.id}
+                "title" = ${request.body.title},
+                "titleSearch" = ${html`${request.body.title}`}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
 
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -9522,29 +9629,29 @@ export default async (app: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.server.locals.middlewares.isCourseStaff,
     ...app.server.locals.middlewares.isConversationAccessible,
-    (req, res) => {
+    (request, response) => {
       app.database.run(
-        sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
+        sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
       app.server.locals.helpers.Flash.set({
-        req,
-        res,
+        request,
+        response,
         theme: "green",
         content: html`Conversation removed successfully.`,
       });
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
+          response.locals.course.reference
         }${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
       );
-      app.server.locals.helpers.liveUpdates({ req, res });
+      app.server.locals.helpers.liveUpdates({ request, response });
     }
   );
 
@@ -9563,12 +9670,14 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...mayEditConversationMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        typeof req.body.reference !== "string" ||
-        !res.locals.tags.some((tag) => req.body.reference === tag.reference) ||
-        res.locals.conversation.taggings.some(
-          (tagging) => req.body.reference === tagging.tag.reference
+        typeof request.body.reference !== "string" ||
+        !response.locals.tags.some(
+          (tag) => request.body.reference === tag.reference
+        ) ||
+        response.locals.conversation.taggings.some(
+          (tagging) => request.body.reference === tagging.tag.reference
         )
       )
         return next("Validation");
@@ -9578,24 +9687,24 @@ export default async (app: Application): Promise<void> => {
           INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
             ${new Date().toISOString()},
-            ${res.locals.conversation.id},
+            ${response.locals.conversation.id},
             ${
-              res.locals.tags.find(
-                (tag) => req.body.reference === tag.reference
+              response.locals.tags.find(
+                (tag) => request.body.reference === tag.reference
               )!.id
             }
           )
         `
       );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
@@ -9618,13 +9727,13 @@ export default async (app: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...mayEditConversationMiddleware,
-    (req, res, next) => {
+    (request, response, next) => {
       if (
-        (res.locals.conversation.taggings.length === 1 &&
-          res.locals.conversation.type !== "chat") ||
-        typeof req.body.reference !== "string" ||
-        !res.locals.conversation.taggings.some(
-          (tagging) => req.body.reference === tagging.tag.reference
+        (response.locals.conversation.taggings.length === 1 &&
+          response.locals.conversation.type !== "chat") ||
+        typeof request.body.reference !== "string" ||
+        !response.locals.conversation.taggings.some(
+          (tagging) => request.body.reference === tagging.tag.reference
         )
       )
         return next("Validation");
@@ -9633,23 +9742,23 @@ export default async (app: Application): Promise<void> => {
         sql`
           DELETE FROM "taggings"
           WHERE
-            "conversation" = ${res.locals.conversation.id} AND
+            "conversation" = ${response.locals.conversation.id} AND
             "tag" = ${
-              res.locals.tags.find(
-                (tag) => req.body.reference === tag.reference
+              response.locals.tags.find(
+                (tag) => request.body.reference === tag.reference
               )!.id
             }
         `
       );
 
-      res.redirect(
+      response.redirect(
         303,
         `https://${app.configuration.hostname}/courses/${
-          res.locals.course.reference
-        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          response.locals.course.reference
+        }/conversations/${response.locals.conversation.reference}${qs.stringify(
           {
-            conversations: req.query.conversations,
-            messages: req.query.messages,
+            conversations: request.query.conversations,
+            messages: request.query.messages,
           },
           { addQueryPrefix: true }
         )}`
