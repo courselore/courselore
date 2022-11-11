@@ -28,7 +28,7 @@ import administration, {
 import user, { ApplicationUser } from "./user.mjs";
 import course, { ApplicationCourse } from "./course.mjs";
 import conversation, { ApplicationConversation } from "./conversation.mjs";
-// import message from "./message.mjs";
+import message, {ApplicationMessage} from "./message.mjs";
 // import content from "./content.mjs";
 // import email from "./email.mjs";
 // import demonstration from "./demonstration.mjs";
@@ -86,7 +86,8 @@ export type Application = {
   ApplicationAdministration &
   ApplicationUser &
   ApplicationCourse &
-  ApplicationConversation & {
+  ApplicationConversation & 
+  ApplicationMessage & {
     // TODO
     server: {
       locals: {
@@ -96,13 +97,6 @@ export type Application = {
           contentEditor: any;
         };
         helpers: {
-          getMessage: (..._: any) => {
-            endorsements: any[];
-            likes: any[];
-            [key: string]: any;
-          };
-          mayEndorseMessage: (..._: any) => any;
-          mayEditMessage: (..._: any) => any;
           emailNotifications: (..._: any) => any;
           splitFilterablePhrases: (..._: any) => any;
           emailRegExp: RegExp;
@@ -255,7 +249,7 @@ if (
         await user(application);
         await course(application);
         await conversation(application);
-        // await message(application);
+        await message(application);
         // await content(application);
         // await email(application);
         // await demonstration(application);
