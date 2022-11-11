@@ -2252,20 +2252,25 @@ ${contentSource}</textarea
     </div>
   `;
 
-  (() => {
-    const handler: express.RequestHandler<
-      { courseReference: string; conversationReference?: string },
-      any,
-      {},
-      { search?: string },
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-        Partial<
-          Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-        >
-    > = (request, response, next) => {
-      // TODO: Different expectations for different uses of handler
-      if (response.locals.course === undefined) return next();
-      if (response.locals.conversation === undefined) return next();
+  application.server.get<
+    { courseReference: string; conversationReference?: string },
+    any,
+    {},
+    { search?: string },
+    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
+  >(
+    [
+      "/courses/:courseReference/content-editor/mention-user-search",
+      "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
+    ],
+    (request, response, next) => {
+      if (
+        response.locals.course === undefined ||
+        (request.params.conversationReference !== undefined &&
+          response.locals.conversation === undefined)
+      )
+        return next();
 
       if (
         typeof request.query.search !== "string" ||
@@ -2405,27 +2410,8 @@ ${contentSource}</textarea
           `,
         })
       );
-    };
-
-    application.server.get<
-      { courseReference: string },
-      any,
-      {},
-      { search?: string },
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-    >("/courses/:courseReference/content-editor/mention-user-search", handler);
-
-    application.server.get<
-      { courseReference: string; conversationReference: string },
-      any,
-      {},
-      { search?: string },
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-    >(
-      "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
-      handler
-    );
-  })();
+    }
+  );
 
   application.server.get<
     { courseReference: string },
@@ -2835,13 +2821,16 @@ ${contentSource}</textarea
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/content-editor/attachments",
-    ...application.server.locals.middlewares.isSignedIn,
     asyncHandler(async (request, response, next) => {
+      if (response.locals.user === undefined) return next();
+
       if (request.files?.attachments === undefined) return next("Validation");
+
       const attachments = Array.isArray(request.files.attachments)
         ? request.files.attachments
         : [request.files.attachments];
       if (attachments.length === 0) return next("Validation");
+
       for (const attachment of attachments) {
         if (attachment.truncated)
           return response
@@ -2852,6 +2841,7 @@ ${contentSource}</textarea
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("Validation");
       }
+
       let attachmentsContentSources = ``;
       for (const attachment of attachments) {
         const directory = cryptoRandomString({
@@ -2906,29 +2896,39 @@ ${contentSource}</textarea
           } catch {}
         attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
+
       response.send(`\n\n${attachmentsContentSources}`);
     })
   );
 
-  (() => {
-    const handler: express.RequestHandler<
-      {},
-      any,
-      { content?: string },
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"] &
-        Partial<
-          Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-        >
-    > = (request, response, next) => {
-      // TODO: Different expectations for different uses of handler
-      if (response.locals.course === undefined) return next();
+  application.server.post<
+    { courseReference?: string },
+    any,
+    { content?: string },
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]> &
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      >
+  >(
+    [
+      "/content-editor/preview",
+      "/courses/:courseReference/content-editor/preview",
+    ],
+    (request, response, next) => {
+      if (
+        request.params.courseReference !== undefined &&
+        response.locals.course === undefined
+      )
+        return next();
 
       if (
         typeof request.body.content !== "string" ||
         request.body.content.trim() === ""
       )
         return next("Validation");
+
       response.send(
         application.server.locals.layouts.partial({
           request,
@@ -2944,38 +2944,6 @@ ${contentSource}</textarea
           }).contentProcessed,
         })
       );
-    };
-
-    application.server.post<
-      { courseReference: string },
-      any,
-      { content?: string },
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-    >("/courses/:courseReference/content-editor/preview", handler);
-
-    application.server.post<
-      {},
-      any,
-      { content?: string },
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-    >(
-      "/content-editor/preview",
-      ...application.server.locals.middlewares.isSignedIn,
-      handler
-    );
-
-    application.server.post<
-      {},
-      any,
-      { content?: string },
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"]
-    >(
-      "/content-editor/preview",
-      ...application.server.locals.middlewares.isSignedOut,
-      handler
-    );
-  })();
+    }
+  );
 };
