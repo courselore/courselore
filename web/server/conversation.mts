@@ -8,7 +8,6 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
-import cryptoRandomString from "crypto-random-string";
 import { Application } from "./index.mjs";
 
 export type ApplicationConversation = {
