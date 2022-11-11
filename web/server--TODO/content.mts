@@ -407,7 +407,9 @@ export default async (app: Courselore): Promise<void> => {
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${response.locals.course!.id} AND
+                        "enrollments"."course" = ${
+                          response.locals.course!.id
+                        } AND
                         "enrollments"."reference" = ${enrollmentReference}
                     `
                   );
@@ -476,8 +478,8 @@ export default async (app: Courselore): Promise<void> => {
               if (message === undefined) return match;
               return html`<a
                 class="reference"
-                href="https://${app.configuration.hostname}/courses/${response.locals
-                  .course!
+                href="https://${app.configuration.hostname}/courses/${response
+                  .locals.course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
                     conversations: request.query.conversations,
@@ -1835,7 +1837,10 @@ export default async (app: Courselore): Promise<void> => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.server.locals.partials.spinner({ request, response })}
+                          $${app.server.locals.partials.spinner({
+                            request,
+                            response,
+                          })}
                           Uploading…
                         </div>
                       `
@@ -2211,7 +2216,8 @@ ${contentSource}</textarea
                   gap: var(--space--2);
                 `)}"
               >
-                $${app.server.locals.partials.spinner({ request, response })} Loading…
+                $${app.server.locals.partials.spinner({ request, response })}
+                Loading…
               </div>
 
               <div
@@ -2233,8 +2239,12 @@ ${contentSource}</textarea
       {},
       { search?: string },
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-        Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
+        Partial<
+          Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+        >
     > = (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       if (
         typeof request.query.search !== "string" ||
         request.query.search.trim() === ""
@@ -2395,7 +2405,6 @@ ${contentSource}</textarea
       Application["server"]["locals"]["ResponseLocals"]["Conversation"]
     >(
       "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
-      ...app.server.locals.middlewares.isConversationAccessible,
       handler
     );
   })();

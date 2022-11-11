@@ -70,7 +70,10 @@ export type MayEditMessageHelper = ({
     {},
     Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >;
-  response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Conversation"]>;
+  response: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+  >;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -91,7 +94,10 @@ export type MayEndorseMessageHelper = ({
     {},
     Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >;
-  response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Conversation"]>;
+  response: express.Response<
+    any,
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+  >;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -160,7 +166,9 @@ export default async (app: Courselore): Promise<void> => {
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+      authorEnrollmentCourseRole:
+        | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+        | null;
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
@@ -265,7 +273,9 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+        enrollmentCourseRole:
+          | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+          | null;
       }>(
         sql`
           SELECT
@@ -339,7 +349,9 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+        enrollmentCourseRole:
+          | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+          | null;
       }>(
         sql`
           SELECT
@@ -412,7 +424,9 @@ export default async (app: Courselore): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
-        enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number] | null;
+        enrollmentCourseRole:
+          | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+          | null;
       }>(
         sql`
           SELECT
@@ -477,11 +491,12 @@ export default async (app: Courselore): Promise<void> => {
     };
   };
 
-  type MessageExistsLocals = Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
-    message: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-    >;
-  };
+  type MessageExistsLocals =
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
+      message: NonNullable<
+        ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+      >;
+    };
   const messageExistsMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -493,8 +508,9 @@ export default async (app: Courselore): Promise<void> => {
     {},
     MessageExistsLocals
   >[] = [
-    ...app.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       const message = app.server.locals.helpers.getMessage({
         request,
         response,
@@ -587,8 +603,9 @@ export default async (app: Courselore): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
-    ...app.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       if (
         ![undefined, "on"].includes(request.body.isAnswer) ||
         (request.body.isAnswer === "on" &&
@@ -614,7 +631,8 @@ export default async (app: Courselore): Promise<void> => {
         response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
         mostRecentMessage.authorEnrollment !== "no-longer-enrolled" &&
-        response.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
+        response.locals.enrollment.id ===
+          mostRecentMessage.authorEnrollment.id &&
         mostRecentMessage.anonymousAt === null &&
         request.body.isAnonymous !== "on" &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
@@ -701,9 +719,13 @@ export default async (app: Courselore): Promise<void> => {
               ${String(response.locals.conversation.nextMessageReference)},
               ${response.locals.enrollment.id},
               ${
-                request.body.isAnonymous === "on" ? new Date().toISOString() : null
+                request.body.isAnonymous === "on"
+                  ? new Date().toISOString()
+                  : null
               },
-              ${request.body.isAnswer === "on" ? new Date().toISOString() : null},
+              ${
+                request.body.isAnswer === "on" ? new Date().toISOString() : null
+              },
               ${request.body.content},
               ${contentPreprocessed.contentPreprocessed},
               ${contentPreprocessed.contentSearch}
@@ -796,7 +818,9 @@ export default async (app: Courselore): Promise<void> => {
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
-                request.body.isAnswer === "true" ? new Date().toISOString() : null
+                request.body.isAnswer === "true"
+                  ? new Date().toISOString()
+                  : null
               }
               WHERE "id" = ${response.locals.message.id}
             `
@@ -827,7 +851,8 @@ export default async (app: Courselore): Promise<void> => {
           );
           if (
             response.locals.message.reference === "1" &&
-            response.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
+            response.locals.conversation.authorEnrollment !==
+              "no-longer-enrolled" &&
             response.locals.conversation.authorEnrollment.id ===
               response.locals.message.authorEnrollment.id
           )
@@ -1095,7 +1120,11 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.locals.helpers.mayEndorseMessage = ({ request, response, message }) =>
+  app.server.locals.helpers.mayEndorseMessage = ({
+    request,
+    response,
+    message,
+  }) =>
     response.locals.enrollment.courseRole === "staff" &&
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
@@ -1236,7 +1265,11 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
 
-  app.server.locals.helpers.emailNotifications = ({ request, response, message }) => {
+  app.server.locals.helpers.emailNotifications = ({
+    request,
+    response,
+    message,
+  }) => {
     app.database.executeTransaction(() => {
       app.database.run(
         sql`

@@ -2994,8 +2994,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
-    ...application.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       if (
         response.locals.conversation.participants === "everyone" ||
         response.locals.conversation.selectedParticipants.length <= 1
@@ -4949,9 +4950,10 @@ export default async (application: Application): Promise<void> => {
       ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...application.server.locals.middlewares.isConversationAccessible,
     ...application.server.locals.middlewares.liveUpdates,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       const beforeMessage =
         typeof request.query.messages?.messagesPage?.beforeMessageReference ===
           "string" &&
@@ -9381,8 +9383,9 @@ export default async (application: Application): Promise<void> => {
     {},
     MayEditConversationLocals
   >[] = [
-    ...application.server.locals.middlewares.isConversationAccessible,
     (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       if (mayEditConversation({ request, response })) return next();
       next("route");
     },
@@ -9696,8 +9699,9 @@ export default async (application: Application): Promise<void> => {
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...application.server.locals.middlewares.isCourseStaff,
-    ...application.server.locals.middlewares.isConversationAccessible,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
       application.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
