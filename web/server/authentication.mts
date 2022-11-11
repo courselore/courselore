@@ -316,96 +316,6 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.locals.helpers.emailVerification = ({
-    request,
-    response,
-    userId,
-    userEmail,
-    welcome = false,
-  }) => {
-    const emailVerification = application.database.executeTransaction(() => {
-      application.database.run(
-        sql`
-          DELETE FROM "emailVerifications" WHERE "user" = ${userId}
-        `
-      );
-      return application.database.get<{
-        nonce: string;
-      }>(
-        sql`
-          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
-          VALUES (
-            ${new Date().toISOString()},
-            ${userId},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
-        `
-      )!;
-    });
-
-    const link = `https://${
-      application.configuration.hostname
-    }/email-verification/${emailVerification.nonce}${qs.stringify(
-      { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
-      { addQueryPrefix: true }
-    )}`;
-    application.database.run(
-      sql`
-        INSERT INTO "sendEmailJobs" (
-          "createdAt",
-          "startAt",
-          "expiresAt",
-          "mailOptions"
-        )
-        VALUES (
-          ${new Date().toISOString()},
-          ${new Date().toISOString()},
-          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-          ${JSON.stringify({
-            to: userEmail,
-            subject: welcome ? "Welcome to Courselore!" : "Email Verification",
-            html: html`
-              <p>
-                Please verify your email:<br />
-                <a href="${link}" target="_blank">${link}</a>
-              </p>
-            `,
-          })}
-        )
-      `
-    );
-    got
-      .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
-      .catch((error) => {
-        response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
-      });
-  };
-
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
-      );
-      application.database.run(
-        sql`
-          DELETE FROM "emailVerifications"
-          WHERE "createdAt" < ${new Date(
-            Date.now() - 24 * 60 * 60 * 1000
-          ).toISOString()}
-        `
-      );
-      console.log(
-        `${new Date().toISOString()}\t${
-          application.process.type
-        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
-      );
-      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-    }
-  });
-
   application.server.use<
     {},
     any,
@@ -1612,6 +1522,96 @@ export default async (application: Application): Promise<void> => {
       );
     })
   );
+
+  application.server.locals.helpers.emailVerification = ({
+    request,
+    response,
+    userId,
+    userEmail,
+    welcome = false,
+  }) => {
+    const emailVerification = application.database.executeTransaction(() => {
+      application.database.run(
+        sql`
+          DELETE FROM "emailVerifications" WHERE "user" = ${userId}
+        `
+      );
+      return application.database.get<{
+        nonce: string;
+      }>(
+        sql`
+          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
+          VALUES (
+            ${new Date().toISOString()},
+            ${userId},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+      )!;
+    });
+
+    const link = `https://${
+      application.configuration.hostname
+    }/email-verification/${emailVerification.nonce}${qs.stringify(
+      { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
+      { addQueryPrefix: true }
+    )}`;
+    application.database.run(
+      sql`
+        INSERT INTO "sendEmailJobs" (
+          "createdAt",
+          "startAt",
+          "expiresAt",
+          "mailOptions"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${new Date().toISOString()},
+          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+          ${JSON.stringify({
+            to: userEmail,
+            subject: welcome ? "Welcome to Courselore!" : "Email Verification",
+            html: html`
+              <p>
+                Please verify your email:<br />
+                <a href="${link}" target="_blank">${link}</a>
+              </p>
+            `,
+          })}
+        )
+      `
+    );
+    got
+      .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
+      .catch((error) => {
+        response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+      });
+  };
+
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tSTARTING...`
+      );
+      application.database.run(
+        sql`
+          DELETE FROM "emailVerifications"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - 24 * 60 * 60 * 1000
+          ).toISOString()}
+        `
+      );
+      console.log(
+        `${new Date().toISOString()}\t${
+          application.process.type
+        }\tCLEAN EXPIRED ‘emailVerifications’\tFINISHED`
+      );
+      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 
   application.server.post<
     {},

@@ -107,6 +107,143 @@ export type ApplicationUser = {
 };
 
 export default async (application: Application): Promise<void> => {
+  application.server.locals.helpers.userAvatarlessBackgroundColors = [
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
+  ];
+
+  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
+    "none",
+    "instant",
+    "hourly-digests",
+    "daily-digests",
+  ];
+
+  application.server.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/settings", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/settings/profile`
+    );
+  });
+
+  const layoutUserSettings = ({
+    request,
+    response,
+    head,
+    body,
+  }: {
+    request: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
+    response: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    >;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
+    application.server.locals.layouts.settings({
+      request,
+      response,
+      head,
+      menuButton: html`
+        <i class="bi bi-sliders"></i>
+        User Settings
+      `,
+      menu: html`
+        <a
+          href="https://${application.configuration.hostname}/settings/profile"
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
+            /\/settings\/profile\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i class="bi bi-person-circle"></i>
+          Profile
+        </a>
+        <a
+          href="https://${application.configuration
+            .hostname}/settings/email-and-password"
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
+            /\/settings\/email-and-password\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i
+            class="bi ${request.path.match(
+              /\/settings\/email-and-password\/?$/i
+            )
+              ? "bi-key-fill"
+              : "bi-key"}"
+          ></i>
+          Email & Password
+        </a>
+        <a
+          href="https://${application.configuration
+            .hostname}/settings/notifications"
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
+            /\/settings\/notifications\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i
+            class="bi ${request.path.match(/\/settings\/notifications\/?$/i)
+              ? "bi-bell-fill"
+              : "bi-bell"}"
+          ></i>
+          Notifications
+        </a>
+        <a
+          hidden
+          TODO
+          href="https://${application.configuration.hostname}/settings/account"
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
+            /\/settings\/account\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i class="bi bi-sliders"></i>
+          Account
+        </a>
+      `,
+      body,
+    });
+
   application.server.locals.partials.user = ({
     request,
     response,
@@ -624,143 +761,6 @@ export default async (application: Application): Promise<void> => {
       ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
       : html``;
   };
-
-  application.server.locals.helpers.userAvatarlessBackgroundColors = [
-    "red",
-    "orange",
-    "amber",
-    "yellow",
-    "lime",
-    "green",
-    "emerald",
-    "teal",
-    "cyan",
-    "sky",
-    "blue",
-    "indigo",
-    "violet",
-    "purple",
-    "fuchsia",
-    "pink",
-    "rose",
-  ];
-
-  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
-    "none",
-    "instant",
-    "hourly-digests",
-    "daily-digests",
-  ];
-
-  application.server.get<
-    {},
-    HTML,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >("/settings", (request, response, next) => {
-    if (
-      response.locals.user === undefined ||
-      response.locals.user.emailVerifiedAt === null
-    )
-      return next();
-
-    response.redirect(
-      303,
-      `https://${application.configuration.hostname}/settings/profile`
-    );
-  });
-
-  const layoutUserSettings = ({
-    request,
-    response,
-    head,
-    body,
-  }: {
-    request: express.Request<
-      {},
-      any,
-      {},
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-    >;
-    response: express.Response<
-      any,
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-    >;
-    head: HTML;
-    body: HTML;
-  }): HTML =>
-    application.server.locals.layouts.settings({
-      request,
-      response,
-      head,
-      menuButton: html`
-        <i class="bi bi-sliders"></i>
-        User Settings
-      `,
-      menu: html`
-        <a
-          href="https://${application.configuration.hostname}/settings/profile"
-          class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/profile\/?$/i
-          )
-            ? "button--blue"
-            : "button--transparent"}"
-        >
-          <i class="bi bi-person-circle"></i>
-          Profile
-        </a>
-        <a
-          href="https://${application.configuration
-            .hostname}/settings/email-and-password"
-          class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/email-and-password\/?$/i
-          )
-            ? "button--blue"
-            : "button--transparent"}"
-        >
-          <i
-            class="bi ${request.path.match(
-              /\/settings\/email-and-password\/?$/i
-            )
-              ? "bi-key-fill"
-              : "bi-key"}"
-          ></i>
-          Email & Password
-        </a>
-        <a
-          href="https://${application.configuration
-            .hostname}/settings/notifications"
-          class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/notifications\/?$/i
-          )
-            ? "button--blue"
-            : "button--transparent"}"
-        >
-          <i
-            class="bi ${request.path.match(/\/settings\/notifications\/?$/i)
-              ? "bi-bell-fill"
-              : "bi-bell"}"
-          ></i>
-          Notifications
-        </a>
-        <a
-          hidden
-          TODO
-          href="https://${application.configuration.hostname}/settings/account"
-          class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/account\/?$/i
-          )
-            ? "button--blue"
-            : "button--transparent"}"
-        >
-          <i class="bi bi-sliders"></i>
-          Account
-        </a>
-      `,
-      body,
-    });
 
   application.server.get<
     {},

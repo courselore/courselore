@@ -324,22 +324,6 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  const systemRoleIcon: {
-    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: HTML;
-  } = {
-    none: html`<i class="bi bi-dash-circle"></i>`,
-    staff: html`<i class="bi bi-person-badge-fill"></i>`,
-    administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
-  };
-
-  const systemRoleTextColor: {
-    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: string;
-  } = {
-    none: "",
-    staff: "text--teal",
-    administrator: "text--rose",
-  };
-
   application.server.get<
     { userReference: string },
     HTML,
@@ -574,7 +558,7 @@ export default async (application: Application): Promise<void> => {
                       `)}"
                     >
                       <button
-                        class="button button--tight button--tight--inline button--transparent ${systemRoleTextColor[
+                        class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
                         onload="${javascript`
@@ -607,7 +591,7 @@ export default async (application: Application): Promise<void> => {
                                               class="dropdown--menu--item button ${systemRole ===
                                               user.systemRole
                                                 ? "button--blue"
-                                                : "button--transparent"} ${systemRoleTextColor[
+                                                : "button--transparent"} ${textColorsSystemRole[
                                                 systemRole
                                               ]}"
                                               $${isOnlyAdministrator
@@ -694,7 +678,7 @@ export default async (application: Application): Promise<void> => {
                                                   `
                                                 : html``}
                                             >
-                                              $${systemRoleIcon[systemRole]}
+                                              $${iconsSystemRole[systemRole]}
                                               ${lodash.capitalize(systemRole)}
                                             </button>
                                           </div>
@@ -707,7 +691,7 @@ export default async (application: Application): Promise<void> => {
                           });
                         `}"
                       >
-                        $${systemRoleIcon[user.systemRole]}
+                        $${iconsSystemRole[user.systemRole]}
                         ${lodash.capitalize(user.systemRole)}
                         <i class="bi bi-chevron-down"></i>
                       </button>
@@ -734,6 +718,22 @@ export default async (application: Application): Promise<void> => {
       })
     );
   });
+
+  const iconsSystemRole: {
+    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: HTML;
+  } = {
+    none: html`<i class="bi bi-dash-circle"></i>`,
+    staff: html`<i class="bi bi-person-badge-fill"></i>`,
+    administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
+  };
+
+  const textColorsSystemRole: {
+    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: string;
+  } = {
+    none: "",
+    staff: "text--teal",
+    administrator: "text--rose",
+  };
 
   application.server.patch<
     { userReference: string },

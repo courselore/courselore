@@ -127,218 +127,6 @@ export type ApplicationCourse = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.partials.course = ({
-    request,
-    response,
-    course,
-    enrollment = undefined,
-    tight = false,
-  }) => html`
-    <div
-      key="partial--course--${course.reference}"
-      css="${response.locals.css(css`
-        display: flex;
-        gap: var(--space--2);
-        align-items: baseline;
-      `)}"
-    >
-      <div>
-        <div
-          class="button button--tight ${tight ? "button--tight--inline" : ""}"
-          css="${response.locals.css(css`
-            cursor: default;
-            ${enrollment === undefined
-              ? css``
-              : css`
-                  color: var(--color--${enrollment.accentColor}--700);
-                  background-color: var(
-                    --color--${enrollment.accentColor}--100
-                  );
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--${enrollment.accentColor}--200);
-                    background-color: var(
-                      --color--${enrollment.accentColor}--800
-                    );
-                  }
-                `}
-          `)}"
-        >
-          $${enrollment === undefined
-            ? html`<i class="bi bi-journal-arrow-down"></i>`
-            : html`<i class="bi bi-journal-text"></i>`}
-        </div>
-      </div>
-      <div>
-        <div class="strong">${course.name}</div>
-        <div
-          class="secondary"
-          css="${response.locals.css(css`
-            font-size: var(--font-size--xs);
-            line-height: var(--line-height--xs);
-          `)}"
-        >
-          $${[
-            [course.year, course.term],
-            [course.institution, course.code],
-          ].flatMap((row) => {
-            row = row.filter((element) => element !== null);
-            return row.length === 0
-              ? []
-              : [
-                  html`
-                    <div>
-                      $${row.map((element) => html`${element!}`).join(" · ")}
-                    </div>
-                  `,
-                ];
-          })}
-          $${enrollment === undefined
-            ? html``
-            : html`
-                <div>
-                  $${courseRoleIcon[enrollment.courseRole]
-                    .regular} ${lodash.capitalize(enrollment.courseRole)}
-                </div>
-              `}
-          $${course.archivedAt !== null
-            ? html`
-                <div>
-                  $${application.server.locals.partials.courseArchived({
-                    request,
-                    response,
-                  })}
-                </div>
-              `
-            : html``}
-        </div>
-      </div>
-    </div>
-  `;
-
-  application.server.locals.partials.courses = ({
-    request,
-    response,
-    tight = false,
-  }) => {
-    let courses = html``;
-
-    const [unarchived, archived] = lodash.partition(
-      response.locals.enrollments,
-      (enrollment) => enrollment.course.archivedAt === null
-    );
-
-    if (unarchived.length > 0)
-      courses += html`
-        $${unarchived.map(
-          (enrollment) =>
-            html`
-              <a
-                key="enrollment--${enrollment.reference}"
-                href="https://${application.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
-                class="dropdown--menu--item menu-box--item button ${tight
-                  ? ""
-                  : "button--tight"} ${enrollment.id ===
-                response.locals.enrollment?.id
-                  ? "button--blue"
-                  : "button--transparent"}"
-              >
-                $${application.server.locals.partials.course({
-                  request,
-                  response,
-                  course: enrollment.course,
-                  enrollment,
-                  tight,
-                })}
-              </a>
-            `
-        )}
-      `;
-
-    if (archived.length > 0)
-      courses += html`
-        $${courses !== html`` ? html`<hr class="separator" />` : html``}
-
-        <button
-          key="enrollment--archived"
-          class="dropdown--menu--item menu-box--item button ${tight
-            ? ""
-            : "button--tight"} button--transparent secondary"
-          css="${response.locals.css(css`
-            font-size: var(--font-size--xs);
-            line-height: var(--line-height--xs);
-            justify-content: center;
-          `)}"
-          onload="${javascript`
-            (this.tooltip ??= tippy(this)).setProps({
-              touch: false,
-              content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-            });
-
-            this.onclick = () => {
-              for (const element of leafac.nextSiblings(this).slice(1))
-                element.hidden = !element.hidden;
-            };
-          `}"
-        >
-          <i class="bi bi-archive"></i>
-          Archived Courses
-        </button>
-
-        $${archived.map(
-          (enrollment) =>
-            html`
-              <a
-                key="enrollment--${enrollment.reference}"
-                href="https://${application.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
-                hidden
-                class="dropdown--menu--item menu-box--item button ${tight
-                  ? ""
-                  : "button--tight"} ${enrollment.id ===
-                response.locals.enrollment?.id
-                  ? "button--blue"
-                  : "button--transparent"}"
-              >
-                $${application.server.locals.partials.course({
-                  request,
-                  response,
-                  course: enrollment.course,
-                  enrollment,
-                  tight,
-                })}
-              </a>
-            `
-        )}
-      `;
-
-    return courses;
-  };
-
-  application.server.locals.partials.courseArchived = ({
-    request,
-    response,
-  }) => html`
-    <div
-      class="strong text--rose"
-      css="${response.locals.css(css`
-        font-size: var(--font-size--2xs);
-        line-height: var(--line-height--2xs);
-        display: inline-flex;
-        gap: var(--space--1);
-      `)}"
-      onload="${javascript`
-        (this.tooltip ??= tippy(this)).setProps({
-          touch: false,
-          content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-        });
-      `}"
-    >
-      <i class="bi bi-archive-fill"></i>
-      Archived
-    </div>
-  `;
-
   application.server.locals.helpers.courseRoles = ["student", "staff"];
 
   application.server.locals.helpers.enrollmentAccentColors = [
@@ -349,29 +137,6 @@ export default async (application: Application): Promise<void> => {
     "violet",
     "pink",
   ];
-
-  const courseRoleIcon: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
-      regular: HTML;
-      fill: HTML;
-    };
-  } = {
-    student: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
-  };
-
-  const courseRoleTextColor: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
-  } = {
-    student: "",
-    staff: "text--sky",
-  };
 
   application.server.get<
     {},
@@ -823,6 +588,241 @@ export default async (application: Application): Promise<void> => {
 
     next();
   });
+
+  application.server.locals.partials.course = ({
+    request,
+    response,
+    course,
+    enrollment = undefined,
+    tight = false,
+  }) => html`
+    <div
+      key="partial--course--${course.reference}"
+      css="${response.locals.css(css`
+        display: flex;
+        gap: var(--space--2);
+        align-items: baseline;
+      `)}"
+    >
+      <div>
+        <div
+          class="button button--tight ${tight ? "button--tight--inline" : ""}"
+          css="${response.locals.css(css`
+            cursor: default;
+            ${enrollment === undefined
+              ? css``
+              : css`
+                  color: var(--color--${enrollment.accentColor}--700);
+                  background-color: var(
+                    --color--${enrollment.accentColor}--100
+                  );
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--${enrollment.accentColor}--200);
+                    background-color: var(
+                      --color--${enrollment.accentColor}--800
+                    );
+                  }
+                `}
+          `)}"
+        >
+          $${enrollment === undefined
+            ? html`<i class="bi bi-journal-arrow-down"></i>`
+            : html`<i class="bi bi-journal-text"></i>`}
+        </div>
+      </div>
+      <div>
+        <div class="strong">${course.name}</div>
+        <div
+          class="secondary"
+          css="${response.locals.css(css`
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
+          `)}"
+        >
+          $${[
+            [course.year, course.term],
+            [course.institution, course.code],
+          ].flatMap((row) => {
+            row = row.filter((element) => element !== null);
+            return row.length === 0
+              ? []
+              : [
+                  html`
+                    <div>
+                      $${row.map((element) => html`${element!}`).join(" · ")}
+                    </div>
+                  `,
+                ];
+          })}
+          $${enrollment === undefined
+            ? html``
+            : html`
+                <div>
+                  $${courseRoleIcon[enrollment.courseRole]
+                    .regular} ${lodash.capitalize(enrollment.courseRole)}
+                </div>
+              `}
+          $${course.archivedAt !== null
+            ? html`
+                <div>
+                  $${application.server.locals.partials.courseArchived({
+                    request,
+                    response,
+                  })}
+                </div>
+              `
+            : html``}
+        </div>
+      </div>
+    </div>
+  `;
+
+  application.server.locals.partials.courses = ({
+    request,
+    response,
+    tight = false,
+  }) => {
+    let courses = html``;
+
+    const [unarchived, archived] = lodash.partition(
+      response.locals.enrollments,
+      (enrollment) => enrollment.course.archivedAt === null
+    );
+
+    if (unarchived.length > 0)
+      courses += html`
+        $${unarchived.map(
+          (enrollment) =>
+            html`
+              <a
+                key="enrollment--${enrollment.reference}"
+                href="https://${application.configuration
+                  .hostname}/courses/${enrollment.course.reference}"
+                class="dropdown--menu--item menu-box--item button ${tight
+                  ? ""
+                  : "button--tight"} ${enrollment.id ===
+                response.locals.enrollment?.id
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                $${application.server.locals.partials.course({
+                  request,
+                  response,
+                  course: enrollment.course,
+                  enrollment,
+                  tight,
+                })}
+              </a>
+            `
+        )}
+      `;
+
+    if (archived.length > 0)
+      courses += html`
+        $${courses !== html`` ? html`<hr class="separator" />` : html``}
+
+        <button
+          key="enrollment--archived"
+          class="dropdown--menu--item menu-box--item button ${tight
+            ? ""
+            : "button--tight"} button--transparent secondary"
+          css="${response.locals.css(css`
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
+            justify-content: center;
+          `)}"
+          onload="${javascript`
+            (this.tooltip ??= tippy(this)).setProps({
+              touch: false,
+              content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+            });
+
+            this.onclick = () => {
+              for (const element of leafac.nextSiblings(this).slice(1))
+                element.hidden = !element.hidden;
+            };
+          `}"
+        >
+          <i class="bi bi-archive"></i>
+          Archived Courses
+        </button>
+
+        $${archived.map(
+          (enrollment) =>
+            html`
+              <a
+                key="enrollment--${enrollment.reference}"
+                href="https://${application.configuration
+                  .hostname}/courses/${enrollment.course.reference}"
+                hidden
+                class="dropdown--menu--item menu-box--item button ${tight
+                  ? ""
+                  : "button--tight"} ${enrollment.id ===
+                response.locals.enrollment?.id
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                $${application.server.locals.partials.course({
+                  request,
+                  response,
+                  course: enrollment.course,
+                  enrollment,
+                  tight,
+                })}
+              </a>
+            `
+        )}
+      `;
+
+    return courses;
+  };
+
+  application.server.locals.partials.courseArchived = ({
+    request,
+    response,
+  }) => html`
+    <div
+      class="strong text--rose"
+      css="${response.locals.css(css`
+        font-size: var(--font-size--2xs);
+        line-height: var(--line-height--2xs);
+        display: inline-flex;
+        gap: var(--space--1);
+      `)}"
+      onload="${javascript`
+        (this.tooltip ??= tippy(this)).setProps({
+          touch: false,
+          content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+        });
+      `}"
+    >
+      <i class="bi bi-archive-fill"></i>
+      Archived
+    </div>
+  `;
+
+  const courseRoleIcon: {
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
+      regular: HTML;
+      fill: HTML;
+    };
+  } = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
+
+  const courseRoleTextColor: {
+    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
+  } = {
+    student: "",
+    staff: "text--sky",
+  };
 
   application.server.get<
     { courseReference: string },
