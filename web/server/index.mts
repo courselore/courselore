@@ -28,8 +28,8 @@ import administration, {
 import user, { ApplicationUser } from "./user.mjs";
 import course, { ApplicationCourse } from "./course.mjs";
 import conversation, { ApplicationConversation } from "./conversation.mjs";
-import message, {ApplicationMessage} from "./message.mjs";
-// import content from "./content.mjs";
+import message, { ApplicationMessage } from "./message.mjs";
+import content, { ApplicationContent } from "./content.mjs";
 // import email from "./email.mjs";
 // import demonstration from "./demonstration.mjs";
 // import error from "./error.mjs";
@@ -86,18 +86,14 @@ export type Application = {
   ApplicationAdministration &
   ApplicationUser &
   ApplicationCourse &
-  ApplicationConversation & 
-  ApplicationMessage & {
+  ApplicationConversation &
+  ApplicationMessage &
+  ApplicationContent & {
     // TODO
     server: {
       locals: {
-        partials: {
-          contentPreprocessed: any;
-          content: (..._: any) => any;
-          contentEditor: any;
-        };
+        partials: {};
         helpers: {
-          emailNotifications: (..._: any) => any;
           splitFilterablePhrases: (..._: any) => any;
           emailRegExp: RegExp;
           isExpired: (..._: any) => any;
@@ -250,7 +246,7 @@ if (
         await course(application);
         await conversation(application);
         await message(application);
-        // await content(application);
+        await content(application);
         // await email(application);
         // await demonstration(application);
         // await error(application);
