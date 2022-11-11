@@ -33,7 +33,7 @@ import content, { ApplicationContent } from "./content.mjs";
 import email from "./email.mjs";
 import demonstration from "./demonstration.mjs";
 import error from "./error.mjs";
-// import helpers, { ApplicationHelpers } from "./helpers.mjs";
+import helpers, { ApplicationHelpers } from "./helpers.mjs";
 
 export type Application = {
   name: string;
@@ -88,22 +88,8 @@ export type Application = {
   ApplicationCourse &
   ApplicationConversation &
   ApplicationMessage &
-  ApplicationContent & {
-    // TODO
-    server: {
-      locals: {
-        partials: {};
-        helpers: {
-          splitFilterablePhrases: (..._: any) => any;
-          emailRegExp: RegExp;
-          isExpired: (..._: any) => any;
-          isDate: (..._: any) => any;
-          sanitizeSearch: (..._: any) => any;
-          highlightSearchResult: (..._: any) => any;
-        };
-      };
-    };
-  };
+  ApplicationContent &
+  ApplicationHelpers;
 
 if (
   url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
@@ -250,7 +236,7 @@ if (
         await email(application);
         await demonstration(application);
         await error(application);
-        // await helpers(application);
+        await helpers(application);
 
         switch (application.process.type) {
           case "main": {
