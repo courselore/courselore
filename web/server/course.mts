@@ -658,7 +658,7 @@ export default async (application: Application): Promise<void> => {
             ? html``
             : html`
                 <div>
-                  $${courseRoleIcon[enrollment.courseRole]
+                  $${iconsCourseRole[enrollment.courseRole]
                     .regular} ${lodash.capitalize(enrollment.courseRole)}
                 </div>
               `}
@@ -801,7 +801,7 @@ export default async (application: Application): Promise<void> => {
     </div>
   `;
 
-  const courseRoleIcon: {
+  const iconsCourseRole: {
     [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
       regular: HTML;
       fill: HTML;
@@ -817,7 +817,7 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  const courseRoleTextColor: {
+  const textColorsCourseRole: {
     [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
   } = {
     student: "",
@@ -1588,7 +1588,7 @@ export default async (application: Application): Promise<void> => {
                                 Visible by Everyone
                               </span>
                               <span
-                                class="${courseRoleTextColor.staff}"
+                                class="${textColorsCourseRole.staff}"
                                 onload="${javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
@@ -1843,7 +1843,7 @@ export default async (application: Application): Promise<void> => {
                                     Visible by Everyone
                                   </span>
                                   <span
-                                    class="${courseRoleTextColor.staff}"
+                                    class="${textColorsCourseRole.staff}"
                                     onloadpartial="${javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
@@ -2259,11 +2259,11 @@ export default async (application: Application): Promise<void> => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span>
-                            $${courseRoleIcon[courseRole].regular}
+                            $${iconsCourseRole[courseRole].regular}
                             ${lodash.capitalize(courseRole)}
                           </span>
                           <span class="text--blue">
-                            $${courseRoleIcon[courseRole].fill}
+                            $${iconsCourseRole[courseRole].fill}
                             ${lodash.capitalize(courseRole)}
                           </span>
                         </label>
@@ -2665,7 +2665,7 @@ export default async (application: Application): Promise<void> => {
                               `)}"
                             >
                               <button
-                                class="button button--tight button--tight--inline button--transparent ${courseRoleTextColor[
+                                class="button button--tight button--tight--inline button--transparent ${textColorsCourseRole[
                                   invitation.courseRole
                                 ]}"
                                 onload="${javascript`
@@ -2697,7 +2697,7 @@ export default async (application: Application): Promise<void> => {
                                                     class="dropdown--menu--item button ${courseRole ===
                                                     invitation.courseRole
                                                       ? "button--blue"
-                                                      : "button--transparent"} ${courseRoleTextColor[
+                                                      : "button--transparent"} ${textColorsCourseRole[
                                                       courseRole
                                                     ]}"
                                                     $${isUsed
@@ -2724,7 +2724,7 @@ export default async (application: Application): Promise<void> => {
                                                         `
                                                       : html``}
                                                   >
-                                                    $${courseRoleIcon[
+                                                    $${iconsCourseRole[
                                                       courseRole
                                                     ][
                                                       courseRole === "staff"
@@ -2744,7 +2744,7 @@ export default async (application: Application): Promise<void> => {
                                   });
                                 `}"
                               >
-                                $${courseRoleIcon[invitation.courseRole][
+                                $${iconsCourseRole[invitation.courseRole][
                                   invitation.courseRole === "staff"
                                     ? "fill"
                                     : "regular"
@@ -4268,7 +4268,7 @@ export default async (application: Application): Promise<void> => {
                         `)}"
                       >
                         <button
-                          class="button button--tight button--tight--inline button--transparent ${courseRoleTextColor[
+                          class="button button--tight button--tight--inline button--transparent ${textColorsCourseRole[
                             enrollment.courseRole
                           ]}"
                           onload="${javascript`
@@ -4301,7 +4301,7 @@ export default async (application: Application): Promise<void> => {
                                                 class="dropdown--menu--item button ${courseRole ===
                                                 enrollment.courseRole
                                                   ? "button--blue"
-                                                  : "button--transparent"} ${courseRoleTextColor[
+                                                  : "button--transparent"} ${textColorsCourseRole[
                                                   courseRole
                                                 ]}"
                                                 $${isOnlyStaff
@@ -4391,7 +4391,7 @@ export default async (application: Application): Promise<void> => {
                                                     `
                                                   : html``}
                                               >
-                                                $${courseRoleIcon[courseRole][
+                                                $${iconsCourseRole[courseRole][
                                                   courseRole === "staff"
                                                     ? "fill"
                                                     : "regular"
@@ -4408,7 +4408,7 @@ export default async (application: Application): Promise<void> => {
                             });
                           `}"
                         >
-                          $${courseRoleIcon[enrollment.courseRole][
+                          $${iconsCourseRole[enrollment.courseRole][
                             enrollment.courseRole === "staff"
                               ? "fill"
                               : "regular"

@@ -1157,7 +1157,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--blue"
                           >
-                            $${conversationTypeIcon.note.fill} Note
+                            $${iconsConversationType.note.fill} Note
                           </a>
                           <a
                             href="https://${application.configuration
@@ -1168,7 +1168,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${conversationTypeIcon.question.regular} Question
+                            $${iconsConversationType.question.regular} Question
                           </a>
                           <a
                             href="https://${application.configuration
@@ -1179,7 +1179,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${conversationTypeIcon.chat.regular} Chat
+                            $${iconsConversationType.chat.regular} Chat
                           </a>
                         `
                       : html`
@@ -1192,7 +1192,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--blue"
                           >
-                            $${conversationTypeIcon.question.fill} Question
+                            $${iconsConversationType.question.fill} Question
                           </a>
                           <a
                             href="https://${application.configuration
@@ -1203,7 +1203,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${conversationTypeIcon.note.regular} Note
+                            $${iconsConversationType.note.regular} Note
                           </a>
                           <a
                             href="https://${application.configuration
@@ -1214,7 +1214,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             class="button button--transparent"
                           >
-                            $${conversationTypeIcon.chat.regular} Chat
+                            $${iconsConversationType.chat.regular} Chat
                           </a>
                         `}
                   </div>
@@ -1824,16 +1824,16 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   />
                                   <span>
-                                    $${conversationTypeIcon[conversationType]
+                                    $${iconsConversationType[conversationType]
                                       .regular}
                                     $${lodash.capitalize(conversationType)}
                                   </span>
                                   <span
-                                    class="${conversationTypeTextColor[
+                                    class="${textColorsConversationType[
                                       conversationType
                                     ]}"
                                   >
-                                    $${conversationTypeIcon[conversationType]
+                                    $${iconsConversationType[conversationType]
                                       .fill}
                                     $${lodash.capitalize(conversationType)}
                                   </span>
@@ -2036,22 +2036,22 @@ export default async (application: Application): Promise<void> => {
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
                                   />
                                   <span>
-                                    $${conversationParticipantsIcon[
+                                    $${iconsConversationParticipants[
                                       conversationParticipants
                                     ].regular}
-                                    $${conversationParticipantsLabel[
+                                    $${labelsConversationParticipants[
                                       conversationParticipants
                                     ]}
                                   </span>
                                   <span
-                                    class="${conversationParticipantsTextColor[
+                                    class="${textColorsConversationParticipants[
                                       conversationParticipants
                                     ]}"
                                   >
-                                    $${conversationParticipantsIcon[
+                                    $${iconsConversationParticipants[
                                       conversationParticipants
                                     ].fill}
-                                    $${conversationParticipantsLabel[
+                                    $${labelsConversationParticipants[
                                       conversationParticipants
                                     ]}
                                   </span>
@@ -2621,9 +2621,9 @@ export default async (application: Application): Promise<void> => {
           class="${conversation.type === "question" &&
           conversation.resolvedAt !== null
             ? "text--emerald"
-            : conversationTypeTextColor[conversation.type]}"
+            : textColorsConversationType[conversation.type]}"
         >
-          $${conversationTypeIcon[conversation.type].fill}
+          $${iconsConversationType[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
         </div>
         $${conversation.type === "question"
@@ -2652,7 +2652,7 @@ export default async (application: Application): Promise<void> => {
             `
           : html``}
         <div
-          class="${conversationParticipantsTextColor[
+          class="${textColorsConversationParticipants[
             conversation.participants
           ]}"
           onload="${javascript`
@@ -2705,8 +2705,8 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
         >
-          $${conversationParticipantsIcon[conversation.participants].fill}
-          $${conversationParticipantsLabel[conversation.participants]}
+          $${iconsConversationParticipants[conversation.participants].fill}
+          $${labelsConversationParticipants[conversation.participants]}
           $${conversation.selectedParticipants.length === 1
             ? html`
                 <div>
@@ -2929,7 +2929,7 @@ export default async (application: Application): Promise<void> => {
     </div>
   `;
 
-  const conversationTypeIcon: {
+  const iconsConversationType: {
     [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: {
       regular: HTML;
       fill: HTML;
@@ -2949,7 +2949,7 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  const conversationTypeTextColor: {
+  const textColorsConversationType: {
     [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: string;
   } = {
     question: "text--rose",
@@ -2957,7 +2957,7 @@ export default async (application: Application): Promise<void> => {
     chat: "text--cyan",
   };
 
-  const conversationParticipantsIcon: {
+  const iconsConversationParticipants: {
     [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
       regular: HTML;
       fill: HTML;
@@ -2977,7 +2977,7 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  const conversationParticipantsTextColor: {
+  const textColorsConversationParticipants: {
     [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: "text--green",
@@ -2985,7 +2985,7 @@ export default async (application: Application): Promise<void> => {
     "selected-people": "text--purple",
   };
 
-  const conversationParticipantsLabel: {
+  const labelsConversationParticipants: {
     [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: html`Everyone`,
@@ -3237,7 +3237,7 @@ export default async (application: Application): Promise<void> => {
             <h2 class="heading">
               $${request.params.type === "note"
                 ? html`
-                    $${conversationTypeIcon.note.fill} Post
+                    $${iconsConversationType.note.fill} Post
                     ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -3245,7 +3245,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : request.params.type === "question"
                 ? html`
-                    $${conversationTypeIcon.question.fill} Ask
+                    $${iconsConversationType.question.fill} Ask
                     ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -3253,7 +3253,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : request.params.type === "chat"
                 ? html`
-                    $${conversationTypeIcon.chat.fill} Start
+                    $${iconsConversationType.chat.fill} Start
                     ${response.locals.conversationsCount === 0
                       ? "the First"
                       : "a New"}
@@ -3346,13 +3346,15 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         />
                         <span>
-                          $${conversationTypeIcon[conversationType].regular}
+                          $${iconsConversationType[conversationType].regular}
                           $${lodash.capitalize(conversationType)}
                         </span>
                         <span
-                          class="${conversationTypeTextColor[conversationType]}"
+                          class="${textColorsConversationType[
+                            conversationType
+                          ]}"
                         >
-                          $${conversationTypeIcon[conversationType].fill}
+                          $${iconsConversationType[conversationType].fill}
                           $${lodash.capitalize(conversationType)}
                         </span>
                       </label>
@@ -3707,24 +3709,24 @@ export default async (application: Application): Promise<void> => {
                                             `}"
                                           />
                                           <span
-                                            class="dropdown--menu--item button button--transparent ${conversationParticipantsTextColor[
+                                            class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
                                               conversationParticipants
                                             ]}"
                                           >
-                                            $${conversationParticipantsIcon[
+                                            $${iconsConversationParticipants[
                                               conversationParticipants
                                             ].fill}
-                                            $${conversationParticipantsLabel[
+                                            $${labelsConversationParticipants[
                                               conversationParticipants
                                             ]}
                                           </span>
                                           <span
                                             class="dropdown--menu--item button button--blue"
                                           >
-                                            $${conversationParticipantsIcon[
+                                            $${iconsConversationParticipants[
                                               conversationParticipants
                                             ].fill}
-                                            $${conversationParticipantsLabel[
+                                            $${labelsConversationParticipants[
                                               conversationParticipants
                                             ]}
                                           </span>
@@ -3943,14 +3945,14 @@ export default async (application: Application): Promise<void> => {
                             />
                             <button
                               type="button"
-                              class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
+                              class="button button--tight button--tight--inline button--transparent ${textColorsConversationParticipants[
                                 conversationParticipants
                               ]}"
                             >
-                              $${conversationParticipantsIcon[
+                              $${iconsConversationParticipants[
                                 conversationParticipants
                               ].fill}
-                              $${conversationParticipantsLabel[
+                              $${labelsConversationParticipants[
                                 conversationParticipants
                               ]}
                               <i class="bi bi-chevron-down"></i>
@@ -4316,7 +4318,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   $${request.params.type === "note"
                     ? html`
-                        $${conversationTypeIcon.note.fill} Post
+                        $${iconsConversationType.note.fill} Post
                         ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -4324,7 +4326,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     : request.params.type === "question"
                     ? html`
-                        $${conversationTypeIcon.question.fill} Ask
+                        $${iconsConversationType.question.fill} Ask
                         ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -4332,7 +4334,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     : request.params.type === "chat"
                     ? html`
-                        $${conversationTypeIcon.chat.fill} Start
+                        $${iconsConversationType.chat.fill} Start
                         ${response.locals.conversationsCount === 0
                           ? "the First"
                           : "a New"}
@@ -5251,7 +5253,7 @@ export default async (application: Application): Promise<void> => {
                                   response.locals.conversation.resolvedAt !==
                                     null
                                     ? "text--emerald"
-                                    : conversationTypeTextColor[
+                                    : textColorsConversationType[
                                         response.locals.conversation.type
                                       ]}"
                                   onload="${javascript`
@@ -5298,11 +5300,11 @@ export default async (application: Application): Promise<void> => {
                                                     response.locals.conversation
                                                       .type
                                                       ? "button--blue"
-                                                      : "button--transparent"} ${conversationTypeTextColor[
+                                                      : "button--transparent"} ${textColorsConversationType[
                                                       conversationType
                                                     ]}"
                                                   >
-                                                    $${conversationTypeIcon[
+                                                    $${iconsConversationType[
                                                       conversationType
                                                     ].fill}
                                                     $${lodash.capitalize(
@@ -5318,7 +5320,7 @@ export default async (application: Application): Promise<void> => {
                                     });
                                   `}"
                                 >
-                                  $${conversationTypeIcon[
+                                  $${iconsConversationType[
                                     response.locals.conversation.type
                                   ].fill}
                                   $${lodash.capitalize(
@@ -5333,11 +5335,11 @@ export default async (application: Application): Promise<void> => {
                                   "question" &&
                                 response.locals.conversation.resolvedAt !== null
                                   ? "text--emerald"
-                                  : conversationTypeTextColor[
+                                  : textColorsConversationType[
                                       response.locals.conversation.type
                                     ]}"
                               >
-                                $${conversationTypeIcon[
+                                $${iconsConversationType[
                                   response.locals.conversation.type
                                 ].fill}
                                 $${lodash.capitalize(
@@ -6498,24 +6500,24 @@ export default async (application: Application): Promise<void> => {
                                                       `}"
                                                     />
                                                     <span
-                                                      class="dropdown--menu--item button button--transparent ${conversationParticipantsTextColor[
+                                                      class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
                                                         conversationParticipants
                                                       ]}"
                                                     >
-                                                      $${conversationParticipantsIcon[
+                                                      $${iconsConversationParticipants[
                                                         conversationParticipants
                                                       ].fill}
-                                                      $${conversationParticipantsLabel[
+                                                      $${labelsConversationParticipants[
                                                         conversationParticipants
                                                       ]}
                                                     </span>
                                                     <span
                                                       class="dropdown--menu--item button button--blue"
                                                     >
-                                                      $${conversationParticipantsIcon[
+                                                      $${iconsConversationParticipants[
                                                         conversationParticipants
                                                       ].fill}
-                                                      $${conversationParticipantsLabel[
+                                                      $${labelsConversationParticipants[
                                                         conversationParticipants
                                                       ]}
                                                     </span>
@@ -6747,14 +6749,14 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         type="button"
-                                        class="button button--tight button--tight--inline button--transparent ${conversationParticipantsTextColor[
+                                        class="button button--tight button--tight--inline button--transparent ${textColorsConversationParticipants[
                                           conversationParticipants
                                         ]}"
                                       >
-                                        $${conversationParticipantsIcon[
+                                        $${iconsConversationParticipants[
                                           conversationParticipants
                                         ].fill}
-                                        $${conversationParticipantsLabel[
+                                        $${labelsConversationParticipants[
                                           conversationParticipants
                                         ]}
                                         <i class="bi bi-chevron-down"></i>
@@ -6861,7 +6863,7 @@ export default async (application: Application): Promise<void> => {
                             `)}"
                           >
                             <div
-                              class="${conversationParticipantsTextColor[
+                              class="${textColorsConversationParticipants[
                                 response.locals.conversation.participants
                               ]}"
                               onload="${javascript`
@@ -6871,10 +6873,10 @@ export default async (application: Application): Promise<void> => {
                                 });
                               `}"
                             >
-                              $${conversationParticipantsIcon[
+                              $${iconsConversationParticipants[
                                 response.locals.conversation.participants
                               ].fill}
-                              $${conversationParticipantsLabel[
+                              $${labelsConversationParticipants[
                                 response.locals.conversation.participants
                               ]}
                             </div>
