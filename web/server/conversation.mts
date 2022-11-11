@@ -3049,8 +3049,9 @@ export default async (application: Application): Promise<void> => {
       response.locals.actionAllowedOnArchivedCourse = true;
       next();
     },
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       const messages = application.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
@@ -3132,9 +3133,10 @@ export default async (application: Application): Promise<void> => {
     `/courses/:courseReference/conversations/new(/:type(${application.server.locals.helpers.conversationTypes.join(
       "|"
     )}))?`,
-    ...application.server.locals.middlewares.isEnrolledInCourse,
     ...application.server.locals.middlewares.liveUpdates,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       const conversationDraft =
         typeof request.query.newConversation?.conversationDraftReference ===
           "string" &&
@@ -4457,254 +4459,253 @@ export default async (application: Application): Promise<void> => {
     },
     { conversations?: object },
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >(
-    "/courses/:courseReference/conversations",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    (request, response, next) => {
-      if (request.body.isDraft === "true") {
-        // TODO: Conversation drafts: Validate inputs
-        // let conversationDraft =
-        //   typeof request.body.conversationDraftReference === "string" &&
-        //   request.body.conversationDraftReference.match(/^[0-9]+$/)
-        //     ? app.database.get<{
-        //         reference: string;
-        //       }>(
-        //         sql`
-        //           SELECT "reference"
-        //           FROM "conversationDrafts"
-        //           WHERE "course" = ${response.locals.course.id} AND
-        //                 "reference" = ${request.body.conversationDraftReference} AND
-        //                 "authorEnrollment" = ${response.locals.enrollment.id}
-        //         `
-        //       )
-        //     : undefined;
-        // if (conversationDraft === undefined)
-        //   conversationDraft = app.database.get<{
-        //     reference: string;
-        //   }>(
-        //     sql`
-        //       INSERT INTO "conversationDrafts" (
-        //         "createdAt",
-        //         "course",
-        //         "reference",
-        //         "authorEnrollment",
-        //         "type",
-        //         "isPinned",
-        //         "isStaffOnly",
-        //         "title",
-        //         "content",
-        //         "tagsReferences"
-        //       )
-        //       VALUES (
-        //         ${new Date().toISOString()},
-        //         ${response.locals.course.id},
-        //         ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //         ${response.locals.enrollment.id},
-        //         ${
-        //           typeof request.body.type === "string" &&
-        //           request.body.type.trim() !== ""
-        //             ? request.body.type
-        //             : null
-        //         },
-        //         ${request.body.isPinned === "on" ? "true" : null},
-        //         ${request.body.isStaffOnly === "on" ? "true" : null},
-        //         ${
-        //           typeof request.body.title === "string" &&
-        //           request.body.title.trim() !== ""
-        //             ? request.body.title
-        //             : null
-        //         },
-        //         ${
-        //           typeof request.body.content === "string" &&
-        //           request.body.content.trim() !== ""
-        //             ? request.body.content
-        //             : null
-        //         },
-        //         ${
-        //           Array.isArray(request.body.tagsReferences) &&
-        //           request.body.tagsReferences.every(
-        //             (tagReference) =>
-        //               typeof tagReference === "string" &&
-        //               tagReference.trim() !== ""
-        //           )
-        //             ? JSON.stringify(request.body.tagsReferences)
-        //             : null
-        //         }
-        //       )
-        //       RETURNING *
-        //     `
-        //   )!;
-        // else
-        //   app.database.run(
-        //     sql`
-        //       UPDATE "conversationDrafts"
-        //       SET "updatedAt" = ${new Date().toISOString()},
-        //           "type" = ${
-        //             typeof request.body.type === "string" &&
-        //             request.body.type.trim() !== ""
-        //               ? request.body.type
-        //               : null
-        //           },
-        //           "isPinned" = ${request.body.isPinned === "on" ? "true" : null},
-        //           "isStaffOnly" = ${
-        //             request.body.isStaffOnly === "on" ? "true" : null
-        //           },
-        //           "title" = ${
-        //             typeof request.body.title === "string" &&
-        //             request.body.title.trim() !== ""
-        //               ? request.body.title
-        //               : null
-        //           },
-        //           "content" = ${
-        //             typeof request.body.content === "string" &&
-        //             request.body.content.trim() !== ""
-        //               ? request.body.content
-        //               : null
-        //           },
-        //           "tagsReferences" = ${
-        //             Array.isArray(request.body.tagsReferences) &&
-        //             request.body.tagsReferences.every(
-        //               (tagReference) =>
-        //                 typeof tagReference === "string" &&
-        //                 tagReference.trim() !== ""
-        //             )
-        //               ? JSON.stringify(request.body.tagsReferences)
-        //               : null
-        //           }
-        //       WHERE "reference" = ${conversationDraft.reference}
-        //     `
-        //   );
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${
-            response.locals.course.reference
-          }/conversations/new${qs.stringify(
-            {
-              conversations: request.query.conversations,
-              newConversation: {
-                // conversationDraftReference: conversationDraft.reference,
-              },
+  >("/courses/:courseReference/conversations", (request, response, next) => {
+    if (response.locals.course === undefined) return next();
+
+    if (request.body.isDraft === "true") {
+      // TODO: Conversation drafts: Validate inputs
+      // let conversationDraft =
+      //   typeof request.body.conversationDraftReference === "string" &&
+      //   request.body.conversationDraftReference.match(/^[0-9]+$/)
+      //     ? app.database.get<{
+      //         reference: string;
+      //       }>(
+      //         sql`
+      //           SELECT "reference"
+      //           FROM "conversationDrafts"
+      //           WHERE "course" = ${response.locals.course.id} AND
+      //                 "reference" = ${request.body.conversationDraftReference} AND
+      //                 "authorEnrollment" = ${response.locals.enrollment.id}
+      //         `
+      //       )
+      //     : undefined;
+      // if (conversationDraft === undefined)
+      //   conversationDraft = app.database.get<{
+      //     reference: string;
+      //   }>(
+      //     sql`
+      //       INSERT INTO "conversationDrafts" (
+      //         "createdAt",
+      //         "course",
+      //         "reference",
+      //         "authorEnrollment",
+      //         "type",
+      //         "isPinned",
+      //         "isStaffOnly",
+      //         "title",
+      //         "content",
+      //         "tagsReferences"
+      //       )
+      //       VALUES (
+      //         ${new Date().toISOString()},
+      //         ${response.locals.course.id},
+      //         ${cryptoRandomString({ length: 10, type: "numeric" })},
+      //         ${response.locals.enrollment.id},
+      //         ${
+      //           typeof request.body.type === "string" &&
+      //           request.body.type.trim() !== ""
+      //             ? request.body.type
+      //             : null
+      //         },
+      //         ${request.body.isPinned === "on" ? "true" : null},
+      //         ${request.body.isStaffOnly === "on" ? "true" : null},
+      //         ${
+      //           typeof request.body.title === "string" &&
+      //           request.body.title.trim() !== ""
+      //             ? request.body.title
+      //             : null
+      //         },
+      //         ${
+      //           typeof request.body.content === "string" &&
+      //           request.body.content.trim() !== ""
+      //             ? request.body.content
+      //             : null
+      //         },
+      //         ${
+      //           Array.isArray(request.body.tagsReferences) &&
+      //           request.body.tagsReferences.every(
+      //             (tagReference) =>
+      //               typeof tagReference === "string" &&
+      //               tagReference.trim() !== ""
+      //           )
+      //             ? JSON.stringify(request.body.tagsReferences)
+      //             : null
+      //         }
+      //       )
+      //       RETURNING *
+      //     `
+      //   )!;
+      // else
+      //   app.database.run(
+      //     sql`
+      //       UPDATE "conversationDrafts"
+      //       SET "updatedAt" = ${new Date().toISOString()},
+      //           "type" = ${
+      //             typeof request.body.type === "string" &&
+      //             request.body.type.trim() !== ""
+      //               ? request.body.type
+      //               : null
+      //           },
+      //           "isPinned" = ${request.body.isPinned === "on" ? "true" : null},
+      //           "isStaffOnly" = ${
+      //             request.body.isStaffOnly === "on" ? "true" : null
+      //           },
+      //           "title" = ${
+      //             typeof request.body.title === "string" &&
+      //             request.body.title.trim() !== ""
+      //               ? request.body.title
+      //               : null
+      //           },
+      //           "content" = ${
+      //             typeof request.body.content === "string" &&
+      //             request.body.content.trim() !== ""
+      //               ? request.body.content
+      //               : null
+      //           },
+      //           "tagsReferences" = ${
+      //             Array.isArray(request.body.tagsReferences) &&
+      //             request.body.tagsReferences.every(
+      //               (tagReference) =>
+      //                 typeof tagReference === "string" &&
+      //                 tagReference.trim() !== ""
+      //             )
+      //               ? JSON.stringify(request.body.tagsReferences)
+      //               : null
+      //           }
+      //       WHERE "reference" = ${conversationDraft.reference}
+      //     `
+      //   );
+      return response.redirect(
+        303,
+        `https://${application.configuration.hostname}/courses/${
+          response.locals.course.reference
+        }/conversations/new${qs.stringify(
+          {
+            conversations: request.query.conversations,
+            newConversation: {
+              // conversationDraftReference: conversationDraft.reference,
             },
-            { addQueryPrefix: true }
-          )}`
-        );
-      }
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
+    }
 
-      request.body.tagsReferences ??= [];
-      request.body.selectedParticipantsReferences ??= [];
-      if (
-        typeof request.body.type !== "string" ||
-        !application.server.locals.helpers.conversationTypes.includes(
-          request.body.type
-        ) ||
-        typeof request.body.title !== "string" ||
-        request.body.title.trim() === "" ||
-        (request.body.type !== "chat" &&
-          (typeof request.body.content !== "string" ||
-            request.body.content.trim() === "")) ||
-        (request.body.type === "chat" &&
-          request.body.content !== undefined &&
-          typeof request.body.content !== "string") ||
-        !Array.isArray(request.body.tagsReferences) ||
-        (response.locals.tags.length === 0 &&
-          request.body.tagsReferences.length !== 0) ||
-        (response.locals.tags.length !== 0 &&
-          ((request.body.type !== "chat" &&
-            request.body.tagsReferences.length === 0) ||
-            request.body.tagsReferences.some(
-              (tagReference) => typeof tagReference !== "string"
-            ) ||
-            request.body.tagsReferences.length !==
-              new Set(request.body.tagsReferences).size ||
-            request.body.tagsReferences.length !==
-              lodash.intersection(
-                request.body.tagsReferences,
-                response.locals.tags.map((tag) => tag.reference)
-              ).length)) ||
-        typeof request.body.participants !== "string" ||
-        !application.server.locals.helpers.conversationParticipantses.includes(
-          request.body.participants
-        ) ||
-        !Array.isArray(request.body.selectedParticipantsReferences) ||
-        (request.body.participants === "everyone" &&
-          request.body.selectedParticipantsReferences.length > 0) ||
-        (request.body.participants === "selected-people" &&
-          request.body.selectedParticipantsReferences.length === 0) ||
-        request.body.selectedParticipantsReferences.some(
-          (selectedParticipantReference) =>
-            typeof selectedParticipantReference !== "string"
-        ) ||
-        request.body.selectedParticipantsReferences.length !==
-          new Set(request.body.selectedParticipantsReferences).size
-      )
-        return next("Validation");
+    request.body.tagsReferences ??= [];
+    request.body.selectedParticipantsReferences ??= [];
+    if (
+      typeof request.body.type !== "string" ||
+      !application.server.locals.helpers.conversationTypes.includes(
+        request.body.type
+      ) ||
+      typeof request.body.title !== "string" ||
+      request.body.title.trim() === "" ||
+      (request.body.type !== "chat" &&
+        (typeof request.body.content !== "string" ||
+          request.body.content.trim() === "")) ||
+      (request.body.type === "chat" &&
+        request.body.content !== undefined &&
+        typeof request.body.content !== "string") ||
+      !Array.isArray(request.body.tagsReferences) ||
+      (response.locals.tags.length === 0 &&
+        request.body.tagsReferences.length !== 0) ||
+      (response.locals.tags.length !== 0 &&
+        ((request.body.type !== "chat" &&
+          request.body.tagsReferences.length === 0) ||
+          request.body.tagsReferences.some(
+            (tagReference) => typeof tagReference !== "string"
+          ) ||
+          request.body.tagsReferences.length !==
+            new Set(request.body.tagsReferences).size ||
+          request.body.tagsReferences.length !==
+            lodash.intersection(
+              request.body.tagsReferences,
+              response.locals.tags.map((tag) => tag.reference)
+            ).length)) ||
+      typeof request.body.participants !== "string" ||
+      !application.server.locals.helpers.conversationParticipantses.includes(
+        request.body.participants
+      ) ||
+      !Array.isArray(request.body.selectedParticipantsReferences) ||
+      (request.body.participants === "everyone" &&
+        request.body.selectedParticipantsReferences.length > 0) ||
+      (request.body.participants === "selected-people" &&
+        request.body.selectedParticipantsReferences.length === 0) ||
+      request.body.selectedParticipantsReferences.some(
+        (selectedParticipantReference) =>
+          typeof selectedParticipantReference !== "string"
+      ) ||
+      request.body.selectedParticipantsReferences.length !==
+        new Set(request.body.selectedParticipantsReferences).size
+    )
+      return next("Validation");
 
-      if (
-        (request.body.participants === "staff" &&
-          response.locals.enrollment.courseRole !== "staff") ||
-        request.body.participants === "selected-people"
-      )
-        request.body.selectedParticipantsReferences.push(
-          response.locals.enrollment.reference
-        );
-      const selectedParticipants =
-        request.body.selectedParticipantsReferences.length === 0
-          ? []
-          : application.database.all<{
-              id: number;
-              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-            }>(
-              sql`
+    if (
+      (request.body.participants === "staff" &&
+        response.locals.enrollment.courseRole !== "staff") ||
+      request.body.participants === "selected-people"
+    )
+      request.body.selectedParticipantsReferences.push(
+        response.locals.enrollment.reference
+      );
+    const selectedParticipants =
+      request.body.selectedParticipantsReferences.length === 0
+        ? []
+        : application.database.all<{
+            id: number;
+            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          }>(
+            sql`
                 SELECT "id", "courseRole"
                 FROM "enrollments"
                 WHERE
                   "enrollments"."course" = ${response.locals.course.id} AND
                   "reference" IN ${request.body.selectedParticipantsReferences}
               `
-            );
+          );
 
-      if (
-        request.body.selectedParticipantsReferences.length !==
-          selectedParticipants.length ||
-        (request.body.participants === "staff" &&
-          selectedParticipants.some(
-            (selectedParticipant) => selectedParticipant.courseRole === "staff"
-          )) ||
-        ![undefined, "on"].includes(request.body.isAnnouncement) ||
-        (request.body.isAnnouncement === "on" &&
-          (response.locals.enrollment.courseRole !== "staff" ||
-            request.body.type !== "note")) ||
-        ![undefined, "on"].includes(request.body.isPinned) ||
-        (request.body.isPinned === "on" &&
-          response.locals.enrollment.courseRole !== "staff") ||
-        ![undefined, "on"].includes(request.body.isAnonymous) ||
-        (request.body.isAnonymous === "on" &&
-          response.locals.enrollment.courseRole === "staff")
-      )
-        return next("Validation");
+    if (
+      request.body.selectedParticipantsReferences.length !==
+        selectedParticipants.length ||
+      (request.body.participants === "staff" &&
+        selectedParticipants.some(
+          (selectedParticipant) => selectedParticipant.courseRole === "staff"
+        )) ||
+      ![undefined, "on"].includes(request.body.isAnnouncement) ||
+      (request.body.isAnnouncement === "on" &&
+        (response.locals.enrollment.courseRole !== "staff" ||
+          request.body.type !== "note")) ||
+      ![undefined, "on"].includes(request.body.isPinned) ||
+      (request.body.isPinned === "on" &&
+        response.locals.enrollment.courseRole !== "staff") ||
+      ![undefined, "on"].includes(request.body.isAnonymous) ||
+      (request.body.isAnonymous === "on" &&
+        response.locals.enrollment.courseRole === "staff")
+    )
+      return next("Validation");
 
-      const hasMessage =
-        typeof request.body.content === "string" &&
-        request.body.content.trim() !== "";
+    const hasMessage =
+      typeof request.body.content === "string" &&
+      request.body.content.trim() !== "";
 
-      application.database.run(
-        sql`
+    application.database.run(
+      sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
             response.locals.course.nextConversationReference + 1
           }
           WHERE "id" = ${response.locals.course.id}
         `
-      );
+    );
 
-      const conversation = application.database.get<{
-        id: number;
-        reference: string;
-        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
-        type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
-        title: string;
-      }>(
-        sql`
+    const conversation = application.database.get<{
+      id: number;
+      reference: string;
+      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+      type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+      title: string;
+    }>(
+      sql`
           INSERT INTO "conversations" (
             "createdAt",
             "course",
@@ -4743,11 +4744,11 @@ export default async (application: Application): Promise<void> => {
           )
           RETURNING *
         `
-      )!;
+    )!;
 
-      for (const selectedParticipant of selectedParticipants)
-        application.database.run(
-          sql`
+    for (const selectedParticipant of selectedParticipants)
+      application.database.run(
+        sql`
             INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
             VALUES (
               ${new Date().toISOString()},
@@ -4755,11 +4756,11 @@ export default async (application: Application): Promise<void> => {
               ${selectedParticipant.id}
             )
           `
-        );
+      );
 
-      for (const tagReference of request.body.tagsReferences)
-        application.database.run(
-          sql`
+    for (const tagReference of request.body.tagsReferences)
+      application.database.run(
+        sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
               ${new Date().toISOString()},
@@ -4771,18 +4772,18 @@ export default async (application: Application): Promise<void> => {
               }
             )
           `
-        );
+      );
 
-      if (hasMessage) {
-        const contentPreprocessed =
-          application.server.locals.partials.contentPreprocessed(
-            request.body.content!
-          );
-        const message = application.database.get<{
-          id: number;
-          reference: string;
-        }>(
-          sql`
+    if (hasMessage) {
+      const contentPreprocessed =
+        application.server.locals.partials.contentPreprocessed(
+          request.body.content!
+        );
+      const message = application.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
             INSERT INTO "messages" (
               "createdAt",
               "conversation",
@@ -4809,9 +4810,9 @@ export default async (application: Application): Promise<void> => {
             )
             RETURNING *
           `
-        )!;
-        application.database.run(
-          sql`
+      )!;
+      application.database.run(
+        sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
               ${new Date().toISOString()},
@@ -4819,50 +4820,49 @@ export default async (application: Application): Promise<void> => {
               ${response.locals.enrollment.id}
             )
           `
-        );
-        application.server.locals.helpers.emailNotifications({
+      );
+      application.server.locals.helpers.emailNotifications({
+        request,
+        response,
+        message: application.server.locals.helpers.getMessage({
           request,
           response,
-          message: application.server.locals.helpers.getMessage({
+          conversation: application.server.locals.helpers.getConversation({
             request,
             response,
-            conversation: application.server.locals.helpers.getConversation({
-              request,
-              response,
-              conversationReference: conversation.reference,
-            })!,
-            messageReference: message.reference,
+            conversationReference: conversation.reference,
           })!,
-        });
-      }
+          messageReference: message.reference,
+        })!,
+      });
+    }
 
-      if (
-        typeof request.body.conversationDraftReference === "string" &&
-        request.body.conversationDraftReference.match(/^[0-9]+$/)
-      )
-        application.database.run(
-          sql`
+    if (
+      typeof request.body.conversationDraftReference === "string" &&
+      request.body.conversationDraftReference.match(/^[0-9]+$/)
+    )
+      application.database.run(
+        sql`
             DELETE FROM "conversationDrafts"
             WHERE
               "course" = ${response.locals.course.id} AND
               "reference" = ${request.body.conversationDraftReference} AND
               "authorEnrollment" = ${response.locals.enrollment.id}
           `
-        );
-
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/courses/${
-          response.locals.course.reference
-        }/conversations/${conversation.reference}${qs.stringify(
-          { conversations: request.query.conversations },
-          { addQueryPrefix: true }
-        )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
-    }
-  );
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/courses/${
+        response.locals.course.reference
+      }/conversations/${conversation.reference}${qs.stringify(
+        { conversations: request.query.conversations },
+        { addQueryPrefix: true }
+      )}`
+    );
+
+    application.server.locals.helpers.liveUpdates({ request, response });
+  });
 
   application.server.delete<
     { courseReference: string },
@@ -4872,8 +4872,9 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/new",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       if (
         typeof request.body.conversationDraftReference !== "string" ||
         !request.body.conversationDraftReference.match(/^[0-9]+$/)

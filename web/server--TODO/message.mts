@@ -967,9 +967,10 @@ export default async (app: Courselore): Promise<void> => {
       MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...app.server.locals.middlewares.isEnrolledInCourse,
     ...messageExistsMiddleware,
-    (request, response) => {
+    (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       response.send(
         app.server.locals.layouts.partial({
           request,

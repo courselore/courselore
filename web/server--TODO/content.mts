@@ -2243,6 +2243,8 @@ ${contentSource}</textarea
           Application["server"]["locals"]["ResponseLocals"]["Conversation"]
         >
     > = (request, response, next) => {
+      // TODO: Different expectations for different uses of handler
+      if (response.locals.course === undefined) return next();
       if (response.locals.conversation === undefined) return next();
 
       if (
@@ -2391,11 +2393,7 @@ ${contentSource}</textarea
       {},
       { search?: string },
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-    >(
-      "/courses/:courseReference/content-editor/mention-user-search",
-      ...app.server.locals.middlewares.isEnrolledInCourse,
-      handler
-    );
+    >("/courses/:courseReference/content-editor/mention-user-search", handler);
 
     app.server.get<
       { courseReference: string; conversationReference: string },
@@ -2417,8 +2415,9 @@ ${contentSource}</textarea
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
-    ...app.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
       if (
         typeof request.query.search !== "string" ||
         request.query.search.trim() === ""
@@ -2901,6 +2900,9 @@ ${contentSource}</textarea
           Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
         >
     > = (request, response, next) => {
+      // TODO: Different expectations for different uses of handler
+      if (response.locals.course === undefined) return next();
+
       if (
         typeof request.body.content !== "string" ||
         request.body.content.trim() === ""
@@ -2928,11 +2930,7 @@ ${contentSource}</textarea
       { content?: string },
       {},
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-    >(
-      "/courses/:courseReference/content-editor/preview",
-      ...app.server.locals.middlewares.isEnrolledInCourse,
-      handler
-    );
+    >("/courses/:courseReference/content-editor/preview", handler);
 
     app.server.post<
       {},
