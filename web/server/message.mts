@@ -519,15 +519,6 @@ export default async (application: Application): Promise<void> => {
     };
   };
 
-  application.server.locals.helpers.mayEditMessage = ({
-    request,
-    response,
-    message,
-  }) =>
-    response.locals.enrollment.courseRole === "staff" ||
-    (message.authorEnrollment !== "no-longer-enrolled" &&
-      message.authorEnrollment.id === response.locals.enrollment.id);
-
   application.server.get<
     {
       courseReference: string;
@@ -777,6 +768,15 @@ export default async (application: Application): Promise<void> => {
       application.server.locals.helpers.liveUpdates({ request, response });
     }
   );
+
+  application.server.locals.helpers.mayEditMessage = ({
+    request,
+    response,
+    message,
+  }) =>
+    response.locals.enrollment.courseRole === "staff" ||
+    (message.authorEnrollment !== "no-longer-enrolled" &&
+      message.authorEnrollment.id === response.locals.enrollment.id);
 
   application.server.patch<
     {
