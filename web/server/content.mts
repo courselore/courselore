@@ -1824,7 +1824,8 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   const checkIsSignedIn = ${
-                    response.locals.user === undefined
+                    response.locals.user === undefined ||
+                    response.locals.user.emailVerifiedAt === null
                       ? javascript`
                           (() => {
                             (textarea.tooltip ??= tippy(textarea)).setProps({
@@ -2822,7 +2823,11 @@ ${contentSource}</textarea
   >(
     "/content-editor/attachments",
     asyncHandler(async (request, response, next) => {
-      if (response.locals.user === undefined) return next();
+      if (
+        response.locals.user === undefined ||
+        response.locals.user.emailVerifiedAt === null
+      )
+        return next();
 
       if (request.files?.attachments === undefined) return next("Validation");
 

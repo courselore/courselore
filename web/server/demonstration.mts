@@ -7,374 +7,402 @@ import casual from "casual";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
-export default async (app: Courselore): Promise<void> => {
-  if (!app.configuration.demonstration) return;
+export default async (application: Application): Promise<void> => {
+  if (!application.configuration.demonstration) return;
 
-  const handler: express.RequestHandler<
+  application.server.post<
     {},
     any,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
-  > = asyncHandler(async (request, response) => {
-    const password = await argon2.hash(
-      "courselore",
-      app.server.locals.configuration.argon2
-    );
-    const avatarIndices = lodash.shuffle(lodash.range(250));
-    const users = lodash.times(151, (userIndex) => {
-      const name = casual.full_name;
-      const biographySource = casual.sentences(lodash.random(5, 7));
-      const isEmailNotificationsForNone = Math.random() < 0.1;
-      const isEmailNotificationsForMentions =
-        !isEmailNotificationsForNone && Math.random() < 0.8;
-      const isEmailNotificationsForMessagesInConversationsInWhichYouParticipated =
-        !isEmailNotificationsForNone && Math.random() < 0.8;
-      const isEmailNotificationsForMessagesInConversationsYouStarted =
-        isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
-        (!isEmailNotificationsForNone && Math.random() < 0.8);
-      const isEmailNotificationsForAllMessages =
-        isEmailNotificationsForMentions &&
-        isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
-        isEmailNotificationsForMessagesInConversationsYouStarted &&
-        Math.random() < 0.3
-          ? lodash.sample(userEmailNotificationsForAllMessageses)!
-          : "none";
-      const hour = new Date();
-      hour.setUTCMinutes(0, 0, 0);
-      const day = new Date();
-      day.setUTCHours(0, 0, 0, 0);
-      return app.database.get<{
-        id: number;
-        email: string;
-        name: string;
-      }>(
-        sql`
-          INSERT INTO "users" (
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForAllMessagesDigestDeliveredAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${new Date(
-              Date.now() -
-                (Math.random() < 0.5 ? 0 : lodash.random(0, 5 * 60 * 60 * 1000))
-            ).toISOString()},
-            ${cryptoRandomString({ length: 20, type: "numeric" })},
-            ${`${slugify(name)}--${cryptoRandomString({
-              length: 5,
-              type: "numeric",
-            })}@courselore.org`},
-            ${password},
-            ${new Date().toISOString()},
-            ${name},
-            ${html`${name}`},
-            ${
-              Math.random() < 0.6
-                ? `https://${
-                    app.configuration.hostname
-                  }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
-                : null
-            },
-            ${lodash.sample(userAvatarlessBackgroundColors)!},
-            ${biographySource},
-            ${
-              app.server.locals.partials.contentPreprocessed(biographySource)
-                .contentPreprocessed
-            },
-            ${
-              app.configuration.hostname === app.addresses.tryHostname
-                ? "none"
-                : userIndex === 0
-                ? "administrator"
-                : Math.random() < 0.1
-                ? "administrator"
-                : Math.random() < 0.3
-                ? "staff"
-                : "none"
-            },
-            ${isEmailNotificationsForAllMessages},
-            ${
-              isEmailNotificationsForAllMessages === "hourly-digests"
-                ? hour.toISOString()
-                : isEmailNotificationsForAllMessages === "daily-digests"
-                ? day.toISOString()
-                : null
-            },
-            ${
-              isEmailNotificationsForMentions ? new Date().toISOString() : null
-            },
-            ${
-              isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-                ? new Date().toISOString()
-                : null
-            },
-            ${
-              isEmailNotificationsForMessagesInConversationsYouStarted
-                ? new Date().toISOString()
-                : null
-            }
-          )
-          RETURNING *
-        `
-      )!;
-    });
-    const demonstrationUser = response.locals.user ?? users.shift()!;
-
-    const year = new Date().getFullYear().toString();
-    const month = new Date().getMonth() + 1;
-    const term = month < 4 || month > 9 ? "Spring" : "Fall";
-    const institution = "Johns Hopkins University";
-    for (const {
-      name,
-      code,
-      courseRole: courseRole,
-      accentColor,
-      enrollmentsUsers,
-      isArchived,
-    } of [
-      {
-        name: "Principles of Programming Languages",
-        code: "CS 601.426",
-        courseRole: courseRoles[1],
-        accentColor: enrollmentAccentColors[0],
-        enrollmentsUsers: users.slice(0, 100),
-      },
-      {
-        name: "Pharmacology",
-        code: "MD 401.324",
-        courseRole: courseRoles[0],
-        accentColor: enrollmentAccentColors[1],
-        enrollmentsUsers: users.slice(25, 125),
-      },
-      {
-        name: "Object-Oriented Software Engineering",
-        code: "EN 601.421",
-        courseRole: courseRoles[1],
-        accentColor: enrollmentAccentColors[2],
-        enrollmentsUsers: users.slice(50, 150),
-        isArchived: true,
-      },
-    ].reverse()) {
-      const course = app.database.get<{
-        id: number;
-        reference: string;
-        nextConversationReference: number;
-      }>(
-        sql`
-          INSERT INTO "courses" (
-            "createdAt",
-            "reference",
-            "archivedAt",
-            "name",
-            "year",
-            "term",
-            "institution",
-            "code",      
-            "nextConversationReference"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${isArchived ? new Date().toISOString() : null},
-            ${name},
-            ${year},
-            ${term},
-            ${institution},
-            ${code},
-            ${lodash.random(30, 50)}
-          )
-          RETURNING *
-        `
-      )!;
-
-      const enrollment = app.database.get<{
-        id: number;
-        reference: string;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-      }>(
-        sql`
-          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-          VALUES (
-            ${new Date().toISOString()},
-            ${demonstrationUser.id},
-            ${course.id},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${courseRole},
-            ${accentColor}
-          )
-          RETURNING *
-        `
-      )!;
-
-      for (const _ of lodash.times(20)) {
-        const expiresAt =
+  >(
+    "/demonstration-data",
+    asyncHandler(async (request, response) => {
+      const password = await argon2.hash(
+        "courselore",
+        application.server.locals.configuration.argon2
+      );
+      const avatarIndices = lodash.shuffle(lodash.range(250));
+      const users = lodash.times(151, (userIndex) => {
+        const name = casual.full_name;
+        const biographySource = casual.sentences(lodash.random(5, 7));
+        const isEmailNotificationsForNone = Math.random() < 0.1;
+        const isEmailNotificationsForMentions =
+          !isEmailNotificationsForNone && Math.random() < 0.8;
+        const isEmailNotificationsForMessagesInConversationsInWhichYouParticipated =
+          !isEmailNotificationsForNone && Math.random() < 0.8;
+        const isEmailNotificationsForMessagesInConversationsYouStarted =
+          isEmailNotificationsForMessagesInConversationsInWhichYouParticipated ||
+          (!isEmailNotificationsForNone && Math.random() < 0.8);
+        const isEmailNotificationsForAllMessages =
+          isEmailNotificationsForMentions &&
+          isEmailNotificationsForMessagesInConversationsInWhichYouParticipated &&
+          isEmailNotificationsForMessagesInConversationsYouStarted &&
           Math.random() < 0.3
-            ? new Date(
-                Date.now() +
-                  lodash.random(
-                    -30 * 24 * 60 * 60 * 1000,
-                    30 * 24 * 60 * 60 * 1000
-                  )
-              ).toISOString()
-            : null;
-        const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
-        const name =
-          user !== null
-            ? Math.random() < 0.7
-              ? user.name
-              : null
-            : Math.random() < 0.5
-            ? casual.full_name
-            : null;
-        const email =
-          user !== null
-            ? name !== null || Math.random() < 0.7
-              ? user.email
-              : null
-            : name !== null || Math.random() < 0.5
-            ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
-                length: 5,
-                type: "numeric",
-              })}@courselore.org`
-            : null;
-        app.database.run(
+            ? lodash.sample(
+                application.server.locals.helpers
+                  .userEmailNotificationsForAllMessageses
+              )!
+            : "none";
+        const hour = new Date();
+        hour.setUTCMinutes(0, 0, 0);
+        const day = new Date();
+        day.setUTCHours(0, 0, 0, 0);
+        return application.database.get<{
+          id: number;
+          email: string;
+          name: string;
+        }>(
           sql`
-            INSERT INTO "invitations" (
+            INSERT INTO "users" (
               "createdAt",
-              "expiresAt",
-              "usedAt",
-              "course",
+              "lastSeenOnlineAt",
               "reference",
               "email",
+              "password",
+              "emailVerifiedAt",
               "name",
-              "courseRole"
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biographySource",
+              "biographyPreprocessed",
+              "systemRole",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForAllMessagesDigestDeliveredAt",
+              "emailNotificationsForMentionsAt",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+              "emailNotificationsForMessagesInConversationsYouStartedAt"
             )
             VALUES (
               ${new Date().toISOString()},
-              ${expiresAt},
+              ${new Date(
+                Date.now() -
+                  (Math.random() < 0.5
+                    ? 0
+                    : lodash.random(0, 5 * 60 * 60 * 1000))
+              ).toISOString()},
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${`${slugify(name)}--${cryptoRandomString({
+                length: 5,
+                type: "numeric",
+              })}@courselore.org`},
+              ${password},
+              ${new Date().toISOString()},
+              ${name},
+              ${html`${name}`},
               ${
-                email === null || Math.random() < 0.4
-                  ? null
-                  : new Date(
-                      (expiresAt === null
-                        ? Date.now()
-                        : Math.min(Date.now(), new Date(expiresAt).getTime())) -
-                        lodash.random(20 * 24 * 60 * 60 * 1000)
-                    ).toISOString()
+                Math.random() < 0.6
+                  ? `https://${
+                      application.configuration.hostname
+                    }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                  : null
               },
+              ${lodash.sample(
+                application.server.locals.helpers.userAvatarlessBackgroundColors
+              )!},
+              ${biographySource},
+              ${
+                application.server.locals.partials.contentPreprocessed(
+                  biographySource
+                ).contentPreprocessed
+              },
+              ${
+                application.configuration.hostname ===
+                application.addresses.tryHostname
+                  ? "none"
+                  : userIndex === 0
+                  ? "administrator"
+                  : Math.random() < 0.1
+                  ? "administrator"
+                  : Math.random() < 0.3
+                  ? "staff"
+                  : "none"
+              },
+              ${isEmailNotificationsForAllMessages},
+              ${
+                isEmailNotificationsForAllMessages === "hourly-digests"
+                  ? hour.toISOString()
+                  : isEmailNotificationsForAllMessages === "daily-digests"
+                  ? day.toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMentions
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                  ? new Date().toISOString()
+                  : null
+              },
+              ${
+                isEmailNotificationsForMessagesInConversationsYouStarted
+                  ? new Date().toISOString()
+                  : null
+              }
+            )
+            RETURNING *
+          `
+        )!;
+      });
+      const demonstrationUser = response.locals.user ?? users.shift()!;
+
+      const year = new Date().getFullYear().toString();
+      const month = new Date().getMonth() + 1;
+      const term = month < 4 || month > 9 ? "Spring" : "Fall";
+      const institution = "Johns Hopkins University";
+      for (const {
+        name,
+        code,
+        courseRole: courseRole,
+        accentColor,
+        enrollmentsUsers,
+        isArchived,
+      } of [
+        {
+          name: "Principles of Programming Languages",
+          code: "CS 601.426",
+          courseRole: application.server.locals.helpers.courseRoles[1],
+          accentColor:
+            application.server.locals.helpers.enrollmentAccentColors[0],
+          enrollmentsUsers: users.slice(0, 100),
+        },
+        {
+          name: "Pharmacology",
+          code: "MD 401.324",
+          courseRole: application.server.locals.helpers.courseRoles[0],
+          accentColor:
+            application.server.locals.helpers.enrollmentAccentColors[1],
+          enrollmentsUsers: users.slice(25, 125),
+        },
+        {
+          name: "Object-Oriented Software Engineering",
+          code: "EN 601.421",
+          courseRole: application.server.locals.helpers.courseRoles[1],
+          accentColor:
+            application.server.locals.helpers.enrollmentAccentColors[2],
+          enrollmentsUsers: users.slice(50, 150),
+          isArchived: true,
+        },
+      ].reverse()) {
+        const course = application.database.get<{
+          id: number;
+          reference: string;
+          nextConversationReference: number;
+        }>(
+          sql`
+            INSERT INTO "courses" (
+              "createdAt",
+              "reference",
+              "archivedAt",
+              "name",
+              "year",
+              "term",
+              "institution",
+              "code",      
+              "nextConversationReference"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${isArchived ? new Date().toISOString() : null},
+              ${name},
+              ${year},
+              ${term},
+              ${institution},
+              ${code},
+              ${lodash.random(30, 50)}
+            )
+            RETURNING *
+          `
+        )!;
+
+        const enrollment = application.database.get<{
+          id: number;
+          reference: string;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        }>(
+          sql`
+            INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+            VALUES (
+              ${new Date().toISOString()},
+              ${demonstrationUser.id},
               ${course.id},
               ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${email},
-              ${name},
-              ${courseRoles[Math.random() < 0.1 ? 1 : 0]}
+              ${courseRole},
+              ${accentColor}
             )
+            RETURNING *
           `
-        );
-      }
+        )!;
 
-      const enrollments = [
-        enrollment,
-        ...enrollmentsUsers.map(
-          (enrollmentUser) =>
-            app.database.get<{
-              id: number;
-              reference: string;
-              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-            }>(
+        for (const _ of lodash.times(20)) {
+          const expiresAt =
+            Math.random() < 0.3
+              ? new Date(
+                  Date.now() +
+                    lodash.random(
+                      -30 * 24 * 60 * 60 * 1000,
+                      30 * 24 * 60 * 60 * 1000
+                    )
+                ).toISOString()
+              : null;
+          const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
+          const name =
+            user !== null
+              ? Math.random() < 0.7
+                ? user.name
+                : null
+              : Math.random() < 0.5
+              ? casual.full_name
+              : null;
+          const email =
+            user !== null
+              ? name !== null || Math.random() < 0.7
+                ? user.email
+                : null
+              : name !== null || Math.random() < 0.5
+              ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
+                  length: 5,
+                  type: "numeric",
+                })}@courselore.org`
+              : null;
+          application.database.run(
+            sql`
+              INSERT INTO "invitations" (
+                "createdAt",
+                "expiresAt",
+                "usedAt",
+                "course",
+                "reference",
+                "email",
+                "name",
+                "courseRole"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${expiresAt},
+                ${
+                  email === null || Math.random() < 0.4
+                    ? null
+                    : new Date(
+                        (expiresAt === null
+                          ? Date.now()
+                          : Math.min(
+                              Date.now(),
+                              new Date(expiresAt).getTime()
+                            )) - lodash.random(20 * 24 * 60 * 60 * 1000)
+                      ).toISOString()
+                },
+                ${course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${email},
+                ${name},
+                ${
+                  application.server.locals.helpers.courseRoles[
+                    Math.random() < 0.1 ? 1 : 0
+                  ]
+                }
+              )
+            `
+          );
+        }
+
+        const enrollments = [
+          enrollment,
+          ...enrollmentsUsers.map(
+            (enrollmentUser) =>
+              application.database.get<{
+                id: number;
+                reference: string;
+                courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+              }>(
+                sql`
+                  INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${enrollmentUser.id},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${
+                      application.server.locals.helpers.courseRoles[
+                        Math.random() < 0.1 ? 1 : 0
+                      ]
+                    },
+                    ${lodash.sample(
+                      application.server.locals.helpers.enrollmentAccentColors
+                    )!}
+                  )
+                  RETURNING *
+                `
+              )!
+          ),
+        ];
+        const staff = enrollments.filter(
+          (enrollment) => enrollment.courseRole === "staff"
+        );
+        const students = enrollments.filter(
+          (enrollment) => enrollment.courseRole === "student"
+        );
+
+        const tags: { id: number }[] = [
+          { name: "Assignment 1", staffOnlyAt: null },
+          { name: "Assignment 2", staffOnlyAt: null },
+          { name: "Assignment 3", staffOnlyAt: null },
+          { name: "Assignment 4", staffOnlyAt: null },
+          { name: "Assignment 5", staffOnlyAt: null },
+          { name: "Assignment 6", staffOnlyAt: null },
+          { name: "Assignment 7", staffOnlyAt: null },
+          { name: "Assignment 8", staffOnlyAt: null },
+          { name: "Assignment 9", staffOnlyAt: null },
+          { name: "Assignment 10", staffOnlyAt: null },
+          {
+            name: "Change for Next Year",
+            staffOnlyAt: new Date().toISOString(),
+          },
+          {
+            name: "Duplicate Question",
+            staffOnlyAt: new Date().toISOString(),
+          },
+        ].map(
+          ({ name, staffOnlyAt }) =>
+            application.database.get<{ id: number }>(
               sql`
-                INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
                 VALUES (
                   ${new Date().toISOString()},
-                  ${enrollmentUser.id},
                   ${course.id},
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
-                  ${courseRoles[Math.random() < 0.1 ? 1 : 0]},
-                  ${lodash.sample(enrollmentAccentColors)!}
+                  ${name},
+                  ${staffOnlyAt}
                 )
                 RETURNING *
               `
             )!
-        ),
-      ];
-      const staff = enrollments.filter(
-        (enrollment) => enrollment.courseRole === "staff"
-      );
-      const students = enrollments.filter(
-        (enrollment) => enrollment.courseRole === "student"
-      );
-
-      const tags: { id: number }[] = [
-        { name: "Assignment 1", staffOnlyAt: null },
-        { name: "Assignment 2", staffOnlyAt: null },
-        { name: "Assignment 3", staffOnlyAt: null },
-        { name: "Assignment 4", staffOnlyAt: null },
-        { name: "Assignment 5", staffOnlyAt: null },
-        { name: "Assignment 6", staffOnlyAt: null },
-        { name: "Assignment 7", staffOnlyAt: null },
-        { name: "Assignment 8", staffOnlyAt: null },
-        { name: "Assignment 9", staffOnlyAt: null },
-        { name: "Assignment 10", staffOnlyAt: null },
-        {
-          name: "Change for Next Year",
-          staffOnlyAt: new Date().toISOString(),
-        },
-        {
-          name: "Duplicate Question",
-          staffOnlyAt: new Date().toISOString(),
-        },
-      ].map(
-        ({ name, staffOnlyAt }) =>
-          app.database.get<{ id: number }>(
-            sql`
-              INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-              VALUES (
-                ${new Date().toISOString()},
-                ${course.id},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${name},
-                ${staffOnlyAt}
-              )
-              RETURNING *
-            `
-          )!
-      );
-
-      const conversationCreatedAts = [
-        new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      ];
-      for (
-        let conversationReference = 2;
-        conversationReference < course.nextConversationReference;
-        conversationReference++
-      )
-        conversationCreatedAts.unshift(
-          new Date(
-            new Date(conversationCreatedAts[0]).getTime() -
-              lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
-          ).toISOString()
         );
 
-      const exampleOfAllFeaturesInRichTextMessages = `
+        const conversationCreatedAts = [
+          new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        ];
+        for (
+          let conversationReference = 2;
+          conversationReference < course.nextConversationReference;
+          conversationReference++
+        )
+          conversationCreatedAts.unshift(
+            new Date(
+              new Date(conversationCreatedAts[0]).getTime() -
+                lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
+            ).toISOString()
+          );
+
+        const exampleOfAllFeaturesInRichTextMessages = `
 **Edit to see source**
 
 ---
@@ -407,12 +435,12 @@ Conversation other: #2
 Conversation non-existent: #14981039481
 
 Conversation permanent link turned reference: <https://${
-        app.configuration.hostname
-      }/courses/${course.reference}/conversations/1>
+          application.configuration.hostname
+        }/courses/${course.reference}/conversations/1>
 
 Conversation non-existent permanent link turned reference: <https://${
-        app.configuration.hostname
-      }/courses/${course.reference}/conversations/14981039481>
+          application.configuration.hostname
+        }/courses/${course.reference}/conversations/14981039481>
 
 Message self: #1/1
 
@@ -421,16 +449,16 @@ Message other: #2/1
 Message non-existent: #1/2
 
 Message permanent link turned reference: <https://${
-        app.configuration.hostname
-      }/courses/${
-        course.reference
-      }/conversations/1?messages%5BmessageReference%5D=1>
+          application.configuration.hostname
+        }/courses/${
+          course.reference
+        }/conversations/1?messages%5BmessageReference%5D=1>
 
 Message non-existent permanent link turned reference: <https://${
-        app.configuration.hostname
-      }/courses/${
-        course.reference
-      }/conversations/1?messages%5BmessageReference%5D=2>
+          application.configuration.hostname
+        }/courses/${
+          course.reference
+        }/conversations/1?messages%5BmessageReference%5D=2>
 
 ---
 
@@ -644,17 +672,17 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre
   L          TE
     A       A
       C    V
-       R A
-       DOU
-       LOU
+        R A
+        DOU
+        LOU
       REUSE
       QUE TU
       PORTES
     ET QUI T'
     ORNE O CI
-     VILISÉ
+      VILISÉ
     OTE-  TU VEUX
-     LA    BIEN
+      LA    BIEN
     SI      RESPI
             RER       - Apollinaire
 </pre>
@@ -670,8 +698,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img
 
 <img class="fit-picture"
-     src="https://placekitten.com/500/300"
-     alt="Grapefruit slice atop a pile of other slices">
+      src="https://placekitten.com/500/300"
+      alt="Grapefruit slice atop a pile of other slices">
 
 ---
 
@@ -687,7 +715,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 
 <div class="warning">
     <img src="https://placekitten.com/500/300"
-         alt="An intimidating leopard.">
+          alt="An intimidating leopard.">
     <p>Beware of the leopard</p>
 </div>
 
@@ -720,7 +748,7 @@ C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>, also known as "caffeine."
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p
 
 <p>Geckos are a group of usually small, usually nocturnal lizards. They are found on every continent except Australia.</p>
- 
+  
 <p>Some species live in houses where they hunt insects attracted by artificial light.</p>
 
 ---
@@ -980,7 +1008,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption
 
 <figure>
     <img src="https://placekitten.com/500/300"
-         alt="Elephant at sunset">
+          alt="Elephant at sunset">
     <figcaption>An elephant at sunset</figcaption>
 </figure>
 
@@ -1077,7 +1105,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 
 <div>
   <input type="checkbox" id="scales" name="scales"
-         checked>
+          checked>
   <label for="scales">Scales</label>
 </div>
 
@@ -1087,350 +1115,327 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
 </div>
 `;
 
-      for (
-        let conversationReference = 1;
-        conversationReference < course.nextConversationReference;
-        conversationReference++
-      ) {
-        const isExampleOfAllFeaturesInRichTextMessages =
-          conversationReference === 1;
-        const conversationCreatedAt =
-          conversationCreatedAts[conversationReference - 1];
-        const participants = isExampleOfAllFeaturesInRichTextMessages
-          ? "everyone"
-          : Math.random() < 0.5
-          ? "everyone"
-          : lodash.sample(application.server.locals.helpers.conversationParticipantses)!;
-        const selectedParticipantEnrollments = lodash.uniq(
-          participants === "everyone"
-            ? []
-            : participants === "staff"
-            ? [
-                ...(enrollment.courseRole === "staff"
-                  ? []
-                  : Math.random() < 0.5
-                  ? [enrollment]
-                  : []),
-                ...lodash.sampleSize(students, lodash.random(0, 10)),
-              ]
-            : participants === "selected-people"
-            ? [
-                ...(Math.random() < 0.5 ? [enrollment] : []),
-                ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
-              ]
-            : []
-        );
-        const participantEnrollments = lodash.uniq([
-          ...(participants === "everyone"
-            ? enrollments
-            : participants === "staff"
-            ? staff
-            : participants === "selected-people"
-            ? []
-            : []),
-          ...selectedParticipantEnrollments,
-        ]);
-        const conversationAuthorEnrollment =
-          Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
-        const type = isExampleOfAllFeaturesInRichTextMessages
-          ? application.server.locals.helpers.conversationTypes[1]
-          : application.server.locals.helpers.conversationTypes[
-              Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
-            ];
-        const title = isExampleOfAllFeaturesInRichTextMessages
-          ? `Example of All Features in Rich-Text Messages`
-          : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
-              type === "question" ? "?" : ""
-            }`;
-        const nextMessageReference = isExampleOfAllFeaturesInRichTextMessages
-          ? 2
-          : type === "chat"
-          ? lodash.random(50, 100)
-          : lodash.random(2, 30);
-        const messageCreatedAts = [conversationCreatedAt];
         for (
-          let messageReference = 1;
-          messageReference < nextMessageReference;
-          messageReference++
-        )
-          messageCreatedAts.push(
-            new Date(
-              Math.min(
-                Date.now(),
-                new Date(
-                  messageCreatedAts[messageCreatedAts.length - 1]
-                ).getTime() + lodash.random(12 * 60 * 60 * 1000)
-              )
-            ).toISOString()
-          );
-        const conversation = app.database.get<{
-          id: number;
-          authorEnrollment: number | null;
-          participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
-          anonymousAt: string | null;
-          type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
-          title: string;
-        }>(
-          sql`
-            INSERT INTO "conversations" (
-              "createdAt",
-              "updatedAt",
-              "course",
-              "reference",
-              "authorEnrollment",
-              "participants",
-              "anonymousAt",
-              "type",
-              "resolvedAt",
-              "announcementAt",
-              "pinnedAt",
-              "title",
-              "titleSearch",
-              "nextMessageReference"
-            )
-            VALUES (
-              ${conversationCreatedAt},
-              ${messageCreatedAts[messageCreatedAts.length - 1]},
-              ${course.id},
-              ${String(conversationReference)},
-              ${conversationAuthorEnrollment?.id},
-              ${participants},
-              ${
-                conversationAuthorEnrollment?.courseRole === "student" &&
-                Math.random() < 0.5
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${type},
-              ${
-                type === "question" && Math.random() < 0.75
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                conversationAuthorEnrollment?.courseRole === "staff" &&
-                type === "note" &&
-                Math.random() < 0.5
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                isExampleOfAllFeaturesInRichTextMessages
-                  ? null
-                  : Math.random() < 0.15
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${title},
-              ${html`${title}`},
-              ${nextMessageReference}
-            )
-            RETURNING *
-          `
-        )!;
-
-        for (const enrollment of selectedParticipantEnrollments)
-          app.database.run(
-            sql`
-              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
-              VALUES (
-                ${new Date().toISOString()},
-                ${conversation.id},
-                ${enrollment.id}
-              )
-            `
-          );
-
-        app.database.run(
-          sql`
-            INSERT INTO "taggings" ("createdAt", "conversation", "tag")
-            VALUES (
-              ${new Date().toISOString()},
-              ${conversation.id},
-              ${lodash.sample(tags)!.id}
-            )
-          `
-        );
-
-        for (
-          let messageReference = 1;
-          messageReference < nextMessageReference;
-          messageReference++
+          let conversationReference = 1;
+          conversationReference < course.nextConversationReference;
+          conversationReference++
         ) {
-          const messageCreatedAt = messageCreatedAts[messageReference - 1];
-          const messageAuthorEnrollment =
-            messageReference === 1
-              ? conversationAuthorEnrollment
-              : Math.random() < 0.05
-              ? null
-              : lodash.sample(participantEnrollments)!;
-          const contentSource = isExampleOfAllFeaturesInRichTextMessages
-            ? exampleOfAllFeaturesInRichTextMessages
-            : type === "chat" && Math.random() < 0.9
-            ? casual.sentences(lodash.random(1, 2))
-            : lodash
-                .times(lodash.random(1, 6), () =>
-                  casual.sentences(lodash.random(1, 6))
+          const isExampleOfAllFeaturesInRichTextMessages =
+            conversationReference === 1;
+          const conversationCreatedAt =
+            conversationCreatedAts[conversationReference - 1];
+          const participants = isExampleOfAllFeaturesInRichTextMessages
+            ? "everyone"
+            : Math.random() < 0.5
+            ? "everyone"
+            : lodash.sample(
+                application.server.locals.helpers.conversationParticipantses
+              )!;
+          const selectedParticipantEnrollments = lodash.uniq(
+            participants === "everyone"
+              ? []
+              : participants === "staff"
+              ? [
+                  ...(enrollment.courseRole === "staff"
+                    ? []
+                    : Math.random() < 0.5
+                    ? [enrollment]
+                    : []),
+                  ...lodash.sampleSize(students, lodash.random(0, 10)),
+                ]
+              : participants === "selected-people"
+              ? [
+                  ...(Math.random() < 0.5 ? [enrollment] : []),
+                  ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
+                ]
+              : []
+          );
+          const participantEnrollments = lodash.uniq([
+            ...(participants === "everyone"
+              ? enrollments
+              : participants === "staff"
+              ? staff
+              : participants === "selected-people"
+              ? []
+              : []),
+            ...selectedParticipantEnrollments,
+          ]);
+          const conversationAuthorEnrollment =
+            Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
+          const type = isExampleOfAllFeaturesInRichTextMessages
+            ? application.server.locals.helpers.conversationTypes[1]
+            : application.server.locals.helpers.conversationTypes[
+                Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
+              ];
+          const title = isExampleOfAllFeaturesInRichTextMessages
+            ? `Example of All Features in Rich-Text Messages`
+            : `${lodash.capitalize(casual.words(lodash.random(3, 9)))}${
+                type === "question" ? "?" : ""
+              }`;
+          const nextMessageReference = isExampleOfAllFeaturesInRichTextMessages
+            ? 2
+            : type === "chat"
+            ? lodash.random(50, 100)
+            : lodash.random(2, 30);
+          const messageCreatedAts = [conversationCreatedAt];
+          for (
+            let messageReference = 1;
+            messageReference < nextMessageReference;
+            messageReference++
+          )
+            messageCreatedAts.push(
+              new Date(
+                Math.min(
+                  Date.now(),
+                  new Date(
+                    messageCreatedAts[messageCreatedAts.length - 1]
+                  ).getTime() + lodash.random(12 * 60 * 60 * 1000)
                 )
-                .join("\n\n");
-          const contentPreprocessed =
-            app.server.locals.partials.contentPreprocessed(contentSource);
-          const message = app.database.get<{ id: number }>(
+              ).toISOString()
+            );
+          const conversation = application.database.get<{
+            id: number;
+            authorEnrollment: number | null;
+            participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+            anonymousAt: string | null;
+            type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+            title: string;
+          }>(
             sql`
-              INSERT INTO "messages" (
+              INSERT INTO "conversations" (
                 "createdAt",
                 "updatedAt",
-                "conversation",
+                "course",
                 "reference",
                 "authorEnrollment",
+                "participants",
                 "anonymousAt",
-                "answerAt",
-                "contentSource",
-                "contentPreprocessed",
-                "contentSearch"
+                "type",
+                "resolvedAt",
+                "announcementAt",
+                "pinnedAt",
+                "title",
+                "titleSearch",
+                "nextMessageReference"
               )
               VALUES (
-                ${messageCreatedAt},
+                ${conversationCreatedAt},
+                ${messageCreatedAts[messageCreatedAts.length - 1]},
+                ${course.id},
+                ${String(conversationReference)},
+                ${conversationAuthorEnrollment?.id},
+                ${participants},
                 ${
-                  Math.random() < 0.8
-                    ? null
-                    : new Date(
-                        Math.min(
-                          Date.now(),
-                          new Date(messageCreatedAt).getTime() +
-                            lodash.random(
-                              5 * 60 * 60 * 1000,
-                              18 * 60 * 60 * 1000
-                            )
-                        )
-                      ).toISOString()
-                },
-                ${conversation.id},
-                ${String(messageReference)},
-                ${messageAuthorEnrollment?.id},
-                ${
-                  messageReference === 1
-                    ? conversation.anonymousAt
-                    : messageAuthorEnrollment?.courseRole === "student" &&
-                      Math.random() < 0.5
+                  conversationAuthorEnrollment?.courseRole === "student" &&
+                  Math.random() < 0.5
                     ? new Date().toISOString()
                     : null
                 },
-                ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                ${contentSource},
-                ${contentPreprocessed.contentPreprocessed},
-                ${contentPreprocessed.contentSearch}
+                ${type},
+                ${
+                  type === "question" && Math.random() < 0.75
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  conversationAuthorEnrollment?.courseRole === "staff" &&
+                  type === "note" &&
+                  Math.random() < 0.5
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  isExampleOfAllFeaturesInRichTextMessages
+                    ? null
+                    : Math.random() < 0.15
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${title},
+                ${html`${title}`},
+                ${nextMessageReference}
               )
               RETURNING *
             `
           )!;
 
-          let readingCreatedAt = messageCreatedAt;
-          for (const enrollment of lodash.sampleSize(
-            participantEnrollments,
-            lodash.random(1, participantEnrollments.length)
-          )) {
-            readingCreatedAt = new Date(
-              Math.min(
-                Date.now(),
-                new Date(readingCreatedAt).getTime() +
-                  lodash.random(12 * 60 * 60 * 1000)
+          for (const enrollment of selectedParticipantEnrollments)
+            application.database.run(
+              sql`
+                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${conversation.id},
+                  ${enrollment.id}
+                )
+              `
+            );
+
+          application.database.run(
+            sql`
+              INSERT INTO "taggings" ("createdAt", "conversation", "tag")
+              VALUES (
+                ${new Date().toISOString()},
+                ${conversation.id},
+                ${lodash.sample(tags)!.id}
               )
-            ).toISOString();
-            app.database.run(
+            `
+          );
+
+          for (
+            let messageReference = 1;
+            messageReference < nextMessageReference;
+            messageReference++
+          ) {
+            const messageCreatedAt = messageCreatedAts[messageReference - 1];
+            const messageAuthorEnrollment =
+              messageReference === 1
+                ? conversationAuthorEnrollment
+                : Math.random() < 0.05
+                ? null
+                : lodash.sample(participantEnrollments)!;
+            const contentSource = isExampleOfAllFeaturesInRichTextMessages
+              ? exampleOfAllFeaturesInRichTextMessages
+              : type === "chat" && Math.random() < 0.9
+              ? casual.sentences(lodash.random(1, 2))
+              : lodash
+                  .times(lodash.random(1, 6), () =>
+                    casual.sentences(lodash.random(1, 6))
+                  )
+                  .join("\n\n");
+            const contentPreprocessed =
+              application.server.locals.partials.contentPreprocessed(
+                contentSource
+              );
+            const message = application.database.get<{ id: number }>(
               sql`
-                INSERT INTO "readings" ("createdAt", "message", "enrollment")
-                VALUES (
-                  ${readingCreatedAt},
-                  ${message.id},
-                  ${enrollment.id}
+                INSERT INTO "messages" (
+                  "createdAt",
+                  "updatedAt",
+                  "conversation",
+                  "reference",
+                  "authorEnrollment",
+                  "anonymousAt",
+                  "answerAt",
+                  "contentSource",
+                  "contentPreprocessed",
+                  "contentSearch"
                 )
+                VALUES (
+                  ${messageCreatedAt},
+                  ${
+                    Math.random() < 0.8
+                      ? null
+                      : new Date(
+                          Math.min(
+                            Date.now(),
+                            new Date(messageCreatedAt).getTime() +
+                              lodash.random(
+                                5 * 60 * 60 * 1000,
+                                18 * 60 * 60 * 1000
+                              )
+                          )
+                        ).toISOString()
+                  },
+                  ${conversation.id},
+                  ${String(messageReference)},
+                  ${messageAuthorEnrollment?.id},
+                  ${
+                    messageReference === 1
+                      ? conversation.anonymousAt
+                      : messageAuthorEnrollment?.courseRole === "student" &&
+                        Math.random() < 0.5
+                      ? new Date().toISOString()
+                      : null
+                  },
+                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                  ${contentSource},
+                  ${contentPreprocessed.contentPreprocessed},
+                  ${contentPreprocessed.contentSearch}
+                )
+                RETURNING *
               `
-            );
+            )!;
+
+            let readingCreatedAt = messageCreatedAt;
+            for (const enrollment of lodash.sampleSize(
+              participantEnrollments,
+              lodash.random(1, participantEnrollments.length)
+            )) {
+              readingCreatedAt = new Date(
+                Math.min(
+                  Date.now(),
+                  new Date(readingCreatedAt).getTime() +
+                    lodash.random(12 * 60 * 60 * 1000)
+                )
+              ).toISOString();
+              application.database.run(
+                sql`
+                  INSERT INTO "readings" ("createdAt", "message", "enrollment")
+                  VALUES (
+                    ${readingCreatedAt},
+                    ${message.id},
+                    ${enrollment.id}
+                  )
+                `
+              );
+            }
+
+            for (const enrollment of lodash.sampleSize(
+              lodash.intersection(staff, participantEnrollments),
+              Math.random() < 0.8 ? 0 : lodash.random(2)
+            ))
+              application.database.run(
+                sql`
+                  INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${message.id},
+                    ${enrollment.id}
+                  )
+                `
+              );
+
+            for (const enrollment of lodash.sampleSize(
+              participantEnrollments,
+              Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
+                ? 0
+                : lodash.random(5)
+            ))
+              application.database.run(
+                sql`
+                  INSERT INTO "likes" ("createdAt", "message", "enrollment")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${message.id},
+                    ${enrollment.id}
+                  )
+                `
+              );
           }
-
-          for (const enrollment of lodash.sampleSize(
-            lodash.intersection(staff, participantEnrollments),
-            Math.random() < 0.8 ? 0 : lodash.random(2)
-          ))
-            app.database.run(
-              sql`
-                INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${message.id},
-                  ${enrollment.id}
-                )
-              `
-            );
-
-          for (const enrollment of lodash.sampleSize(
-            participantEnrollments,
-            Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
-              ? 0
-              : lodash.random(5)
-          ))
-            app.database.run(
-              sql`
-                INSERT INTO "likes" ("createdAt", "message", "enrollment")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${message.id},
-                  ${enrollment.id}
-                )
-              `
-            );
         }
       }
-    }
 
-    if (response.locals.user === undefined)
-      app.server.locals.helpers.Session.open({
+      if (response.locals.user === undefined)
+        application.server.locals.helpers.Session.open({
+          request,
+          response,
+          userId: demonstrationUser.id,
+        });
+
+      application.server.locals.helpers.Flash.set({
         request,
         response,
-        userId: demonstrationUser.id,
+        theme: "green",
+        content: html`
+          Demonstration data including users, courses, conversations, and so
+          forth, have been created and you’ve been signed in as a demonstration
+          user to give you a better idea of what Courselore looks like in use.
+          If you wish to sign in as another one of the demonstration users,
+          their password is “courselore”.
+        `,
       });
-
-    app.server.locals.helpers.Flash.set({
-      request,
-      response,
-      theme: "green",
-      content: html`
-        Demonstration data including users, courses, conversations, and so
-        forth, have been created and you’ve been signed in as a demonstration
-        user to give you a better idea of what Courselore looks like in use. If
-        you wish to sign in as another one of the demonstration users, their
-        password is “courselore”.
-      `,
-    });
-    response.redirect(303, `https://${app.configuration.hostname}`);
-  });
-
-  app.server.post<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >(
-    "/demonstration-data",
-    ...app.server.locals.middlewares.isSignedOut,
-    handler
-  );
-
-  app.server.post<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/demonstration-data",
-    (request, response, next) => {
-      response.locals.actionAllowedToUserWithUnverifiedEmail = true;
-      next();
-    },
-    ...app.server.locals.middlewares.isSignedIn,
-    handler
+      response.redirect(303, `https://${application.configuration.hostname}`);
+    })
   );
 };
