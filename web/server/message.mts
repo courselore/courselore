@@ -1146,7 +1146,6 @@ export default async (application: Application): Promise<void> => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.courseRole !== "staff");
 
-  type MayEndorseMessageLocals = ResponseLocalsMessage;
   const mayEndorseMessageMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -1156,7 +1155,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    MayEndorseMessageLocals
+    ResponseLocalsMessage
   >[] = [
     (request, response, next) => {
       if (response.locals.message === undefined) return next();
@@ -1185,7 +1184,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEndorseMessageLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,
@@ -1247,7 +1246,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEndorseMessageLocals
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
     ...mayEndorseMessageMiddleware,
