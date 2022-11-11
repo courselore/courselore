@@ -68,9 +68,9 @@ export type MayEditMessageHelper = ({
     any,
     {},
     {},
-    IsConversationAccessibleLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >;
-  response: express.Response<any, IsConversationAccessibleLocals>;
+  response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Conversation"]>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -89,9 +89,9 @@ export type MayEndorseMessageHelper = ({
     any,
     {},
     {},
-    IsConversationAccessibleLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >;
-  response: express.Response<any, IsConversationAccessibleLocals>;
+  response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Conversation"]>;
   message: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
   >;
@@ -477,7 +477,7 @@ export default async (app: Courselore): Promise<void> => {
     };
   };
 
-  type MessageExistsLocals = IsConversationAccessibleLocals & {
+  type MessageExistsLocals = Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
     message: NonNullable<
       ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
     >;
@@ -584,7 +584,7 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsConversationAccessibleLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
     ...app.server.locals.middlewares.isConversationAccessible,
@@ -1411,8 +1411,8 @@ export default async (app: Courselore): Promise<void> => {
             courseCode: string | null;
             courseNextConversationReference: number;
             conversationReference: string;
-            conversationParticipants: ConversationParticipants;
-            conversationType: ConversationType;
+            conversationParticipants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+            conversationType: Application["server"]["locals"]["helpers"]["conversationTypes"];
             conversationAnnouncementAt: string | null;
             conversationTitle: string;
             reference: string;

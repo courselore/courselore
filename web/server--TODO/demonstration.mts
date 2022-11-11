@@ -1100,7 +1100,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
           ? "everyone"
           : Math.random() < 0.5
           ? "everyone"
-          : lodash.sample(conversationParticipantses)!;
+          : lodash.sample(application.server.locals.helpers.conversationParticipantses)!;
         const selectedParticipantEnrollments = lodash.uniq(
           participants === "everyone"
             ? []
@@ -1133,8 +1133,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         const conversationAuthorEnrollment =
           Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
         const type = isExampleOfAllFeaturesInRichTextMessages
-          ? conversationTypes[1]
-          : conversationTypes[
+          ? application.server.locals.helpers.conversationTypes[1]
+          : application.server.locals.helpers.conversationTypes[
               Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
             ];
         const title = isExampleOfAllFeaturesInRichTextMessages
@@ -1166,9 +1166,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
         const conversation = app.database.get<{
           id: number;
           authorEnrollment: number | null;
-          participants: ConversationParticipants;
+          participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
           anonymousAt: string | null;
-          type: ConversationType;
+          type: Application["server"]["locals"]["helpers"]["conversationTypes"];
           title: string;
         }>(
           sql`

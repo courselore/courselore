@@ -87,7 +87,7 @@ export type ContentEditorPartial = ({
       Partial<
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       > &
-      Partial<IsConversationAccessibleLocals>
+      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
   >;
   response: express.Response<
     any,
@@ -95,7 +95,7 @@ export type ContentEditorPartial = ({
       Partial<
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       > &
-      Partial<IsConversationAccessibleLocals>
+      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
   >;
   name?: string;
   contentSource?: string;
@@ -2233,7 +2233,7 @@ ${contentSource}</textarea
       {},
       { search?: string },
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-        Partial<IsConversationAccessibleLocals>
+        Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
     > = (request, response, next) => {
       if (
         typeof request.query.search !== "string" ||
@@ -2392,7 +2392,7 @@ ${contentSource}</textarea
       any,
       {},
       { search?: string },
-      IsConversationAccessibleLocals
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
     >(
       "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
       ...app.server.locals.middlewares.isConversationAccessible,

@@ -11,175 +11,185 @@ import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import { Application } from "./index.mjs";
 
-export type ConversationParticipants =
-  typeof conversationParticipantses[number];
-export const conversationParticipantses = [
-  "everyone",
-  "staff",
-  "selected-people",
-] as const;
-
-export type ConversationType = typeof conversationTypes[number];
-export const conversationTypes = ["question", "note", "chat"] as const;
-
-export type ConversationLayout = ({
-  request,
-  response,
-  head,
-  sidebarOnSmallScreen,
-  mainIsAScrollingPane,
-  body,
-}: {
-  request: express.Request<
-    { courseReference: string; conversationReference?: string },
-    HTML,
-    {},
-    {
-      conversations?: {
-        conversationsPage?: string;
-        search?: string;
-        filters?: {
-          isQuick?: "true";
-          isUnread?: "true" | "false";
-          types?: ConversationType[];
-          isResolved?: "true" | "false";
-          isAnnouncement?: "true" | "false";
-          participantses?: ConversationParticipants[];
-          isPinned?: "true" | "false";
-          tagsReferences?: string[];
+export type ApplicationConversation = {
+  server: {
+    locals: {
+      ResponseLocals: {
+        Conversation: Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+          conversation: NonNullable<
+            ReturnType<
+              Application["server"]["locals"]["helpers"]["getConversation"]
+            >
+          >;
         };
       };
-      messages?: object;
-      newConversation?: object;
-    },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      Partial<IsConversationAccessibleLocals>
-  >;
-  response: express.Response<
-    HTML,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      Partial<IsConversationAccessibleLocals>
-  >;
-  head: HTML;
-  sidebarOnSmallScreen?: boolean;
-  mainIsAScrollingPane?: boolean;
-  body: HTML;
-}) => HTML;
-
-export type ConversationPartial = ({
-  request,
-  response,
-  conversation,
-  searchResult,
-  message,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  conversation: NonNullable<
-    ReturnType<Application["locals"]["helpers"]["getConversation"]>
-  >;
-  searchResult?:
-    | {
-        type: "conversationTitle";
-        highlight: HTML;
-      }
-    | {
-        type: "messageAuthorUserName";
-        message: NonNullable<
-          ReturnType<Application["locals"]["helpers"]["getMessage"]>
-        >;
-        highlight: HTML;
-      }
-    | {
-        type: "messageContent";
-        message: NonNullable<
-          ReturnType<Application["locals"]["helpers"]["getMessage"]>
-        >;
-        snippet: HTML;
+      layouts: {
+        conversation({
+          request,
+          response,
+          head,
+          sidebarOnSmallScreen,
+          mainIsAScrollingPane,
+          body,
+        }: {
+          request: express.Request<
+            { courseReference: string; conversationReference?: string },
+            HTML,
+            {},
+            {
+              conversations?: {
+                conversationsPage?: string;
+                search?: string;
+                filters?: {
+                  isQuick?: "true";
+                  isUnread?: "true" | "false";
+                  types?: Application["server"]["locals"]["helpers"]["conversationTypes"][];
+                  isResolved?: "true" | "false";
+                  isAnnouncement?: "true" | "false";
+                  participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][];
+                  isPinned?: "true" | "false";
+                  tagsReferences?: string[];
+                };
+              };
+              messages?: object;
+              newConversation?: object;
+            },
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+              >
+          >;
+          response: express.Response<
+            HTML,
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+              >
+          >;
+          head: HTML;
+          sidebarOnSmallScreen?: boolean;
+          mainIsAScrollingPane?: boolean;
+          body: HTML;
+        }): HTML;
       };
-  message?: NonNullable<
-    ReturnType<Application["locals"]["helpers"]["getMessage"]>
-  >;
-}) => HTML;
-
-export type GetConversationHelper = ({
-  request,
-  response,
-  conversationReference,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  conversationReference: string;
-}) =>
-  | {
-      id: number;
-      createdAt: string;
-      updatedAt: string | null;
-      reference: string;
-      authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      participants: ConversationParticipants;
-      anonymousAt: string | null;
-      type: ConversationType;
-      resolvedAt: string | null;
-      announcementAt: string | null;
-      pinnedAt: string | null;
-      title: string;
-      titleSearch: string;
-      nextMessageReference: number;
-      selectedParticipants: Application["server"]["locals"]["Types"]["Enrollment"][];
-      taggings: {
-        id: number;
-        tag: {
-          id: number;
-          reference: string;
-          name: string;
-          staffOnlyAt: string | null;
-        };
-      }[];
-      messagesCount: number;
-      readingsCount: number;
-      endorsements: {
-        id: number;
-        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      }[];
-    }
-  | undefined;
-
-export type IsConversationAccessibleMiddleware = express.RequestHandler<
-  { courseReference: string; conversationReference: string },
-  HTML,
-  {},
-  {},
-  IsConversationAccessibleLocals
->[];
-export type IsConversationAccessibleLocals =
-  Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
-    conversation: NonNullable<
-      ReturnType<Application["locals"]["helpers"]["getConversation"]>
-    >;
+      partials: {
+        conversation({
+          request,
+          response,
+          conversation,
+          searchResult,
+          message,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          conversation: NonNullable<
+            ReturnType<
+              Application["server"]["locals"]["helpers"]["getConversation"]
+            >
+          >;
+          searchResult?:
+            | {
+                type: "conversationTitle";
+                highlight: HTML;
+              }
+            | {
+                type: "messageAuthorUserName";
+                message: NonNullable<
+                  ReturnType<
+                    Application["server"]["locals"]["helpers"]["getMessage"]
+                  >
+                >;
+                highlight: HTML;
+              }
+            | {
+                type: "messageContent";
+                message: NonNullable<
+                  ReturnType<
+                    Application["server"]["locals"]["helpers"]["getMessage"]
+                  >
+                >;
+                snippet: HTML;
+              };
+          message?: NonNullable<
+            ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+          >;
+        }): HTML;
+      };
+      helpers: {
+        conversationParticipantses: ["everyone", "staff", "selected-people"];
+        conversationTypes: ["question", "note", "chat"];
+        getConversation({
+          request,
+          response,
+          conversationReference,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          conversationReference: string;
+        }):
+          | {
+              id: number;
+              createdAt: string;
+              updatedAt: string | null;
+              reference: string;
+              authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+              anonymousAt: string | null;
+              type: Application["server"]["locals"]["helpers"]["conversationTypes"];
+              resolvedAt: string | null;
+              announcementAt: string | null;
+              pinnedAt: string | null;
+              title: string;
+              titleSearch: string;
+              nextMessageReference: number;
+              selectedParticipants: Application["server"]["locals"]["Types"]["Enrollment"][];
+              taggings: {
+                id: number;
+                tag: {
+                  id: number;
+                  reference: string;
+                  name: string;
+                  staffOnlyAt: string | null;
+                };
+              }[];
+              messagesCount: number;
+              readingsCount: number;
+              endorsements: {
+                id: number;
+                enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              }[];
+            }
+          | undefined;
+      };
+    };
   };
+};
+
+// Application["server"]["locals"]["helpers"]["conversationParticipantses"]
+// Application["server"]["locals"]["helpers"]["conversationTypes"]
+// Application["server"]["locals"]["ResponseLocals"]["Conversation"]
 
 export default async (app: Application): Promise<void> => {
   const conversationTypeIcon: {
-    [conversationType in ConversationType]: {
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -199,7 +209,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationTypeTextColor: {
-    [conversationType in ConversationType]: string;
+    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"]]: string;
   } = {
     question: "text--rose",
     note: "text--fuchsia",
@@ -207,7 +217,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsIcon: {
-    [conversationParticipants in ConversationParticipants]: {
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -227,7 +237,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsTextColor: {
-    [conversationParticipants in ConversationParticipants]: string;
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: string;
   } = {
     everyone: "text--green",
     staff: "text--sky",
@@ -235,7 +245,7 @@ export default async (app: Application): Promise<void> => {
   };
 
   const conversationParticipantsLabel: {
-    [conversationParticipants in ConversationParticipants]: string;
+    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"]]: string;
   } = {
     everyone: html`Everyone`,
     staff: html`Staff`,
@@ -261,10 +271,10 @@ export default async (app: Application): Promise<void> => {
     const filters: {
       isQuick?: "true";
       isUnread?: "true" | "false";
-      types?: ConversationType[];
+      types?: Application["server"]["locals"]["helpers"]["conversationTypes"][];
       isResolved?: "true" | "false";
       isAnnouncement?: "true" | "false";
-      participantses?: ConversationParticipants[];
+      participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][];
       isPinned?: "true" | "false";
       tagsReferences?: string[];
     } = {};
@@ -281,7 +291,7 @@ export default async (app: Application): Promise<void> => {
         const types = [
           ...new Set(
             request.query.conversations.filters.types.filter((type) =>
-              conversationTypes.includes(type)
+              application.server.locals.helpers.conversationTypes.includes(type)
             )
           ),
         ];
@@ -310,7 +320,9 @@ export default async (app: Application): Promise<void> => {
           ...new Set(
             request.query.conversations.filters.participantses.filter(
               (conversationParticipants) =>
-                conversationParticipantses.includes(conversationParticipants)
+                application.server.locals.helpers.conversationParticipantses.includes(
+                  conversationParticipants
+                )
             )
           ),
         ];
@@ -1460,7 +1472,7 @@ export default async (app: Application): Promise<void> => {
                               row-gap: var(--space--2);
                             `)}"
                           >
-                            $${conversationTypes.map(
+                            $${application.server.locals.helpers.conversationTypes.map(
                               (conversationType) => html`
                                 <label
                                   class="button button--tight button--tight--inline button--transparent"
@@ -1693,7 +1705,7 @@ export default async (app: Application): Promise<void> => {
                               row-gap: var(--space--2);
                             `)}"
                           >
-                            $${conversationParticipantses.map(
+                            $${application.server.locals.helpers.conversationParticipantses.map(
                               (conversationParticipants) => html`
                                 <label
                                   class="button button--tight button--tight--inline button--transparent"
@@ -2605,6 +2617,15 @@ export default async (app: Application): Promise<void> => {
     </div>
   `;
 
+  /*
+    export type IsConversationAccessibleMiddleware = express.RequestHandler<
+      { courseReference: string; conversationReference: string },
+      HTML,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    >[];
+  */
   app.server.locals.middlewares.isConversationAccessible = [
     ...app.server.locals.middlewares.isEnrolledInCourse,
     (request, response, next) => {
@@ -2624,7 +2645,7 @@ export default async (app: Application): Promise<void> => {
     HTML,
     {},
     {},
-    IsConversationAccessibleLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
     ...app.server.locals.middlewares.isConversationAccessible,
@@ -2695,9 +2716,9 @@ export default async (app: Application): Promise<void> => {
       authorEnrollmentCourseRole:
         | Application["server"]["locals"]["helpers"]["courseRoles"][number]
         | null;
-      participants: ConversationParticipants;
+      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
       anonymousAt: string | null;
-      type: ConversationType;
+      type: Application["server"]["locals"]["helpers"]["conversationTypes"];
       resolvedAt: string | null;
       announcementAt: string | null;
       pinnedAt: string | null;
@@ -3078,7 +3099,10 @@ export default async (app: Application): Promise<void> => {
   );
 
   app.server.get<
-    { courseReference: string; type?: ConversationType },
+    {
+      courseReference: string;
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
+    },
     HTML,
     {},
     {
@@ -3089,7 +3113,7 @@ export default async (app: Application): Promise<void> => {
         title?: string;
         content?: string;
         tagsReferences?: string[];
-        participants?: ConversationParticipants;
+        participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
         selectedParticipants?: string[];
         isAnnouncement?: "true";
         isPinned?: "true";
@@ -3098,7 +3122,7 @@ export default async (app: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
       ResponseLocalsLiveUpdates
   >(
-    `/courses/:courseReference/conversations/new(/:type(${conversationTypes.join(
+    `/courses/:courseReference/conversations/new(/:type(${application.server.locals.helpers.conversationTypes.join(
       "|"
     )}))?`,
     ...app.server.locals.middlewares.isEnrolledInCourse,
@@ -3227,7 +3251,9 @@ export default async (app: Application): Promise<void> => {
             >
               <div
                 $${typeof request.params.type === "string" &&
-                conversationTypes.includes(request.params.type)
+                application.server.locals.helpers.conversationTypes.includes(
+                  request.params.type
+                )
                   ? html`hidden`
                   : html``}
                 class="label"
@@ -3241,7 +3267,7 @@ export default async (app: Application): Promise<void> => {
                     row-gap: var(--space--2);
                   `)}"
                 >
-                  $${conversationTypes.map(
+                  $${application.server.locals.helpers.conversationTypes.map(
                     (conversationType) => html`
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -3578,7 +3604,7 @@ export default async (app: Application): Promise<void> => {
                                   `)}"
                                 >
                                   <div class="dropdown--menu">
-                                    $${conversationParticipantses.map(
+                                    $${application.server.locals.helpers.conversationParticipantses.map(
                                       (conversationParticipants) => html`
                                         <label>
                                           <input
@@ -3849,7 +3875,7 @@ export default async (app: Application): Promise<void> => {
                           });
                         `}"
                       >
-                        $${conversationParticipantses.map(
+                        $${application.server.locals.helpers.conversationParticipantses.map(
                           (conversationParticipants) => html`
                             <input
                               type="radio"
@@ -4409,11 +4435,11 @@ export default async (app: Application): Promise<void> => {
     { courseReference: string },
     HTML,
     {
-      type?: ConversationType;
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      participants?: ConversationParticipants;
+      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
       selectedParticipantsReferences?: string[];
       isAnnouncement?: "on";
       isPinned?: "on";
@@ -4560,7 +4586,9 @@ export default async (app: Application): Promise<void> => {
       request.body.selectedParticipantsReferences ??= [];
       if (
         typeof request.body.type !== "string" ||
-        !conversationTypes.includes(request.body.type) ||
+        !application.server.locals.helpers.conversationTypes.includes(
+          request.body.type
+        ) ||
         typeof request.body.title !== "string" ||
         request.body.title.trim() === "" ||
         (request.body.type !== "chat" &&
@@ -4586,7 +4614,9 @@ export default async (app: Application): Promise<void> => {
                 response.locals.tags.map((tag) => tag.reference)
               ).length)) ||
         typeof request.body.participants !== "string" ||
-        !conversationParticipantses.includes(request.body.participants) ||
+        !application.server.locals.helpers.conversationParticipantses.includes(
+          request.body.participants
+        ) ||
         !Array.isArray(request.body.selectedParticipantsReferences) ||
         (request.body.participants === "everyone" &&
           request.body.selectedParticipantsReferences.length > 0) ||
@@ -4662,8 +4692,8 @@ export default async (app: Application): Promise<void> => {
       const conversation = app.database.get<{
         id: number;
         reference: string;
-        participants: ConversationParticipants;
-        type: ConversationType;
+        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
+        type: Application["server"]["locals"]["helpers"]["conversationTypes"];
         title: string;
       }>(
         sql`
@@ -4878,9 +4908,12 @@ export default async (app: Application): Promise<void> => {
       any,
       {},
       {},
-      IsConversationAccessibleLocals
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
     >;
-    response: express.Response<any, IsConversationAccessibleLocals>;
+    response: express.Response<
+      any,
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    >;
   }): boolean =>
     response.locals.enrollment.courseRole === "staff" ||
     (response.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
@@ -4903,7 +4936,8 @@ export default async (app: Application): Promise<void> => {
         };
       };
     },
-    IsConversationAccessibleLocals & ResponseLocalsLiveUpdates
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"] &
+      ResponseLocalsLiveUpdates
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.server.locals.middlewares.isConversationAccessible,
@@ -5151,7 +5185,7 @@ export default async (app: Application): Promise<void> => {
                                       content: ${response.locals.html(
                                         html`
                                           <div class="dropdown--menu">
-                                            $${conversationTypes.map(
+                                            $${application.server.locals.helpers.conversationTypes.map(
                                               (conversationType) => html`
                                                 <form
                                                   key="conversation-type--${conversationType}"
@@ -6314,7 +6348,7 @@ export default async (app: Application): Promise<void> => {
                                             `)}"
                                           >
                                             <div class="dropdown--menu">
-                                              $${conversationParticipantses.map(
+                                              $${application.server.locals.helpers.conversationParticipantses.map(
                                                 (
                                                   conversationParticipants
                                                 ) => html`
@@ -6598,7 +6632,7 @@ export default async (app: Application): Promise<void> => {
                                     });
                                   `}"
                                 >
-                                  $${conversationParticipantses.map(
+                                  $${application.server.locals.helpers.conversationParticipantses.map(
                                     (conversationParticipants) => html`
                                       <input
                                         type="radio"
@@ -9309,7 +9343,8 @@ export default async (app: Application): Promise<void> => {
     }
   );
 
-  type MayEditConversationLocals = IsConversationAccessibleLocals;
+  type MayEditConversationLocals =
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"];
   const mayEditConversationMiddleware: express.RequestHandler<
     {
       courseReference: string;
@@ -9331,10 +9366,10 @@ export default async (app: Application): Promise<void> => {
     { courseReference: string; conversationReference: string },
     HTML,
     {
-      participants?: ConversationParticipants;
+      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"];
       selectedParticipantsReferences?: string[];
       isAnonymous?: "true" | "false";
-      type?: ConversationType;
+      type?: Application["server"]["locals"]["helpers"]["conversationTypes"];
       isAnnouncement?: "true" | "false";
       isPinned?: "true" | "false";
       isResolved?: "true" | "false";
@@ -9352,7 +9387,9 @@ export default async (app: Application): Promise<void> => {
       if (typeof request.body.participants === "string") {
         request.body.selectedParticipantsReferences ??= [];
         if (
-          !conversationParticipantses.includes(request.body.participants) ||
+          !application.server.locals.helpers.conversationParticipantses.includes(
+            request.body.participants
+          ) ||
           !Array.isArray(request.body.selectedParticipantsReferences) ||
           (request.body.participants === "everyone" &&
             request.body.selectedParticipantsReferences.length > 0) ||
@@ -9476,7 +9513,11 @@ export default async (app: Application): Promise<void> => {
         }
 
       if (typeof request.body.type === "string")
-        if (!conversationTypes.includes(request.body.type))
+        if (
+          !application.server.locals.helpers.conversationTypes.includes(
+            request.body.type
+          )
+        )
           return next("Validation");
         else
           app.database.run(
@@ -9624,7 +9665,8 @@ export default async (app: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsCourseStaffLocals & IsConversationAccessibleLocals
+    IsCourseStaffLocals &
+      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.server.locals.middlewares.isCourseStaff,
