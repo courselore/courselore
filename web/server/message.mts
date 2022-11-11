@@ -5,143 +5,133 @@ import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
-export type GetMessageHelper = ({
-  request,
-  response,
-  conversation,
-  messageReference,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  conversation: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-  >;
-  messageReference: string;
-}) =>
-  | {
-      id: number;
-      createdAt: string;
-      updatedAt: string | null;
-      reference: string;
-      authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      anonymousAt: string | null;
-      answerAt: string | null;
-      contentSource: string;
-      contentPreprocessed: HTML;
-      contentSearch: string;
-      reading: { id: number } | null;
-      readings: {
-        id: number;
-        createdAt: string;
-        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      }[];
-      endorsements: {
-        id: number;
-        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      }[];
-      likes: {
-        id: number;
-        createdAt: string;
-        enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-      }[];
-    }
-  | undefined;
+export type ApplicationMessage = {
+  server: {
+    locals: {
+      helpers: {
+        getMessage({
+          request,
+          response,
+          conversation,
+          messageReference,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          conversation: NonNullable<
+            ReturnType<
+              Application["server"]["locals"]["helpers"]["getConversation"]
+            >
+          >;
+          messageReference: string;
+        }):
+          | {
+              id: number;
+              createdAt: string;
+              updatedAt: string | null;
+              reference: string;
+              authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              anonymousAt: string | null;
+              answerAt: string | null;
+              contentSource: string;
+              contentPreprocessed: HTML;
+              contentSearch: string;
+              reading: { id: number } | null;
+              readings: {
+                id: number;
+                createdAt: string;
+                enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              }[];
+              endorsements: {
+                id: number;
+                enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              }[];
+              likes: {
+                id: number;
+                createdAt: string;
+                enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+              }[];
+            }
+          | undefined;
+        mayEditMessage({
+          request,
+          response,
+          message,
+        }: {
+          request: express.Request<
+            { courseReference: string; conversationReference: string },
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+          >;
+          message: NonNullable<
+            ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+          >;
+        }): boolean;
+        mayEndorseMessage({
+          request,
+          response,
+          message,
+        }: {
+          request: express.Request<
+            {
+              courseReference: string;
+              conversationReference: string;
+            },
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+          >;
+          message: NonNullable<
+            ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+          >;
+        }): boolean;
+        emailNotifications({
+          request,
+          response,
+          message,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+          >;
+          message: NonNullable<
+            ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+          >;
+        }): void;
+      };
+    };
+  };
+};
 
-export type MayEditMessageHelper = ({
-  request,
-  response,
-  message,
-}: {
-  request: express.Request<
-    { courseReference: string; conversationReference: string },
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-  >;
-  message: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-  >;
-}) => boolean;
-
-export type MayEndorseMessageHelper = ({
-  request,
-  response,
-  message,
-}: {
-  request: express.Request<
-    {
-      courseReference: string;
-      conversationReference: string;
-    },
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-  >;
-  message: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-  >;
-}) => boolean;
-
-export type CourseLiveUpdater = ({
-  request,
-  response,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-}) => Promise<void>;
-
-export type EmailNotificationsMailer = ({
-  request,
-  response,
-  message,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  message: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-  >;
-}) => void;
-
-export default async (app: Courselore): Promise<void> => {
+export default async (app: Application): Promise<void> => {
   app.server.locals.helpers.getMessage = ({
     request,
     response,
@@ -494,7 +484,7 @@ export default async (app: Courselore): Promise<void> => {
   type MessageExistsLocals =
     Application["server"]["locals"]["ResponseLocals"]["Conversation"] & {
       message: NonNullable<
-        ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+        ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
       >;
     };
   const messageExistsMiddleware: express.RequestHandler<
