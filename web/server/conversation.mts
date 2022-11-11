@@ -4922,11 +4922,28 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (
         typeof request.body.conversationDraftReference !== "string" ||
         !request.body.conversationDraftReference.match(/^[0-9]+$/)
       )
         return next("Validation");
+
       const conversationDraft = application.database.get<{
         id: number;
       }>(
@@ -4945,6 +4962,7 @@ export default async (application: Application): Promise<void> => {
           DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
         `
       );
+
       response.redirect(
         303,
         `https://${application.configuration.hostname}/courses/${
