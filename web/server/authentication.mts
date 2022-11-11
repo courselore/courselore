@@ -40,6 +40,7 @@ export type ApplicationAuthentication = {
               | string
               | null;
           };
+
           invitations: {
             id: number;
             course: {
@@ -56,6 +57,7 @@ export type ApplicationAuthentication = {
             reference: string;
             courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
           }[];
+
           enrollments: {
             id: number;
             course: {
@@ -73,20 +75,25 @@ export type ApplicationAuthentication = {
             courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
           }[];
+
           administrationOptions: {
             latestVersion: string;
             userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
           };
+
           mayCreateCourses: boolean;
           passwordConfirmed: boolean;
         };
       };
+
       configuration: {
         argon2: argon2.Options & { raw?: false };
       };
+
       helpers: {
         Session: {
           maxAge: number;
+
           open({
             request,
             response,
@@ -105,6 +112,7 @@ export type ApplicationAuthentication = {
             >;
             userId: number;
           }): void;
+
           get({
             request,
             response,
@@ -121,6 +129,7 @@ export type ApplicationAuthentication = {
               Application["server"]["locals"]["ResponseLocals"]["Base"]
             >;
           }): number | undefined;
+
           close({
             request,
             response,
@@ -137,6 +146,7 @@ export type ApplicationAuthentication = {
               Application["server"]["locals"]["ResponseLocals"]["Base"]
             >;
           }): void;
+
           closeAllAndReopen({
             request,
             response,
@@ -156,6 +166,7 @@ export type ApplicationAuthentication = {
             userId: number;
           }): void;
         };
+
         emailVerification: ({
           request,
           response,

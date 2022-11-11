@@ -14,6 +14,7 @@ export type ApplicationBase = {
           html: ReturnType<typeof HTMLForJavaScript>;
         };
       };
+
       configuration: {
         cookies: express.CookieOptions;
       };

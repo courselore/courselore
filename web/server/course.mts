@@ -22,10 +22,12 @@ export type ApplicationCourse = {
           reference: string;
           courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         };
+
         MaybeEnrollment:
           | Application["server"]["locals"]["Types"]["Enrollment"]
           | "no-longer-enrolled";
       };
+
       ResponseLocals: {
         CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
           enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
@@ -40,6 +42,7 @@ export type ApplicationCourse = {
           }[];
         };
       };
+
       partials: {
         course({
           request,
@@ -63,6 +66,7 @@ export type ApplicationCourse = {
           enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
           tight?: boolean;
         }): HTML;
+
         courses({
           request,
           response,
@@ -87,6 +91,7 @@ export type ApplicationCourse = {
           >;
           tight?: boolean;
         }): HTML;
+
         courseArchived({
           request,
           response,
@@ -104,8 +109,10 @@ export type ApplicationCourse = {
           >;
         }): HTML;
       };
+
       helpers: {
         courseRoles: ["student", "staff"];
+
         enrollmentAccentColors: [
           "red",
           "yellow",

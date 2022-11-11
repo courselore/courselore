@@ -63,6 +63,7 @@ export type ApplicationMessage = {
               }[];
             }
           | undefined;
+
         mayEditMessage({
           request,
           response,
@@ -83,6 +84,7 @@ export type ApplicationMessage = {
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
         }): boolean;
+
         mayEndorseMessage({
           request,
           response,
@@ -106,6 +108,7 @@ export type ApplicationMessage = {
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
         }): boolean;
+
         emailNotifications({
           request,
           response,

@@ -42,6 +42,7 @@ export type ApplicationLayouts = {
           extraHeaders?: HTML;
           body: HTML;
         }): HTML;
+
         box({
           request,
           response,
@@ -68,6 +69,7 @@ export type ApplicationLayouts = {
           head: HTML;
           body: HTML;
         }): HTML;
+
         application({
           request,
           response,
@@ -98,6 +100,7 @@ export type ApplicationLayouts = {
           extraHeaders?: HTML;
           body: HTML;
         }): HTML;
+
         main({
           request,
           response,
@@ -126,6 +129,7 @@ export type ApplicationLayouts = {
           showCourseSwitcher?: boolean;
           body: HTML;
         }): HTML;
+
         settings({
           request,
           response,
@@ -150,6 +154,7 @@ export type ApplicationLayouts = {
           menu: HTML;
           body: HTML;
         }): HTML;
+
         partial({
           request,
           response,
@@ -169,8 +174,10 @@ export type ApplicationLayouts = {
           body: HTML;
         }): HTML;
       };
+
       partials: {
         logo(options?: { size?: number }): HTML;
+
         spinner({
           request,
           response,
@@ -189,11 +196,14 @@ export type ApplicationLayouts = {
           >;
           size?: number;
         }): HTML;
+
         reportIssueHref: string;
       };
+
       helpers: {
         Flash: {
           maxAge: number;
+
           set({
             request,
             response,
@@ -214,6 +224,7 @@ export type ApplicationLayouts = {
             theme: string;
             content: HTML;
           }): void;
+
           get({
             request,
             response,

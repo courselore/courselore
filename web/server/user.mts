@@ -28,6 +28,7 @@ export type ApplicationUser = {
           biographyPreprocessed: HTML | null;
         };
       };
+
       partials: {
         user({
           request,
@@ -72,6 +73,7 @@ export type ApplicationUser = {
           bold?: boolean;
         }): HTML;
       };
+
       helpers: {
         userAvatarlessBackgroundColors: [
           "red",
@@ -92,6 +94,7 @@ export type ApplicationUser = {
           "pink",
           "rose"
         ];
+
         userEmailNotificationsForAllMessageses: [
           "none",
           "instant",

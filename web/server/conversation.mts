@@ -23,6 +23,7 @@ export type ApplicationConversation = {
           >;
         };
       };
+
       layouts: {
         conversation({
           request,
@@ -72,6 +73,7 @@ export type ApplicationConversation = {
           body: HTML;
         }): HTML;
       };
+
       partials: {
         conversation({
           request,
@@ -124,9 +126,12 @@ export type ApplicationConversation = {
           >;
         }): HTML;
       };
+
       helpers: {
         conversationParticipantses: ["everyone", "staff", "selected-people"];
+
         conversationTypes: ["question", "note", "chat"];
+
         getConversation({
           request,
           response,

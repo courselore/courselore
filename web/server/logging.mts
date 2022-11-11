@@ -2,6 +2,7 @@ import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
   log(...messageParts: string[]): void;
+
   server: {
     locals: {
       ResponseLocals: {
