@@ -9594,7 +9594,12 @@ export default async (application: Application): Promise<void> => {
                   "conversation" = ${response.locals.conversation.id} AND
                   "reference" = '1' AND
                   "authorEnrollment" = ${
-                    response.locals.conversation.authorEnrollment.id
+                    response.locals.conversation.authorEnrollment ===
+                    "no-longer-enrolled"
+                      ? (() => {
+                          throw new Error();
+                        })()
+                      : response.locals.conversation.authorEnrollment.id
                   }
               `
             );
