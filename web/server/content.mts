@@ -29,82 +29,94 @@ import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import got from "got";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
-export type ContentPreprocessedPartial = (contentSource: string) => {
-  contentPreprocessed: string;
-  contentSearch: string;
+export type ApplicationContent = {
+  server: {
+    locals: {
+      partials: {
+        contentPreprocessed(contentSource: string): {
+          contentPreprocessed: string;
+          contentSearch: string;
+        };
+
+        content({
+          request,
+          response,
+          id,
+          contentPreprocessed,
+          decorate,
+          search,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            { conversations?: object },
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
+          >;
+          id?: string;
+          contentPreprocessed: HTML;
+          decorate?: boolean;
+          search?: string | string[] | undefined;
+        }): {
+          contentProcessed: HTML;
+          mentions: Set<string>;
+        };
+
+        contentEditor({
+          request,
+          response,
+          name,
+          contentSource,
+          required,
+          compact,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              > &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+              >
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              > &
+              Partial<
+                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+              >
+          >;
+          name?: string;
+          contentSource?: string;
+          required?: boolean;
+          compact?: boolean;
+        }): HTML;
+      };
+    };
+  };
 };
 
-export type ContentPartial = ({
-  request,
-  response,
-  id,
-  contentPreprocessed,
-  decorate,
-  search,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    { conversations?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      >
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      >
-  >;
-  id?: string;
-  contentPreprocessed: HTML;
-  decorate?: boolean;
-  search?: string | string[] | undefined;
-}) => {
-  contentProcessed: HTML;
-  mentions: Set<string>;
-};
-
-export type ContentEditorPartial = ({
-  request,
-  response,
-  name,
-  contentSource,
-  required,
-  compact,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      > &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      > &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
-  >;
-  name?: string;
-  contentSource?: string;
-  required?: boolean;
-  compact?: boolean;
-}) => HTML;
-
-export default async (app: Courselore): Promise<void> => {
-  app.server.locals.partials.contentPreprocessed = await (async () => {
+export default async (application: Application): Promise<void> => {
+  application.server.locals.partials.contentPreprocessed = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm, { singleTilde: false })
@@ -163,7 +175,7 @@ export default async (app: Courselore): Promise<void> => {
     };
   })();
 
-  app.server.locals.partials.content = ({
+  application.server.locals.partials.content = ({
     request,
     response,
     id = Math.random().toString(36).slice(2),
@@ -192,12 +204,12 @@ export default async (app: Courselore): Promise<void> => {
       if (
         !element
           .getAttribute("src")
-          ?.startsWith(`https://${app.configuration.hostname}`)
+          ?.startsWith(`https://${application.configuration.hostname}`)
       )
         element.setAttribute(
           "src",
           `https://${
-            app.configuration.hostname
+            application.configuration.hostname
           }/content/image-proxy${qs.stringify(
             { url: element.getAttribute("src") },
             { addQueryPrefix: true }
@@ -251,11 +263,11 @@ export default async (app: Courselore): Promise<void> => {
         element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
 
       const isExternal =
-        !href.startsWith(`https://${app.configuration.hostname}`) &&
+        !href.startsWith(`https://${application.configuration.hostname}`) &&
         !href.startsWith("#");
       if (
         isExternal ||
-        href.startsWith(`https://${app.configuration.hostname}/files/`)
+        href.startsWith(`https://${application.configuration.hostname}/files/`)
       )
         element.setAttribute("target", "_blank");
 
@@ -295,7 +307,7 @@ export default async (app: Courselore): Promise<void> => {
         const match = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              app.configuration.hostname
+              application.configuration.hostname
             )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
           )
         );
@@ -303,7 +315,7 @@ export default async (app: Courselore): Promise<void> => {
         const [courseReference, conversationReference, messageReference] =
           match.slice(1);
         if (courseReference !== response.locals.course.reference) continue;
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversationReference,
@@ -322,7 +334,7 @@ export default async (app: Courselore): Promise<void> => {
           element.textContent = `#${conversation.reference}`;
           continue;
         }
-        const message = app.server.locals.helpers.getMessage({
+        const message = application.server.locals.helpers.getMessage({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversation,
@@ -368,15 +380,17 @@ export default async (app: Courselore): Promise<void> => {
                   >`;
                   break;
                 case "anonymous":
-                  mentionHTML = html`@$${app.server.locals.partials.user({
-                    request,
-                    response,
-                    avatar: false,
-                  })}`;
+                  mentionHTML = html`@$${application.server.locals.partials.user(
+                    {
+                      request,
+                      response,
+                      avatar: false,
+                    }
+                  )}`;
                   break;
                 default:
                   const enrollmentReference = mention.split("--")[0];
-                  const enrollmentRow = app.database.get<{
+                  const enrollmentRow = application.database.get<{
                     id: number;
                     userId: number;
                     userLastSeenOnlineAt: string;
@@ -433,12 +447,14 @@ export default async (app: Courselore): Promise<void> => {
                     courseRole: enrollmentRow.courseRole,
                   };
                   mentions.add(enrollment.reference);
-                  mentionHTML = html`@$${app.server.locals.partials.user({
-                    request,
-                    response,
-                    enrollment,
-                    avatar: false,
-                  })}`;
+                  mentionHTML = html`@$${application.server.locals.partials.user(
+                    {
+                      request,
+                      response,
+                      enrollment,
+                      avatar: false,
+                    }
+                  )}`;
                   if (enrollment.user.id === response.locals.user!.id)
                     mentionHTML = html`<mark class="mark"
                       >$${mentionHTML}</mark
@@ -452,24 +468,25 @@ export default async (app: Courselore): Promise<void> => {
           newNodeHTML = newNodeHTML.replace(
             /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
             (match, conversationReference, messageReference) => {
-              const conversation = app.server.locals.helpers.getConversation({
-                request: requestCourseEnrolled,
-                response: responseCourseEnrolled,
-                conversationReference,
-              });
+              const conversation =
+                application.server.locals.helpers.getConversation({
+                  request: requestCourseEnrolled,
+                  response: responseCourseEnrolled,
+                  conversationReference,
+                });
               if (conversation === undefined) return match;
               if (messageReference === undefined)
                 return html`<a
                   class="reference"
-                  href="https://${app.configuration.hostname}/courses/${response
-                    .locals.course!
+                  href="https://${application.configuration
+                    .hostname}/courses/${response.locals.course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
                     { conversations: request.query.conversations },
                     { addQueryPrefix: true }
                   )}"
                   >${match}</a
                 >`;
-              const message = app.server.locals.helpers.getMessage({
+              const message = application.server.locals.helpers.getMessage({
                 request: requestCourseEnrolled,
                 response: responseCourseEnrolled,
                 conversation,
@@ -478,8 +495,8 @@ export default async (app: Courselore): Promise<void> => {
               if (message === undefined) return match;
               return html`<a
                 class="reference"
-                href="https://${app.configuration.hostname}/courses/${response
-                  .locals.course!
+                href="https://${application.configuration
+                  .hostname}/courses/${response.locals.course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
                   {
                     conversations: request.query.conversations,
@@ -502,7 +519,7 @@ export default async (app: Courselore): Promise<void> => {
         const hrefMatch = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              app.configuration.hostname
+              application.configuration.hostname
             )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
           )
         );
@@ -524,7 +541,7 @@ export default async (app: Courselore): Promise<void> => {
           hrefMessageReference !== textContentMessageReference
         )
           continue;
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversationReference: hrefConversationReference,
@@ -543,7 +560,7 @@ export default async (app: Courselore): Promise<void> => {
                         padding: var(--space--2);
                       `)}"
                     >
-                      $${app.server.locals.partials.conversation({
+                      $${application.server.locals.partials.conversation({
                         request: requestCourseEnrolled,
                         response: responseCourseEnrolled,
                         conversation,
@@ -556,7 +573,7 @@ export default async (app: Courselore): Promise<void> => {
           );
           continue;
         }
-        const message = app.server.locals.helpers.getMessage({
+        const message = application.server.locals.helpers.getMessage({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversation,
@@ -578,7 +595,7 @@ export default async (app: Courselore): Promise<void> => {
                       gap: var(--space--2);
                     `)}"
                   >
-                    $${app.server.locals.partials.conversation({
+                    $${application.server.locals.partials.conversation({
                       request: requestCourseEnrolled,
                       response: responseCourseEnrolled,
                       conversation,
@@ -603,7 +620,7 @@ export default async (app: Courselore): Promise<void> => {
           if (node.textContent === null || parentElement === null) return;
           parentElement.replaceChild(
             JSDOM.fragment(
-              app.server.locals.helpers.highlightSearchResult(
+              application.server.locals.helpers.highlightSearchResult(
                 html`${node.textContent}`,
                 search
               )
@@ -616,7 +633,7 @@ export default async (app: Courselore): Promise<void> => {
     return { contentProcessed: contentElement.outerHTML, mentions };
   };
 
-  app.server.get<{}, any, {}, { url?: string }, {}>(
+  application.server.get<{}, any, {}, { url?: string }, {}>(
     "/content/image-proxy",
     asyncHandler(async (request, response) => {
       if (
@@ -647,7 +664,7 @@ export default async (app: Courselore): Promise<void> => {
     })
   );
 
-  app.server.locals.partials.contentEditor = ({
+  application.server.locals.partials.contentEditor = ({
     request,
     response,
     name = "content",
@@ -746,7 +763,7 @@ export default async (app: Courselore): Promise<void> => {
                         preview,
                         await (
                           await fetch(${JSON.stringify(
-                            `https://${app.configuration.hostname}${
+                            `https://${application.configuration.hostname}${
                               response.locals.course === undefined
                                 ? ""
                                 : `/courses/${response.locals.course.reference}`
@@ -1793,7 +1810,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
-                      `https://${app.configuration.hostname}/content-editor/attachments`
+                      `https://${application.configuration.hostname}/content-editor/attachments`
                     )}, {
                       cache: "no-store",
                       method: "POST",
@@ -1837,7 +1854,7 @@ export default async (app: Courselore): Promise<void> => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.server.locals.partials.spinner({
+                          $${application.server.locals.partials.spinner({
                             request,
                             response,
                           })}
@@ -2075,9 +2092,9 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `https://${app.configuration.hostname}/courses/${
-                                response.locals.course.reference
-                              }/${
+                              `https://${
+                                application.configuration.hostname
+                              }/courses/${response.locals.course.reference}/${
                                 response.locals.conversation !== undefined
                                   ? `conversations/${response.locals.conversation.reference}/`
                                   : ``
@@ -2088,7 +2105,7 @@ export default async (app: Courselore): Promise<void> => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `https://${app.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
@@ -2216,7 +2233,10 @@ ${contentSource}</textarea
                   gap: var(--space--2);
                 `)}"
               >
-                $${app.server.locals.partials.spinner({ request, response })}
+                $${application.server.locals.partials.spinner({
+                  request,
+                  response,
+                })}
                 Loading…
               </div>
 
@@ -2253,7 +2273,7 @@ ${contentSource}</textarea
       )
         return next("Validation");
 
-      const enrollments = app.database
+      const enrollments = application.database
         .all<{
           id: number;
           userId: number;
@@ -2291,7 +2311,7 @@ ${contentSource}</textarea
               "users"."id" != ${response.locals.user.id}
             JOIN "usersNameSearchIndex" ON
               "users"."id" = "usersNameSearchIndex"."rowid" AND
-              "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+              "usersNameSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
                 request.query.search,
                 { prefix: true }
               )}
@@ -2344,7 +2364,7 @@ ${contentSource}</textarea
         }));
 
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -2370,7 +2390,7 @@ ${contentSource}</textarea
                         };
                     `}"
                     >
-                      $${app.server.locals.partials.user({
+                      $${application.server.locals.partials.user({
                         request,
                         response,
                         enrollment,
@@ -2387,7 +2407,7 @@ ${contentSource}</textarea
       );
     };
 
-    app.server.get<
+    application.server.get<
       { courseReference: string },
       any,
       {},
@@ -2395,7 +2415,7 @@ ${contentSource}</textarea
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >("/courses/:courseReference/content-editor/mention-user-search", handler);
 
-    app.server.get<
+    application.server.get<
       { courseReference: string; conversationReference: string },
       any,
       {},
@@ -2407,7 +2427,7 @@ ${contentSource}</textarea
     );
   })();
 
-  app.server.get<
+  application.server.get<
     { courseReference: string },
     any,
     {},
@@ -2427,7 +2447,7 @@ ${contentSource}</textarea
       let results = html``;
 
       if (request.query.search.match(/^\d+$/) !== null)
-        for (const conversationRow of app.database.all<{
+        for (const conversationRow of application.database.all<{
           reference: string;
         }>(
           sql`
@@ -2435,7 +2455,7 @@ ${contentSource}</textarea
             FROM "conversations"
             JOIN "conversationsReferenceIndex" ON
               "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-              "conversationsReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+              "conversationsReferenceIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
                 request.query.search,
                 { prefix: true }
               )}
@@ -2444,11 +2464,12 @@ ${contentSource}</textarea
             LIMIT 5
           `
         )) {
-          const conversation = app.server.locals.helpers.getConversation({
-            request,
-            response,
-            conversationReference: conversationRow.reference,
-          });
+          const conversation =
+            application.server.locals.helpers.getConversation({
+              request,
+              response,
+              conversationReference: conversationRow.reference,
+            });
           if (conversation === undefined) continue;
           results += html`
             <button
@@ -2465,7 +2486,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${app.server.locals.helpers.highlightSearchResult(
+                  $${application.server.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${request.query.search}`,
                     { prefix: true }
@@ -2482,13 +2503,13 @@ ${contentSource}</textarea
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request,
           response,
           conversationReference,
         });
         if (conversation !== undefined) {
-          for (const messageRow of app.database.all<{
+          for (const messageRow of application.database.all<{
             reference: string;
           }>(
             sql`
@@ -2500,7 +2521,7 @@ ${contentSource}</textarea
                   : sql`
                       JOIN "messagesReferenceIndex" ON
                         "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                        "messagesReferenceIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+                        "messagesReferenceIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
                           messageReferenceSearch,
                           { prefix: true }
                         )}
@@ -2511,7 +2532,7 @@ ${contentSource}</textarea
               LIMIT 5
             `
           )) {
-            const message = app.server.locals.helpers.getMessage({
+            const message = application.server.locals.helpers.getMessage({
               request,
               response,
               conversation,
@@ -2534,7 +2555,7 @@ ${contentSource}</textarea
                 <div>
                   <div>
                     <span class="secondary">
-                      $${app.server.locals.helpers.highlightSearchResult(
+                      $${application.server.locals.helpers.highlightSearchResult(
                         `#${conversation.reference}/${message.reference}`,
                         `#${request.query.search}`,
                         { prefix: true }
@@ -2566,7 +2587,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${app.server.locals.helpers.highlightSearchResult(
+                  $${application.server.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${conversationReference}`
                   )}
@@ -2578,7 +2599,7 @@ ${contentSource}</textarea
         }
       }
 
-      for (const conversationRow of app.database.all<{
+      for (const conversationRow of application.database.all<{
         reference: string;
         conversationTitleSearchResultHighlight: string;
       }>(
@@ -2589,7 +2610,7 @@ ${contentSource}</textarea
           FROM "conversations"
           JOIN "conversationsTitleSearchIndex" ON
             "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-            "conversationsTitleSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+            "conversationsTitleSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -2600,7 +2621,7 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request,
           response,
           conversationReference: conversationRow.reference,
@@ -2629,7 +2650,7 @@ ${contentSource}</textarea
         `;
       }
 
-      for (const messageRow of app.database.all<{
+      for (const messageRow of application.database.all<{
         messageReference: string;
         conversationReference: string;
         messageAuthorUserNameSearchResultHighlight: string;
@@ -2643,7 +2664,7 @@ ${contentSource}</textarea
           JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
           JOIN "usersNameSearchIndex" ON
             "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-            "usersNameSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+            "usersNameSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -2666,13 +2687,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request,
           response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = app.server.locals.helpers.getMessage({
+        const message = application.server.locals.helpers.getMessage({
           request,
           response,
           conversation,
@@ -2701,7 +2722,7 @@ ${contentSource}</textarea
               </div>
               <div class="secondary">
                 <div>
-                  $${app.server.locals.partials.user({
+                  $${application.server.locals.partials.user({
                     request,
                     response,
                     enrollment: message.authorEnrollment,
@@ -2721,7 +2742,7 @@ ${contentSource}</textarea
         `;
       }
 
-      for (const messageRow of app.database.all<{
+      for (const messageRow of application.database.all<{
         messageReference: string;
         conversationReference: string;
         messageContentSearchResultSnippet: string;
@@ -2734,7 +2755,7 @@ ${contentSource}</textarea
           FROM "messages"
           JOIN "messagesContentSearchIndex" ON
             "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-            "messagesContentSearchIndex" MATCH ${app.server.locals.helpers.sanitizeSearch(
+            "messagesContentSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -2747,13 +2768,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = app.server.locals.helpers.getConversation({
+        const conversation = application.server.locals.helpers.getConversation({
           request,
           response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = app.server.locals.helpers.getMessage({
+        const message = application.server.locals.helpers.getMessage({
           request,
           response,
           conversation,
@@ -2789,7 +2810,7 @@ ${contentSource}</textarea
       }
 
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -2806,7 +2827,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.server.post<
+  application.server.post<
     {},
     any,
     {},
@@ -2814,7 +2835,7 @@ ${contentSource}</textarea
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/content-editor/attachments",
-    ...app.server.locals.middlewares.isSignedIn,
+    ...application.server.locals.middlewares.isSignedIn,
     asyncHandler(async (request, response, next) => {
       if (request.files?.attachments === undefined) return next("Validation");
       const attachments = Array.isArray(request.files.attachments)
@@ -2839,12 +2860,12 @@ ${contentSource}</textarea
         });
         await attachment.mv(
           path.join(
-            app.configuration.dataDirectory,
+            application.configuration.dataDirectory,
             `files/${directory}/${attachment.name}`
           )
         );
         const href = `https://${
-          app.configuration.hostname
+          application.configuration.hostname
         }/files/${directory}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
@@ -2872,12 +2893,12 @@ ${contentSource}</textarea
               .resize({ width: maximumWidth })
               .toFile(
                 path.join(
-                  app.configuration.dataDirectory,
+                  application.configuration.dataDirectory,
                   `files/${directory}/${nameThumbnail}`
                 )
               );
             attachmentsContentSources += `[<img src="https://${
-              app.configuration.hostname
+              application.configuration.hostname
             }/files/${directory}/${encodeURIComponent(nameThumbnail)}" alt="${
               attachment.name
             }" width="${maximumWidth / 2}" />](${href})\n\n`;
@@ -2909,22 +2930,23 @@ ${contentSource}</textarea
       )
         return next("Validation");
       response.send(
-        app.server.locals.layouts.partial({
+        application.server.locals.layouts.partial({
           request,
           response,
-          body: app.server.locals.partials.content({
+          body: application.server.locals.partials.content({
             request,
             response,
-            contentPreprocessed: app.server.locals.partials.contentPreprocessed(
-              request.body.content
-            ).contentPreprocessed,
+            contentPreprocessed:
+              application.server.locals.partials.contentPreprocessed(
+                request.body.content
+              ).contentPreprocessed,
             decorate: true,
           }).contentProcessed,
         })
       );
     };
 
-    app.server.post<
+    application.server.post<
       { courseReference: string },
       any,
       { content?: string },
@@ -2932,7 +2954,7 @@ ${contentSource}</textarea
       Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >("/courses/:courseReference/content-editor/preview", handler);
 
-    app.server.post<
+    application.server.post<
       {},
       any,
       { content?: string },
@@ -2940,11 +2962,11 @@ ${contentSource}</textarea
       Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
     >(
       "/content-editor/preview",
-      ...app.server.locals.middlewares.isSignedIn,
+      ...application.server.locals.middlewares.isSignedIn,
       handler
     );
 
-    app.server.post<
+    application.server.post<
       {},
       any,
       { content?: string },
@@ -2952,7 +2974,7 @@ ${contentSource}</textarea
       Application["server"]["locals"]["ResponseLocals"]["Base"]
     >(
       "/content-editor/preview",
-      ...app.server.locals.middlewares.isSignedOut,
+      ...application.server.locals.middlewares.isSignedOut,
       handler
     );
   })();
