@@ -9774,9 +9774,26 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       application.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
+
       application.server.locals.helpers.Flash.set({
         request,
         response,
@@ -9795,7 +9812,19 @@ export default async (application: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      application.server.locals.helpers.liveUpdates({ request, response });
+
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -9819,6 +9848,22 @@ export default async (application: Application): Promise<void> => {
         !mayEditConversation({ request, response })
       )
         return next();
+
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       if (
         typeof request.body.reference !== "string" ||
@@ -9881,6 +9926,22 @@ export default async (application: Application): Promise<void> => {
         !mayEditConversation({ request, response })
       )
         return next();
+
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       if (
         (response.locals.conversation.taggings.length === 1 &&
