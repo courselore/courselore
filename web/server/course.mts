@@ -3448,6 +3448,7 @@ export default async (application: Application): Promise<void> => {
         name: invitation.name,
         courseRole: invitation.courseRole,
       };
+
       next();
     }
   );
@@ -4447,64 +4448,20 @@ export default async (application: Application): Promise<void> => {
       ResponseLocalsInvitation
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    (request, response, next) => {
-      if (response.locals.invitation === undefined) {
-        // TODO: Error message saying invitation doesn’t exist.
-      }
-
-      if (response.locals.course !== undefined) {
-        // TODO: You’re already enrolled.
-      }
-
-      // TODO: isInvitationUsableMiddleware
-    }
-  );
-
-  const isInvitationUsableMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    { redirect?: string },
-    IsInvitationUsableLocals
-  >[] = [
-    ...invitationExistsMiddleware,
     asyncHandler(async (request, response, next) => {
-      if (
-        response.locals.invitation.email !== null &&
-        response.locals.user !== undefined &&
-        response.locals.invitation.email.toLowerCase() !==
-          response.locals.user.email.toLowerCase()
-      )
+      if (response.locals.invitation === undefined)
         return response.send(
           application.server.locals.layouts.box({
             request,
             response,
-            head: html`
-              <title>
-                Invitation · ${response.locals.invitation.course.name} ·
-                Courselore
-              </title>
-            `,
+            head: html` <title>Invitation · Courselore</title> `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${application.server.locals.partials.course({
-                request,
-                response,
-                course: response.locals.invitation.course,
-              })}
-              <hr class="separator" />
-              <p class="strong">
-                This invitation is for another email address.
-              </p>
-              <p>
-                You’re signed in with the email address
-                <code class="code">${response.locals.user.email}</code>, and
-                this invitation is for the email address
-                <code class="code">${response.locals.invitation.email}</code>.
-              </p>
+
+              <p>Invitation not found. Please contact your course staff.</p>
             `,
           })
         );
@@ -4531,7 +4488,10 @@ export default async (application: Application): Promise<void> => {
                 course: response.locals.invitation.course,
               })}
               <hr class="separator" />
-              <p class="strong">This invitation has already been used.</p>
+              <p class="strong">
+                This invitation has already been used. Please contact your
+                course staff.
+              </p>
             `,
           })
         );
@@ -4569,7 +4529,148 @@ export default async (application: Application): Promise<void> => {
           })
         );
 
-      if (response.locals.enrollment !== undefined)
+      if (response.locals.user === undefined)
+        return response.send(
+          application.server.locals.layouts.box({
+            request,
+            response,
+            head: html`
+              <title>
+                Invitation · ${response.locals.invitation.course.name} ·
+                Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-journal-arrow-down"></i>
+                Invitation
+              </h2>
+              $${application.server.locals.partials.course({
+                request,
+                response,
+                course: response.locals.invitation.course,
+              })}
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                  gap: var(--space--4);
+                  & > * {
+                    flex: 1;
+                  }
+                `)}"
+              >
+                $${(() => {
+                  let buttons = html``;
+
+                  const hasInvitationEmail =
+                    response.locals.invitation.email !== null;
+                  const invitationUserExists =
+                    hasInvitationEmail &&
+                    application.database.get<{}>(
+                      sql`
+                        SELECT TRUE
+                        FROM "users"
+                        WHERE "email" = ${response.locals.invitation.email}
+                      `
+                    ) !== undefined;
+
+                  if (!invitationUserExists)
+                    buttons += html`
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/sign-up${qs.stringify(
+                          {
+                            redirect: request.originalUrl.slice(1),
+                            invitation: {
+                              email:
+                                response.locals.invitation.email ?? undefined,
+                              name:
+                                response.locals.invitation.name ?? undefined,
+                            },
+                          },
+                          { addQueryPrefix: true }
+                        )}"
+                        class="button button--blue"
+                      >
+                        <i class="bi bi-person-plus-fill"></i>
+                        Sign up
+                      </a>
+                    `;
+
+                  if (!(hasInvitationEmail && !invitationUserExists))
+                    buttons += html`
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/sign-in${qs.stringify(
+                          {
+                            redirect: request.originalUrl.slice(1),
+                            invitation: {
+                              email:
+                                response.locals.invitation.email ?? undefined,
+                              name:
+                                response.locals.invitation.name ?? undefined,
+                            },
+                          },
+                          { addQueryPrefix: true }
+                        )}"
+                        class="button ${invitationUserExists
+                          ? "button--blue"
+                          : "button--transparent"}"
+                      >
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign in
+                      </a>
+                    `;
+
+                  return buttons;
+                })()}
+              </div>
+            `,
+          })
+        );
+
+      if (response.locals.user.emailVerifiedAt === null) return next();
+
+      if (
+        response.locals.invitation.email !== null &&
+        response.locals.invitation.email.toLowerCase() !==
+          response.locals.user.email.toLowerCase()
+      )
+        return response.send(
+          application.server.locals.layouts.box({
+            request,
+            response,
+            head: html`
+              <title>
+                Invitation · ${response.locals.invitation.course.name} ·
+                Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-journal-arrow-down"></i>
+                Invitation
+              </h2>
+              $${application.server.locals.partials.course({
+                request,
+                response,
+                course: response.locals.invitation.course,
+              })}
+              <hr class="separator" />
+              <p class="strong">
+                This invitation is for another email address.
+              </p>
+              <p>
+                You’re signed in with the email address
+                <code class="code">${response.locals.user.email}</code>, and
+                this invitation is for the email address
+                <code class="code">${response.locals.invitation.email}</code>.
+              </p>
+            `,
+          })
+        );
+
+      if (response.locals.course !== undefined)
         if (typeof request.query.redirect === "string")
           return response.redirect(
             303,
@@ -4689,40 +4790,6 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-      next();
-    }),
-  ];
-
-  application.server.get<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {},
-    { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      IsInvitationUsableLocals
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    ...isInvitationUsableMiddleware
-  );
-
-  application.server.get<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {},
-    { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-      IsInvitationUsableLocals
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsableMiddleware,
-    (request, response, next) => {
-      if (
-        response.locals.user === undefined ||
-        response.locals.user.emailVerifiedAt === null
-      )
-        return next();
-
       response.send(
         application.server.locals.layouts.box({
           request,
@@ -4767,20 +4834,7 @@ export default async (application: Application): Promise<void> => {
           `,
         })
       );
-    }
-  );
-
-  application.server.post<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {},
-    { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      IsInvitationUsableLocals
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...application.server.locals.middlewares.isEnrolledInCourse,
-    ...isInvitationUsableMiddleware
+    })
   );
 
   application.server.post<
@@ -4789,14 +4843,18 @@ export default async (application: Application): Promise<void> => {
     {},
     { redirect?: string },
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
-      IsInvitationUsableLocals
+      Partial<
+        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      > &
+      ResponseLocalsInvitation
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsableMiddleware,
     (request, response, next) => {
       if (
         response.locals.user === undefined ||
-        response.locals.user.emailVerifiedAt === null
+        response.locals.user.emailVerifiedAt === null ||
+        response.locals.invitation === undefined ||
+        response.locals.course !== undefined
       )
         return next();
 
@@ -4831,144 +4889,6 @@ export default async (application: Application): Promise<void> => {
             ? request.query.redirect
             : ""
         }`
-      );
-    }
-  );
-
-  application.server.get<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
-      IsInvitationUsableLocals
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...application.server.locals.middlewares.isSignedOut,
-    ...isInvitationUsableMiddleware,
-    (request, response) => {
-      response.send(
-        application.server.locals.layouts.box({
-          request,
-          response,
-          head: html`
-            <title>
-              Invitation · ${response.locals.invitation.course.name} ·
-              Courselore
-            </title>
-          `,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-journal-arrow-down"></i>
-              Invitation
-            </h2>
-            $${application.server.locals.partials.course({
-              request,
-              response,
-              course: response.locals.invitation.course,
-            })}
-            <div
-              css="${response.locals.css(css`
-                display: flex;
-                gap: var(--space--4);
-                & > * {
-                  flex: 1;
-                }
-              `)}"
-            >
-              $${(() => {
-                let buttons = html``;
-
-                const hasInvitationEmail =
-                  response.locals.invitation.email !== null;
-                const invitationUserExists =
-                  hasInvitationEmail &&
-                  application.database.get<{}>(
-                    sql`
-                      SELECT TRUE
-                      FROM "users"
-                      WHERE "email" = ${response.locals.invitation.email}
-                    `
-                  ) !== undefined;
-
-                if (!hasInvitationEmail || !invitationUserExists)
-                  buttons += html`
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/sign-up${qs.stringify(
-                        {
-                          redirect: request.originalUrl.slice(1),
-                          invitation: {
-                            email:
-                              response.locals.invitation.email ?? undefined,
-                            name: response.locals.invitation.name ?? undefined,
-                          },
-                        },
-                        { addQueryPrefix: true }
-                      )}"
-                      class="button button--blue"
-                    >
-                      <i class="bi bi-person-plus-fill"></i>
-                      Sign up
-                    </a>
-                  `;
-
-                if (!hasInvitationEmail || invitationUserExists)
-                  buttons += html`
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/sign-in${qs.stringify(
-                        {
-                          redirect: request.originalUrl.slice(1),
-                          invitation: {
-                            email:
-                              response.locals.invitation.email ?? undefined,
-                            name: response.locals.invitation.name ?? undefined,
-                          },
-                        },
-                        { addQueryPrefix: true }
-                      )}"
-                      class="button ${invitationUserExists
-                        ? "button--blue"
-                        : "button--transparent"}"
-                    >
-                      <i class="bi bi-box-arrow-in-right"></i>
-                      Sign in
-                    </a>
-                  `;
-
-                return buttons;
-              })()}
-            </div>
-          `,
-        })
-      );
-    }
-  );
-
-  application.server.get<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    (request, response) => {
-      response.send(
-        application.server.locals.layouts.box({
-          request,
-          response,
-          head: html` <title>Invitation · Courselore</title> `,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-journal-arrow-down"></i>
-              Invitation
-            </h2>
-
-            <p>Invitation not found. Please contact your course staff.</p>
-          `,
-        })
       );
     }
   );
