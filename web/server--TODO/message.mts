@@ -537,12 +537,17 @@ export default async (app: Courselore): Promise<void> => {
     HTML,
     {},
     {},
-    IsCourseStaffLocals & MessageExistsLocals
+    MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
-    ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
-    (request, response) => {
+    (request, response, next) => {
+      if (
+        response.locals.message === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
       response.send(
         app.server.locals.layouts.partial({
           request,
@@ -929,12 +934,17 @@ export default async (app: Courselore): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsCourseStaffLocals & MessageExistsLocals
+    MessageExistsLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...app.server.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.message === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
       app.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`
       );

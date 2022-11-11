@@ -9454,90 +9454,107 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (typeof request.body.participants === "string") {
-        request.body.selectedParticipantsReferences ??= [];
-        if (
-          !application.server.locals.helpers.conversationParticipantses.includes(
-            request.body.participants
-          ) ||
-          !Array.isArray(request.body.selectedParticipantsReferences) ||
-          (request.body.participants === "everyone" &&
-            request.body.selectedParticipantsReferences.length > 0) ||
-          (request.body.participants === "selected-people" &&
-            request.body.selectedParticipantsReferences.length === 0) ||
-          request.body.selectedParticipantsReferences.some(
-            (selectedParticipantReference) =>
-              typeof selectedParticipantReference !== "string"
-          ) ||
-          request.body.selectedParticipantsReferences.length !==
-            new Set(request.body.selectedParticipantsReferences).size
-        )
-          return next("Validation");
-
-        if (
-          (request.body.participants === "staff" &&
-            response.locals.enrollment.courseRole !== "staff") ||
-          request.body.participants === "selected-people"
-        )
-          request.body.selectedParticipantsReferences.push(
-            response.locals.enrollment.reference
-          );
-        const selectedParticipants =
-          request.body.selectedParticipantsReferences.length === 0
-            ? []
-            : application.database.all<{
-                id: number;
-                courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-              }>(
-                sql`
-                  SELECT "id", "courseRole"
-                  FROM "enrollments"
-                  WHERE
-                    "enrollments"."course" = ${response.locals.course.id} AND
-                    "reference" IN ${request.body.selectedParticipantsReferences}
-                `
-              );
-
-        if (
-          request.body.selectedParticipantsReferences.length !==
-            selectedParticipants.length ||
-          (request.body.participants === "staff" &&
-            selectedParticipants.some(
-              (selectedParticipant) =>
-                selectedParticipant.courseRole === "staff"
-            ))
-        )
-          return next("Validation");
-
-        application.database.run(
-          sql`
-            UPDATE "conversations"
-            SET "participants" = ${request.body.participants}
-            WHERE "id" = ${response.locals.conversation.id}
-          `
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
         );
-        application.database.run(
-          sql`
-            DELETE FROM "conversationSelectedParticipants"
-            WHERE
-              "conversation" = ${response.locals.conversation.id} AND
-              "enrollment" NOT IN ${selectedParticipants.map(
-                (selectedParticipant) => selectedParticipant.id
-              )}
-          `
-        );
-        for (const selectedParticipant of selectedParticipants)
+      }
+
+      if (typeof request.body.participants === "string")
+        application.database.executeTransaction(() => {
+          request.body.selectedParticipantsReferences ??= [];
+          if (
+            !application.server.locals.helpers.conversationParticipantses.includes(
+              request.body.participants!
+            ) ||
+            !Array.isArray(request.body.selectedParticipantsReferences) ||
+            (request.body.participants === "everyone" &&
+              request.body.selectedParticipantsReferences.length > 0) ||
+            (request.body.participants === "selected-people" &&
+              request.body.selectedParticipantsReferences.length === 0) ||
+            request.body.selectedParticipantsReferences.some(
+              (selectedParticipantReference) =>
+                typeof selectedParticipantReference !== "string"
+            ) ||
+            request.body.selectedParticipantsReferences.length !==
+              new Set(request.body.selectedParticipantsReferences).size
+          )
+            return next("Validation");
+
+          if (
+            (request.body.participants === "staff" &&
+              response.locals.enrollment.courseRole !== "staff") ||
+            request.body.participants === "selected-people"
+          )
+            request.body.selectedParticipantsReferences.push(
+              response.locals.enrollment.reference
+            );
+          const selectedParticipants =
+            request.body.selectedParticipantsReferences.length === 0
+              ? []
+              : application.database.all<{
+                  id: number;
+                  courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                }>(
+                  sql`
+                    SELECT "id", "courseRole"
+                    FROM "enrollments"
+                    WHERE
+                      "enrollments"."course" = ${response.locals.course.id} AND
+                      "reference" IN ${request.body.selectedParticipantsReferences}
+                  `
+                );
+
+          if (
+            request.body.selectedParticipantsReferences.length !==
+              selectedParticipants.length ||
+            (request.body.participants === "staff" &&
+              selectedParticipants.some(
+                (selectedParticipant) =>
+                  selectedParticipant.courseRole === "staff"
+              ))
+          )
+            return next("Validation");
+
           application.database.run(
             sql`
-              INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
-              VALUES (
-                ${new Date().toISOString()},
-                ${response.locals.conversation.id},
-                ${selectedParticipant.id}
-              )
+              UPDATE "conversations"
+              SET "participants" = ${request.body.participants}
+              WHERE "id" = ${response.locals.conversation.id}
             `
           );
-      }
+          application.database.run(
+            sql`
+              DELETE FROM "conversationSelectedParticipants"
+              WHERE
+                "conversation" = ${response.locals.conversation.id} AND
+                "enrollment" NOT IN ${selectedParticipants.map(
+                  (selectedParticipant) => selectedParticipant.id
+                )}
+            `
+          );
+          for (const selectedParticipant of selectedParticipants)
+            application.database.run(
+              sql`
+                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${response.locals.conversation.id},
+                  ${selectedParticipant.id}
+                )
+              `
+            );
+        });
 
       if (typeof request.body.isAnonymous === "string")
         if (
@@ -9552,35 +9569,36 @@ export default async (application: Application): Promise<void> => {
             response.locals.conversation.anonymousAt === null)
         )
           return next("Validation");
-        else {
-          application.database.run(
-            sql`
-              UPDATE "conversations"
-              SET "anonymousAt" = ${
-                request.body.isAnonymous === "true"
-                  ? new Date().toISOString()
-                  : null
-              }
-              WHERE "id" = ${response.locals.conversation.id}
-            `
-          );
-          application.database.run(
-            sql`
-              UPDATE "messages"
-              SET "anonymousAt" = ${
-                request.body.isAnonymous === "true"
-                  ? new Date().toISOString()
-                  : null
-              }
-              WHERE
-                "conversation" = ${response.locals.conversation.id} AND
-                "reference" = '1' AND
-                "authorEnrollment" = ${
-                  response.locals.conversation.authorEnrollment.id
+        else
+          application.database.executeTransaction(() => {
+            application.database.run(
+              sql`
+                UPDATE "conversations"
+                SET "anonymousAt" = ${
+                  request.body.isAnonymous === "true"
+                    ? new Date().toISOString()
+                    : null
                 }
-            `
-          );
-        }
+                WHERE "id" = ${response.locals.conversation.id}
+              `
+            );
+            application.database.run(
+              sql`
+                UPDATE "messages"
+                SET "anonymousAt" = ${
+                  request.body.isAnonymous === "true"
+                    ? new Date().toISOString()
+                    : null
+                }
+                WHERE
+                  "conversation" = ${response.locals.conversation.id} AND
+                  "reference" = '1' AND
+                  "authorEnrollment" = ${
+                    response.locals.conversation.authorEnrollment.id
+                  }
+              `
+            );
+          });
 
       if (typeof request.body.type === "string")
         if (
@@ -9723,7 +9741,18 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -9735,13 +9764,15 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    IsCourseStaffLocals &
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...application.server.locals.middlewares.isCourseStaff,
     (request, response, next) => {
-      if (response.locals.conversation === undefined) return next();
+      if (
+        response.locals.conversation === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
 
       application.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
