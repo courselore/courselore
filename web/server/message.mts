@@ -5,6 +5,7 @@ import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
+import { got } from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationMessage = {
@@ -601,6 +602,22 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (response.locals.conversation === undefined) return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (
         ![undefined, "on"].includes(request.body.isAnswer) ||
         (request.body.isAnswer === "on" &&
@@ -636,110 +653,118 @@ export default async (application: Application): Promise<void> => {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${request.body.content}`;
         const contentPreprocessed =
           application.server.locals.partials.contentPreprocessed(contentSource);
-        application.database.run(
-          sql`
-            UPDATE "conversations"
-            SET "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${response.locals.conversation.id}
-          `
-        );
-        message = application.database.get<{ id: number; reference: string }>(
-          sql`
-            UPDATE "messages"
-            SET
-              "contentSource" = ${contentSource},
-              "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
-              "contentSearch" = ${contentPreprocessed.contentSearch}
-            WHERE "id" = ${mostRecentMessage.id}
-            RETURNING *
-          `
-        )!;
-        application.database.run(
-          sql`
-            DELETE FROM "readings"
-            WHERE
-              "message" = ${mostRecentMessage.id} AND
-              "enrollment" != ${response.locals.enrollment.id}
-          `
-        );
+
+        application.database.executeTransaction(() => {
+          application.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${response.locals.conversation.id}
+            `
+          );
+          message = application.database.get<{ id: number; reference: string }>(
+            sql`
+              UPDATE "messages"
+              SET
+                "contentSource" = ${contentSource},
+                "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
+                "contentSearch" = ${contentPreprocessed.contentSearch}
+              WHERE "id" = ${mostRecentMessage.id}
+              RETURNING *
+            `
+          )!;
+          application.database.run(
+            sql`
+              DELETE FROM "readings"
+              WHERE
+                "message" = ${mostRecentMessage.id} AND
+                "enrollment" != ${response.locals.enrollment.id}
+            `
+          );
+        });
       } else {
         const contentPreprocessed =
           application.server.locals.partials.contentPreprocessed(
             request.body.content
           );
-        application.database.run(
-          sql`
-            UPDATE "conversations"
-            SET
-              "updatedAt" = ${new Date().toISOString()},
-              "nextMessageReference" = ${
-                response.locals.conversation.nextMessageReference + 1
-              }
-              $${
-                response.locals.conversation.type === "question" &&
-                response.locals.enrollment.courseRole === "staff" &&
-                request.body.isAnswer === "on" &&
-                response.locals.conversation.resolvedAt === null
-                  ? sql`,
-                      "resolvedAt" = ${new Date().toISOString()}
-                    `
-                  : response.locals.conversation.type === "question" &&
-                    response.locals.enrollment.courseRole === "student" &&
-                    request.body.isAnswer !== "on"
-                  ? sql`,
-                      "resolvedAt" = ${null}
-                    `
-                  : sql``
-              }
-            WHERE "id" = ${response.locals.conversation.id}
-          `
-        );
-        message = application.database.get<{
-          id: number;
-          reference: string;
-        }>(
-          sql`
-            INSERT INTO "messages" (
-              "createdAt",
-              "conversation",
-              "reference",
-              "authorEnrollment",
-              "anonymousAt",
-              "answerAt",
-              "contentSource",
-              "contentPreprocessed",
-              "contentSearch"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${response.locals.conversation.id},
-              ${String(response.locals.conversation.nextMessageReference)},
-              ${response.locals.enrollment.id},
-              ${
-                request.body.isAnonymous === "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                request.body.isAnswer === "on" ? new Date().toISOString() : null
-              },
-              ${request.body.content},
-              ${contentPreprocessed.contentPreprocessed},
-              ${contentPreprocessed.contentSearch}
-            )
-            RETURNING *
-          `
-        )!;
-        application.database.run(
-          sql`
-            INSERT INTO "readings" ("createdAt", "message", "enrollment")
-            VALUES (
-              ${new Date().toISOString()},
-              ${message.id},
-              ${response.locals.enrollment.id}
-            )
-          `
-        );
+
+        application.database.executeTransaction(() => {
+          application.database.run(
+            sql`
+              UPDATE "conversations"
+              SET
+                "updatedAt" = ${new Date().toISOString()},
+                "nextMessageReference" = ${
+                  response.locals.conversation.nextMessageReference + 1
+                }
+                $${
+                  response.locals.conversation.type === "question" &&
+                  response.locals.enrollment.courseRole === "staff" &&
+                  request.body.isAnswer === "on" &&
+                  response.locals.conversation.resolvedAt === null
+                    ? sql`,
+                        "resolvedAt" = ${new Date().toISOString()}
+                      `
+                    : response.locals.conversation.type === "question" &&
+                      response.locals.enrollment.courseRole === "student" &&
+                      request.body.isAnswer !== "on"
+                    ? sql`,
+                        "resolvedAt" = ${null}
+                      `
+                    : sql``
+                }
+              WHERE "id" = ${response.locals.conversation.id}
+            `
+          );
+          message = application.database.get<{
+            id: number;
+            reference: string;
+          }>(
+            sql`
+              INSERT INTO "messages" (
+                "createdAt",
+                "conversation",
+                "reference",
+                "authorEnrollment",
+                "anonymousAt",
+                "answerAt",
+                "contentSource",
+                "contentPreprocessed",
+                "contentSearch"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${response.locals.conversation.id},
+                ${String(response.locals.conversation.nextMessageReference)},
+                ${response.locals.enrollment.id},
+                ${
+                  request.body.isAnonymous === "on"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${
+                  request.body.isAnswer === "on"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${request.body.content},
+                ${contentPreprocessed.contentPreprocessed},
+                ${contentPreprocessed.contentSearch}
+              )
+              RETURNING *
+            `
+          )!;
+          application.database.run(
+            sql`
+              INSERT INTO "readings" ("createdAt", "message", "enrollment")
+              VALUES (
+                ${new Date().toISOString()},
+                ${message.id},
+                ${response.locals.enrollment.id}
+              )
+            `
+          );
+        });
       }
       application.server.locals.helpers.emailNotifications({
         request,
@@ -748,7 +773,7 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           conversation: response.locals.conversation,
-          messageReference: message.reference,
+          messageReference: message!.reference,
         })!,
       });
 
@@ -765,7 +790,18 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
