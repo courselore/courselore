@@ -83,14 +83,10 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${job.id}
             `
           );
-          console.log(
-            `${new Date().toISOString()}\t${
-              application.process.type
-            }\tsendEmailJobs\tTIMED OUT\n${JSON.stringify(
-              JSON.parse(job.mailOptions),
-              undefined,
-              2
-            )}`
+          application.log(
+            "sendEmailJobs",
+            "TIMED OUT",
+            JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)
           );
         }
       });
