@@ -2965,28 +2965,26 @@ export default async (application: Application): Promise<void> => {
     "selected-people": html`Selected People`,
   };
 
-  /*
-    export type IsConversationAccessibleMiddleware = express.RequestHandler<
-      { courseReference: string; conversationReference: string },
-      HTML,
-      {},
-      {},
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
-    >[];
-  */
-  application.server.locals.middlewares.isConversationAccessible = [
-    ...application.server.locals.middlewares.isEnrolledInCourse,
+  application.server.use<
+    { courseReference: string; conversationReference: string },
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+  >(
+    "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
+      if (response.locals.course === undefined) return next();
       const conversation = application.server.locals.helpers.getConversation({
         request,
         response,
         conversationReference: request.params.conversationReference,
       });
-      if (conversation === undefined) return next("route");
+      if (conversation === undefined) return next();
       response.locals.conversation = conversation;
       next();
-    },
-  ];
+    }
+  );
 
   application.server.get<
     { courseReference: string; conversationReference: string },

@@ -1321,32 +1321,6 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       if (
-        response.locals.course.archivedAt !== null &&
-        !(
-          typeof request.body.isArchived === "string" &&
-          request.body.name === undefined &&
-          request.body.year === undefined &&
-          request.body.term === undefined &&
-          request.body.institution === undefined &&
-          request.body.code === undefined
-        )
-      ) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
-
-      if (
         (typeof request.body.isArchived !== "string" &&
           (typeof request.body.name !== "string" ||
             request.body.name.trim() === "" ||
@@ -3157,22 +3131,6 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
-
       if (
         typeof request.body.courseRole !== "string" ||
         !application.server.locals.helpers.courseRoles.includes(
@@ -3475,22 +3433,6 @@ export default async (application: Application): Promise<void> => {
         response.locals.invitation === undefined
       )
         return next();
-
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
 
       if (response.locals.invitation.usedAt !== null) return next("Validation");
 
@@ -4713,7 +4655,6 @@ export default async (application: Application): Promise<void> => {
           from the course successfully.
         `,
       });
-
       response.redirect(
         303,
         response.locals.managedEnrollment.isSelf

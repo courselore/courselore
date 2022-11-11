@@ -101,6 +101,7 @@ export type Application = {
           emailRegExp: RegExp;
           isExpired: (..._: any) => any;
           isDate: (..._: any) => any;
+          sanitizeSearch: (..._: any) => any;
         };
       };
     };
