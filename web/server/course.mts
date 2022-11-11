@@ -4020,27 +4020,29 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      application.database.run(
-        sql`
-          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-          VALUES (
-            ${new Date().toISOString()},
-            ${response.locals.user.id},
-            ${response.locals.invitation.course.id},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${response.locals.invitation.courseRole},
-            ${defaultAccentColor({ request, response })}
-          )
-        `
-      );
-      if (response.locals.invitation.email !== null)
+      application.database.executeTransaction(() => {
         application.database.run(
           sql`
-            UPDATE "invitations"
-            SET "usedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${response.locals.invitation.id}
+            INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+            VALUES (
+              ${new Date().toISOString()},
+              ${response.locals.user.id},
+              ${response.locals.invitation.course.id},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${response.locals.invitation.courseRole},
+              ${defaultAccentColor({ request, response })}
+            )
           `
         );
+        if (response.locals.invitation.email !== null)
+          application.database.run(
+            sql`
+              UPDATE "invitations"
+              SET "usedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${response.locals.invitation.id}
+            `
+          );
+      });
 
       response.redirect(
         303,
