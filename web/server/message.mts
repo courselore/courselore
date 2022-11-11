@@ -844,15 +844,27 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (typeof request.body.isAnswer === "string")
         if (
           !["true", "false"].includes(request.body.isAnswer) ||
           response.locals.message.reference === "1" ||
-          response.locals.conversation.type !== "question" ||
-          (request.body.isAnswer === "true" &&
-            response.locals.message.answerAt !== null) ||
-          (request.body.isAnswer === "false" &&
-            response.locals.message.answerAt === null)
+          response.locals.conversation.type !== "question"
         )
           return next("Validation");
         else
@@ -872,44 +884,43 @@ export default async (application: Application): Promise<void> => {
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
           response.locals.message.authorEnrollment === "no-longer-enrolled" ||
-          response.locals.message.authorEnrollment.courseRole === "staff" ||
-          (request.body.isAnonymous === "true" &&
-            response.locals.message.anonymousAt !== null) ||
-          (request.body.isAnonymous === "false" &&
-            response.locals.message.anonymousAt === null)
+          response.locals.message.authorEnrollment.courseRole === "staff"
         )
           return next("Validation");
-        else {
-          application.database.run(
-            sql`
-              UPDATE "messages"
-              SET "anonymousAt" = ${
-                request.body.isAnonymous === "true"
-                  ? new Date().toISOString()
-                  : null
-              }
-              WHERE "id" = ${response.locals.message.id}
-            `
-          );
-          if (
-            response.locals.message.reference === "1" &&
-            response.locals.conversation.authorEnrollment !==
-              "no-longer-enrolled" &&
-            response.locals.conversation.authorEnrollment.id ===
-              response.locals.message.authorEnrollment.id
-          )
+        else
+          application.database.executeTransaction(() => {
             application.database.run(
               sql`
-                UPDATE "conversations"
+                UPDATE "messages"
                 SET "anonymousAt" = ${
                   request.body.isAnonymous === "true"
                     ? new Date().toISOString()
                     : null
                 }
-                WHERE "id" = ${response.locals.conversation.id}
+                WHERE "id" = ${response.locals.message.id}
               `
             );
-        }
+            if (
+              response.locals.message.reference === "1" &&
+              response.locals.conversation.authorEnrollment !==
+                "no-longer-enrolled" &&
+              response.locals.message.authorEnrollment !==
+                "no-longer-enrolled" &&
+              response.locals.conversation.authorEnrollment.id ===
+                response.locals.message.authorEnrollment.id
+            )
+              application.database.run(
+                sql`
+                  UPDATE "conversations"
+                  SET "anonymousAt" = ${
+                    request.body.isAnonymous === "true"
+                      ? new Date().toISOString()
+                      : null
+                  }
+                  WHERE "id" = ${response.locals.conversation.id}
+                `
+              );
+          });
 
       if (typeof request.body.content === "string") {
         if (request.body.content.trim() === "") return next("Validation");
@@ -917,26 +928,30 @@ export default async (application: Application): Promise<void> => {
           application.server.locals.partials.contentPreprocessed(
             request.body.content
           );
-        application.database.run(
-          sql`
-            UPDATE "messages"
-            SET
-              "contentSource" = ${request.body.content},
-              "contentPreprocessed" = ${
-                contentPreprocessed.contentPreprocessed
-              },
-              "contentSearch" = ${contentPreprocessed.contentSearch},
-              "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${response.locals.message.id}
-          `
-        );
-        application.database.run(
-          sql`
-            UPDATE "conversations"
-            SET "updatedAt" = ${new Date().toISOString()}
-            WHERE "id" = ${response.locals.conversation.id}
-          `
-        );
+
+        application.database.executeTransaction(() => {
+          application.database.run(
+            sql`
+              UPDATE "messages"
+              SET
+                "contentSource" = ${request.body.content},
+                "contentPreprocessed" = ${
+                  contentPreprocessed.contentPreprocessed
+                },
+                "contentSearch" = ${contentPreprocessed.contentSearch},
+                "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${response.locals.message.id}
+            `
+          );
+          application.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${response.locals.conversation.id}
+            `
+          );
+        });
+
         application.server.locals.helpers.emailNotifications({
           request,
           response,
@@ -957,7 +972,18 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: { url: `/courses/${response.locals.course.reference}` },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -983,9 +1009,26 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       application.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`
       );
+
       response.redirect(
         303,
         `https://${application.configuration.hostname}/courses/${
@@ -998,7 +1041,21 @@ export default async (application: Application): Promise<void> => {
           { addQueryPrefix: true }
         )}`
       );
-      application.server.locals.helpers.liveUpdates({ request, response });
+
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -1085,6 +1142,22 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (response.locals.message === undefined) return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       if (
         response.locals.message.likes.some(
           (like) =>
@@ -1118,7 +1191,20 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -1139,6 +1225,22 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     (request, response, next) => {
       if (response.locals.message === undefined) return next();
+
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       const like = response.locals.message.likes.find(
         (like) =>
@@ -1166,7 +1268,20 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -1207,6 +1322,22 @@ export default async (application: Application): Promise<void> => {
         })
       )
         return next();
+
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
 
       if (
         response.locals.message.endorsements.some(
@@ -1249,7 +1380,20 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -1279,6 +1423,22 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
+      if (response.locals.course.archivedAt !== null) {
+        application.server.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`
+            This action isn’t allowed because the course is archived, which
+            means it’s read-only.
+          `,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
+        );
+      }
+
       const endorsement = response.locals.message.endorsements.find(
         (endorsement) =>
           endorsement.enrollment !== "no-longer-enrolled" &&
@@ -1303,7 +1463,20 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({ request, response });
+      for (const port of application.ports.serverEvents)
+        got
+          .post(`http://127.0.0.1:${port}/live-updates`, {
+            form: {
+              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+            },
+          })
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES ",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
     }
   );
 
@@ -1380,425 +1553,417 @@ export default async (application: Application): Promise<void> => {
     });
   };
 
-  if (application.process.type === "worker")
-    application.once("start", async () => {
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      application.log("emailNotificationMessageJobs", "STARTED...");
+
+      application.database.executeTransaction(() => {
+        for (const job of application.database.all<{
+          id: number;
+          message: number;
+        }>(
+          sql`
+            SELECT "id", "message"
+            FROM "emailNotificationMessageJobs"
+            WHERE "expiresAt" < ${new Date().toISOString()}
+          `
+        )) {
+          application.database.run(
+            sql`
+              DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
+            `
+          );
+          application.log(
+            "emailNotificationMessageJobs",
+            "EXPIRED",
+            `message = ${job.message}`
+          );
+        }
+      });
+
+      application.database.executeTransaction(() => {
+        for (const job of application.database.all<{
+          id: number;
+          message: number;
+        }>(
+          sql`
+            SELECT "id", "message"
+            FROM "emailNotificationMessageJobs"
+            WHERE "startedAt" < ${new Date(
+              Date.now() - 2 * 60 * 1000
+            ).toISOString()}
+          `
+        )) {
+          application.database.run(
+            sql`
+              UPDATE "emailNotificationMessageJobs"
+              SET "startedAt" = NULL
+              WHERE "id" = ${job.id}
+            `
+          );
+          application.log(
+            "emailNotificationMessageJobs",
+            "TIMED OUT",
+            `message = ${job.message}`
+          );
+        }
+      });
+
       while (true) {
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\temailNotificationMessageJobs\tSTARTED...`
-        );
-
-        application.database.executeTransaction(() => {
-          for (const job of application.database.all<{
+        const job = application.database.executeTransaction(() => {
+          const job = application.database.get<{
             id: number;
-            message: number;
+            message: string;
           }>(
             sql`
               SELECT "id", "message"
               FROM "emailNotificationMessageJobs"
-              WHERE "expiresAt" < ${new Date().toISOString()}
+              WHERE
+                "startAt" <= ${new Date().toISOString()} AND
+                "startedAt" IS NULL
+              ORDER BY "startAt" ASC
+              LIMIT 1
             `
-          )) {
-            application.database.run(
-              sql`
-                DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
-              `
-            );
-            console.log(
-              `${new Date().toISOString()}\t${
-                application.process.type
-              }\temailNotificationMessageJobs\tEXPIRED\tmessage = ${
-                job.message
-              }`
-            );
-          }
-        });
-
-        application.database.executeTransaction(() => {
-          for (const job of application.database.all<{
-            id: number;
-            message: number;
-          }>(
-            sql`
-              SELECT "id", "message"
-              FROM "emailNotificationMessageJobs"
-              WHERE "startedAt" < ${new Date(
-                Date.now() - 2 * 60 * 1000
-              ).toISOString()}
-            `
-          )) {
+          );
+          if (job !== undefined)
             application.database.run(
               sql`
                 UPDATE "emailNotificationMessageJobs"
-                SET "startedAt" = NULL
+                SET "startedAt" = ${new Date().toISOString()}
                 WHERE "id" = ${job.id}
               `
             );
-            console.log(
-              `${new Date().toISOString()}\t${
-                application.process.type
-              }\temailNotificationMessageJobs\tTIMED OUT\tmessage = ${
-                job.message
-              }`
-            );
-          }
+          return job;
+        });
+        if (job === undefined) break;
+
+        const messageRow = application.database.get<{
+          id: number;
+          conversationId: number;
+          courseId: number;
+          courseReference: string;
+          courseArchivedAt: string | null;
+          courseName: string;
+          courseYear: string | null;
+          courseTerm: string | null;
+          courseInstitution: string | null;
+          courseCode: string | null;
+          courseNextConversationReference: number;
+          conversationReference: string;
+          conversationParticipants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+          conversationType: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+          conversationAnnouncementAt: string | null;
+          conversationTitle: string;
+          reference: string;
+          authorUserName: string | null;
+          anonymousAt: string | null;
+          contentPreprocessed: string;
+        }>(
+          sql`
+            SELECT
+              "messages"."id",
+              "conversations"."id" AS "conversationId",
+              "courses"."id" AS "courseId",
+              "courses"."reference" AS "courseReference",
+              "courses"."archivedAt" AS "courseArchivedAt",
+              "courses"."name" AS "courseName",
+              "courses"."year" AS "courseYear",
+              "courses"."term" AS "courseTerm",
+              "courses"."institution" AS "courseInstitution",
+              "courses"."code" AS "courseCode",
+              "courses"."nextConversationReference" AS "courseNextConversationReference",
+              "conversations"."reference" AS "conversationReference",
+              "conversations"."participants" AS "conversationParticipants",
+              "conversations"."type" AS "conversationType",
+              "conversations"."announcementAt" AS "conversationAnnouncementAt",
+              "conversations"."title" AS "conversationTitle",
+              "messages"."reference",
+              "authorUser"."name" AS "authorUserName",
+              "messages"."anonymousAt",
+              "messages"."contentPreprocessed"
+            FROM "messages"
+            JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
+            JOIN "courses" ON "conversations"."course" = "courses"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
+            WHERE "messages"."id" = ${job.message}
+          `
+        )!;
+        const message = {
+          id: messageRow.id,
+          reference: messageRow.reference,
+          authorEnrollment:
+            messageRow.authorUserName !== null
+              ? {
+                  user: {
+                    name: messageRow.authorUserName,
+                  },
+                }
+              : ("no-longer-enrolled" as const),
+          anonymousAt: messageRow.anonymousAt,
+          contentPreprocessed: messageRow.contentPreprocessed,
+        };
+        const conversation = {
+          id: messageRow.conversationId,
+          reference: messageRow.conversationReference,
+          participants: messageRow.conversationParticipants,
+          type: messageRow.conversationType,
+          announcementAt: messageRow.conversationAnnouncementAt,
+          title: messageRow.conversationTitle,
+        };
+        const course = {
+          id: messageRow.courseId,
+          reference: messageRow.courseReference,
+          archivedAt: messageRow.courseArchivedAt,
+          name: messageRow.courseName,
+          year: messageRow.courseYear,
+          term: messageRow.courseTerm,
+          institution: messageRow.courseInstitution,
+          code: messageRow.courseCode,
+          nextConversationReference: messageRow.courseNextConversationReference,
+        };
+        const contentProcessed = application.server.locals.partials.content({
+          request: { query: {} } as Parameters<
+            typeof application.server.locals.partials.content
+          >[0]["request"],
+          response: {
+            locals: {
+              css: localCSS(),
+              html: HTMLForJavaScript(),
+              user: {},
+              enrollment: {},
+              course,
+            },
+          } as Parameters<
+            typeof application.server.locals.partials.content
+          >[0]["response"],
+          contentPreprocessed: message.contentPreprocessed,
+          decorate: true,
         });
 
-        while (true) {
-          const job = application.database.executeTransaction(() => {
-            const job = application.database.get<{
-              id: number;
-              message: string;
-            }>(
-              sql`
-                SELECT "id", "message"
-                FROM "emailNotificationMessageJobs"
+        const enrollments = application.database.all<{
+          id: number;
+          userId: number;
+          userEmail: string;
+          userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
+          reference: string;
+          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        }>(
+          sql`
+            SELECT
+              "enrollments"."id",
+              "users"."id" AS "userId",
+              "users"."email" AS "userEmail",
+              "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
+              "enrollments"."reference",
+              "enrollments"."courseRole"
+            FROM "enrollments"
+            JOIN "users" ON
+              "enrollments"."user" = "users"."id" AND
+              "users"."emailVerifiedAt" IS NOT NULL
+            WHERE
+              "enrollments"."course" = ${course.id} AND
+              NOT EXISTS(
+                SELECT TRUE
+                FROM "emailNotificationDeliveries"
                 WHERE
-                  "startAt" <= ${new Date().toISOString()} AND
-                  "startedAt" IS NULL
-                ORDER BY "startAt" ASC
-                LIMIT 1
-              `
-            );
-            if (job !== undefined)
-              application.database.run(
-                sql`
-                  UPDATE "emailNotificationMessageJobs"
-                  SET "startedAt" = ${new Date().toISOString()}
-                  WHERE "id" = ${job.id}
-                `
-              );
-            return job;
-          });
-          if (job === undefined) break;
-
-          const messageRow = application.database.get<{
-            id: number;
-            conversationId: number;
-            courseId: number;
-            courseReference: string;
-            courseArchivedAt: string | null;
-            courseName: string;
-            courseYear: string | null;
-            courseTerm: string | null;
-            courseInstitution: string | null;
-            courseCode: string | null;
-            courseNextConversationReference: number;
-            conversationReference: string;
-            conversationParticipants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
-            conversationType: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
-            conversationAnnouncementAt: string | null;
-            conversationTitle: string;
-            reference: string;
-            authorUserName: string | null;
-            anonymousAt: string | null;
-            contentPreprocessed: string;
-          }>(
-            sql`
-              SELECT
-                "messages"."id",
-                "conversations"."id" AS "conversationId",
-                "courses"."id" AS "courseId",
-                "courses"."reference" AS "courseReference",
-                "courses"."archivedAt" AS "courseArchivedAt",
-                "courses"."name" AS "courseName",
-                "courses"."year" AS "courseYear",
-                "courses"."term" AS "courseTerm",
-                "courses"."institution" AS "courseInstitution",
-                "courses"."code" AS "courseCode",
-                "courses"."nextConversationReference" AS "courseNextConversationReference",
-                "conversations"."reference" AS "conversationReference",
-                "conversations"."participants" AS "conversationParticipants",
-                "conversations"."type" AS "conversationType",
-                "conversations"."announcementAt" AS "conversationAnnouncementAt",
-                "conversations"."title" AS "conversationTitle",
-                "messages"."reference",
-                "authorUser"."name" AS "authorUserName",
-                "messages"."anonymousAt",
-                "messages"."contentPreprocessed"
-              FROM "messages"
-              JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
-              JOIN "courses" ON "conversations"."course" = "courses"."id"
-              LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-              LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
-              WHERE "messages"."id" = ${job.message}
-            `
-          )!;
-          const message = {
-            id: messageRow.id,
-            reference: messageRow.reference,
-            authorEnrollment:
-              messageRow.authorUserName !== null
-                ? {
-                    user: {
-                      name: messageRow.authorUserName,
-                    },
-                  }
-                : ("no-longer-enrolled" as const),
-            anonymousAt: messageRow.anonymousAt,
-            contentPreprocessed: messageRow.contentPreprocessed,
-          };
-          const conversation = {
-            id: messageRow.conversationId,
-            reference: messageRow.conversationReference,
-            participants: messageRow.conversationParticipants,
-            type: messageRow.conversationType,
-            announcementAt: messageRow.conversationAnnouncementAt,
-            title: messageRow.conversationTitle,
-          };
-          const course = {
-            id: messageRow.courseId,
-            reference: messageRow.courseReference,
-            archivedAt: messageRow.courseArchivedAt,
-            name: messageRow.courseName,
-            year: messageRow.courseYear,
-            term: messageRow.courseTerm,
-            institution: messageRow.courseInstitution,
-            code: messageRow.courseCode,
-            nextConversationReference:
-              messageRow.courseNextConversationReference,
-          };
-          const contentProcessed = application.server.locals.partials.content({
-            request: { query: {} } as Parameters<
-              typeof application.server.locals.partials.content
-            >[0]["request"],
-            response: {
-              locals: {
-                css: localCSS(),
-                html: HTMLForJavaScript(),
-                user: {},
-                enrollment: {},
-                course,
-              },
-            } as Parameters<
-              typeof application.server.locals.partials.content
-            >[0]["response"],
-            contentPreprocessed: message.contentPreprocessed,
-            decorate: true,
-          });
-
-          const enrollments = application.database.all<{
-            id: number;
-            userId: number;
-            userEmail: string;
-            userEmailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
-            reference: string;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-          }>(
-            sql`
-              SELECT
-                "enrollments"."id",
-                "users"."id" AS "userId",
-                "users"."email" AS "userEmail",
-                "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
-                "enrollments"."reference",
-                "enrollments"."courseRole"
-              FROM "enrollments"
-              JOIN "users" ON
-                "enrollments"."user" = "users"."id" AND
-                "users"."emailVerifiedAt" IS NOT NULL
-              WHERE
-                "enrollments"."course" = ${course.id} AND
-                NOT EXISTS(
-                  SELECT TRUE
-                  FROM "emailNotificationDeliveries"
-                  WHERE
-                    "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
-                    "emailNotificationDeliveries"."message" = ${message.id}
-                ) $${
-                  conversation.participants === "everyone"
-                    ? sql``
-                    : conversation.participants === "staff"
-                    ? sql`
-                        AND (
-                          "enrollments"."courseRole" = 'staff' OR EXISTS(
-                            SELECT TRUE
-                            FROM "conversationSelectedParticipants"
-                            WHERE
-                              "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                              "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                          )
-                        )
-                      `
-                    : conversation.participants === "selected-people"
-                    ? sql`
-                        AND EXISTS(
+                  "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                  "emailNotificationDeliveries"."message" = ${message.id}
+              ) $${
+                conversation.participants === "everyone"
+                  ? sql``
+                  : conversation.participants === "staff"
+                  ? sql`
+                      AND (
+                        "enrollments"."courseRole" = 'staff' OR EXISTS(
                           SELECT TRUE
                           FROM "conversationSelectedParticipants"
                           WHERE
                             "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
                             "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
                         )
-                      `
-                    : sql``
-                } $${
-              conversation.type === "note" &&
-              conversation.announcementAt !== null &&
-              message.reference === "1"
-                ? sql``
-                : sql`
-                AND (
-                  "users"."emailNotificationsForAllMessages" != 'none' OR (
-                    "users"."emailNotificationsForMentionsAt" IS NOT NULL
-                      $${
-                        contentProcessed.mentions.has("everyone")
-                          ? sql``
-                          : contentProcessed.mentions.has("staff")
-                          ? sql`
-                              AND (
-                                "enrollments"."courseRole" = 'staff' OR
-                                "enrollments"."reference" IN ${contentProcessed.mentions}
-                              )
-                            `
-                          : contentProcessed.mentions.has("students")
-                          ? sql`
-                              AND (
-                                "enrollments"."courseRole" = 'student' OR
-                                "enrollments"."reference" IN ${contentProcessed.mentions}
-                              )
-                            `
-                          : sql`
-                              AND "enrollments"."reference" IN ${contentProcessed.mentions}
-                            `
-                      }
-                  ) OR (
-                    "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
-                      SELECT TRUE
-                      FROM "messages"
-                      WHERE
-                        "conversation" = ${conversation.id} AND
-                        "authorEnrollment" = "enrollments"."id"
-                    )
-                  ) OR (
-                    "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
-                      SELECT TRUE
-                      FROM "conversations"
-                      WHERE
-                        "id" = ${conversation.id} AND
-                        "authorEnrollment" = "enrollments"."id"
-                    )
+                      )
+                    `
+                  : conversation.participants === "selected-people"
+                  ? sql`
+                      AND EXISTS(
+                        SELECT TRUE
+                        FROM "conversationSelectedParticipants"
+                        WHERE
+                          "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                          "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                      )
+                    `
+                  : sql``
+              } $${
+            conversation.type === "note" &&
+            conversation.announcementAt !== null &&
+            message.reference === "1"
+              ? sql``
+              : sql`
+              AND (
+                "users"."emailNotificationsForAllMessages" != 'none' OR (
+                  "users"."emailNotificationsForMentionsAt" IS NOT NULL
+                    $${
+                      contentProcessed.mentions.has("everyone")
+                        ? sql``
+                        : contentProcessed.mentions.has("staff")
+                        ? sql`
+                            AND (
+                              "enrollments"."courseRole" = 'staff' OR
+                              "enrollments"."reference" IN ${contentProcessed.mentions}
+                            )
+                          `
+                        : contentProcessed.mentions.has("students")
+                        ? sql`
+                            AND (
+                              "enrollments"."courseRole" = 'student' OR
+                              "enrollments"."reference" IN ${contentProcessed.mentions}
+                            )
+                          `
+                        : sql`
+                            AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                          `
+                    }
+                ) OR (
+                  "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
+                    SELECT TRUE
+                    FROM "messages"
+                    WHERE
+                      "conversation" = ${conversation.id} AND
+                      "authorEnrollment" = "enrollments"."id"
+                  )
+                ) OR (
+                  "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
+                    SELECT TRUE
+                    FROM "conversations"
+                    WHERE
+                      "id" = ${conversation.id} AND
+                      "authorEnrollment" = "enrollments"."id"
                   )
                 )
-              `
-            }
+              )
             `
-          );
+          }
+          `
+        );
 
-          for (const enrollment of enrollments) {
-            // TODO: Better email notifications
-            // switch (enrollment.userEmailNotificationsForAllMessages) {
-            //   case "instant":
-            //     break;
+        for (const enrollment of enrollments) {
+          // TODO: Better email notifications
+          // switch (enrollment.userEmailNotificationsForAllMessages) {
+          //   case "instant":
+          //     break;
 
-            //   case "hourly-digests":
-            //   case "daily-digests":
-            //     break;
-            // }
-            application.database.run(
-              sql`
-                INSERT INTO "sendEmailJobs" (
-                  "createdAt",
-                  "startAt",
-                  "expiresAt",
-                  "mailOptions"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${new Date().toISOString()},
-                  ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-                  ${JSON.stringify({
-                    from: {
-                      name: `${course.name} · ${application.configuration.email.defaults.from.name}`,
-                      address:
-                        application.configuration.email.defaults.from.address,
-                    },
-                    to: enrollment.userEmail,
-                    inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
-                    references: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
-                    subject: conversation.title,
-                    html: html`
-                      <p>
+          //   case "hourly-digests":
+          //   case "daily-digests":
+          //     break;
+          // }
+          application.database.run(
+            sql`
+              INSERT INTO "sendEmailJobs" (
+                "createdAt",
+                "startAt",
+                "expiresAt",
+                "mailOptions"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${new Date().toISOString()},
+                ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+                ${JSON.stringify({
+                  from: {
+                    name: `${course.name} · ${application.configuration.email.defaults.from.name}`,
+                    address:
+                      application.configuration.email.defaults.from.address,
+                  },
+                  to: enrollment.userEmail,
+                  inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
+                  references: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
+                  subject: conversation.title,
+                  html: html`
+                    <p>
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
+                          {
+                            messages: {
+                              messageReference: message.reference,
+                            },
+                          },
+                          { addQueryPrefix: true }
+                        )}"
+                        >${message.authorEnrollment === "no-longer-enrolled"
+                          ? "Someone who is no longer enrolled"
+                          : message.anonymousAt !== null
+                          ? `Anonymous ${
+                              enrollment.courseRole === "staff"
+                                ? `(${message.authorEnrollment.user.name})`
+                                : ""
+                            }`
+                          : message.authorEnrollment.user.name}
+                        says</a
+                      >:
+                    </p>
+
+                    <hr />
+
+                    $${message.contentPreprocessed}
+
+                    <hr />
+
+                    <p>
+                      <small>
                         <a
                           href="https://${application.configuration
-                            .hostname}/courses/${course.reference}/conversations/${conversation.reference}${qs.stringify(
-                            {
-                              messages: {
-                                messageReference: message.reference,
-                              },
-                            },
-                            { addQueryPrefix: true }
-                          )}"
-                          >${message.authorEnrollment === "no-longer-enrolled"
-                            ? "Someone who is no longer enrolled"
-                            : message.anonymousAt !== null
-                            ? `Anonymous ${
-                                enrollment.courseRole === "staff"
-                                  ? `(${message.authorEnrollment.user.name})`
-                                  : ""
-                              }`
-                            : message.authorEnrollment.user.name}
-                          says</a
-                        >:
-                      </p>
-
-                      <hr />
-
-                      $${message.contentPreprocessed}
-
-                      <hr />
-
-                      <p>
-                        <small>
-                          <a
-                            href="https://${application.configuration
-                              .hostname}/settings/notifications-preferences"
-                            >Change Notifications Preferences</a
-                          >
-                        </small>
-                      </p>
-                    `,
-                  })}
-                )
-              `
-            );
-
-            application.database.run(
-              sql`
-                INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${message.id},
-                  ${enrollment.id}
-                )
-              `
-            );
-          }
+                            .hostname}/settings/notifications-preferences"
+                          >Change Notifications Preferences</a
+                        >
+                      </small>
+                    </p>
+                  `,
+                })}
+              )
+            `
+          );
 
           application.database.run(
             sql`
-              DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
+              INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
+              VALUES (
+                ${new Date().toISOString()},
+                ${message.id},
+                ${enrollment.id}
+              )
             `
           );
-          console.log(
-            `${new Date().toISOString()}\t${
-              application.process.type
-            }\temailNotificationMessageJobs\tSUCCEEDED\tmessage = ${
-              job.message
-            }`
-          );
-          await timers.setTimeout(100, undefined, { ref: false });
         }
 
-        application.server.locals.workers.sendEmail?.();
-
-        console.log(
-          `${new Date().toISOString()}\t${
-            application.process.type
-          }\temailNotificationMessageJobs\tFINISHED`
+        application.database.run(
+          sql`
+            DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
+          `
         );
 
-        await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
+        application.log(
+          "emailNotificationMessageJobs",
+          "SUCCEEDED",
+          `message = ${job.message}`
+        );
+
+        await timers.setTimeout(100, undefined, { ref: false });
       }
-    });
+
+      got
+        .post(
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+        )
+        .catch((error) => {
+          application.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+        });
+
+      application.log("emailNotificationMessageJobs", "FINISHED");
+
+      await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
+    }
+  });
 };
