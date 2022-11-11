@@ -1,61 +1,69 @@
 import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
-import { Courselore } from "./index.mjs";
+import { Application } from "./index.mjs";
 
-export default async (app: Courselore): Promise<void> => {
-  app.all<
+export default async (application: Application): Promise<void> => {
+  application.all<
     {},
     HTML,
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["Base"]
-  >("*", ...app.server.locals.middlewares.isSignedOut, (request, response) => {
-    response.redirect(
-      303,
-      `https://${app.configuration.hostname}/sign-in${qs.stringify(
-        { redirect: request.originalUrl.slice(1) },
-        { addQueryPrefix: true }
-      )}`
-    );
-  });
+  >(
+    "*",
+    ...application.server.locals.middlewares.isSignedOut,
+    (request, response) => {
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/sign-in${qs.stringify(
+          { redirect: request.originalUrl.slice(1) },
+          { addQueryPrefix: true }
+        )}`
+      );
+    }
+  );
 
-  app.all<
+  application.all<
     {},
     HTML,
     {},
     { redirect?: string },
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >("*", ...app.server.locals.middlewares.isSignedIn, (request, response) => {
-    if (typeof request.query.redirect === "string")
-      return response.redirect(
-        303,
-        `https://${app.configuration.hostname}/${request.query.redirect}`
+  >(
+    "*",
+    ...application.server.locals.middlewares.isSignedIn,
+    (request, response) => {
+      if (typeof request.query.redirect === "string")
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${request.query.redirect}`
+        );
+      response.status(404).send(
+        application.server.locals.layouts.box({
+          request,
+          response,
+          head: html`<title>404 Not Found · Courselore</title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-question-diamond-fill"></i>
+              404 Not Found
+            </h2>
+            <p>
+              If you think there should be something here, please contact your
+              course staff or the system administrator at
+              <a
+                href="${application.server.locals.partials.reportIssueHref}"
+                target="_blank"
+                class="link"
+                >${application.configuration.administratorEmail}</a
+              >.
+            </p>
+          `,
+        })
       );
-    response.status(404).send(
-      app.server.locals.layouts.box({
-        request,
-        response,
-        head: html`<title>404 Not Found · Courselore</title>`,
-        body: html`
-          <h2 class="heading">
-            <i class="bi bi-question-diamond-fill"></i>
-            404 Not Found
-          </h2>
-          <p>
-            If you think there should be something here, please contact your
-            course staff or the system administrator at
-            <a
-              href="${app.server.locals.partials.reportIssueHref}"
-              target="_blank"
-              class="link"
-              >${app.configuration.administratorEmail}</a
-            >.
-          </p>
-        `,
-      })
-    );
-  });
+    }
+  );
 
   /*
         return response.send(
@@ -236,7 +244,7 @@ export default async (app: Courselore): Promise<void> => {
           );
         */
 
-  app.use(((error, request, response, next) => {
+  application.use(((error, request, response, next) => {
     response.locals.log("ERROR", String(error));
 
     if (!["Cross-Site Request Forgery", "Validation"].includes(error))
@@ -250,7 +258,7 @@ export default async (app: Courselore): Promise<void> => {
           : 500
       )
       .send(
-        app.server.locals.layouts.box({
+        application.server.locals.layouts.box({
           request,
           response,
           head: html`<title>${error} Error · Courselore</title>`,
@@ -265,10 +273,10 @@ export default async (app: Courselore): Promise<void> => {
                 ? "This request doesn’t appear to have come from Courselore. Please try again. If the issue persists, please report to the system administrator at"
                 : "This is an issue in Courselore. Please report to the system administrator at"}
               <a
-                href="${app.server.locals.partials.reportIssueHref}"
+                href="${application.server.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
-                >${app.configuration.administratorEmail}</a
+                >${application.configuration.administratorEmail}</a
               >.
             </p>
           `,
