@@ -5266,7 +5266,7 @@ export default async (application: Application): Promise<void> => {
                                                   key="conversation-type--${conversationType}"
                                                   method="PATCH"
                                                   action="https://${application
-                                                    .server.locals.options
+                                                    .configuration
                                                     .hostname}/courses/${response
                                                     .locals.course
                                                     .reference}/conversations/${response
@@ -6108,7 +6108,7 @@ export default async (application: Application): Promise<void> => {
                                               <div class="dropdown--menu">
                                                 <a
                                                   href="https://${application
-                                                    .server.locals.options
+                                                    .configuration
                                                     .hostname}/courses/${response
                                                     .locals.course
                                                     .reference}/settings/tags"
@@ -6135,7 +6135,7 @@ export default async (application: Application): Promise<void> => {
                                                     key="tag--${tag.reference}"
                                                     method="POST"
                                                     action="https://${application
-                                                      .server.locals.options
+                                                      .configuration
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -6228,7 +6228,7 @@ export default async (application: Application): Promise<void> => {
                                                     key="tag--${tag.reference}"
                                                     method="DELETE"
                                                     action="https://${application
-                                                      .server.locals.options
+                                                      .configuration
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -7374,8 +7374,7 @@ export default async (application: Application): Promise<void> => {
                                                                 <form
                                                                   method="POST"
                                                                   action="https://${application
-                                                                    .locals
-                                                                    .options
+                                                                    .configuration
                                                                     .hostname}/courses/${response
                                                                     .locals
                                                                     .course
@@ -7510,8 +7509,7 @@ export default async (application: Application): Promise<void> => {
                                                                         this.tooltip.setContent(loading);
                                                                         leafac.loadPartial(content, await (await fetch("https://${
                                                                           application
-                                                                            .locals
-                                                                            .options
+                                                                            .configuration
                                                                             .hostname
                                                                         }/courses/${
                                                                     response
@@ -7552,9 +7550,7 @@ export default async (application: Application): Promise<void> => {
                                                               this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("https://${
                                                                   application
-                                                                    .server
-                                                                    .locals
-                                                                    .options
+                                                                    .configuration
                                                                     .hostname
                                                                 }/courses/${
                                                               response.locals
@@ -7632,8 +7628,7 @@ export default async (application: Application): Promise<void> => {
                                                                 <form
                                                                   method="PATCH"
                                                                   action="https://${application
-                                                                    .locals
-                                                                    .options
+                                                                    .configuration
                                                                     .hostname}/courses/${response
                                                                     .locals
                                                                     .course
@@ -7766,8 +7761,7 @@ export default async (application: Application): Promise<void> => {
                                                                             <form
                                                                               method="DELETE"
                                                                               action="https://${application
-                                                                                .locals
-                                                                                .options
+                                                                                .configuration
                                                                                 .hostname}/courses/${response
                                                                                 .locals
                                                                                 .course
@@ -7887,7 +7881,7 @@ export default async (application: Application): Promise<void> => {
                                               <form
                                                 method="PATCH"
                                                 action="https://${application
-                                                  .server.locals.options
+                                                  .configuration
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -7990,7 +7984,7 @@ export default async (application: Application): Promise<void> => {
                                                   ? "DELETE"
                                                   : "POST"}"
                                                 action="https://${application
-                                                  .server.locals.options
+                                                  .configuration
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -8534,7 +8528,7 @@ export default async (application: Application): Promise<void> => {
                                                       ? "DELETE"
                                                       : "POST"}"
                                                     action="https://${application
-                                                      .server.locals.options
+                                                      .configuration
                                                       .hostname}/courses/${response
                                                       .locals.course
                                                       .reference}/conversations/${response
@@ -8634,9 +8628,7 @@ export default async (application: Application): Promise<void> => {
                                                                 this.dropdown.setContent(loading);
                                                                 leafac.loadPartial(content, await (await fetch("https://${
                                                                   application
-                                                                    .server
-                                                                    .locals
-                                                                    .options
+                                                                    .configuration
                                                                     .hostname
                                                                 }/courses/${
                                                             response.locals
@@ -8765,7 +8757,7 @@ export default async (application: Application): Promise<void> => {
                                               <form
                                                 method="PATCH"
                                                 action="https://${application
-                                                  .server.locals.options
+                                                  .configuration
                                                   .hostname}/courses/${response
                                                   .locals.course
                                                   .reference}/conversations/${response
@@ -9435,26 +9427,6 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  type MayEditConversationLocals =
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"];
-  const mayEditConversationMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-    },
-    any,
-    {},
-    {},
-    MayEditConversationLocals
-  >[] = [
-    (request, response, next) => {
-      if (response.locals.conversation === undefined) return next();
-
-      if (mayEditConversation({ request, response })) return next();
-      next("route");
-    },
-  ];
-
   application.server.patch<
     { courseReference: string; conversationReference: string },
     HTML,
@@ -9472,11 +9444,16 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...mayEditConversationMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.conversation === undefined ||
+        !mayEditConversation({ request, response })
+      )
+        return next();
+
       if (typeof request.body.participants === "string") {
         request.body.selectedParticipantsReferences ??= [];
         if (
@@ -9802,11 +9779,16 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.conversation === undefined ||
+        !mayEditConversation({ request, response })
+      )
+        return next();
+
       if (
         typeof request.body.reference !== "string" ||
         !response.locals.tags.some(
@@ -9859,11 +9841,16 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    MayEditConversationLocals
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
     (request, response, next) => {
+      if (
+        response.locals.conversation === undefined ||
+        !mayEditConversation({ request, response })
+      )
+        return next();
+
       if (
         (response.locals.conversation.taggings.length === 1 &&
           response.locals.conversation.type !== "chat") ||

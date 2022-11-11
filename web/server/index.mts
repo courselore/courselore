@@ -96,13 +96,20 @@ export type Application = {
           contentEditor: any;
         };
         helpers: {
-          getMessage: (..._: any) => any;
+          getMessage: (..._: any) => {
+            endorsements: any[];
+            likes: any[];
+            [key: string]: any;
+          };
+          mayEndorseMessage: (..._: any) => any;
+          mayEditMessage: (..._: any) => any;
           emailNotifications: (..._: any) => any;
           splitFilterablePhrases: (..._: any) => any;
           emailRegExp: RegExp;
           isExpired: (..._: any) => any;
           isDate: (..._: any) => any;
           sanitizeSearch: (..._: any) => any;
+          highlightSearchResult: (..._: any) => any;
         };
       };
     };
