@@ -9,6 +9,8 @@ import { Application } from "./index.mjs";
 export type SendEmailWorker = () => Promise<void>;
 
 export default async (application: Application): Promise<void> => {
+  let timerAbortController: AbortController;
+
   application.workerEvents.once("start", async () => {
     const sendMailTransport = nodemailer.createTransport(
       application.configuration.email.options,
@@ -161,7 +163,21 @@ export default async (application: Application): Promise<void> => {
 
       application.log("sendEmailJobs", "FINISHED");
 
-      await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
+      timerAbortController = new AbortController();
+      await timers
+        .setTimeout(2 * 60 * 1000, undefined, {
+          ref: false,
+          signal: timerAbortController.signal,
+        })
+        .catch(() => {});
     }
   });
+
+  application.workerEvents.post<{}, any, {}, {}, {}>(
+    "/send-email",
+    (request, response) => {
+      timerAbortController?.abort();
+      response.end();
+    }
+  );
 };
