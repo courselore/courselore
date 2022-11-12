@@ -144,6 +144,48 @@ export default async (application: Application): Promise<void> => {
         return response.status(422).end();
       }
 
+      response.contentType("application/x-ndjson");
+      const heartbeatAbortController = new AbortController();
+      (async () => {
+        while (true) {
+          response.write("\n");
+          try {
+            await timers.setTimeout(15 * 1000, undefined, {
+              ref: false,
+              signal: heartbeatAbortController.signal,
+            });
+          } catch {
+            break;
+          }
+        }
+      })();
+
+      response.setHeader = (name, value) => response;
+      response.send = (body) => {
+        response.write(JSON.stringify(body) + "\n");
+        response.locals.log(
+          String(response.statusCode),
+          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+        );
+        return response;
+      };
+
+      response.once("close", () => {
+        heartbeatAbortController.abort();
+        if (typeof response.locals.liveConnectionNonce !== "string") return;
+        application.database.run(
+          sql`
+            DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
+          `
+        );
+        connections.delete(response.locals.liveConnectionNonce);
+      });
+
+      connections.set(response.locals.liveConnectionNonce, {
+        request,
+        response,
+      });
+
       if (liveConnection !== undefined) {
         application.database.run(
           sql`
@@ -175,66 +217,8 @@ export default async (application: Application): Promise<void> => {
         response.locals.log("LIVE-CONNECTION", "CREATED & CONNECTION OPENED");
       }
 
-      response.contentType("application/x-ndjson");
-      const heartbeatAbortController = new AbortController();
-      (async () => {
-        while (true) {
-          response.write("\n");
-          try {
-            await timers.setTimeout(15 * 1000, undefined, {
-              ref: false,
-              signal: heartbeatAbortController.signal,
-            });
-          } catch {
-            break;
-          }
-        }
-      })();
-
-      response.once("close", () => {
-        heartbeatAbortController.abort();
-        application.database.run(
-          sql`
-            DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
-          `
-        );
-        got
-          .delete(
-            `http://127.0.0.1:${
-              application.ports.serverEvents[application.process.number]
-            }/live-connections`,
-            {
-              form: { nonce: response.locals.liveConnectionNonce },
-            }
-          )
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-CONNECTION",
-              "ERROR EMITTING DELETE EVENT",
-              error
-            );
-          });
-      });
-
-      connections.set(response.locals.liveConnectionNonce, {
-        request,
-        response,
-      });
-
-      if (liveConnection?.liveUpdateAt !== null)
-        got
-          .post(
-            `http://127.0.0.1:${
-              application.ports.serverEvents[application.process.number]
-            }/live-updates`
-          )
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      if (liveConnection === undefined || liveConnection.liveUpdateAt !== null)
+        next();
 
       return;
     }
@@ -374,22 +358,9 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
 
-        const id = Math.random().toString(36).slice(2);
-        const time = process.hrtime.bigint();
-        connection.response.setHeader = (name, value) => connection.response;
-        connection.response.send = (body) => {
-          connection.response.write(JSON.stringify(body) + "\n");
-          connection.response.locals.log(
-            String(connection.response.statusCode),
-            `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
-          );
-          return connection.response;
-        };
         connection.response.locals = {
           liveConnectionNonce: connection.response.locals.liveConnectionNonce,
-          log: (...messageParts) => {
-            console.log("TODO");
-          },
+          log: connection.response.locals.log,
         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
         application.server(connection.request, connection.response);
 
