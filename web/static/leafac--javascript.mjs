@@ -317,9 +317,9 @@ export async function liveConnection({
         });
       }
     } catch (error) {
-      console.error(error);
-
       if (inLiveNavigation) return;
+
+      console.error(error);
 
       if (!connected) {
         (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
