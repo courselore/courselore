@@ -113,10 +113,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >((request, response, next) => {
-    if (response.locals.liveConnectionNonce !== undefined) {
-      // TODO: SUBSEQUENT REQUEST
-      return next();
-    }
+    if (response.locals.liveConnectionNonce !== undefined) return next();
 
     response.header("Version", application.version);
 
@@ -192,16 +189,6 @@ export default async (application: Application): Promise<void> => {
           }
         }
       })();
-      response.setHeader = (name, value) => response;
-      response.send = (body) => {
-        // TODO: Add nonce to log
-        response.write(JSON.stringify(body) + "\n");
-        response.locals.log(
-          String(response.statusCode),
-          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
-        );
-        return response;
-      };
       response.once("close", () => {
         heartbeatAbortController.abort();
         application.database.run(
@@ -358,8 +345,22 @@ export default async (application: Application): Promise<void> => {
 
         const connection = connections.get(liveConnection.nonce);
         if (connection === undefined) continue;
+        const id = Math.random().toString(36).slice(2);
+        const time = process.hrtime.bigint();
+        connection.response.setHeader = (name, value) => connection.response;
+        connection.response.send = (body) => {
+          connection.response.write(JSON.stringify(body) + "\n");
+          connection.response.locals.log(
+            String(connection.response.statusCode),
+            `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+          );
+          return connection.response;
+        };
         connection.response.locals = {
           liveConnectionNonce: connection.response.locals.liveConnectionNonce,
+          log: (...messageParts) => {
+            console.log("TODO");
+          },
         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
         application.server(connection.request, connection.response);
         await timers.setTimeout(100, undefined, { ref: false });
