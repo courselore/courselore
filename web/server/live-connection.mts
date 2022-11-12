@@ -161,38 +161,7 @@ export default async (application: Application): Promise<void> => {
 
 // TODO: liveUpdatesNonce
 
-// export type ApplicationLiveConnections = {
-//   server: {
-//     locals: {
-//       middleware: {
-//         liveConnections: express.RequestHandler<
-//           {},
-//           any,
-//           {},
-//           {},
-//           ResponseLocalsLiveConnections
-//         >[];
-//       };
-//       helpers: {
-//         liveUpdates({
-//           request,
-//           response,
-//         }: {
-//           request: express.Request<
-//             {},
-//             any,
-//             {},
-//             {},
-//             Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-//           >;
-//           response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]>;
-//         }): Promise<void>;
-//       };
-//     };
-//   };
-// };
-
-// export type ResponseLocalsLiveUpdates = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+// export type Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
 //   liveUpdatesNonce: string | undefined;
 // };
 
@@ -206,8 +175,8 @@ export default async (application: Application): Promise<void> => {
 //   const connections = new Map<
 //     string,
 //     {
-//       request: express.Request<{}, any, {}, {}, ResponseLocalsLiveUpdates>;
-//       response: express.Response<any, ResponseLocalsLiveUpdates>;
+//       request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
+//       response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
 //     }
 //   >();
 
@@ -429,7 +398,7 @@ export default async (application: Application): Promise<void> => {
 //         if (connection === undefined) continue;
 //         connection.response.locals = {
 //           liveUpdatesNonce: connection.response.locals.liveUpdatesNonce,
-//         } as ResponseLocalsLiveUpdates;
+//         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
 //         application.server(connection.request, connection.response);
 //         await timers.setTimeout(100, undefined, { ref: false });
 //       }
