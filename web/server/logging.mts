@@ -63,7 +63,9 @@ export default async (application: Application): Promise<void> => {
       );
     };
     const log = response.locals.log.bind(response);
+
     log("STARTING...");
+
     response.once("close", () => {
       const contentLength = response.getHeader("Content-Length");
       log(
