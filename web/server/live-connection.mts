@@ -80,7 +80,6 @@ export default async (application: Application): Promise<void> => {
             });
       }
 
-      // TODO: Close other connection
       // TODO: Establish this connection
       // ONLY ESTABLISH CONNECTION IF RESPONSE WAS:
       // GET
