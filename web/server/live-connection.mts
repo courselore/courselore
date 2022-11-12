@@ -18,7 +18,13 @@ export type ApplicationLiveConnection = {
 };
 
 export default async (application: Application): Promise<void> => {
-  const liveConnections = new Map<
+  application.database.run(
+    sql`
+      DELETE FROM "liveUpdates" WHERE "processNumber" = ${application.process.number}
+    `
+  );
+
+  const connections = new Map<
     string,
     {
       request: express.Request<
@@ -34,6 +40,51 @@ export default async (application: Application): Promise<void> => {
       >;
     }
   >();
+
+  application.workerEvents.once("start", async () => {
+    while (true) {
+      application.log("CLEAN EXPIRED ‘liveConnections’", "STARTING...");
+
+      for (const liveConnection of application.database.all<{
+        nonce: string;
+        processNumber: number | null;
+      }>(
+        sql`
+          SELECT "nonce", "processNumber"
+          FROM "liveConnections"
+          WHERE "expiresAt" < ${new Date().toISOString()}
+        `
+      )) {
+        application.database.run(
+          sql`
+            DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
+          `
+        );
+        if (liveConnection.processNumber !== null)
+          got
+            .delete(
+              `http://127.0.0.1:${
+                application.ports.serverEvents[liveConnection.processNumber]
+              }/live-connections`,
+              {
+                form: { nonce: liveConnection.nonce },
+              }
+            )
+            .catch((error) => {
+              application.log(
+                "LIVE-CONNECTION",
+                "ERROR EMITTING DELETE EVENT",
+                error
+              );
+            });
+        application.log("LIVE-CONNECTION", liveConnection.nonce, "EXPIRED");
+      }
+
+      application.log("CLEAN EXPIRED ‘liveConnections’", "FINISHED");
+
+      await timers.setTimeout(60 * 1000, undefined, { ref: false });
+    }
+  });
 
   application.server.use<
     {},
@@ -55,7 +106,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.liveConnectionNonce = nonce;
 
         const connection = { request, response };
-        liveConnections.set(response.locals.liveConnectionNonce, connection);
+        connections.set(response.locals.liveConnectionNonce, connection);
 
         response.contentType("text/plain");
         const heartbeatAbortController = new AbortController();
@@ -75,7 +126,7 @@ export default async (application: Application): Promise<void> => {
 
         response.once("close", () => {
           if (typeof response.locals.liveConnectionNonce !== "string") return;
-          liveConnections.delete(response.locals.liveConnectionNonce);
+          connections.delete(response.locals.liveConnectionNonce);
           heartbeatAbortController.abort();
         });
         return;
@@ -146,7 +197,7 @@ export default async (application: Application): Promise<void> => {
           DELETE FROM "liveConnections" WHERE "nonce" = ${request.body.nonce}
         `
       );
-      liveConnections.delete(request.body.nonce);
+      connections.delete(request.body.nonce);
       application.log("LIVE-CONNECTION", "ABORTED", request.body.nonce);
 
       response.end();
@@ -154,67 +205,12 @@ export default async (application: Application): Promise<void> => {
   );
 
   application.serverEvents.once("stop", () => {
-    for (const { request, response } of liveConnections.values())
-      response.end();
+    for (const { request, response } of connections.values()) response.end();
   });
 };
 
 // TODO: liveUpdatesNonce
-
-// export type Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] = Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
-//   liveUpdatesNonce: string | undefined;
-// };
-
-// export default async (application: Application): Promise<void> => {
-//   application.database.run(
-//     sql`
-//       DELETE FROM "liveUpdates" WHERE ___
-//     `
-//   );
-
-//   const connections = new Map<
-//     string,
-//     {
-//       request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
-//       response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
-//     }
-//   >();
-
-//   application.workerEvents.once("start", async () => {
-//     while (true) {
-//       application.log("CLEAN EXPIRED ‘liveUpdates’", "STARTING...");
-//       for (const liveUpdates of application.database.all<{
-//         nonce: string;
-//       }>(
-//         sql`
-//           SELECT "nonce"
-//           FROM "liveUpdates"
-//           WHERE "expiresAt" < ${new Date().toISOString()}
-//         `
-//       )) {
-//         application.database.run(
-//           sql`
-//             DELETE FROM "liveUpdates" WHERE "nonce" = ${liveUpdates.nonce}
-//           `
-//         );
-//         for (const port of application.ports.serverEvents)
-//           got
-//             .delete(`http://127.0.0.1:${port}/live-updates`, {
-//               form: { nonce: liveUpdates.nonce },
-//             })
-//             .catch((error) => {
-//               application.log(
-//                 "LIVE-CONNECTION",
-//                 "ERROR EMITTING DELETE EVENT",
-//                 error
-//               );
-//             });
-//         application.log("LIVE-CONNECTION", liveUpdates.nonce, "EXPIRED");
-//       }
-//       application.log("CLEAN EXPIRED ‘liveUpdates’", "FINISHED");
-//       await timers.setTimeout(60 * 1000, undefined, { ref: false });
-//     }
-//   });
+// TODO: Add nonce to log
 
 //   application.server.locals.middleware.liveUpdates = [
 //     (request, response, next) => {
@@ -422,8 +418,3 @@ export default async (application: Application): Promise<void> => {
 //       connection.response.locals.log("LIVE-CONNECTION", "ABORTED");
 //     }
 //   );
-
-//   application.serverEvents.once("stop", () => {
-//     for (const [_, { request, response }] of connections) response.end();
-//   });
-// };
