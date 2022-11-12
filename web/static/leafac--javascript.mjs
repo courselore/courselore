@@ -83,78 +83,79 @@ export async function liveConnection({
   }
 }
 
-// export async function liveUpdates(nonce) {
-//   const body = document.querySelector("body");
-//   let inLiveNavigation = false;
-//   window.addEventListener(
-//     "livenavigate",
-//     (event) => {
-//       event.detail.request.headers.set("Live-Updates-Abort", nonce);
-//       inLiveNavigation = true;
-//     },
-//     { once: true }
-//   );
-//   while (true) {
-//     try {
-//       const abortController = new AbortController();
-//       const abort = () => {
-//         abortController.abort();
-//       };
-//       window.addEventListener("livenavigate", abort, { once: true });
-//       let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-//       const response = await fetch(window.location.href, {
-//         cache: "no-store",
-//         headers: { "Live-Updates": nonce },
-//         signal: abortController.signal,
-//       });
-//       if (response.status === 422) {
-//         console.error(response);
-//         (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
-//           appendTo: body,
-//           trigger: "manual",
-//           hideOnClick: false,
-//           theme: "error",
-//           arrow: false,
-//           interactive: true,
-//           content:
-//             "Failed to connect to server. Please try reloading the page.",
-//         });
-//         body.liveUpdatesValidationErrorTooltip.show();
-//         return;
-//       }
-//       if (!response.ok) throw new Error();
-//       const responseBodyReader = response.body.getReader();
-//       const textDecoder = new TextDecoder();
-//       let buffer = "";
-//       while (true) {
-//         const chunk = (await responseBodyReader.read()).value;
-//         if (chunk === undefined) break;
-//         clearTimeout(heartbeatTimeout);
-//         heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-//         buffer += textDecoder.decode(chunk, { stream: true });
-//         const bufferParts = buffer.split("\n");
-//         buffer = bufferParts.pop();
-//         const bufferPart = bufferParts
-//           .reverse()
-//           .find((bufferPart) => bufferPart.trim() !== "");
-//         if (bufferPart === undefined) continue;
-//         const bufferPartJSON = JSON.parse(bufferPart);
-//         if (inLiveNavigation) return;
-//         loadDocument(bufferPartJSON, {
-//           previousLocation: { ...window.location },
-//           liveUpdate: true,
-//         });
-//       }
-//     } catch (error) {
-//       if (inLiveNavigation) return;
-//       console.error(error);
-//     }
-//     nonce = Math.random().toString(36).slice(2);
-//     await new Promise((resolve) => {
-//       window.setTimeout(resolve, 5 * 1000);
-//     });
-//   }
-// }
+// TODO: MERGE INTO ‘liveConnection()’
+export async function liveUpdates(nonce) {
+  const body = document.querySelector("body");
+  let inLiveNavigation = false;
+  window.addEventListener(
+    "livenavigate",
+    (event) => {
+      event.detail.request.headers.set("Live-Updates-Abort", nonce);
+      inLiveNavigation = true;
+    },
+    { once: true }
+  );
+  while (true) {
+    try {
+      const abortController = new AbortController();
+      const abort = () => {
+        abortController.abort();
+      };
+      window.addEventListener("livenavigate", abort, { once: true });
+      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+      const response = await fetch(window.location.href, {
+        cache: "no-store",
+        headers: { "Live-Updates": nonce },
+        signal: abortController.signal,
+      });
+      if (response.status === 422) {
+        console.error(response);
+        (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content:
+            "Failed to connect to server. Please try reloading the page.",
+        });
+        body.liveUpdatesValidationErrorTooltip.show();
+        return;
+      }
+      if (!response.ok) throw new Error();
+      const responseBodyReader = response.body.getReader();
+      const textDecoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const chunk = (await responseBodyReader.read()).value;
+        if (chunk === undefined) break;
+        clearTimeout(heartbeatTimeout);
+        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+        buffer += textDecoder.decode(chunk, { stream: true });
+        const bufferParts = buffer.split("\n");
+        buffer = bufferParts.pop();
+        const bufferPart = bufferParts
+          .reverse()
+          .find((bufferPart) => bufferPart.trim() !== "");
+        if (bufferPart === undefined) continue;
+        const bufferPartJSON = JSON.parse(bufferPart);
+        if (inLiveNavigation) return;
+        loadDocument(bufferPartJSON, {
+          previousLocation: { ...window.location },
+          liveUpdate: true,
+        });
+      }
+    } catch (error) {
+      if (inLiveNavigation) return;
+      console.error(error);
+    }
+    nonce = Math.random().toString(36).slice(2);
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, 5 * 1000);
+    });
+  }
+}
 
 export function liveNavigation(hostname) {
   let abortController;
