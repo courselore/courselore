@@ -31,7 +31,7 @@ export type ApplicationLiveConnection = {
             Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           url: string;
-        }): void;
+        }): Promise<void>;
       };
     };
   };
@@ -194,6 +194,7 @@ export default async (application: Application): Promise<void> => {
       })();
       response.setHeader = (name, value) => response;
       response.send = (body) => {
+        // TODO: Add nonce to log
         response.write(JSON.stringify(body) + "\n");
         response.locals.log(
           String(response.statusCode),
@@ -293,7 +294,7 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
-  application.server.locals.helpers.liveUpdates = ({
+  application.server.locals.helpers.liveUpdates = async ({
     request,
     response,
     url,
@@ -306,14 +307,13 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
+    await timers.setTimeout(3000, undefined, { ref: false });
+
     for (const port of application.ports.serverEvents)
       got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
         response.locals.log("LIVE-UPDATES", "ERROR EMITTING POST EVENT", error);
       });
   };
-
-  // TODO: Worker that sends Live-Updates
-  // TODO: ‘serverEvents’ listener that triggers worker
 
   application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
     "/live-connections",
@@ -378,49 +378,4 @@ export default async (application: Application): Promise<void> => {
   application.serverEvents.once("stop", () => {
     for (const { request, response } of connections.values()) response.end();
   });
-};
-
-// TODO: Add nonce to log
-
-// TODO: BRING BACK THIS HELPER, WHICH IS NECESSARY BECAUSE IT SETS THE DATABASE
-application.server.locals.helpers.liveUpdates = async ({
-  request,
-  response,
-}: {
-  request: express.Request<
-    {},
-    any,
-    {},
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-  response: express.Response<
-    any,
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >;
-}) => {
-  application.database.run(
-    sql`
-      UPDATE "liveConnections"
-      SET "liveUpdateAt" = ${new Date().toISOString()}
-      WHERE
-        "course" = ${response.locals.course.id} AND
-        "expiresAt" IS NOT NULL
-    `
-  );
-
-  await timers.setTimeout(3000, undefined, { ref: false });
-
-  for (const port of application.ports.serverEvents)
-    got
-      .post(`http://127.0.0.1:${port}/live-updates`, {
-        form: { courseId: response.locals.course.id },
-      })
-      .catch((error) => {
-        response.locals.log(
-          "LIVE-UPDATES ",
-          "ERROR EMITTING POST EVENT",
-          error
-        );
-      });
 };
