@@ -10,7 +10,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(["/", "/about"], (request, response, next) => {
     if (request.originalUrl === "/" && response.locals.user !== undefined)

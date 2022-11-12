@@ -56,11 +56,11 @@ export type ApplicationCourse = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
           enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
@@ -101,11 +101,11 @@ export type ApplicationCourse = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
         }): HTML;
       };
@@ -3063,11 +3063,11 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"]
+      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["Base"]
+      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
     >;
     invitation: ResponseLocalsInvitation["invitation"];
   }): void => {
@@ -3314,7 +3314,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   type ResponseLocalsInvitation =
-    Application["server"]["locals"]["ResponseLocals"]["Base"] & {
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] & {
       invitation: {
         id: number;
         expiresAt: string | null;

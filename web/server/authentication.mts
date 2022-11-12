@@ -16,7 +16,7 @@ export type ApplicationAuthentication = {
   server: {
     locals: {
       ResponseLocals: {
-        SignedIn: Application["server"]["locals"]["ResponseLocals"]["Base"] & {
+        SignedIn: Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] & {
           user: {
             id: number;
             lastSeenOnlineAt: string;
@@ -104,11 +104,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
           }): void;
@@ -122,11 +122,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }): number | undefined;
 
@@ -139,11 +139,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }): void;
 
@@ -157,11 +157,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
           }): void;
@@ -179,11 +179,11 @@ export type ApplicationAuthentication = {
             any,
             {},
             { redirect?: string },
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           userId: number;
           userEmail: string;
@@ -524,7 +524,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(["/", "/sign-in"], (request, response, next) => {
     if (
@@ -645,7 +645,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/sign-in",
@@ -766,7 +766,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
@@ -869,7 +869,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { email?: string; resend?: "true" },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
@@ -1000,7 +1000,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password/:passwordResetNonce", (request, response) => {
     if (response.locals.user !== undefined) {
@@ -1112,7 +1112,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/reset-password/:passwordResetNonce",
@@ -1242,7 +1242,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/sign-up", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
@@ -1379,7 +1379,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/sign-up",

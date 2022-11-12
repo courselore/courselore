@@ -48,14 +48,14 @@ export type ApplicationUser = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >

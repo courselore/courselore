@@ -26,14 +26,14 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -54,14 +54,14 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -165,11 +165,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           body: HTML;
         }): HTML;
@@ -188,11 +188,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"]
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           size?: number;
         }): HTML;
@@ -215,11 +215,11 @@ export type ApplicationLayouts = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             theme: string;
             content: HTML;
@@ -234,11 +234,11 @@ export type ApplicationLayouts = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["Base"]
+              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }): { theme: string; content: HTML } | undefined;
         };
@@ -987,7 +987,7 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["Base"]
+      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
     >("/turn-off", (request, response) => {
       response.send(
         application.server.locals.layouts.box({

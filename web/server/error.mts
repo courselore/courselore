@@ -12,7 +12,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >((request, response) => {
     if (response.locals.user === undefined)
@@ -259,5 +259,5 @@ export default async (application: Application): Promise<void> => {
           `,
         })
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>);
 };

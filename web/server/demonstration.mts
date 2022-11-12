@@ -17,7 +17,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/demonstration-data",

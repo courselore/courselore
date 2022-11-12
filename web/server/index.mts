@@ -16,7 +16,9 @@ import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
-// import liveUpdates, { ApplicationLiveUpdates } from "./live-updates.mjs";
+import liveConnection, {
+  ApplicationLiveConnection,
+} from "./live-connection.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
@@ -81,6 +83,7 @@ export type Application = {
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
+  ApplicationLiveConnection &
   ApplicationLayouts &
   ApplicationAuthentication &
   ApplicationAdministration &
@@ -223,7 +226,7 @@ if (
         await database(application);
         await healthChecks(application);
         await base(application);
-        // await liveUpdates(application);
+        await liveConnection(application);
         await layouts(application);
         await authentication(application);
         await about(application);

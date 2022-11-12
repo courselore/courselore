@@ -11,10 +11,10 @@ import {
 // TODO: "LIVE-UPDATES", liveUpdatesNonce
 
 // const liveConnections = new Set<{
-//   request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
-//   response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["Base"]>;
+//   request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
+//   response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
 // }>();
-// app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
+// app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
 //   "/live-connection",
 //   (request, response) => {
 //     const connection = { request, response };
@@ -329,7 +329,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.use<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["Base"]>(
+  application.server.use<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
     (request, response, next) => {
       const nonce = request.header("Live-Updates-Abort");
       if (nonce === undefined) return next();

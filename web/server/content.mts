@@ -53,14 +53,14 @@ export type ApplicationContent = {
             any,
             {},
             { conversations?: object },
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -87,7 +87,7 @@ export type ApplicationContent = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               > &
@@ -97,7 +97,7 @@ export type ApplicationContent = {
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["Base"] &
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
                 Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               > &
@@ -2911,7 +2911,7 @@ ${contentSource}</textarea
     any,
     { content?: string },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"] &
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]> &
       Partial<
         Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
