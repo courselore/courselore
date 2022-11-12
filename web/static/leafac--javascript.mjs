@@ -24,7 +24,7 @@ export async function liveConnection({
   window.addEventListener(
     "livenavigate",
     (event) => {
-      event.detail.request.headers.set("Live-Updates-Abort", nonce);
+      event.detail.request.headers.set("Live-Connection-Close", nonce);
       inLiveNavigation = true;
       abortController?.();
     },

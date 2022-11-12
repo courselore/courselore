@@ -331,7 +331,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server.use<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
     (request, response, next) => {
-      const nonce = request.header("Live-Updates-Abort");
+      const nonce = request.header("Live-Connection-Close");
       if (nonce === undefined) return next();
       application.database.run(
         sql`
