@@ -192,7 +192,8 @@ export default async (application: Application): Promise<void> => {
             UPDATE "liveConnections"
             SET
               "expiresAt" = NULL,
-              "processNumber" = ${application.process.number}
+              "processNumber" = ${application.process.number},
+              "liveUpdateAt" = NULL
             WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
@@ -203,14 +204,12 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "liveConnections" (
               "nonce",
               "url",
-              "processNumber",
-              "liveUpdateAt"
+              "processNumber"
             )
             VALUES (
               ${response.locals.liveConnectionNonce},
               ${request.originalUrl},
-              ${application.process.number},
-              ${new Date().toISOString()}
+              ${application.process.number}
             )
           `
         );
