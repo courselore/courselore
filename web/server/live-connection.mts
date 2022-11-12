@@ -12,6 +12,27 @@ export type ApplicationLiveConnection = {
           liveConnectionNonce?: string;
         };
       };
+
+      helpers: {
+        liveUpdates({
+          request,
+          response,
+          url,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+          >;
+          url: string;
+        }): void;
+      };
     };
   };
 };
@@ -272,6 +293,25 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
+  application.server.locals.helpers.liveUpdates = ({
+    request,
+    response,
+    url,
+  }) => {
+    application.database.run(
+      sql`
+        UPDATE "liveConnections"
+        SET "liveUpdateAt" = ${new Date().toISOString()}
+        WHERE "url" LIKE ${`${url}%`}
+      `
+    );
+
+    for (const port of application.ports.serverEvents)
+      got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
+        response.locals.log("LIVE-UPDATES", "ERROR EMITTING POST EVENT", error);
+      });
+  };
+
   // TODO: Worker that sends Live-Updates
   // TODO: ‘serverEvents’ listener that triggers worker
 
@@ -289,6 +329,48 @@ export default async (application: Application): Promise<void> => {
       connections.delete(request.body.nonce);
       connection.response.end();
 
+      response.end();
+    }
+  );
+
+  let liveUpdate: Function = () => {};
+
+  application.serverEvents.once("start", async () => {
+    while (true) {
+      await new Promise((resolve) => {
+        liveUpdate = resolve;
+      });
+
+      while (true) {
+        const liveConnection = application.database.get<{
+          nonce: string;
+        }>(
+          sql`
+            SELECT "nonce"
+            FROM "liveConnections"
+            WHERE
+              "processNumber" = ${application.process.number},
+              "liveUpdateAt" IS NOT NULL
+            LIMIT 1
+          `
+        );
+        if (liveConnection === undefined) break;
+
+        const connection = connections.get(liveConnection.nonce);
+        if (connection === undefined) continue;
+        connection.response.locals = {
+          liveConnectionNonce: connection.response.locals.liveConnectionNonce,
+        } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
+        application.server(connection.request, connection.response);
+        await timers.setTimeout(100, undefined, { ref: false });
+      }
+    }
+  });
+
+  application.serverEvents.post<{}, any, {}, {}, {}>(
+    "/live-updates",
+    (request, response) => {
+      liveUpdate();
       response.end();
     }
   );
