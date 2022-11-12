@@ -9,141 +9,47 @@ export function setServerVersion(newServerVersion) {
   serverVersion = newServerVersion;
 }
 
-export async function liveConnection({
-  nonce,
-  newServerVersionMessage = "There has been an update. Please reload the page.",
-  offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
-  liveReload = false,
-}) {
-  const body = document.querySelector("body");
-  let connected;
-  let shouldLiveReloadOnNextConnection = false;
-  let inLiveNavigation = false;
-  let abortController;
-
-  window.addEventListener(
-    "livenavigate",
+export function customFormValidation() {
+  document.addEventListener(
+    "submit",
     (event) => {
-      event.detail.request.headers.set("Live-Connection-Close", nonce);
-      inLiveNavigation = true;
-      abortController?.();
+      if (validate(event.target)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
     },
-    { once: true }
+    { capture: true }
   );
+}
 
-  while (true) {
-    try {
-      connected = false;
+export function warnAboutLosingInputs() {
+  let isSubmittingForm = false;
+  window.addEventListener("DOMContentLoaded", () => {
+    isSubmittingForm = false;
+  });
+  document.addEventListener("submit", () => {
+    isSubmittingForm = true;
+  });
+  window.onbeforeunload = (event) => {
+    if (isSubmittingForm || !isModified(document.querySelector("body"))) return;
+    event.preventDefault();
+    event.returnValue = "";
+  };
+  window.onbeforelivenavigate = () =>
+    isSubmittingForm ||
+    !isModified(document.querySelector("body")) ||
+    confirm(
+      "Your changes will be lost if you leave this page. Do you wish to continue?"
+    );
+}
 
-      const abortController = new AbortController();
-      const abort = () => {
-        abortController.abort();
-      };
-      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-
-      const response = await fetch(window.location.href, {
-        cache: "no-store",
-        headers: { "Live-Connection": nonce },
-        signal: abortController.signal,
-      });
-      if (response.status === 422) {
-        console.error(response);
-        (body.liveConnectionValidationErrorTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content:
-            "Failed to connect to server. Please try reloading the page.",
-        });
-        body.liveConnectionValidationErrorTooltip.show();
-        return;
-      }
-      if (!response.ok) throw new Error("Response isn’t OK");
-      connected = true;
-
-      if (shouldLiveReloadOnNextConnection) {
-        abort();
-        document.querySelector("body").isModified = false;
-        window.location.reload();
-        return;
-      }
-
-      body.liveConnectionOfflineTooltip?.hide();
-
-      const newServerVersion = response.headers.get("Version");
-      if (
-        typeof serverVersion === "string" &&
-        typeof newServerVersion === "string" &&
-        serverVersion !== newServerVersion
-      ) {
-        console.error(
-          `NEW SERVER VERSION: ${serverVersion} → ${newServerVersion}`
-        );
-        (body.liveConnectionNewServerVersionTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: newServerVersionMessage,
-        });
-        body.liveConnectionNewServerVersionTooltip.show();
-        abort();
-        return;
-      }
-
-      const responseBodyReader = response.body.getReader();
-      const textDecoder = new TextDecoder();
-      let buffer = "";
-      while (true) {
-        const chunk = (await responseBodyReader.read()).value;
-        if (chunk === undefined) break;
-        clearTimeout(heartbeatTimeout);
-        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-        buffer += textDecoder.decode(chunk, { stream: true });
-        const bufferParts = buffer.split("\n");
-        buffer = bufferParts.pop();
-        const bufferPart = bufferParts
-          .reverse()
-          .find((bufferPart) => bufferPart.trim() !== "");
-        if (bufferPart === undefined) continue;
-        const bufferPartJSON = JSON.parse(bufferPart);
-        if (inLiveNavigation) return;
-        loadDocument(bufferPartJSON, {
-          previousLocation: { ...window.location },
-          liveUpdate: true,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-
-      if (inLiveNavigation) return;
-
-      if (!connected) {
-        (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: liveReload ? "Live-Reloading…" : offlineMessage,
-        });
-        body.liveConnectionOfflineTooltip.show();
-        shouldLiveReloadOnNextConnection = liveReload;
-      }
-    }
-
-    nonce = Math.random().toString(36).slice(2);
-
-    await new Promise((resolve) => {
-      window.setTimeout(resolve, liveReload ? 200 : 1000);
-    });
-  }
+export function tippySetDefaultProps(extraProps = {}) {
+  tippy.setDefaultProps({
+    arrow: tippyStatic.roundArrow + tippyStatic.roundArrow,
+    duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? 1
+      : 150,
+    ...extraProps,
+  });
 }
 
 export function liveNavigation(hostname) {
@@ -299,6 +205,143 @@ export function liveNavigation(hostname) {
       event,
     });
   };
+}
+
+export async function liveConnection({
+  nonce,
+  newServerVersionMessage = "There has been an update. Please reload the page.",
+  offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
+  liveReload = false,
+}) {
+  const body = document.querySelector("body");
+  let connected;
+  let shouldLiveReloadOnNextConnection = false;
+  let inLiveNavigation = false;
+  let abortController;
+
+  window.addEventListener(
+    "livenavigate",
+    (event) => {
+      event.detail.request.headers.set("Live-Connection-Close", nonce);
+      inLiveNavigation = true;
+      abortController?.();
+    },
+    { once: true }
+  );
+
+  while (true) {
+    try {
+      connected = false;
+
+      const abortController = new AbortController();
+      const abort = () => {
+        abortController.abort();
+      };
+      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+
+      const response = await fetch(window.location.href, {
+        cache: "no-store",
+        headers: { "Live-Connection": nonce },
+        signal: abortController.signal,
+      });
+      if (response.status === 422) {
+        console.error(response);
+        (body.liveConnectionValidationErrorTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content:
+            "Failed to connect to server. Please try reloading the page.",
+        });
+        body.liveConnectionValidationErrorTooltip.show();
+        return;
+      }
+      if (!response.ok) throw new Error("Response isn’t OK");
+      connected = true;
+
+      if (shouldLiveReloadOnNextConnection) {
+        abort();
+        document.querySelector("body").isModified = false;
+        window.location.reload();
+        return;
+      }
+
+      body.liveConnectionOfflineTooltip?.hide();
+
+      const newServerVersion = response.headers.get("Version");
+      if (
+        typeof serverVersion === "string" &&
+        typeof newServerVersion === "string" &&
+        serverVersion !== newServerVersion
+      ) {
+        console.error(
+          `NEW SERVER VERSION: ${serverVersion} → ${newServerVersion}`
+        );
+        (body.liveConnectionNewServerVersionTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content: newServerVersionMessage,
+        });
+        body.liveConnectionNewServerVersionTooltip.show();
+        abort();
+        return;
+      }
+
+      const responseBodyReader = response.body.getReader();
+      const textDecoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const chunk = (await responseBodyReader.read()).value;
+        if (chunk === undefined) break;
+        clearTimeout(heartbeatTimeout);
+        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+        buffer += textDecoder.decode(chunk, { stream: true });
+        const bufferParts = buffer.split("\n");
+        buffer = bufferParts.pop();
+        const bufferPart = bufferParts
+          .reverse()
+          .find((bufferPart) => bufferPart.trim() !== "");
+        if (bufferPart === undefined) continue;
+        const bufferPartJSON = JSON.parse(bufferPart);
+        if (inLiveNavigation) return;
+        loadDocument(bufferPartJSON, {
+          previousLocation: { ...window.location },
+          liveUpdate: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (inLiveNavigation) return;
+
+      if (!connected) {
+        (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content: liveReload ? "Live-Reloading…" : offlineMessage,
+        });
+        body.liveConnectionOfflineTooltip.show();
+        shouldLiveReloadOnNextConnection = liveReload;
+      }
+    }
+
+    nonce = Math.random().toString(36).slice(2);
+
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, liveReload ? 200 : 1000);
+    });
+  }
 }
 
 export function loadDocument(documentString, detail) {
@@ -462,18 +505,6 @@ export function morph(from, to, detail = {}) {
   }
 }
 
-export function customFormValidation() {
-  document.addEventListener(
-    "submit",
-    (event) => {
-      if (validate(event.target)) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    },
-    { capture: true }
-  );
-}
-
 export function validate(element) {
   const elementsToValidate = descendants(element);
   const elementsToReset = new Map();
@@ -554,27 +585,6 @@ export function validate(element) {
   }
 }
 
-export function warnAboutLosingInputs() {
-  let isSubmittingForm = false;
-  window.addEventListener("DOMContentLoaded", () => {
-    isSubmittingForm = false;
-  });
-  document.addEventListener("submit", () => {
-    isSubmittingForm = true;
-  });
-  window.onbeforeunload = (event) => {
-    if (isSubmittingForm || !isModified(document.querySelector("body"))) return;
-    event.preventDefault();
-    event.returnValue = "";
-  };
-  window.onbeforelivenavigate = () =>
-    isSubmittingForm ||
-    !isModified(document.querySelector("body")) ||
-    confirm(
-      "Your changes will be lost if you leave this page. Do you wish to continue?"
-    );
-}
-
 export function isModified(element) {
   const elementsToCheck = descendants(element);
   for (const element of elementsToCheck) {
@@ -596,50 +606,6 @@ export function isModified(element) {
       if (element.value !== element.defaultValue) return true;
   }
   return false;
-}
-
-export function tippySetDefaultProps(extraProps = {}) {
-  tippy.setDefaultProps({
-    arrow: tippyStatic.roundArrow + tippyStatic.roundArrow,
-    duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? 1
-      : 150,
-    ...extraProps,
-  });
-}
-
-export function relativizeDateTimeElement(element, options = {}) {
-  const target = options.target ?? element;
-  window.clearTimeout(element.relativizeDateTimeElementTimeout);
-  (function update() {
-    if (!isConnected(element)) return;
-    const dateTime = element.getAttribute("datetime");
-    (target.relativizeDateTimeElementTooltip ??= tippy(target)).setProps({
-      touch: false,
-      content: formatUTCDateTime(dateTime),
-    });
-    element.textContent = relativizeDateTime(dateTime, options);
-    element.relativizeDateTimeElementTimeout = window.setTimeout(
-      update,
-      10 * 1000
-    );
-  })();
-}
-
-export function relativizeDateElement(element) {
-  window.clearTimeout(element.relativizeDateElementTimeout);
-  (function update() {
-    if (!isConnected(element)) return;
-    element.textContent = relativizeDate(element.getAttribute("datetime"));
-    element.relativizeDateElementTimeout = window.setTimeout(update, 60 * 1000);
-  })();
-}
-
-export function validateLocalizedDateTime(element) {
-  const date = UTCizeDateTime(element.value);
-  if (date === undefined)
-    return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
-  element.value = date.toISOString();
 }
 
 export const relativizeDateTime = (() => {
@@ -678,6 +644,24 @@ export const relativizeDateTime = (() => {
   };
 })();
 
+export function relativizeDateTimeElement(element, options = {}) {
+  const target = options.target ?? element;
+  window.clearTimeout(element.relativizeDateTimeElementTimeout);
+  (function update() {
+    if (!isConnected(element)) return;
+    const dateTime = element.getAttribute("datetime");
+    (target.relativizeDateTimeElementTooltip ??= tippy(target)).setProps({
+      touch: false,
+      content: formatUTCDateTime(dateTime),
+    });
+    element.textContent = relativizeDateTime(dateTime, options);
+    element.relativizeDateTimeElementTimeout = window.setTimeout(
+      update,
+      10 * 1000
+    );
+  })();
+}
+
 export function relativizeDate(dateString) {
   const date = localizeDate(dateString);
   const today = localizeDate(new Date().toISOString());
@@ -689,6 +673,26 @@ export function relativizeDate(dateString) {
     : date === yesterday
     ? "Yesterday"
     : `${date} · ${weekday(date)}`;
+}
+
+export function relativizeDateElement(element) {
+  window.clearTimeout(element.relativizeDateElementTimeout);
+  (function update() {
+    if (!isConnected(element)) return;
+    element.textContent = relativizeDate(element.getAttribute("datetime"));
+    element.relativizeDateElementTimeout = window.setTimeout(update, 60 * 1000);
+  })();
+}
+
+export function localizeDateTime(dateString) {
+  return `${localizeDate(dateString)} ${localizeTime(dateString)}`;
+}
+
+export function validateLocalizedDateTime(element) {
+  const date = UTCizeDateTime(element.value);
+  if (date === undefined)
+    return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
+  element.value = date.toISOString();
 }
 
 export function localizeDate(dateString) {
@@ -704,10 +708,6 @@ export function localizeTime(dateString) {
   return `${String(date.getHours()).padStart(2, "0")}:${String(
     date.getMinutes()
   ).padStart(2, "0")}`;
-}
-
-export function localizeDateTime(dateString) {
-  return `${localizeDate(dateString)} ${localizeTime(dateString)}`;
 }
 
 export function formatUTCDateTime(dateString) {
