@@ -103,10 +103,57 @@ export default async (application: Application): Promise<void> => {
     if (typeof nonce === "string") {
       response.locals.liveConnectionNonce = nonce;
 
-      const connection = { request, response };
-      connections.set(response.locals.liveConnectionNonce, connection);
+      const liveConnection = application.database.get<{
+        expiresAt: string | null;
+        shouldLiveUpdateOnConnectionAt: string | null;
+        url: string;
+      }>(
+        sql`
+          SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
+          FROM "liveConnections"
+          WHERE "nonce" = ${response.locals.liveConnectionNonce}
+        `
+      );
 
-      response.contentType("text/plain");
+      if (
+        liveConnection !== undefined &&
+        (liveConnection.expiresAt === null ||
+          liveConnection.url !== request.originalUrl)
+      ) {
+        response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
+        return response.status(422).end();
+      }
+
+      if (liveConnection !== undefined) {
+        application.database.run(
+          sql`
+            UPDATE "liveConnections"
+            SET
+              "expiresAt" = NULL,
+              "shouldLiveUpdateOnConnectionAt" = NULL
+            WHERE "nonce" = ${response.locals.liveConnectionNonce}
+          `
+        );
+        response.locals.log("LIVE-CONNECTION", "CONNECTION OPENED");
+      } else {
+        application.database.run(
+          sql`
+            INSERT INTO "liveConnections" (
+              "nonce",
+              "url",
+              "course"
+            )
+            VALUES (
+              ${response.locals.liveConnectionNonce},
+              ${request.originalUrl},
+              ${response.locals.course.id}
+            )
+          `
+        );
+        response.locals.log("LIVE-CONNECTION", "CREATED & CONNECTION OPENED");
+      }
+
+      response.contentType("application/x-ndjson");
       const heartbeatAbortController = new AbortController();
       (async () => {
         while (true) {
@@ -121,13 +168,30 @@ export default async (application: Application): Promise<void> => {
           }
         }
       })();
-
+      response.setHeader = (name, value) => response;
+      response.send = (body) => {
+        response.write(JSON.stringify(body) + "\n");
+        response.locals.log(
+          String(response.statusCode),
+          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+        );
+        return response;
+      };
       response.once("close", () => {
-        if (typeof response.locals.liveConnectionNonce !== "string") return;
-        connections.delete(response.locals.liveConnectionNonce);
         heartbeatAbortController.abort();
+        application.database.run(
+          sql`
+            DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
+          `
+        );
+        connections.delete(response.locals.liveConnectionNonce!);
       });
-      return;
+      connections.set(response.locals.liveConnectionNonce, {
+        request,
+        response,
+      });
+
+      if (liveConnection?.shouldLiveUpdateOnConnectionAt === null) return;
     }
 
     const abortNonce = request.header("Live-Connection-Abort");
@@ -230,108 +294,6 @@ export default async (application: Application): Promise<void> => {
 };
 
 // TODO: Add nonce to log
-
-application.server.locals.middleware.liveUpdates = [
-  (request, response, next) => {
-    const nonce = request.header("Live-Updates");
-
-    if (response.locals.liveConnectionNonce === undefined) {
-      response.locals.liveConnectionNonce = nonce;
-
-      const liveConnection = application.database.get<{
-        expiresAt: string | null;
-        shouldLiveUpdateOnConnectionAt: string | null;
-        url: string;
-      }>(
-        sql`
-          SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
-          FROM "liveConnections"
-          WHERE "nonce" = ${response.locals.liveConnectionNonce}
-        `
-      );
-
-      if (
-        liveConnection !== undefined &&
-        (liveConnection.expiresAt === null ||
-          liveConnection.url !== request.originalUrl)
-      ) {
-        response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
-        return response.status(422).end();
-      }
-
-      if (liveConnection !== undefined) {
-        application.database.run(
-          sql`
-            UPDATE "liveConnections"
-            SET
-              "expiresAt" = NULL,
-              "shouldLiveUpdateOnConnectionAt" = NULL
-            WHERE "nonce" = ${response.locals.liveConnectionNonce}
-          `
-        );
-        response.locals.log("LIVE-CONNECTION", "CONNECTION OPENED");
-      } else {
-        application.database.run(
-          sql`
-            INSERT INTO "liveConnections" (
-              "nonce",
-              "url",
-              "course"
-            )
-            VALUES (
-              ${response.locals.liveConnectionNonce},
-              ${request.originalUrl},
-              ${response.locals.course.id}
-            )
-          `
-        );
-        response.locals.log("LIVE-CONNECTION", "CREATED & CONNECTION OPENED");
-      }
-
-      response.contentType("application/x-ndjson");
-      const heartbeatAbortController = new AbortController();
-      (async () => {
-        while (true) {
-          response.write("\n");
-          try {
-            await timers.setTimeout(15 * 1000, undefined, {
-              ref: false,
-              signal: heartbeatAbortController.signal,
-            });
-          } catch {
-            break;
-          }
-        }
-      })();
-      response.setHeader = (name, value) => response;
-      response.send = (body) => {
-        response.write(JSON.stringify(body) + "\n");
-        response.locals.log(
-          String(response.statusCode),
-          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
-        );
-        return response;
-      };
-      response.once("close", () => {
-        heartbeatAbortController.abort();
-        application.database.run(
-          sql`
-            DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
-          `
-        );
-        connections.delete(response.locals.liveConnectionNonce!);
-      });
-      connections.set(response.locals.liveConnectionNonce, {
-        request,
-        response,
-      });
-
-      if (liveConnection?.shouldLiveUpdateOnConnectionAt === null) return;
-    }
-
-    next();
-  },
-];
 
 // TODO: BRING BACK THIS HELPER, WHICH IS NECESSARY BECAUSE IT SETS THE DATABASE
 application.server.locals.helpers.liveUpdates = async ({
