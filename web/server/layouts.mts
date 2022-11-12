@@ -365,6 +365,16 @@ export default async (application: Application): Promise<void> => {
             document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
               response.locals.enrollment?.accentColor
             }--600"));
+
+            if (event?.detail?.liveUpdate !== true)
+              leafac.liveConnection({
+                nonce: ${JSON.stringify(response.locals.liveConnectionNonce)},
+                newVersionMessage: "Courselore has been updated. Please reload the page.",
+                offlineMessage: "Failed to connect to the Courselore server. Please check your internet connection and try reloading the page.",
+                liveReload: ${JSON.stringify(
+                  application.configuration.environment === "development"
+                )},
+              });
           `}"
         >
           $${response.locals.enrollment === undefined
@@ -942,22 +952,10 @@ export default async (application: Application): Promise<void> => {
           <script src="https://${application.configuration
               .hostname}/${application.static["index.mjs"]}"></script>
           <script>
+            leafac.setServerVersion($${JSON.stringify(application.version)});
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
-            leafac.liveConnection({
-              version: $${JSON.stringify(application.version)},
-              url: $${JSON.stringify(
-                `https://${application.configuration.hostname}/live-connection`
-              )},
-              newVersionMessage:
-                "Courselore has been updated. Please reload the page.",
-              offlineMessage:
-                "Failed to connect to the Courselore server. Please check your internet connection and try reloading the page.",
-              liveReload: $${JSON.stringify(
-                application.configuration.environment === "development"
-              )},
-            });
             leafac.liveNavigation(
               $${JSON.stringify(application.configuration.hostname)}
             );
