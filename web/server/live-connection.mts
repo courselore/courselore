@@ -52,10 +52,11 @@ export default async (application: Application): Promise<void> => {
       const abortNonce = request.header("Live-Connection-Abort");
       if (typeof abortNonce === "string") {
         const liveConnection = application.database.get<{
+          nonce: string;
           processNumber: number | null;
         }>(
           sql`
-            SELECT "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
+            SELECT "nonce", "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
           `
         );
         if (
@@ -68,7 +69,7 @@ export default async (application: Application): Promise<void> => {
                 application.ports.serverEvents[liveConnection.processNumber]
               }/live-connections`,
               {
-                form: { nonce: abortNonce },
+                form: { nonce: liveConnection.nonce },
               }
             )
             .catch((error) => {
