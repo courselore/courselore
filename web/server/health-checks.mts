@@ -6,7 +6,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/health", (request, response) => {
     response.json({ name: application.name, version: application.version });
   });
@@ -18,7 +18,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/errors/validation", (request, response, next) => {
     next("Validation");
   });
@@ -28,7 +28,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/errors/cross-site-request-forgery", (request, response, next) => {
     next("Cross-Site Request Forgery");
   });
@@ -38,7 +38,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/errors/exception", (request, response) => {
     throw new Error("Exception");
   });
@@ -48,7 +48,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/errors/crash", (request, response) => {
     setTimeout(() => {
       throw new Error("Crash");

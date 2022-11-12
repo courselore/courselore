@@ -14,7 +14,6 @@ import caddyfile from "dedent";
 import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
-import healthChecks from "./health-checks.mjs";
 import base, { ApplicationBase } from "./base.mjs";
 import liveConnection, {
   ApplicationLiveConnection,
@@ -23,6 +22,7 @@ import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import authentication, {
   ApplicationAuthentication,
 } from "./authentication.mjs";
+import healthChecks from "./health-checks.mjs";
 import about from "./about.mjs";
 import administration, {
   ApplicationAdministration,
@@ -224,11 +224,11 @@ if (
 
         await logging(application);
         await database(application);
-        await healthChecks(application);
         await base(application);
         await liveConnection(application);
         await layouts(application);
         await authentication(application);
+        await healthChecks(application);
         await about(application);
         await administration(application);
         await user(application);

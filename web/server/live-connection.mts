@@ -23,6 +23,10 @@ export default async (application: Application): Promise<void> => {
     // TODO: Set Version header
     // TODO: Close other connection
     // TODO: Establish this connection
+    // ONLY ESTABLISH CONNECTION IF RESPONSE WAS:
+    // GET
+    // SUCCESSFUL
+    // OPEN WAYS TO HAVE EXCEPTIONS, FOR EXAMPLE, HEALTH CHECK. PERHAPS JUST UNSET ‘response.locas.liveConnectionNonce’ in route
     next();
   });
 
