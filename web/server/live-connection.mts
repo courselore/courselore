@@ -49,13 +49,13 @@ export default async (application: Application): Promise<void> => {
 
       response.header("Version", application.version);
 
-      const closeNonce = request.header("Live-Connection-Close");
-      if (typeof closeNonce === "string") {
+      const abortNonce = request.header("Live-Connection-Abort");
+      if (typeof abortNonce === "string") {
         const liveConnection = application.database.get<{
           processNumber: number | null;
         }>(
           sql`
-            SELECT "processNumber" FROM "liveConnections" WHERE "nonce" = ${closeNonce}
+            SELECT "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
           `
         );
         if (
@@ -68,7 +68,7 @@ export default async (application: Application): Promise<void> => {
                 application.ports.serverEvents[liveConnection.processNumber]
               }/live-connections`,
               {
-                form: { nonce: closeNonce },
+                form: { nonce: abortNonce },
               }
             )
             .catch((error) => {
@@ -105,7 +105,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
       liveConnections.delete(request.body.nonce);
-      application.log("LIVE-CONNECTION", "CLOSED", request.body.nonce);
+      application.log("LIVE-CONNECTION", "ABORTED", request.body.nonce);
 
       response.end();
     }
