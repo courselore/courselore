@@ -53,7 +53,31 @@ export default async (application: Application): Promise<void> => {
       const nonce = request.header("Live-Connection");
       if (typeof nonce === "string") {
         response.locals.liveConnectionNonce = nonce;
-        // TODO: Establish this connection
+
+        const connection = { request, response };
+        liveConnections.set(response.locals.liveConnectionNonce, connection);
+
+        response.contentType("text/plain");
+        const heartbeatAbortController = new AbortController();
+        (async () => {
+          while (true) {
+            response.write("\n");
+            try {
+              await timers.setTimeout(15 * 1000, undefined, {
+                ref: false,
+                signal: heartbeatAbortController.signal,
+              });
+            } catch {
+              break;
+            }
+          }
+        })();
+
+        response.once("close", () => {
+          if (typeof response.locals.liveConnectionNonce !== "string") return;
+          liveConnections.delete(response.locals.liveConnectionNonce);
+          heartbeatAbortController.abort();
+        });
         return;
       }
 
@@ -128,48 +152,14 @@ export default async (application: Application): Promise<void> => {
       response.end();
     }
   );
+
+  application.serverEvents.once("stop", () => {
+    for (const { request, response } of liveConnections.values())
+      response.end();
+  });
 };
 
 // TODO: liveUpdatesNonce
-
-// app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
-//   "/live-connection",
-//   (request, response) => {
-//     const connection = { request, response };
-//     liveConnections.add(connection);
-//     response.contentType("text/plain");
-//     const heartbeatAbortController = new AbortController();
-//     (async () => {
-//       while (true) {
-//         response.write("\n");
-//         try {
-//           await timers.setTimeout(15 * 1000, undefined, {
-//             ref: false,
-//             signal: heartbeatAbortController.signal,
-//           });
-//         } catch {
-//           break;
-//         }
-//       }
-//     })();
-//     response.once("close", () => {
-//       liveConnections.delete(connection);
-//       heartbeatAbortController.abort();
-//       console.log(
-//         `${new Date().toISOString()}\t${app.process.type}\t${
-//           request.ip
-//         }\t${request.method}\t${request.originalUrl}\t${response.statusCode}\t${
-//           (process.hrtime.bigint() - response.locals.responseStartTime) /
-//           1_000_000n
-//         }ms`
-//       );
-//     });
-//   }
-// );
-// if (app.process.type === "server")
-//   app.once("stop", () => {
-//     for (const { request, response } of liveConnections) response.end();
-//   });
 
 // export type ApplicationLiveConnections = {
 //   server: {
