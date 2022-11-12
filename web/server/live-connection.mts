@@ -342,35 +342,3 @@ application.server.locals.helpers.liveUpdates = async ({
         );
       });
 };
-
-application.serverEvents.post<{}, any, { courseId: string }, {}, {}>(
-  "/live-updates",
-  asyncHandler(async (request, response, next) => {
-    if (
-      typeof request.body.courseId !== "string" ||
-      request.body.courseId.trim() === ""
-    )
-      next("Validation");
-    response.end();
-
-    for (const liveConnection of application.database.all<{
-      nonce: string;
-    }>(
-      sql`
-        SELECT "nonce"
-        FROM "liveConnections"
-        WHERE
-          "course" = ${request.body.courseId} AND
-          "expiresAt" IS NULL
-      `
-    )) {
-      const connection = connections.get(liveConnection.nonce);
-      if (connection === undefined) continue;
-      connection.response.locals = {
-        liveConnectionNonce: connection.response.locals.liveConnectionNonce,
-      } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
-      application.server(connection.request, connection.response);
-      await timers.setTimeout(100, undefined, { ref: false });
-    }
-  })
-);
