@@ -333,12 +333,20 @@ export default async (application: Application): Promise<void> => {
       });
   };
 
-  let liveUpdate: Function = () => {};
+  let liveUpdates: Function = () => {};
+
+  application.serverEvents.post<{}, any, {}, {}, {}>(
+    "/live-updates",
+    (request, response) => {
+      liveUpdates();
+      response.end();
+    }
+  );
 
   application.serverEvents.once("start", async () => {
     while (true) {
       await new Promise((resolve) => {
-        liveUpdate = resolve;
+        liveUpdates = resolve;
       });
 
       while (true) {
@@ -389,14 +397,6 @@ export default async (application: Application): Promise<void> => {
       }
     }
   });
-
-  application.serverEvents.post<{}, any, {}, {}, {}>(
-    "/live-updates",
-    (request, response) => {
-      liveUpdate();
-      response.end();
-    }
-  );
 
   application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
     "/live-connections",
