@@ -12,7 +12,23 @@ export type ApplicationLiveConnection = {
   };
 };
 
-export default async (application: Application): Promise<void> => {};
+export default async (application: Application): Promise<void> => {
+  application.server.use<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >((request, response, next) => {
+    // TODO: Set Version header
+    // TODO: Close other connection
+    // TODO: Establish this connection
+    next();
+  });
+
+  // TODO: Worker that sends Live-Updates
+  // TODO: ‘serverEvents’ listener that triggers worker
+};
 
 // import timers from "node:timers/promises";
 // import express from "express";
