@@ -74,7 +74,11 @@ export async function liveConnection({
       body.liveConnectionOfflineTooltip?.hide();
 
       const newServerVersion = response.headers.get("Version");
-      if (newServerVersion !== serverVersion) {
+      if (
+        typeof serverVersion === "string" &&
+        typeof newServerVersion === "string" &&
+        serverVersion !== newServerVersion
+      ) {
         console.error(
           `NEW SERVER VERSION: ${serverVersion} → ${newServerVersion}`
         );
