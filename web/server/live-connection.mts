@@ -1,6 +1,5 @@
 import timers from "node:timers/promises";
 import express from "express";
-import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import got from "got";
 import { Application } from "./index.mjs";
