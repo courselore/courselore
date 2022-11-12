@@ -8,7 +8,6 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
-import { got } from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationConversation = {
@@ -4905,18 +4904,11 @@ export default async (application: Application): Promise<void> => {
       )}`
     );
 
-    for (const port of application.ports.serverEvents)
-      got
-        .post(`http://127.0.0.1:${port}/live-updates`, {
-          form: { url: `/courses/${response.locals.course.reference}` },
-        })
-        .catch((error) => {
-          response.locals.log(
-            "LIVE-UPDATES ",
-            "ERROR EMITTING POST EVENT",
-            error
-          );
-        });
+    application.server.locals.helpers.liveUpdates({
+      request,
+      response,
+      url: `/courses/${response.locals.course.reference}`,
+    });
   });
 
   application.server.delete<
@@ -9754,18 +9746,11 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: { url: `/courses/${response.locals.course.reference}` },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
@@ -9826,18 +9811,11 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: { url: `/courses/${response.locals.course.reference}` },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
@@ -9917,20 +9895,11 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: {
-              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
-            },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+      });
     }
   );
 
@@ -10007,20 +9976,11 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: {
-              url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
-            },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+      });
     }
   );
 };

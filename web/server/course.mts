@@ -1412,18 +1412,11 @@ export default async (application: Application): Promise<void> => {
         `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-information`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: { url: `/courses/${response.locals.course.reference}` },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
@@ -2015,18 +2008,11 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/tags`
     );
 
-    for (const port of application.ports.serverEvents)
-      got
-        .post(`http://127.0.0.1:${port}/live-updates`, {
-          form: { url: `/courses/${response.locals.course.reference}` },
-        })
-        .catch((error) => {
-          response.locals.log(
-            "LIVE-UPDATES ",
-            "ERROR EMITTING POST EVENT",
-            error
-          );
-        });
+    application.server.locals.helpers.liveUpdates({
+      request,
+      response,
+      url: `/courses/${response.locals.course.reference}`,
+    });
   });
 
   application.server.get<
@@ -4621,18 +4607,11 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: { url: `/courses/${response.locals.course.reference}` },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
@@ -4669,18 +4648,11 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      for (const port of application.ports.serverEvents)
-        got
-          .post(`http://127.0.0.1:${port}/live-updates`, {
-            form: { url: `/courses/${response.locals.course.reference}` },
-          })
-          .catch((error) => {
-            response.locals.log(
-              "LIVE-UPDATES ",
-              "ERROR EMITTING POST EVENT",
-              error
-            );
-          });
+      application.server.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
