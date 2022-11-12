@@ -190,6 +190,7 @@ export default async (application: Application): Promise<void> => {
           }
         }
       })();
+
       response.once("close", () => {
         heartbeatAbortController.abort();
         application.database.run(
@@ -197,14 +198,43 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
-        connections.delete(response.locals.liveConnectionNonce!);
+        got
+          .delete(
+            `http://127.0.0.1:${
+              application.ports.serverEvents[application.process.number]
+            }/live-connections`,
+            {
+              form: { nonce: response.locals.liveConnectionNonce },
+            }
+          )
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-CONNECTION",
+              "ERROR EMITTING DELETE EVENT",
+              error
+            );
+          });
       });
+
       connections.set(response.locals.liveConnectionNonce, {
         request,
         response,
       });
 
-      if (liveConnection?.liveUpdateAt !== null) "TODO";
+      if (liveConnection?.liveUpdateAt !== null)
+        got
+          .post(
+            `http://127.0.0.1:${
+              application.ports.serverEvents[application.process.number]
+            }/live-updates`
+          )
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES",
+              "ERROR EMITTING POST EVENT",
+              error
+            );
+          });
 
       return;
     }
@@ -303,24 +333,6 @@ export default async (application: Application): Promise<void> => {
       });
   };
 
-  application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
-    "/live-connections",
-    (request, response) => {
-      if (
-        typeof request.body.nonce !== "string" ||
-        request.body.nonce.trim() === ""
-      )
-        return response.status(422).end();
-
-      const connection = connections.get(request.body.nonce);
-      if (connection === undefined) return;
-      connections.delete(request.body.nonce);
-      connection.response.end();
-
-      response.end();
-    }
-  );
-
   let liveUpdate: Function = () => {};
 
   application.serverEvents.once("start", async () => {
@@ -345,7 +357,15 @@ export default async (application: Application): Promise<void> => {
         if (liveConnection === undefined) break;
 
         const connection = connections.get(liveConnection.nonce);
-        if (connection === undefined) continue;
+        if (connection === undefined) {
+          application.database.run(
+            sql`
+              DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
+            `
+          );
+          continue;
+        }
+
         const id = Math.random().toString(36).slice(2);
         const time = process.hrtime.bigint();
         connection.response.setHeader = (name, value) => connection.response;
@@ -364,6 +384,7 @@ export default async (application: Application): Promise<void> => {
           },
         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
         application.server(connection.request, connection.response);
+
         await timers.setTimeout(100, undefined, { ref: false });
       }
     }
@@ -373,6 +394,24 @@ export default async (application: Application): Promise<void> => {
     "/live-updates",
     (request, response) => {
       liveUpdate();
+      response.end();
+    }
+  );
+
+  application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
+    "/live-connections",
+    (request, response) => {
+      if (
+        typeof request.body.nonce !== "string" ||
+        request.body.nonce.trim() === ""
+      )
+        return response.status(422).end();
+
+      const connection = connections.get(request.body.nonce);
+      if (connection === undefined) return;
+      connections.delete(request.body.nonce);
+      connection.response.end();
+
       response.end();
     }
   );
