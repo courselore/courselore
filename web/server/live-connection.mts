@@ -105,6 +105,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
       liveConnections.delete(request.body.nonce);
+      application.log("LIVE-CONNECTION", "CLOSED", request.body.nonce);
 
       response.end();
     }
