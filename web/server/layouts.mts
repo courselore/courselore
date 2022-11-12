@@ -369,7 +369,7 @@ export default async (application: Application): Promise<void> => {
             if (event?.detail?.liveUpdate !== true)
               leafac.liveConnection({
                 nonce: ${JSON.stringify(response.locals.liveConnectionNonce)},
-                newVersionMessage: "Courselore has been updated. Please reload the page.",
+                newServerVersionMessage: "Courselore has been updated. Please reload the page.",
                 offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
                 liveReload: ${JSON.stringify(
                   application.configuration.environment === "development"

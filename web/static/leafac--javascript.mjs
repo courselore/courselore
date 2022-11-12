@@ -11,7 +11,7 @@ export function setServerVersion(newServerVersion) {
 
 export async function liveConnection({
   nonce,
-  newVersionMessage = "There has been an update. Please reload the page.",
+  newServerVersionMessage = "There has been an update. Please reload the page.",
   offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
   liveReload = false,
 }) {
@@ -73,19 +73,21 @@ export async function liveConnection({
 
       body.liveConnectionOfflineTooltip?.hide();
 
-      const newVersion = response.headers.get("Version");
-      if (newVersion !== version) {
-        console.error(`NEW VERSION: ${version} → ${newVersion}`);
-        (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
+      const newServerVersion = response.headers.get("Version");
+      if (newServerVersion !== serverVersion) {
+        console.error(
+          `NEW SERVER VERSION: ${serverVersion} → ${newServerVersion}`
+        );
+        (body.liveConnectionNewServerVersionTooltip ??= tippy(body)).setProps({
           appendTo: body,
           trigger: "manual",
           hideOnClick: false,
           theme: "error",
           arrow: false,
           interactive: true,
-          content: newVersionMessage,
+          content: newServerVersionMessage,
         });
-        body.liveConnectionNewVersionTooltip.show();
+        body.liveConnectionNewServerVersionTooltip.show();
         abort();
         return;
       }
