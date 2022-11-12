@@ -10,7 +10,7 @@ export type ApplicationLiveConnection = {
     locals: {
       ResponseLocals: {
         LiveConnection: Application["server"]["locals"]["ResponseLocals"]["Base"] & {
-          liveConnectionNonce: string;
+          liveConnectionNonce?: string;
         };
       };
     };
@@ -45,9 +45,17 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (response.locals.liveConnectionNonce !== undefined) {
         // TODO: SUBSEQUENT REQUEST
+        return next();
       }
 
       response.header("Version", application.version);
+
+      const nonce = request.header("Live-Connection");
+      if (typeof nonce === "string") {
+        response.locals.liveConnectionNonce = nonce;
+        // TODO: Establish this connection
+        return;
+      }
 
       const abortNonce = request.header("Live-Connection-Abort");
       if (typeof abortNonce === "string") {
@@ -81,11 +89,20 @@ export default async (application: Application): Promise<void> => {
             });
       }
 
-      // TODO: Establish this connection
-      // ONLY ESTABLISH CONNECTION IF RESPONSE WAS:
-      // GET
-      // SUCCESSFUL
-      // OPEN WAYS TO HAVE EXCEPTIONS, FOR EXAMPLE, HEALTH CHECK. PERHAPS JUST UNSET ‘response.locas.liveConnectionNonce’ in route
+      if (request.method === "GET") {
+        response.locals.liveConnectionNonce = Math.random()
+          .toString(36)
+          .slice(2);
+
+        response.once("close", () => {
+          if (
+            response.statusCode !== 200 ||
+            typeof response.locals.liveConnectionNonce !== "string"
+          )
+            return;
+          // TODO: SETUP LIVE-CONNECTION
+        });
+      }
 
       next();
     })

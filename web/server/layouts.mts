@@ -366,15 +366,24 @@ export default async (application: Application): Promise<void> => {
               response.locals.enrollment?.accentColor
             }--600"));
 
-            if (event?.detail?.liveUpdate !== true)
-              leafac.liveConnection({
-                nonce: ${JSON.stringify(response.locals.liveConnectionNonce)},
-                newServerVersionMessage: "Courselore has been updated. Please reload the page.",
-                offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                liveReload: ${JSON.stringify(
-                  application.configuration.environment === "development"
-                )},
-              });
+            ${
+              typeof response.locals.liveConnectionNonce === "string"
+                ? javascript`
+                    if (event?.detail?.liveUpdate !== true)
+                      leafac.liveConnection({
+                        nonce: ${JSON.stringify(
+                          response.locals.liveConnectionNonce
+                        )},
+                        newServerVersionMessage: "Courselore has been updated. Please reload the page.",
+                        offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
+                        liveReload: ${JSON.stringify(
+                          application.configuration.environment ===
+                            "development"
+                        )},
+                      });
+                  `
+                : javascript``
+            }
           `}"
         >
           $${response.locals.enrollment === undefined
