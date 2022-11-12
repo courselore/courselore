@@ -1,3 +1,8 @@
+import timers from "node:timers/promises";
+import express from "express";
+import { asyncHandler } from "@leafac/express-async-handler";
+import { sql } from "@leafac/sqlite";
+import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationLiveConnection = {
@@ -19,30 +24,49 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-  >((request, response, next) => {
-    // TODO: Set Version header
-    // TODO: Close other connection
-    // TODO: Establish this connection
-    // ONLY ESTABLISH CONNECTION IF RESPONSE WAS:
-    // GET
-    // SUCCESSFUL
-    // OPEN WAYS TO HAVE EXCEPTIONS, FOR EXAMPLE, HEALTH CHECK. PERHAPS JUST UNSET ‘response.locas.liveConnectionNonce’ in route
-    next();
-  });
+  >(
+    asyncHandler(async (request, response, next) => {
+      if (response.locals.liveConnectionNonce !== undefined) {
+        // TODO: SUBSEQUENT REQUEST
+      }
+
+      response.header("Version", application.version);
+
+      const closeNonce = request.header("Live-Connection-Close");
+      if (typeof closeNonce === "string") {
+        application.database.run(
+          sql`
+          DELETE FROM "liveUpdates" WHERE "nonce" = ${closeNonce}
+        `
+        );
+        for (const port of application.ports.serverEvents)
+          got
+            .delete(`http://127.0.0.1:${port}/live-updates`, {
+              form: { nonce: closeNonce },
+            })
+            .catch((error) => {
+              response.locals.log(
+                "LIVE-UPDATES",
+                "ERROR EMITTING DELETE EVENT",
+                error
+              );
+            });
+      }
+
+      // TODO: Close other connection
+      // TODO: Establish this connection
+      // ONLY ESTABLISH CONNECTION IF RESPONSE WAS:
+      // GET
+      // SUCCESSFUL
+      // OPEN WAYS TO HAVE EXCEPTIONS, FOR EXAMPLE, HEALTH CHECK. PERHAPS JUST UNSET ‘response.locas.liveConnectionNonce’ in route
+
+      next();
+    })
+  );
 
   // TODO: Worker that sends Live-Updates
   // TODO: ‘serverEvents’ listener that triggers worker
 };
-
-// import timers from "node:timers/promises";
-// import express from "express";
-// import { asyncHandler } from "@leafac/express-async-handler";
-// import { sql } from "@leafac/sqlite";
-// import got from "got";
-// import {
-//   Application,
-//   Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"],
-// } from "./index.mjs";
 
 // TODO: "LIVE-UPDATES", liveUpdatesNonce
 
@@ -363,31 +387,6 @@ export default async (application: Application): Promise<void> => {
 //         await timers.setTimeout(100, undefined, { ref: false });
 //       }
 //     })
-//   );
-
-//   application.server.use<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
-//     (request, response, next) => {
-//       const nonce = request.header("Live-Connection-Close");
-//       if (nonce === undefined) return next();
-//       application.database.run(
-//         sql`
-//           DELETE FROM "liveUpdates" WHERE "nonce" = ${nonce}
-//         `
-//       );
-//       for (const port of application.ports.serverEvents)
-//         got
-//           .delete(`http://127.0.0.1:${port}/live-updates`, {
-//             form: { nonce },
-//           })
-//           .catch((error) => {
-//             response.locals.log(
-//               "LIVE-UPDATES",
-//               "ERROR EMITTING DELETE EVENT",
-//               error
-//             );
-//           });
-//       next();
-//     }
 //   );
 
 //   application.serverEvents.delete<{}, any, { nonce: string }, {}, {}>(
