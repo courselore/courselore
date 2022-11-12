@@ -176,7 +176,27 @@ export default async (application: Application): Promise<void> => {
           typeof response.locals.liveConnectionNonce !== "string"
         )
           return;
-        // TODO: SETUP LIVE-CONNECTION
+
+        application.database.run(
+          sql`
+            INSERT INTO "liveUpdates" (
+              "expiresAt",
+              "nonce",
+              "url"
+            )
+            VALUES (
+              ${new Date(Date.now() + 60 * 1000).toISOString()},
+              ${response.locals.liveConnectionNonce},
+              ${request.originalUrl}
+            )
+          `
+        );
+
+        response.locals.log(
+          "LIVE-CONNECTION",
+          response.locals.liveConnectionNonce,
+          "CREATED"
+        );
       });
     }
 
@@ -209,37 +229,14 @@ export default async (application: Application): Promise<void> => {
   });
 };
 
-// TODO: liveUpdatesNonce
 // TODO: Add nonce to log
 
 application.server.locals.middleware.liveUpdates = [
   (request, response, next) => {
     const nonce = request.header("Live-Updates");
 
-    if (nonce === undefined) {
-      response.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
-      application.database.run(
-        sql`
-          INSERT INTO "liveUpdates" (
-            "expiresAt",
-            "nonce",
-            "url",
-            "course"
-          )
-          VALUES (
-            ${new Date(Date.now() + 60 * 1000).toISOString()},
-            ${response.locals.liveUpdatesNonce},
-            ${request.originalUrl},
-            ${response.locals.course.id}
-          )
-        `
-      );
-      response.locals.log("LIVE-CONNECTION", "CREATED");
-      return next();
-    }
-
-    if (response.locals.liveUpdatesNonce === undefined) {
-      response.locals.liveUpdatesNonce = nonce;
+    if (response.locals.liveConnectionNonce === undefined) {
+      response.locals.liveConnectionNonce = nonce;
 
       const liveUpdates = application.database.get<{
         expiresAt: string | null;
@@ -249,7 +246,7 @@ application.server.locals.middleware.liveUpdates = [
         sql`
           SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
           FROM "liveUpdates"
-          WHERE "nonce" = ${response.locals.liveUpdatesNonce}
+          WHERE "nonce" = ${response.locals.liveConnectionNonce}
         `
       );
 
@@ -269,7 +266,7 @@ application.server.locals.middleware.liveUpdates = [
             SET
               "expiresAt" = NULL,
               "shouldLiveUpdateOnConnectionAt" = NULL
-            WHERE "nonce" = ${response.locals.liveUpdatesNonce}
+            WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
         response.locals.log("LIVE-CONNECTION", "CONNECTION OPENED");
@@ -282,7 +279,7 @@ application.server.locals.middleware.liveUpdates = [
               "course"
             )
             VALUES (
-              ${response.locals.liveUpdatesNonce},
+              ${response.locals.liveConnectionNonce},
               ${request.originalUrl},
               ${response.locals.course.id}
             )
@@ -319,12 +316,12 @@ application.server.locals.middleware.liveUpdates = [
         heartbeatAbortController.abort();
         application.database.run(
           sql`
-            DELETE FROM "liveUpdates" WHERE "nonce" = ${response.locals.liveUpdatesNonce}
+            DELETE FROM "liveUpdates" WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
-        connections.delete(response.locals.liveUpdatesNonce!);
+        connections.delete(response.locals.liveConnectionNonce!);
       });
-      connections.set(response.locals.liveUpdatesNonce, {
+      connections.set(response.locals.liveConnectionNonce, {
         request,
         response,
       });
@@ -403,7 +400,7 @@ application.serverEvents.post<{}, any, { courseId: string }, {}, {}>(
       const connection = connections.get(liveUpdates.nonce);
       if (connection === undefined) continue;
       connection.response.locals = {
-        liveUpdatesNonce: connection.response.locals.liveUpdatesNonce,
+        liveConnectionNonce: connection.response.locals.liveConnectionNonce,
       } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
       application.server(connection.request, connection.response);
       await timers.setTimeout(100, undefined, { ref: false });
