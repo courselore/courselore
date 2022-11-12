@@ -19,7 +19,7 @@ export type ApplicationLiveConnection = {
 export default async (application: Application): Promise<void> => {
   application.database.run(
     sql`
-      DELETE FROM "liveUpdates" WHERE "processNumber" = ${application.process.number}
+      DELETE FROM "liveConnections" WHERE "processNumber" = ${application.process.number}
     `
   );
 
@@ -179,7 +179,7 @@ export default async (application: Application): Promise<void> => {
 
         application.database.run(
           sql`
-            INSERT INTO "liveUpdates" (
+            INSERT INTO "liveConnections" (
               "expiresAt",
               "nonce",
               "url"
@@ -238,31 +238,31 @@ application.server.locals.middleware.liveUpdates = [
     if (response.locals.liveConnectionNonce === undefined) {
       response.locals.liveConnectionNonce = nonce;
 
-      const liveUpdates = application.database.get<{
+      const liveConnection = application.database.get<{
         expiresAt: string | null;
         shouldLiveUpdateOnConnectionAt: string | null;
         url: string;
       }>(
         sql`
           SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
-          FROM "liveUpdates"
+          FROM "liveConnections"
           WHERE "nonce" = ${response.locals.liveConnectionNonce}
         `
       );
 
       if (
-        liveUpdates !== undefined &&
-        (liveUpdates.expiresAt === null ||
-          liveUpdates.url !== request.originalUrl)
+        liveConnection !== undefined &&
+        (liveConnection.expiresAt === null ||
+          liveConnection.url !== request.originalUrl)
       ) {
         response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
         return response.status(422).end();
       }
 
-      if (liveUpdates !== undefined) {
+      if (liveConnection !== undefined) {
         application.database.run(
           sql`
-            UPDATE "liveUpdates"
+            UPDATE "liveConnections"
             SET
               "expiresAt" = NULL,
               "shouldLiveUpdateOnConnectionAt" = NULL
@@ -273,7 +273,7 @@ application.server.locals.middleware.liveUpdates = [
       } else {
         application.database.run(
           sql`
-            INSERT INTO "liveUpdates" (
+            INSERT INTO "liveConnections" (
               "nonce",
               "url",
               "course"
@@ -316,7 +316,7 @@ application.server.locals.middleware.liveUpdates = [
         heartbeatAbortController.abort();
         application.database.run(
           sql`
-            DELETE FROM "liveUpdates" WHERE "nonce" = ${response.locals.liveConnectionNonce}
+            DELETE FROM "liveConnections" WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
         connections.delete(response.locals.liveConnectionNonce!);
@@ -326,7 +326,7 @@ application.server.locals.middleware.liveUpdates = [
         response,
       });
 
-      if (liveUpdates?.shouldLiveUpdateOnConnectionAt === null) return;
+      if (liveConnection?.shouldLiveUpdateOnConnectionAt === null) return;
     }
 
     next();
@@ -352,7 +352,7 @@ application.server.locals.helpers.liveUpdates = async ({
 }) => {
   application.database.run(
     sql`
-      UPDATE "liveUpdates"
+      UPDATE "liveConnections"
       SET "shouldLiveUpdateOnConnectionAt" = ${new Date().toISOString()}
       WHERE
         "course" = ${response.locals.course.id} AND
@@ -386,18 +386,18 @@ application.serverEvents.post<{}, any, { courseId: string }, {}, {}>(
       next("Validation");
     response.end();
 
-    for (const liveUpdates of application.database.all<{
+    for (const liveConnection of application.database.all<{
       nonce: string;
     }>(
       sql`
         SELECT "nonce"
-        FROM "liveUpdates"
+        FROM "liveConnections"
         WHERE
           "course" = ${request.body.courseId} AND
           "expiresAt" IS NULL
       `
     )) {
-      const connection = connections.get(liveUpdates.nonce);
+      const connection = connections.get(liveConnection.nonce);
       if (connection === undefined) continue;
       connection.response.locals = {
         liveConnectionNonce: connection.response.locals.liveConnectionNonce,
