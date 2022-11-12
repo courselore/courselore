@@ -36,8 +36,8 @@ export default async (application: Application): Promise<void> => {
       if (typeof closeNonce === "string") {
         application.database.run(
           sql`
-          DELETE FROM "liveUpdates" WHERE "nonce" = ${closeNonce}
-        `
+            DELETE FROM "liveConnections" WHERE "nonce" = ${closeNonce}
+          `
         );
         for (const port of application.ports.serverEvents)
           got
@@ -74,12 +74,12 @@ export default async (application: Application): Promise<void> => {
 //   request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
 //   response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
 // }>();
+
 // app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
 //   "/live-connection",
 //   (request, response) => {
 //     const connection = { request, response };
 //     liveConnections.add(connection);
-//     response.header("Version", app.version);
 //     response.contentType("text/plain");
 //     const heartbeatAbortController = new AbortController();
 //     (async () => {
@@ -114,16 +114,16 @@ export default async (application: Application): Promise<void> => {
 //     for (const { request, response } of liveConnections) response.end();
 //   });
 
-// export type ApplicationLiveUpdates = {
+// export type ApplicationLiveConnections = {
 //   server: {
 //     locals: {
 //       middleware: {
-//         liveUpdates: express.RequestHandler<
+//         liveConnections: express.RequestHandler<
 //           {},
 //           any,
 //           {},
 //           {},
-//           ResponseLocalsLiveUpdates
+//           ResponseLocalsLiveConnections
 //         >[];
 //       };
 //       helpers: {
