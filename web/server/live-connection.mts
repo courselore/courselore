@@ -92,101 +92,97 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-  >(
-    asyncHandler(async (request, response, next) => {
-      if (response.locals.liveConnectionNonce !== undefined) {
-        // TODO: SUBSEQUENT REQUEST
-        return next();
-      }
+  >((request, response, next) => {
+    if (response.locals.liveConnectionNonce !== undefined) {
+      // TODO: SUBSEQUENT REQUEST
+      return next();
+    }
 
-      response.header("Version", application.version);
+    response.header("Version", application.version);
 
-      const nonce = request.header("Live-Connection");
-      if (typeof nonce === "string") {
-        response.locals.liveConnectionNonce = nonce;
+    const nonce = request.header("Live-Connection");
+    if (typeof nonce === "string") {
+      response.locals.liveConnectionNonce = nonce;
 
-        const connection = { request, response };
-        connections.set(response.locals.liveConnectionNonce, connection);
+      const connection = { request, response };
+      connections.set(response.locals.liveConnectionNonce, connection);
 
-        response.contentType("text/plain");
-        const heartbeatAbortController = new AbortController();
-        (async () => {
-          while (true) {
-            response.write("\n");
-            try {
-              await timers.setTimeout(15 * 1000, undefined, {
-                ref: false,
-                signal: heartbeatAbortController.signal,
-              });
-            } catch {
-              break;
-            }
+      response.contentType("text/plain");
+      const heartbeatAbortController = new AbortController();
+      (async () => {
+        while (true) {
+          response.write("\n");
+          try {
+            await timers.setTimeout(15 * 1000, undefined, {
+              ref: false,
+              signal: heartbeatAbortController.signal,
+            });
+          } catch {
+            break;
           }
-        })();
+        }
+      })();
 
-        response.once("close", () => {
-          if (typeof response.locals.liveConnectionNonce !== "string") return;
-          connections.delete(response.locals.liveConnectionNonce);
-          heartbeatAbortController.abort();
-        });
-        return;
-      }
+      response.once("close", () => {
+        if (typeof response.locals.liveConnectionNonce !== "string") return;
+        connections.delete(response.locals.liveConnectionNonce);
+        heartbeatAbortController.abort();
+      });
+      return;
+    }
 
-      const abortNonce = request.header("Live-Connection-Abort");
-      if (typeof abortNonce === "string") {
-        const liveConnection = application.database.get<{
-          nonce: string;
-          processNumber: number | null;
-        }>(
+    const abortNonce = request.header("Live-Connection-Abort");
+    if (typeof abortNonce === "string") {
+      const liveConnection = application.database.get<{
+        nonce: string;
+        processNumber: number | null;
+      }>(
+        sql`
+          SELECT "nonce", "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
+        `
+      );
+      if (liveConnection !== undefined) {
+        application.database.run(
           sql`
-            SELECT "nonce", "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
+            DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
           `
         );
-        if (liveConnection !== undefined) {
-          application.database.run(
-            sql`
-              DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
-            `
-          );
-          if (liveConnection.processNumber !== null)
-            got
-              .delete(
-                `http://127.0.0.1:${
-                  application.ports.serverEvents[liveConnection.processNumber]
-                }/live-connections`,
-                {
-                  form: { nonce: liveConnection.nonce },
-                }
-              )
-              .catch((error) => {
-                response.locals.log(
-                  "LIVE-CONNECTION",
-                  "ERROR EMITTING DELETE EVENT",
-                  error
-                );
-              });
-          response.locals.log("LIVE-CONNECTION", "ABORTED", abortNonce);
-        }
+        if (liveConnection.processNumber !== null)
+          got
+            .delete(
+              `http://127.0.0.1:${
+                application.ports.serverEvents[liveConnection.processNumber]
+              }/live-connections`,
+              {
+                form: { nonce: liveConnection.nonce },
+              }
+            )
+            .catch((error) => {
+              response.locals.log(
+                "LIVE-CONNECTION",
+                "ERROR EMITTING DELETE EVENT",
+                error
+              );
+            });
+        response.locals.log("LIVE-CONNECTION", "ABORTED", abortNonce);
       }
+    }
 
-      if (request.method === "GET") {
-        response.locals.liveConnectionNonce = Math.random()
-          .toString(36)
-          .slice(2);
+    if (request.method === "GET") {
+      response.locals.liveConnectionNonce = Math.random().toString(36).slice(2);
 
-        response.once("close", () => {
-          if (
-            response.statusCode !== 200 ||
-            typeof response.locals.liveConnectionNonce !== "string"
-          )
-            return;
-          // TODO: SETUP LIVE-CONNECTION
-        });
-      }
+      response.once("close", () => {
+        if (
+          response.statusCode !== 200 ||
+          typeof response.locals.liveConnectionNonce !== "string"
+        )
+          return;
+        // TODO: SETUP LIVE-CONNECTION
+      });
+    }
 
-      next();
-    })
-  );
+    next();
+  });
 
   // TODO: Worker that sends Live-Updates
   // TODO: ‘serverEvents’ listener that triggers worker
