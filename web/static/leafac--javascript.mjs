@@ -224,7 +224,7 @@ export async function liveConnection({
     (event) => {
       event.detail.request.headers.set("Live-Connection-Abort", nonce);
       inLiveNavigation = true;
-      abortController?.();
+      abortController?.abort();
     },
     { once: true }
   );

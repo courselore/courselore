@@ -340,7 +340,7 @@ export default async (application: Application): Promise<void> => {
             SELECT "nonce"
             FROM "liveConnections"
             WHERE
-              "processNumber" = ${application.process.number},
+              "processNumber" = ${application.process.number} AND
               "liveUpdateAt" IS NOT NULL
             LIMIT 1
           `
