@@ -105,11 +105,12 @@ export default async (application: Application): Promise<void> => {
 
       const liveConnection = application.database.get<{
         expiresAt: string | null;
-        shouldLiveUpdateOnConnectionAt: string | null;
         url: string;
+        processNumber: number | null;
+        liveUpdateAt: string | null;
       }>(
         sql`
-          SELECT "expiresAt", "shouldLiveUpdateOnConnectionAt", "url"
+          SELECT "expiresAt", "url", "processNumber", "liveUpdateAt"
           FROM "liveConnections"
           WHERE "nonce" = ${response.locals.liveConnectionNonce}
         `
@@ -118,7 +119,8 @@ export default async (application: Application): Promise<void> => {
       if (
         liveConnection !== undefined &&
         (liveConnection.expiresAt === null ||
-          liveConnection.url !== request.originalUrl)
+          liveConnection.url !== request.originalUrl ||
+          liveConnection.processNumber !== null)
       ) {
         response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
         return response.status(422).end();
@@ -130,7 +132,8 @@ export default async (application: Application): Promise<void> => {
             UPDATE "liveConnections"
             SET
               "expiresAt" = NULL,
-              "shouldLiveUpdateOnConnectionAt" = NULL
+              "processNumber" = ${application.process.number},
+              "liveUpdateAt" = NULL
             WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
@@ -141,12 +144,12 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "liveConnections" (
               "nonce",
               "url",
-              "course"
+              "processNumber"
             )
             VALUES (
               ${response.locals.liveConnectionNonce},
               ${request.originalUrl},
-              ${response.locals.course.id}
+              "processNumber" = ${application.process.number}
             )
           `
         );
@@ -191,7 +194,9 @@ export default async (application: Application): Promise<void> => {
         response,
       });
 
-      if (liveConnection?.shouldLiveUpdateOnConnectionAt === null) return;
+      if (liveConnection?.liveUpdateAt !== null) next();
+
+      return;
     }
 
     const abortNonce = request.header("Live-Connection-Abort");
@@ -315,7 +320,7 @@ application.server.locals.helpers.liveUpdates = async ({
   application.database.run(
     sql`
       UPDATE "liveConnections"
-      SET "shouldLiveUpdateOnConnectionAt" = ${new Date().toISOString()}
+      SET "liveUpdateAt" = ${new Date().toISOString()}
       WHERE
         "course" = ${response.locals.course.id} AND
         "expiresAt" IS NOT NULL
