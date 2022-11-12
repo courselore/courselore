@@ -9,85 +9,78 @@ export function setServerVersion(newServerVersion) {
   serverVersion = newServerVersion;
 }
 
-export function liveConnection({
-  version,
-  url,
+export async function liveConnection({
+  nonce,
   newVersionMessage = "There has been an update. Please reload the page.",
-  offlineMessage = "Failed to connect to server. Please check your internet connection and try reloading the page.",
+  offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
   liveReload = false,
 }) {
-  window.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-      const body = document.querySelector("body");
-      let connected;
-      let shouldLiveReloadOnNextConnection = false;
-      while (true) {
-        try {
-          connected = false;
-          const abortController = new AbortController();
-          const abort = () => {
-            abortController.abort();
-          };
-          let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-          const response = await fetch(url, {
-            cache: "no-store",
-            signal: abortController.signal,
-          });
-          if (!response.ok) throw new Error("Response isn’t OK");
-          connected = true;
-          if (shouldLiveReloadOnNextConnection) {
-            abort();
-            document.querySelector("body").isModified = false;
-            window.location.reload();
-            return;
-          }
-          body.liveConnectionOfflineTooltip?.hide();
-          if (response.headers.get("Version") !== version) {
-            console.error("NEW VERSION");
-            (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
-              appendTo: body,
-              trigger: "manual",
-              hideOnClick: false,
-              theme: "error",
-              arrow: false,
-              interactive: true,
-              content: newVersionMessage,
-            });
-            body.liveConnectionNewVersionTooltip.show();
-            abort();
-            return;
-          }
-          const responseBodyReader = response.body.getReader();
-          while (true) {
-            const chunk = (await responseBodyReader.read()).value;
-            if (chunk === undefined) break;
-            clearTimeout(heartbeatTimeout);
-            heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-          }
-        } catch (error) {
-          console.error(error);
-          if (!connected) {
-            (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
-              appendTo: body,
-              trigger: "manual",
-              hideOnClick: false,
-              theme: "error",
-              arrow: false,
-              interactive: true,
-              content: liveReload ? "Live-Reloading…" : offlineMessage,
-            });
-            body.liveConnectionOfflineTooltip.show();
-            shouldLiveReloadOnNextConnection = liveReload;
-          }
-        }
-        await new Promise((resolve) => {
-          window.setTimeout(resolve, liveReload ? 200 : 1000);
-        });
+  const body = document.querySelector("body");
+  let connected;
+  let shouldLiveReloadOnNextConnection = false;
+  while (true) {
+    try {
+      connected = false;
+      const abortController = new AbortController();
+      const abort = () => {
+        abortController.abort();
+      };
+      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+      const response = await fetch(url, {
+        cache: "no-store",
+        signal: abortController.signal,
+      });
+      if (!response.ok) throw new Error("Response isn’t OK");
+      connected = true;
+      if (shouldLiveReloadOnNextConnection) {
+        abort();
+        document.querySelector("body").isModified = false;
+        window.location.reload();
+        return;
       }
-    },
-    { once: true }
-  );
+      body.liveConnectionOfflineTooltip?.hide();
+      if (response.headers.get("Version") !== version) {
+        console.error("NEW VERSION");
+        (body.liveConnectionNewVersionTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content: newVersionMessage,
+        });
+        body.liveConnectionNewVersionTooltip.show();
+        abort();
+        return;
+      }
+      const responseBodyReader = response.body.getReader();
+      while (true) {
+        const chunk = (await responseBodyReader.read()).value;
+        if (chunk === undefined) break;
+        clearTimeout(heartbeatTimeout);
+        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+      }
+    } catch (error) {
+      console.error(error);
+      if (!connected) {
+        (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content: liveReload ? "Live-Reloading…" : offlineMessage,
+        });
+        body.liveConnectionOfflineTooltip.show();
+        shouldLiveReloadOnNextConnection = liveReload;
+      }
+    }
+    await new Promise((resolve) => {
+      window.setTimeout(resolve, liveReload ? 200 : 1000);
+    });
+  }
 }
 
 // export async function liveUpdates(nonce) {
