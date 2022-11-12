@@ -233,7 +233,7 @@ export async function liveConnection({
     try {
       connected = false;
 
-      const abortController = new AbortController();
+      abortController = new AbortController();
       const abort = () => {
         abortController.abort();
       };
