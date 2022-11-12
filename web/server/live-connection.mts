@@ -18,6 +18,23 @@ export type ApplicationLiveConnection = {
 };
 
 export default async (application: Application): Promise<void> => {
+  const liveConnections = new Map<
+    string,
+    {
+      request: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      >;
+      response: express.Response<
+        any,
+        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      >;
+    }
+  >();
+
   application.server.use<
     {},
     any,
@@ -34,19 +51,29 @@ export default async (application: Application): Promise<void> => {
 
       const closeNonce = request.header("Live-Connection-Close");
       if (typeof closeNonce === "string") {
-        application.database.run(
+        const liveConnection = application.database.get<{
+          processNumber: number | null;
+        }>(
           sql`
-            DELETE FROM "liveConnections" WHERE "nonce" = ${closeNonce}
+            SELECT "processNumber" FROM "liveConnections" WHERE "nonce" = ${closeNonce}
           `
         );
-        for (const port of application.ports.serverEvents)
+        if (
+          liveConnection !== undefined &&
+          liveConnection.processNumber !== null
+        )
           got
-            .delete(`http://127.0.0.1:${port}/live-updates`, {
-              form: { nonce: closeNonce },
-            })
+            .delete(
+              `http://127.0.0.1:${
+                application.ports.serverEvents[liveConnection.processNumber]
+              }/live-connections`,
+              {
+                form: { nonce: closeNonce },
+              }
+            )
             .catch((error) => {
               response.locals.log(
-                "LIVE-UPDATES",
+                "LIVE-CONNECTION",
                 "ERROR EMITTING DELETE EVENT",
                 error
               );
@@ -66,14 +93,26 @@ export default async (application: Application): Promise<void> => {
 
   // TODO: Worker that sends Live-Updates
   // TODO: ‘serverEvents’ listener that triggers worker
+
+  application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
+    "/live-connections",
+    (request, response) => {
+      if (typeof request.body.nonce !== "string")
+        return response.status(422).end();
+
+      application.database.run(
+        sql`
+          DELETE FROM "liveConnections" WHERE "nonce" = ${request.body.nonce}
+        `
+      );
+      liveConnections.delete(request.body.nonce);
+
+      response.end();
+    }
+  );
 };
 
-// TODO: "LIVE-UPDATES", liveUpdatesNonce
-
-// const liveConnections = new Set<{
-//   request: express.Request<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
-//   response: express.Response<any, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>;
-// }>();
+// TODO: liveUpdatesNonce
 
 // app.server.get<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>(
 //   "/live-connection",
@@ -188,12 +227,12 @@ export default async (application: Application): Promise<void> => {
 //             })
 //             .catch((error) => {
 //               application.log(
-//                 "LIVE-UPDATES",
+//                 "LIVE-CONNECTION",
 //                 "ERROR EMITTING DELETE EVENT",
 //                 error
 //               );
 //             });
-//         application.log("LIVE-UPDATES", liveUpdates.nonce, "EXPIRED");
+//         application.log("LIVE-CONNECTION", liveUpdates.nonce, "EXPIRED");
 //       }
 //       application.log("CLEAN EXPIRED ‘liveUpdates’", "FINISHED");
 //       await timers.setTimeout(60 * 1000, undefined, { ref: false });
@@ -222,7 +261,7 @@ export default async (application: Application): Promise<void> => {
 //             )
 //           `
 //         );
-//         response.locals.log("LIVE-UPDATES", "CREATED");
+//         response.locals.log("LIVE-CONNECTION", "CREATED");
 //         return next();
 //       }
 
@@ -246,7 +285,7 @@ export default async (application: Application): Promise<void> => {
 //           (liveUpdates.expiresAt === null ||
 //             liveUpdates.url !== request.originalUrl)
 //         ) {
-//           response.locals.log("LIVE-UPDATES", "CONNECTION FAILED");
+//           response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
 //           return response.status(422).end();
 //         }
 
@@ -260,7 +299,7 @@ export default async (application: Application): Promise<void> => {
 //               WHERE "nonce" = ${response.locals.liveUpdatesNonce}
 //             `
 //           );
-//           response.locals.log("LIVE-UPDATES", "CONNECTION OPENED");
+//           response.locals.log("LIVE-CONNECTION", "CONNECTION OPENED");
 //         } else {
 //           application.database.run(
 //             sql`
@@ -276,7 +315,7 @@ export default async (application: Application): Promise<void> => {
 //               )
 //             `
 //           );
-//           response.locals.log("LIVE-UPDATES", "CREATED & CONNECTION OPENED");
+//           response.locals.log("LIVE-CONNECTION", "CREATED & CONNECTION OPENED");
 //         }
 
 //         response.contentType("application/x-ndjson");
@@ -403,7 +442,7 @@ export default async (application: Application): Promise<void> => {
 //       if (connection === undefined) return;
 //       connections.delete(request.body.nonce);
 //       connection.response.end();
-//       connection.response.locals.log("LIVE-UPDATES", "ABORTED");
+//       connection.response.locals.log("LIVE-CONNECTION", "ABORTED");
 //     }
 //   );
 
