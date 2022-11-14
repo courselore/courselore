@@ -164,29 +164,6 @@ export type ApplicationAuthentication = {
           }): void;
         };
 
-        emailVerification({
-          request,
-          response,
-          userId,
-          userEmail,
-          welcome,
-        }: {
-          request: express.Request<
-            {},
-            any,
-            {},
-            { redirect?: string },
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-          >;
-          response: express.Response<
-            any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-          >;
-          userId: number;
-          userEmail: string;
-          welcome?: boolean;
-        }): void;
-
         passwordConfirmation({
           request,
           response,
@@ -220,6 +197,29 @@ export type ApplicationAuthentication = {
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
         }): boolean;
+
+        emailVerification({
+          request,
+          response,
+          userId,
+          userEmail,
+          welcome,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            { redirect?: string },
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+          >;
+          userId: number;
+          userEmail: string;
+          welcome?: boolean;
+        }): void;
       };
     };
   };
@@ -529,6 +529,30 @@ export default async (application: Application): Promise<void> => {
       next();
     })
   );
+
+  application.server.locals.helpers.passwordConfirmation = async ({
+    request,
+    response,
+  }) =>
+    typeof request.body.passwordConfirmation === "string" &&
+    request.body.passwordConfirmation.trim() !== "" &&
+    (await argon2.verify(
+      response.locals.user.password,
+      request.body.passwordConfirmation
+    ));
+
+  application.server.locals.helpers.mayCreateCourses = ({
+    request,
+    response,
+  }) =>
+    response.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
+      "all" ||
+    (response.locals.administrationOptions
+      .userSystemRolesWhoMayCreateCourses === "staff-and-administrators" &&
+      ["staff", "administrator"].includes(response.locals.user.systemRole)) ||
+    (response.locals.administrationOptions
+      .userSystemRolesWhoMayCreateCourses === "administrators" &&
+      response.locals.user.systemRole === "administrator");
 
   application.server.get<
     {},
@@ -1247,30 +1271,6 @@ export default async (application: Application): Promise<void> => {
       );
     })
   );
-
-  application.server.locals.helpers.passwordConfirmation = async ({
-    request,
-    response,
-  }) =>
-    typeof request.body.passwordConfirmation === "string" &&
-    request.body.passwordConfirmation.trim() !== "" &&
-    (await argon2.verify(
-      response.locals.user.password,
-      request.body.passwordConfirmation
-    ));
-
-  application.server.locals.helpers.mayCreateCourses = ({
-    request,
-    response,
-  }) =>
-    response.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
-      "all" ||
-    (response.locals.administrationOptions
-      .userSystemRolesWhoMayCreateCourses === "staff-and-administrators" &&
-      ["staff", "administrator"].includes(response.locals.user.systemRole)) ||
-    (response.locals.administrationOptions
-      .userSystemRolesWhoMayCreateCourses === "administrators" &&
-      response.locals.user.systemRole === "administrator");
 
   application.server.get<
     {},
