@@ -183,7 +183,7 @@ export function liveNavigation() {
       event.shiftKey ||
       event.target.isContentEditable ||
       link === null ||
-      new URL(link.href).hostname !== window.location.hostname
+      link.hostname !== window.location.hostname
     )
       return;
 
