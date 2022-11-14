@@ -80,8 +80,6 @@ export type ApplicationAuthentication = {
             latestVersion: string;
             userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
           };
-
-          mayCreateCourses: boolean;
         };
       };
 
@@ -205,6 +203,23 @@ export type ApplicationAuthentication = {
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
         }): Promise<boolean>;
+
+        mayCreateCourses({
+          request,
+          response,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            {},
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
+        }): boolean;
       };
     };
   };
@@ -510,18 +525,6 @@ export default async (application: Application): Promise<void> => {
         (() => {
           throw new Error("Failed to get ‘administrationOptions’.");
         })();
-
-      response.locals.mayCreateCourses =
-        response.locals.administrationOptions
-          .userSystemRolesWhoMayCreateCourses === "all" ||
-        (response.locals.administrationOptions
-          .userSystemRolesWhoMayCreateCourses === "staff-and-administrators" &&
-          ["staff", "administrator"].includes(
-            response.locals.user.systemRole
-          )) ||
-        (response.locals.administrationOptions
-          .userSystemRolesWhoMayCreateCourses === "administrators" &&
-          response.locals.user.systemRole === "administrator");
 
       next();
     })
@@ -1255,6 +1258,19 @@ export default async (application: Application): Promise<void> => {
       response.locals.user.password,
       request.body.passwordConfirmation
     ));
+
+  application.server.locals.helpers.mayCreateCourses = ({
+    request,
+    response,
+  }) =>
+    response.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
+      "all" ||
+    (response.locals.administrationOptions
+      .userSystemRolesWhoMayCreateCourses === "staff-and-administrators" &&
+      ["staff", "administrator"].includes(response.locals.user.systemRole)) ||
+    (response.locals.administrationOptions
+      .userSystemRolesWhoMayCreateCourses === "administrators" &&
+      response.locals.user.systemRole === "administrator");
 
   application.server.get<
     {},
