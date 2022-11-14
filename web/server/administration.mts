@@ -38,38 +38,39 @@ export default async (application: Application): Promise<void> => {
     "administrator",
   ];
 
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      try {
-        application.log("CHECK FOR UPDATES", "STARTING...");
-        const latestVersion = semver.clean(
-          (
-            (await got(
-              "https://api.github.com/repos/courselore/courselore/releases/latest"
-            ).json()) as { tag_name: string }
-          ).tag_name
-        );
-        if (typeof latestVersion !== "string")
-          throw new Error(`latestVersion = ‘${latestVersion}’`);
-        application.database.run(
-          sql`
-            UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
-          `
-        );
-        application.log(
-          "CHECK FOR UPDATES",
-          ...(semver.gt(latestVersion, application.version)
-            ? [
-                `NEW VERSION AVAILABLE: ${application.version} → ${latestVersion}`,
-              ]
-            : [`CURRENT VERSION ${application.version} IS THE LATEST`])
-        );
-      } catch (error) {
-        application.log("CHECK FOR UPDATES", "ERROR", String(error));
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        try {
+          application.log("CHECK FOR UPDATES", "STARTING...");
+          const latestVersion = semver.clean(
+            (
+              (await got(
+                "https://api.github.com/repos/courselore/courselore/releases/latest"
+              ).json()) as { tag_name: string }
+            ).tag_name
+          );
+          if (typeof latestVersion !== "string")
+            throw new Error(`latestVersion = ‘${latestVersion}’`);
+          application.database.run(
+            sql`
+              UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
+            `
+          );
+          application.log(
+            "CHECK FOR UPDATES",
+            ...(semver.gt(latestVersion, application.version)
+              ? [
+                  `NEW VERSION AVAILABLE: ${application.version} → ${latestVersion}`,
+                ]
+              : [`CURRENT VERSION ${application.version} IS THE LATEST`])
+          );
+        } catch (error) {
+          application.log("CHECK FOR UPDATES", "ERROR", String(error));
+        }
+        await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
       }
-      await timers.setTimeout(5 * 60 * 1000, undefined, { ref: false });
-    }
-  });
+    });
 
   application.server.get<
     {},
