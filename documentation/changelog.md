@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Introduced [variables fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide), which reduce the number of files that have to be downloaded by the browser and speed up the initial loading of Courselore.
+- Changed the behavior of archived courses.
 
 ## 5.0.0
 

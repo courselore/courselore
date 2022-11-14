@@ -50,6 +50,7 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
     if (response.locals.log !== undefined) return next();
+
     const id = Math.random().toString(36).slice(2);
     const time = process.hrtime.bigint();
     response.locals.log = (...messageParts) => {

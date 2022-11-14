@@ -32,11 +32,13 @@ export default async (application: Application): Promise<void> => {
   >((request, response, next) => {
     response.locals.css = localCSS();
     response.locals.html = HTMLForJavaScript();
+
     if (
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
       request.header("CSRF-Protection") !== "true"
     )
       next("Cross-Site Request Forgery");
+
     next();
   });
 
