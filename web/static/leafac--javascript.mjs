@@ -56,7 +56,7 @@ export function tippySetDefaultProps(extraProps = {}) {
   });
 }
 
-export function liveNavigation(hostname) {
+export function liveNavigation() {
   let abortController;
   let previousLocation = { ...window.location };
 
@@ -183,7 +183,7 @@ export function liveNavigation(hostname) {
       event.shiftKey ||
       event.target.isContentEditable ||
       link === null ||
-      !link.href.startsWith(`https://${hostname}`)
+      new URL(link.href).hostname !== window.location.hostname
     )
       return;
 
@@ -198,7 +198,7 @@ export function liveNavigation(hostname) {
     ).toUpperCase();
     const action =
       event.submitter?.getAttribute("formaction") ?? event.target.action;
-    if (!action.startsWith(`https://${hostname}`)) return;
+    if (new URL(action).hostname !== window.location.hostname) return;
     const enctype =
       event.submitter?.getAttribute("formenctype") ?? event.target.enctype;
     const body =

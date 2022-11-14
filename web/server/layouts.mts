@@ -965,9 +965,7 @@ export default async (application: Application): Promise<void> => {
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
-            leafac.liveNavigation(
-              $${JSON.stringify(application.configuration.hostname)}
-            );
+            leafac.liveNavigation();
           </script>
 
           <meta
