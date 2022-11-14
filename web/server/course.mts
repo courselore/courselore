@@ -196,7 +196,10 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-journal-arrow-down"></i>
                     Enroll in an Existing Course
                   </button>
-                  $${response.locals.mayCreateCourses
+                  $${application.server.locals.helpers.mayCreateCourses({
+                    request,
+                    response,
+                  })
                     ? html`
                         <a
                           href="https://${application.configuration
@@ -273,7 +276,7 @@ export default async (application: Application): Promise<void> => {
     if (
       response.locals.user === undefined ||
       response.locals.user.emailVerifiedAt === null ||
-      !response.locals.mayCreateCourses
+      !application.server.locals.helpers.mayCreateCourses({ request, response })
     )
       return next();
 
@@ -399,7 +402,7 @@ export default async (application: Application): Promise<void> => {
     if (
       response.locals.user === undefined ||
       response.locals.user.emailVerifiedAt === null ||
-      !response.locals.mayCreateCourses
+      !application.server.locals.helpers.mayCreateCourses({ request, response })
     )
       return next();
 
