@@ -186,6 +186,7 @@ export function liveNavigation(hostname) {
       !link.href.startsWith(`https://${hostname}`)
     )
       return;
+
     event.preventDefault();
     liveNavigate({ request: new Request(link.href), event });
   };
@@ -197,6 +198,7 @@ export function liveNavigation(hostname) {
     ).toUpperCase();
     const action =
       event.submitter?.getAttribute("formaction") ?? event.target.action;
+    if (!action.startsWith(`https://${hostname}`)) return;
     const enctype =
       event.submitter?.getAttribute("formenctype") ?? event.target.enctype;
     const body =
@@ -206,10 +208,11 @@ export function liveNavigation(hostname) {
     const submitterName = event.submitter?.getAttribute("name");
     if (typeof submitterName === "string")
       body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
-    if (!action.startsWith(`https://${hostname}`)) return;
+
     event.preventDefault();
     if (event.submitter?.disabled !== undefined)
       event.submitter.disabled = true;
+
     const request = ["GET", "HEAD", "OPTIONS", "TRACE"].includes(method)
       ? (() => {
           const actionURL = new URL(action);
