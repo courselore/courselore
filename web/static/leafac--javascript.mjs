@@ -263,7 +263,6 @@ export async function liveConnection({
         abortController.abort();
       };
       let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
-
       const response = await fetch(window.location.href, {
         cache: "no-store",
         headers: { "Live-Connection": nonce },
@@ -273,8 +272,11 @@ export async function liveConnection({
       if (shouldLiveReloadOnNextConnection) {
         abort();
         if (response.status === 502)
-          throw new Error("Server hasn’t started yet.");
-        document.querySelector("body").isModified = false;
+          throw new Error("The server hasn’t started yet.");
+        body.isModified = false;
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, 1000);
+        });
         window.location.reload();
         return;
       }
@@ -367,7 +369,7 @@ export async function liveConnection({
     nonce = Math.random().toString(36).slice(2);
 
     await new Promise((resolve) => {
-      window.setTimeout(resolve, liveReload ? 200 : 1000);
+      window.setTimeout(resolve, liveReload ? 200 : 5 * 1000);
     });
   }
 }
