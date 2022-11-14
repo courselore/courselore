@@ -166,7 +166,7 @@ export type ApplicationAuthentication = {
           }): void;
         };
 
-        emailVerification: ({
+        emailVerification({
           request,
           response,
           userId,
@@ -187,7 +187,7 @@ export type ApplicationAuthentication = {
           userId: number;
           userEmail: string;
           welcome?: boolean;
-        }) => void;
+        }): void;
       };
     };
   };
