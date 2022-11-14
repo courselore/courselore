@@ -23,17 +23,21 @@ export function customFormValidation() {
 
 export function warnAboutLosingInputs() {
   let isSubmittingForm = false;
+
   window.addEventListener("DOMContentLoaded", () => {
     isSubmittingForm = false;
   });
+
   document.addEventListener("submit", () => {
     isSubmittingForm = true;
   });
+
   window.onbeforeunload = (event) => {
     if (isSubmittingForm || !isModified(document.querySelector("body"))) return;
     event.preventDefault();
     event.returnValue = "";
   };
+
   window.onbeforelivenavigate = () =>
     isSubmittingForm ||
     !isModified(document.querySelector("body")) ||
@@ -57,12 +61,16 @@ export function liveNavigation(hostname) {
   let previousLocation = { ...window.location };
 
   const liveNavigate = async ({ request, event }) => {
-    request.headers.set("Live-Navigation", "true");
     const body = document.querySelector("body");
+
     if (event instanceof PopStateEvent) abortController?.abort();
     else if (body.getAttribute("live-navigation") !== null) return;
+
+    request.headers.set("Live-Navigation", "true");
+
     const isGet = ["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method);
     if (!isGet) request.headers.set("CSRF-Protection", "true");
+
     const requestURL = new URL(request.url);
     const detail = { request, previousLocation };
     if (
@@ -84,25 +92,33 @@ export function liveNavigation(hostname) {
       previousLocation = { ...window.location };
       return;
     }
+
     if (window.onbeforelivenavigate?.() === false) return;
     body.setAttribute("live-navigation", "true");
     window.dispatchEvent(new CustomEvent("livenavigate", { detail }));
     window.onlivenavigate?.();
+
     try {
       abortController = new AbortController();
       const response = await fetch(request, {
         cache: "no-store",
         signal: abortController.signal,
       });
-      if (response.headers.has("Live-Navigation-External-Redirect")) {
+
+      const externalRedirect = response.headers.get(
+        "Live-Navigation-External-Redirect"
+      );
+      if (typeof externalRedirect === "string") {
         window.location.assign(
           response.headers.get("Live-Navigation-External-Redirect")
         );
         return;
       }
+
       const responseText = await response.text();
       const responseURL = new URL(response.url);
       responseURL.hash = requestURL.hash;
+
       if (
         (isGet ||
           window.location.origin !== responseURL.origin ||
@@ -111,7 +127,9 @@ export function liveNavigation(hostname) {
         !(event instanceof PopStateEvent)
       )
         window.history.pushState(undefined, "", responseURL.href);
+
       loadDocument(responseText, detail);
+
       if (window.location.hash.trim() !== "")
         document
           .getElementById(window.location.hash.slice(1))
@@ -119,8 +137,10 @@ export function liveNavigation(hostname) {
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error(error);
+
         if (isGet && !(event instanceof PopStateEvent))
           window.history.pushState(undefined, "", requestURL.href);
+
         (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
           appendTo: body,
           trigger: "manual",
@@ -132,9 +152,11 @@ export function liveNavigation(hostname) {
             "Something went wrong when trying to perform this action. Please try reloading the page.",
         });
         body.liveNavigationErrorTooltip.show();
+
         window.onlivenavigateerror?.();
       }
     }
+
     previousLocation = { ...window.location };
     body.removeAttribute("live-navigation");
   };
