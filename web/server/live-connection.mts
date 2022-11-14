@@ -95,7 +95,8 @@ export default async (application: Application): Promise<void> => {
                 application.log(
                   "LIVE-CONNECTION",
                   "ERROR EMITTING DELETE EVENT",
-                  error
+                  String(error),
+                  error?.stack
                 );
               });
           application.log("LIVE-CONNECTION", liveConnection.nonce, "EXPIRED");
@@ -253,7 +254,8 @@ export default async (application: Application): Promise<void> => {
               response.locals.log(
                 "LIVE-CONNECTION",
                 "ERROR EMITTING DELETE EVENT",
-                error
+                String(error),
+                error?.stack
               );
             });
         response.locals.log("LIVE-CONNECTION", "ABORTED", abortNonce);
@@ -313,7 +315,12 @@ export default async (application: Application): Promise<void> => {
 
     for (const port of application.ports.serverEvents)
       got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
-        response.locals.log("LIVE-UPDATES", "ERROR EMITTING POST EVENT", error);
+        response.locals.log(
+          "LIVE-UPDATES",
+          "ERROR EMITTING POST EVENT",
+          String(error),
+          error?.stack
+        );
       });
   };
 

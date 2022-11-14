@@ -221,7 +221,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server.use(((error, request, response, next) => {
-    response.locals.log("ERROR", String(error));
+    response.locals.log("ERROR", String(error), error?.stack);
 
     if (!["Cross-Site Request Forgery", "Validation"].includes(error))
       error = "Server";

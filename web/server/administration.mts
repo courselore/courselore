@@ -65,8 +65,13 @@ export default async (application: Application): Promise<void> => {
                 ]
               : [`CURRENT VERSION ${application.version} IS THE LATEST`])
           );
-        } catch (error) {
-          application.log("CHECK FOR UPDATES", "ERROR", String(error));
+        } catch (error: any) {
+          application.log(
+            "CHECK FOR UPDATES",
+            "ERROR",
+            String(error),
+            error?.stack
+          );
         }
         await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
       }

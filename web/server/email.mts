@@ -154,7 +154,8 @@ export default async (application: Application): Promise<void> => {
             error.response ?? "",
             mailOptions.to,
             mailOptions.subject,
-            String(error)
+            String(error),
+            error?.stack
           );
         }
 

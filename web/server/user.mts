@@ -1567,7 +1567,11 @@ export default async (application: Application): Promise<void> => {
             `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
           )
           .catch((error) => {
-            response.locals.log("FAILED TO EMIT ‘/send-email’ EVENT", error);
+            response.locals.log(
+              "FAILED TO EMIT ‘/send-email’ EVENT",
+              String(error),
+              error?.stack
+            );
           });
 
         application.server.locals.helpers.Session.closeAllAndReopen({
