@@ -633,9 +633,17 @@ export default async (application: Application): Promise<void> => {
     return { contentProcessed: contentElement.outerHTML, mentions };
   };
 
-  application.server.get<{}, any, {}, { url?: string }, {}>(
+  application.server.get<
+    {},
+    any,
+    {},
+    { url?: string },
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >(
     "/content/image-proxy",
     asyncHandler(async (request, response) => {
+      delete response.locals.liveConnectionNonce;
+
       if (
         typeof request.query.url !== "string" ||
         !["http://", "https://"].some((urlPrefix) =>
@@ -643,6 +651,7 @@ export default async (application: Application): Promise<void> => {
         )
       )
         return response.status(422).end();
+
       await stream.pipeline(
         got
           .stream(request.query.url, {
