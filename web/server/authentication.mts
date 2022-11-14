@@ -188,6 +188,23 @@ export type ApplicationAuthentication = {
           userEmail: string;
           welcome?: boolean;
         }): void;
+
+        passwordConfirmation({
+          request,
+          response,
+        }: {
+          request: express.Request<
+            {},
+            any,
+            { passwordConfirmation?: string },
+            {},
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
+          response: express.Response<
+            any,
+            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+          >;
+        }): Promise<boolean>;
       };
     };
   };
@@ -1227,6 +1244,17 @@ export default async (application: Application): Promise<void> => {
       );
     })
   );
+
+  application.server.locals.helpers.passwordConfirmation = async ({
+    request,
+    response,
+  }) =>
+    typeof request.body.passwordConfirmation === "string" &&
+    request.body.passwordConfirmation.trim() !== "" &&
+    (await argon2.verify(
+      response.locals.user.password,
+      request.body.passwordConfirmation
+    ));
 
   application.server.get<
     {},
