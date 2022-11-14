@@ -3147,22 +3147,6 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
-
       const conversationDraft =
         typeof request.query.newConversation?.conversationDraftReference ===
           "string" &&
@@ -4487,22 +4471,6 @@ export default async (application: Application): Promise<void> => {
   >("/courses/:courseReference/conversations", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
-    if (response.locals.course.archivedAt !== null) {
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "rose",
-        content: html`
-          This action isn’t allowed because the course is archived, which means
-          it’s read-only.
-        `,
-      });
-      return response.redirect(
-        303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-      );
-    }
-
     if (request.body.isDraft === "true") {
       // TODO: Conversation drafts: Validate inputs
       // let conversationDraft =
@@ -4923,22 +4891,6 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/conversations/new",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
-
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
 
       if (
         typeof request.body.conversationDraftReference !== "string" ||
@@ -9456,22 +9408,6 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
-
       if (typeof request.body.participants === "string")
         application.database.executeTransaction(() => {
           request.body.selectedParticipantsReferences ??= [];
@@ -9774,22 +9710,6 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
-
       application.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
@@ -9841,22 +9761,6 @@ export default async (application: Application): Promise<void> => {
         !mayEditConversation({ request, response })
       )
         return next();
-
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
 
       if (
         typeof request.body.reference !== "string" ||
@@ -9925,22 +9829,6 @@ export default async (application: Application): Promise<void> => {
         !mayEditConversation({ request, response })
       )
         return next();
-
-      if (response.locals.course.archivedAt !== null) {
-        application.server.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`
-            This action isn’t allowed because the course is archived, which
-            means it’s read-only.
-          `,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-        );
-      }
 
       if (
         (response.locals.conversation.taggings.length === 1 &&

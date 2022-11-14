@@ -244,6 +244,16 @@ export async function liveConnection({
         headers: { "Live-Connection": nonce },
         signal: abortController.signal,
       });
+
+      if (shouldLiveReloadOnNextConnection) {
+        abort();
+        if (response.status === 502)
+          throw new Error("Server hasn’t started yet.");
+        document.querySelector("body").isModified = false;
+        window.location.reload();
+        return;
+      }
+
       if (response.status === 422) {
         console.error(response);
         (body.liveConnectionValidationErrorTooltip ??= tippy(body)).setProps({
@@ -261,13 +271,6 @@ export async function liveConnection({
       }
       if (!response.ok) throw new Error("Response isn’t OK");
       connected = true;
-
-      if (shouldLiveReloadOnNextConnection) {
-        abort();
-        document.querySelector("body").isModified = false;
-        window.location.reload();
-        return;
-      }
 
       body.liveConnectionOfflineTooltip?.hide();
 

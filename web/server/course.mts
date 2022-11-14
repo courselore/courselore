@@ -735,11 +735,6 @@ export default async (application: Application): Promise<void> => {
             justify-content: center;
           `)}"
           onload="${javascript`
-            (this.tooltip ??= tippy(this)).setProps({
-              touch: false,
-              content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-            });
-
             this.onclick = () => {
               for (const element of leafac.nextSiblings(this).slice(1))
                 element.hidden = !element.hidden;
@@ -792,12 +787,6 @@ export default async (application: Application): Promise<void> => {
         display: inline-flex;
         gap: var(--space--1);
       `)}"
-      onload="${javascript`
-        (this.tooltip ??= tippy(this)).setProps({
-          touch: false,
-          content: "This course is archived, which means it’s read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-        });
-      `}"
     >
       <i class="bi bi-archive-fill"></i>
       Archived
@@ -1188,96 +1177,29 @@ export default async (application: Application): Promise<void> => {
             >
               $${response.locals.course.archivedAt === null
                 ? html`
-                    <div
-                      css="${response.locals.css(css`
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: baseline;
-                      `)}"
-                    >
-                      <input type="hidden" name="isArchived" value="true" />
+                    <input type="hidden" name="isArchived" value="true" />
+                    <div>
                       <button class="button button--rose">
                         <i class="bi bi-archive-fill"></i>
                         Archive Course
                       </button>
-                      <button
-                        type="button"
-                        class="button button--tight button--tight--inline button--transparent"
-                        css="${response.locals.css(css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `)}"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            trigger: "click",
-                            interactive: true,
-                            content: ${response.locals.html(html`
-                              <div
-                                css="${response.locals.css(css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `)}"
-                              >
-                                <p>
-                                  An archived course becomes read-only. People,
-                                  including students, who are enrolled in the
-                                  course may continue to read existing
-                                  conversations, but may no longer ask
-                                  questions, send messages, and so forth.
-                                </p>
-                                <p>You may unarchive a course at any time.</p>
-                              </div>
-                            `)},
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
+                    </div>
+                    <div
+                      class="secondary"
+                      css="${response.locals.css(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `)}"
+                    >
+                      You may unarchive a course at any time.
                     </div>
                   `
                 : html`
-                    <div
-                      css="${response.locals.css(css`
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: baseline;
-                      `)}"
-                    >
-                      <input type="hidden" name="isArchived" value="false" />
+                    <input type="hidden" name="isArchived" value="false" />
+                    <div>
                       <button class="button button--rose">
                         <i class="bi bi-archive-fill"></i>
                         Unarchive Course
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--tight button--tight--inline button--transparent"
-                        css="${response.locals.css(css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `)}"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            trigger: "click",
-                            interactive: true,
-                            content: ${response.locals.html(html`
-                              <div
-                                css="${response.locals.css(css`
-                                  padding: var(--space--2);
-                                `)}"
-                              >
-                                This course is archived, which means it’s
-                                read-only. People, including students, who are
-                                enrolled in the course may continue to read
-                                existing conversations, but may no longer ask
-                                questions, send messages, and so forth.
-                              </div>
-                            `)},
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
                       </button>
                     </div>
                     <div
@@ -1928,22 +1850,6 @@ export default async (application: Application): Promise<void> => {
       response.locals.enrollment.courseRole !== "staff"
     )
       return next();
-
-    if (response.locals.course.archivedAt !== null) {
-      application.server.locals.helpers.Flash.set({
-        request,
-        response,
-        theme: "rose",
-        content: html`
-          This action isn’t allowed because the course is archived, which means
-          it’s read-only.
-        `,
-      });
-      return response.redirect(
-        303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-      );
-    }
 
     if (
       !Array.isArray(request.body.tags) ||
