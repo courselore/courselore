@@ -1373,7 +1373,7 @@ export default async (application: Application): Promise<void> => {
   application.server.patch<
     {},
     any,
-    { email?: string; newPassword?: string },
+    { email?: string; newPassword?: string; passwordConfirmation?: string },
     { redirect?: string },
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
@@ -1381,7 +1381,12 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (response.locals.user === undefined) return next();
 
-      if (!response.locals.passwordConfirmed) {
+      if (
+        !(await application.server.locals.helpers.passwordConfirmation({
+          request,
+          response,
+        }))
+      ) {
         application.server.locals.helpers.Flash.set({
           request,
           response,
