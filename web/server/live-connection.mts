@@ -61,50 +61,51 @@ export default async (application: Application): Promise<void> => {
     }
   >();
 
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      application.log("CLEAN EXPIRED ‘liveConnections’", "STARTING...");
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        application.log("CLEAN EXPIRED ‘liveConnections’", "STARTING...");
 
-      for (const liveConnection of application.database.all<{
-        nonce: string;
-        processNumber: number | null;
-      }>(
-        sql`
-          SELECT "nonce", "processNumber"
-          FROM "liveConnections"
-          WHERE "expiresAt" < ${new Date().toISOString()}
-        `
-      )) {
-        application.database.run(
+        for (const liveConnection of application.database.all<{
+          nonce: string;
+          processNumber: number | null;
+        }>(
           sql`
-            DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
+            SELECT "nonce", "processNumber"
+            FROM "liveConnections"
+            WHERE "expiresAt" < ${new Date().toISOString()}
           `
-        );
-        if (liveConnection.processNumber !== null)
-          got
-            .delete(
-              `http://127.0.0.1:${
-                application.ports.serverEvents[liveConnection.processNumber]
-              }/live-connections`,
-              {
-                form: { nonce: liveConnection.nonce },
-              }
-            )
-            .catch((error) => {
-              application.log(
-                "LIVE-CONNECTION",
-                "ERROR EMITTING DELETE EVENT",
-                error
-              );
-            });
-        application.log("LIVE-CONNECTION", liveConnection.nonce, "EXPIRED");
+        )) {
+          application.database.run(
+            sql`
+              DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
+            `
+          );
+          if (liveConnection.processNumber !== null)
+            got
+              .delete(
+                `http://127.0.0.1:${
+                  application.ports.serverEvents[liveConnection.processNumber]
+                }/live-connections`,
+                {
+                  form: { nonce: liveConnection.nonce },
+                }
+              )
+              .catch((error) => {
+                application.log(
+                  "LIVE-CONNECTION",
+                  "ERROR EMITTING DELETE EVENT",
+                  error
+                );
+              });
+          application.log("LIVE-CONNECTION", liveConnection.nonce, "EXPIRED");
+        }
+
+        application.log("CLEAN EXPIRED ‘liveConnections’", "FINISHED");
+
+        await timers.setTimeout(60 * 1000, undefined, { ref: false });
       }
-
-      application.log("CLEAN EXPIRED ‘liveConnections’", "FINISHED");
-
-      await timers.setTimeout(60 * 1000, undefined, { ref: false });
-    }
-  });
+    });
 
   application.server.use<
     {},

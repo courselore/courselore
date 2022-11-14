@@ -323,21 +323,22 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      application.log("CLEAN EXPIRED ‘sessions’", "STARTING...");
-      application.database.run(
-        sql`
-          DELETE FROM "sessions"
-          WHERE "createdAt" < ${new Date(
-            Date.now() - application.server.locals.helpers.Session.maxAge
-          ).toISOString()}
-        `
-      );
-      application.log("CLEAN EXPIRED ‘sessions’", "FINISHED");
-      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-    }
-  });
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        application.log("CLEAN EXPIRED ‘sessions’", "STARTING...");
+        application.database.run(
+          sql`
+            DELETE FROM "sessions"
+            WHERE "createdAt" < ${new Date(
+              Date.now() - application.server.locals.helpers.Session.maxAge
+            ).toISOString()}
+          `
+        );
+        application.log("CLEAN EXPIRED ‘sessions’", "FINISHED");
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+      }
+    });
 
   application.server.use<
     {},
@@ -780,21 +781,22 @@ export default async (application: Application): Promise<void> => {
     },
   };
 
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      application.log("CLEAN EXPIRED ‘passwordResets’", "STARTING...");
-      application.database.run(
-        sql`
-          DELETE FROM "passwordResets"
-          WHERE "createdAt" < ${new Date(
-            Date.now() - PasswordReset.maxAge
-          ).toISOString()}
-        `
-      );
-      application.log("CLEAN EXPIRED ‘passwordResets’", "FINISHED");
-      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-    }
-  });
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        application.log("CLEAN EXPIRED ‘passwordResets’", "STARTING...");
+        application.database.run(
+          sql`
+            DELETE FROM "passwordResets"
+            WHERE "createdAt" < ${new Date(
+              Date.now() - PasswordReset.maxAge
+            ).toISOString()}
+          `
+        );
+        application.log("CLEAN EXPIRED ‘passwordResets’", "FINISHED");
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+      }
+    });
 
   application.server.get<
     {},
@@ -1608,21 +1610,22 @@ export default async (application: Application): Promise<void> => {
       });
   };
 
-  application.workerEvents.once("start", async () => {
-    while (true) {
-      application.log("CLEAN EXPIRED ‘emailVerifications’", "STARTING...");
-      application.database.run(
-        sql`
-          DELETE FROM "emailVerifications"
-          WHERE "createdAt" < ${new Date(
-            Date.now() - 24 * 60 * 60 * 1000
-          ).toISOString()}
-        `
-      );
-      application.log("CLEAN EXPIRED ‘emailVerifications’", "FINISHED");
-      await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
-    }
-  });
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        application.log("CLEAN EXPIRED ‘emailVerifications’", "STARTING...");
+        application.database.run(
+          sql`
+            DELETE FROM "emailVerifications"
+            WHERE "createdAt" < ${new Date(
+              Date.now() - 24 * 60 * 60 * 1000
+            ).toISOString()}
+          `
+        );
+        application.log("CLEAN EXPIRED ‘emailVerifications’", "FINISHED");
+        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+      }
+    });
 
   application.server.post<
     {},
