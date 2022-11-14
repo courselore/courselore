@@ -210,6 +210,7 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
+
       const conversation = application.server.locals.helpers.getConversation({
         request,
         response,
@@ -217,6 +218,7 @@ export default async (application: Application): Promise<void> => {
       });
       if (conversation === undefined) return next();
       response.locals.conversation = conversation;
+
       next();
     }
   );

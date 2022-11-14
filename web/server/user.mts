@@ -1137,7 +1137,13 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/profile/avatar",
-    asyncHandler(async (request, response) => {
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.user === undefined ||
+        response.locals.user.emailVerifiedAt === null
+      )
+        return next();
+
       if (
         request.files?.avatar === undefined ||
         Array.isArray(request.files.avatar)
