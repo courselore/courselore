@@ -94,6 +94,7 @@ export default async (application: Application): Promise<void> => {
               .catch((error) => {
                 application.log(
                   "LIVE-CONNECTION",
+                  liveConnection.nonce,
                   "ERROR EMITTING DELETE EVENT",
                   String(error),
                   error?.stack
@@ -123,6 +124,16 @@ export default async (application: Application): Promise<void> => {
     if (typeof nonce === "string") {
       response.locals.liveConnectionNonce = nonce;
 
+      const responseLocalsLog = response.locals.log;
+
+      response.locals.log = (...messageParts) => {
+        responseLocalsLog(
+          "LIVE-CONNECTION",
+          response.locals.liveConnectionNonce!,
+          ...messageParts
+        );
+      };
+
       const liveConnection = application.database.get<{
         expiresAt: string | null;
         url: string;
@@ -142,7 +153,7 @@ export default async (application: Application): Promise<void> => {
           liveConnection.url !== request.originalUrl ||
           liveConnection.processNumber !== null)
       ) {
-        response.locals.log("LIVE-CONNECTION", "CONNECTION FAILED");
+        response.locals.log("CONNECTION FAILED");
         return response.status(422).end();
       }
 
