@@ -186,17 +186,17 @@ if (
           ports: {
             server: lodash.times(
               os.cpus().length,
-              (processNumber) => 6001 + processNumber
+              (processNumber) => 6000 + processNumber
             ),
-            serverEventsAny: 7000,
+            serverEventsAny: 6999,
             serverEvents: lodash.times(
               os.cpus().length,
-              (processNumber) => 7001 + processNumber
+              (processNumber) => 7000 + processNumber
             ),
-            workerEventsAny: 8000,
+            workerEventsAny: 7999,
             workerEvents: lodash.times(
               os.cpus().length,
-              (processNumber) => 8001 + processNumber
+              (processNumber) => 8000 + processNumber
             ),
           },
           addresses: {
