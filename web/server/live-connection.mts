@@ -195,8 +195,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "liveConnections"
             SET
               "expiresAt" = NULL,
-              "processNumber" = ${application.process.number},
-              "liveUpdateAt" = NULL
+              "processNumber" = ${application.process.number}
             WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
@@ -207,12 +206,14 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "liveConnections" (
               "nonce",
               "url",
-              "processNumber"
+              "processNumber",
+              "liveUpdateAt"
             )
             VALUES (
               ${response.locals.liveConnectionNonce},
               ${request.originalUrl},
-              ${application.process.number}
+              ${application.process.number},
+              ${new Date().toISOString()}
             )
           `
         );
@@ -220,7 +221,20 @@ export default async (application: Application): Promise<void> => {
       }
 
       if (liveConnection === undefined || liveConnection.liveUpdateAt !== null)
-        next();
+        got
+          .post(
+            `http://127.0.0.1:${
+              application.ports.serverEvents[application.process.number]
+            }/live-updates`
+          )
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES",
+              "FAILED TO EMIT POST ‘/live-updates’ EVENT",
+              String(error),
+              error?.stack
+            );
+          });
 
       return;
     }
