@@ -241,13 +241,18 @@ export default async (application: Application): Promise<void> => {
         token: string;
       }>(
         sql`
-          INSERT INTO "sessions" ("createdAt", "token", "user")
-          VALUES (
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
-            ${userId}
-          )
-          RETURNING *
+          SELECT * FROM "sessions" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "sessions" ("createdAt", "token", "user")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
+                  ${userId}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
       request.cookies["__Host-Session"] = session.token;
@@ -752,13 +757,18 @@ export default async (application: Application): Promise<void> => {
       );
       return application.database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
-          VALUES (
-            ${new Date().toISOString()},
-            ${userId},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
+          SELECT * FROM "passwordResets" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${userId},
+                  ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!.nonce;
     },
@@ -1196,13 +1206,18 @@ export default async (application: Application): Promise<void> => {
       );
       const user = application.database.get<{ email: string }>(
         sql`
-          UPDATE "users"
-          SET "password" = ${await argon2.hash(
-            request.body.password,
-            application.server.locals.configuration.argon2
-          )}
-          WHERE "id" = ${userId}
-          RETURNING *
+          SELECT * FROM "users" WHERE "id" = ${
+            application.database.run(
+              sql`
+                UPDATE "users"
+                SET "password" = ${await argon2.hash(
+                  request.body.password,
+                  application.server.locals.configuration.argon2
+                )}
+                WHERE "id" = ${userId}
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
 
@@ -1474,56 +1489,62 @@ export default async (application: Application): Promise<void> => {
 
       const user = application.database.get<{ id: number; email: string }>(
         sql`
-          INSERT INTO "users" (
-            "createdAt",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "nameSearch",
-            "avatarlessBackgroundColor",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForAllMessagesDigestDeliveredAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 20, type: "numeric" })},
-            ${request.body.email},
-            ${await argon2.hash(
-              request.body.password,
-              application.server.locals.configuration.argon2
-            )},
-            ${null},
-            ${request.body.name},
-            ${html`${request.body.name}`},
-            ${lodash.sample(
-              application.server.locals.helpers.userAvatarlessBackgroundColors
-            )},
-            ${
-              application.configuration.hostname !==
-                application.addresses.tryHostname &&
-              application.database.get<{ count: number }>(
-                sql`
-                  SELECT COUNT(*) AS "count" FROM "users"
-                `
-              )!.count === 0
-                ? "administrator"
-                : "none"
-            },
-            ${"none"},
-            ${null},
-            ${new Date().toISOString()},
-            ${new Date().toISOString()},
-            ${new Date().toISOString()}
-          )
-          RETURNING *
+          SELECT * FROM "users" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "users" (
+                  "createdAt",
+                  "lastSeenOnlineAt",
+                  "reference",
+                  "email",
+                  "password",
+                  "emailVerifiedAt",
+                  "name",
+                  "nameSearch",
+                  "avatarlessBackgroundColor",
+                  "systemRole",
+                  "emailNotificationsForAllMessages",
+                  "emailNotificationsForAllMessagesDigestDeliveredAt",
+                  "emailNotificationsForMentionsAt",
+                  "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                  "emailNotificationsForMessagesInConversationsYouStartedAt"
+                )
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${new Date().toISOString()},
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${request.body.email},
+                  ${await argon2.hash(
+                    request.body.password,
+                    application.server.locals.configuration.argon2
+                  )},
+                  ${null},
+                  ${request.body.name},
+                  ${html`${request.body.name}`},
+                  ${lodash.sample(
+                    application.server.locals.helpers
+                      .userAvatarlessBackgroundColors
+                  )},
+                  ${
+                    application.configuration.hostname !==
+                      application.addresses.tryHostname &&
+                    application.database.get<{ count: number }>(
+                      sql`
+                        SELECT COUNT(*) AS "count" FROM "users"
+                      `
+                    )!.count === 0
+                      ? "administrator"
+                      : "none"
+                  },
+                  ${"none"},
+                  ${null},
+                  ${new Date().toISOString()},
+                  ${new Date().toISOString()},
+                  ${new Date().toISOString()}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
 
@@ -1569,13 +1590,18 @@ export default async (application: Application): Promise<void> => {
         nonce: string;
       }>(
         sql`
-          INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
-          VALUES (
-            ${new Date().toISOString()},
-            ${userId},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
+          SELECT * FROM "emailVerifications" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "emailVerifications" ("createdAt", "user", "nonce")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${userId},
+                  ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
     });

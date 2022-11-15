@@ -1918,14 +1918,19 @@ export default async (application: Application): Promise<void> => {
     set({ request, response, theme, content }) {
       const flash = application.database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "flashes" ("createdAt", "nonce", "theme", "content")
-          VALUES (
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
-            ${theme},
-            ${content}
-          )
-          RETURNING *
+          SELECT * FROM "flashes" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "flashes" ("createdAt", "nonce", "theme", "content")
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
+                  ${theme},
+                  ${content}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
       request.cookies["__Host-Flash"] = flash.nonce;

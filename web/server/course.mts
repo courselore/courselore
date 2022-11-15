@@ -422,47 +422,52 @@ export default async (application: Application): Promise<void> => {
         reference: string;
       }>(
         sql`
-          INSERT INTO "courses" (
-            "createdAt",
-            "reference",
-            "name",
-            "year",
-            "term",
-            "institution",
-            "code",
-            "nextConversationReference"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${request.body.name},
-            ${
-              typeof request.body.year === "string" &&
-              request.body.year.trim() !== ""
-                ? request.body.year
-                : null
-            },
-            ${
-              typeof request.body.term === "string" &&
-              request.body.term.trim() !== ""
-                ? request.body.term
-                : null
-            },
-            ${
-              typeof request.body.institution === "string" &&
-              request.body.institution.trim() !== ""
-                ? request.body.institution
-                : null
-            },
-            ${
-              typeof request.body.code === "string" &&
-              request.body.code.trim() !== ""
-                ? request.body.code
-                : null
-            },
-            ${1}
-          )
-          RETURNING *
+          SELECT * FROM "courses" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "courses" (
+                  "createdAt",
+                  "reference",
+                  "name",
+                  "year",
+                  "term",
+                  "institution",
+                  "code",
+                  "nextConversationReference"
+                )
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${cryptoRandomString({ length: 10, type: "numeric" })},
+                  ${request.body.name},
+                  ${
+                    typeof request.body.year === "string" &&
+                    request.body.year.trim() !== ""
+                      ? request.body.year
+                      : null
+                  },
+                  ${
+                    typeof request.body.term === "string" &&
+                    request.body.term.trim() !== ""
+                      ? request.body.term
+                      : null
+                  },
+                  ${
+                    typeof request.body.institution === "string" &&
+                    request.body.institution.trim() !== ""
+                      ? request.body.institution
+                      : null
+                  },
+                  ${
+                    typeof request.body.code === "string" &&
+                    request.body.code.trim() !== ""
+                      ? request.body.code
+                      : null
+                  },
+                  ${1}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
       application.database.run(
@@ -3057,16 +3062,21 @@ export default async (application: Application): Promise<void> => {
         case "link":
           const invitation = application.database.get<{ reference: string }>(
             sql`
-              INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "courseRole")
-              VALUES (
-                ${new Date().toISOString()},
-                ${request.body.expiresAt},
-                ${response.locals.course.id},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${request.body.courseRole}
-              )
-              RETURNING *
-          `
+              SELECT * FROM "invitations" WHERE "id" = ${
+                application.database.run(
+                  sql`
+                    INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "courseRole")
+                    VALUES (
+                      ${new Date().toISOString()},
+                      ${request.body.expiresAt},
+                      ${response.locals.course.id},
+                      ${cryptoRandomString({ length: 10, type: "numeric" })},
+                      ${request.body.courseRole}
+                    )
+                  `
+                ).lastInsertRowid
+              }
+            `
           )!;
 
           application.server.locals.helpers.Flash.set({
@@ -3172,17 +3182,22 @@ export default async (application: Application): Promise<void> => {
               courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
-                INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "courseRole")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${request.body.expiresAt ?? null},
-                  ${response.locals.course.id},
-                  ${cryptoRandomString({ length: 10, type: "numeric" })},
-                  ${email},
-                  ${name},
-                  ${request.body.courseRole}
-                )
-                RETURNING *
+                SELECT * FROM "invitations" WHERE "id" = ${
+                  application.database.run(
+                    sql`
+                      INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "courseRole")
+                      VALUES (
+                        ${new Date().toISOString()},
+                        ${request.body.expiresAt ?? null},
+                        ${response.locals.course.id},
+                        ${cryptoRandomString({ length: 10, type: "numeric" })},
+                        ${email},
+                        ${name},
+                        ${request.body.courseRole}
+                      )
+                    `
+                  ).lastInsertRowid
+                }
               `
             )!;
 

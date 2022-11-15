@@ -58,96 +58,102 @@ export default async (application: Application): Promise<void> => {
           name: string;
         }>(
           sql`
-            INSERT INTO "users" (
-              "createdAt",
-              "lastSeenOnlineAt",
-              "reference",
-              "email",
-              "password",
-              "emailVerifiedAt",
-              "name",
-              "nameSearch",
-              "avatar",
-              "avatarlessBackgroundColor",
-              "biographySource",
-              "biographyPreprocessed",
-              "systemRole",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForAllMessagesDigestDeliveredAt",
-              "emailNotificationsForMentionsAt",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${new Date(
-                Date.now() -
-                  (Math.random() < 0.5
-                    ? 0
-                    : lodash.random(0, 5 * 60 * 60 * 1000))
-              ).toISOString()},
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${`${slugify(name)}--${cryptoRandomString({
-                length: 5,
-                type: "numeric",
-              })}@courselore.org`},
-              ${password},
-              ${new Date().toISOString()},
-              ${name},
-              ${html`${name}`},
-              ${
-                Math.random() < 0.6
-                  ? `https://${
-                      application.configuration.hostname
-                    }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
-                  : null
-              },
-              ${lodash.sample(
-                application.server.locals.helpers.userAvatarlessBackgroundColors
-              )!},
-              ${biographySource},
-              ${
-                application.server.locals.partials.contentPreprocessed(
-                  biographySource
-                ).contentPreprocessed
-              },
-              ${
-                application.configuration.hostname ===
-                application.addresses.tryHostname
-                  ? "none"
-                  : userIndex === 0
-                  ? "administrator"
-                  : Math.random() < 0.1
-                  ? "administrator"
-                  : Math.random() < 0.3
-                  ? "staff"
-                  : "none"
-              },
-              ${isEmailNotificationsForAllMessages},
-              ${
-                isEmailNotificationsForAllMessages === "hourly-digests"
-                  ? hour.toISOString()
-                  : isEmailNotificationsForAllMessages === "daily-digests"
-                  ? day.toISOString()
-                  : null
-              },
-              ${
-                isEmailNotificationsForMentions
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${
-                isEmailNotificationsForMessagesInConversationsYouStarted
-                  ? new Date().toISOString()
-                  : null
-              }
-            )
-            RETURNING *
+            SELECT * FROM "users" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "users" (
+                    "createdAt",
+                    "lastSeenOnlineAt",
+                    "reference",
+                    "email",
+                    "password",
+                    "emailVerifiedAt",
+                    "name",
+                    "nameSearch",
+                    "avatar",
+                    "avatarlessBackgroundColor",
+                    "biographySource",
+                    "biographyPreprocessed",
+                    "systemRole",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForAllMessagesDigestDeliveredAt",
+                    "emailNotificationsForMentionsAt",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                    "emailNotificationsForMessagesInConversationsYouStartedAt"
+                  )
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${new Date(
+                      Date.now() -
+                        (Math.random() < 0.5
+                          ? 0
+                          : lodash.random(0, 5 * 60 * 60 * 1000))
+                    ).toISOString()},
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${`${slugify(name)}--${cryptoRandomString({
+                      length: 5,
+                      type: "numeric",
+                    })}@courselore.org`},
+                    ${password},
+                    ${new Date().toISOString()},
+                    ${name},
+                    ${html`${name}`},
+                    ${
+                      Math.random() < 0.6
+                        ? `https://${
+                            application.configuration.hostname
+                          }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                        : null
+                    },
+                    ${lodash.sample(
+                      application.server.locals.helpers
+                        .userAvatarlessBackgroundColors
+                    )!},
+                    ${biographySource},
+                    ${
+                      application.server.locals.partials.contentPreprocessed(
+                        biographySource
+                      ).contentPreprocessed
+                    },
+                    ${
+                      application.configuration.hostname ===
+                      application.addresses.tryHostname
+                        ? "none"
+                        : userIndex === 0
+                        ? "administrator"
+                        : Math.random() < 0.1
+                        ? "administrator"
+                        : Math.random() < 0.3
+                        ? "staff"
+                        : "none"
+                    },
+                    ${isEmailNotificationsForAllMessages},
+                    ${
+                      isEmailNotificationsForAllMessages === "hourly-digests"
+                        ? hour.toISOString()
+                        : isEmailNotificationsForAllMessages === "daily-digests"
+                        ? day.toISOString()
+                        : null
+                    },
+                    ${
+                      isEmailNotificationsForMentions
+                        ? new Date().toISOString()
+                        : null
+                    },
+                    ${
+                      isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+                        ? new Date().toISOString()
+                        : null
+                    },
+                    ${
+                      isEmailNotificationsForMessagesInConversationsYouStarted
+                        ? new Date().toISOString()
+                        : null
+                    }
+                  )
+                `
+              ).lastInsertRowid
+            }
           `
         )!;
       });
@@ -197,29 +203,34 @@ export default async (application: Application): Promise<void> => {
           nextConversationReference: number;
         }>(
           sql`
-            INSERT INTO "courses" (
-              "createdAt",
-              "reference",
-              "archivedAt",
-              "name",
-              "year",
-              "term",
-              "institution",
-              "code",      
-              "nextConversationReference"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${isArchived ? new Date().toISOString() : null},
-              ${name},
-              ${year},
-              ${term},
-              ${institution},
-              ${code},
-              ${lodash.random(30, 50)}
-            )
-            RETURNING *
+            SELECT * FROM "courses" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "courses" (
+                    "createdAt",
+                    "reference",
+                    "archivedAt",
+                    "name",
+                    "year",
+                    "term",
+                    "institution",
+                    "code",      
+                    "nextConversationReference"
+                  )
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${isArchived ? new Date().toISOString() : null},
+                    ${name},
+                    ${year},
+                    ${term},
+                    ${institution},
+                    ${code},
+                    ${lodash.random(30, 50)}
+                  )
+                `
+              ).lastInsertRowid
+            }
           `
         )!;
 
@@ -229,16 +240,21 @@ export default async (application: Application): Promise<void> => {
           courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
-            INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-            VALUES (
-              ${new Date().toISOString()},
-              ${demonstrationUser.id},
-              ${course.id},
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${courseRole},
-              ${accentColor}
-            )
-            RETURNING *
+            SELECT * FROM "enrollments" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${demonstrationUser.id},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${courseRole},
+                    ${accentColor}
+                  )
+                `
+              ).lastInsertRowid
+            }
           `
         )!;
 
@@ -324,22 +340,31 @@ export default async (application: Application): Promise<void> => {
                 courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
-                  INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
-                  VALUES (
-                    ${new Date().toISOString()},
-                    ${enrollmentUser.id},
-                    ${course.id},
-                    ${cryptoRandomString({ length: 10, type: "numeric" })},
-                    ${
-                      application.server.locals.helpers.courseRoles[
-                        Math.random() < 0.1 ? 1 : 0
-                      ]
-                    },
-                    ${lodash.sample(
-                      application.server.locals.helpers.enrollmentAccentColors
-                    )!}
-                  )
-                  RETURNING *
+                  SELECT * FROM "enrollments" WHERE "id" = ${
+                    application.database.run(
+                      sql`
+                        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                        VALUES (
+                          ${new Date().toISOString()},
+                          ${enrollmentUser.id},
+                          ${course.id},
+                          ${cryptoRandomString({
+                            length: 10,
+                            type: "numeric",
+                          })},
+                          ${
+                            application.server.locals.helpers.courseRoles[
+                              Math.random() < 0.1 ? 1 : 0
+                            ]
+                          },
+                          ${lodash.sample(
+                            application.server.locals.helpers
+                              .enrollmentAccentColors
+                          )!}
+                        )
+                      `
+                    ).lastInsertRowid
+                  }
                 `
               )!
           ),
@@ -374,15 +399,20 @@ export default async (application: Application): Promise<void> => {
           ({ name, staffOnlyAt }) =>
             application.database.get<{ id: number }>(
               sql`
-                INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${course.id},
-                  ${cryptoRandomString({ length: 10, type: "numeric" })},
-                  ${name},
-                  ${staffOnlyAt}
-                )
-                RETURNING *
+                SELECT * FROM "tags" WHERE "id" = ${
+                  application.database.run(
+                    sql`
+                      INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+                      VALUES (
+                        ${new Date().toISOString()},
+                        ${course.id},
+                        ${cryptoRandomString({ length: 10, type: "numeric" })},
+                        ${name},
+                        ${staffOnlyAt}
+                      )
+                    `
+                  ).lastInsertRowid
+                }
               `
             )!
         );
@@ -1202,60 +1232,65 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
             title: string;
           }>(
             sql`
-              INSERT INTO "conversations" (
-                "createdAt",
-                "updatedAt",
-                "course",
-                "reference",
-                "authorEnrollment",
-                "participants",
-                "anonymousAt",
-                "type",
-                "resolvedAt",
-                "announcementAt",
-                "pinnedAt",
-                "title",
-                "titleSearch",
-                "nextMessageReference"
-              )
-              VALUES (
-                ${conversationCreatedAt},
-                ${messageCreatedAts[messageCreatedAts.length - 1]},
-                ${course.id},
-                ${String(conversationReference)},
-                ${conversationAuthorEnrollment?.id},
-                ${participants},
-                ${
-                  conversationAuthorEnrollment?.courseRole === "student" &&
-                  Math.random() < 0.5
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${type},
-                ${
-                  type === "question" && Math.random() < 0.75
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  conversationAuthorEnrollment?.courseRole === "staff" &&
-                  type === "note" &&
-                  Math.random() < 0.5
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${
-                  isExampleOfAllFeaturesInRichTextMessages
-                    ? null
-                    : Math.random() < 0.15
-                    ? new Date().toISOString()
-                    : null
-                },
-                ${title},
-                ${html`${title}`},
-                ${nextMessageReference}
-              )
-              RETURNING *
+              SELECT * FROM "conversations" WHERE "id" = ${
+                application.database.run(
+                  sql`
+                    INSERT INTO "conversations" (
+                      "createdAt",
+                      "updatedAt",
+                      "course",
+                      "reference",
+                      "authorEnrollment",
+                      "participants",
+                      "anonymousAt",
+                      "type",
+                      "resolvedAt",
+                      "announcementAt",
+                      "pinnedAt",
+                      "title",
+                      "titleSearch",
+                      "nextMessageReference"
+                    )
+                    VALUES (
+                      ${conversationCreatedAt},
+                      ${messageCreatedAts[messageCreatedAts.length - 1]},
+                      ${course.id},
+                      ${String(conversationReference)},
+                      ${conversationAuthorEnrollment?.id},
+                      ${participants},
+                      ${
+                        conversationAuthorEnrollment?.courseRole ===
+                          "student" && Math.random() < 0.5
+                          ? new Date().toISOString()
+                          : null
+                      },
+                      ${type},
+                      ${
+                        type === "question" && Math.random() < 0.75
+                          ? new Date().toISOString()
+                          : null
+                      },
+                      ${
+                        conversationAuthorEnrollment?.courseRole === "staff" &&
+                        type === "note" &&
+                        Math.random() < 0.5
+                          ? new Date().toISOString()
+                          : null
+                      },
+                      ${
+                        isExampleOfAllFeaturesInRichTextMessages
+                          ? null
+                          : Math.random() < 0.15
+                          ? new Date().toISOString()
+                          : null
+                      },
+                      ${title},
+                      ${html`${title}`},
+                      ${nextMessageReference}
+                    )
+                  `
+                ).lastInsertRowid
+              }
             `
           )!;
 
@@ -1309,51 +1344,58 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox
               );
             const message = application.database.get<{ id: number }>(
               sql`
-                INSERT INTO "messages" (
-                  "createdAt",
-                  "updatedAt",
-                  "conversation",
-                  "reference",
-                  "authorEnrollment",
-                  "anonymousAt",
-                  "answerAt",
-                  "contentSource",
-                  "contentPreprocessed",
-                  "contentSearch"
-                )
-                VALUES (
-                  ${messageCreatedAt},
-                  ${
-                    Math.random() < 0.8
-                      ? null
-                      : new Date(
-                          Math.min(
-                            Date.now(),
-                            new Date(messageCreatedAt).getTime() +
-                              lodash.random(
-                                5 * 60 * 60 * 1000,
-                                18 * 60 * 60 * 1000
-                              )
-                          )
-                        ).toISOString()
-                  },
-                  ${conversation.id},
-                  ${String(messageReference)},
-                  ${messageAuthorEnrollment?.id},
-                  ${
-                    messageReference === 1
-                      ? conversation.anonymousAt
-                      : messageAuthorEnrollment?.courseRole === "student" &&
-                        Math.random() < 0.5
-                      ? new Date().toISOString()
-                      : null
-                  },
-                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                  ${contentSource},
-                  ${contentPreprocessed.contentPreprocessed},
-                  ${contentPreprocessed.contentSearch}
-                )
-                RETURNING *
+                SELECT * FROM "messages" WHERE "id" = ${
+                  application.database.run(
+                    sql`
+                      INSERT INTO "messages" (
+                        "createdAt",
+                        "updatedAt",
+                        "conversation",
+                        "reference",
+                        "authorEnrollment",
+                        "anonymousAt",
+                        "answerAt",
+                        "contentSource",
+                        "contentPreprocessed",
+                        "contentSearch"
+                      )
+                      VALUES (
+                        ${messageCreatedAt},
+                        ${
+                          Math.random() < 0.8
+                            ? null
+                            : new Date(
+                                Math.min(
+                                  Date.now(),
+                                  new Date(messageCreatedAt).getTime() +
+                                    lodash.random(
+                                      5 * 60 * 60 * 1000,
+                                      18 * 60 * 60 * 1000
+                                    )
+                                )
+                              ).toISOString()
+                        },
+                        ${conversation.id},
+                        ${String(messageReference)},
+                        ${messageAuthorEnrollment?.id},
+                        ${
+                          messageReference === 1
+                            ? conversation.anonymousAt
+                            : messageAuthorEnrollment?.courseRole ===
+                                "student" && Math.random() < 0.5
+                            ? new Date().toISOString()
+                            : null
+                        },
+                        ${
+                          Math.random() < 0.5 ? new Date().toISOString() : null
+                        },
+                        ${contentSource},
+                        ${contentPreprocessed.contentPreprocessed},
+                        ${contentPreprocessed.contentSearch}
+                      )
+                    `
+                  ).lastInsertRowid
+                }
               `
             )!;
 
