@@ -95,7 +95,7 @@ export default async (application: Application): Promise<void> => {
                 application.log(
                   "LIVE-CONNECTION",
                   liveConnection.nonce,
-                  "ERROR EMITTING DELETE EVENT",
+                  "FAILED TO EMIT DELETE ‘/live-connections’ EVENT",
                   String(error),
                   error?.stack
                 );
@@ -173,16 +173,6 @@ export default async (application: Application): Promise<void> => {
         }
       })();
 
-      response.setHeader = (name, value) => response;
-      response.send = (body) => {
-        response.write(JSON.stringify(body) + "\n");
-        response.locals.log(
-          String(response.statusCode),
-          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
-        );
-        return response;
-      };
-
       response.once("close", () => {
         heartbeatAbortController.abort();
         if (typeof response.locals.liveConnectionNonce !== "string") return;
@@ -210,7 +200,7 @@ export default async (application: Application): Promise<void> => {
             WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
-        response.locals.log("LIVE-CONNECTION", "CONNECTION OPENED");
+        response.locals.log("CONNECTION OPENED");
       } else {
         application.database.run(
           sql`
@@ -226,7 +216,7 @@ export default async (application: Application): Promise<void> => {
             )
           `
         );
-        response.locals.log("LIVE-CONNECTION", "CREATED & CONNECTION OPENED");
+        response.locals.log("CREATED & CONNECTION OPENED");
       }
 
       if (liveConnection === undefined || liveConnection.liveUpdateAt !== null)
@@ -245,7 +235,13 @@ export default async (application: Application): Promise<void> => {
           SELECT "nonce", "processNumber" FROM "liveConnections" WHERE "nonce" = ${abortNonce}
         `
       );
-      if (liveConnection !== undefined) {
+      if (liveConnection === undefined)
+        response.locals.log(
+          "LIVE-CONNECTION",
+          abortNonce,
+          "FAILED TO ABORT: NOT FOUND"
+        );
+      else {
         application.database.run(
           sql`
             DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
@@ -264,12 +260,13 @@ export default async (application: Application): Promise<void> => {
             .catch((error) => {
               response.locals.log(
                 "LIVE-CONNECTION",
-                "ERROR EMITTING DELETE EVENT",
+                liveConnection.nonce,
+                "FAILED TO EMIT DELETE ‘/live-connections’ EVENT",
                 String(error),
                 error?.stack
               );
             });
-        response.locals.log("LIVE-CONNECTION", "ABORTED", abortNonce);
+        response.locals.log("LIVE-CONNECTION", liveConnection.nonce, "ABORTED");
       }
     }
 
@@ -328,7 +325,7 @@ export default async (application: Application): Promise<void> => {
       got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
         response.locals.log(
           "LIVE-UPDATES",
-          "ERROR EMITTING POST EVENT",
+          "FAILED TO EMIT POST ‘/live-updates’ EVENT",
           String(error),
           error?.stack
         );
@@ -375,6 +372,16 @@ export default async (application: Application): Promise<void> => {
           );
           continue;
         }
+
+        connection.response.setHeader = (name, value) => connection.response;
+        connection.response.send = (body) => {
+          connection.response.write(JSON.stringify(body) + "\n");
+          connection.response.locals.log(
+            String(connection.response.statusCode),
+            `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+          );
+          return connection.response;
+        };
 
         connection.response.locals = {
           liveConnectionNonce: connection.response.locals.liveConnectionNonce,
