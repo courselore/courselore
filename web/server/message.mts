@@ -1782,18 +1782,6 @@ export default async (application: Application): Promise<void> => {
         await timers.setTimeout(100, undefined, { ref: false });
       }
 
-      got
-        .post(
-          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
-        )
-        .catch((error) => {
-          application.log(
-            "FAILED TO EMIT ‘/send-email’ EVENT",
-            String(error),
-            error?.stack
-          );
-        });
-
       application.log("emailNotificationMessageJobs", "FINISHED");
 
       await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
