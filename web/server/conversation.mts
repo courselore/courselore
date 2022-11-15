@@ -4716,43 +4716,52 @@ export default async (application: Application): Promise<void> => {
         title: string;
       }>(
         sql`
-          INSERT INTO "conversations" (
-            "createdAt",
-            "course",
-            "reference",
-            "authorEnrollment",
-            "participants",
-            "anonymousAt",
-            "type",
-            "announcementAt",
-            "pinnedAt",
-            "title",
-            "titleSearch",
-            "nextMessageReference"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${response.locals.course.id},
-            ${String(response.locals.course.nextConversationReference)},
-            ${response.locals.enrollment.id},
-            ${request.body.participants},
-            ${
-              request.body.isAnonymous === "on"
-                ? new Date().toISOString()
-                : null
-            },
-            ${request.body.type},
-            ${
-              request.body.isAnnouncement === "on"
-                ? new Date().toISOString()
-                : null
-            },
-            ${request.body.isPinned === "on" ? new Date().toISOString() : null},
-            ${request.body.title},
-            ${html`${request.body.title!}`},
-            ${hasMessage ? 2 : 1}
-          )
-          RETURNING *
+          SELECT * FROM "conversations" WHERE "id" = ${
+            application.database.run(
+              sql`
+                INSERT INTO "conversations" (
+                  "createdAt",
+                  "course",
+                  "reference",
+                  "authorEnrollment",
+                  "participants",
+                  "anonymousAt",
+                  "type",
+                  "announcementAt",
+                  "pinnedAt",
+                  "title",
+                  "titleSearch",
+                  "nextMessageReference"
+                )
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${response.locals.course.id},
+                  ${String(response.locals.course.nextConversationReference)},
+                  ${response.locals.enrollment.id},
+                  ${request.body.participants},
+                  ${
+                    request.body.isAnonymous === "on"
+                      ? new Date().toISOString()
+                      : null
+                  },
+                  ${request.body.type},
+                  ${
+                    request.body.isAnnouncement === "on"
+                      ? new Date().toISOString()
+                      : null
+                  },
+                  ${
+                    request.body.isPinned === "on"
+                      ? new Date().toISOString()
+                      : null
+                  },
+                  ${request.body.title},
+                  ${html`${request.body.title!}`},
+                  ${hasMessage ? 2 : 1}
+                )
+              `
+            ).lastInsertRowid
+          }
         `
       )!;
 
@@ -4794,31 +4803,36 @@ export default async (application: Application): Promise<void> => {
           reference: string;
         }>(
           sql`
-            INSERT INTO "messages" (
-              "createdAt",
-              "conversation",
-              "reference",
-              "authorEnrollment",
-              "anonymousAt",
-              "contentSource",
-              "contentPreprocessed",
-              "contentSearch"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${conversation.id},
-              ${"1"},
-              ${response.locals.enrollment.id},
-              ${
-                request.body.isAnonymous === "on"
-                  ? new Date().toISOString()
-                  : null
-              },
-              ${request.body.content},
-              ${contentPreprocessed.contentPreprocessed},
-              ${contentPreprocessed.contentSearch}
-            )
-            RETURNING *
+            SELECT * FROM "messages" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "messages" (
+                    "createdAt",
+                    "conversation",
+                    "reference",
+                    "authorEnrollment",
+                    "anonymousAt",
+                    "contentSource",
+                    "contentPreprocessed",
+                    "contentSearch"
+                  )
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${conversation.id},
+                    ${"1"},
+                    ${response.locals.enrollment.id},
+                    ${
+                      request.body.isAnonymous === "on"
+                        ? new Date().toISOString()
+                        : null
+                    },
+                    ${request.body.content},
+                    ${contentPreprocessed.contentPreprocessed},
+                    ${contentPreprocessed.contentSearch}
+                  )
+                `
+              ).lastInsertRowid
+            }
           `
         )!;
         application.database.run(
