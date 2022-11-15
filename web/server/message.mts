@@ -1396,7 +1396,7 @@ export default async (application: Application): Promise<void> => {
 
   application.workerEvents.once("start", async () => {
     while (true) {
-      application.log("emailNotificationMessageJobs", "STARTED...");
+      application.log("emailNotificationMessageJobs", "STARTING...");
 
       application.database.executeTransaction(() => {
         for (const job of application.database.all<{

@@ -384,13 +384,33 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "liveConnections" WHERE "nonce" = ${liveConnection.nonce}
             `
           );
+          application.log(
+            "LIVE-UPDATES",
+            liveConnection.nonce,
+            "CLEANED ZOMBIE CONNECTION WHEN TRYING TO SEND LIVE-UPDATE"
+          );
           continue;
         }
 
+        const responseLocalsLog = connection.response.locals.log;
+        const id = Math.random().toString(36).slice(2);
+        const time = process.hrtime.bigint();
+        connection.response.locals.log = (...messageParts) => {
+          responseLocalsLog(
+            id,
+            `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
+            ...messageParts
+          );
+        };
+
+        connection.response.locals.log("STARTING...");
+
         connection.response.setHeader = (name, value) => connection.response;
+
         connection.response.send = (body) => {
           connection.response.write(JSON.stringify(body) + "\n");
           connection.response.locals.log(
+            "LIVE-UPDATE FINISHED",
             String(connection.response.statusCode),
             `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
           );
@@ -401,7 +421,10 @@ export default async (application: Application): Promise<void> => {
           liveConnectionNonce: connection.response.locals.liveConnectionNonce,
           log: connection.response.locals.log,
         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
+
         application.server(connection.request, connection.response);
+
+        connection.response.locals.log = responseLocalsLog;
 
         await timers.setTimeout(100, undefined, { ref: false });
       }
@@ -418,7 +441,7 @@ export default async (application: Application): Promise<void> => {
         return response.status(422).end();
 
       const connection = connections.get(request.body.nonce);
-      if (connection === undefined) return;
+      if (connection === undefined) return response.status(404).end();
       connections.delete(request.body.nonce);
       connection.response.end();
 
