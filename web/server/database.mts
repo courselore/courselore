@@ -1424,7 +1424,7 @@ export default async (application: Application): Promise<void> => {
     },
 
     sql`
-      CREATE TABLE "liveConnections" (
+      CREATE TABLE "liveConnectionsMetadata" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
@@ -1432,11 +1432,11 @@ export default async (application: Application): Promise<void> => {
         "processNumber" INTEGER NULL,
         "liveUpdateAt" TEXT NULL
       );
-      CREATE INDEX "liveConnectionsExpiresAtIndex" ON "liveConnections" ("expiresAt");
-      CREATE INDEX "liveConnectionsNonceIndex" ON "liveConnections" ("nonce");
-      CREATE INDEX "liveConnectionsURLIndex" ON "liveConnections" ("url");
-      CREATE INDEX "liveConnectionsProcessNumberIndex" ON "liveConnections" ("processNumber");
-      CREATE INDEX "liveConnectionsLiveUpdateAtIndex" ON "liveConnections" ("liveUpdateAt");
+      CREATE INDEX "liveConnectionsMetadataExpiresAtIndex" ON "liveConnectionsMetadata" ("expiresAt");
+      CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
+      CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
+      CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
+      CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
     `,
 
     sql`
@@ -1447,7 +1447,7 @@ export default async (application: Application): Promise<void> => {
 
   application.database.run(
     sql`
-      DELETE FROM "liveConnections"
+      DELETE FROM "liveConnectionsMetadata"
     `
   );
 
