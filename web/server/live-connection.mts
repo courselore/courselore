@@ -217,10 +217,11 @@ export default async (application: Application): Promise<void> => {
         liveConnections.delete(nonce);
       });
 
-      liveConnections.set(nonce, {
+      const liveConnection = {
         request,
         response,
-      });
+      };
+      liveConnections.set(nonce, liveConnection);
 
       if (liveConnectionMetadata !== undefined) {
         application.database.run(
@@ -271,6 +272,8 @@ export default async (application: Application): Promise<void> => {
               error?.stack
             );
           });
+
+      application.serverEvents.emit("liveConnectionOpened", liveConnection);
 
       return;
     }
