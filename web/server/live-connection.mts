@@ -65,7 +65,11 @@ export default async (application: Application): Promise<void> => {
   if (application.process.number === 0)
     application.workerEvents.once("start", async () => {
       while (true) {
-        application.log("CLEAN EXPIRED ‘liveConnections’", "STARTING...");
+        application.log(
+          "LIVE-CONNECTIONS",
+          "CLEAN EXPIRED ‘liveConnections’",
+          "STARTING..."
+        );
 
         for (const liveConnectionMetadata of application.database.all<{
           nonce: string;
@@ -110,7 +114,11 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-        application.log("CLEAN EXPIRED ‘liveConnections’", "FINISHED");
+        application.log(
+          "LIVE-CONNECTIONS",
+          "CLEAN EXPIRED ‘liveConnections’",
+          "FINISHED"
+        );
 
         await timers.setTimeout(60 * 1000, undefined, { ref: false });
       }
@@ -119,6 +127,8 @@ export default async (application: Application): Promise<void> => {
   application.serverEvents.once("start", async () => {
     while (true) {
       await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
+
+      application.log("LIVE-CONNECTIONS", "CLEAN ZOMBIES", "STARTING...");
 
       for (const liveConnectionMetadata of application.database.all<{
         nonce: string;
@@ -155,6 +165,8 @@ export default async (application: Application): Promise<void> => {
           liveConnection.response.end();
           application.log("LIVE-CONNECTION", nonce, "CLOSED ZOMBIE CONNECTION");
         }
+
+      application.log("LIVE-CONNECTIONS", "CLEAN ZOMBIES", "FINISHED");
     }
   });
 
