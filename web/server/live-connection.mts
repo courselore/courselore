@@ -73,7 +73,6 @@ export default async (application: Application): Promise<void> => {
 
         for (const liveConnectionMetadata of application.database.all<{
           nonce: string;
-          processNumber: number | null;
         }>(
           sql`
             SELECT "nonce", "processNumber"
@@ -86,27 +85,6 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
             `
           );
-          if (liveConnectionMetadata.processNumber !== null)
-            got
-              .delete(
-                `http://127.0.0.1:${
-                  application.ports.serverEvents[
-                    liveConnectionMetadata.processNumber
-                  ]
-                }/live-connections`,
-                {
-                  form: { nonce: liveConnectionMetadata.nonce },
-                }
-              )
-              .catch((error) => {
-                application.log(
-                  "LIVE-CONNECTION",
-                  liveConnectionMetadata.nonce,
-                  "FAILED TO EMIT DELETE ‘/live-connections’ EVENT",
-                  String(error),
-                  error?.stack
-                );
-              });
           application.log(
             "LIVE-CONNECTION",
             liveConnectionMetadata.nonce,
@@ -455,24 +433,6 @@ export default async (application: Application): Promise<void> => {
       }
     }
   });
-
-  application.serverEvents.delete<{}, any, { nonce?: string }, {}, {}>(
-    "/live-connections",
-    (request, response) => {
-      if (
-        typeof request.body.nonce !== "string" ||
-        request.body.nonce.trim() === ""
-      )
-        return response.status(422).end();
-
-      const liveConnection = liveConnections.get(request.body.nonce);
-      if (liveConnection === undefined) return response.status(404).end();
-      liveConnections.delete(request.body.nonce);
-      liveConnection.response.end();
-
-      response.end();
-    }
-  );
 
   application.serverEvents.once("stop", () => {
     for (const liveConnection of liveConnections.values())
