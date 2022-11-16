@@ -44,7 +44,7 @@ export default async (application: Application): Promise<void> => {
     `
   );
 
-  const connections = new Map<
+  const liveConnections = new Map<
     string,
     {
       request: express.Request<
@@ -127,7 +127,7 @@ export default async (application: Application): Promise<void> => {
           FROM "liveConnectionsMetadata"
           WHERE
             "processNumber" = ${application.process.number} AND
-            "nonce" NOT IN ${[...connections.keys()]}
+            "nonce" NOT IN ${[...liveConnections.keys()]}
         `
       )) {
         application.database.run(
@@ -143,7 +143,7 @@ export default async (application: Application): Promise<void> => {
         );
       }
 
-      for (const [nonce, connection] of connections)
+      for (const [nonce, liveConnection] of liveConnections)
         if (
           application.database.get<{}>(
             sql`
@@ -151,7 +151,7 @@ export default async (application: Application): Promise<void> => {
             `
           ) === undefined
         ) {
-          connection.response.end();
+          liveConnection.response.end();
           application.log("LIVE-CONNECTION", nonce, "CLOSED ZOMBIE CONNECTION");
         }
     }
@@ -229,10 +229,10 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${response.locals.liveConnectionNonce}
           `
         );
-        connections.delete(response.locals.liveConnectionNonce);
+        liveConnections.delete(response.locals.liveConnectionNonce);
       });
 
-      connections.set(response.locals.liveConnectionNonce, {
+      liveConnections.set(response.locals.liveConnectionNonce, {
         request,
         response,
       });
@@ -434,8 +434,10 @@ export default async (application: Application): Promise<void> => {
         );
         if (liveConnectionMetadata === undefined) break;
 
-        const connection = connections.get(liveConnectionMetadata.nonce);
-        if (connection === undefined) {
+        const liveConnection = liveConnections.get(
+          liveConnectionMetadata.nonce
+        );
+        if (liveConnection === undefined) {
           application.database.run(
             sql`
               DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
@@ -449,10 +451,10 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
 
-        const responseLocalsLog = connection.response.locals.log;
+        const responseLocalsLog = liveConnection.response.locals.log;
         const id = Math.random().toString(36).slice(2);
         const time = process.hrtime.bigint();
-        connection.response.locals.log = (...messageParts) => {
+        liveConnection.response.locals.log = (...messageParts) => {
           responseLocalsLog(
             id,
             `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
@@ -460,28 +462,30 @@ export default async (application: Application): Promise<void> => {
           );
         };
 
-        connection.response.locals.log("STARTING...");
+        liveConnection.response.locals.log("STARTING...");
 
-        connection.response.setHeader = (name, value) => connection.response;
+        liveConnection.response.setHeader = (name, value) =>
+          liveConnection.response;
 
-        connection.response.send = (body) => {
-          connection.response.write(JSON.stringify(body) + "\n");
-          connection.response.locals.log(
+        liveConnection.response.send = (body) => {
+          liveConnection.response.write(JSON.stringify(body) + "\n");
+          liveConnection.response.locals.log(
             "LIVE-UPDATE FINISHED",
-            String(connection.response.statusCode),
+            String(liveConnection.response.statusCode),
             `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
           );
-          return connection.response;
+          return liveConnection.response;
         };
 
-        connection.response.locals = {
-          liveConnectionNonce: connection.response.locals.liveConnectionNonce,
-          log: connection.response.locals.log,
+        liveConnection.response.locals = {
+          liveConnectionNonce:
+            liveConnection.response.locals.liveConnectionNonce,
+          log: liveConnection.response.locals.log,
         } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
 
-        application.server(connection.request, connection.response);
+        application.server(liveConnection.request, liveConnection.response);
 
-        connection.response.locals.log = responseLocalsLog;
+        liveConnection.response.locals.log = responseLocalsLog;
 
         await timers.setTimeout(100, undefined, { ref: false });
       }
@@ -497,16 +501,17 @@ export default async (application: Application): Promise<void> => {
       )
         return response.status(422).end();
 
-      const connection = connections.get(request.body.nonce);
-      if (connection === undefined) return response.status(404).end();
-      connections.delete(request.body.nonce);
-      connection.response.end();
+      const liveConnection = liveConnections.get(request.body.nonce);
+      if (liveConnection === undefined) return response.status(404).end();
+      liveConnections.delete(request.body.nonce);
+      liveConnection.response.end();
 
       response.end();
     }
   );
 
   application.serverEvents.once("stop", () => {
-    for (const { request, response } of connections.values()) response.end();
+    for (const liveConnection of liveConnections.values())
+      liveConnection.response.end();
   });
 };
