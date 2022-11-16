@@ -255,6 +255,7 @@ export default async (application: Application): Promise<void> => {
           }
         `
       )!;
+
       request.cookies["__Host-Session"] = session.token;
       response.cookie("__Host-Session", session.token, {
         ...application.server.locals.configuration.cookies,
@@ -264,6 +265,7 @@ export default async (application: Application): Promise<void> => {
 
     get({ request, response }) {
       if (request.cookies["__Host-Session"] === undefined) return undefined;
+
       const session = application.database.get<{
         createdAt: string;
         user: number;
@@ -274,6 +276,7 @@ export default async (application: Application): Promise<void> => {
           WHERE "token" = ${request.cookies["__Host-Session"]}
         `
       );
+
       if (
         session === undefined ||
         new Date(session.createdAt).getTime() <
@@ -293,13 +296,7 @@ export default async (application: Application): Promise<void> => {
           userId: session.user,
         });
       }
-      application.database.run(
-        sql`
-          UPDATE "users"
-          SET "lastSeenOnlineAt" = ${new Date().toISOString()}
-          WHERE "id" = ${session.user}
-        `
-      );
+
       return session.user;
     },
 
@@ -403,6 +400,31 @@ export default async (application: Application): Promise<void> => {
           WHERE "id" = ${userId}
         `
       )!;
+
+      if ("TODO" && false) {
+        const abortController = new AbortController();
+
+        (async () => {
+          while (true) {
+            application.database.run(
+              sql`
+                UPDATE "users"
+                SET "lastSeenOnlineAt" = ${new Date().toISOString()}
+                WHERE "id" = ${response.locals.user.id}
+              `
+            );
+
+            await timers.setTimeout(60 * 1000, undefined, {
+              ref: false,
+              signal: abortController.signal,
+            });
+          }
+        })();
+
+        response.once("close", () => {
+          abortController.abort();
+        });
+      }
 
       response.locals.invitations = application.database
         .all<{
