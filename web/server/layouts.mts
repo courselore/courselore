@@ -1025,7 +1025,7 @@ export default async (application: Application): Promise<void> => {
           `,
         })
       );
-      process.exit();
+      process.kill(process.ppid);
     });
 
   application.server.locals.layouts.box = ({ request, response, head, body }) =>

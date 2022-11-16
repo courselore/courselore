@@ -659,14 +659,14 @@ export default async (application: Application): Promise<void> => {
             retry: { limit: 0 },
             timeout: { request: 10000 },
           })
-          .on("response", (response) => {
-            for (const header of Object.keys(response.headers))
+          .on("response", (proxiedResponse) => {
+            for (const header of Object.keys(proxiedResponse.headers))
               if (
                 !["content-type", "content-length"].includes(
                   header.toLowerCase()
                 )
               )
-                delete response.headers[header];
+                delete proxiedResponse.headers[header];
           }),
         response
       );
