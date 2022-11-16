@@ -282,7 +282,7 @@ export default async (application: Application): Promise<void> => {
         application.server.locals.helpers.Session.close({ request, response });
         return undefined;
       } else if (
-        request.header("Live-Updates") === undefined &&
+        typeof request.header("Live-Connection") !== "string" &&
         new Date(session.createdAt).getTime() <
           Date.now() - application.server.locals.helpers.Session.maxAge / 2
       ) {
