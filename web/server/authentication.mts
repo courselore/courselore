@@ -302,9 +302,11 @@ export default async (application: Application): Promise<void> => {
 
     close({ request, response }) {
       if (request.cookies["__Host-Session"] === undefined) return;
+
       application.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
       );
+
       delete request.cookies["__Host-Session"];
       response.clearCookie(
         "__Host-Session",
@@ -314,9 +316,11 @@ export default async (application: Application): Promise<void> => {
 
     closeAllAndReopen({ request, response, userId }) {
       application.server.locals.helpers.Session.close({ request, response });
+
       application.database.run(
         sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
       );
+
       application.server.locals.helpers.Session.open({
         request,
         response,
