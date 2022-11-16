@@ -418,10 +418,12 @@ export default async (application: Application): Promise<void> => {
               `
             );
 
-            await timers.setTimeout(60 * 1000, undefined, {
-              ref: false,
-              signal: abortController.signal,
-            });
+            await timers
+              .setTimeout(60 * 1000, undefined, {
+                ref: false,
+                signal: abortController.signal,
+              })
+              .catch(() => {});
           }
         })();
 
