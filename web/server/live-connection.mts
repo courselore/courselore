@@ -402,7 +402,7 @@ export default async (application: Application): Promise<void> => {
           application.log(
             "LIVE-UPDATES",
             liveConnectionMetadata.nonce,
-            "CLEANED ZOMBIE CONNECTION WHEN TRYING TO SEND LIVE-UPDATE"
+            "CLEANED ZOMBIE LIVE-CONNECTION WHEN TRYING TO SEND LIVE-UPDATE"
           );
           continue;
         }
