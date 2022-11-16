@@ -109,6 +109,46 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
+  application.serverEvents.once("start", async () => {
+    while (true) {
+      await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
+
+      for (const liveConnection of application.database.all<{ nonce: string }>(
+        sql`
+          SELECT "nonce"
+          FROM "liveConnections"
+          WHERE
+            "processNumber" = ${application.process.number} AND
+            "nonce" NOT IN ${[...connections.keys()]}
+        `
+      )) {
+        application.database.run(
+          sql`
+            DELETE FROM "liveConnections"
+            WHERE "nonce" = ${liveConnection.nonce}
+          `
+        );
+        application.log(
+          "LIVE-CONNECTION",
+          liveConnection.nonce,
+          "CLEANED ZOMBIE CONNECTION IN DATABASE"
+        );
+      }
+
+      for (const [nonce, connection] of connections)
+        if (
+          application.database.get<{}>(
+            sql`
+              SELECT TRUE FROM "liveConnections" WHERE "nonce" = ${nonce}
+            `
+          ) === undefined
+        ) {
+          connection.response.end();
+          application.log("LIVE-CONNECTION", nonce, "CLOSED ZOMBIE CONNECTION");
+        }
+    }
+  });
+
   application.server.use<
     {},
     any,
