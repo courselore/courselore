@@ -186,7 +186,6 @@ export default async (application: Application): Promise<void> => {
       response.locals.liveConnectionNonce = nonce;
 
       const responseLocalsLog = response.locals.log;
-
       response.locals.log = (...messageParts) => {
         responseLocalsLog(
           "LIVE-CONNECTION",
