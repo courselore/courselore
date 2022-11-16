@@ -187,11 +187,7 @@ export default async (application: Application): Promise<void> => {
 
       const responseLocalsLog = response.locals.log;
       response.locals.log = (...messageParts) => {
-        responseLocalsLog(
-          "LIVE-CONNECTION",
-          response.locals.liveConnectionNonce!,
-          ...messageParts
-        );
+        responseLocalsLog("LIVE-CONNECTION", nonce, ...messageParts);
       };
 
       const liveConnectionMetadata = application.database.get<{
@@ -203,7 +199,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT "expiresAt", "url", "processNumber", "liveUpdateAt"
           FROM "liveConnectionsMetadata"
-          WHERE "nonce" = ${response.locals.liveConnectionNonce}
+          WHERE "nonce" = ${nonce}
         `
       );
 
@@ -235,16 +231,15 @@ export default async (application: Application): Promise<void> => {
 
       response.once("close", () => {
         heartbeatAbortController.abort();
-        if (typeof response.locals.liveConnectionNonce !== "string") return;
         application.database.run(
           sql`
-            DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${response.locals.liveConnectionNonce}
+            DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${nonce}
           `
         );
-        liveConnections.delete(response.locals.liveConnectionNonce);
+        liveConnections.delete(nonce);
       });
 
-      liveConnections.set(response.locals.liveConnectionNonce, {
+      liveConnections.set(nonce, {
         request,
         response,
       });
@@ -256,7 +251,7 @@ export default async (application: Application): Promise<void> => {
             SET
               "expiresAt" = NULL,
               "processNumber" = ${application.process.number}
-            WHERE "nonce" = ${response.locals.liveConnectionNonce}
+            WHERE "nonce" = ${nonce}
           `
         );
         response.locals.log("CONNECTION OPENED");
@@ -270,7 +265,7 @@ export default async (application: Application): Promise<void> => {
               "liveUpdateAt"
             )
             VALUES (
-              ${response.locals.liveConnectionNonce},
+              ${nonce},
               ${request.originalUrl},
               ${application.process.number},
               ${new Date().toISOString()}
