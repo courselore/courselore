@@ -38,11 +38,12 @@ export type ApplicationLiveConnection = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.database.run(
-    sql`
-      DELETE FROM "liveConnectionsMetadata" WHERE "processNumber" = ${application.process.number}
-    `
-  );
+  if (application.process.type === "server")
+    application.database.run(
+      sql`
+        DELETE FROM "liveConnectionsMetadata" WHERE "processNumber" = ${application.process.number}
+      `
+    );
 
   const liveConnections = new Map<
     string,
