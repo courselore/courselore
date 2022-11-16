@@ -303,57 +303,6 @@ export default async (application: Application): Promise<void> => {
       return;
     }
 
-    const abortNonce = request.header("Live-Connection-Abort");
-    if (typeof abortNonce === "string") {
-      const liveConnectionMetadata = application.database.get<{
-        nonce: string;
-        processNumber: number | null;
-      }>(
-        sql`
-          SELECT "nonce", "processNumber" FROM "liveConnectionsMetadata" WHERE "nonce" = ${abortNonce}
-        `
-      );
-      if (liveConnectionMetadata === undefined)
-        response.locals.log(
-          "LIVE-CONNECTION",
-          abortNonce,
-          "FAILED TO ABORT: NOT FOUND"
-        );
-      else {
-        application.database.run(
-          sql`
-            DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
-          `
-        );
-        if (liveConnectionMetadata.processNumber !== null)
-          got
-            .delete(
-              `http://127.0.0.1:${
-                application.ports.serverEvents[
-                  liveConnectionMetadata.processNumber
-                ]
-              }/live-connections`,
-              {
-                form: { nonce: liveConnectionMetadata.nonce },
-              }
-            )
-            .catch((error) => {
-              response.locals.log(
-                "LIVE-CONNECTION",
-                liveConnectionMetadata.nonce,
-                "FAILED TO EMIT DELETE ‘/live-connections’ EVENT",
-                String(error),
-                error?.stack
-              );
-            });
-        response.locals.log(
-          "LIVE-CONNECTION",
-          liveConnectionMetadata.nonce,
-          "ABORTED"
-        );
-      }
-    }
-
     if (request.method === "GET") {
       response.locals.liveConnectionNonce = Math.random().toString(36).slice(2);
 
