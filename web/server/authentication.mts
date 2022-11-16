@@ -537,58 +537,6 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/63288
-  (application.serverEvents.on as any)(
-    "liveConnectionOpened",
-    ({
-      request,
-      response,
-    }: {
-      request: express.Request<
-        {},
-        any,
-        {},
-        {},
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-      >;
-      response: express.Response<
-        any,
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
-      >;
-    }) => {
-      const userId = application.server.locals.helpers.Session.get({
-        request,
-        response,
-      });
-      if (userId === undefined) return;
-
-      const abortController = new AbortController();
-
-      (async () => {
-        while (true) {
-          application.database.run(
-            sql`
-              UPDATE "users"
-              SET "lastSeenOnlineAt" = ${new Date().toISOString()}
-              WHERE "id" = ${userId}
-            `
-          );
-
-          await timers
-            .setTimeout(30 * 1000, undefined, {
-              ref: false,
-              signal: abortController.signal,
-            })
-            .catch(() => {});
-        }
-      })();
-
-      response.once("close", () => {
-        abortController.abort();
-      });
-    }
-  );
-
   application.server.locals.helpers.passwordConfirmation = async ({
     request,
     response,

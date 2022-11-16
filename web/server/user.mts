@@ -1,4 +1,5 @@
 import path from "node:path";
+import timers from "node:timers/promises";
 import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
@@ -133,6 +134,58 @@ export default async (application: Application): Promise<void> => {
     "hourly-digests",
     "daily-digests",
   ];
+
+  // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/63288
+  (application.serverEvents.on as any)(
+    "liveConnectionOpened",
+    ({
+      request,
+      response,
+    }: {
+      request: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      >;
+      response: express.Response<
+        any,
+        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      >;
+    }) => {
+      const userId = application.server.locals.helpers.Session.get({
+        request,
+        response,
+      });
+      if (userId === undefined) return;
+
+      const abortController = new AbortController();
+
+      (async () => {
+        while (true) {
+          application.database.run(
+            sql`
+              UPDATE "users"
+              SET "lastSeenOnlineAt" = ${new Date().toISOString()}
+              WHERE "id" = ${userId}
+            `
+          );
+
+          await timers
+            .setTimeout(30 * 1000, undefined, {
+              ref: false,
+              signal: abortController.signal,
+            })
+            .catch(() => {});
+        }
+      })();
+
+      response.once("close", () => {
+        abortController.abort();
+      });
+    }
+  );
 
   application.server.get<
     {},
