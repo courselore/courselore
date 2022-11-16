@@ -498,6 +498,14 @@ export default async (application: Application): Promise<void> => {
 
         application.server(liveConnection.request, liveConnection.response);
 
+        application.database.run(
+          sql`
+            UPDATE "liveConnectionsMetadata"
+            SET "liveUpdateAt" = NULL
+            WHERE "nonce" = ${liveConnectionMetadata.nonce}
+          `
+        );
+
         liveConnection.response.locals.log = responseLocalsLog;
 
         await timers.setTimeout(100, undefined, { ref: false });
