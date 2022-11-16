@@ -10,8 +10,11 @@
 
 ## Unreleased
 
+- **Breaking change.** Hopefully the last in a while.
 - Introduced [variables fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide), which reduce the number of files that have to be downloaded by the browser and speed up the initial loading of Courselore.
 - Changed the behavior of archived courses.
+- Better detection that a person is online.
+- Performance improvements (multiple processes, fewer keepalive connections to the server, and so forth).
 
 ## 5.0.0
 
