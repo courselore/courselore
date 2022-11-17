@@ -1072,7 +1072,15 @@ export default async (application: Application): Promise<void> => {
     }
 
     const userId = PasswordReset.get(request.params.passwordResetNonce);
-    if (userId === undefined) {
+    const user =
+      userId === undefined
+        ? undefined
+        : application.database.get<{ email: string; name: string }>(
+            sql`
+              SELECT "email", "name" FROM "users" WHERE "id" = ${userId}
+            `
+          );
+    if (user === undefined) {
       application.server.locals.helpers.Flash.set({
         request,
         response,
@@ -1092,14 +1100,6 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
     }
-
-    const user = application.database.get<{ email: string; name: string }>(
-      sql`
-        SELECT "email", "name"
-        FROM "users"
-        WHERE "id" = ${userId}
-      `
-    )!;
 
     response.send(
       application.server.locals.layouts.box({
@@ -1191,7 +1191,15 @@ export default async (application: Application): Promise<void> => {
         return next("Validation");
 
       const userId = PasswordReset.get(request.params.passwordResetNonce);
-      if (userId === undefined) {
+      const user =
+        userId === undefined
+          ? undefined
+          : application.database.get<{ id: number; email: string }>(
+              sql`
+                SELECT "id", "email" FROM "users" WHERE "id" = ${userId}
+              `
+            );
+      if (user === undefined) {
         application.server.locals.helpers.Flash.set({
           request,
           response,
@@ -1215,24 +1223,18 @@ export default async (application: Application): Promise<void> => {
       }
 
       application.database.run(
-        sql`DELETE FROM "passwordResets" WHERE "user" = ${userId}`
+        sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`
       );
-      const user = application.database.get<{ email: string }>(
+      application.database.run(
         sql`
-          SELECT * FROM "users" WHERE "id" = ${
-            application.database.run(
-              sql`
-                UPDATE "users"
-                SET "password" = ${await argon2.hash(
-                  request.body.password,
-                  application.server.locals.configuration.argon2
-                )}
-                WHERE "id" = ${userId}
-              `
-            ).lastInsertRowid
-          }
+          UPDATE "users"
+          SET "password" = ${await argon2.hash(
+            request.body.password,
+            application.server.locals.configuration.argon2
+          )}
+          WHERE "id" = ${user.id}
         `
-      )!;
+      );
 
       application.database.run(
         sql`
@@ -1290,7 +1292,7 @@ export default async (application: Application): Promise<void> => {
       application.server.locals.helpers.Session.closeAllAndReopen({
         request,
         response,
-        userId,
+        userId: user.id,
       });
 
       application.server.locals.helpers.Flash.set({
