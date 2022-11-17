@@ -752,6 +752,7 @@ export default async (application: Application): Promise<void> => {
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
         `
       );
+
       return application.database.get<{ nonce: string }>(
         sql`
           SELECT * FROM "passwordResets" WHERE "id" = ${
@@ -772,17 +773,16 @@ export default async (application: Application): Promise<void> => {
 
     get(nonce: string): number | undefined {
       return application.database.get<{
-        createdAt: string;
         user: number;
       }>(
         sql`
-          SELECT "createdAt", "user"
+          SELECT "user"
           FROM "passwordResets"
           WHERE
             "nonce" = ${nonce} AND
-            "createdAt" > ${new Date(
+            ${new Date(
               Date.now() - PasswordReset.maxAge
-            ).toISOString()}
+            ).toISOString()} < "createdAt"
         `
       )?.user;
     },
@@ -1093,6 +1093,14 @@ export default async (application: Application): Promise<void> => {
       );
     }
 
+    const user = application.database.get<{ email: string; name: string }>(
+      sql`
+        SELECT "email", "name"
+        FROM "users"
+        WHERE "id" = ${userId}
+      `
+    )!;
+
     response.send(
       application.server.locals.layouts.box({
         request,
@@ -1121,6 +1129,14 @@ export default async (application: Application): Promise<void> => {
               gap: var(--space--4);
             `)}"
           >
+            <label class="label">
+              <p class="label--text">Name</p>
+              <input value="${user.name}" disabled class="input--text" />
+            </label>
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input value="${user.email}" disabled class="input--text" />
+            </label>
             <label class="label">
               <p class="label--text">Password</p>
               <input
