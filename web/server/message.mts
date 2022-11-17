@@ -646,22 +646,17 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${response.locals.conversation.id}
             `
           );
-          message = application.database.get<{ id: number; reference: string }>(
+          application.database.run(
             sql`
-              SELECT * FROM "messages" WHERE "id" = ${
-                application.database.run(
-                  sql`
-                    UPDATE "messages"
-                    SET
-                      "contentSource" = ${contentSource},
-                      "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
-                      "contentSearch" = ${contentPreprocessed.contentSearch}
-                    WHERE "id" = ${mostRecentMessage.id}
-                  `
-                ).lastInsertRowid
-              }
+              UPDATE "messages"
+              SET
+                "contentSource" = ${contentSource},
+                "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
+                "contentSearch" = ${contentPreprocessed.contentSearch}
+              WHERE "id" = ${mostRecentMessage.id}
             `
-          )!;
+          );
+          message = mostRecentMessage;
           application.database.run(
             sql`
               DELETE FROM "readings"
