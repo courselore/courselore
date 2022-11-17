@@ -352,190 +352,186 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    asyncHandler(async (request, response, next) => {
-      const userId = application.server.locals.helpers.Session.get({
-        request,
-        response,
-      });
-      if (typeof userId !== "number") return next();
+  >((request, response, next) => {
+    const userId = application.server.locals.helpers.Session.get({
+      request,
+      response,
+    });
+    if (typeof userId !== "number") return next();
 
-      response.locals.user = application.database.get<{
+    response.locals.user = application.database.get<{
+      id: number;
+      lastSeenOnlineAt: string;
+      reference: string;
+      email: string;
+      password: string;
+      emailVerifiedAt: string | null;
+      name: string;
+      avatar: string | null;
+      avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+      biographySource: string | null;
+      biographyPreprocessed: HTML | null;
+      systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+      emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
+      emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
+      emailNotificationsForMentionsAt: string | null;
+      emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
+        | string
+        | null;
+      emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+    }>(
+      sql`
+        SELECT
+          "id",
+          "lastSeenOnlineAt",
+          "reference",
+          "email",
+          "password",
+          "emailVerifiedAt",
+          "name",
+          "avatar",
+          "avatarlessBackgroundColor",
+          "biographySource",
+          "biographyPreprocessed",
+          "systemRole",
+          "emailNotificationsForAllMessages",
+          "emailNotificationsForAllMessagesDigestDeliveredAt",
+          "emailNotificationsForMentionsAt",
+          "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+          "emailNotificationsForMessagesInConversationsYouStartedAt"
+        FROM "users"
+        WHERE "id" = ${userId}
+      `
+    )!;
+
+    response.locals.invitations = application.database
+      .all<{
         id: number;
-        lastSeenOnlineAt: string;
+        courseId: number;
+        courseReference: string;
+        courseArchivedAt: string | null;
+        courseName: string;
+        courseYear: string | null;
+        courseTerm: string | null;
+        courseInstitution: string | null;
+        courseCode: string | null;
+        courseNextConversationReference: number;
         reference: string;
-        email: string;
-        password: string;
-        emailVerifiedAt: string | null;
-        name: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
-        biographySource: string | null;
-        biographyPreprocessed: HTML | null;
-        systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
-        emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
-        emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
-        emailNotificationsForMentionsAt: string | null;
-        emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
-          | string
-          | null;
-        emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT
-            "id",
-            "lastSeenOnlineAt",
-            "reference",
-            "email",
-            "password",
-            "emailVerifiedAt",
-            "name",
-            "avatar",
-            "avatarlessBackgroundColor",
-            "biographySource",
-            "biographyPreprocessed",
-            "systemRole",
-            "emailNotificationsForAllMessages",
-            "emailNotificationsForAllMessagesDigestDeliveredAt",
-            "emailNotificationsForMentionsAt",
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-            "emailNotificationsForMessagesInConversationsYouStartedAt"
-          FROM "users"
-          WHERE "id" = ${userId}
+            "invitations"."id",
+            "courses"."id" AS "courseId",
+            "courses"."reference" AS "courseReference",
+            "courses"."archivedAt" AS "courseArchivedAt",
+            "courses"."name" AS "courseName",
+            "courses"."year" AS "courseYear",
+            "courses"."term" AS "courseTerm",
+            "courses"."institution" AS "courseInstitution",
+            "courses"."code" AS "courseCode",
+            "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "invitations"."reference",
+            "invitations"."courseRole"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id"
+          WHERE
+            "invitations"."usedAt" IS NULL AND (
+              "invitations"."expiresAt" IS NULL OR
+              ${new Date().toISOString()} < "invitations"."expiresAt"
+            ) AND
+            "invitations"."email" = ${response.locals.user.email}
+          ORDER BY "invitations"."id" DESC
         `
-      )!;
+      )
+      .map((invitation) => ({
+        id: invitation.id,
+        course: {
+          id: invitation.courseId,
+          reference: invitation.courseReference,
+          archivedAt: invitation.courseArchivedAt,
+          name: invitation.courseName,
+          year: invitation.courseYear,
+          term: invitation.courseTerm,
+          institution: invitation.courseInstitution,
+          code: invitation.courseCode,
+          nextConversationReference: invitation.courseNextConversationReference,
+        },
+        reference: invitation.reference,
+        courseRole: invitation.courseRole,
+      }));
 
-      response.locals.invitations = application.database
-        .all<{
-          id: number;
-          courseId: number;
-          courseReference: string;
-          courseArchivedAt: string | null;
-          courseName: string;
-          courseYear: string | null;
-          courseTerm: string | null;
-          courseInstitution: string | null;
-          courseCode: string | null;
-          courseNextConversationReference: number;
-          reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-        }>(
-          sql`
-            SELECT
-              "invitations"."id",
-              "courses"."id" AS "courseId",
-              "courses"."reference" AS "courseReference",
-              "courses"."archivedAt" AS "courseArchivedAt",
-              "courses"."name" AS "courseName",
-              "courses"."year" AS "courseYear",
-              "courses"."term" AS "courseTerm",
-              "courses"."institution" AS "courseInstitution",
-              "courses"."code" AS "courseCode",
-              "courses"."nextConversationReference" AS "courseNextConversationReference",
-              "invitations"."reference",
-              "invitations"."courseRole"
-            FROM "invitations"
-            JOIN "courses" ON "invitations"."course" = "courses"."id"
-            WHERE
-              "invitations"."usedAt" IS NULL AND (
-                "invitations"."expiresAt" IS NULL OR
-                ${new Date().toISOString()} < "invitations"."expiresAt"
-              ) AND
-              "invitations"."email" = ${response.locals.user.email}
-            ORDER BY "invitations"."id" DESC
-          `
-        )
-        .map((invitation) => ({
-          id: invitation.id,
-          course: {
-            id: invitation.courseId,
-            reference: invitation.courseReference,
-            archivedAt: invitation.courseArchivedAt,
-            name: invitation.courseName,
-            year: invitation.courseYear,
-            term: invitation.courseTerm,
-            institution: invitation.courseInstitution,
-            code: invitation.courseCode,
-            nextConversationReference:
-              invitation.courseNextConversationReference,
-          },
-          reference: invitation.reference,
-          courseRole: invitation.courseRole,
-        }));
+    response.locals.enrollments = application.database
+      .all<{
+        id: number;
+        courseId: number;
+        courseReference: string;
+        courseArchivedAt: string | null;
+        courseName: string;
+        courseYear: string | null;
+        courseTerm: string | null;
+        courseInstitution: string | null;
+        courseCode: string | null;
+        courseNextConversationReference: number;
+        reference: string;
+        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+      }>(
+        sql`
+          SELECT
+            "enrollments"."id",
+            "courses"."id" AS "courseId",
+            "courses"."reference" AS "courseReference",
+            "courses"."archivedAt" AS "courseArchivedAt",
+            "courses"."name" AS "courseName",
+            "courses"."year" AS "courseYear",
+            "courses"."term" AS "courseTerm",
+            "courses"."institution" AS "courseInstitution",
+            "courses"."code" AS "courseCode",
+            "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "enrollments"."reference",
+            "enrollments"."courseRole",
+            "enrollments"."accentColor"
+          FROM "enrollments"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "enrollments"."user" = ${response.locals.user.id}
+          ORDER BY "enrollments"."id" DESC
+        `
+      )
+      .map((enrollment) => ({
+        id: enrollment.id,
+        course: {
+          id: enrollment.courseId,
+          reference: enrollment.courseReference,
+          archivedAt: enrollment.courseArchivedAt,
+          name: enrollment.courseName,
+          year: enrollment.courseYear,
+          term: enrollment.courseTerm,
+          institution: enrollment.courseInstitution,
+          code: enrollment.courseCode,
+          nextConversationReference: enrollment.courseNextConversationReference,
+        },
+        reference: enrollment.reference,
+        courseRole: enrollment.courseRole,
+        accentColor: enrollment.accentColor,
+      }));
 
-      response.locals.enrollments = application.database
-        .all<{
-          id: number;
-          courseId: number;
-          courseReference: string;
-          courseArchivedAt: string | null;
-          courseName: string;
-          courseYear: string | null;
-          courseTerm: string | null;
-          courseInstitution: string | null;
-          courseCode: string | null;
-          courseNextConversationReference: number;
-          reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-          accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
-        }>(
-          sql`
-            SELECT
-              "enrollments"."id",
-              "courses"."id" AS "courseId",
-              "courses"."reference" AS "courseReference",
-              "courses"."archivedAt" AS "courseArchivedAt",
-              "courses"."name" AS "courseName",
-              "courses"."year" AS "courseYear",
-              "courses"."term" AS "courseTerm",
-              "courses"."institution" AS "courseInstitution",
-              "courses"."code" AS "courseCode",
-              "courses"."nextConversationReference" AS "courseNextConversationReference",
-              "enrollments"."reference",
-              "enrollments"."courseRole",
-              "enrollments"."accentColor"
-            FROM "enrollments"
-            JOIN "courses" ON "enrollments"."course" = "courses"."id"
-            WHERE "enrollments"."user" = ${response.locals.user.id}
-            ORDER BY "enrollments"."id" DESC
-          `
-        )
-        .map((enrollment) => ({
-          id: enrollment.id,
-          course: {
-            id: enrollment.courseId,
-            reference: enrollment.courseReference,
-            archivedAt: enrollment.courseArchivedAt,
-            name: enrollment.courseName,
-            year: enrollment.courseYear,
-            term: enrollment.courseTerm,
-            institution: enrollment.courseInstitution,
-            code: enrollment.courseCode,
-            nextConversationReference:
-              enrollment.courseNextConversationReference,
-          },
-          reference: enrollment.reference,
-          courseRole: enrollment.courseRole,
-          accentColor: enrollment.accentColor,
-        }));
+    response.locals.administrationOptions =
+      application.database.get<{
+        latestVersion: string;
+        userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+      }>(
+        sql`
+          SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
+          FROM "administrationOptions"
+        `
+      ) ??
+      (() => {
+        throw new Error("Failed to get ‘administrationOptions’.");
+      })();
 
-      response.locals.administrationOptions =
-        application.database.get<{
-          latestVersion: string;
-          userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
-        }>(
-          sql`
-            SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
-            FROM "administrationOptions"
-          `
-        ) ??
-        (() => {
-          throw new Error("Failed to get ‘administrationOptions’.");
-        })();
-
-      next();
-    })
-  );
+    next();
+  });
 
   application.server.locals.helpers.passwordConfirmation = async ({
     request,
