@@ -15,6 +15,7 @@
 - Changed the behavior of archived courses.
 - Better detection that a person is online.
 - Performance improvements (multiple processes, fewer keepalive connections to the server, and so forth).
+- Major refactoring to make it easier to contribute to the codebase.
 
 ## 5.0.0
 

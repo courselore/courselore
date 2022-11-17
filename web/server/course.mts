@@ -3475,7 +3475,7 @@ export default async (application: Application): Promise<void> => {
     "/courses/:courseReference/invitations/:invitationReference",
     asyncHandler(async (request, response, next) => {
       if (response.locals.invitation === undefined)
-        return response.send(
+        return response.status(404).send(
           application.server.locals.layouts.box({
             request,
             response,
