@@ -1485,11 +1485,16 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           theme: "rose",
-          content: html`Email already taken.`,
+          content: html`
+            An account with this email address already exists. Perhaps you
+            forgot your password?
+          `,
         });
         return response.redirect(
           303,
-          `https://${application.configuration.hostname}/sign-in${qs.stringify(
+          `https://${
+            application.configuration.hostname
+          }/reset-password${qs.stringify(
             {
               redirect: request.query.redirect,
               invitation: {
