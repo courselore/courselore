@@ -20,6 +20,16 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >("/errors/not-found", (request, response, next) => {
+    next();
+  });
+
+  application.server.get<
+    {},
+    any,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/errors/validation", (request, response, next) => {
     next("Validation");
   });
