@@ -1477,7 +1477,9 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             theme: "rose",
-            content: html`Email already taken.`,
+            content: html`
+              There already exists another account with this email address.
+            `,
           });
           return response.redirect(
             303,
@@ -1517,10 +1519,10 @@ export default async (application: Application): Promise<void> => {
                   subject: "Your Email Has Been Updated",
                   html: html`
                     <p>
-                      The <code>${response.locals.user.email}</code> email
-                      address was associated with a Courselore account that has
-                      been updated to use the
-                      <code>${request.body.email}</code> email address.
+                      The Courselore account that used the email address
+                      <code>${response.locals.user.email}</code>
+                      has been updated to use the email address
+                      <code>${request.body.email}</code>.
                     </p>
 
                     <p>
