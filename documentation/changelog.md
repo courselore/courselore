@@ -10,12 +10,63 @@
 
 ## Unreleased
 
-- **Breaking change.** Hopefully the last in a while.
-- Introduced [variables fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide), which reduce the number of files that have to be downloaded by the browser and speed up the initial loading of Courselore.
-- Changed the behavior of archived courses.
-- Better detection that a person is online.
-- Performance improvements (multiple processes, fewer keepalive connections to the server, and so forth).
-- Major refactoring to make it easier to contribute to the codebase.
+**This is a major release because we introduced changes to the Courselore configuration file that require your intervention as a system administrator.**
+
+You may refer to [`example.mjs`](https://github.com/courselore/courselore/blob/v5.0.0/web/configuration/example.mjs) and adapt your configuration based on it. In particular, the following have changed:
+
+1. The `sendMail` configuration property has been renamed to `email`.
+
+2. The boilerplate around the configuration has been simplified. Instead of using functions and `import`s, it’s just a JavaScript module exporting a configuration object.
+
+We expect this configuration file format to be valid for longer and we expect to have fewer updates that require your intervention in the future.
+
+---
+
+Besides the change to the format of the configuration file, this version of Courselore has been a significant rearchitecture.
+
+Previously there was a single Node.js process that was responsible for everything in the application, including serving requests and working on background jobs that would determine who should receive email notifications for messages, deliver email, clean the database of expired entries (for example, expired user sessions), and so forth.
+
+That’s a simple architecture, but it has two issues:
+
+1. The server may take longer to respond to a request because it’s busy with background jobs.
+2. A single process is allocated in a single CPU core, so it doesn’t use the machine resources as well as it should.
+
+We fixed these issues in Courselore 6.0.0 by doing the following:
+
+1. Now there are different kinds of processes for serving requests and working on background jobs. The server process is dedicated to responding to requests as fast as possible.
+2. We start multiple processes of each kind—one per CPU core.
+
+This kind of change had repercussions across the codebase, which now must deal with issues such as supervising the multiple processes, dealing with edge cases in case some processes are unavailable, allowing processes to communicate with one another (for example, when a user creates an account, the server process has to kick off a job in a worker process immediately to send the “welcome” email), and so forth.
+
+Overall, this makes Courselore’s codebase a bit more complex for beginner contributors, but we expect that the performance and availability benefits will offset that.
+
+---
+
+In the process of bringing this rearchitecture about, we improved many smaller things, including:
+
+1. Previously some pages would keep two open connections between browser and server. One to detect that the user online, be notified of server updates, and so forth. And another to receive page updates in case, for example, someone has sent a message.
+
+   Now we keep a single connection open to service all these needs. This should increase the number of users that a server can support, and slightly improve the performance overall.
+
+2. We changed the way middleware is installed in the Node.js server, simplifying the TypeScript declarations and the codebase overall, and making Courselore a bit more welcoming to beginner contributors.
+
+3. We changed the way we detect that a user is online and now the little green dot under their avatar is more reliable.
+
+4. We introduced [variables fonts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Fonts/Variable_Fonts_Guide), which reduce the number of files that have to be downloaded by the browser and speed up the initial loading.
+
+---
+
+We also changed the behavior of archived courses.
+
+Previously archived courses would reject new actions, for example, new messages.
+
+Now those actions are allowed, and the only effect of archiving a course is making it less apparent on the course switcher in the user interface.
+
+The reason for this change is that for the most part people don’t participate in archived courses, but it sometimes be necessary to do it, and it was annoying to momentarily unarchive a course just for this. For example, a staff member may want to contact certain students of an archived course in a later semester to invite students to be course assistants.
+
+---
+
+**As with any significant rearchitectures, this version may include some issues we haven’t detected yet in our testing. Please monitor your installation more closely after the update and report any issues you encounter.**
 
 ## 5.0.0
 
