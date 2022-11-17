@@ -56,7 +56,6 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
             `
           );
-
           application.log(
             "sendEmailJobs",
             "EXPIRED",
@@ -120,6 +119,7 @@ export default async (application: Application): Promise<void> => {
           return job;
         });
         if (job === undefined) break;
+
         const mailOptions = JSON.parse(job.mailOptions);
         try {
           const sentMessageInfo = await sendMail(mailOptions);
@@ -128,7 +128,6 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
             `
           );
-
           application.log(
             "sendEmailJobs",
             "SUCCEEDED",
