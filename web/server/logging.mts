@@ -31,10 +31,11 @@ export default async (application: Application): Promise<void> => {
     "STARTED",
     ...(application.process.type === "main"
       ? [
-          `Courselore/${application.version}`,
+          application.name,
+          application.version,
           `https://${application.configuration.hostname}`,
         ]
-      : ["PROCESS NUMBER", String(application.process.number)])
+      : [])
   );
 
   process.once("exit", () => {
@@ -78,6 +79,7 @@ export default async (application: Application): Promise<void> => {
           : [])
       );
     });
+
     next();
   });
 };
