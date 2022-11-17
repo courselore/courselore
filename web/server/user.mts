@@ -1128,62 +1128,6 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.patch<
-    {},
-    any,
-    { name?: string; avatar?: string; biography?: string },
-    {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
-  >("/settings/profile", (request, response, next) => {
-    if (
-      response.locals.user === undefined ||
-      response.locals.user.emailVerifiedAt === null
-    )
-      return next();
-
-    if (
-      typeof request.body.name !== "string" ||
-      request.body.name.trim() === "" ||
-      typeof request.body.avatar !== "string" ||
-      typeof request.body.biography !== "string"
-    )
-      return next("Validation");
-
-    application.database.run(
-      sql`
-        UPDATE "users"
-        SET
-          "name" = ${request.body.name},
-          "nameSearch" = ${html`${request.body.name}`},
-          "avatar" = ${
-            request.body.avatar.trim() === "" ? null : request.body.avatar
-          },
-          "biographySource" = ${
-            request.body.biography.trim() === "" ? null : request.body.biography
-          },
-          "biographyPreprocessed" = ${
-            request.body.biography.trim() === ""
-              ? null
-              : application.server.locals.partials.contentPreprocessed(
-                  request.body.biography
-                ).contentPreprocessed
-          }
-        WHERE "id" = ${response.locals.user.id}
-      `
-    );
-
-    application.server.locals.helpers.Flash.set({
-      request,
-      response,
-      theme: "green",
-      content: html`Profile updated successfully.`,
-    });
-    response.redirect(
-      303,
-      `https://${application.configuration.hostname}/settings/profile`
-    );
-  });
-
   application.server.post<
     {},
     HTML,
@@ -1273,6 +1217,62 @@ export default async (application: Application): Promise<void> => {
       );
     })
   );
+
+  application.server.patch<
+    {},
+    any,
+    { name?: string; avatar?: string; biography?: string },
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/settings/profile", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    if (
+      typeof request.body.name !== "string" ||
+      request.body.name.trim() === "" ||
+      typeof request.body.avatar !== "string" ||
+      typeof request.body.biography !== "string"
+    )
+      return next("Validation");
+
+    application.database.run(
+      sql`
+        UPDATE "users"
+        SET
+          "name" = ${request.body.name},
+          "nameSearch" = ${html`${request.body.name}`},
+          "avatar" = ${
+            request.body.avatar.trim() === "" ? null : request.body.avatar
+          },
+          "biographySource" = ${
+            request.body.biography.trim() === "" ? null : request.body.biography
+          },
+          "biographyPreprocessed" = ${
+            request.body.biography.trim() === ""
+              ? null
+              : application.server.locals.partials.contentPreprocessed(
+                  request.body.biography
+                ).contentPreprocessed
+          }
+        WHERE "id" = ${response.locals.user.id}
+      `
+    );
+
+    application.server.locals.helpers.Flash.set({
+      request,
+      response,
+      theme: "green",
+      content: html`Profile updated successfully.`,
+    });
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/settings/profile`
+    );
+  });
 
   application.server.get<
     {},
