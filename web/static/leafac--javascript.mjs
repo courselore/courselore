@@ -412,6 +412,8 @@ export function loadPartial(parentElement, partialString) {
 }
 
 export function morph(from, to, detail = {}) {
+  if (from.onbeforemorph?.(detail) === false) return;
+
   const fromChildNodes = from.childNodes;
   const toChildNodes = to.childNodes;
 
@@ -446,7 +448,7 @@ export function morph(from, to, detail = {}) {
 
       if (
         detail.liveUpdate &&
-        (node.onbeforeremove?.() === false ||
+        (node.onbeforeremove?.(detail) === false ||
           node.matches?.("[data-tippy-root]"))
       )
         continue;

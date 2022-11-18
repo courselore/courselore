@@ -1424,6 +1424,9 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--space--4);
                 `)}"
+                onload="${javascript`
+                  this.onbeforemorph = (detail) => !detail.liveUpdate;
+                `}"
               >
                 $${response.locals.tags.map(
                   (tag, index) => html`
@@ -1703,9 +1706,6 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--space--2);
                             align-items: baseline;
                           `)}"
-                          onloadpartial="${javascript`
-                            this.onbeforeremove = () => false;
-                          `}"
                         >
                           <div class="text--teal">
                             <i class="bi bi-tag-fill"></i>
@@ -1810,7 +1810,7 @@ export default async (application: Application): Promise<void> => {
                     this.onclick = () => {
                       const newTag = newTagPartial.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      for (const element of [newTag, ...newTag.querySelectorAll("[onloadpartial]")])
+                      for (const element of newTag.querySelectorAll("[onloadpartial]"))
                         new Function(element.getAttribute("onloadpartial")).call(element);
                     };
 
