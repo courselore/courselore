@@ -445,6 +445,9 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `)}"
+                onload="${javascript`
+                  this.onbeforemorph = (detail) => !detail.liveUpdate;
+                `}"
               >
                 <div>
                   $${application.server.locals.partials.user({
