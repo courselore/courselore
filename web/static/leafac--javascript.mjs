@@ -239,27 +239,29 @@ export async function liveConnection({
   reconnectTimeout = 5 * 1000,
 }) {
   const body = document.querySelector("body");
-  let connected;
   let inLiveNavigation = false;
+  let heartbeatTimeout;
   let abortController;
 
   window.addEventListener(
     "livenavigate",
     () => {
       inLiveNavigation = true;
-      abortController?.abort();
+      clearTimeout(heartbeatTimeout);
+      abortController.abort();
     },
     { once: true }
   );
 
   while (true) {
-    try {
-      connected = false;
-      abortController = new AbortController();
+    heartbeatTimeout = window.setTimeout(() => {
+      abortController.abort();
+    }, 50 * 1000);
+    abortController = new AbortController();
 
-      let heartbeatTimeout = window.setTimeout(() => {
-        abortController.abort();
-      }, 50 * 1000);
+    let connected = false;
+
+    try {
       const response = await fetch(window.location.href, {
         cache: "no-store",
         headers: { "Live-Connection": nonce },
@@ -282,8 +284,8 @@ export async function liveConnection({
         return;
       }
       if (!response.ok) throw new Error("Response isn’t OK");
-      connected = true;
 
+      connected = true;
       body.liveConnectionOfflineTooltip?.hide();
 
       const newServerVersion = response.headers.get("Version");
@@ -305,7 +307,6 @@ export async function liveConnection({
           content: newServerVersionMessage,
         });
         body.liveConnectionNewServerVersionTooltip.show();
-        abortController.abort();
         return;
       }
 
@@ -350,6 +351,9 @@ export async function liveConnection({
         });
         body.liveConnectionOfflineTooltip.show();
       }
+    } finally {
+      clearTimeout(heartbeatTimeout);
+      abortController.abort();
     }
 
     nonce = Math.random().toString(36).slice(2);
