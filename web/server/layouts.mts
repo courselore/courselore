@@ -376,10 +376,12 @@ export default async (application: Application): Promise<void> => {
                         )},
                         newServerVersionMessage: "Courselore has been updated. Please reload the page.",
                         offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                        liveReload: ${JSON.stringify(
+                        ${
                           application.configuration.environment ===
-                            "development"
-                        )},
+                          "development"
+                            ? javascript`reconnectTimeout: 200,`
+                            : javascript``
+                        }
                       });
                   `
                 : javascript``

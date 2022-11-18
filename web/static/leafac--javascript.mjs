@@ -236,11 +236,10 @@ export async function liveConnection({
   nonce,
   newServerVersionMessage = "There has been an update. Please reload the page.",
   offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
-  liveReload = false,
+  reconnectTimeout = 5 * 1000,
 }) {
   const body = document.querySelector("body");
   let connected;
-  let shouldLiveReloadOnNextConnection = false;
   let inLiveNavigation = false;
   let abortController;
 
@@ -267,18 +266,6 @@ export async function liveConnection({
         headers: { "Live-Connection": nonce },
         signal: abortController.signal,
       });
-
-      if (shouldLiveReloadOnNextConnection) {
-        abort();
-        if (response.status === 502)
-          throw new Error("The server hasn’t started yet.");
-        body.isModified = false;
-        await new Promise((resolve) => {
-          window.setTimeout(resolve, 1000);
-        });
-        window.location.reload();
-        return;
-      }
 
       if (response.status === 422) {
         console.error(response);
@@ -358,17 +345,16 @@ export async function liveConnection({
           theme: "error",
           arrow: false,
           interactive: true,
-          content: liveReload ? "Live-Reloading…" : offlineMessage,
+          content: offlineMessage,
         });
         body.liveConnectionOfflineTooltip.show();
-        shouldLiveReloadOnNextConnection = liveReload;
       }
     }
 
     nonce = Math.random().toString(36).slice(2);
 
     await new Promise((resolve) => {
-      window.setTimeout(resolve, liveReload ? 200 : 5 * 1000);
+      window.setTimeout(resolve, reconnectTimeout);
     });
   }
 }
