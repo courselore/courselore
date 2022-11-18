@@ -283,8 +283,11 @@ export default async (application: Application): Promise<void> => {
 
       response.once("close", () => {
         if (
-          response.statusCode !== 200 ||
-          typeof response.locals.liveConnectionNonce !== "string"
+          typeof response.locals.liveConnectionNonce !== "string" ||
+          !response
+            .getHeader("Content-Type")
+            ?.toString()
+            .startsWith("text/html")
         )
           return;
 

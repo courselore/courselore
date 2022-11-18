@@ -642,8 +642,6 @@ export default async (application: Application): Promise<void> => {
   >(
     "/content/image-proxy",
     asyncHandler(async (request, response) => {
-      delete response.locals.liveConnectionNonce;
-
       if (
         typeof request.query.url !== "string" ||
         !["http://", "https://"].some((urlPrefix) =>

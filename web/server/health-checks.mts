@@ -8,7 +8,6 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/health", (request, response) => {
-    delete response.locals.liveConnectionNonce;
     response.json({ name: application.name, version: application.version });
   });
 
