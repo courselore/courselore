@@ -255,12 +255,11 @@ export async function liveConnection({
   while (true) {
     try {
       connected = false;
-
       abortController = new AbortController();
-      const abort = () => {
+
+      let heartbeatTimeout = window.setTimeout(() => {
         abortController.abort();
-      };
-      let heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+      }, 50 * 1000);
       const response = await fetch(window.location.href, {
         cache: "no-store",
         headers: { "Live-Connection": nonce },
@@ -306,7 +305,7 @@ export async function liveConnection({
           content: newServerVersionMessage,
         });
         body.liveConnectionNewServerVersionTooltip.show();
-        abort();
+        abortController.abort();
         return;
       }
 
@@ -317,7 +316,9 @@ export async function liveConnection({
         const chunk = (await responseBodyReader.read()).value;
         if (chunk === undefined) break;
         clearTimeout(heartbeatTimeout);
-        heartbeatTimeout = window.setTimeout(abort, 50 * 1000);
+        heartbeatTimeout = window.setTimeout(() => {
+          abortController.abort();
+        }, 50 * 1000);
         buffer += textDecoder.decode(chunk, { stream: true });
         const bufferParts = buffer.split("\n");
         buffer = bufferParts.pop();
