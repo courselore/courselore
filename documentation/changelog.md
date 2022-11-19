@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+## 6.0.0
+
+**2022-11-19 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 **This is a major release for the following reasons:**
 
 1. Before this update, Courselore used the following network ports: 80, 445, and 4000. Now Courselore uses the following network ports: 80, 443, and 6000–9000. If you have other application occupying those ports, you may need to adapt them. In general, to avoid these kinds of issues, we recommend that Courselore is the only application running in the machine. Or, if you must, use containers to separate applications and give Courselore its own container.
