@@ -22,6 +22,10 @@ We expect this configuration file format to be valid for longer and we expect to
 
 ---
 
+The new version of Courselore uses network ports 80, 443, and 6000–9000. If you have other application occupying those ports, you may need to adapt them. We recommend that Courselore is the only application running in the machine (or, if you must, that you use containers to separate the applications).
+
+---
+
 Besides the change to the format of the configuration file, this version of Courselore has been a significant rearchitecture.
 
 Previously there was a single Node.js process that was responsible for everything in the application, including serving requests and working on background jobs that would determine who should receive email notifications for messages, deliver email, clean the database of expired entries (for example, expired user sessions), and so forth.

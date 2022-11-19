@@ -14,7 +14,7 @@ You may use Courselore at [`courselore.org`](https://courselore.org), but you ma
 
   > **Note:** You need command-line access to the server.
 
-  > **Note:** Courselore uses the following network ports: 80, 443, and 4000. Stop other applications you may have running on those ports. In Linux and macOS, for example, you may find which application is running on a network port by using `lsof -i:80`. Or you may prefer to use [`npx kill-port 80 443 4000`](https://github.com/tiaanduplessis/kill-port).
+  > **Note:** Courselore uses the following network ports: 80, 443, and 6000–9000. Stop other applications you may have running on those ports. In Linux and macOS, for example, you may find which application is running on a network port by using `lsof -i:80`. Or you may prefer to use [`npx kill-port 80 443 ...`](https://github.com/tiaanduplessis/kill-port).
 
   > **Note:** The server may run Linux, Windows, or macOS. We recommend Linux ([Ubuntu](https://ubuntu.com)).
 
