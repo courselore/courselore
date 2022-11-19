@@ -7193,7 +7193,7 @@ export default async (application: Application): Promise<void> => {
                                                       const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
                                                       const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
                                                       thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                      element.updateTimeout = window.setTimeout(update, 60 * 1000);
+                                                      element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
                                                     })();
                                                   `}"
                                                 ></time>

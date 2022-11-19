@@ -342,7 +342,11 @@ export default async (application: Application): Promise<void> => {
           `
         );
         application.log("CLEAN EXPIRED ‘sessions’", "FINISHED");
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+        await timers.setTimeout(
+          24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
+          undefined,
+          { ref: false }
+        );
       }
     });
 
@@ -801,7 +805,11 @@ export default async (application: Application): Promise<void> => {
           `
         );
         application.log("CLEAN EXPIRED ‘passwordResets’", "FINISHED");
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+        await timers.setTimeout(
+          24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
+          undefined,
+          { ref: false }
+        );
       }
     });
 
@@ -1681,7 +1689,11 @@ export default async (application: Application): Promise<void> => {
           `
         );
         application.log("CLEAN EXPIRED ‘emailVerifications’", "FINISHED");
-        await timers.setTimeout(24 * 60 * 60 * 1000, undefined, { ref: false });
+        await timers.setTimeout(
+          24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
+          undefined,
+          { ref: false }
+        );
       }
     });
 

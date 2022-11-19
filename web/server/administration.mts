@@ -73,7 +73,12 @@ export default async (application: Application): Promise<void> => {
             error?.stack
           );
         }
-        await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
+
+        await timers.setTimeout(
+          10 * 60 * 1000 + Math.random() * 60 * 1000,
+          undefined,
+          { ref: false }
+        );
       }
     });
 

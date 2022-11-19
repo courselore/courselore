@@ -158,14 +158,16 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-        await timers.setTimeout(100, undefined, { ref: false });
+        await timers.setTimeout(100 + Math.random() * 100, undefined, {
+          ref: false,
+        });
       }
 
       application.log("sendEmailJobs", "FINISHED");
 
       timerAbortController = new AbortController();
       await timers
-        .setTimeout(2 * 60 * 1000, undefined, {
+        .setTimeout(2 * 60 * 1000 + Math.random() * 30 * 1000, undefined, {
           ref: false,
           signal: timerAbortController.signal,
         })

@@ -1786,12 +1786,18 @@ export default async (application: Application): Promise<void> => {
           `message = ${job.message}`
         );
 
-        await timers.setTimeout(100, undefined, { ref: false });
+        await timers.setTimeout(100 + Math.random() * 100, undefined, {
+          ref: false,
+        });
       }
 
       application.log("emailNotificationMessageJobs", "FINISHED");
 
-      await timers.setTimeout(2 * 60 * 1000, undefined, { ref: false });
+      await timers.setTimeout(
+        2 * 60 * 1000 + Math.random() * 30 * 1000,
+        undefined,
+        { ref: false }
+      );
     }
   });
 };

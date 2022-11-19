@@ -359,7 +359,10 @@ export async function liveConnection({
     nonce = Math.random().toString(36).slice(2);
 
     await new Promise((resolve) => {
-      window.setTimeout(resolve, reconnectTimeout);
+      window.setTimeout(
+        resolve,
+        reconnectTimeout + Math.random() * reconnectTimeout * 0.2
+      );
     });
   }
 }
@@ -699,7 +702,7 @@ export function relativizeDateTimeElement(element, options = {}) {
     element.textContent = relativizeDateTime(dateTime, options);
     element.relativizeDateTimeElementTimeout = window.setTimeout(
       update,
-      10 * 1000
+      10 * 1000 + Math.random() * 2 * 1000
     );
   })();
 }
@@ -722,7 +725,10 @@ export function relativizeDateElement(element) {
   (function update() {
     if (!isConnected(element)) return;
     element.textContent = relativizeDate(element.getAttribute("datetime"));
-    element.relativizeDateElementTimeout = window.setTimeout(update, 60 * 1000);
+    element.relativizeDateElementTimeout = window.setTimeout(
+      update,
+      60 * 1000 + Math.random() * 5 * 1000
+    );
   })();
 }
 

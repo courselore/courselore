@@ -173,10 +173,14 @@ export default async (application: Application): Promise<void> => {
           );
 
           try {
-            await timers.setTimeout(30 * 1000, undefined, {
-              ref: false,
-              signal: abortController.signal,
-            });
+            await timers.setTimeout(
+              30 * 1000 + Math.random() * 5 * 1000,
+              undefined,
+              {
+                ref: false,
+                signal: abortController.signal,
+              }
+            );
           } catch {
             break;
           }
@@ -503,7 +507,7 @@ export default async (application: Application): Promise<void> => {
                   element.hidden = Date.now() - ${new Date(
                     user.lastSeenOnlineAt
                   ).getTime()} > 5 * 60 * 1000;
-                  element.updateTimeout = window.setTimeout(update, 60 * 1000);
+                  element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 2 * 1000);
                 })();
               `}"
             ></span>

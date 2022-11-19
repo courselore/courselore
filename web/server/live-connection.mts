@@ -98,13 +98,21 @@ export default async (application: Application): Promise<void> => {
           "FINISHED"
         );
 
-        await timers.setTimeout(60 * 1000, undefined, { ref: false });
+        await timers.setTimeout(
+          60 * 1000 + Math.random() * 10 * 1000,
+          undefined,
+          { ref: false }
+        );
       }
     });
 
   application.serverEvents.once("start", async () => {
     while (true) {
-      await timers.setTimeout(10 * 60 * 1000, undefined, { ref: false });
+      await timers.setTimeout(
+        10 * 60 * 1000 + Math.random() * 60 * 1000,
+        undefined,
+        { ref: false }
+      );
 
       application.log("LIVE-CONNECTIONS", "CLEAN ZOMBIES", "STARTING...");
 
@@ -197,10 +205,14 @@ export default async (application: Application): Promise<void> => {
         while (true) {
           response.write("\n");
           try {
-            await timers.setTimeout(15 * 1000, undefined, {
-              ref: false,
-              signal: heartbeatAbortController.signal,
-            });
+            await timers.setTimeout(
+              15 * 1000 + Math.random() * 5 * 1000,
+              undefined,
+              {
+                ref: false,
+                signal: heartbeatAbortController.signal,
+              }
+            );
           } catch {
             break;
           }
@@ -330,7 +342,9 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
-    await timers.setTimeout(3000, undefined, { ref: false });
+    await timers.setTimeout(3 * 1000 + Math.random() * 2 * 1000, undefined, {
+      ref: false,
+    });
 
     for (const port of application.ports.serverEvents)
       got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
@@ -435,7 +449,9 @@ export default async (application: Application): Promise<void> => {
 
         liveConnection.response.locals.log = responseLocalsLog;
 
-        await timers.setTimeout(100, undefined, { ref: false });
+        await timers.setTimeout(100 + Math.random() * 100, undefined, {
+          ref: false,
+        });
       }
     }
   });
