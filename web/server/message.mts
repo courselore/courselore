@@ -5,7 +5,6 @@ import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, localCSS } from "@leafac/css";
 import { javascript, HTMLForJavaScript } from "@leafac/javascript";
-import { got } from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationMessage = {
