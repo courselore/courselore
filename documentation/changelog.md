@@ -10,25 +10,27 @@
 
 ## Unreleased
 
-**This is a major release because we introduced changes to the Courselore configuration file that require your intervention as a system administrator.**
+**This is a major release for the following reasons:**
 
-You may refer to [`example.mjs`](https://github.com/courselore/courselore/blob/v5.0.0/web/configuration/example.mjs) and adapt your configuration based on it. In particular, the following have changed:
+1. Before this update, Courselore used the following network ports: 80, 445, and 4000. Now Courselore uses the following network ports: 80, 443, and 6000–9000. If you have other application occupying those ports, you may need to adapt them. In general, to avoid these kinds of issues, we recommend that Courselore is the only application running in the machine. Or, if you must, use containers to separate applications and give Courselore its own container.
 
-1. The `sendMail` configuration property has been renamed to `email`.
+2. We introduced changes to the Courselore configuration file that require your intervention.
 
-2. The boilerplate around the configuration has been simplified. Instead of using functions and `import`s, it’s just a JavaScript module exporting a configuration object.
+   You may refer to [`example.mjs`](https://github.com/courselore/courselore/blob/v5.0.0/web/configuration/example.mjs) and adapt your configuration based on it. In particular, the following has changed:
 
-We expect this configuration file format to be valid for longer and we expect to have fewer updates that require your intervention in the future.
+   1. The `sendMail` configuration property has been renamed to `email`.
+
+   2. The boilerplate around the configuration has been simplified. Instead of using functions and special `import`s, the configuration is just a JavaScript module exporting a configuration object.
+
+   We expect this configuration file format to be valid for longer and we expect to have fewer updates that require your intervention in the future.
+
+3. Courselore has been through a significant rearchitecture. This update may include some issues that we haven’t detected yet in our testing. Please monitor your installation more closely than normal after the update and report any issues you encounter.
 
 ---
 
-The new version of Courselore uses network ports 80, 443, and 6000–9000. If you have other application occupying those ports, you may need to adapt them. We recommend that Courselore is the only application running in the machine (or, if you must, that you use containers to separate the applications).
+Details about Courselore’s significant rearchitecture:
 
----
-
-Besides the change to the format of the configuration file, this version of Courselore has been a significant rearchitecture.
-
-Previously there was a single Node.js process that was responsible for everything in the application, including serving requests and working on background jobs that would determine who should receive email notifications for messages, deliver email, clean the database of expired entries (for example, expired user sessions), and so forth.
+Previously there was a single Node.js process that was responsible for everything in the application, including serving requests and working on background jobs that would determine who should receive email notifications for messages, deliver email, clean the database of expired data (for example, expired user sessions), and so forth.
 
 That’s a simple architecture, but it has two issues:
 
@@ -40,7 +42,7 @@ We fixed these issues in Courselore 6.0.0 by doing the following:
 1. Now there are different kinds of processes for serving requests and working on background jobs. The server process is dedicated to responding to requests as fast as possible.
 2. We start multiple processes of each kind—one per CPU core.
 
-This kind of change had repercussions across the codebase, which now must deal with issues such as supervising the multiple processes, dealing with edge cases in case some processes are unavailable, allowing processes to communicate with one another (for example, when a user creates an account, the server process has to kick off a job in a worker process immediately to send the “welcome” email), and so forth.
+This kind of change had repercussions across the codebase, which now must deal with issues including supervising the multiple processes, dealing with edge cases in case some processes are unavailable, allowing processes to communicate with one another (for example, when a user creates an account, the server process has to start a job in a worker process immediately to send the “welcome” email), and so forth.
 
 Overall, this makes Courselore’s codebase a bit more complex for beginner contributors, but we expect that the performance and availability benefits will offset that.
 
@@ -48,7 +50,7 @@ Overall, this makes Courselore’s codebase a bit more complex for beginner cont
 
 In the process of bringing this rearchitecture about, we improved many smaller things, including:
 
-1. Previously some pages would keep two open connections between browser and server. One to detect that the user online, be notified of server updates, and so forth. And another to receive page updates in case, for example, someone has sent a message.
+1. Previously some pages would keep two open connections between browser and server. One to detect that the user is online, to notify of server updates, and so forth. And another to receive page updates in case, for example, someone has sent a message.
 
    Now we keep a single connection open to service all these needs. This should increase the number of users that a server can support, and slightly improve the performance overall.
 
@@ -62,15 +64,11 @@ In the process of bringing this rearchitecture about, we improved many smaller t
 
 We also changed the behavior of archived courses.
 
-Previously archived courses would reject new actions, for example, new messages.
+Previously archived courses would reject new actions, for example, sending new messages.
 
 Now those actions are allowed, and the only effect of archiving a course is making it less apparent on the course switcher in the user interface.
 
-The reason for this change is that for the most part people don’t participate in archived courses, but it sometimes be necessary to do it, and it was annoying to momentarily unarchive a course just for this. For example, a staff member may want to contact certain students of an archived course in a later semester to invite students to be course assistants.
-
----
-
-**As with any significant rearchitectures, this version may include some issues we haven’t detected yet in our testing. Please monitor your installation more closely after the update and report any issues you encounter.**
+The reason for this change is that for the most part people don’t participate in archived courses, but it sometimes be necessary to do it, and it could be annoying to unarchive a course momentarily just for this. For example, a staff member may want to contact certain students of an archived course in a later semester to invite them to become course assistants.
 
 ## 5.0.0
 
