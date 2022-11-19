@@ -188,16 +188,16 @@ if (
               os.cpus().length,
               (processNumber) => 6000 + processNumber
             ),
-            serverEventsAny: 6999,
             serverEvents: lodash.times(
               os.cpus().length,
               (processNumber) => 7000 + processNumber
             ),
-            workerEventsAny: 7999,
+            serverEventsAny: 7999,
             workerEvents: lodash.times(
               os.cpus().length,
               (processNumber) => 8000 + processNumber
             ),
+            workerEventsAny: 8999,
           },
           addresses: {
             canonicalHostname: "courselore.org",
