@@ -313,32 +313,32 @@ if (
                         : [application.configuration.hostname]),
                       ...application.configuration.alternativeHostnames,
                     ]
-                      .map((hostname) => `http://${hostname}`)
-                      .join(", ")} {
-                      import common
-                      redir https://{host}{uri} 308
-                      handle_errors {
-                        import common
-                      }
-                    }
-
-                    ${
-                      application.configuration.alternativeHostnames.length > 0
-                        ? caddyfile`
-                            ${application.configuration.alternativeHostnames
-                              .map((hostname) => `https://${hostname}`)
-                              .join(", ")} {
+                      .map(
+                        (hostname) => caddyfile`
+                          http://${hostname} {
+                            import common
+                            redir https://{host}{uri} 308
+                            handle_errors {
                               import common
-                              redir https://${
-                                application.configuration.hostname
-                              }{uri} 307
-                              handle_errors {
-                                import common
-                              }
                             }
-                          `
-                        : ``
-                    }
+                          }
+                        `
+                      )
+                      .join("\n\n")}
+
+                    ${application.configuration.alternativeHostnames
+                      .map(
+                        (hostname) => caddyfile`
+                          https://${hostname} {
+                            import common
+                            redir https://${application.configuration.hostname}{uri} 307
+                            handle_errors {
+                              import common
+                            }
+                          }
+                        `
+                      )
+                      .join("\n\n")}
 
                     http${application.configuration.tunnel ? `` : `s`}://${
                     application.configuration.hostname
