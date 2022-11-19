@@ -1,7 +1,14 @@
 # Meeting Notes
 
 <details>
-<summary>2021-10-15</summary>
+<summary>2021-11-12</summary>
+
+- Rearchitecture of processes, Live-Connections & Live-Updates, and so forth.
+- Priorities moving forward:
+  - Sidebar reorganization: Don’t change the user interface too much, given it’s almost the end of the semester and people are used to it.
+  - Basic help for formatting, for example, the use of code fences (```).
+  - Analytics, for example, the average time to respond, number of questions asked, and so forth.
+  - Whispers.
 
 </details>
 
