@@ -4,7 +4,10 @@ export default {
   hostname: "localhost",
   dataDirectory: path.join(process.cwd(), "data"),
   email: {
-    options: { streamTransport: true, buffer: true },
+    options: {
+      streamTransport: true,
+      buffer: true,
+    },
     defaults: {
       from: {
         name: "Courselore",
