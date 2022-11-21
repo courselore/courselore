@@ -1,6 +1,22 @@
 # Meeting Notes
 
 <details>
+<summary>2021-11-19</summary>
+
+- Finished and deployed version 6.0.0 with new infrastructure.
+- Prioritize being able to migrate content from Piazza and across semesters.
+- Buy keywords in AdSense.
+- At some point look for people who can do more proper marketing & sales.
+- At some point look for people who can manage contracts & payments.
+- Future pricing:
+  - Free period and/or free tier.
+  - Based on number of (active) classes.
+  - Based on number of users.
+- Table of comparison with other services, for example, Piazza and Ed.
+
+</details>
+
+<details>
 <summary>2021-11-12</summary>
 
 - Rearchitecture of processes, Live-Connections & Live-Updates, and so forth.
