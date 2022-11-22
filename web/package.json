@@ -29,7 +29,7 @@
     "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=19"
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
