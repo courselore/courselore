@@ -38,9 +38,9 @@
     "@leafac/html": "^3.0.3",
     "@leafac/javascript": "^0.2.13",
     "@leafac/rehype-shiki": "^2.2.1",
-    "@leafac/sqlite": "^3.2.2",
+    "@leafac/sqlite": "^3.3.0",
     "@sindresorhus/slugify": "^2.1.1",
-    "argon2": "^0.30.1",
+    "argon2": "^0.30.2",
     "casual": "^1.6.2",
     "commander": "^9.4.1",
     "cookie-parser": "^1.4.6",
@@ -51,8 +51,8 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "filenamify": "^5.1.1",
-    "got": "^12.5.2",
-    "jsdom": "^20.0.1",
+    "got": "^12.5.3",
+    "jsdom": "^20.0.3",
     "lodash": "^4.17.21",
     "nodemailer": "^6.8.0",
     "prompts": "^2.4.2",
@@ -67,7 +67,7 @@
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "semver": "^7.3.8",
-    "sharp": "^0.31.1",
+    "sharp": "^0.31.2",
     "shiki": "^0.11.1",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.1"
@@ -76,7 +76,7 @@
   "devDependencies": {
     "caxa": "^3.0.1",
     "nodemon": "^2.0.20",
-    "npm-check-updates": "^16.3.11",
+    "npm-check-updates": "^16.4.1",
     "prettier": "^2.7.1",
     "shx": "^0.3.4"
   }
