@@ -10,7 +10,6 @@ import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import argon2 from "argon2";
-import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationUser = {
@@ -1625,7 +1624,7 @@ export default async (application: Application): Promise<void> => {
             )
           `
         );
-        got
+        application.got
           .post(
             `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
           )

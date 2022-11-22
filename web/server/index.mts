@@ -10,6 +10,8 @@ import express from "express";
 import nodemailer from "nodemailer";
 import lodash from "lodash";
 import { execa, ExecaChildProcess } from "execa";
+import { got } from "got";
+import * as Got from "got";
 import caddyfile from "dedent";
 import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
@@ -80,6 +82,7 @@ export type Application = {
   server: Omit<express.Express, "locals"> & Function;
   serverEvents: Omit<express.Express, "locals"> & Function;
   workerEvents: Omit<express.Express, "locals"> & Function;
+  got: Got.Got;
 } & ApplicationLogging &
   ApplicationDatabase &
   ApplicationBase &
@@ -216,6 +219,8 @@ if (
         application.configuration.alternativeHostnames ??= [];
         application.configuration.hstsPreload ??= false;
         application.configuration.caddy ??= caddyfile``;
+
+        application.got = got.extend({ timeout: { request: 5 * 1000 } });
 
         application.server.locals.configuration = {} as any;
         application.server.locals.layouts = {} as any;

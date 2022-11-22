@@ -1,7 +1,6 @@
 import timers from "node:timers/promises";
 import express from "express";
 import { sql } from "@leafac/sqlite";
-import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationLiveConnection = {
@@ -270,7 +269,7 @@ export default async (application: Application): Promise<void> => {
         liveConnectionMetadata === undefined ||
         liveConnectionMetadata.liveUpdateAt !== null
       )
-        got
+        application.got
           .post(
             `http://127.0.0.1:${
               application.ports.serverEvents[application.process.number]
@@ -347,14 +346,16 @@ export default async (application: Application): Promise<void> => {
     });
 
     for (const port of application.ports.serverEvents)
-      got.post(`http://127.0.0.1:${port}/live-updates`).catch((error) => {
-        response.locals.log(
-          "LIVE-UPDATES",
-          "FAILED TO EMIT POST ‘/live-updates’ EVENT",
-          String(error),
-          error?.stack
-        );
-      });
+      application.got
+        .post(`http://127.0.0.1:${port}/live-updates`)
+        .catch((error) => {
+          response.locals.log(
+            "LIVE-UPDATES",
+            "FAILED TO EMIT POST ‘/live-updates’ EVENT",
+            String(error),
+            error?.stack
+          );
+        });
   };
 
   let liveUpdates: Function = () => {};

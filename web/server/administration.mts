@@ -4,7 +4,6 @@ import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { sql } from "@leafac/sqlite";
 import { javascript } from "@leafac/javascript";
-import got from "got";
 import lodash from "lodash";
 import semver from "semver";
 import { Application } from "./index.mjs";
@@ -45,9 +44,11 @@ export default async (application: Application): Promise<void> => {
           application.log("CHECK FOR UPDATES", "STARTING...");
           const latestVersion = semver.clean(
             (
-              (await got(
-                "https://api.github.com/repos/courselore/courselore/releases/latest"
-              ).json()) as { tag_name: string }
+              (await application
+                .got(
+                  "https://api.github.com/repos/courselore/courselore/releases/latest"
+                )
+                .json()) as { tag_name: string }
             ).tag_name
           );
           if (typeof latestVersion !== "string")

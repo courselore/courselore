@@ -9,7 +9,6 @@ import dedent from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import QRCode from "qrcode";
-import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourse = {
@@ -3014,7 +3013,7 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-    got
+    application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
         response.locals.log(

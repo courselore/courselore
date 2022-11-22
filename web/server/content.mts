@@ -28,7 +28,6 @@ import slugify from "@sindresorhus/slugify";
 import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
-import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationContent = {
@@ -651,7 +650,7 @@ export default async (application: Application): Promise<void> => {
         return response.status(422).end();
 
       await stream.pipeline(
-        got
+        application.got
           .stream(request.query.url, {
             throwHttpErrors: false,
             retry: { limit: 0 },

@@ -9,7 +9,6 @@ import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
-import got from "got";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -996,7 +995,7 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-    got
+    application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
         response.locals.log(
@@ -1285,7 +1284,7 @@ export default async (application: Application): Promise<void> => {
           )
         `
       );
-      got
+      application.got
         .post(
           `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
         )
@@ -1665,7 +1664,7 @@ export default async (application: Application): Promise<void> => {
         )
       `
     );
-    got
+    application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
         response.locals.log(
