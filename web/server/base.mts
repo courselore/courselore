@@ -1,6 +1,8 @@
+import timers from "node:timers/promises";
 import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
+import { asyncHandler } from "@leafac/express-async-handler";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 import { Application } from "./index.mjs";
@@ -23,6 +25,15 @@ export type ApplicationBase = {
 };
 
 export default async (application: Application): Promise<void> => {
+  // SIMULATE SLOW SERVER
+  // if (application.configuration.environment === "development")
+  //   application.server.use<{}, any, {}, {}, {}>(
+  //     asyncHandler(async (request, response, next) => {
+  //       await timers.setTimeout(5 * 1000, undefined, { ref: false });
+  //       next();
+  //     })
+  //   );
+
   application.server.use<
     {},
     any,
