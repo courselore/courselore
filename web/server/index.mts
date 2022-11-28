@@ -57,7 +57,7 @@ export type Application = {
       };
     };
     administratorEmail: string;
-    environment: "production" | "development" | "other";
+    environment: "production" | "development" | "profile" | "other";
     demonstration: boolean;
     tunnel: boolean;
     alternativeHostnames: string[];
@@ -253,8 +253,21 @@ if (
             for (const execaArguments of [
               ...["server", "worker"].flatMap((processType) =>
                 lodash.times(os.cpus().length, (processNumber) => ({
-                  file: process.argv[0],
+                  file:
+                    application.configuration.environment === "profile"
+                      ? "0x"
+                      : process.argv[0],
                   arguments: [
+                    ...(application.configuration.environment === "profile"
+                      ? [
+                          "--name",
+                          `${processType}--${processNumber}`,
+                          "--output-dir",
+                          "data/measurements/profiles/{name}",
+                          "--collect-delay",
+                          "2000",
+                        ]
+                      : []),
                     process.argv[1],
                     "--process-type",
                     processType,
@@ -265,7 +278,9 @@ if (
                   options: {
                     preferLocal: true,
                     stdio: "inherit",
-                    ...(application.configuration.environment === "production"
+                    ...(["production", "profile"].includes(
+                      application.configuration.environment
+                    )
                       ? { env: { NODE_ENV: "production" } }
                       : {}),
                   },
@@ -434,7 +449,10 @@ if (
               })();
             await stop;
             restartChildProcesses = false;
-            for (const childProcess of childProcesses) childProcess.cancel();
+            for (const childProcess of childProcesses)
+              childProcess.kill(undefined, {
+                forceKillAfterTimeout: 20 * 1000,
+              });
             break;
           }
 
