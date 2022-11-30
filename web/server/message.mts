@@ -1636,49 +1636,49 @@ export default async (application: Application): Promise<void> => {
             message.reference === "1"
               ? sql``
               : sql`
-              AND (
-                "users"."emailNotificationsForAllMessages" != 'none' OR (
-                  "users"."emailNotificationsForMentionsAt" IS NOT NULL
-                    $${
-                      contentProcessed.mentions.has("everyone")
-                        ? sql``
-                        : contentProcessed.mentions.has("staff")
-                        ? sql`
-                            AND (
-                              "enrollments"."courseRole" = 'staff' OR
-                              "enrollments"."reference" IN ${contentProcessed.mentions}
-                            )
-                          `
-                        : contentProcessed.mentions.has("students")
-                        ? sql`
-                            AND (
-                              "enrollments"."courseRole" = 'student' OR
-                              "enrollments"."reference" IN ${contentProcessed.mentions}
-                            )
-                          `
-                        : sql`
-                            AND "enrollments"."reference" IN ${contentProcessed.mentions}
-                          `
-                    }
-                ) OR (
-                  "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
-                    SELECT TRUE
-                    FROM "messages"
-                    WHERE
-                      "conversation" = ${conversation.id} AND
-                      "authorEnrollment" = "enrollments"."id"
+                  AND (
+                    "users"."emailNotificationsForAllMessages" != 'none' OR (
+                      "users"."emailNotificationsForMentionsAt" IS NOT NULL
+                        $${
+                          contentProcessed.mentions.has("everyone")
+                            ? sql``
+                            : contentProcessed.mentions.has("staff")
+                            ? sql`
+                                AND (
+                                  "enrollments"."courseRole" = 'staff' OR
+                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                )
+                              `
+                            : contentProcessed.mentions.has("students")
+                            ? sql`
+                                AND (
+                                  "enrollments"."courseRole" = 'student' OR
+                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                )
+                              `
+                            : sql`
+                                AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                              `
+                        }
+                    ) OR (
+                      "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" IS NOT NULL AND EXISTS(
+                        SELECT TRUE
+                        FROM "messages"
+                        WHERE
+                          "conversation" = ${conversation.id} AND
+                          "authorEnrollment" = "enrollments"."id"
+                      )
+                    ) OR (
+                      "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
+                        SELECT TRUE
+                        FROM "conversations"
+                        WHERE
+                          "id" = ${conversation.id} AND
+                          "authorEnrollment" = "enrollments"."id"
+                      )
+                    )
                   )
-                ) OR (
-                  "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
-                    SELECT TRUE
-                    FROM "conversations"
-                    WHERE
-                      "id" = ${conversation.id} AND
-                      "authorEnrollment" = "enrollments"."id"
-                  )
-                )
-              )
-            `
+                `
           }
           `
         );

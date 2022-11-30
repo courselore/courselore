@@ -38,8 +38,8 @@
   - Notifications API & Push API
   - Mobile & desktop applications
 - Minimal integration with Learning Management Systems (identity, not grades).
-- Performance:
-  - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
+- SAML: Register our application with Hopkins to allow access to SAML.
+- Performance: Finish pagination, the measures that will reduce the size of HTML pages, and so forth
 - Smaller things:
   - Lock a course for a period, for example, when a take-home exam is out.
   - Polls.
@@ -48,12 +48,8 @@
     - Students may see aggregate results.
     - Staff may see individual votes.
     - Allow for closing a poll.
-- SAML
-  - Register our application with Hopkins to allow access to SAML.
 
 ## Administrative Interface
-
-**Goals**
 
 - List of people in the system
   - See what courses people are on
@@ -63,9 +59,6 @@
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
 - Deal with the case in which you’re the administrator and also the staff/student on a course.
   - Switch in out of administrator role and see the course differently.
-
-**Good to Have in the Future**
-
 - Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
 - Administrators can have further control over user accounts:
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
@@ -97,21 +90,18 @@
   - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
 - Take a look at other nice features from Discourse’s administrative interface
 
-## Better Email Notifications
+## Email Notifications
 
 - Don’t send notifications when the person is online and/or has seen the message.
-- “Important staff announcements”
-  - They have two consequences:
-    - They send emails to everyone, because it isn’t possible to opt out of receiving them.
-    - They send emails immediately, even to people who otherwise would receive digests.
-  - Change New Conversation page.
-    - When you select this option, check “Pin” in the form
-  - Store this in conversation database table
-  - Show these conversations differently on sidebar
+- Email digests:
+  - “Announcements” should be sent immediately, not as part of the digest.
 - Email contents:
 
   - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
     - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
+  - Easier ways to unsubscribe:
+    - Link to one-click unsubscription in message body.
+    - `List-*` headers to allow one-click unsubscription.
   - Decorate:
 
     - Motivation:
@@ -158,16 +148,9 @@
 
   - Mathematics are rendered incorrectly.
 
----
-
-**Good to Have**
-
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
-    - Email notifications should include:
-      - Link to one-click unsubscription in message body.
-      - `List-*` headers to allow one-click unsubscription.
 
 ## User Interface Improvements
 
