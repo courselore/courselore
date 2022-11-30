@@ -26,15 +26,17 @@
 - Improve the psychological factors that go into the perception of response time:
   - Don’t bring the beach ball right away, or not at all
   - Tweak the progress bar
-- Table of comparison with Piazza, Ed, and so forth.
+- Features from competitors, including Piazza, Ed, and so forth.
+  - Find features that people will ask for, and that we need to have.
+  - Table of comparison for home page.
 
-## Fall
+## Spring
 
+- “Import” conversations from previous semesters and from other platforms.
 - Notifications:
   - Email notification digests
   - Notifications API & Push API
   - Mobile & desktop applications
-- Granular access control to conversations.
 - Minimal integration with Learning Management Systems (identity, not grades).
 - Performance:
   - Finish pagination, the measures that will reduce the size of HTML pages, and so forth
@@ -46,81 +48,6 @@
     - Students may see aggregate results.
     - Staff may see individual votes.
     - Allow for closing a poll.
-    - Perhaps don’t include poll in replies?
-- Communicate that we’re in a free hosting period for now:
-
-```javascript
-            $${app.configuration.host === app.configuration.canonicalHost
-              ? html`
-                  <div
-                    css="${response.locals.css(css`
-                      color: var(--color--green--700);
-                      background-color: var(--color--green--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--green--200);
-                        background-color: var(--color--green--900);
-                      }
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      gap: var(--space--4);
-
-                      .link {
-                        color: var(--color--green--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--green--500);
-                        }
-                        &:active {
-                          color: var(--color--green--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--green--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--green--50);
-                          }
-                          &:active {
-                            color: var(--color--green--200);
-                          }
-                        }
-                      }
-                    `)}"
-                  >
-                    <div
-                      css="${response.locals.css(css`
-                        font-size: var(--font-size--4xl);
-                        line-height: var(--line-height--4xl);
-                      `)}"
-                    >
-                      <i class="bi bi-gift-fill"></i>
-                    </div>
-                    <p>
-                      This is the hosted installation of Courselore managed by
-                      the Courselore developers. Enjoy the initial period of
-                      free hosting, during which you may create courses for
-                      free! Courselore is
-                      <a
-                        href="https://github.com/courselore/courselore"
-                        class="link"
-                        >open source</a
-                      >
-                      and you may install it on your own server, an option that
-                      will be free forever and guarantees maximum privacy &
-                      control.
-                    </p>
-                  </div>
-                `
-              : html``}
-```
-
-**Roadmap**
-
-- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
-- 20 users by fall, 200 by spring, paid by 2024, profit by 2026 (Only start charging when we have thousands of courses.)
-
-## Spring
-
 - SAML
   - Register our application with Hopkins to allow access to SAML.
 
@@ -1105,6 +1032,9 @@ test("/preview (Text processor)", async () => {
 
 - Invest more in marketing on spring.
   - Buy keywords on Google.
+- Goal: Double usage every semester for the first couple semesters.
+- Start charging by 2024, start turning a profit by 2026.
+  - But only start charging when we have a thousand users.
 - Homepage:
   - Better printscreens without `lorem ipsum`.
   - Example of design that we like: https://capacitorjs.com
@@ -1127,6 +1057,72 @@ test("/preview (Text processor)", async () => {
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
 - In Meta Courselore, make a pinned announcement of how to report bugs.
   - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
+- Communicate that we’re in a free hosting period for now:
+
+```javascript
+            $${app.configuration.host === app.configuration.canonicalHost
+              ? html`
+                  <div
+                    css="${response.locals.css(css`
+                      color: var(--color--green--700);
+                      background-color: var(--color--green--100);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--green--200);
+                        background-color: var(--color--green--900);
+                      }
+                      padding: var(--space--4);
+                      border-radius: var(--border-radius--lg);
+                      display: flex;
+                      gap: var(--space--4);
+
+                      .link {
+                        color: var(--color--green--600);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--green--500);
+                        }
+                        &:active {
+                          color: var(--color--green--700);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--green--100);
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--green--50);
+                          }
+                          &:active {
+                            color: var(--color--green--200);
+                          }
+                        }
+                      }
+                    `)}"
+                  >
+                    <div
+                      css="${response.locals.css(css`
+                        font-size: var(--font-size--4xl);
+                        line-height: var(--line-height--4xl);
+                      `)}"
+                    >
+                      <i class="bi bi-gift-fill"></i>
+                    </div>
+                    <p>
+                      This is the hosted installation of Courselore managed by
+                      the Courselore developers. Enjoy the initial period of
+                      free hosting, during which you may create courses for
+                      free! Courselore is
+                      <a
+                        href="https://github.com/courselore/courselore"
+                        class="link"
+                        >open source</a
+                      >
+                      and you may install it on your own server, an option that
+                      will be free forever and guarantees maximum privacy &
+                      control.
+                    </p>
+                  </div>
+                `
+              : html``}
+```
 
 ## References
 
