@@ -1,5 +1,33 @@
 # Backlog
 
+## TO ORGANIZE
+
+- Performance improvements:
+  - HTML sanitization is a significant overhead.
+  - `slugify` is expensive, and it may be cacheable.
+  - Lazy load parts of the page that don’t show up immediately, for example:
+    - User tooltip
+    - Content editor in “Edit Message”
+    - More…
+  - Cache rendered HTML
+  - Process content (which is CPU intensive) in worker thread (asynchronously)?
+  - We’re hitting the disk a lot, perhaps too much. More than Kill the Newsletter!
+- Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
+- Why does 0x need the prelude?
+  - Does not support cluster. Good thing we aren’t using it, I guess…
+  - Redirects `stdout`.
+  - Includes its own handlers for `SIGINT` & `SIGTERM` which `process.exit()`s right away.
+    - `⌃C` from the command line doesn’t seem to work when `npm run`ed.
+- There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
+- autocannon:
+  - Produce graphs (HDRHistogram)
+- Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
+- Content editor issue: Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
+- Improve the psychological factors that go into the perception of response time:
+  - Don’t bring the beach ball right away, or not at all
+  - Tweak the progress bar
+- Table of comparison with Piazza, Ed, and so forth.
+
 ## Fall
 
 - Notifications:
@@ -1025,7 +1053,9 @@ beforeEach(async () => {
     (await client.get("demonstration-inbox")).body
   );
   const nonce = demonstrationInbox
-    .querySelector(`a[href^="${app.server.locals.settings.url}/authenticate/"]`)!
+    .querySelector(
+      `a[href^="${app.server.locals.settings.url}/authenticate/"]`
+    )!
     .getAttribute("href")!
     .match(/\/authenticate\/(\d+)/)!
     .pop();
