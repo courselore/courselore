@@ -18,9 +18,9 @@ import rehypeSanitize, {
 } from "rehype-sanitize";
 import rehypeKatex from "rehype-katex";
 import * as shiki from "shiki";
+import rehypeParse from "rehype-parse";
 import { visit as unistUtilVisit } from "unist-util-visit";
 import { toString as hastUtilToString } from "hast-util-to-string";
-import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import sharp from "sharp";
@@ -146,15 +146,15 @@ export default async (application: Application): Promise<void> => {
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(
         await (async () => {
-          const rehypeParseProcessor = unified().use(rehypeParse, {
-            fragment: true,
-          });
           const shikiHighlighter = await shiki.getHighlighter({
             themes: ["light-plus", "dark-plus"],
           });
+          const rehypeParseProcessor = unified().use(rehypeParse, {
+            fragment: true,
+          });
 
           return () => (tree) => {
-            unistUtilVisit(tree, (node) => {
+            unistUtilVisit(tree, (node, index, parent) => {
               if (
                 node.type !== "element" ||
                 node.tagName !== "pre" ||
@@ -167,30 +167,38 @@ export default async (application: Application): Promise<void> => {
                 typeof node.children[0].properties.className[0] !== "string" ||
                 !node.children[0].properties.className[0].startsWith(
                   "language-"
-                )
+                ) ||
+                index === null ||
+                parent === null
               )
                 return;
+
               const code = hastUtilToString(node).slice(0, -1);
               const language = node.children[0].properties.className[0].slice(
                 "language-".length
               );
+
               try {
-                const highlightedCode = html`
-                  <div>
-                    <div class="light">
-                      $${shikiHighlighter.codeToHtml(code, {
-                        lang: language,
-                        theme: "light-plus",
-                      })}
+                const highlightedCode = rehypeParseProcessor.parse(
+                  html`
+                    <div>
+                      <div class="light">
+                        $${shikiHighlighter.codeToHtml(code, {
+                          lang: language,
+                          theme: "light-plus",
+                        })}
+                      </div>
+                      <div class="dark">
+                        $${shikiHighlighter.codeToHtml(code, {
+                          lang: language,
+                          theme: "dark-plus",
+                        })}
+                      </div>
                     </div>
-                    <div class="dark">
-                      $${shikiHighlighter.codeToHtml(code, {
-                        lang: language,
-                        theme: "dark-plus",
-                      })}
-                    </div>
-                  </div>
-                `;
+                  `
+                ).children[0];
+                highlightedCode.position = node.position;
+                parent.children[index] = highlightedCode;
               } catch {}
             });
           };
