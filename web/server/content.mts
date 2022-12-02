@@ -146,14 +146,53 @@ export default async (application: Application): Promise<void> => {
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(
         await (async () => {
-          const hastParser = unified().use(rehypeParse, { fragment: true });
-          const highlighter = {
-            light: await shiki.getHighlighter({ theme: "light-plus" }),
-            dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-          };
+          const rehypeParseProcessor = unified().use(rehypeParse, {
+            fragment: true,
+          });
+          const shikiHighlighter = await shiki.getHighlighter({
+            themes: ["light-plus", "dark-plus"],
+          });
 
           return () => (tree) => {
-            unistUtilVisit(tree, (node) => {});
+            unistUtilVisit(tree, (node) => {
+              if (
+                node.type !== "element" ||
+                node.tagName !== "pre" ||
+                node.children.length !== 1 ||
+                node.children[0].type !== "element" ||
+                node.children[0].tagName !== "code" ||
+                node.children[0].properties === undefined ||
+                !Array.isArray(node.children[0].properties.className) ||
+                node.children[0].properties.className.length !== 1 ||
+                typeof node.children[0].properties.className[0] !== "string" ||
+                !node.children[0].properties.className[0].startsWith(
+                  "language-"
+                )
+              )
+                return;
+              const code = hastUtilToString(node).slice(0, -1);
+              const language = node.children[0].properties.className[0].slice(
+                "language-".length
+              );
+              try {
+                const highlightedCode = html`
+                  <div>
+                    <div class="light">
+                      $${shikiHighlighter.codeToHtml(code, {
+                        lang: language,
+                        theme: "light-plus",
+                      })}
+                    </div>
+                    <div class="dark">
+                      $${shikiHighlighter.codeToHtml(code, {
+                        lang: language,
+                        theme: "dark-plus",
+                      })}
+                    </div>
+                  </div>
+                `;
+              } catch {}
+            });
           };
         })()
       )
