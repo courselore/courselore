@@ -1,7 +1,7 @@
 import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
-import { sql } from "@leafac/sqlite";
-import { html } from "@leafac/html";
+import sql from "@leafac/sqlite";
+import html from "@leafac/html";
 import argon2 from "argon2";
 import casual from "casual";
 import lodash from "lodash";

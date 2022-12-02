@@ -1,6 +1,6 @@
 import path from "node:path";
 import fs from "node:fs/promises";
-import { Database, sql } from "@leafac/sqlite";
+import sql, { Database } from "@leafac/sqlite";
 import escapeStringRegexp from "escape-string-regexp";
 import cryptoRandomString from "crypto-random-string";
 import prompts from "prompts";

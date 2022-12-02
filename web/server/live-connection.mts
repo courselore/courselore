@@ -1,6 +1,6 @@
 import timers from "node:timers/promises";
 import express from "express";
-import { sql } from "@leafac/sqlite";
+import sql from "@leafac/sqlite";
 import { Application } from "./index.mjs";
 
 export type ApplicationLiveConnection = {

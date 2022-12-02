@@ -1,6 +1,6 @@
-import { HTML, html } from "@leafac/html";
-import { css } from "@leafac/css";
-import { javascript } from "@leafac/javascript";
+import html, { HTML } from "@leafac/html";
+import css from "@leafac/css";
+import javascript from "@leafac/javascript";
 import dedent from "dedent";
 import { Application } from "./index.mjs";
 

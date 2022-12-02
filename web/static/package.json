@@ -10,12 +10,12 @@
     "fake-avatars": "^1.0.1",
     "fast-myers-diff": "^3.0.1",
     "mousetrap": "^1.6.5",
-    "scroll-into-view-if-needed": "^2.2.29",
+    "scroll-into-view-if-needed": "^3.0.3",
     "text-field-edit": "^3.2.0",
     "textarea-caret": "^3.1.0",
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
-    "esbuild": "^0.15.15"
+    "esbuild": "^0.15.16"
   }
 }

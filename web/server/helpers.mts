@@ -1,5 +1,5 @@
 import escapeStringRegexp from "escape-string-regexp";
-import { HTML, html } from "@leafac/html";
+import html, { HTML } from "@leafac/html";
 import { Application } from "./index.mjs";
 
 export type ApplicationHelpers = {
