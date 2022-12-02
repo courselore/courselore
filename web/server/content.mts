@@ -178,28 +178,33 @@ export default async (application: Application): Promise<void> => {
                 "language-".length
               );
 
-              try {
-                const highlightedCode = rehypeParseProcessor.parse(
-                  html`
-                    <div>
-                      <div class="light">
-                        $${shikiHighlighter.codeToHtml(code, {
-                          lang: language,
-                          theme: "light-plus",
-                        })}
-                      </div>
-                      <div class="dark">
-                        $${shikiHighlighter.codeToHtml(code, {
-                          lang: language,
-                          theme: "dark-plus",
-                        })}
-                      </div>
-                    </div>
-                  `
-                ).children[0];
-                highlightedCode.position = node.position;
-                parent.children[index] = highlightedCode;
-              } catch {}
+              const highlightedCode = (() => {
+                try {
+                  return rehypeParseProcessor
+                    .parse(
+                      html`
+                        <div>
+                          <div class="light">
+                            $${shikiHighlighter.codeToHtml(code, {
+                              lang: language,
+                              theme: "light-plus",
+                            })}
+                          </div>
+                          <div class="dark">
+                            $${shikiHighlighter.codeToHtml(code, {
+                              lang: language,
+                              theme: "dark-plus",
+                            })}
+                          </div>
+                        </div>
+                      `
+                    )
+                    .children.find((child) => child.type === "element");
+                } catch {}
+              })();
+              if (highlightedCode === undefined) return;
+              highlightedCode.position = node.position;
+              parent.children[index] = highlightedCode;
             });
           };
         })()
