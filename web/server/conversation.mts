@@ -7301,7 +7301,10 @@ export default async (application: Application): Promise<void> => {
                                                         transition-timing-function: var(
                                                           --transition-timing-function--in-out
                                                         );
-                                                        .message:not(:hover, :focus-within)
+                                                        .message:not(
+                                                            :hover,
+                                                            :focus-within
+                                                          )
                                                           & {
                                                           opacity: var(
                                                             --opacity--0
