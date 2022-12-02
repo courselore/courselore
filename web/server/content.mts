@@ -17,9 +17,10 @@ import rehypeSanitize, {
   defaultSchema as rehypeSanitizeDefaultSchema,
 } from "rehype-sanitize";
 import rehypeKatex from "rehype-katex";
-import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import { visit as unistUtilVisit } from "unist-util-visit";
+import { toString as hastUtilToString } from "hast-util-to-string";
+import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import sharp from "sharp";
@@ -143,21 +144,27 @@ export default async (application: Application): Promise<void> => {
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
-      .use(rehypeShiki, {
-        highlighter: {
-          light: await shiki.getHighlighter({ theme: "light-plus" }),
-          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-        },
-      })
+      .use(
+        await (async () => {
+          const hastParser = unified().use(rehypeParse, { fragment: true });
+          const highlighter = {
+            light: await shiki.getHighlighter({ theme: "light-plus" }),
+            dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+          };
+
+          return () => (tree) => {
+            unistUtilVisit(tree, (node) => {});
+          };
+        })()
+      )
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
           if (
-            (node as any).properties !== undefined &&
+            node.type === "element" &&
+            node.properties !== undefined &&
             node.position !== undefined
           )
-            (node as any).properties.dataPosition = JSON.stringify(
-              node.position
-            );
+            node.properties.dataPosition = JSON.stringify(node.position);
         });
       })
       .use(rehypeStringify);
