@@ -15,22 +15,24 @@ export default async (application: Application): Promise<void> => {
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
   >((request, response) => {
-    if (response.locals.user === undefined)
-      return response.redirect(
-        303,
-        `https://${application.configuration.hostname}/sign-in${qs.stringify(
-          { redirect: request.originalUrl.slice(1) },
-          { addQueryPrefix: true }
-        )}`
-      );
+    if (typeof request.header("Live-Connection") !== "string") {
+      if (response.locals.user === undefined)
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/sign-in${qs.stringify(
+            { redirect: request.originalUrl.slice(1) },
+            { addQueryPrefix: true }
+          )}`
+        );
 
-    if (typeof request.query.redirect === "string")
-      return response.redirect(
-        303,
-        `https://${application.configuration.hostname}/${request.query.redirect}`
-      );
+      if (typeof request.query.redirect === "string")
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${request.query.redirect}`
+        );
+    }
 
-    if (response.locals.user.emailVerifiedAt === null)
+    if (response.locals.user?.emailVerifiedAt === null)
       return response.send(
         application.server.locals.layouts.box({
           request,
