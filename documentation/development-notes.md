@@ -43,3 +43,4 @@
 - The overhead of creating Live-Connections (a write in the hot path of a `GET` request) is negligible.
 - Caddy & load balancing has negligible impact on performance.
 - Using HAR with autocannon could have been good in theory, because it means we wouldn’t have to collect cookies, URLs, and so forth by hand. But in practice there’s no way to create an HAR of a single request, and it isn’t ergonomic to edit the generated HAR and filter the requests that we actually want to run.
+- The overhead of computing CSS on the fly using PostCSS is negligible. Probably because of memoization.
