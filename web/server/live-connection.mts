@@ -218,6 +218,18 @@ export default async (application: Application): Promise<void> => {
         }
       })();
 
+      response.setHeader = (name, value) => response;
+
+      response.send = (body) => {
+        response.write(JSON.stringify(body) + "\n");
+        response.locals.log(
+          "LIVE-UPDATE FINISHED",
+          String(response.statusCode),
+          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+        );
+        return response;
+      };
+
       response.once("close", () => {
         heartbeatAbortController.abort();
         application.database.run(
@@ -418,19 +430,6 @@ export default async (application: Application): Promise<void> => {
         };
 
         liveConnection.response.locals.log("STARTING...");
-
-        liveConnection.response.setHeader = (name, value) =>
-          liveConnection.response;
-
-        liveConnection.response.send = (body) => {
-          liveConnection.response.write(JSON.stringify(body) + "\n");
-          liveConnection.response.locals.log(
-            "LIVE-UPDATE FINISHED",
-            String(liveConnection.response.statusCode),
-            `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
-          );
-          return liveConnection.response;
-        };
 
         liveConnection.response.locals = {
           liveConnectionNonce:
