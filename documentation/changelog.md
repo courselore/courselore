@@ -10,7 +10,9 @@
 
 ## Unreleased
 
-- Fixed nested code blocks.
+- Improved the performance by about a factor of 2 by optimizing the way we render HTML/CSS/(client-side)JavaScript.
+- Fixed an issue in which code blocks nested in other tags (for example, `<div>CODE BLOCK</div>`) would not be syntax highlighted.
+- Introduced infrastructure for measuring performance and profiling the application, which will help us developers make Courselore even faster 😁
 
 ## 6.0.0
 
