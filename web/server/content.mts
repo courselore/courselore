@@ -7,6 +7,7 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
+import * as sanitizeXMLCharacters from "sanitize-xml-string";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -223,7 +224,11 @@ export default async (application: Application): Promise<void> => {
 
     return (contentSource) => {
       const contentElement = JSDOM.fragment(html`
-        <div>$${unifiedProcessor.processSync(contentSource).toString()}</div>
+        <div>
+          $${unifiedProcessor
+            .processSync(sanitizeXMLCharacters.sanitize(contentSource))
+            .toString()}
+        </div>
       `).firstElementChild!;
 
       return {
