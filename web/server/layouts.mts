@@ -899,13 +899,13 @@ export default async (application: Application): Promise<void> => {
               const parentElement = this;
               parentElement.hidden = false;
               const element = parentElement.querySelector("div");
-              let width = 10;
+              let width = 5;
               window.clearTimeout(element.updateTimeout);
               (function update() {
                 if (parentElement.hidden || !leafac.isConnected(element)) return;
                 element.style.width = width.toString() + "%";
-                width += (90 - width) / (5 + Math.random() * 15);
-                element.updateTimeout = window.setTimeout(update, 100 + Math.random() * 100);
+                width += (95 - width) / (20 + Math.random() * 15);
+                element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
               })();
             };
 
@@ -928,7 +928,7 @@ export default async (application: Application): Promise<void> => {
                 border-color: var(--color--blue--700);
               }
               transition-property: width;
-              transition-duration: var(--transition-duration--150);
+              transition-duration: var(--transition-duration--500);
               transition-timing-function: var(
                 --transition-timing-function--in-out
               );
