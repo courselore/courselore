@@ -10,9 +10,13 @@
 
 ## Unreleased
 
-- Improved the performance by about a factor of 2 by optimizing the way we render HTML/CSS/(client-side)JavaScript.
+## 6.0.1
+
+**2022-12-03 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Improved the performance by a factor of approximately 2 by optimizing the way we render HTML/CSS/(client-side)JavaScript.
 - Fixed an issue in which code blocks nested in other tags (for example, `<div>CODE BLOCK</div>`) would not be syntax highlighted.
-- Introduced infrastructure for measuring performance and profiling the application, which will help us developers make Courselore even faster 😁
+- Introduced infrastructure for developers to measure performance and profile the application.
 
 ## 6.0.0
 
