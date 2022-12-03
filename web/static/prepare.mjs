@@ -8,10 +8,6 @@ import esbuild from "esbuild";
 await fs.writeFile(
   "global.css",
   processCSS(css`
-    [live-navigation] * {
-      cursor: wait !important;
-    }
-
     .label {
       display: flex;
       flex-direction: column;
