@@ -210,8 +210,6 @@ export function liveNavigation() {
       body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
 
     event.preventDefault();
-    if (event.submitter?.disabled !== undefined)
-      event.submitter.disabled = true;
 
     const request = ["GET", "HEAD", "OPTIONS", "TRACE"].includes(method)
       ? (() => {
