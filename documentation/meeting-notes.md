@@ -1,6 +1,16 @@
 # Meeting Notes
 
 <details>
+<summary>2021-12-03</summary>
+
+- Progress:
+  - Performance improvements of 2x.
+  - Monitor.
+  - Reusable messages across courses is almost finished.
+
+</details>
+
+<details>
 <summary>2021-11-19</summary>
 
 - Finished and deployed version 6.0.0 with new infrastructure.
