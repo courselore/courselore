@@ -5724,6 +5724,73 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
+                                      "staff" &&
+                                    response.locals.enrollments.some(
+                                      (enrollment) =>
+                                        enrollment.id !==
+                                          response.locals.enrollment.id &&
+                                        enrollment.courseRole === "staff"
+                                    ) &&
+                                    messages.length > 0 &&
+                                    messages[0].reference ===
+                                      "1" /* TODO: Pagination */
+                                      ? html`
+                                          <button
+                                            class="dropdown--menu--item button button--transparent"
+                                            onload="${javascript`
+                                              const loading = ${response.locals
+                                                .html(html`
+                                                <div
+                                                  css="${response.locals
+                                                    .css(css`
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                    align-items: center;
+                                                  `)}"
+                                                >
+                                                  $${application.server.locals.partials.spinner(
+                                                    {
+                                                      request,
+                                                      response,
+                                                    }
+                                                  )}
+                                                  Loading…
+                                                </div>
+                                              `)};
+                                              loading.remove();
+
+                                              const content = ${response.locals.html(
+                                                html``
+                                              )};
+                                              content.remove();
+
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                trigger: "click",
+                                                interactive: true,
+                                                onShow: async () => {
+                                                  this.tooltip.setContent(loading);
+                                                  leafac.loadPartial(content, await (await fetch("https://${
+                                                    application.configuration
+                                                      .hostname
+                                                  }/courses/${
+                                              response.locals.course.reference
+                                            }/conversations/${
+                                              response.locals.conversation
+                                                .reference
+                                            }/messages/${
+                                              messages[0].reference
+                                            }/reuse", { cache: "no-store" })).text());
+                                                  this.tooltip.setContent(content);
+                                                },
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-recycle"></i>
+                                            Reuse Conversation in Another Course
+                                          </button>
+                                        `
+                                      : html``}
+                                    $${response.locals.enrollment.courseRole ===
                                     "staff"
                                       ? html`
                                           <div>
@@ -7712,6 +7779,89 @@ export default async (application: Application): Promise<void> => {
                                                                         </button>
                                                                       `}
                                                                 </form>
+                                                              `
+                                                            : html``}
+                                                          $${response.locals
+                                                            .enrollment
+                                                            .courseRole ===
+                                                            "staff" &&
+                                                          response.locals.enrollments.some(
+                                                            (enrollment) =>
+                                                              enrollment.id !==
+                                                                response.locals
+                                                                  .enrollment
+                                                                  .id &&
+                                                              enrollment.courseRole ===
+                                                                "staff"
+                                                          )
+                                                            ? html`
+                                                                <button
+                                                                  class="dropdown--menu--item button button--transparent"
+                                                                  onload="${javascript`
+                                                                    const loading = ${response
+                                                                      .locals
+                                                                      .html(html`
+                                                                      <div
+                                                                        css="${response
+                                                                          .locals
+                                                                          .css(css`
+                                                                          display: flex;
+                                                                          gap: var(
+                                                                            --space--2
+                                                                          );
+                                                                          align-items: center;
+                                                                        `)}"
+                                                                      >
+                                                                        $${application.server.locals.partials.spinner(
+                                                                          {
+                                                                            request,
+                                                                            response,
+                                                                          }
+                                                                        )}
+                                                                        Loading…
+                                                                      </div>
+                                                                    `)};
+                                                                    loading.remove();
+                
+                                                                    const content = ${response.locals.html(
+                                                                      html``
+                                                                    )};
+                                                                    content.remove();
+                
+                                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                                      trigger: "click",
+                                                                      interactive: true,
+                                                                      onShow: async () => {
+                                                                        this.tooltip.setContent(loading);
+                                                                        leafac.loadPartial(content, await (await fetch("https://${
+                                                                          application
+                                                                            .configuration
+                                                                            .hostname
+                                                                        }/courses/${
+                                                                    response
+                                                                      .locals
+                                                                      .course
+                                                                      .reference
+                                                                  }/conversations/${
+                                                                    response
+                                                                      .locals
+                                                                      .conversation
+                                                                      .reference
+                                                                  }/messages/${
+                                                                    message.reference
+                                                                  }/reuse", { cache: "no-store" })).text());
+                                                                        this.tooltip.setContent(content);
+                                                                      },
+                                                                    });
+                                                                  `}"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-recycle"
+                                                                  ></i>
+                                                                  Reuse Message
+                                                                  in Another
+                                                                  Course
+                                                                </button>
                                                               `
                                                             : html``}
                                                           $${response.locals
