@@ -7422,6 +7422,7 @@ export default async (application: Application): Promise<void> => {
                                                   });
 
                                                   this.onmouseenter = async () => {
+                                                    console.log("TODO: Query parameters: ‘conversations’, ‘messages’");
                                                     if (content.skipLoading) return;
                                                     content.skipLoading = true;
                                                     leafac.loadPartial(content, await (await fetch("https://${
