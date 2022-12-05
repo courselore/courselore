@@ -530,6 +530,31 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsMessage
   >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/actions",
+    (request, response, next) => {
+      if (response.locals.message === undefined) return next();
+
+      response.send(
+        application.server.locals.layouts.partial({
+          request,
+          response,
+          body: html`TODO: ACTIONS`,
+        })
+      );
+    }
+  );
+
+  application.server.get<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    HTML,
+    {},
+    {},
+    ResponseLocalsMessage
+  >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
     (request, response, next) => {
       if (
