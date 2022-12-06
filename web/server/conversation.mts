@@ -7414,9 +7414,10 @@ export default async (application: Application): Promise<void> => {
 
                                                   this.onmouseenter = async () => {
                                                     console.log("TODO: ‘onmouseenter’");
-                                                    // if (content.skipLoading) return;
-                                                    // content.skipLoading = true;
-                                                    // leafac.loadPartial(content, await (await fetch("https://${
+                                                    window.clearTimeout(content.timeout);
+                                                    if (content.skipLoading) return;
+                                                    content.skipLoading = true;
+                                                    leafac.loadPartial(content, await (await fetch("https://${
                                                       application.configuration
                                                         .hostname
                                                     }/courses/${
@@ -7441,7 +7442,11 @@ export default async (application: Application): Promise<void> => {
 
                                                   this.onmouseleave = () => {
                                                     console.log("TODO: ‘onmouseleave’");
-                                                    // if (this.dropdown.state.isShown) return;
+                                                    if (this.dropdown.state.isShown) return;
+                                                    content.timeout = window.setTimeout(() => {
+                                                      content.replaceChildren(loading.cloneNode(true));
+                                                      content.skipLoading = false;
+                                                    }, 60 * 1000);
                                                   };
 
                                                   (this.dropdown ??= tippy(this)).setProps({
@@ -7449,8 +7454,11 @@ export default async (application: Application): Promise<void> => {
                                                     interactive: true,
                                                     onHidden() {
                                                       console.log("TODO: ‘hidden’");
-                                                      // content.innerHTML = "TODO: LOADING AGAIN";
-                                                      // content.skipLoading = false;
+                                                      // TODO: if (HAS FOCUS) return;
+                                                      content.timeout = window.setTimeout(() => {
+                                                        content.replaceChildren(loading.cloneNode(true));
+                                                        content.skipLoading = false;
+                                                      }, 60 * 1000);
                                                     },
                                                     content,
                                                   });
