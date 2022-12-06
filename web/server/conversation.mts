@@ -7410,22 +7410,24 @@ export default async (application: Application): Promise<void> => {
                                                   const content = ${response.locals.html(
                                                     html``
                                                   )};
+                                                  content.replaceChildren(loading.cloneNode(true));
 
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
                                                     onHidden() {
-                                                      content.innerHTML = "TODO: LOADING AGAIN";
-                                                      content.skipLoading = false;
+                                                      console.log("TODO: ‘hidden’");
+                                                      // content.innerHTML = "TODO: LOADING AGAIN";
+                                                      // content.skipLoading = false;
                                                     },
                                                     content,
                                                   });
 
                                                   this.onmouseenter = async () => {
-                                                    console.log("TODO: Query parameters: ‘conversations’, ‘messages’");
-                                                    if (content.skipLoading) return;
-                                                    content.skipLoading = true;
-                                                    leafac.loadPartial(content, await (await fetch("https://${
+                                                    console.log("TODO: ‘onmouseenter’");
+                                                    // if (content.skipLoading) return;
+                                                    // content.skipLoading = true;
+                                                    // leafac.loadPartial(content, await (await fetch("https://${
                                                       application.configuration
                                                         .hostname
                                                     }/courses/${
@@ -7436,7 +7438,21 @@ export default async (application: Application): Promise<void> => {
                                                     .reference
                                                 }/messages/${
                                                   message.reference
-                                                }/actions", { cache: "no-store" })).text());
+                                                }/actions${qs.stringify(
+                                                  {
+                                                    conversations:
+                                                      request.query
+                                                        .conversations,
+                                                    messages:
+                                                      request.query.messages,
+                                                  },
+                                                  { addQueryPrefix: true }
+                                                )}", { cache: "no-store" })).text());
+                                                  };
+
+                                                  this.onmouseleave = () => {
+                                                    console.log("TODO: ‘onmouseleave’");
+                                                    // if (this.dropdown.state.isShown) return;
                                                   };
                                                 `}"
                                               >
