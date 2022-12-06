@@ -7412,8 +7412,8 @@ export default async (application: Application): Promise<void> => {
                                                   )};
                                                   content.replaceChildren(loading.cloneNode(true));
 
-                                                  this.onmouseenter = async () => {
-                                                    console.log("TODO: ‘onmouseenter’");
+                                                  this.onmouseenter = this.onfocus = async () => {
+                                                    console.log("TODO: ‘onmouseenter’/‘onfocus’");
                                                     // window.clearTimeout(content.timeout);
                                                     // if (content.skipLoading) return;
                                                     // content.skipLoading = true;
@@ -7440,8 +7440,8 @@ export default async (application: Application): Promise<void> => {
                                                 )}", { cache: "no-store" })).text());
                                                   };
 
-                                                  this.onmouseleave = () => {
-                                                    console.log("TODO: ‘onmouseleave’");
+                                                  this.onmouseleave = this.onblur = () => {
+                                                    console.log("TODO: ‘onmouseleave’/‘onblur’");
                                                     // if (this.dropdown.state.isShown) return;
                                                     // content.timeout = window.setTimeout(() => {
                                                     //   content.replaceChildren(loading.cloneNode(true));
@@ -7449,24 +7449,12 @@ export default async (application: Application): Promise<void> => {
                                                     // }, 60 * 1000);
                                                   };
 
-                                                  this.onfocus = () => {
-                                                    console.log("TODO: ‘onfocus’");
-                                                  };
-
-                                                  this.onblur = () => {
-                                                    console.log("TODO: ‘onblur’");
-                                                  };
-
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
                                                     onHidden() {
                                                       console.log("TODO: ‘hidden’");
-                                                      // TODO: if (HAS FOCUS) return;
-                                                      // content.timeout = window.setTimeout(() => {
-                                                      //   content.replaceChildren(loading.cloneNode(true));
-                                                      //   content.skipLoading = false;
-                                                      // }, 60 * 1000);
+                                                      // this.onmouseleave();
                                                     },
                                                     content,
                                                   });
