@@ -7412,17 +7412,6 @@ export default async (application: Application): Promise<void> => {
                                                   )};
                                                   content.replaceChildren(loading.cloneNode(true));
 
-                                                  (this.dropdown ??= tippy(this)).setProps({
-                                                    trigger: "click",
-                                                    interactive: true,
-                                                    onHidden() {
-                                                      console.log("TODO: ‘hidden’");
-                                                      // content.innerHTML = "TODO: LOADING AGAIN";
-                                                      // content.skipLoading = false;
-                                                    },
-                                                    content,
-                                                  });
-
                                                   this.onmouseenter = async () => {
                                                     console.log("TODO: ‘onmouseenter’");
                                                     // if (content.skipLoading) return;
@@ -7454,6 +7443,17 @@ export default async (application: Application): Promise<void> => {
                                                     console.log("TODO: ‘onmouseleave’");
                                                     // if (this.dropdown.state.isShown) return;
                                                   };
+
+                                                  (this.dropdown ??= tippy(this)).setProps({
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    onHidden() {
+                                                      console.log("TODO: ‘hidden’");
+                                                      // content.innerHTML = "TODO: LOADING AGAIN";
+                                                      // content.skipLoading = false;
+                                                    },
+                                                    content,
+                                                  });
                                                 `}"
                                               >
                                                 <i
