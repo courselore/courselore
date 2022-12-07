@@ -2479,7 +2479,7 @@ export default async (application: Application): Promise<void> => {
                                       gap: var(--space--0);
                                     `)}"
                                     onload="${javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
+                                      (this.dropdown ??= tippy(this)).setProps({
                                         trigger: "click",
                                         interactive: true,
                                         content: ${response.locals.html(
@@ -4133,6 +4133,7 @@ export default async (application: Application): Promise<void> => {
                               touch: false,
                               content: "Copy Email",
                             });
+
                             (this.copied ??= tippy(this)).setProps({
                               theme: "green",
                               trigger: "manual",

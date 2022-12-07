@@ -467,7 +467,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--transparent"
                     onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
+                      (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
                         content: ${response.locals.html(
@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `)}"
                 onload="${javascript`
-                  (this.tooltip ??= tippy(this)).setProps({
+                  (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
                     content: ${response.locals.html(
@@ -678,7 +678,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 class="button button--transparent"
                 onload="${javascript`
-                  (this.tooltip ??= tippy(this)).setProps({
+                  (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
                     content: ${response.locals.html(
@@ -798,7 +798,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button button--transparent strong text--green"
                       onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
+                        (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
                           content: ${response.locals.html(
@@ -1275,7 +1275,7 @@ export default async (application: Application): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
+                        (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
                           content: ${response.locals.html(
@@ -1392,7 +1392,7 @@ export default async (application: Application): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
+                        (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
                           content: ${response.locals.html(
@@ -1729,7 +1729,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--tight button--tight--inline button--transparent"
                     onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
+                      (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
                         content: ${response.locals.html(

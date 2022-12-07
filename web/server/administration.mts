@@ -510,6 +510,7 @@ export default async (application: Application): Promise<void> => {
                             touch: false,
                             content: "Copy Email",
                           });
+
                           (this.copied ??= tippy(this)).setProps({
                             theme: "green",
                             trigger: "manual",
