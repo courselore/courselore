@@ -1525,6 +1525,8 @@ export default async (application: Application): Promise<void> => {
                               searchAndFiltersFormSection.hidden = !this.checked;
                               for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
                                 if (element.disabled !== null) element.disabled = !this.checked;
+                              if (this.checked)
+                                searchAndFiltersFormSection.querySelector('[name="conversations[search]"]').focus();
                             };
                           `}"
                         />
