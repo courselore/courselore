@@ -1199,15 +1199,15 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   }
 
 for (const source of [
-  "about/ali-madooei.png",
-  "about/eliot-smith.png",
-  "about/leandro-facchinetti.png",
-  "about/main-screen--dark.png",
-  "about/main-screen--light-and-dark.png",
-  "about/main-screen--light.png",
-  "about/main-screen--phone--dark.jpeg",
-  "about/main-screen--phone--light.jpeg",
-  "about/scott-smith.png",
+  "about/ali-madooei.webp",
+  "about/eliot-smith.webp",
+  "about/leandro-facchinetti.webp",
+  "about/main-screen--dark.webp",
+  "about/main-screen--light-and-dark.webp",
+  "about/main-screen--light.webp",
+  "about/main-screen--phone--dark.webp",
+  "about/main-screen--phone--light.webp",
+  "about/scott-smith.webp",
 ]) {
   const extension = path.extname(source);
   const destination = path.join(

@@ -201,7 +201,7 @@ export default async (application: Application): Promise<void> => {
             >
               <img
                 src="https://${application.configuration.hostname}/${application
-                  .static["about/main-screen--light.png"]}"
+                  .static["about/main-screen--light.webp"]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -217,7 +217,7 @@ export default async (application: Application): Promise<void> => {
               />
               <img
                 src="https://${application.configuration.hostname}/${application
-                  .static["about/main-screen--dark.png"]}"
+                  .static["about/main-screen--dark.webp"]}"
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
@@ -414,7 +414,7 @@ export default async (application: Application): Promise<void> => {
             >
               <img
                 src="https://${application.configuration.hostname}/${application
-                  .static["about/main-screen--light-and-dark.png"]}"
+                  .static["about/main-screen--light-and-dark.webp"]}"
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
@@ -491,7 +491,7 @@ export default async (application: Application): Promise<void> => {
             >
               <img
                 src="https://${application.configuration.hostname}/${application
-                  .static["about/main-screen--phone--light.jpeg"]}"
+                  .static["about/main-screen--phone--light.webp"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
               />
               <img
                 src="https://${application.configuration.hostname}/${application
-                  .static["about/main-screen--phone--dark.jpeg"]}"
+                  .static["about/main-screen--phone--dark.webp"]}"
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
@@ -728,7 +728,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <img
                   src="https://${application.configuration
-                    .hostname}/${application.static["about/scott-smith.png"]}"
+                    .hostname}/${application.static["about/scott-smith.webp"]}"
                   alt="Dr. Scott Smith"
                   loading="lazy"
                   class="img"
@@ -749,7 +749,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <img
                   src="https://${application.configuration
-                    .hostname}/${application.static["about/ali-madooei.png"]}"
+                    .hostname}/${application.static["about/ali-madooei.webp"]}"
                   alt="Dr. Ali Madooei"
                   loading="lazy"
                   class="img"
@@ -768,7 +768,7 @@ export default async (application: Application): Promise<void> => {
                 <img
                   src="https://${application.configuration
                     .hostname}/${application.static[
-                    "about/leandro-facchinetti.png"
+                    "about/leandro-facchinetti.webp"
                   ]}"
                   alt="Leandro Facchinetti"
                   loading="lazy"
@@ -802,7 +802,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <img
                   src="https://${application.configuration
-                    .hostname}/${application.static["about/eliot-smith.png"]}"
+                    .hostname}/${application.static["about/eliot-smith.webp"]}"
                   alt="Eliot Smith"
                   loading="lazy"
                   class="img"
