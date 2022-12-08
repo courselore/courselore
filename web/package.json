@@ -81,8 +81,8 @@
     "autocannon": "^7.10.0",
     "caxa": "^3.0.1",
     "nodemon": "^2.0.20",
-    "npm-check-updates": "^16.4.3",
-    "prettier": "^2.8.0",
+    "npm-check-updates": "^16.5.1",
+    "prettier": "^2.8.1",
     "shx": "^0.3.4"
   }
 }

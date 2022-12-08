@@ -7,7 +7,7 @@
     "@fontsource/public-sans": "^4.5.11",
     "autosize": "^5.0.2",
     "bootstrap-icons": "^1.10.2",
-    "fake-avatars": "^1.0.1",
+    "fake-avatars": "^1.0.2",
     "fast-myers-diff": "^3.0.1",
     "mousetrap": "^1.6.5",
     "scroll-into-view-if-needed": "^3.0.3",
@@ -16,6 +16,6 @@
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
-    "esbuild": "^0.15.16"
+    "esbuild": "^0.16.2"
   }
 }
