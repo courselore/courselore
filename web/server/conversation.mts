@@ -7415,11 +7415,10 @@ export default async (application: Application): Promise<void> => {
                                                   content.replaceChildren(loading.cloneNode(true));
 
                                                   this.onmouseenter = this.onfocus = async () => {
-                                                    console.log("TODO: ‘onmouseenter’/‘onfocus’");
-                                                    // window.clearTimeout(content.timeout);
-                                                    // if (content.skipLoading) return;
-                                                    // content.skipLoading = true;
-                                                    // leafac.loadPartial(content, await (await fetch("https://${
+                                                    window.clearTimeout(content.timeout);
+                                                    if (content.skipLoading) return;
+                                                    content.skipLoading = true;
+                                                    leafac.loadPartial(content, await (await fetch("https://${
                                                       application.configuration
                                                         .hostname
                                                     }/courses/${
@@ -7443,21 +7442,18 @@ export default async (application: Application): Promise<void> => {
                                                   };
 
                                                   this.onmouseleave = this.onblur = () => {
-                                                    console.log("TODO: ‘onmouseleave’/‘onblur’");
-                                                    // if (this.dropdown.state.isShown) return;
-                                                    // content.timeout = window.setTimeout(() => {
-                                                    //   content.replaceChildren(loading.cloneNode(true));
-                                                    //   content.skipLoading = false;
-                                                    // }, 60 * 1000);
+                                                    window.clearTimeout(content.timeout);
+                                                    if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                    content.timeout = window.setTimeout(() => {
+                                                      content.replaceChildren(loading.cloneNode(true));
+                                                      content.skipLoading = false;
+                                                    }, 60 * 1000);
                                                   };
 
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
-                                                    onHidden() {
-                                                      console.log("TODO: ‘hidden’");
-                                                      // this.onmouseleave();
-                                                    },
+                                                    onHidden: this.onmouseleave,
                                                     content,
                                                   });
                                                 `}"
