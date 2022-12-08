@@ -102,7 +102,7 @@ export default async (application: Application): Promise<void> => {
                       Math.random() < 0.6
                         ? `https://${
                             application.configuration.hostname
-                          }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                          }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.webp`
                         : null
                     },
                     ${lodash.sample(
