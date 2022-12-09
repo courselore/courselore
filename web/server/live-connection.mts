@@ -307,37 +307,31 @@ export default async (application: Application): Promise<void> => {
       const responseSend = response.send.bind(response);
       response.send = (body) => {
         if (
-          typeof response.locals.liveConnectionNonce !== "string" ||
-          !response
-            .getHeader("Content-Type")
-            ?.toString()
-            .startsWith("text/html")
-        )
-          return response;
-
-        application.database.run(
-          sql`
-            INSERT INTO "liveConnectionsMetadata" (
-              "expiresAt",
-              "nonce",
-              "url"
-            )
-            VALUES (
-              ${new Date(Date.now() + 60 * 1000).toISOString()},
-              ${response.locals.liveConnectionNonce},
-              ${request.originalUrl}
-            )
-          `
-        );
+          typeof response.locals.liveConnectionNonce === "string" &&
+          response.getHeader("Content-Type")?.toString().startsWith("text/html")
+        ) {
+          application.database.run(
+            sql`
+              INSERT INTO "liveConnectionsMetadata" (
+                "expiresAt",
+                "nonce",
+                "url"
+              )
+              VALUES (
+                ${new Date(Date.now() + 60 * 1000).toISOString()},
+                ${response.locals.liveConnectionNonce},
+                ${request.originalUrl}
+              )
+            `
+          );
+          response.locals.log(
+            "LIVE-CONNECTION",
+            response.locals.liveConnectionNonce,
+            "CREATED"
+          );
+        }
 
         responseSend(body);
-
-        response.locals.log(
-          "LIVE-CONNECTION",
-          response.locals.liveConnectionNonce,
-          "CREATED"
-        );
-
         return response;
       };
     }
