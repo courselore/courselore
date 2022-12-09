@@ -7439,6 +7439,7 @@ export default async (application: Application): Promise<void> => {
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}", { cache: "no-store" })).text());
+                                                    this.dropdown.setProps({});
                                                   };
 
                                                   this.onmouseleave = this.onblur = () => {
