@@ -306,10 +306,7 @@ export default async (application: Application): Promise<void> => {
 
       const responseSend = response.send.bind(response);
       response.send = (body) => {
-        if (
-          typeof response.locals.liveConnectionNonce === "string" &&
-          response.getHeader("Content-Type")?.toString().startsWith("text/html")
-        ) {
+        if (typeof response.locals.liveConnectionNonce === "string") {
           application.database.run(
             sql`
               INSERT INTO "liveConnectionsMetadata" (
