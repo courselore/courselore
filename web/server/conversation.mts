@@ -7387,7 +7387,7 @@ export default async (application: Application): Promise<void> => {
                                                   (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
-                                                    onHidden() { this.onmouseleave(); },
+                                                    onHidden: () => { this.onmouseleave(); },
                                                     content: ${response.locals
                                                       .html(html`
                                                       <div
