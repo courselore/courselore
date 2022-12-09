@@ -304,7 +304,8 @@ export default async (application: Application): Promise<void> => {
     if (request.method === "GET") {
       response.locals.liveConnectionNonce = Math.random().toString(36).slice(2);
 
-      response.once("close", () => {
+      const responseSend = response.send.bind(response);
+      response.send = (body) => {
         if (
           typeof response.locals.liveConnectionNonce !== "string" ||
           !response
@@ -312,7 +313,7 @@ export default async (application: Application): Promise<void> => {
             ?.toString()
             .startsWith("text/html")
         )
-          return;
+          return response;
 
         application.database.run(
           sql`
@@ -329,12 +330,16 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
+        responseSend(body);
+
         response.locals.log(
           "LIVE-CONNECTION",
           response.locals.liveConnectionNonce,
           "CREATED"
         );
-      });
+
+        return response;
+      };
     }
 
     next();
