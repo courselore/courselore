@@ -7384,36 +7384,41 @@ export default async (application: Application): Promise<void> => {
                                                     content: "Actions",
                                                   });
 
-                                                  const loading = ${response
-                                                    .locals.html(html`
-                                                    <div
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        align-items: center;
-                                                      `)}"
-                                                    >
-                                                      $${application.server.locals.partials.spinner(
-                                                        {
-                                                          request,
-                                                          response,
-                                                        }
-                                                      )}
-                                                      Loading…
-                                                    </div>
-                                                  `)};
-
-                                                  const content = ${response.locals.html(
-                                                    html``
-                                                  )};
-                                                  content.replaceChildren(loading.cloneNode(true));
+                                                  (this.dropdown ??= tippy(this)).setProps({
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    onHidden() { this.onmouseleave(); },
+                                                    content: ${response.locals
+                                                      .html(html`
+                                                      <div
+                                                        key="loading"
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          display: flex;
+                                                          gap: var(--space--2);
+                                                          align-items: center;
+                                                        `)}"
+                                                      >
+                                                        $${application.server.locals.partials.spinner(
+                                                          {
+                                                            request,
+                                                            response,
+                                                          }
+                                                        )}
+                                                        Loading…
+                                                      </div>
+                                                      <div
+                                                        key="content"
+                                                        hidden
+                                                      ></div>
+                                                    `)},
+                                                  });
 
                                                   this.onmouseenter = this.onfocus = async () => {
-                                                    window.clearTimeout(content.timeout);
-                                                    if (content.skipLoading) return;
-                                                    content.skipLoading = true;
-                                                    leafac.loadPartial(content, await (await fetch("https://${
+                                                    window.clearTimeout(this.dropdownContentTimeout);
+                                                    if (this.dropdownContentSkipLoading) return;
+                                                    this.dropdownContentSkipLoading = true;
+                                                    leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
                                                       application.configuration
                                                         .hostname
                                                     }/courses/${
@@ -7434,24 +7439,20 @@ export default async (application: Application): Promise<void> => {
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}", { cache: "no-store" })).text());
+                                                    this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                    this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
                                                     this.dropdown.setProps({});
                                                   };
 
                                                   this.onmouseleave = this.onblur = () => {
-                                                    window.clearTimeout(content.timeout);
+                                                    window.clearTimeout(this.dropdownContentTimeout);
                                                     if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                    content.timeout = window.setTimeout(() => {
-                                                      content.replaceChildren(loading.cloneNode(true));
-                                                      content.skipLoading = false;
+                                                    this.dropdownContentTimeout = window.setTimeout(() => {
+                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                      this.dropdownContentSkipLoading = false;
                                                     }, 60 * 1000);
                                                   };
-
-                                                  (this.dropdown ??= tippy(this)).setProps({
-                                                    trigger: "click",
-                                                    interactive: true,
-                                                    onHidden: this.onmouseleave,
-                                                    content,
-                                                  });
                                                 `}"
                                               >
                                                 <i
