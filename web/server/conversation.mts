@@ -7384,35 +7384,36 @@ export default async (application: Application): Promise<void> => {
                                                     content: "Actions",
                                                   });
 
-                                                  (this.dropdown ??= tippy(this)).setProps({
-                                                    trigger: "click",
-                                                    interactive: true,
-                                                    onHidden: () => { this.onmouseleave(); },
-                                                    content: ${response.locals
-                                                      .html(html`
-                                                      <div
-                                                        key="loading"
-                                                        css="${response.locals
-                                                          .css(css`
-                                                          display: flex;
-                                                          gap: var(--space--2);
-                                                          align-items: center;
-                                                        `)}"
-                                                      >
-                                                        $${application.server.locals.partials.spinner(
-                                                          {
-                                                            request,
-                                                            response,
-                                                          }
-                                                        )}
-                                                        Loading…
-                                                      </div>
-                                                      <div
-                                                        key="content"
-                                                        hidden
-                                                      ></div>
-                                                    `)},
-                                                  });
+                                                  if (event?.detail?.liveUpdate !== true)
+                                                    (this.dropdown ??= tippy(this)).setProps({
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      onHidden: () => { this.onmouseleave(); },
+                                                      content: ${response.locals
+                                                        .html(html`
+                                                        <div
+                                                          key="loading"
+                                                          css="${response.locals
+                                                            .css(css`
+                                                            display: flex;
+                                                            gap: var(--space--2);
+                                                            align-items: center;
+                                                          `)}"
+                                                        >
+                                                          $${application.server.locals.partials.spinner(
+                                                            {
+                                                              request,
+                                                              response,
+                                                            }
+                                                          )}
+                                                          Loading…
+                                                        </div>
+                                                        <div
+                                                          key="content"
+                                                          hidden
+                                                        ></div>
+                                                      `)},
+                                                    });
 
                                                   this.onmouseenter = this.onfocus = async () => {
                                                     window.clearTimeout(this.dropdownContentTimeout);
