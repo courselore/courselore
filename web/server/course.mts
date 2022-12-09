@@ -1805,7 +1805,7 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       `
                     )};
-                    newTagPartial.remove();
+
                     this.onclick = () => {
                       const newTag = newTagPartial.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);

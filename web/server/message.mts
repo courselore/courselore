@@ -641,10 +641,8 @@ export default async (application: Application): Promise<void> => {
                             Loading…
                           </div>
                         `)};
-                        loading.remove();
 
                         const content = ${response.locals.html(html``)};
-                        content.remove();
 
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
@@ -844,10 +842,8 @@ export default async (application: Application): Promise<void> => {
                             Loading…
                           </div>
                         `)};
-                        loading.remove();
 
                         const content = ${response.locals.html(html``)};
-                        content.remove();
 
                         (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
