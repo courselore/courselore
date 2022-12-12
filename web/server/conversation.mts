@@ -8209,44 +8209,51 @@ export default async (application: Application): Promise<void> => {
                                                               touch: false,
                                                               content: "See people who liked",
                                                             });
-
-                                                            const loading = ${response
-                                                              .locals.html(html`
-                                                              <div
-                                                                css="${response
+                                                            
+                                                            if (event?.detail?.liveUpdate !== true)
+                                                              (this.dropdown ??= tippy(this)).setProps({
+                                                                trigger: "click",
+                                                                interactive: true,
+                                                                onHidden: () => { this.onmouseleave(); },
+                                                                content: ${response
                                                                   .locals
-                                                                  .css(css`
-                                                                  display: flex;
-                                                                  gap: var(
-                                                                    --space--2
-                                                                  );
-                                                                  align-items: center;
-                                                                `)}"
-                                                              >
-                                                                $${application.server.locals.partials.spinner(
-                                                                  {
-                                                                    request,
-                                                                    response,
-                                                                  }
-                                                                )}
-                                                                Loading…
-                                                              </div>
-                                                            `)};
-
-                                                            const content = ${response.locals.html(
-                                                              html``
-                                                            )};
-
-                                                            (this.dropdown ??= tippy(this)).setProps({
-                                                              trigger: "click",
-                                                              interactive: true,
-                                                              onShow: async () => {
-                                                                this.dropdown.setContent(loading);
-                                                                leafac.loadPartial(content, await (await fetch("https://${
-                                                                  application
-                                                                    .configuration
-                                                                    .hostname
-                                                                }/courses/${
+                                                                  .html(html`
+                                                                  <div
+                                                                    key="loading"
+                                                                    css="${response
+                                                                      .locals
+                                                                      .css(css`
+                                                                      display: flex;
+                                                                      gap: var(
+                                                                        --space--2
+                                                                      );
+                                                                      align-items: center;
+                                                                    `)}"
+                                                                  >
+                                                                    $${application.server.locals.partials.spinner(
+                                                                      {
+                                                                        request,
+                                                                        response,
+                                                                      }
+                                                                    )}
+                                                                    Loading…
+                                                                  </div>
+                                                                  <div
+                                                                    key="content"
+                                                                    hidden
+                                                                  ></div>
+                                                                `)},
+                                                              });
+                                                            
+                                                            this.onmouseenter = this.onfocus = async () => {
+                                                              window.clearTimeout(this.dropdownContentTimeout);
+                                                              if (this.dropdownContentSkipLoading) return;
+                                                              this.dropdownContentSkipLoading = true;
+                                                              leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                                application
+                                                                  .configuration
+                                                                  .hostname
+                                                              }/courses/${
                                                             response.locals
                                                               .course.reference
                                                           }/conversations/${
@@ -8256,9 +8263,20 @@ export default async (application: Application): Promise<void> => {
                                                           }/messages/${
                                                             message.reference
                                                           }/likes", { cache: "no-store" })).text());
-                                                                this.dropdown.setContent(content);
-                                                              },
-                                                            });
+                                                              this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                              this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                              this.dropdown.setProps({});
+                                                            };
+                                                            
+                                                            this.onmouseleave = this.onblur = () => {
+                                                              window.clearTimeout(this.dropdownContentTimeout);
+                                                              if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                              this.dropdownContentTimeout = window.setTimeout(() => {
+                                                                this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                                this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                                this.dropdownContentSkipLoading = false;
+                                                              }, 60 * 1000);
+                                                            };
                                                           `}"
                                                         >
                                                           ${likesCount.toString()}
