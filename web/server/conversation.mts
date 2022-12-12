@@ -2662,40 +2662,56 @@ export default async (application: Application): Promise<void> => {
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
-                    const loading = ${response.locals.html(html`
-                      <div
-                        css="${response.locals.css(css`
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: center;
-                        `)}"
-                      >
-                        $${application.server.locals.partials.spinner({
-                          request,
-                          response,
-                        })}
-                        Loading…
-                      </div>
-                    `)};
+                    if (event?.detail?.liveUpdate !== true)
+                      (this.tooltip ??= tippy(this)).setProps({
+                        interactive: true,
+                        delay: [1000, null],
+                        touch: ["hold", 1000],
+                        onHidden: () => { this.onmouseleave(); },
+                        content: ${response.locals.html(html`
+                          <div
+                            key="loading"
+                            css="${response.locals.css(css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: center;
+                            `)}"
+                          >
+                            $${application.server.locals.partials.spinner({
+                              request,
+                              response,
+                            })}
+                            Loading…
+                          </div>
+                          <div key="content" hidden></div>
+                        `)},
+                      });
                     
-                    const content = ${response.locals.html(html``)};
-                    
-                    (this.tooltip ??= tippy(this)).setProps({
-                      interactive: true,
-                      delay: [1000, null],
-                      touch: ["hold", 1000],
-                      onShow: async () => {
-                        this.tooltip.setContent(loading);
-                        leafac.loadPartial(content, await (await fetch("https://${
-                          application.configuration.hostname
-                        }/courses/${
+                    this.onmouseenter = this.onfocus = async () => {
+                      window.clearTimeout(this.tooltipContentTimeout);
+                      if (this.tooltipContentSkipLoading) return;
+                      this.tooltipContentSkipLoading = true;
+                      leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                        application.configuration.hostname
+                      }/courses/${
                     response.locals.course.reference
                   }/conversations/${
                     conversation.reference
                   }/selected-participants", { cache: "no-store" })).text());
-                        this.tooltip.setContent(content);
-                      },
-                    });
+                      this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
+                      this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
+                      this.tooltip.setProps({});
+                    };
+                    
+                    this.onmouseleave = this.onblur = () => {
+                      window.clearTimeout(this.tooltipContentTimeout);
+                      if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
+                      this.tooltipContentTimeout = window.setTimeout(() => {
+                        this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
+                        this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
+                        this.tooltipContentSkipLoading = false;
+                      }, 60 * 1000);
+                    };
                   `
                 : javascript`
                     (this.tooltip ??= tippy(this)).setProps({
@@ -7396,7 +7412,9 @@ export default async (application: Application): Promise<void> => {
                                                           css="${response.locals
                                                             .css(css`
                                                             display: flex;
-                                                            gap: var(--space--2);
+                                                            gap: var(
+                                                              --space--2
+                                                            );
                                                             align-items: center;
                                                           `)}"
                                                         >
