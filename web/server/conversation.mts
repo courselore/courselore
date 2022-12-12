@@ -2662,7 +2662,7 @@ export default async (application: Application): Promise<void> => {
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
-                    if (event?.detail?.liveUpdate !== true)
+                    if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                       (this.tooltip ??= tippy(this)).setProps({
                         interactive: true,
                         delay: [1000, null],
@@ -5754,7 +5754,7 @@ export default async (application: Application): Promise<void> => {
                                           <button
                                             class="dropdown--menu--item button button--transparent"
                                             onload="${javascript`
-                                              if (event?.detail?.liveUpdate !== true)
+                                              if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   trigger: "click",
                                                   interactive: true,
@@ -7415,7 +7415,7 @@ export default async (application: Application): Promise<void> => {
                                                     content: "Actions",
                                                   });
 
-                                                  if (event?.detail?.liveUpdate !== true)
+                                                  if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
                                                     (this.dropdown ??= tippy(this)).setProps({
                                                       trigger: "click",
                                                       interactive: true,
@@ -8225,7 +8225,7 @@ export default async (application: Application): Promise<void> => {
                                                               content: "See people who liked",
                                                             });
                                                             
-                                                            if (event?.detail?.liveUpdate !== true)
+                                                            if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
                                                               (this.dropdown ??= tippy(this)).setProps({
                                                                 trigger: "click",
                                                                 interactive: true,
@@ -8313,7 +8313,7 @@ export default async (application: Application): Promise<void> => {
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
-                                                    if (event?.detail?.liveUpdate !== true)
+                                                    if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         trigger: "click",
                                                         interactive: true,

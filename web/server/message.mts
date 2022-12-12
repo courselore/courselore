@@ -626,7 +626,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        if (event?.detail?.liveUpdate !== true)
+                        if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
@@ -843,7 +843,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        if (event?.detail?.liveUpdate !== true)
+                        if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
