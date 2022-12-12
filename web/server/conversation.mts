@@ -5741,12 +5741,7 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
                                       "staff" &&
-                                    response.locals.enrollments.some(
-                                      (enrollment) =>
-                                        enrollment.id !==
-                                          response.locals.enrollment.id &&
-                                        enrollment.courseRole === "staff"
-                                    ) &&
+                                    response.locals.enrollments.length > 1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
                                       "1" /* TODO: Pagination */

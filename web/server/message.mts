@@ -834,11 +834,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
               $${response.locals.enrollment.courseRole === "staff" &&
-              response.locals.enrollments.some(
-                (enrollment) =>
-                  enrollment.id !== response.locals.enrollment.id &&
-                  enrollment.courseRole === "staff"
-              )
+              response.locals.enrollments.length > 1
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
@@ -1397,6 +1393,31 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
+    }
+  );
+
+  application.server.get<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {
+      conversations?: object;
+      messages?: object;
+    },
+    ResponseLocalsMessage
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/reuse",
+    (request, response, next) => {
+      if (
+        response.locals.message === undefined ||
+        response.locals.enrollment.courseRole !== "staff" ||
+        response.locals.enrollments.length === 1
+      )
+        return next();
     }
   );
 
