@@ -5754,49 +5754,64 @@ export default async (application: Application): Promise<void> => {
                                           <button
                                             class="dropdown--menu--item button button--transparent"
                                             onload="${javascript`
-                                              const loading = ${response.locals
-                                                .html(html`
-                                                <div
-                                                  css="${response.locals
-                                                    .css(css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
-                                                    align-items: center;
-                                                  `)}"
-                                                >
-                                                  $${application.server.locals.partials.spinner(
-                                                    {
-                                                      request,
-                                                      response,
-                                                    }
-                                                  )}
-                                                  Loading…
-                                                </div>
-                                              `)};
-
-                                              const content = ${response.locals.html(
-                                                html``
-                                              )};
-
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                trigger: "click",
-                                                interactive: true,
-                                                onShow: async () => {
-                                                  this.tooltip.setContent(loading);
-                                                  leafac.loadPartial(content, await (await fetch("https://${
-                                                    application.configuration
-                                                      .hostname
-                                                  }/courses/${
+                                              if (event?.detail?.liveUpdate !== true)
+                                                (this.tooltip ??= tippy(this)).setProps({
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                  onHidden: () => { this.onmouseleave(); },
+                                                  content: ${response.locals
+                                                    .html(html`
+                                                    <div
+                                                      key="loading"
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        display: flex;
+                                                        gap: var(--space--2);
+                                                        align-items: center;
+                                                      `)}"
+                                                    >
+                                                      $${application.server.locals.partials.spinner(
+                                                        {
+                                                          request,
+                                                          response,
+                                                        }
+                                                      )}
+                                                      Loading…
+                                                    </div>
+                                                    <div
+                                                      key="content"
+                                                      hidden
+                                                    ></div>
+                                                  `)},
+                                                });
+                                              
+                                              this.onmouseenter = this.onfocus = async () => {
+                                                window.clearTimeout(this.tooltipContentTimeout);
+                                                if (this.tooltipContentSkipLoading) return;
+                                                this.tooltipContentSkipLoading = true;
+                                                leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                  application.configuration
+                                                    .hostname
+                                                }/courses/${
                                               response.locals.course.reference
                                             }/conversations/${
                                               response.locals.conversation
                                                 .reference
-                                            }/messages/${
-                                              messages[0].reference
-                                            }/reuse", { cache: "no-store" })).text());
-                                                  this.tooltip.setContent(content);
-                                                },
-                                              });
+                                            }/messages/1/reuse", { cache: "no-store" })).text());
+                                                this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
+                                                this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
+                                                this.tooltip.setProps({});
+                                              };
+                                              
+                                              this.onmouseleave = this.onblur = () => {
+                                                window.clearTimeout(this.tooltipContentTimeout);
+                                                if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
+                                                this.tooltipContentTimeout = window.setTimeout(() => {
+                                                  this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
+                                                  this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
+                                                  this.tooltipContentSkipLoading = false;
+                                                }, 60 * 1000);
+                                              };
                                             `}"
                                           >
                                             <i class="bi bi-recycle"></i>
