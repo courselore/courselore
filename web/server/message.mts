@@ -1402,12 +1402,9 @@ export default async (application: Application): Promise<void> => {
       conversationReference: string;
       messageReference: string;
     },
-    any,
+    HTML,
     {},
-    {
-      conversations?: object;
-      messages?: object;
-    },
+    {},
     ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/reuse",
@@ -1418,6 +1415,40 @@ export default async (application: Application): Promise<void> => {
         response.locals.enrollments.length === 1
       )
         return next();
+
+      response.send(
+        application.server.locals.layouts.partial({
+          request,
+          response,
+          body: html`
+            <div
+              class="dropdown--menu"
+              css="${response.locals.css(css`
+                max-height: var(--space--56);
+                padding: var(--space--1) var(--space--0);
+                overflow: auto;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${application.server.locals.partials.courses({
+                request,
+                response,
+                hrefSuffix: `/conversations/new/${
+                  response.locals.conversation.type
+                }${qs.stringify(
+                  {
+                    newConversation: {
+                      title: response.locals.conversation.title,
+                      content: response.locals.message.contentSource,
+                    },
+                  },
+                  { addQueryPrefix: true }
+                )}`,
+              })}
+            </div>
+          `,
+        })
+      );
     }
   );
 
@@ -1477,8 +1508,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      ResponseLocalsMessage
+    ResponseLocalsMessage
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
     (request, response, next) => {

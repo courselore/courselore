@@ -70,6 +70,7 @@ export type ApplicationCourse = {
           request,
           response,
           tight,
+          hrefSuffix,
         }: {
           request: express.Request<
             {},
@@ -89,6 +90,7 @@ export type ApplicationCourse = {
               >
           >;
           tight?: boolean;
+          hrefSuffix?: string;
         }): HTML;
 
         courseArchived({
@@ -688,6 +690,7 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
     tight = false,
+    hrefSuffix = "",
   }) => {
     let courses = html``;
 
@@ -704,7 +707,8 @@ export default async (application: Application): Promise<void> => {
               <a
                 key="enrollment--${enrollment.reference}"
                 href="https://${application.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
+                  .hostname}/courses/${enrollment.course
+                  .reference}${hrefSuffix}"
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
                   : "button--tight"} ${enrollment.id ===
@@ -755,7 +759,8 @@ export default async (application: Application): Promise<void> => {
               <a
                 key="enrollment--${enrollment.reference}"
                 href="https://${application.configuration
-                  .hostname}/courses/${enrollment.course.reference}"
+                  .hostname}/courses/${enrollment.course
+                  .reference}${hrefSuffix}"
                 hidden
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
