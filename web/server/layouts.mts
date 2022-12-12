@@ -1788,7 +1788,9 @@ export default async (application: Application): Promise<void> => {
     });
 
   application.server.locals.layouts.partial = ({ request, response, body }) => {
-    delete response.locals.liveConnectionNonce;
+    if (typeof request.header("Live-Connection") !== "string")
+      delete response.locals.liveConnectionNonce;
+
     return html`
       <!DOCTYPE html>
       <html>
