@@ -2923,52 +2923,50 @@ ${contentSource}</textarea
           length: 20,
           type: "numeric",
         });
+        const href = `https://${
+          application.configuration.hostname
+        }/files/${directory}/${encodeURIComponent(attachment.name)}`;
+
         await attachment.mv(
           path.join(
             application.configuration.dataDirectory,
             `files/${directory}/${attachment.name}`
           )
         );
-        const href = `https://${
-          application.configuration.hostname
-        }/files/${directory}/${encodeURIComponent(attachment.name)}`;
+
         if (attachment.mimetype.startsWith("image/"))
           try {
             const image = sharp(attachment.data, { limitInputPixels: false });
             const metadata = await image.metadata();
             if (typeof metadata.width !== "number") throw new Error();
-            const maximumWidth = 1152; /* var(--width--6xl) */
-            if (metadata.width <= maximumWidth) {
-              attachmentsContentSources += `[${
-                typeof metadata.density === "number" && metadata.density >= 120
-                  ? `<img src="${href}" alt="${attachment.name}" width="${
-                      metadata.width / 2
-                    }" />`
-                  : `![${attachment.name}](${href})`
-              }](${href})\n\n`;
-              continue;
-            }
             const extension = path.extname(attachment.name);
             const nameThumbnail = `${attachment.name.slice(
               0,
               -extension.length
-            )}--thumbnail${extension}`;
+            )}--thumbnail.webp`;
+            const width = Math.min(
+              metadata.width,
+              1152 /* var(--width--6xl) */
+            );
+
             await image
               .rotate()
-              .resize({ width: maximumWidth })
+              .resize({ width })
               .toFile(
                 path.join(
                   application.configuration.dataDirectory,
                   `files/${directory}/${nameThumbnail}`
                 )
               );
+
             attachmentsContentSources += `[<img src="https://${
               application.configuration.hostname
             }/files/${directory}/${encodeURIComponent(nameThumbnail)}" alt="${
               attachment.name
-            }" width="${maximumWidth / 2}" />](${href})\n\n`;
+            }" width="${width / 2}" />](${href})\n\n`;
             continue;
           } catch {}
+
         attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
 
