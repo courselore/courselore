@@ -1449,7 +1449,7 @@ export default async (application: Application): Promise<void> => {
                             .courseRole === "student" &&
                           response.locals.message.anonymousAt !== null
                         )
-                          ? `> Original author ${response.locals.message.authorEnrollment.user.name}\n\n${response.locals.message.contentSource}`
+                          ? `> Original author: ${response.locals.message.authorEnrollment.user.name}\n\n${response.locals.message.contentSource}`
                           : response.locals.message.contentSource,
                       isAnnouncement:
                         response.locals.conversation.announcementAt !== null,
