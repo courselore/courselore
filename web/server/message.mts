@@ -1439,7 +1439,21 @@ export default async (application: Application): Promise<void> => {
                   {
                     newConversation: {
                       title: response.locals.conversation.title,
-                      content: response.locals.message.contentSource,
+                      content:
+                        response.locals.message.authorEnrollment !==
+                          "no-longer-enrolled" &&
+                        response.locals.message.authorEnrollment.id !==
+                          response.locals.enrollment.id &&
+                        !(
+                          response.locals.message.authorEnrollment
+                            .courseRole === "student" &&
+                          response.locals.message.anonymousAt !== null
+                        )
+                          ? `> Original author ${response.locals.message.authorEnrollment.user.name}\n\n${response.locals.message.contentSource}`
+                          : response.locals.message.contentSource,
+                      isAnnouncement:
+                        response.locals.conversation.announcementAt !== null,
+                      isPinned: response.locals.conversation.pinnedAt !== null,
                     },
                   },
                   { addQueryPrefix: true }
