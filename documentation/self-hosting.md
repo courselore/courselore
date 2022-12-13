@@ -65,8 +65,8 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    ```console
    # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/web/configuration/courselore.service
    # systemctl daemon-reload
-   # systemctl enable courselore
    # systemctl start courselore
+   # systemctl enable courselore
    ```
 
    > **Note:** When you run Courselore for the first time, create an account for yourself, because the first account that is created is granted system administrator privileges.
