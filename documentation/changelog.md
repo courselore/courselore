@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+- Added a way to “Reuse” a conversation or message across courses.
+- Improved the performance of the conversations page by lazy loading some dropdown menus.
+- Fixed a rare race condition in which the browser could try to open a Live-Connection to the server before the original request was closed, which would crash the server process.
+
 ## 6.0.1
 
 **2022-12-03 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
