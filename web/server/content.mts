@@ -2944,6 +2944,9 @@ ${contentSource}</textarea
               0,
               -extension.length
             )}--thumbnail.webp`;
+            const src = `https://${
+              application.configuration.hostname
+            }/files/${directory}/${encodeURIComponent(nameThumbnail)}`;
             const width = Math.min(
               metadata.width,
               1152 /* var(--width--6xl) */
@@ -2961,12 +2964,10 @@ ${contentSource}</textarea
 
             attachmentsContentSources += `[${
               typeof metadata.density === "number" && metadata.density >= 120
-                ? `<img src="https://${
-                    application.configuration.hostname
-                  }/files/${directory}/${encodeURIComponent(
-                    nameThumbnail
-                  )}" alt="${attachment.name}" width="${width / 2}" />`
-                : `![${attachment.name}](${href})`
+                ? `<img src="${src}" alt="${attachment.name}" width="${
+                    width / 2
+                  }" />`
+                : `![${attachment.name}](${src})`
             }](${href})\n\n`;
             continue;
           } catch {}
