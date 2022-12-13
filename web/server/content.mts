@@ -2959,11 +2959,15 @@ ${contentSource}</textarea
                 )
               );
 
-            attachmentsContentSources += `[<img src="https://${
-              application.configuration.hostname
-            }/files/${directory}/${encodeURIComponent(nameThumbnail)}" alt="${
-              attachment.name
-            }" width="${width / 2}" />](${href})\n\n`;
+            attachmentsContentSources += `[${
+              typeof metadata.density === "number" && metadata.density >= 120
+                ? `<img src="https://${
+                    application.configuration.hostname
+                  }/files/${directory}/${encodeURIComponent(
+                    nameThumbnail
+                  )}" alt="${attachment.name}" width="${width / 2}" />`
+                : `![${attachment.name}](${href})`
+            }](${href})\n\n`;
             continue;
           } catch {}
 
