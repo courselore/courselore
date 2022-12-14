@@ -1464,25 +1464,34 @@ export default async (application: Application): Promise<void> => {
         )
           continue;
 
-        const file = user.avatar.slice(
+        const fileURL = user.avatar.slice(
           `https://${application.configuration.hostname}/files/`.length
         );
-        const directory = path.dirname(file);
-        const nameOldAvatar = decodeURIComponent(path.basename(file));
+        const directory = path.dirname(fileURL);
+        const nameOldAvatar = decodeURIComponent(path.basename(fileURL));
         const extension = path.extname(nameOldAvatar);
         const name =
           nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
           extension;
         const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
+        const file = path.join(
+          application.configuration.dataDirectory,
+          "files",
+          directory,
+          name
+        );
+        try {
+          await fs.access(file);
+        } catch (error: any) {
+          application.log(
+            "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
+            String(error),
+            error?.stack
+          );
+          continue;
+        }
 
-        await sharp(
-          path.join(
-            application.configuration.dataDirectory,
-            "files",
-            directory,
-            name
-          )
-        )
+        await sharp(file)
           .rotate()
           .resize({
             width: 256 /* var(--space--64) */,
