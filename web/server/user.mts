@@ -1192,7 +1192,7 @@ export default async (application: Application): Promise<void> => {
         -path.extname(name).length
       )}--avatar.webp`;
       try {
-        await sharp(request.files.avatar.data, { limitInputPixels: false })
+        await sharp(request.files.avatar.data)
           .rotate()
           .resize({
             width: 256 /* var(--space--64) */,
