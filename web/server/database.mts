@@ -1465,7 +1465,7 @@ export default async (application: Application): Promise<void> => {
           continue;
 
         const file = user.avatar.slice(
-          `https://${application.configuration.hostname}`.length
+          `https://${application.configuration.hostname}/files/`.length
         );
         const directory = path.dirname(file);
         const nameOldAvatar = decodeURIComponent(path.basename(file));
@@ -1476,7 +1476,12 @@ export default async (application: Application): Promise<void> => {
         const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
 
         await sharp(
-          path.join(application.configuration.dataDirectory, directory, name)
+          path.join(
+            application.configuration.dataDirectory,
+            "files",
+            directory,
+            name
+          )
         )
           .rotate()
           .resize({
@@ -1487,6 +1492,7 @@ export default async (application: Application): Promise<void> => {
           .toFile(
             path.join(
               application.configuration.dataDirectory,
+              "files",
               directory,
               nameAvatar
             )
@@ -1497,7 +1503,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "users"
             SET "avatar" = ${`https://${
               application.configuration.hostname
-            }${path.join(directory, nameAvatar)}`}
+            }/files/${directory}/${encodeURIComponent(nameAvatar)}`}
             WHERE "id" = ${user.id}
           `
         );
