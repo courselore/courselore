@@ -2960,7 +2960,11 @@ ${contentSource}</textarea
           try {
             const image = sharp(attachment.data);
             const metadata = await image.metadata();
-            if (typeof metadata.width !== "number") throw new Error();
+            if (
+              typeof metadata.width !== "number" ||
+              typeof metadata.height !== "number"
+            )
+              throw new Error();
             const extension = path.extname(attachment.name);
             const animated =
               typeof metadata.pages === "number" && metadata.pages > 1;
@@ -2980,11 +2984,21 @@ ${contentSource}</textarea
               1152 /* var(--width--6xl) */
             );
 
-            // TODO: https://web.dev/replace-gifs-with-videos/
             if (animated)
               await execa(ffmpeg, [
                 "-i",
                 file,
+                ...(metadata.width % 2 !== 0 || metadata.height % 2 !== 0
+                  ? ["-vf", "crop=trunc(iw/2)*2:trunc(ih/2)*2"]
+                  : []),
+                "-f",
+                "mp4",
+                "-vcodec",
+                "libx264",
+                "-b:v",
+                "0",
+                "-crf",
+                "25",
                 "-pix_fmt",
                 "yuv420p",
                 fileThumbnail,
