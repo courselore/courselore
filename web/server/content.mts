@@ -1,5 +1,6 @@
 import path from "node:path";
 import stream from "node:stream/promises";
+import assert from "node:assert/strict";
 import express from "express";
 import qs from "qs";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -25,6 +26,10 @@ import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import sharp from "sharp";
+import { execa } from "execa";
+import maybeFFmpeg from "ffmpeg-static";
+assert.equal(typeof maybeFFmpeg, "string");
+const ffmpeg = maybeFFmpeg as unknown as string;
 import escapeStringRegexp from "escape-string-regexp";
 import slugify from "@sindresorhus/slugify";
 import filenamify from "filenamify";
@@ -127,7 +132,11 @@ export default async (application: Application): Promise<void> => {
       .use(rehypeSanitize, {
         ...rehypeSanitizeDefaultSchema,
         clobber: [],
-        tagNames: [...(rehypeSanitizeDefaultSchema.tagNames ?? []), "u"],
+        tagNames: [
+          ...(rehypeSanitizeDefaultSchema.tagNames ?? []),
+          "u",
+          "video",
+        ],
         attributes: {
           ...rehypeSanitizeDefaultSchema.attributes,
           div: [
@@ -141,6 +150,14 @@ export default async (application: Application): Promise<void> => {
           code: [
             ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
             "className",
+          ],
+          video: [
+            ...(rehypeSanitizeDefaultSchema.attributes?.video ?? []),
+            "src",
+            "autoPlay",
+            "loop",
+            "muted",
+            "playsInline",
           ],
         },
       })
@@ -2923,27 +2940,32 @@ ${contentSource}</textarea
           length: 20,
           type: "numeric",
         });
+        const file = path.join(
+          application.configuration.dataDirectory,
+          `files/${directory}/${attachment.name}`
+        );
         const href = `https://${
           application.configuration.hostname
         }/files/${directory}/${encodeURIComponent(attachment.name)}`;
 
-        await attachment.mv(
-          path.join(
-            application.configuration.dataDirectory,
-            `files/${directory}/${attachment.name}`
-          )
-        );
+        await attachment.mv(file);
 
         if (attachment.mimetype.startsWith("image/"))
           try {
-            const image = sharp(attachment.data, { limitInputPixels: false });
+            const image = sharp(attachment.data);
             const metadata = await image.metadata();
             if (typeof metadata.width !== "number") throw new Error();
             const extension = path.extname(attachment.name);
+            const animated =
+              typeof metadata.pages === "number" && metadata.pages > 1;
             const nameThumbnail = `${attachment.name.slice(
               0,
               -extension.length
-            )}--thumbnail.webp`;
+            )}--thumbnail.${animated ? "mp4" : "webp"}`;
+            const fileThumbnail = path.join(
+              application.configuration.dataDirectory,
+              `files/${directory}/${nameThumbnail}`
+            );
             const src = `https://${
               application.configuration.hostname
             }/files/${directory}/${encodeURIComponent(nameThumbnail)}`;
@@ -2952,18 +2974,22 @@ ${contentSource}</textarea
               1152 /* var(--width--6xl) */
             );
 
-            await image
-              .rotate()
-              .resize({ width })
-              .toFile(
-                path.join(
-                  application.configuration.dataDirectory,
-                  `files/${directory}/${nameThumbnail}`
-                )
-              );
+            // TODO: https://web.dev/replace-gifs-with-videos/
+            if (animated)
+              await execa(ffmpeg, [
+                "-i",
+                file,
+                "-pix_fmt",
+                "yuv420p",
+                fileThumbnail,
+              ]);
+            else await image.rotate().resize({ width }).toFile(fileThumbnail);
 
             attachmentsContentSources += `[${
-              typeof metadata.density === "number" && metadata.density >= 120
+              animated
+                ? `<video src="${src}" autoplay loop muted playsinline></video>`
+                : typeof metadata.density === "number" &&
+                  metadata.density >= 120
                 ? `<img src="${src}" alt="${attachment.name}" width="${
                     width / 2
                   }" />`
