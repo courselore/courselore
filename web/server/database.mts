@@ -1468,7 +1468,7 @@ export default async (application: Application): Promise<void> => {
           `https://${application.configuration.hostname}`.length
         );
         const directory = path.dirname(file);
-        const nameOldAvatar = path.basename(file);
+        const nameOldAvatar = decodeURIComponent(path.basename(file));
         const extension = path.extname(nameOldAvatar);
         const name =
           nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
