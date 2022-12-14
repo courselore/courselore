@@ -1187,11 +1187,10 @@ export default async (application: Application): Promise<void> => {
         )
       );
 
-      const extension = path.extname(name);
       const nameAvatar = `${name.slice(
         0,
-        -extension.length
-      )}--avatar${extension}`;
+        -path.extname(name).length
+      )}--avatar.webp`;
       try {
         await sharp(request.files.avatar.data, { limitInputPixels: false })
           .rotate()

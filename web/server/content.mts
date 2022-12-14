@@ -2965,12 +2965,11 @@ ${contentSource}</textarea
               typeof metadata.height !== "number"
             )
               throw new Error();
-            const extension = path.extname(attachment.name);
             const animated =
               typeof metadata.pages === "number" && metadata.pages > 1;
             const nameThumbnail = `${attachment.name.slice(
               0,
-              -extension.length
+              -path.extname(attachment.name).length
             )}--thumbnail.${animated ? "mp4" : "webp"}`;
             const fileThumbnail = path.join(
               application.configuration.dataDirectory,
