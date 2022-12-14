@@ -1463,6 +1463,7 @@ export default async (application: Application): Promise<void> => {
           !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
         )
           continue;
+
         const file = user.avatar.slice(
           `https://${application.configuration.hostname}`.length
         );
@@ -1473,6 +1474,7 @@ export default async (application: Application): Promise<void> => {
           nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
           extension;
         const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
+
         await sharp(
           path.join(application.configuration.dataDirectory, directory, name)
         )
@@ -1489,6 +1491,7 @@ export default async (application: Application): Promise<void> => {
               nameAvatar
             )
           );
+
         application.database.run(
           sql`
             UPDATE "users"
