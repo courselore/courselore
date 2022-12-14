@@ -4,6 +4,7 @@ import sql, { Database } from "@leafac/sqlite";
 import escapeStringRegexp from "escape-string-regexp";
 import cryptoRandomString from "crypto-random-string";
 import prompts from "prompts";
+import sharp from "sharp";
 import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
@@ -1442,7 +1443,63 @@ export default async (application: Application): Promise<void> => {
     sql`
       CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
       CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
-    `
+    `,
+
+    async () => {
+      for (const user of application.database.all<{
+        id: number;
+        avatar: string;
+      }>(
+        sql`
+          SELECT "id", "avatar"
+          FROM "users"
+          WHERE "avatar" IS NOT NULL
+        `
+      )) {
+        if (
+          !user.avatar.startsWith(
+            `https://${application.configuration.hostname}/files/`
+          ) ||
+          !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
+        )
+          continue;
+        const file = user.avatar.slice(
+          `https://${application.configuration.hostname}`.length
+        );
+        const directory = path.dirname(file);
+        const nameOldAvatar = path.basename(file);
+        const extension = path.extname(nameOldAvatar);
+        const name =
+          nameOldAvatar.slice(0, -"--avatar".length - extension.length) +
+          extension;
+        const nameAvatar = `${name.slice(0, -extension.length)}--avatar.webp`;
+        await sharp(
+          path.join(application.configuration.dataDirectory, directory, name)
+        )
+          .rotate()
+          .resize({
+            width: 256 /* var(--space--64) */,
+            height: 256 /* var(--space--64) */,
+            position: sharp.strategy.attention,
+          })
+          .toFile(
+            path.join(
+              application.configuration.dataDirectory,
+              directory,
+              nameAvatar
+            )
+          );
+        application.database.run(
+          sql`
+            UPDATE "users"
+            SET "avatar" = ${`https://${
+              application.configuration.hostname
+            }${path.join(directory, nameAvatar)}`}
+            WHERE "id" = ${user.id}
+          `
+        );
+      }
+    }
   );
 
   application.database.run(
