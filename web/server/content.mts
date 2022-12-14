@@ -218,7 +218,13 @@ export default async (application: Application): Promise<void> => {
                       `
                     )
                     .children.find((child) => child.type === "element");
-                } catch {}
+                } catch (error: any) {
+                  application.log(
+                    "ERROR IN SYNTAX HIGHLIGHTER",
+                    String(error),
+                    error?.stack
+                  );
+                }
               })();
               if (highlightedCode === undefined) return;
               highlightedCode.position = node.position;
@@ -2996,7 +3002,13 @@ ${contentSource}</textarea
                 : `![${attachment.name}](${src})`
             }](${href})\n\n`;
             continue;
-          } catch {}
+          } catch (error: any) {
+            response.locals.log(
+              "ERROR IN CREATING THUMBNAIL",
+              String(error),
+              error?.stack
+            );
+          }
 
         attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
