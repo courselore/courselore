@@ -7016,7 +7016,7 @@ export default async (application: Application): Promise<void> => {
                                   const element = this.querySelector('[key="message--${request.query.messages.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
-                                  const messageHighlight = element.querySelector(".message--highlight");
+                                  const messageHighlight = element.querySelector('[key="message--highlight"]');
                                   messageHighlight.style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
                                   messageHighlight.onanimationend = () => {
                                     messageHighlight.style.animation = "";
@@ -7303,7 +7303,7 @@ export default async (application: Application): Promise<void> => {
                                         : html``}
 
                                       <div
-                                        class="message--highlight"
+                                        key="message--highlight"
                                         css="${response.locals.css(css`
                                           padding: var(--space--2);
                                           ${response.locals.conversation
