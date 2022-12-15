@@ -7985,7 +7985,7 @@ export default async (application: Application): Promise<void> => {
                                         })()}
 
                                         <div
-                                          class="message--show"
+                                          key="message--show"
                                           css="${response.locals.css(css`
                                             display: flex;
                                             flex-direction: column;
@@ -8541,7 +8541,7 @@ export default async (application: Application): Promise<void> => {
                                                       });
 
                                                       this.onclick = () => {
-                                                        this.closest(".message").querySelector(".message--show").hidden = false;
+                                                        this.closest(".message").querySelector('[key="message--show"]').hidden = false;
                                                         this.closest(".message").querySelector(".message--edit").hidden = true;
                                                       };
 
