@@ -1148,3 +1148,6 @@ test("/preview (Text processor)", async () => {
   - <https://typora.io>
   - <https://www.notion.so>
   - <https://marktext.app>
+- Conferences
+  - <https://openeducationconference.org>
+  - <https://www.digitallyengagedlearning.net>
