@@ -1,6 +1,14 @@
 # Meeting Notes
 
 <details>
+<summary>2022-12-12</summary>
+
+- Reuse conversations across semesters.
+- Performance improvements of almost 2x by lazy loading dropdown menu for “Actions”.
+
+</details>
+
+<details>
 <summary>2021-12-03</summary>
 
 - Progress:
