@@ -916,7 +916,8 @@ await fs.writeFile(
         bottom: var(--space---1);
       }
 
-      img {
+      img,
+      video {
         background-color: var(--color--gray--medium--50);
         @media (prefers-color-scheme: dark) {
           background-color: var(--color--gray--medium--50);
