@@ -926,7 +926,7 @@ export default async (application: Application): Promise<void> => {
                       )},
                     });
 
-                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
                   `}"
@@ -1036,7 +1036,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
@@ -1076,7 +1076,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
@@ -1116,7 +1116,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
@@ -1157,7 +1157,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "**");
@@ -1196,7 +1196,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "_");
@@ -1235,7 +1235,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
@@ -1275,7 +1275,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "~~");
@@ -1314,7 +1314,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
@@ -1356,7 +1356,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
@@ -1396,7 +1396,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
@@ -1436,7 +1436,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
@@ -1477,7 +1477,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
@@ -1517,7 +1517,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     const gapLength = textarea.selectionEnd - textarea.selectionStart + 2;
@@ -1558,7 +1558,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
@@ -1598,7 +1598,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
@@ -1639,7 +1639,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "\`");
@@ -1679,7 +1679,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
@@ -1721,7 +1721,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
                   
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "$");
@@ -1761,7 +1761,7 @@ export default async (application: Application): Promise<void> => {
                     )},
                   });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
@@ -1791,7 +1791,7 @@ export default async (application: Application): Promise<void> => {
                           )},
                         });
 
-                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                        const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                         this.onclick = () => {
                           textFieldEdit.wrapSelection(textarea, " @", "");
@@ -1815,7 +1815,7 @@ export default async (application: Application): Promise<void> => {
                           )},
                         });
 
-                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                        const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                         this.onclick = () => {
                           textFieldEdit.wrapSelection(textarea, " #", "");
@@ -1862,7 +1862,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+i", () => { this.click(); return false; });
                 `}"
@@ -1902,7 +1902,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
                 `}"
@@ -1917,7 +1917,7 @@ export default async (application: Application): Promise<void> => {
                 onload="${javascript`
                   this.isModified = false;
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                   this.upload = async (fileList) => {
                     if (!checkIsSignedIn()) return;
@@ -2029,7 +2029,7 @@ export default async (application: Application): Promise<void> => {
                   onload="${javascript`
                     this.isModified = false;
 
-                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
 
                     this.onclick = () => {
                       if (this.checked) textarea.classList.add("content-editor--write--textarea--programmer-mode");
@@ -2065,9 +2065,10 @@ export default async (application: Application): Promise<void> => {
               `)}"
             ></div>
             <textarea
+              key="content-editor--write--textarea"
               name="${name}"
               $${required ? html`required` : html``}
-              class="content-editor--write--textarea input--text input--text--textarea"
+              class="input--text input--text--textarea"
               css="${response.locals.css(css`
                 ${compact
                   ? css`
@@ -2148,7 +2149,7 @@ export default async (application: Application): Promise<void> => {
                                     class="dropdown--menu--item button button--transparent"
                                     onload="${javascript`
                                       this.onclick = () => {
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
+                                        this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
                                       };
                                     `}"
                                   >
@@ -2159,7 +2160,7 @@ export default async (application: Application): Promise<void> => {
                                     class="dropdown--menu--item button button--transparent"
                                     onload="${javascript`
                                       this.onclick = () => {
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
+                                        this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
                                       };
                                     `}"
                                   >
@@ -2170,7 +2171,7 @@ export default async (application: Application): Promise<void> => {
                                     class="dropdown--menu--item button button--transparent"
                                     onload="${javascript`
                                       this.onclick = () => {
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
+                                        this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
                                       };
                                     `}"
                                   >
@@ -2506,7 +2507,7 @@ ${contentSource}</textarea
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
                         this.onclick = () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                          this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                             `${enrollment.reference}--${slugify(
                               enrollment.user.name
                             )}`
@@ -2583,7 +2584,7 @@ ${contentSource}</textarea
               class="dropdown--menu--item button button--transparent"
               onload="${javascript`
                 this.onclick = () => {
-                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                  this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                     conversation.reference
                   )});
                 };
@@ -2651,7 +2652,7 @@ ${contentSource}</textarea
                 class="dropdown--menu--item button button--transparent"
                 onload="${javascript`
                   this.onclick = () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                    this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                       `${conversation.reference}/${message.reference}`
                     )});
                   };
@@ -2684,7 +2685,7 @@ ${contentSource}</textarea
               class="dropdown--menu--item button button--transparent"
               onload="${javascript`
                 this.onclick = () => {
-                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                  this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                     conversation.reference
                   )});
                 };
@@ -2739,7 +2740,7 @@ ${contentSource}</textarea
             class="dropdown--menu--item button button--transparent"
             onload="${javascript`
               this.onclick = () => {
-                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   conversation.reference
                 )});
               };
@@ -2812,7 +2813,7 @@ ${contentSource}</textarea
             class="dropdown--menu--item button button--transparent"
             onload="${javascript`
               this.onclick = () => {
-                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   `${conversation.reference}/${message.reference}`
                 )});
               };
@@ -2893,7 +2894,7 @@ ${contentSource}</textarea
             class="dropdown--menu--item button button--transparent"
             onload="${javascript`
               this.onclick = () => {
-                this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   `${conversation.reference}/${message.reference}`
                 )});
               };

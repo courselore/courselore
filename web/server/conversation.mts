@@ -4308,7 +4308,7 @@ export default async (application: Application): Promise<void> => {
                       )},
                     });
 
-                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                    const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
 
@@ -4391,7 +4391,7 @@ export default async (application: Application): Promise<void> => {
                       )},
                     });
 
-                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                    const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                     // TODO: Drafts
                     // (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
@@ -8041,7 +8041,7 @@ export default async (application: Application): Promise<void> => {
                                                               const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
                                                               const newMessage = document.querySelector('[key="new-message"]');
                                                               newMessage.querySelector(".content-editor--button--write")?.click();
-                                                              const element = newMessage.querySelector(".content-editor--write--textarea");
+                                                              const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
                                                               textFieldEdit.wrapSelection(
                                                                 element,
                                                                 ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
@@ -8500,7 +8500,7 @@ export default async (application: Application): Promise<void> => {
                                                         )},
                                                       });
 
-                                                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                                                      const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                                                       (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
                                                     `}"
@@ -8545,7 +8545,7 @@ export default async (application: Application): Promise<void> => {
                                                         this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
                                                       };
 
-                                                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                                                      const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                                                       (textarea.mousetrap ??= new Mousetrap(textarea)).bind("escape", () => { this.click(); return false; });                                  
                                                     `}"
@@ -8897,7 +8897,7 @@ export default async (application: Application): Promise<void> => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
+                      leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `}"
                   >
                     $${application.server.locals.partials.contentEditor({
@@ -9073,7 +9073,7 @@ export default async (application: Application): Promise<void> => {
                           )},
                         });
 
-                        const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                        const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                         (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
                       `}"

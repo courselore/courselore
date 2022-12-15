@@ -584,7 +584,7 @@ export default async (application: Application): Promise<void> => {
                     const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                     const newMessage = document.querySelector('[key="new-message"]');
                     newMessage.querySelector(".content-editor--button--write")?.click();
-                    const element = newMessage.querySelector(".content-editor--write--textarea");
+                    const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
                     textFieldEdit.wrapSelection(
                       element,
                       ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
@@ -734,7 +734,7 @@ export default async (application: Application): Promise<void> => {
                         this.onclick = () => {
                           this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = true;
                           this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = false;
-                          autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] .content-editor--write--textarea'));
+                          autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
                           tippy.hideAll();
                         };
                       `}"
