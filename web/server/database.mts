@@ -1480,8 +1480,23 @@ export default async (application: Application): Promise<void> => {
           directory,
           name
         );
+
         try {
-          await fs.access(file);
+          await sharp(file)
+            .rotate()
+            .resize({
+              width: 256 /* var(--space--64) */,
+              height: 256 /* var(--space--64) */,
+              position: sharp.strategy.attention,
+            })
+            .toFile(
+              path.join(
+                application.configuration.dataDirectory,
+                "files",
+                directory,
+                nameAvatar
+              )
+            );
         } catch (error: any) {
           application.log(
             "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
@@ -1490,22 +1505,6 @@ export default async (application: Application): Promise<void> => {
           );
           continue;
         }
-
-        await sharp(file)
-          .rotate()
-          .resize({
-            width: 256 /* var(--space--64) */,
-            height: 256 /* var(--space--64) */,
-            position: sharp.strategy.attention,
-          })
-          .toFile(
-            path.join(
-              application.configuration.dataDirectory,
-              "files",
-              directory,
-              nameAvatar
-            )
-          );
 
         application.database.run(
           sql`
