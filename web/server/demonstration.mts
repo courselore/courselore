@@ -1,4 +1,3 @@
-import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
 import sql from "@leafac/sqlite";
 import html from "@leafac/html";
@@ -728,8 +727,27 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img
 
 <img class="fit-picture"
-      src="https://placekitten.com/500/300"
+      src="https://${
+        application.configuration.hostname
+      }/node_modules/fake-avatars/avatars/1.webp"
       alt="Grapefruit slice atop a pile of other slices">
+
+---
+
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video
+
+Also tests proxying to external server
+
+<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+---
+
+Animated GIFs
+
+[<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>](https://${
+          application.configuration.hostname
+        }/node_modules/fake-avatars/avatars/1.webp)
+
 
 ---
 
@@ -744,7 +762,9 @@ The telnet client should display: <tt>Local Echo is on</tt></p>
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 
 <div class="warning">
-    <img src="https://placekitten.com/500/300"
+    <img src="https://${
+      application.configuration.hostname
+    }/node_modules/fake-avatars/avatars/1.webp"
           alt="An intimidating leopard.">
     <p>Beware of the leopard</p>
 </div>
@@ -1037,7 +1057,9 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption
 
 <figure>
-    <img src="https://placekitten.com/500/300"
+    <img src="https://${
+      application.configuration.hostname
+    }/node_modules/fake-avatars/avatars/1.webp"
           alt="Elephant at sunset">
     <figcaption>An elephant at sunset</figcaption>
 </figure>
