@@ -5161,7 +5161,7 @@ export default async (application: Application): Promise<void> => {
                           onload="${javascript`
                             this.onclick = () => {
                               this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = true;
-                              this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
+                              this.closest(".conversation--header").querySelector('[key="conversation--header--full"]').hidden = false;
                             };
                           `}"
                         >
@@ -5189,10 +5189,10 @@ export default async (application: Application): Promise<void> => {
                     : html``}
 
                   <div
+                    key="conversation--header--full"
                     $${response.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
-                    class="conversation--header--full"
                     css="${response.locals.css(css`
                       display: flex;
                       flex-direction: column;
@@ -5621,8 +5621,8 @@ export default async (application: Application): Promise<void> => {
                                             class="dropdown--menu--item button button--transparent"
                                             onload="${javascript`
                                               this.onclick = () => {
-                                                this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
-                                                this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                                this.closest('[key="conversation--header--full"]').querySelector(".title--show").hidden = true;
+                                                this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = false;
                                                 tippy.hideAll();
                                               };
                                             `}"
@@ -5998,8 +5998,8 @@ export default async (application: Application): Promise<void> => {
                                 });
                                       
                                 this.onclick = () => {
-                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
-                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
+                                  this.closest('[key="conversation--header--full"]').querySelector(".title--show").hidden = false;
+                                  this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = true;
                                 };
 
                                 const input = this.closest(".title--edit").querySelector('[name="title"]');
@@ -6963,7 +6963,7 @@ export default async (application: Application): Promise<void> => {
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
                               this.onclick = () => {
-                                this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
+                                this.closest(".conversation--header").querySelector('[key="conversation--header--full"]').hidden = true;
                                 this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = false;
                               };
                             `}"
