@@ -754,7 +754,10 @@ export default async (application: Application): Promise<void> => {
         typeof request.query.url !== "string" ||
         !["http://", "https://"].some((urlPrefix) =>
           request.query.url!.toLowerCase().startsWith(urlPrefix)
-        )
+        ) ||
+        request.query.url
+          .toLowerCase()
+          .startsWith(`https://${application.configuration.hostname}/`)
       )
         return response.status(422).end();
 
