@@ -1859,7 +1859,7 @@ export default async (application: Application): Promise<void> => {
                   });
 
                   this.onclick = () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
+                    this.closest(".content-editor").querySelector('[key="content-editor--write--attachments"]').click();
                   };
 
                   const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
@@ -1899,7 +1899,7 @@ export default async (application: Application): Promise<void> => {
                   });
 
                   this.onclick = () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
+                    this.closest(".content-editor").querySelector('[key="content-editor--write--attachments"]').click();
                   };
 
                   const textarea = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea"]');
@@ -1910,8 +1910,8 @@ export default async (application: Application): Promise<void> => {
                 <i class="bi bi-paperclip"></i>
               </button>
               <input
+                key="content-editor--write--attachments"
                 type="file"
-                class="content-editor--write--attachments"
                 multiple
                 hidden
                 onload="${javascript`
@@ -2111,13 +2111,13 @@ export default async (application: Application): Promise<void> => {
                   this.classList.remove("drag");
                   if (event.dataTransfer.files.length === 0) return;
                   event.preventDefault();
-                  this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.dataTransfer.files);
+                  this.closest(".content-editor").querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
                 };
 
                 this.onpaste = (event) => {
                   if (event.clipboardData.files.length === 0) return;
                   event.preventDefault();
-                  this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.clipboardData.files);
+                  this.closest(".content-editor").querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
                 };
 
                 ${
