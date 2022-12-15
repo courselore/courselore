@@ -649,6 +649,9 @@ export default async (application: Application): Promise<void> => {
                               <div key="content" hidden></div>
                             `)},
                           });
+
+                        window.clearTimeout(this.tooltipContentTimeout);
+                        this.tooltipContentSkipLoading = false;
                         
                         this.onmouseenter = this.onfocus = async () => {
                           window.clearTimeout(this.tooltipContentTimeout);
@@ -862,6 +865,9 @@ export default async (application: Application): Promise<void> => {
                               <div key="content" hidden></div>
                             `)},
                           });
+
+                        window.clearTimeout(this.tooltipContentTimeout);
+                        this.tooltipContentSkipLoading = false;
 
                         this.onmouseenter = this.onfocus = async () => {
                           window.clearTimeout(this.tooltipContentTimeout);

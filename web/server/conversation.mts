@@ -2686,6 +2686,9 @@ export default async (application: Application): Promise<void> => {
                           <div key="content" hidden></div>
                         `)},
                       });
+
+                    window.clearTimeout(this.tooltipContentTimeout);
+                    this.tooltipContentSkipLoading = false;
                     
                     this.onmouseenter = this.onfocus = async () => {
                       window.clearTimeout(this.tooltipContentTimeout);
@@ -5780,6 +5783,9 @@ export default async (application: Application): Promise<void> => {
                                                     ></div>
                                                   `)},
                                                 });
+
+                                              window.clearTimeout(this.tooltipContentTimeout);
+                                              this.tooltipContentSkipLoading = false;
                                               
                                               this.onmouseenter = this.onfocus = async () => {
                                                 window.clearTimeout(this.tooltipContentTimeout);
@@ -7446,6 +7452,9 @@ export default async (application: Application): Promise<void> => {
                                                       `)},
                                                     });
 
+                                                  window.clearTimeout(this.dropdownContentTimeout);
+                                                  this.dropdownContentSkipLoading = false;
+
                                                   this.onmouseenter = this.onfocus = async () => {
                                                     window.clearTimeout(this.dropdownContentTimeout);
                                                     if (this.dropdownContentSkipLoading) return;
@@ -8257,6 +8266,9 @@ export default async (application: Application): Promise<void> => {
                                                                   ></div>
                                                                 `)},
                                                               });
+
+                                                            window.clearTimeout(this.dropdownContentTimeout);
+                                                            this.dropdownContentSkipLoading = false;
                                                             
                                                             this.onmouseenter = this.onfocus = async () => {
                                                               window.clearTimeout(this.dropdownContentTimeout);
@@ -8343,6 +8355,9 @@ export default async (application: Application): Promise<void> => {
                                                           ></div>
                                                         `)},
                                                       });
+
+                                                    window.clearTimeout(this.tooltipContentTimeout);
+                                                    this.tooltipContentSkipLoading = false;
                                                     
                                                     this.onmouseenter = this.onfocus = async () => {
                                                       window.clearTimeout(this.tooltipContentTimeout);
