@@ -7993,7 +7993,7 @@ export default async (application: Application): Promise<void> => {
                                           `)}"
                                         >
                                           <div
-                                            class="message--show--content-area"
+                                            key="message--show--content-area"
                                             css="${response.locals.css(css`
                                               position: relative;
                                             `)}"
@@ -8009,7 +8009,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               key="message--show--content-area--content"
                                               onload="${javascript`
-                                                const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector('[key="message--show--content-area--dropdown-menu-target"]');
+                                                const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
                                                   interactive: true,
@@ -8026,7 +8026,7 @@ export default async (application: Application): Promise<void> => {
                                                               const selection = window.getSelection();
                                                               const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
                                                               const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                              const contentElement = this.closest(".message--show--content-area").querySelector('[key="message--show--content-area--content"]');
+                                                              const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
                                                               if (
                                                                 selection.isCollapsed ||
                                                                 anchorElement === undefined ||
