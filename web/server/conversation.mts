@@ -8425,153 +8425,26 @@ export default async (application: Application): Promise<void> => {
                                           })()}
                                         </div>
 
-                                        $${application.server.locals.helpers.mayEditMessage(
-                                          {
-                                            request,
-                                            response,
-                                            message,
-                                          }
-                                        )
-                                          ? html`
-                                              <form
-                                                key="message--edit"
-                                                method="PATCH"
-                                                action="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/conversations/${response
-                                                  .locals.conversation
-                                                  .reference}/messages/${message.reference}${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      request.query
-                                                        .conversations,
-                                                    messages:
-                                                      request.query.messages,
-                                                  },
-                                                  { addQueryPrefix: true }
-                                                )}"
-                                                novalidate
-                                                hidden
-                                                css="${response.locals.css(css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `)}"
-                                              >
-                                                $${application.server.locals.partials.contentEditor(
-                                                  {
-                                                    request,
-                                                    response,
-                                                    contentSource:
-                                                      message.contentSource,
-                                                    compact:
-                                                      response.locals
-                                                        .conversation.type ===
-                                                      "chat",
-                                                  }
-                                                )}
-
-                                                <div
-                                                  css="${response.locals
-                                                    .css(css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
-                                                    @media (max-width: 400px) {
-                                                      flex-direction: column;
-                                                    }
-                                                  `)}"
-                                                >
-                                                  <button
-                                                    class="button button--blue"
-                                                    onload="${javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        touch: false,
-                                                        content: ${response.locals.html(
-                                                          html`
-                                                            <span
-                                                              class="keyboard-shortcut"
-                                                            >
-                                                              <span
-                                                                onload="${javascript`
-                                                                  this.hidden = leafac.isAppleDevice;
-                                                                `}"
-                                                                >Ctrl+Enter</span
-                                                              ><span
-                                                                class="keyboard-shortcut--cluster"
-                                                                onload="${javascript`
-                                                                  this.hidden = !leafac.isAppleDevice;
-                                                                `}"
-                                                                ><i
-                                                                  class="bi bi-command"
-                                                                ></i
-                                                                ><i
-                                                                  class="bi bi-arrow-return-left"
-                                                                ></i
-                                                              ></span>
-                                                            </span>
-                                                          `
-                                                        )},
-                                                      });
-
-                                                      const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
-
-                                                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-pencil-fill"
-                                                    ></i>
-                                                    Update Message
-                                                  </button>
-                                                  <button
-                                                    type="reset"
-                                                    class="button button--transparent"
-                                                    onload="${javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        touch: false,
-                                                        content: ${response.locals.html(
-                                                          html`
-                                                            <span
-                                                              class="keyboard-shortcut"
-                                                            >
-                                                              <span
-                                                                onload="${javascript`
-                                                                  this.hidden = leafac.isAppleDevice;
-                                                                `}"
-                                                                >Esc</span
-                                                              ><span
-                                                                class="keyboard-shortcut--cluster"
-                                                                onload="${javascript`
-                                                                  this.hidden = !leafac.isAppleDevice;
-                                                                `}"
-                                                                ><i
-                                                                  class="bi bi-escape"
-                                                                ></i
-                                                              ></span>
-                                                            </span>
-                                                          `
-                                                        )},
-                                                      });
-
-                                                      this.onclick = () => {
-                                                        this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
-                                                        this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
-                                                      };
-
-                                                      const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
-
-                                                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("escape", () => { this.click(); return false; });                                  
-                                                    `}"
-                                                  >
-                                                    <i class="bi bi-x-lg"></i>
-                                                    Cancel
-                                                  </button>
-                                                </div>
-                                              </form>
-                                            `
-                                          : html``}
+                                        <div key="message--edit" hidden>
+                                          <div
+                                            key="loading"
+                                            class="strong"
+                                            css="${response.locals.css(css`
+                                              display: flex;
+                                              gap: var(--space--2);
+                                              justify-content: center;
+                                            `)}"
+                                          >
+                                            $${application.server.locals.partials.spinner(
+                                              {
+                                                request,
+                                                response,
+                                              }
+                                            )}
+                                            Loading…
+                                          </div>
+                                          <div key="form"></div>
+                                        </div>
                                       </div>
                                     </div>
                                   `
