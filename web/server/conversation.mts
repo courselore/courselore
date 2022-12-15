@@ -8419,6 +8419,7 @@ export default async (application: Application): Promise<void> => {
                                         )
                                           ? html`
                                               <form
+                                                key="message--edit"
                                                 method="PATCH"
                                                 action="https://${application
                                                   .configuration
@@ -8438,7 +8439,6 @@ export default async (application: Application): Promise<void> => {
                                                 )}"
                                                 novalidate
                                                 hidden
-                                                class="message--edit"
                                                 css="${response.locals.css(css`
                                                   display: flex;
                                                   flex-direction: column;
@@ -8542,7 +8542,7 @@ export default async (application: Application): Promise<void> => {
 
                                                       this.onclick = () => {
                                                         this.closest(".message").querySelector('[key="message--show"]').hidden = false;
-                                                        this.closest(".message").querySelector(".message--edit").hidden = true;
+                                                        this.closest(".message").querySelector('[key="message--edit"]').hidden = true;
                                                       };
 
                                                       const textarea = this.closest("form").querySelector(".content-editor--write--textarea");

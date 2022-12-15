@@ -733,8 +733,8 @@ export default async (application: Application): Promise<void> => {
                       onload="${javascript`
                         this.onclick = () => {
                           this.closest(".message").querySelector('[key="message--show"]').hidden = true;
-                          this.closest(".message").querySelector(".message--edit").hidden = false;
-                          autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
+                          this.closest(".message").querySelector('[key="message--edit"]').hidden = false;
+                          autosize.update(this.closest(".message").querySelector('[key="message--edit"] .content-editor--write--textarea'));
                           tippy.hideAll();
                         };
                       `}"
