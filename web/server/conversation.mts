@@ -7173,7 +7173,8 @@ export default async (application: Application): Promise<void> => {
                                       message !== messages[0]
                                         ? html`
                                             <button
-                                              class="message--new-separator button button--transparent"
+                                              key="message--new-separator"
+                                              class="button button--transparent"
                                               css="${response.locals.css(css`
                                                 width: calc(
                                                   var(--space--2) + 100% +
@@ -7188,7 +7189,7 @@ export default async (application: Application): Promise<void> => {
                                                 align-items: center;
                                               `)}"
                                               onload="${javascript`
-                                                if (this !== document.querySelector(".message--new-separator")) {
+                                                if (this !== document.querySelector('[key="message--new-separator"]')) {
                                                   this.remove();
                                                   return;
                                                 }
