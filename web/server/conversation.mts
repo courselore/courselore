@@ -7146,7 +7146,7 @@ export default async (application: Application): Promise<void> => {
                                 (message) =>
                                   html`
                                     <div
-                                      key="message--${message.reference}"
+                                      key="message/${message.reference}"
                                       data-content-source="${JSON.stringify(
                                         message.contentSource
                                       )}"
@@ -8541,8 +8541,8 @@ export default async (application: Application): Promise<void> => {
                                                       });
 
                                                       this.onclick = () => {
-                                                        this.closest(".message").querySelector('[key="message--show"]').hidden = false;
-                                                        this.closest(".message").querySelector('[key="message--edit"]').hidden = true;
+                                                        this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
+                                                        this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
                                                       };
 
                                                       const textarea = this.closest("form").querySelector(".content-editor--write--textarea");

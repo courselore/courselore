@@ -732,9 +732,9 @@ export default async (application: Application): Promise<void> => {
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
                         this.onclick = () => {
-                          this.closest(".message").querySelector('[key="message--show"]').hidden = true;
-                          this.closest(".message").querySelector('[key="message--edit"]').hidden = false;
-                          autosize.update(this.closest(".message").querySelector('[key="message--edit"] .content-editor--write--textarea'));
+                          this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = true;
+                          this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = false;
+                          autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] .content-editor--write--textarea'));
                           tippy.hideAll();
                         };
                       `}"
