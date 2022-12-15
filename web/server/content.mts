@@ -2973,7 +2973,9 @@ ${contentSource}</textarea
         });
         const file = path.join(
           application.configuration.dataDirectory,
-          `files/${directory}/${attachment.name}`
+          "files",
+          directory,
+          attachment.name
         );
         const href = `https://${
           application.configuration.hostname
@@ -2998,7 +3000,9 @@ ${contentSource}</textarea
             )}--thumbnail.${animated ? "mp4" : "webp"}`;
             const fileThumbnail = path.join(
               application.configuration.dataDirectory,
-              `files/${directory}/${nameThumbnail}`
+              "files",
+              directory,
+              nameThumbnail
             );
             const src = `https://${
               application.configuration.hostname
