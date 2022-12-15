@@ -8040,7 +8040,7 @@ export default async (application: Application): Promise<void> => {
                                                               const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                                                               const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
                                                               const newMessage = document.querySelector('[key="new-message"]');
-                                                              newMessage.querySelector(".content-editor--button--write")?.click();
+                                                              newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                                                               const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
                                                               textFieldEdit.wrapSelection(
                                                                 element,

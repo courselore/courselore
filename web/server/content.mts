@@ -833,10 +833,11 @@ export default async (application: Application): Promise<void> => {
             >
               <label>
                 <input
+                  key="content-editor--button--write"
                   type="radio"
                   name="content-editor--mode"
                   checked
-                  class="content-editor--button--write visually-hidden"
+                  class="visually-hidden"
                   onload="${javascript`
                     this.isModified = false;
 
