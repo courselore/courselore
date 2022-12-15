@@ -8039,7 +8039,7 @@ export default async (application: Application): Promise<void> => {
                                                               const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                               const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                                                               const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
-                                                              const newMessage = document.querySelector(".new-message");
+                                                              const newMessage = document.querySelector('[key="new-message"]');
                                                               newMessage.querySelector(".content-editor--button--write")?.click();
                                                               const element = newMessage.querySelector(".content-editor--write--textarea");
                                                               textFieldEdit.wrapSelection(
@@ -8881,7 +8881,7 @@ export default async (application: Application): Promise<void> => {
                     : html``}
 
                   <div
-                    class="new-message"
+                    key="new-message"
                     css="${response.locals.css(css`
                       display: grid;
                       & > * {

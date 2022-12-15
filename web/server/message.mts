@@ -582,7 +582,7 @@ export default async (application: Application): Promise<void> => {
                 onload="${javascript`
                   this.onclick = () => {
                     const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
-                    const newMessage = document.querySelector(".new-message");
+                    const newMessage = document.querySelector('[key="new-message"]');
                     newMessage.querySelector(".content-editor--button--write")?.click();
                     const element = newMessage.querySelector(".content-editor--write--textarea");
                     textFieldEdit.wrapSelection(
