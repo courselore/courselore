@@ -2144,7 +2144,7 @@ export default async (application: Application): Promise<void> => {
                                   Mention User
                                 </p>
                                 <div class="dropdown--menu">
-                                  <div class="search-results"></div>
+                                  <div key="search-results"></div>
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
@@ -2202,7 +2202,7 @@ export default async (application: Application): Promise<void> => {
                                   Refer to Conversation or Message
                                 </p>
                                 <div class="dropdown--menu">
-                                  <div class="search-results"></div>
+                                  <div key="search-results"></div>
                                 </div>
                               </div>
                             `
@@ -2265,7 +2265,7 @@ export default async (application: Application): Promise<void> => {
                               isUpdating = true;
                               shouldUpdateAgain = false;
                               const content = dropdownMenu.props.content;
-                              const searchResults = content.querySelector(".search-results");
+                              const searchResults = content.querySelector('[key="search-results"]');
                               const search = value.slice(anchorIndex, selectionMax).trim();
                               if (search === "") searchResults.innerHTML = "";
                               else
