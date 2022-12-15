@@ -734,6 +734,29 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
+                        this.onmouseenter = this.onfocus = async () => {
+                          const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
+                          if (messageEdit.querySelector('[key="form"] form') !== null) return;
+                          leafac.loadPartial(messageEdit.querySelector('[key="form"]'), await (await fetch("https://${
+                            application.configuration.hostname
+                          }/courses/${
+                        response.locals.course.reference
+                      }/conversations/${
+                        response.locals.conversation.reference
+                      }/messages/${
+                        response.locals.message.reference
+                      }/edit${qs.stringify(
+                        {
+                          conversations: request.query.conversations,
+                          messages: request.query.messages,
+                        },
+                        { addQueryPrefix: true }
+                      )}", { cache: "no-store" })).text());
+                          messageEdit.querySelector('[key="loading"]').hidden = true;
+                          messageEdit.querySelector('[key="form"]').hidden = false;
+                          autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
+                        };
+
                         this.onclick = () => {
                           this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = true;
                           this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = false;
@@ -968,6 +991,156 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
             </div>
+          `,
+        })
+      );
+    }
+  );
+
+  application.server.get<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    HTML,
+    {},
+    { conversations?: object; messages?: object },
+    ResponseLocalsMessage
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/edit",
+    (request, response, next) => {
+      if (
+        response.locals.message === undefined ||
+        !application.server.locals.helpers.mayEditMessage({
+          request,
+          response,
+          message: response.locals.message,
+        })
+      )
+        return next();
+
+      response.send(
+        application.server.locals.layouts.partial({
+          request,
+          response,
+          body: html`
+            <form
+              method="PATCH"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/conversations/${response.locals.conversation
+                .reference}/messages/${response.locals.message
+                .reference}${qs.stringify(
+                {
+                  conversations: request.query.conversations,
+                  messages: request.query.messages,
+                },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              css="${response.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${application.server.locals.partials.contentEditor({
+                request,
+                response,
+                contentSource: response.locals.message.contentSource,
+                compact: response.locals.conversation.type === "chat",
+              })}
+
+              <div
+                css="${response.locals.css(css`
+                  display: flex;
+                  gap: var(--space--2);
+                  @media (max-width: 400px) {
+                    flex-direction: column;
+                  }
+                `)}"
+              >
+                <button
+                  class="button button--blue"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: ${response.locals.html(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+Enter</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `
+                      )},
+                    });
+
+                    const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
+                  `}"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                  Update Message
+                </button>
+                <button
+                  type="reset"
+                  class="button button--transparent"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: ${response.locals.html(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Esc</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-escape"></i
+                            ></span>
+                          </span>
+                        `
+                      )},
+                    });
+
+                    this.onclick = () => {
+                      this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
+                      this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
+
+                      const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
+                      messageEdit.querySelector('[key="loading"]').hidden = false;
+                      messageEdit.querySelector('[key="form"]').hidden = true;
+                      messageEdit.querySelector('[key="form"]').replaceChildren();
+                    };
+
+                    const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("escape", () => { this.click(); return false; });                                  
+                  `}"
+                >
+                  <i class="bi bi-x-lg"></i>
+                  Cancel
+                </button>
+              </div>
+            </form>
           `,
         })
       );
