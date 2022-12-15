@@ -154,10 +154,6 @@ export default async (application: Application): Promise<void> => {
           video: [
             ...(rehypeSanitizeDefaultSchema.attributes?.video ?? []),
             "src",
-            "autoPlay",
-            "loop",
-            "muted",
-            "playsInline",
           ],
         },
       })
@@ -302,6 +298,17 @@ export default async (application: Application): Promise<void> => {
           )}`
         );
     }
+
+    for (const element of contentElement.querySelectorAll("video"))
+      if (element.parentElement?.matches("a")) {
+        element.setAttribute("autoplay", "");
+        element.setAttribute("loop", "");
+        element.setAttribute("muted", "");
+        element.setAttribute("playsinline", "");
+      } else {
+        element.setAttribute("controls", "");
+        element.setAttribute("preload", "metadata");
+      }
 
     for (const element of contentElement.querySelectorAll("details")) {
       const childNodes = [...element.childNodes];
@@ -3006,7 +3013,7 @@ ${contentSource}</textarea
 
             attachmentsContentSources += `[${
               animated
-                ? `<video src="${src}" autoplay loop muted playsinline></video>`
+                ? `<video src="${src}"></video>`
                 : typeof metadata.density === "number" &&
                   metadata.density >= 120
                 ? `<img src="${src}" alt="${attachment.name}" width="${
@@ -3022,6 +3029,10 @@ ${contentSource}</textarea
               error?.stack
             );
           }
+        else if (attachment.mimetype.startsWith("video/")) {
+          attachmentsContentSources += `<video src="${href}"></video>`;
+          continue;
+        }
 
         attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
