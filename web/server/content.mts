@@ -842,7 +842,7 @@ export default async (application: Application): Promise<void> => {
                     this.isModified = false;
 
                     this.onclick = () => {
-                      this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
+                      this.closest(".content-editor").querySelector('[key="content-editor--write"]').hidden = false;
                       this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
                       this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
                     };
@@ -862,7 +862,7 @@ export default async (application: Application): Promise<void> => {
                     this.isModified = false;
 
                     this.onclick = async (event) => {
-                      const write = this.closest(".content-editor").querySelector(".content-editor--write");
+                      const write = this.closest(".content-editor").querySelector('[key="content-editor--write"]');
                       const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
                       const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
                       const textarea = write.querySelector("textarea");
@@ -947,7 +947,7 @@ export default async (application: Application): Promise<void> => {
           border-radius: var(--border-radius--lg);
         `)}"
       >
-        <div class="content-editor--write">
+        <div key="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
             css="${response.locals.css(css`
