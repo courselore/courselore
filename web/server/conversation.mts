@@ -8007,7 +8007,7 @@ export default async (application: Application): Promise<void> => {
                                               `)}"
                                             ></div>
                                             <div
-                                              class="message--show--content-area--content"
+                                              key="message--show--content-area--content"
                                               onload="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
@@ -8026,7 +8026,7 @@ export default async (application: Application): Promise<void> => {
                                                               const selection = window.getSelection();
                                                               const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
                                                               const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                              const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
+                                                              const contentElement = this.closest(".message--show--content-area").querySelector('[key="message--show--content-area--content"]');
                                                               if (
                                                                 selection.isCollapsed ||
                                                                 anchorElement === undefined ||
