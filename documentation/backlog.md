@@ -892,12 +892,12 @@ const { app, BrowserWindow } = require("electron");
       header REMOVE-ME PLEASE
       file_server
     }
-    curl -vs "https://leafac.local/content/image-proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/status/999" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=https://httpbin.org/image" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://httpbin.org/image" > /dev/null
-    curl -vs "https://leafac.local/content/image-proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=http://127.0.0.1:8000/image.png" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=https://httpbin.org/status/999" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=http://alskdfjqlweprjlsf.com" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=https://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=http://httpbin.org/image" > /dev/null
+    curl -vs "https://leafac.local/content/proxy?url=http://pudim.com.br/pudim.jpg" > /dev/null
     ```
   - Good-to-have
     - Max size 5242880

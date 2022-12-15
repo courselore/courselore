@@ -286,20 +286,20 @@ export default async (application: Application): Promise<void> => {
       if (
         !element
           .getAttribute("src")
-          ?.startsWith(`https://${application.configuration.hostname}`)
+          ?.startsWith(`https://${application.configuration.hostname}/`)
       )
         element.setAttribute(
           "src",
           `https://${
             application.configuration.hostname
-          }/content/image-proxy${qs.stringify(
+          }/content/proxy${qs.stringify(
             { url: element.getAttribute("src") },
             { addQueryPrefix: true }
           )}`
         );
     }
 
-    for (const element of contentElement.querySelectorAll("video"))
+    for (const element of contentElement.querySelectorAll("video")) {
       if (element.parentElement?.matches("a")) {
         element.setAttribute("autoplay", "");
         element.setAttribute("loop", "");
@@ -309,6 +309,21 @@ export default async (application: Application): Promise<void> => {
         element.setAttribute("controls", "");
         element.setAttribute("preload", "metadata");
       }
+      if (
+        !element
+          .getAttribute("src")
+          ?.startsWith(`https://${application.configuration.hostname}/`)
+      )
+        element.setAttribute(
+          "src",
+          `https://${
+            application.configuration.hostname
+          }/content/proxy${qs.stringify(
+            { url: element.getAttribute("src") },
+            { addQueryPrefix: true }
+          )}`
+        );
+    }
 
     for (const element of contentElement.querySelectorAll("details")) {
       const childNodes = [...element.childNodes];
@@ -733,7 +748,7 @@ export default async (application: Application): Promise<void> => {
     { url?: string },
     Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >(
-    "/content/image-proxy",
+    "/content/proxy",
     asyncHandler(async (request, response) => {
       if (
         typeof request.query.url !== "string" ||
