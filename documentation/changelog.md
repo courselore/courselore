@@ -10,6 +10,13 @@
 
 ## Unreleased
 
+## 6.0.3
+
+**2022-12-15 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added support for animated GIFs and videos.
+- Improved the performance of images by using WebP.
+
 ## 6.0.2
 
 **2022-12-13 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
