@@ -7999,7 +7999,7 @@ export default async (application: Application): Promise<void> => {
                                             `)}"
                                           >
                                             <div
-                                              class="message--show--content-area--dropdown-menu-target"
+                                              key="message--show--content-area--dropdown-menu-target"
                                               css="${response.locals.css(css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
@@ -8009,7 +8009,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               class="message--show--content-area--content"
                                               onload="${javascript`
-                                                const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
+                                                const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
                                                   interactive: true,
