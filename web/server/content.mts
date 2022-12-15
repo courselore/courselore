@@ -843,7 +843,7 @@ export default async (application: Application): Promise<void> => {
 
                     this.onclick = () => {
                       this.closest(".content-editor").querySelector('[key="content-editor--write"]').hidden = false;
-                      this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
+                      this.closest(".content-editor").querySelector('[key="content-editor--loading"]').hidden = true;
                       this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
                     };
                   `}"
@@ -863,7 +863,7 @@ export default async (application: Application): Promise<void> => {
 
                     this.onclick = async (event) => {
                       const write = this.closest(".content-editor").querySelector('[key="content-editor--write"]');
-                      const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
+                      const loading = this.closest(".content-editor").querySelector('[key="content-editor--loading"]');
                       const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
                       const textarea = write.querySelector("textarea");
                       const previousTextareaRequired = textarea.required;
@@ -2344,8 +2344,9 @@ ${contentSource}</textarea
           ? html``
           : html`
               <div
+                key="content-editor--loading"
                 hidden
-                class="content-editor--loading strong"
+                class="strong"
                 css="${response.locals.css(css`
                   padding: var(--space--4);
                   display: flex;
