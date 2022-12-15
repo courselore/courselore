@@ -5110,7 +5110,7 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <div
-                class="conversation--header"
+                key="conversation--header"
                 css="${response.locals.css(css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
@@ -5160,8 +5160,8 @@ export default async (application: Application): Promise<void> => {
                           `)}"
                           onload="${javascript`
                             this.onclick = () => {
-                              this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = true;
-                              this.closest(".conversation--header").querySelector('[key="conversation--header--full"]').hidden = false;
+                              this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = true;
+                              this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = false;
                             };
                           `}"
                         >
@@ -6963,8 +6963,8 @@ export default async (application: Application): Promise<void> => {
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
                               this.onclick = () => {
-                                this.closest(".conversation--header").querySelector('[key="conversation--header--full"]').hidden = true;
-                                this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = false;
+                                this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = true;
+                                this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = false;
                               };
                             `}"
                           >
