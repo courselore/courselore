@@ -2057,7 +2057,7 @@ export default async (application: Application): Promise<void> => {
             `)}"
           >
             <div
-              class="content-editor--write--textarea--dropdown-menu-target"
+              key="content-editor--write--textarea--dropdown-menu-target"
               css="${response.locals.css(css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
@@ -2122,7 +2122,7 @@ export default async (application: Application): Promise<void> => {
                 ${
                   response.locals.course !== undefined
                     ? javascript`
-                        const dropdownMenuTarget = this.closest(".content-editor").querySelector(".content-editor--write--textarea--dropdown-menu-target");
+                        const dropdownMenuTarget = this.closest(".content-editor").querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
 
                         (dropdownMenuTarget.dropdownMenuMention ??= tippy(dropdownMenuTarget)).setProps({
                           placement: "bottom-start",
