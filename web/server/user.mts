@@ -1168,7 +1168,7 @@ export default async (application: Application): Promise<void> => {
           );
 
       if (!request.files.avatar.mimetype.startsWith("image/"))
-        return response.status(413).send("The avatar must be an image.");
+        return response.status(422).send("The avatar must be an image.");
       if (request.files.avatar.truncated)
         return response
           .status(413)
