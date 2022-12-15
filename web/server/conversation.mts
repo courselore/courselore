@@ -5152,14 +5152,15 @@ export default async (application: Application): Promise<void> => {
                   $${response.locals.conversation.type === "chat"
                     ? html`
                         <button
-                          class="conversation--header--compact button button--tight button--tight--inline button--transparent strong"
+                          key="conversation--header--compact"
+                          class="button button--tight button--tight--inline button--transparent strong"
                           css="${response.locals.css(css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
                           onload="${javascript`
                             this.onclick = () => {
-                              this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
+                              this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = true;
                               this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                             };
                           `}"
@@ -6963,7 +6964,7 @@ export default async (application: Application): Promise<void> => {
                             onload="${javascript`
                               this.onclick = () => {
                                 this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
-                                this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
+                                this.closest(".conversation--header").querySelector('[key="conversation--header--compact"]').hidden = false;
                               };
                             `}"
                           >
