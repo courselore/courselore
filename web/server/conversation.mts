@@ -5621,7 +5621,7 @@ export default async (application: Application): Promise<void> => {
                                             class="dropdown--menu--item button button--transparent"
                                             onload="${javascript`
                                               this.onclick = () => {
-                                                this.closest('[key="conversation--header--full"]').querySelector(".title--show").hidden = true;
+                                                this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
                                                 this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = false;
                                                 tippy.hideAll();
                                               };
@@ -5907,7 +5907,8 @@ export default async (application: Application): Promise<void> => {
                     </div>
 
                     <h2
-                      class="title--show strong"
+                    key="title--show"
+                      class="strong"
                       css="${response.locals.css(css`
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
@@ -5998,7 +5999,7 @@ export default async (application: Application): Promise<void> => {
                                 });
                                       
                                 this.onclick = () => {
-                                  this.closest('[key="conversation--header--full"]').querySelector(".title--show").hidden = false;
+                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = false;
                                   this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = true;
                                 };
 
