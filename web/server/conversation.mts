@@ -5622,7 +5622,7 @@ export default async (application: Application): Promise<void> => {
                                             onload="${javascript`
                                               this.onclick = () => {
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
-                                                this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = false;
+                                                this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
                                                 tippy.hideAll();
                                               };
                                             `}"
@@ -5907,7 +5907,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
 
                     <h2
-                    key="title--show"
+                      key="title--show"
                       class="strong"
                       css="${response.locals.css(css`
                         font-size: var(--font-size--lg);
@@ -5927,6 +5927,7 @@ export default async (application: Application): Promise<void> => {
                     $${mayEditConversation({ request, response })
                       ? html`
                           <form
+                            key="title--edit"
                             method="PATCH"
                             action="https://${application.configuration
                               .hostname}/courses/${response.locals.course
@@ -5940,7 +5941,6 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             novalidate
                             hidden
-                            class="title--edit"
                             css="${response.locals.css(css`
                               display: flex;
                               gap: var(--space--2);
@@ -6000,10 +6000,10 @@ export default async (application: Application): Promise<void> => {
                                       
                                 this.onclick = () => {
                                   this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = false;
-                                  this.closest('[key="conversation--header--full"]').querySelector(".title--edit").hidden = true;
+                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = true;
                                 };
 
-                                const input = this.closest(".title--edit").querySelector('[name="title"]');
+                                const input = this.closest('[key="title--edit"]').querySelector('[name="title"]');
 
                                 (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
                               `}"
