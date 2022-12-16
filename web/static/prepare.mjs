@@ -928,6 +928,10 @@ await fs.writeFile(
         border-radius: var(--border-radius--xl);
       }
 
+      video {
+        display: block;
+      }
+
       hr {
         border-top: var(--border-width--1) solid var(--color--gray--medium--200);
         @media (prefers-color-scheme: dark) {
