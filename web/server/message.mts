@@ -1101,28 +1101,6 @@ export default async (application: Application): Promise<void> => {
                   type="reset"
                   class="button button--transparent"
                   onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${response.locals.html(
-                        html`
-                          <span class="keyboard-shortcut">
-                            <span
-                              onload="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Esc</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              onload="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-escape"></i
-                            ></span>
-                          </span>
-                        `
-                      )},
-                    });
-
                     this.onclick = () => {
                       this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
                       this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
@@ -1132,10 +1110,6 @@ export default async (application: Application): Promise<void> => {
                       messageEdit.querySelector('[key="form"]').hidden = true;
                       messageEdit.querySelector('[key="form"]').skipLoading = false;
                     };
-
-                    const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
-
-                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("escape", () => { this.click(); return false; });                                  
                   `}"
                 >
                   <i class="bi bi-x-lg"></i>
