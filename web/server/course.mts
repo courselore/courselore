@@ -1435,8 +1435,7 @@ export default async (application: Application): Promise<void> => {
                 $${response.locals.tags.map(
                   (tag, index) => html`
                     <div
-                      key="tag--${tag.reference}"
-                      class="tag"
+                      key="tag/${tag.reference}"
                       css="${response.locals.css(css`
                         padding-bottom: var(--space--4);
                         border-bottom: var(--border-width--1) solid
@@ -1535,7 +1534,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <div
                             css="${response.locals.css(css`
-                              .tag.deleted & {
+                              [key^="tag/"].deleted & {
                                 display: none;
                               }
                             `)}"
@@ -1587,7 +1586,7 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--rose"
                                           onload="${javascript`
                                             this.onclick = () => {
-                                              const tag = this.closest(".tag");
+                                              const tag = this.closest('[key^="tag/"]');
                                               tag.classList.add("deleted");
                                               const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
                                               tagIconClassList.remove("text--teal");
@@ -1618,7 +1617,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <div
                             css="${response.locals.css(css`
-                              .tag:not(.deleted) & {
+                              [key^="tag/"]:not(.deleted) & {
                                 display: none;
                               }
                             `)}"
@@ -1633,7 +1632,7 @@ export default async (application: Application): Promise<void> => {
                                 });
                                     
                                 this.onclick = () => {
-                                  const tag = this.closest(".tag");
+                                  const tag = this.closest('[key^="tag/"]');
                                   tag.classList.remove("deleted");
                                   const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
                                   tagIconClassList.remove("text--rose");
@@ -1700,7 +1699,7 @@ export default async (application: Application): Promise<void> => {
                     const newTagPartial = ${response.locals.html(
                       html`
                         <div
-                          class="tag"
+                          key="tag"
                           css="${response.locals.css(css`
                             padding-bottom: var(--space--4);
                             border-bottom: var(--border-width--1) solid
@@ -1734,7 +1733,7 @@ export default async (application: Application): Promise<void> => {
                               onloadpartial="${javascript`
                                 this.isModified = true;
                                 this.disabled = false;
-                                this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
+                                this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
                               `}"
                             />
                             <div
@@ -1760,7 +1759,7 @@ export default async (application: Application): Promise<void> => {
                                     onloadpartial="${javascript`
                                       this.isModified = true;
                                       this.disabled = false;
-                                      this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
+                                      this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
                                     `}"
                                   />
                                   <span
@@ -1799,7 +1798,7 @@ export default async (application: Application): Promise<void> => {
                                   });
 
                                   this.onclick = () => {
-                                    const tag = this.closest(".tag");
+                                    const tag = this.closest('[key^="tag"]');
                                     tag.replaceChildren();
                                     tag.hidden = true;
                                   };
