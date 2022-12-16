@@ -404,7 +404,7 @@ export default async (application: Application): Promise<void> => {
 
                 this.oninput = () => {
                   const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                  for (const user of document.querySelectorAll(".user")) {
+                  for (const user of document.querySelectorAll('[key^="user/"]')) {
                     let userHidden = filterPhrases.length > 0;
                     for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
                       const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
@@ -439,8 +439,7 @@ export default async (application: Application): Promise<void> => {
 
             return html`
               <div
-                key="user--${user.reference}"
-                class="user"
+                key="user/${user.reference}"
                 css="${response.locals.css(css`
                   padding-top: var(--space--2);
                   border-top: var(--border-width--1) solid
