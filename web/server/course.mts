@@ -2194,7 +2194,7 @@ export default async (application: Application): Promise<void> => {
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onload="${javascript`
                         this.onchange = () => {
-                          const expiresAt = this.closest("form").querySelector(".expires-at");
+                          const expiresAt = this.closest("form").querySelector('[key="expires-at"]');
                           expiresAt.hidden = !this.checked;
                           for (const element of expiresAt.querySelectorAll("*"))
                             if (element.disabled !== undefined) element.disabled = !this.checked;
@@ -2228,7 +2228,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
 
-              <div hidden class="expires-at label">
+              <div key="expires-at" hidden class="label">
                 <div class="label--text">
                   Expires at
                   <button
