@@ -2422,24 +2422,25 @@ export default async (application: Application): Promise<void> => {
                                                         await navigator.clipboard.writeText(${JSON.stringify(
                                                           link
                                                         )});
-                                                        const stickies = this.querySelector(".stickies");
-                                                        const check = this.querySelector(".check");
+                                                        const stickies = this.querySelector('[key="stickies"]');
+                                                        const check = this.querySelector('[key="check"]');
                                                         stickies.hidden = true;
                                                         check.hidden = false;
-                                                        await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                         stickies.hidden = false;
                                                         check.hidden = true;
                                                       };
                                                     `}"
                                                   >
-                                                    <span class="stickies">
+                                                    <span key="stickies">
                                                       <i
                                                         class="bi bi-stickies"
                                                       ></i>
                                                     </span>
                                                     <span
+                                                      key="check"
                                                       hidden
-                                                      class="check text--green"
+                                                      class="text--green"
                                                     >
                                                       <i
                                                         class="bi bi-check-lg"
@@ -3778,20 +3779,20 @@ export default async (application: Application): Promise<void> => {
                                   await navigator.clipboard.writeText(${JSON.stringify(
                                     link
                                   )});
-                                  const stickies = this.querySelector(".stickies");
-                                  const check = this.querySelector(".check");
+                                  const stickies = this.querySelector('[key="stickies"]');
+                                  const check = this.querySelector('[key="check"]');
                                   stickies.hidden = true;
                                   check.hidden = false;
-                                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                  await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                   stickies.hidden = false;
                                   check.hidden = true;
                                 };
                               `}"
                             >
-                              <span class="stickies">
+                              <span key="stickies">
                                 <i class="bi bi-stickies"></i>
                               </span>
-                              <span hidden class="check text--green">
+                              <span key="check" hidden class="text--green">
                                 <i class="bi bi-check-lg"></i>
                               </span>
                             </button>
