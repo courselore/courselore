@@ -1463,7 +1463,7 @@ export default async (application: Application): Promise<void> => {
                           this.isModified = true;
                         `}"
                       />
-                      <div class="tag--icon text--teal">
+                      <div key="tag--icon" class="text--teal">
                         <i class="bi bi-tag-fill"></i>
                       </div>
                       <div
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
                                             this.onclick = () => {
                                               const tag = this.closest(".tag");
                                               tag.classList.add("deleted");
-                                              const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                              const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
                                               tagIconClassList.remove("text--teal");
                                               tagIconClassList.add("text--rose");
                                               tag.querySelector('[name$="[delete]"]').disabled = false;
@@ -1635,7 +1635,7 @@ export default async (application: Application): Promise<void> => {
                                 this.onclick = () => {
                                   const tag = this.closest(".tag");
                                   tag.classList.remove("deleted");
-                                  const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                  const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
                                   tagIconClassList.remove("text--rose");
                                   tagIconClassList.add("text--teal");
                                   tag.querySelector('[name$="[delete]"]').disabled = true;
