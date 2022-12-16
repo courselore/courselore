@@ -1422,7 +1422,7 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <div
-                class="tags"
+                key="tags"
                 css="${response.locals.css(css`
                   display: flex;
                   flex-direction: column;
@@ -1815,13 +1815,13 @@ export default async (application: Application): Promise<void> => {
 
                     this.onclick = () => {
                       const newTag = newTagPartial.firstElementChild.cloneNode(true);
-                      this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                      this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
                       for (const element of newTag.querySelectorAll("[onloadpartial]"))
                         new Function(element.getAttribute("onloadpartial")).call(element);
                     };
 
                     this.onvalidate = () => {
-                      if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
+                      if ([...this.closest("form").querySelector('[key="tags"]').children].filter((tag) => !tag.hidden).length === 0)
                         return "Please add at least one tag.";
                     };
                   `}"
