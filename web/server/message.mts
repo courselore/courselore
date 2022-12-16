@@ -756,7 +756,7 @@ export default async (application: Application): Promise<void> => {
                       )}", { cache: "no-store" })).text());
                           messageEdit.querySelector('[key="loading"]').hidden = true;
                           messageEdit.querySelector('[key="form"]').hidden = false;
-                          autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
+                          autosize.update(this.closest('[key^="message/"]')?.querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
                         };
 
                         this.onclick = () => {
