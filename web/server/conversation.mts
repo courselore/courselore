@@ -8443,7 +8443,15 @@ export default async (application: Application): Promise<void> => {
                                             )}
                                             Loading…
                                           </div>
-                                          <div key="form"></div>
+                                          <div
+                                            key="form"
+                                            hidden
+                                            onload="${javascript`
+                                              if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
+                                              this.partialParentElement = false;
+                                              this.skipLoading = false;
+                                            `}"
+                                          ></div>
                                         </div>
                                       </div>
                                     </div>
