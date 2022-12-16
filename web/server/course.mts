@@ -4036,7 +4036,7 @@ export default async (application: Application): Promise<void> => {
 
                   this.oninput = () => {
                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                    for (const enrollment of document.querySelectorAll(".enrollment")) {
+                    for (const enrollment of document.querySelectorAll('[key^="enrollment/"]')) {
                       let enrollmentHidden = filterPhrases.length > 0;
                       for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
                         const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
@@ -4072,8 +4072,7 @@ export default async (application: Application): Promise<void> => {
 
               return html`
                 <div
-                  key="enrollment--${enrollment.reference}"
-                  class="enrollment"
+                  key="enrollment/${enrollment.reference}"
                   css="${response.locals.css(css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
