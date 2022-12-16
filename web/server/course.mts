@@ -2020,7 +2020,7 @@ export default async (application: Application): Promise<void> => {
                       onload="${javascript`
                         this.onchange = () => {
                           const form = this.closest("form");
-                          const emails = form.querySelector(".emails");
+                          const emails = form.querySelector('[key="emails"]');
                           emails.hidden = true;
                           for (const element of emails.querySelectorAll("*"))
                             if (element.disabled !== null) element.disabled = true;
@@ -2050,7 +2050,7 @@ export default async (application: Application): Promise<void> => {
                       onload="${javascript`
                         this.onchange = () => {
                           const form = this.closest("form");
-                          const emails = form.querySelector(".emails");
+                          const emails = form.querySelector('[key="emails"]');
                           emails.hidden = false;
                           for (const element of emails.querySelectorAll("*"))
                             if (element.disabled !== null) element.disabled = false;
@@ -2071,7 +2071,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
 
-              <div hidden class="emails label">
+              <div key="emails" hidden class="label">
                 <div class="label--text">
                   Emails
                   <button
