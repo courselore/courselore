@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 6.0.4
+
+**2022-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Improved the performance of long conversations for staff by lazy loading the “Edit Message” panel.
+
 ## 6.0.3
 
 **2022-12-15 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
