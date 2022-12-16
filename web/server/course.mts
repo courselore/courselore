@@ -1478,9 +1478,10 @@ export default async (application: Application): Promise<void> => {
                           type="text"
                           name="tags[${index.toString()}][name]"
                           value="${tag.name}"
-                          class="disable-on-delete input--text"
+                          data-disable-on-delete="true"
                           required
                           autocomplete="off"
+                          class="input--text"
                         />
                         <div
                           css="${response.locals.css(css`
@@ -1504,7 +1505,8 @@ export default async (application: Application): Promise<void> => {
                                 $${tag.staffOnlyAt === null
                                   ? html``
                                   : html`checked`}
-                                class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
+                                data-disable-on-delete="true"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
                                 onload="${javascript`
@@ -1591,7 +1593,7 @@ export default async (application: Application): Promise<void> => {
                                               tagIconClassList.remove("text--teal");
                                               tagIconClassList.add("text--rose");
                                               tag.querySelector('[name$="[delete]"]').disabled = false;
-                                              for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                              for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
                                                 element.disabled = true;
                                                 const button = element.closest(".button");
                                                 if (button === null) continue;
@@ -1637,7 +1639,7 @@ export default async (application: Application): Promise<void> => {
                                   tagIconClassList.remove("text--rose");
                                   tagIconClassList.add("text--teal");
                                   tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
                                     element.disabled = false;
                                     const button = element.closest(".button");
                                     if (button === null) continue;
