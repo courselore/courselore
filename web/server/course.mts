@@ -2022,8 +2022,8 @@ export default async (application: Application): Promise<void> => {
                           emails.hidden = true;
                           for (const element of emails.querySelectorAll("*"))
                             if (element.disabled !== null) element.disabled = true;
-                          form.querySelector(".button--create-invitation").hidden = false;
-                          form.querySelector(".button--send-invitation-emails").hidden = true;
+                          form.querySelector('[key="button--create-invitation"]').hidden = false;
+                          form.querySelector('[key="button--send-invitation-emails"]').hidden = true;
                         };
                       `}"
                     />
@@ -2052,8 +2052,8 @@ export default async (application: Application): Promise<void> => {
                           emails.hidden = false;
                           for (const element of emails.querySelectorAll("*"))
                             if (element.disabled !== null) element.disabled = false;
-                          form.querySelector(".button--create-invitation").hidden = true;
-                          form.querySelector(".button--send-invitation-emails").hidden = false;
+                          form.querySelector('[key="button--create-invitation"]').hidden = true;
+                          form.querySelector('[key="button--send-invitation-emails"]').hidden = false;
                         };
                       `}"
                     />
@@ -2266,13 +2266,15 @@ export default async (application: Application): Promise<void> => {
 
               <div>
                 <button
-                  class="button--create-invitation button button--full-width-on-small-screen button--blue"
+                  key="button--create-invitation"
+                  class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-link"></i>
                   Create Invitation Link
                 </button>
                 <button
-                  class="button--send-invitation-emails button button--full-width-on-small-screen button--blue"
+                  key="button--send-invitation-emails"
+                  class="button button--full-width-on-small-screen button--blue"
                   hidden
                 >
                   <i class="bi bi-envelope-fill"></i>
