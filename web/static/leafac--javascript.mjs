@@ -418,7 +418,11 @@ export function loadPartial(parentElement, partialString) {
 }
 
 export function morph(from, to, detail = {}) {
-  if (from.onbeforemorph?.(detail) === false) return;
+  if (
+    from.onbeforemorph?.(detail) === false ||
+    (detail.liveUpdate && from.partialParentElement === true)
+  )
+    return;
 
   const fromChildNodes = from.childNodes;
   const toChildNodes = to.childNodes;
@@ -543,8 +547,7 @@ export function morph(from, to, detail = {}) {
           break;
       }
 
-    if (!(detail.liveUpdate && from.partialParentElement === true))
-      morph(from, to, detail);
+    morph(from, to, detail);
   }
 }
 
