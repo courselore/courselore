@@ -165,7 +165,9 @@ export function liveNavigation() {
     for (const element of [...document.querySelectorAll("[onload]")].filter(
       (element) =>
         element.closest("[data-tippy-root]") === null &&
-        !ancestors(element).some((element) => element.partialParentElement)
+        !ancestors(element)
+          .slice(1)
+          .some((element) => element.partialParentElement)
     ))
       new Function("event", element.getAttribute("onload")).call(
         element,
