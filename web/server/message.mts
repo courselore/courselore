@@ -736,8 +736,10 @@ export default async (application: Application): Promise<void> => {
                       onload="${javascript`
                         this.onmouseenter = this.onfocus = async () => {
                           const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
-                          if (messageEdit.querySelector('[key="form"] form') !== null) return;
-                          leafac.loadPartial(messageEdit.querySelector('[key="form"]'), await (await fetch("https://${
+                          const messageEditForm = messageEdit.querySelector('[key="form"]');
+                          if (messageEditForm.skipLoading === true) return;
+                          messageEditForm.skipLoading = true;
+                          leafac.loadPartial(messageEditForm, await (await fetch("https://${
                             application.configuration.hostname
                           }/courses/${
                         response.locals.course.reference
@@ -1128,7 +1130,7 @@ export default async (application: Application): Promise<void> => {
                       const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
                       messageEdit.querySelector('[key="loading"]').hidden = false;
                       messageEdit.querySelector('[key="form"]').hidden = true;
-                      messageEdit.querySelector('[key="form"]').replaceChildren();
+                      messageEdit.querySelector('[key="form"]').skipLoading = false;
                     };
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
