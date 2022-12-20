@@ -3,12 +3,6 @@
 import fastMyersDiff from "fast-myers-diff";
 import tippy, * as tippyStatic from "tippy.js";
 
-let serverVersion;
-
-export function setServerVersion(newServerVersion) {
-  serverVersion = newServerVersion;
-}
-
 export function customFormValidation() {
   document.addEventListener(
     "submit",
@@ -241,6 +235,9 @@ export async function liveConnection({
   reconnectTimeout = 5 * 1000,
 }) {
   const body = document.querySelector("body");
+  const serverVersion = document
+    .querySelector('meta[name="version"]')
+    ?.getAttribute("content");
   let inLiveNavigation = false;
   let heartbeatTimeout;
   let abortController;

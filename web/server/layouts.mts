@@ -943,15 +943,29 @@ export default async (application: Application): Promise<void> => {
       <!DOCTYPE html>
       <html lang="en">
         <head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
-          />
+          <meta name="version" content="${application.version}" />
+
           <meta
             name="description"
             content="Communication Platform for Education"
           />
 
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
+          <meta
+            key="theme-color--light"
+            name="theme-color"
+            media="(prefers-color-scheme: light)"
+            content=""
+          />
+          <meta
+            key="theme-color--dark"
+            name="theme-color"
+            media="(prefers-color-scheme: dark)"
+            content=""
+          />
           <link
             rel="stylesheet"
             href="https://${application.configuration.hostname}/${application
@@ -959,31 +973,15 @@ export default async (application: Application): Promise<void> => {
           />
           $${response.locals.css.toString()}
 
-          <script src="https://${application.configuration
-              .hostname}/${application.static["index.mjs"]}"></script>
-          <script>
-            leafac.setServerVersion($${JSON.stringify(application.version)});
-            leafac.customFormValidation();
-            leafac.warnAboutLosingInputs();
-            leafac.tippySetDefaultProps();
-            leafac.liveNavigation();
-          </script>
-
-          <meta
-            key="theme-color--light"
-            name="theme-color"
-            content=""
-            media="(prefers-color-scheme: light)"
-          />
-          <meta
-            key="theme-color--dark"
-            name="theme-color"
-            content=""
-            media="(prefers-color-scheme: dark)"
-          />
+          <script
+            src="https://${application.configuration.hostname}/${application
+              .static["index.mjs"]}"
+            defer
+          ></script>
 
           $${head}
         </head>
+
         $${layoutBaseBody}
       </html>
     `;

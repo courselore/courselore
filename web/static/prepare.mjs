@@ -1166,6 +1166,11 @@ await fs.writeFile(
 
     import * as leafac from "./leafac--javascript.mjs";
     window.leafac = leafac;
+
+    leafac.customFormValidation();
+    leafac.warnAboutLosingInputs();
+    leafac.tippySetDefaultProps();
+    leafac.liveNavigation();
   `
 );
 
