@@ -16,6 +16,6 @@
     "tippy.js": "^6.3.7"
   },
   "devDependencies": {
-    "esbuild": "^0.16.3"
+    "esbuild": "^0.16.10"
   }
 }
