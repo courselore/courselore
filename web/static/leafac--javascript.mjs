@@ -167,6 +167,7 @@ export function liveNavigation() {
         element,
         event
       );
+    document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   });
 
   document.onclick = async (event) => {
@@ -415,6 +416,7 @@ export function loadPartial(parentElement, partialString) {
     ...HTMLForJavaScript.querySelectorAll("[onload]"),
   ])
     new Function(element.getAttribute("onload")).call(element);
+  document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   parentElement.forceIsConnected = false;
 }
 
