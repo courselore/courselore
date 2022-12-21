@@ -1797,7 +1797,8 @@ export default async (application: Application): Promise<void> => {
           $${response.locals.css.toString()}
         </head>
         <body>
-          $${body}$${response.locals.html.toString()}
+          $${body} $${response.locals.html.toString()}
+          $${response.locals.javascript.toString()}
         </body>
       </html>
     `;

@@ -4,7 +4,10 @@ import qs from "qs";
 import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css, { localCSS } from "@leafac/css";
-import javascript, { HTMLForJavaScript } from "@leafac/javascript";
+import javascript, {
+  localHTMLForJavaScript,
+  localJavaScript,
+} from "@leafac/javascript";
 import slugify from "@sindresorhus/slugify";
 import { Application } from "./index.mjs";
 
@@ -2236,8 +2239,9 @@ export default async (application: Application): Promise<void> => {
           >[0]["request"],
           response: {
             locals: {
+              html: localHTMLForJavaScript(),
               css: localCSS(),
-              html: HTMLForJavaScript(),
+              javascript: localJavaScript(),
               user: {},
               enrollment: {},
               course,
