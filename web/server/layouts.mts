@@ -937,8 +937,10 @@ export default async (application: Application): Promise<void> => {
         </div>
 
         $${response.locals.html.toString()}
+        $${response.locals.javascript.toString()}
       </body>
     `;
+
     return html`
       <!DOCTYPE html>
       <html lang="en">
