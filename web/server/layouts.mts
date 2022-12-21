@@ -281,7 +281,7 @@ export default async (application: Application): Promise<void> => {
             flex-direction: column;
             overflow: hidden;
           `)}"
-          onload="${javascript`
+          onload="${response.locals.javascript(javascript`
             this.onscroll = () => {
               this.scroll(0, 0);
             };
@@ -316,7 +316,7 @@ export default async (application: Application): Promise<void> => {
                             <div>$${flash.content}</div>
                             <button
                               class="button button--tight button--tight--inline button--transparent"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
@@ -325,15 +325,17 @@ export default async (application: Application): Promise<void> => {
                                       Close
                                       <span class="keyboard-shortcut">
                                         (<span
-                                          onload="${javascript`
+                                          onload="${response.locals
+                                            .javascript(javascript`
                                             this.hidden = leafac.isAppleDevice;
-                                          `}"
+                                          `)}"
                                           >Esc</span
                                         ><span
                                           class="keyboard-shortcut--cluster"
-                                          onload="${javascript`
+                                          onload="${response.locals
+                                            .javascript(javascript`
                                             this.hidden = !leafac.isAppleDevice;
-                                          `}"
+                                          `)}"
                                           ><i class="bi bi-escape"></i></span
                                         >)
                                       </span>
@@ -347,7 +349,7 @@ export default async (application: Application): Promise<void> => {
 
                                 const keys = "escape";
                                 (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-x-circle"></i>
                             </button>
@@ -386,7 +388,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : javascript``
             }
-          `}"
+          `)}"
         >
           $${response.locals.enrollment === undefined
             ? html``
@@ -412,7 +414,7 @@ export default async (application: Application): Promise<void> => {
                       border-radius: var(--border-radius--none);
                       flex: 1;
                     `)}"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "What’s This?",
@@ -452,7 +454,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         )},
                       });
-                    `}"
+                    `)}"
                   ></button>
                 </div>
               `}
@@ -466,7 +468,7 @@ export default async (application: Application): Promise<void> => {
                 <div>
                   <button
                     class="button button--transparent"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
@@ -508,7 +510,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         )},
                       });
-                    `}"
+                    `)}"
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
@@ -581,14 +583,14 @@ export default async (application: Application): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
-            onload="${javascript`
+            onload="${response.locals.javascript(javascript`
               if (
                 event?.detail?.previousLocation?.origin !== window.location.origin ||
                 event?.detail?.previousLocation?.pathname !== window.location.pathname ||
                 event?.detail?.previousLocation?.search !== window.location.search
               )
                 this.scroll(0, 0);
-            `}"
+            `)}"
           >
             $${body}
           </div>
@@ -619,7 +621,7 @@ export default async (application: Application): Promise<void> => {
                 css="${response.locals.css(css`
                   align-items: center;
                 `)}"
-                onload="${javascript`
+                onload="${response.locals.javascript(javascript`
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
@@ -665,7 +667,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     )},
                   });
-                `}"
+                `)}"
               >
                 $${application.server.locals.partials.logo({
                   size: 16 /* var(--space--4) */,
@@ -677,7 +679,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--transparent"
-                onload="${javascript`
+                onload="${response.locals.javascript(javascript`
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
@@ -781,7 +783,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     )},
                   });
-                `}"
+                `)}"
               >
                 <i class="bi bi-bug"></i>
                 Report an Issue
@@ -797,7 +799,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <button
                       class="button button--transparent strong text--green"
-                      onload="${javascript`
+                      onload="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -808,23 +810,25 @@ export default async (application: Application): Promise<void> => {
                                 <span>
                                   Courselore
                                   <span
-                                    onload="${javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Current Courselore version",
                                       });
-                                    `}"
+                                    `)}"
                                   >
                                     ${application.version}
                                   </span>
                                   →
                                   <span
-                                    onload="${javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Latest Courselore version",
                                       });
-                                    `}"
+                                    `)}"
                                   >
                                     ${response.locals.administrationOptions!
                                       .latestVersion}
@@ -863,7 +867,7 @@ export default async (application: Application): Promise<void> => {
                             `
                           )},
                         });
-                      `}"
+                      `)}"
                     >
                     <span css="${response.locals.css(css`
                       display: flex;
@@ -889,7 +893,7 @@ export default async (application: Application): Promise<void> => {
             right: 0;
             left: 0;
           `)}"
-          onload="${javascript`
+          onload="${response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: "Loading…",
@@ -912,7 +916,7 @@ export default async (application: Application): Promise<void> => {
             window.onlivenavigateerror = () => {
               this.hidden = true;
             };
-          `}"
+          `)}"
         >
           <div
             css="${response.locals.css(css`
@@ -1237,12 +1241,12 @@ export default async (application: Application): Promise<void> => {
           <a
             href="https://${application.configuration.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
-            onload="${javascript`
+            onload="${response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
                 content: "Courselore",
               });
-            `}"
+            `)}"
           >
             $${application.server.locals.partials.logo()}
           </a>
@@ -1273,7 +1277,7 @@ export default async (application: Application): Promise<void> => {
                       css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
-                      onload="${javascript`
+                      onload="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -1358,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
                             `
                           )},
                         });
-                      `}"
+                      `)}"
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
@@ -1390,7 +1394,7 @@ export default async (application: Application): Promise<void> => {
                       css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
-                      onload="${javascript`
+                      onload="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -1407,7 +1411,7 @@ export default async (application: Application): Promise<void> => {
                             `
                           )},
                         });
-                      `}"
+                      `)}"
                     >
                       Go to Your Courses
                       <i class="bi bi-chevron-down"></i>
@@ -1420,7 +1424,7 @@ export default async (application: Application): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(
@@ -1483,12 +1487,12 @@ export default async (application: Application): Promise<void> => {
                         <div class="dropdown--menu">
                           <button
                             class="dropdown--menu--item button button--transparent"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                               });
-                            `}"
+                            `)}"
                           >
                             <i class="bi bi-journal-arrow-down"></i>
                             Enroll in an Existing Course
@@ -1512,7 +1516,7 @@ export default async (application: Application): Promise<void> => {
                     `
                   )},
                 });
-              `}"
+              `)}"
             >
               <div
                 css="${response.locals.css(css`
@@ -1563,7 +1567,7 @@ export default async (application: Application): Promise<void> => {
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(response.locals.user.name)},
@@ -1625,11 +1629,11 @@ export default async (application: Application): Promise<void> => {
                           >
                             <button
                               class="dropdown--menu--item button button--transparent"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.onclick = () => {
                                   localStorage.clear();
                                 };
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-box-arrow-right"></i>
                               Sign Out
@@ -1640,7 +1644,7 @@ export default async (application: Application): Promise<void> => {
                     `
                   )},
                 });
-              `}"
+              `)}"
             >
               $${application.server.locals.partials.user({
                 request,
@@ -1727,7 +1731,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button button--tight button--tight--inline button--transparent"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
@@ -1735,7 +1739,7 @@ export default async (application: Application): Promise<void> => {
                           html`<div class="dropdown--menu">$${menu}</div>`
                         )},
                       });
-                    `}"
+                    `)}"
                   >
                     $${menuButton}
                     <i class="bi bi-chevron-down"></i>

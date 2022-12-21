@@ -1513,7 +1513,7 @@ export default async (application: Application): Promise<void> => {
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${search !== undefined ? html`checked` : html``}
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             this.isModified = false;
 
                             this.onchange = () => {
@@ -1528,7 +1528,7 @@ export default async (application: Application): Promise<void> => {
                               if (this.checked)
                                 searchAndFiltersFormSection.querySelector('[name="conversations[search]"]').focus();
                             };
-                          `}"
+                          `)}"
                         />
                         <span>
                           <i class="bi bi-search"></i>
@@ -1550,7 +1550,7 @@ export default async (application: Application): Promise<void> => {
                           filters.isQuick !== "true"
                             ? html`checked`
                             : html``}
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             this.isModified = false;
                             
                             this.onchange = () => {
@@ -1563,7 +1563,7 @@ export default async (application: Application): Promise<void> => {
                               for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
                                 if (element.disabled !== null) element.disabled = !this.checked;
                             };
-                          `}"
+                          `)}"
                         />
                         <span>
                           <i class="bi bi-funnel"></i>
@@ -1624,9 +1624,9 @@ export default async (application: Application): Promise<void> => {
                         flex-direction: column;
                         gap: var(--space--1);
                       `)}"
-                      onload="${javascript`
+                      onload="${response.locals.javascript(javascript`
                         this.isModified = false;
-                      `}"
+                      `)}"
                     >
                       <div
                         key="search"
@@ -1649,12 +1649,12 @@ export default async (application: Application): Promise<void> => {
                         />
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Search",
                             });
-                          `}"
+                          `)}"
                         >
                           <i class="bi bi-search"></i>
                         </button>
@@ -1675,12 +1675,12 @@ export default async (application: Application): Promise<void> => {
                                   { addQueryPrefix: true }
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Clear Search",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-x-lg"></i>
                               </a>
@@ -1726,11 +1726,11 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-eyeglasses"></i>
@@ -1757,11 +1757,11 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-check-lg"></i>
@@ -1804,7 +1804,8 @@ export default async (application: Application): Promise<void> => {
                                       ? html``
                                       : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    onload="${javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       ${
                                         conversationType === "question"
                                           ? javascript`
@@ -1824,7 +1825,7 @@ export default async (application: Application): Promise<void> => {
                                             `
                                           : javascript``
                                       }
-                                    `}"
+                                    `)}"
                                   />
                                   <span>
                                     $${iconsConversationType[conversationType]
@@ -1872,14 +1873,14 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
                                     form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
                                     form.querySelector('[name="conversations[filters][isResolved]"][value="true"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-patch-exclamation"></i>
@@ -1906,14 +1907,14 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
                                     form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
                                     form.querySelector('[name="conversations[filters][isResolved]"][value="false"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-patch-check"></i>
@@ -1953,14 +1954,14 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
                                     form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
                                     form.querySelector('[name="conversations[filters][isAnnouncement]"][value="true"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-sticky"></i>
@@ -1987,14 +1988,14 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
                                     form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
                                     form.querySelector('[name="conversations[filters][isAnnouncement]"][value="false"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-megaphone"></i>
@@ -2070,12 +2071,12 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   trigger: "click",
                                   content: "Pinned conversations are listed first.",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-info-circle"></i>
                             </button>
@@ -2104,11 +2105,11 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-pin"></i>
@@ -2135,11 +2136,11 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
                                   };
-                                `}"
+                                `)}"
                               />
                               <span>
                                 <i class="bi bi-pin-angle"></i>
@@ -2162,12 +2163,13 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="button button--tight button--tight--inline button--transparent"
-                                    onload="${javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         trigger: "click",
                                         content: "Tags help to organize conversations.",
                                       });
-                                    `}"
+                                    `)}"
                                   >
                                     <i class="bi bi-info-circle"></i>
                                   </button>
@@ -2220,12 +2222,13 @@ export default async (application: Application): Promise<void> => {
                                           ? html`
                                               <span
                                                 class="text--sky"
-                                                onload="${javascript`
+                                                onload="${response.locals
+                                                  .javascript(javascript`
                                                   (this.tooltip ??= tippy(this)).setProps({
                                                     touch: false,
                                                     content: "This tag is visible by staff only.",
                                                   });
-                                                `}"
+                                                `)}"
                                               >
                                                 <i
                                                   class="bi bi-mortarboard-fill"
@@ -2364,7 +2367,7 @@ export default async (application: Application): Promise<void> => {
                           css="${response.locals.css(css`
                             margin-top: var(--space---2);
                           `)}"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             ${
                               response.locals.conversation !== undefined
                                 ? javascript`
@@ -2379,7 +2382,7 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 : javascript``
                             }
-                          `}"
+                          `)}"
                         >
                           $${conversationsWithSearchResults.map(
                             ({ conversation, searchResult }) => {
@@ -2463,7 +2466,8 @@ export default async (application: Application): Promise<void> => {
                                                   --line-height--2xs
                                                 );
                                               `)}"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Mark as Read",
@@ -2475,7 +2479,7 @@ export default async (application: Application): Promise<void> => {
                                                   await fetch(this.closest("a").getAttribute("href"), { cache: "no-store" });
                                                   this.remove();
                                                 };
-                                              `}"
+                                              `)}"
                                             >
                                               ${unreadCount.toString()}
                                             </button>
@@ -2658,7 +2662,7 @@ export default async (application: Application): Promise<void> => {
           class="${textColorsConversationParticipants[
             conversation.participants
           ]}"
-          onload="${javascript`
+          onload="${response.locals.javascript(javascript`
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
@@ -2723,7 +2727,7 @@ export default async (application: Application): Promise<void> => {
                     });
                   `
             }
-          `}"
+          `)}"
         >
           $${iconsConversationParticipants[conversation.participants].fill}
           $${labelsConversationParticipants[conversation.participants]}
@@ -2745,12 +2749,12 @@ export default async (application: Application): Promise<void> => {
           ? html`
               <div
                 class="text--amber"
-                onload="${javascript`
+                onload="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Pinned conversations are listed first.",
                   });
-                `}"
+                `)}"
               >
                 <i class="bi bi-pin-fill"></i>
                 Pinned
@@ -2801,21 +2805,21 @@ export default async (application: Application): Promise<void> => {
         `)}"
       >
         <div
-          onload="${javascript`
-          (this.tooltip ??= tippy(this)).setProps({
-            touch: false,
-            content: "Conversation Reference",
-          });
-        `}"
+          onload="${response.locals.javascript(javascript`
+            (this.tooltip ??= tippy(this)).setProps({
+              touch: false,
+              content: "Conversation Reference",
+            });
+          `)}"
         >
           #${conversation.reference}
         </div>
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
-          onload="${javascript`
+          onload="${response.locals.javascript(javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
-          `}"
+          `)}"
         ></time>
 
         $${conversation.updatedAt !== null
@@ -2824,9 +2828,9 @@ export default async (application: Application): Promise<void> => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                  `}"
+                  `)}"
                 ></time>
               </div>
             `
@@ -2860,12 +2864,12 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <span
                             class="text--sky"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "This tag is visible by staff only.",
                               });
-                            `}"
+                            `)}"
                           >
                             <i class="bi bi-mortarboard-fill"></i>
                           </span>
@@ -3322,7 +3326,7 @@ export default async (application: Application): Promise<void> => {
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
@@ -3347,7 +3351,7 @@ export default async (application: Application): Promise<void> => {
                                   : javascript``
                               }
                             };
-                          `}"
+                          `)}"
                         />
                         <span>
                           $${iconsConversationType[conversationType].regular}
@@ -3419,12 +3423,12 @@ export default async (application: Application): Promise<void> => {
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               trigger: "click",
                               content: "Tags help to organize conversations.",
                             });
-                          `}"
+                          `)}"
                         >
                           <i class="bi bi-info-circle"></i>
                         </button>
@@ -3538,12 +3542,13 @@ export default async (application: Application): Promise<void> => {
                                     ? html`
                                         <span
                                           class="text--sky"
-                                          onload="${javascript`
+                                          onload="${response.locals
+                                            .javascript(javascript`
                                             (this.tooltip ??= tippy(this)).setProps({
                                               touch: false,
                                               content: "This tag is visible by staff only.",
                                             });
-                                          `}"
+                                          `)}"
                                         >
                                           <i class="bi bi-mortarboard-fill"></i>
                                         </span>
@@ -3627,7 +3632,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         key="participants"
-                        onload="${javascript`
+                        onload="${response.locals.javascript(javascript`
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
@@ -3665,7 +3670,8 @@ export default async (application: Application): Promise<void> => {
                                               ? html`checked`
                                               : html``}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                                            onload="${javascript`
+                                            onload="${response.locals
+                                              .javascript(javascript`
                                               this.isModified = false;
 
                                               this.onchange = () => {  
@@ -3710,7 +3716,7 @@ export default async (application: Application): Promise<void> => {
                                                     : javascript``
                                                 }
                                               };
-                                            `}"
+                                            `)}"
                                           />
                                           <span
                                             class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
@@ -3795,7 +3801,8 @@ export default async (application: Application): Promise<void> => {
                                                 type="text"
                                                 class="input--text"
                                                 placeholder="Filter…"
-                                                onload="${javascript`
+                                                onload="${response.locals
+                                                  .javascript(javascript`
                                                   this.isModified = false;
 
                                                   this.oninput = () => {
@@ -3825,7 +3832,7 @@ export default async (application: Application): Promise<void> => {
                                                       selectedParticipant.hidden = selectedParticipantHidden;
                                                     }
                                                   };
-                                                `}"
+                                                `)}"
                                               />
                                             </label>
                                           </div>
@@ -3863,13 +3870,14 @@ export default async (application: Application): Promise<void> => {
                                                       ? html`checked`
                                                       : html``}
                                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    onload="${javascript`
+                                                    onload="${response.locals
+                                                      .javascript(javascript`
                                                       this.isModified = false;
 
                                                       this.onchange = () => {
                                                         this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
                                                       };
-                                                    `}"
+                                                    `)}"
                                                   />
                                                   <span
                                                     class="dropdown--menu--item button button--transparent"
@@ -3911,7 +3919,7 @@ export default async (application: Application): Promise<void> => {
                               `
                             )},
                           });
-                        `}"
+                        `)}"
                       >
                         $${application.server.locals.helpers.conversationParticipantses.map(
                           (conversationParticipants) => html`
@@ -3933,7 +3941,7 @@ export default async (application: Application): Promise<void> => {
                               required
                               tabindex="-1"
                               class="visually-hidden input--visible-when-enabled-and-checked"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 ${
                                   conversationParticipants === "selected-people"
                                     ? javascript`
@@ -3944,8 +3952,7 @@ export default async (application: Application): Promise<void> => {
                                       `
                                     : javascript``
                                 }
-                                
-                              `}"
+                              `)}"
                             />
                             <button
                               type="button"
@@ -3995,7 +4002,7 @@ export default async (application: Application): Promise<void> => {
                             key="selected-participants--button--${enrollment.reference}"
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Remove Participant",
@@ -4006,7 +4013,7 @@ export default async (application: Application): Promise<void> => {
 
                                 this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
                               };
-                            `}"
+                            `)}"
                           >
                             $${application.server.locals.partials.user({
                               request,
@@ -4054,12 +4061,12 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "People receive immediate email notifications for announcements.",
                               });
-                            `}"
+                            `)}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
@@ -4095,31 +4102,31 @@ export default async (application: Application): Promise<void> => {
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.onchange = () => {
                                   if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
                                 };
-                              `}"
+                              `)}"
                             />
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Announcement",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-megaphone"></i>
                               Not an Announcement
                             </span>
                             <span
                               class="text--orange"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Not an Announcement",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-megaphone-fill"></i>
                               Announcement
@@ -4139,12 +4146,12 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "Pinned conversations are listed first.",
                               });
-                            `}"
+                            `)}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
@@ -4172,24 +4179,24 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Pin",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-pin-angle"></i>
                               Unpinned
                             </span>
                             <span
                               class="text--amber"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Unpin",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-pin-fill"></i>
                               Pinned
@@ -4218,7 +4225,7 @@ export default async (application: Application): Promise<void> => {
                               type="checkbox"
                               name="isAnonymous"
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.isModified = false;
 
                                 this.onchange = () => {
@@ -4226,15 +4233,15 @@ export default async (application: Application): Promise<void> => {
                                 };
                                 
                                 if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
-                              `}"
+                              `)}"
                             />
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Anonymous to Other Students",
                                 });
-                              `}"
+                              `)}"
                             >
                               <span>
                                 $${application.server.locals.partials.user({
@@ -4255,12 +4262,12 @@ export default async (application: Application): Promise<void> => {
                               </span>
                             </span>
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Signed by You",
                                 });
-                              `}"
+                              `)}"
                             >
                               <span>
                                 $${application.server.locals.partials.user({
@@ -4287,22 +4294,22 @@ export default async (application: Application): Promise<void> => {
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
-                              `}"
+                              `)}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
-                              `}"
+                              `)}"
                               ><i class="bi bi-command"></i
                               ><i class="bi bi-arrow-return-left"></i
                             ></span>
@@ -4318,7 +4325,7 @@ export default async (application: Application): Promise<void> => {
                     this.onclick = () => {
                       delete this.closest("form").isValid;
                     };
-                  `}"
+                  `)}"
                 >
                   $${request.params.type === "note"
                     ? html`
@@ -4371,22 +4378,22 @@ export default async (application: Application): Promise<void> => {
                   class="link"
                   name="isDraft"
                   value="true"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
-                              `}"
+                              `)}"
                               >Ctrl+S</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
-                              `}"
+                              `)}"
                               ><i class="bi bi-command"></i>S</span
                             >
                           </span>
@@ -4402,7 +4409,7 @@ export default async (application: Application): Promise<void> => {
                     this.onclick = () => {
                       this.closest("form").isValid = true;
                     };
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-file-earmark-text"></i>
                   Save Draft
@@ -4423,11 +4430,11 @@ export default async (application: Application): Promise<void> => {
                           { conversations: request.query.conversations },
                           { addQueryPrefix: true }
                         )}"
-                        onload="${javascript`
+                        onload="${response.locals.javascript(javascript`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
-                        `}"
+                        `)}"
                       >
                         <i class="bi bi-trash"></i>
                         Remove Draft
@@ -4439,9 +4446,9 @@ export default async (application: Application): Promise<void> => {
                             new Date(conversationDraft.createdAt).getTime() -
                               100 * 24 * 60 * 60 * 1000
                           ).toISOString()}"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                          `}"
+                          `)}"
                         ></time>
                       </div>
                       $${conversationDraft.updatedAt !== null
@@ -4452,9 +4459,9 @@ export default async (application: Application): Promise<void> => {
                                 datetime="${new Date(
                                   conversationDraft.updatedAt
                                 ).toISOString()}"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                `}"
+                                `)}"
                               ></time>
                             </div>
                           `
@@ -5161,12 +5168,12 @@ export default async (application: Application): Promise<void> => {
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             this.onclick = () => {
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = true;
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = false;
                             };
-                          `}"
+                          `)}"
                         >
                           <span
                             css="${response.locals.css(css`
@@ -5236,7 +5243,8 @@ export default async (application: Application): Promise<void> => {
                                     : textColorsConversationType[
                                         response.locals.conversation.type
                                       ]}"
-                                  onload="${javascript`
+                                  onload="${response.locals
+                                    .javascript(javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
                                       content: "Update Conversation Type",
@@ -5298,7 +5306,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       )},
                                     });
-                                  `}"
+                                  `)}"
                                 >
                                   $${iconsConversationType[
                                     response.locals.conversation.type
@@ -5360,12 +5368,13 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Resolved",
                                                 });
-                                              `}"
+                                              `)}"
                                             >
                                               <i
                                                 class="bi bi-patch-exclamation-fill"
@@ -5382,12 +5391,13 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Unresolved",
                                                 });
-                                              `}"
+                                              `)}"
                                             >
                                               <i
                                                 class="bi bi-patch-check-fill"
@@ -5460,12 +5470,13 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Announcement",
                                                 });
-                                              `}"
+                                              `)}"
                                             >
                                               <i class="bi bi-megaphone"></i>
                                               Not an Announcement
@@ -5480,12 +5491,13 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Not an Announcement",
                                                 });
-                                              `}"
+                                              `)}"
                                             >
                                               <i
                                                 class="bi bi-megaphone-fill"
@@ -5532,12 +5544,13 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        onload="${javascript`
+                                        onload="${response.locals
+                                          .javascript(javascript`
                                           (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
                                             content: "Pin",
                                           });
-                                        `}"
+                                        `)}"
                                       >
                                         <i class="bi bi-pin-angle"></i>
                                         Unpinned
@@ -5552,12 +5565,13 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                        onload="${javascript`
+                                        onload="${response.locals
+                                          .javascript(javascript`
                                           (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
                                             content: "Unpin",
                                           });
-                                        `}"
+                                        `)}"
                                       >
                                         <i class="bi bi-pin-fill"></i>
                                         Pinned
@@ -5578,7 +5592,7 @@ export default async (application: Application): Promise<void> => {
                       <div>
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Actions",
@@ -5597,7 +5611,8 @@ export default async (application: Application): Promise<void> => {
                                   <div class="dropdown--menu">
                                     <button
                                       class="dropdown--menu--item button button--transparent"
-                                      onload="${javascript`
+                                      onload="${response.locals
+                                        .javascript(javascript`
                                         (this.copied ??= tippy(this)).setProps({
                                           theme: "green",
                                           trigger: "manual",
@@ -5610,7 +5625,7 @@ export default async (application: Application): Promise<void> => {
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           this.copied.hide();
                                         };
-                                      `}"
+                                      `)}"
                                     >
                                       <i class="bi bi-link"></i>
                                       Copy Conversation Permanent Link
@@ -5622,13 +5637,14 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            onload="${javascript`
+                                            onload="${response.locals
+                                              .javascript(javascript`
                                               this.onclick = () => {
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
                                                 tippy.hideAll();
                                               };
-                                            `}"
+                                            `)}"
                                           >
                                             <i class="bi bi-pencil"></i>
                                             Edit Conversation Title
@@ -5752,7 +5768,8 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            onload="${javascript`
+                                            onload="${response.locals
+                                              .javascript(javascript`
                                               if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   trigger: "click",
@@ -5814,7 +5831,7 @@ export default async (application: Application): Promise<void> => {
                                                   this.tooltipContentSkipLoading = false;
                                                 }, 60 * 1000);
                                               };
-                                            `}"
+                                            `)}"
                                           >
                                             <i class="bi bi-recycle"></i>
                                             Reuse Conversation in Another Course
@@ -5827,7 +5844,8 @@ export default async (application: Application): Promise<void> => {
                                           <div>
                                             <button
                                               class="dropdown--menu--item button button--transparent"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 (this.dropdown ??= tippy(this)).setProps({
                                                   theme: "rose",
                                                   trigger: "click",
@@ -5893,7 +5911,7 @@ export default async (application: Application): Promise<void> => {
                                                     `
                                                   )},
                                                 });
-                                              `}"
+                                              `)}"
                                             >
                                               <i class="bi bi-trash"></i>
                                               Remove Conversation
@@ -5905,7 +5923,7 @@ export default async (application: Application): Promise<void> => {
                                 `
                               )},
                             });
-                          `}"
+                          `)}"
                         >
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
@@ -5966,20 +5984,20 @@ export default async (application: Application): Promise<void> => {
                               css="${response.locals.css(css`
                                 flex: 1;
                               `)}"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
                                   content: "Update Title",
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-check-lg"></i>
                             </button>
                             <button
                               type="reset"
                               class="button button--tight button--tight--inline button--transparent text--rose"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
@@ -5988,15 +6006,17 @@ export default async (application: Application): Promise<void> => {
                                       Cancel
                                       <span class="keyboard-shortcut">
                                         (<span
-                                          onload="${javascript`
+                                          onload="${response.locals
+                                            .javascript(javascript`
                                             this.hidden = leafac.isAppleDevice;
-                                          `}"
+                                          `)}"
                                           >Esc</span
                                         ><span
                                           class="keyboard-shortcut--cluster"
-                                          onload="${javascript`
+                                          onload="${response.locals
+                                            .javascript(javascript`
                                             this.hidden = !leafac.isAppleDevice;
-                                          `}"
+                                          `)}"
                                           ><i class="bi bi-escape"></i></span
                                         >)
                                       </span>
@@ -6012,7 +6032,7 @@ export default async (application: Application): Promise<void> => {
                                 const input = this.closest('[key="title--edit"]').querySelector('[name="title"]');
 
                                 (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-x-lg"></i>
                             </button>
@@ -6055,13 +6075,13 @@ export default async (application: Application): Promise<void> => {
                                   }
                                   text-align: left;
                                 `)}"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
                                     content: "You may not remove this tag because a conversation must have at least one tag.",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
@@ -6070,11 +6090,12 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      onload="${javascript`
+                                      onload="${response.locals
+                                        .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           content: "This tag is visible by staff only.",
                                         });
-                                      `}"
+                                      `)}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
                                     </span>
@@ -6112,13 +6133,13 @@ export default async (application: Application): Promise<void> => {
                                 css="${response.locals.css(css`
                                   text-align: left;
                                 `)}"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
                                     content: "Remove Tag",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
@@ -6127,11 +6148,12 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      onload="${javascript`
+                                      onload="${response.locals
+                                        .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           content: "This tag is visible by staff only.",
                                         });
-                                      `}"
+                                      `)}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
                                     </span>
@@ -6149,7 +6171,7 @@ export default async (application: Application): Promise<void> => {
                           <div>
                             <button
                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Add Tag",
@@ -6236,12 +6258,14 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`
                                                             <span
                                                               class="text--sky"
-                                                              onload="${javascript`
+                                                              onload="${response
+                                                                .locals
+                                                                .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
                                                                 touch: false,
                                                                 content: "This tag is visible by staff only.",
                                                               });
-                                                            `}"
+                                                            `)}"
                                                             >
                                                               <i
                                                                 class="bi bi-mortarboard-fill"
@@ -6259,13 +6283,14 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     class="dropdown--menu--item button button--blue text--teal disabled"
-                                                    onload="${javascript`
+                                                    onload="${response.locals
+                                                      .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         theme: "rose",
                                                         touch: false,
                                                         content: "You may not remove this tag because a conversation must have at least one tag.",
                                                       });
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     <i
                                                       class="bi bi-tag-fill"
@@ -6275,12 +6300,14 @@ export default async (application: Application): Promise<void> => {
                                                       ? html`
                                                           <span
                                                             class="text--sky"
-                                                            onload="${javascript`
+                                                            onload="${response
+                                                              .locals
+                                                              .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
                                                                 touch: false,
                                                                 content: "This tag is visible by staff only.",
                                                               });
-                                                            `}"
+                                                            `)}"
                                                           >
                                                             <i
                                                               class="bi bi-mortarboard-fill"
@@ -6329,12 +6356,14 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`
                                                             <span
                                                               class="text--sky"
-                                                              onload="${javascript`
+                                                              onload="${response
+                                                                .locals
+                                                                .javascript(javascript`
                                                                 (this.tooltip ??= tippy(this)).setProps({
                                                                   touch: false,
                                                                   content: "This tag is visible by staff only.",
                                                                 });
-                                                              `}"
+                                                              `)}"
                                                             >
                                                               <i
                                                                 class="bi bi-mortarboard-fill"
@@ -6351,7 +6380,7 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   )},
                                 });
-                              `}"
+                              `)}"
                             >
                               <i class="bi bi-tags-fill"></i>
                               Tags
@@ -6477,7 +6506,8 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <div
                                   key="participants"
-                                  onload="${javascript`
+                                  onload="${response.locals
+                                    .javascript(javascript`
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
@@ -6509,7 +6539,8 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`checked`
                                                         : html``}
                                                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                      onload="${javascript`
+                                                      onload="${response.locals
+                                                        .javascript(javascript`
                                                         this.isModified = false;
 
                                                         this.onchange = () => {
@@ -6556,7 +6587,7 @@ export default async (application: Application): Promise<void> => {
 
                                                           this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                         };
-                                                      `}"
+                                                      `)}"
                                                     />
                                                     <span
                                                       class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
@@ -6646,7 +6677,9 @@ export default async (application: Application): Promise<void> => {
                                                           type="text"
                                                           class="input--text"
                                                           placeholder="Filter…"
-                                                          onload="${javascript`
+                                                          onload="${response
+                                                            .locals
+                                                            .javascript(javascript`
                                                             this.isModified = false;
 
                                                             this.oninput = () => {
@@ -6676,7 +6709,7 @@ export default async (application: Application): Promise<void> => {
                                                                 selectedParticipant.hidden = selectedParticipantHidden;
                                                               }
                                                             };
-                                                          `}"
+                                                          `)}"
                                                         />
                                                       </label>
                                                     </div>
@@ -6723,7 +6756,9 @@ export default async (application: Application): Promise<void> => {
                                                                 ? html`checked`
                                                                 : html``}
                                                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                              onload="${javascript`
+                                                              onload="${response
+                                                                .locals
+                                                                .javascript(javascript`
                                                                 this.isModified = false;
 
                                                                 this.onchange = () => {
@@ -6731,7 +6766,7 @@ export default async (application: Application): Promise<void> => {
 
                                                                   this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                                 };
-                                                              `}"
+                                                              `)}"
                                                             />
                                                             <span
                                                               class="dropdown--menu--item button button--transparent"
@@ -6775,7 +6810,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       )},
                                     });
-                                  `}"
+                                  `)}"
                                 >
                                   $${application.server.locals.helpers.conversationParticipantses.map(
                                     (conversationParticipants) => html`
@@ -6791,7 +6826,8 @@ export default async (application: Application): Promise<void> => {
                                         required
                                         tabindex="-1"
                                         class="visually-hidden input--visible-when-enabled-and-checked"
-                                        onload="${javascript`
+                                        onload="${response.locals
+                                          .javascript(javascript`
                                           ${
                                             conversationParticipants ===
                                             "selected-people"
@@ -6804,7 +6840,7 @@ export default async (application: Application): Promise<void> => {
                                               : javascript``
                                           }
 
-                                        `}"
+                                        `)}"
                                       />
                                       <button
                                         type="button"
@@ -6853,7 +6889,8 @@ export default async (application: Application): Promise<void> => {
                                       key="selected-participants--button--${enrollment.reference}"
                                       type="button"
                                       class="button button--tight button--tight--inline button--transparent"
-                                      onload="${javascript`
+                                      onload="${response.locals
+                                        .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           touch: false,
                                           content: "Remove Participant",
@@ -6866,7 +6903,7 @@ export default async (application: Application): Promise<void> => {
 
                                           this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                         };
-                                      `}"
+                                      `)}"
                                     >
                                       $${application.server.locals.partials.user(
                                         {
@@ -6925,12 +6962,12 @@ export default async (application: Application): Promise<void> => {
                               class="${textColorsConversationParticipants[
                                 response.locals.conversation.participants
                               ]}"
-                              onload="${javascript`
+                              onload="${response.locals.javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Participants",
                                 });
-                              `}"
+                              `)}"
                             >
                               $${iconsConversationParticipants[
                                 response.locals.conversation.participants
@@ -6968,12 +7005,12 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               this.onclick = () => {
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = true;
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = false;
                               };
-                            `}"
+                            `)}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
                           </button>
@@ -7007,7 +7044,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         : css``}
                     `)}"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       const scroll = () => {
                         if (
                           [undefined, "GET", "HEAD", "OPTIONS", "TRACE"].includes(event?.detail?.request?.method) &&
@@ -7062,7 +7099,7 @@ export default async (application: Application): Promise<void> => {
                         window.removeEventListener("livenavigateself", scroll);
                       }, { once: true });
                       window.setTimeout(scroll);
-                    `}"
+                    `)}"
                   >
                     <div
                       css="${response.locals.css(css`
@@ -7194,7 +7231,8 @@ export default async (application: Application): Promise<void> => {
                                                 gap: var(--space--4);
                                                 align-items: center;
                                               `)}"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 if (this !== document.querySelector('[key="message--new-separator"]')) {
                                                   this.remove();
                                                   return;
@@ -7210,7 +7248,7 @@ export default async (application: Application): Promise<void> => {
                                                 };
 
                                                 this.onbeforeremove = () => false;
-                                              `}"
+                                              `)}"
                                             >
                                               <hr
                                                 class="separator"
@@ -7281,7 +7319,8 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  onload="${javascript`
+                                                  onload="${response.locals
+                                                    .javascript(javascript`
                                                     const element = this;
                                                     leafac.relativizeDateElement(element);
 
@@ -7295,7 +7334,7 @@ export default async (application: Application): Promise<void> => {
                                                       thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
                                                       element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
                                                     })();
-                                                  `}"
+                                                  `)}"
                                                 ></time>
                                               </span>
                                               <hr
@@ -7413,7 +7452,8 @@ export default async (application: Application): Promise<void> => {
                                                       `
                                                     : css``}
                                                 `)}"
-                                                onload="${javascript`
+                                                onload="${response.locals
+                                                  .javascript(javascript`
                                                   (this.tooltip ??= tippy(this)).setProps({
                                                     touch: false,
                                                     content: "Actions",
@@ -7494,7 +7534,7 @@ export default async (application: Application): Promise<void> => {
                                                       this.dropdownContentSkipLoading = false;
                                                     }, 60 * 1000);
                                                   };
-                                                `}"
+                                                `)}"
                                               >
                                                 <i
                                                   class="bi bi-three-dots-vertical"
@@ -7547,12 +7587,14 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                        onload="${javascript`
+                                                        onload="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: "Set as Answer",
                                                           });
-                                                        `}"
+                                                        `)}"
                                                       >
                                                         <i
                                                           class="bi bi-patch-check"
@@ -7569,12 +7611,14 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                        onload="${javascript`
+                                                        onload="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: "Set as Not an Answer",
                                                           });
-                                                        `}"
+                                                        `)}"
                                                       >
                                                         <i
                                                           class="bi bi-patch-check-fill"
@@ -7644,7 +7688,9 @@ export default async (application: Application): Promise<void> => {
                                                   ? html`
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                        onload="${javascript`
+                                                        onload="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: ${JSON.stringify(
@@ -7696,7 +7742,7 @@ export default async (application: Application): Promise<void> => {
                                                               }`
                                                             )},
                                                           });
-                                                        `}"
+                                                        `)}"
                                                       >
                                                         <i
                                                           class="bi bi-award-fill"
@@ -7720,7 +7766,9 @@ export default async (application: Application): Promise<void> => {
                                                         ).length === 0
                                                           ? html``
                                                           : html`
-                                                              onload="${javascript`
+                                                              onload="${response
+                                                                .locals
+                                                                .javascript(javascript`
                                                                 (this.tooltip ??= tippy(this)).setProps({
                                                                   touch: false,
                                                                   content: ${JSON.stringify(
@@ -7748,7 +7796,7 @@ export default async (application: Application): Promise<void> => {
                                                                     })`
                                                                   )},
                                                                 });
-                                                              `}"
+                                                              `)}"
                                                             `}
                                                       >
                                                         <i
@@ -7785,7 +7833,8 @@ export default async (application: Application): Promise<void> => {
                                             header += html`
                                               <div
                                                 class="text--lime"
-                                                onload="${javascript`
+                                                onload="${response.locals
+                                                  .javascript(javascript`
                                                   ${
                                                     message.endorsements.filter(
                                                       (endorsement) =>
@@ -7823,7 +7872,7 @@ export default async (application: Application): Promise<void> => {
                                                       : javascript``
                                                   }
                                                   
-                                                `}"
+                                                `)}"
                                               >
                                                 <i class="bi bi-award"></i>
                                                 ${message.endorsements.length.toString()}
@@ -7964,9 +8013,10 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  onload="${javascript`
+                                                  onload="${response.locals
+                                                    .javascript(javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                  `}"
+                                                  `)}"
                                                 ></time>
 
                                                 $${message.updatedAt !== null
@@ -7977,9 +8027,11 @@ export default async (application: Application): Promise<void> => {
                                                           datetime="${new Date(
                                                             message.updatedAt
                                                           ).toISOString()}"
-                                                          onload="${javascript`
+                                                          onload="${response
+                                                            .locals
+                                                            .javascript(javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `}"
+                                                          `)}"
                                                         ></time>
                                                       </div>
                                                     `
@@ -8017,7 +8069,8 @@ export default async (application: Application): Promise<void> => {
                                             ></div>
                                             <div
                                               key="message--show--content-area--content"
-                                              onload="${javascript`
+                                              onload="${response.locals
+                                                .javascript(javascript`
                                                 const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
@@ -8029,7 +8082,9 @@ export default async (application: Application): Promise<void> => {
                                                       >
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
-                                                          onload="${javascript`
+                                                          onload="${response
+                                                            .locals
+                                                            .javascript(javascript`
                                                             this.onclick = () => {
                                                               tippy.hideAll();
                                                               const selection = window.getSelection();
@@ -8085,7 +8140,7 @@ export default async (application: Application): Promise<void> => {
                                                               );
                                                               element.focus();
                                                             };
-                                                          `}"
+                                                          `)}"
                                                         >
                                                           <i
                                                             class="bi bi-chat-quote"
@@ -8114,7 +8169,7 @@ export default async (application: Application): Promise<void> => {
                                                     dropdownMenuTarget.dropdownMenu.show();
                                                   });
                                                 };
-                                              `}"
+                                              `)}"
                                             >
                                               $${application.server.locals.partials.content(
                                                 {
@@ -8192,7 +8247,9 @@ export default async (application: Application): Promise<void> => {
                                                       $${likesCount === 0
                                                         ? html``
                                                         : html`
-                                                            onload="${javascript`
+                                                            onload="${response
+                                                              .locals
+                                                              .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
                                                                 touch: false,
                                                                 content: ${JSON.stringify(
@@ -8201,7 +8258,7 @@ export default async (application: Application): Promise<void> => {
                                                                     : "Like"
                                                                 )},
                                                               });
-                                                            `}"
+                                                            `)}"
                                                           `}
                                                     >
                                                       $${isLiked
@@ -8226,7 +8283,9 @@ export default async (application: Application): Promise<void> => {
                                                           class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
                                                             ? "text--blue"
                                                             : ""}"
-                                                          onload="${javascript`
+                                                          onload="${response
+                                                            .locals
+                                                            .javascript(javascript`
                                                             (this.tooltip ??= tippy(this)).setProps({
                                                               touch: false,
                                                               content: "See people who liked",
@@ -8302,7 +8361,7 @@ export default async (application: Application): Promise<void> => {
                                                                 this.dropdownContentSkipLoading = false;
                                                               }, 60 * 1000);
                                                             };
-                                                          `}"
+                                                          `)}"
                                                         >
                                                           ${likesCount.toString()}
                                                           Like${likesCount === 1
@@ -8322,7 +8381,8 @@ export default async (application: Application): Promise<void> => {
                                               messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                  onload="${javascript`
+                                                  onload="${response.locals
+                                                    .javascript(javascript`
                                                     if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         trigger: "click",
@@ -8390,7 +8450,7 @@ export default async (application: Application): Promise<void> => {
                                                         this.tooltipContentSkipLoading = false;
                                                       }, 60 * 1000);
                                                     };
-                                                  `}"
+                                                  `)}"
                                                 >
                                                   <i class="bi bi-eye"></i>
                                                   ${message.readings.length.toString()}
@@ -8446,11 +8506,12 @@ export default async (application: Application): Promise<void> => {
                                           <div
                                             key="form"
                                             hidden
-                                            onload="${javascript`
+                                            onload="${response.locals
+                                              .javascript(javascript`
                                               if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
                                               this.partialParentElement = false;
                                               this.skipLoading = false;
-                                            `}"
+                                            `)}"
                                           ></div>
                                         </div>
                                       </div>
@@ -8685,7 +8746,7 @@ export default async (application: Application): Promise<void> => {
                         padding-top: var(--space--4);
                       `}
                 `)}"
-                onload="${javascript`
+                onload="${response.locals.javascript(javascript`
                   this.onsubmit = () => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
@@ -8705,7 +8766,7 @@ export default async (application: Application): Promise<void> => {
                       textFieldEdit.set(content, "");
                     });
                   };
-                `}"
+                `)}"
               >
                 <div
                   css="${response.locals.css(css`
@@ -8743,29 +8804,29 @@ export default async (application: Application): Promise<void> => {
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   leafac.saveFormInputValue(this, "answer");
-                                `}"
+                                `)}"
                               />
                               <span
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Answer",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-patch-check"></i>
                                 Not an Answer
                               </span>
                               <span
                                 class="text--emerald"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Not an Answer",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-patch-check-fill"></i>
                                 Answer
@@ -8792,9 +8853,9 @@ export default async (application: Application): Promise<void> => {
                           `
                         : css``}
                     `)}"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
-                    `}"
+                    `)}"
                   >
                     $${application.server.locals.partials.contentEditor({
                       request,
@@ -8815,7 +8876,7 @@ export default async (application: Application): Promise<void> => {
                               margin: var(--space--1);
                               align-items: center;
                             `)}"
-                            onload="${javascript`
+                            onload="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: ${response.locals.html(
@@ -8823,15 +8884,17 @@ export default async (application: Application): Promise<void> => {
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
-                                        onload="${javascript`
+                                        onload="${response.locals
+                                          .javascript(javascript`
                                           this.hidden = leafac.isAppleDevice;
-                                        `}"
+                                        `)}"
                                         >Ctrl+Enter</span
                                       ><span
                                         class="keyboard-shortcut--cluster"
-                                        onload="${javascript`
+                                        onload="${response.locals
+                                          .javascript(javascript`
                                           this.hidden = !leafac.isAppleDevice;
-                                        `}"
+                                        `)}"
                                         ><i class="bi bi-command"></i
                                         ><i class="bi bi-arrow-return-left"></i
                                       ></span>
@@ -8839,7 +8902,7 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 )},
                               });
-                            `}"
+                            `)}"
                           >
                             <i
                               class="bi bi-send-fill"
@@ -8873,7 +8936,7 @@ export default async (application: Application): Promise<void> => {
                                 type="checkbox"
                                 name="isAnonymous"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   this.isModified = false;
 
                                   this.onchange = () => {
@@ -8881,15 +8944,15 @@ export default async (application: Application): Promise<void> => {
                                   };
                                   
                                   if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
-                                `}"
+                                `)}"
                               />
                               <span
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Anonymous to Other Students",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <span>
                                   $${application.server.locals.partials.user({
@@ -8910,12 +8973,12 @@ export default async (application: Application): Promise<void> => {
                                 </span>
                               </span>
                               <span
-                                onload="${javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Signed by You",
                                   });
-                                `}"
+                                `)}"
                               >
                                 <span>
                                   $${application.server.locals.partials.user({
@@ -8945,22 +9008,24 @@ export default async (application: Application): Promise<void> => {
                   >
                     <button
                       class="button button--full-width-on-small-screen button--blue"
-                      onload="${javascript`
+                      onload="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${response.locals.html(
                             html`
                               <span class="keyboard-shortcut">
                                 <span
-                                  onload="${javascript`
+                                  onload="${response.locals
+                                    .javascript(javascript`
                                     this.hidden = leafac.isAppleDevice;
-                                  `}"
+                                  `)}"
                                   >Ctrl+Enter</span
                                 ><span
                                   class="keyboard-shortcut--cluster"
-                                  onload="${javascript`
+                                  onload="${response.locals
+                                    .javascript(javascript`
                                     this.hidden = !leafac.isAppleDevice;
-                                  `}"
+                                  `)}"
                                   ><i class="bi bi-command"></i
                                   ><i class="bi bi-arrow-return-left"></i
                                 ></span>
@@ -8972,7 +9037,7 @@ export default async (application: Application): Promise<void> => {
                         const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                         (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
-                      `}"
+                      `)}"
                     >
                       <i class="bi bi-send-fill"></i>
                       Send Message

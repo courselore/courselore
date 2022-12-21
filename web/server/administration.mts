@@ -399,7 +399,7 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
               placeholder="Filter…"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -425,7 +425,7 @@ export default async (application: Application): Promise<void> => {
                     user.hidden = userHidden;
                   }
                 };
-              `}"
+              `)}"
             />
           </label>
 
@@ -450,9 +450,9 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `)}"
-                onload="${javascript`
+                onload="${response.locals.javascript(javascript`
                   this.onbeforemorph = (detail) => !detail.liveUpdate;
-                `}"
+                `)}"
               >
                 <div>
                   $${application.server.locals.partials.user({
@@ -504,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `)}"
-                        onload="${javascript`
+                        onload="${response.locals.javascript(javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Copy Email",
@@ -524,7 +524,7 @@ export default async (application: Application): Promise<void> => {
                             await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                             this.copied.hide();
                           };
-                        `}"
+                        `)}"
                       >
                         <i class="bi bi-stickies"></i>
                       </button>
@@ -541,9 +541,9 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             user.lastSeenOnlineAt
                           ).toISOString()}"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                          `}"
+                          `)}"
                         ></time>
                       </span>
                     </div>
@@ -567,7 +567,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
-                        onload="${javascript`
+                        onload="${response.locals.javascript(javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Update System Role",
@@ -603,18 +603,20 @@ export default async (application: Application): Promise<void> => {
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
-                                                    onload="${javascript`
+                                                    onload="${response.locals
+                                                      .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         theme: "rose",
                                                         trigger: "click",
                                                         content: "You may not update your own role because you’re the only administrator.",
                                                       });
-                                                    `}"
+                                                    `)}"
                                                   `
                                                 : isSelf
                                                 ? html`
                                                     type="button"
-                                                    onload="${javascript`
+                                                    onload="${response.locals
+                                                      .javascript(javascript`
                                                       (this.dropdown ??= tippy(this)).setProps({
                                                         theme: "rose",
                                                         trigger: "click",
@@ -680,7 +682,7 @@ export default async (application: Application): Promise<void> => {
                                                           `
                                                         )},
                                                       });
-                                                    `}"
+                                                    `)}"
                                                   `
                                                 : html``}
                                             >
@@ -695,7 +697,7 @@ export default async (application: Application): Promise<void> => {
                               `
                             )},
                           });
-                        `}"
+                        `)}"
                       >
                         $${iconsSystemRole[user.systemRole]}
                         ${lodash.capitalize(user.systemRole)}

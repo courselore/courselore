@@ -106,12 +106,12 @@ export default async (application: Application): Promise<void> => {
                           href="https://${application.addresses
                             .canonicalHostname}/sign-up"
                           class="button button--blue"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Sign up on a Courselore installation managed by the developers of Courselore.",
                             });
-                          `}"
+                          `)}"
                         >
                           <i class="bi bi-person-plus-fill"></i>
                           Sign up
@@ -120,12 +120,12 @@ export default async (application: Application): Promise<void> => {
                           href="https://${application.addresses
                             .canonicalHostname}/sign-in"
                           class="button button--transparent"
-                          onload="${javascript`
+                          onload="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Sign in on a Courselore installation managed by the developers of Courselore.",
                             });
-                          `}"
+                          `)}"
                         >
                           <i class="bi bi-box-arrow-in-right"></i>
                           Sign in
@@ -149,12 +149,12 @@ export default async (application: Application): Promise<void> => {
                     css="${response.locals.css(css`
                       align-items: center;
                     `)}"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                       });
-                    `}"
+                    `)}"
                   >
                     $${application.server.locals.partials.logo({
                       size: 16 /* var(--space--4) */,
@@ -164,12 +164,12 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://github.com/courselore/courselore"
                     class="button button--transparent"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Courselore is open source and will be free forever for installing on your own server.",
                       });
-                    `}"
+                    `)}"
                   >
                     <i class="bi bi-file-earmark-code"></i>
                     Source Code
@@ -180,12 +180,12 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://${application.addresses.tryHostname}"
                     class="button button--transparent"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "A Courselore installation running the latest development version. Not for use with real courses.",
                       });
-                    `}"
+                    `)}"
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration Installation
@@ -575,12 +575,12 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       content: "A straightforward way to make text bold, include links, and so forth.",
                     });
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
@@ -592,12 +592,12 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       content: "A way to write mathematical formulas.",
                     });
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
@@ -609,12 +609,12 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
-                  onload="${javascript`
+                  onload="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       content: "Color computer code to make it easier to read.",
                     });
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
@@ -628,9 +628,9 @@ export default async (application: Application): Promise<void> => {
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
               `)}"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 this.isModified = false;
-              `}"
+              `)}"
             >
               $${application.server.locals.partials.contentEditor({
                 request: request,
@@ -839,12 +839,12 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.addresses
                       .canonicalHostname}/sign-up"
                     class="button button--blue"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Sign up on a Courselore installation managed by the developers of Courselore.",
                       });
-                    `}"
+                    `)}"
                   >
                     <i class="bi bi-person-plus-fill"></i>
                     Sign up
@@ -853,12 +853,12 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.addresses
                       .canonicalHostname}/sign-in"
                     class="button button--transparent"
-                    onload="${javascript`
+                    onload="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Sign in on a Courselore installation managed by the developers of Courselore.",
                       });
-                    `}"
+                    `)}"
                   >
                     <i class="bi bi-box-arrow-in-right"></i>
                     Sign in
@@ -879,12 +879,12 @@ export default async (application: Application): Promise<void> => {
               css="${response.locals.css(css`
                 align-items: center;
               `)}"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                 });
-              `}"
+              `)}"
             >
               $${application.server.locals.partials.logo({
                 size: 24 /* var(--space--6) */,
@@ -894,12 +894,12 @@ export default async (application: Application): Promise<void> => {
             <a
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: "Courselore is open source and will be free forever for installing on your own server.",
                 });
-              `}"
+              `)}"
             >
               <i class="bi bi-file-earmark-code"></i>
               Source Code
@@ -907,12 +907,12 @@ export default async (application: Application): Promise<void> => {
             <a
               href="https://${application.addresses.tryHostname}"
               class="button button--transparent"
-              onload="${javascript`
+              onload="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: "A Courselore installation running the latest development version. Not for use with real courses.",
                 });
-              `}"
+              `)}"
             >
               <i class="bi bi-easel"></i>
               Demonstration Installation
