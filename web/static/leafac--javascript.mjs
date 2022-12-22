@@ -410,6 +410,13 @@ export function loadPartial(parentElement, partialString) {
     `[key="html-for-javascript"]`
   );
   partialHTMLForJavaScript.remove();
+  const javascript = document.querySelector(`[key="local-javascript"]`);
+  const partialJavaScript = partialDocument.querySelector(
+    `[key="local-javascript"]`
+  );
+  partialJavaScript.remove();
+  javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
+  new Function(partialJavaScript.textContent)();
   morph(parentElement, partialDocument.querySelector("body"));
   morph(HTMLForJavaScript, partialHTMLForJavaScript);
   parentElement.partialParentElement = true;
