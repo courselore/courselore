@@ -385,6 +385,9 @@ export function loadDocument(documentString, detail) {
     newDocument.querySelector("body"),
     detail
   );
+  new Function(
+    document.querySelector('[key="local-javascript"]').textContent
+  )();
   window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
   if (!detail.liveUpdate) document.querySelector("[autofocus]")?.focus();
 }
