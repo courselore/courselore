@@ -372,23 +372,30 @@ export function loadDocument(documentString, detail) {
     documentString,
     "text/html"
   );
+
   document.querySelector("title").textContent =
     newDocument.querySelector("title").textContent;
-  if (!detail.liveUpdate)
-    for (const element of document.querySelectorAll(`[key="local-css"]`))
-      element.remove();
-  for (const element of newDocument.querySelectorAll(`[key="local-css"]`))
-    document.querySelector("head").insertAdjacentElement("beforeend", element);
+
+  const css = document.querySelector(`[key="local-css"]`);
+  const newCSS = newDocument.querySelector(`[key="local-css"]`);
+  if (detail.liveUpdate)
+    css.insertAdjacentText("beforeend", newCSS.textContent);
+  else css.textContent = newCSS.textContent;
+
   if (!detail.liveUpdate) tippyStatic.hideAll();
+
   morph(
     document.querySelector("body"),
     newDocument.querySelector("body"),
     detail
   );
+
   new Function(
     document.querySelector('[key="local-javascript"]').textContent
   )();
+
   window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
+
   if (!detail.liveUpdate) document.querySelector("[autofocus]")?.focus();
 }
 
@@ -397,12 +404,14 @@ export function loadPartial(parentElement, partialString) {
     partialString,
     "text/html"
   );
+
   document
     .querySelector("head")
     .insertAdjacentHTML(
       "beforeend",
       partialDocument.querySelector("head").innerHTML
     );
+
   const HTMLForJavaScript = document.querySelector(
     `[key="html-for-javascript"]`
   );
@@ -410,6 +419,7 @@ export function loadPartial(parentElement, partialString) {
     `[key="html-for-javascript"]`
   );
   partialHTMLForJavaScript.remove();
+
   const javascript = document.querySelector(`[key="local-javascript"]`);
   const partialJavaScript = partialDocument.querySelector(
     `[key="local-javascript"]`
@@ -417,16 +427,21 @@ export function loadPartial(parentElement, partialString) {
   partialJavaScript.remove();
   javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
   new Function(partialJavaScript.textContent)();
+
   morph(parentElement, partialDocument.querySelector("body"));
   morph(HTMLForJavaScript, partialHTMLForJavaScript);
+
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
+
   for (const element of [
     ...parentElement.querySelectorAll("[onload]"),
     ...HTMLForJavaScript.querySelectorAll("[onload]"),
   ])
     window.localJavaScript[element.getAttribute("onload")].call(element);
+
   document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
+
   parentElement.forceIsConnected = false;
 }
 
