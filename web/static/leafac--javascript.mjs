@@ -163,7 +163,7 @@ export function liveNavigation() {
           .slice(1)
           .some((element) => element.partialParentElement)
     ))
-      new Function("event", element.getAttribute("onload")).call(
+      window.localJavaScript[element.getAttribute("onload")].call(
         element,
         event
       );
@@ -415,7 +415,7 @@ export function loadPartial(parentElement, partialString) {
     ...parentElement.querySelectorAll("[onload]"),
     ...HTMLForJavaScript.querySelectorAll("[onload]"),
   ])
-    new Function(element.getAttribute("onload")).call(element);
+    window.localJavaScript[element.getAttribute("onload")].call(element);
   document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   parentElement.forceIsConnected = false;
 }
