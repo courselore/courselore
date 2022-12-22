@@ -167,6 +167,7 @@ export function liveNavigation() {
         element,
         event
       );
+
     document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   });
 
@@ -405,12 +406,9 @@ export function loadPartial(parentElement, partialString) {
     "text/html"
   );
 
-  document
-    .querySelector("head")
-    .insertAdjacentHTML(
-      "beforeend",
-      partialDocument.querySelector("head").innerHTML
-    );
+  const css = document.querySelector(`[key="local-css"]`);
+  const partialCSS = partialDocument.querySelector(`[key="local-css"]`);
+  css.insertAdjacentText("beforeend", partialCSS.textContent);
 
   const HTMLForJavaScript = document.querySelector(
     `[key="html-for-javascript"]`
@@ -425,8 +423,8 @@ export function loadPartial(parentElement, partialString) {
     `[key="local-javascript"]`
   );
   partialJavaScript.remove();
-  javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
   new Function(partialJavaScript.textContent)();
+  javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
 
   morph(parentElement, partialDocument.querySelector("body"));
   morph(HTMLForJavaScript, partialHTMLForJavaScript);
