@@ -1698,7 +1698,7 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--transparent button--full-width-on-small-screen"
                   onload="${response.locals.javascript(javascript`
-                    const newTagPartial = ${response.locals.html(
+                    const newTagPartial = ${JSON.stringify(
                       html`
                         <div
                           key="tag"
@@ -1732,7 +1732,7 @@ export default async (application: Application): Promise<void> => {
                               autocomplete="off"
                               disabled
                               class="input--text"
-                              onloadpartial="${response.locals.javascript(javascript`
+                              onload="${response.locals.javascript(javascript`
                                 this.isModified = true;
                                 this.disabled = false;
                                 this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
@@ -1758,14 +1758,16 @@ export default async (application: Application): Promise<void> => {
                                     type="checkbox"
                                     disabled
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    onloadpartial="${response.locals.javascript(javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       this.isModified = true;
                                       this.disabled = false;
                                       this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
                                     `)}"
                                   />
                                   <span
-                                    onloadpartial="${response.locals.javascript(javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Set as Visible by Staff Only",
@@ -1777,7 +1779,8 @@ export default async (application: Application): Promise<void> => {
                                   </span>
                                   <span
                                     class="${textColorsCourseRole.staff}"
-                                    onloadpartial="${response.locals.javascript(javascript`
+                                    onload="${response.locals
+                                      .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Set as Visible by Everyone",
@@ -1792,7 +1795,7 @@ export default async (application: Application): Promise<void> => {
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                onloadpartial="${response.locals.javascript(javascript`
+                                onload="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
@@ -1817,10 +1820,10 @@ export default async (application: Application): Promise<void> => {
                     const localJavaScript = window.localJavaScript;
 
                     this.onclick = () => {
-                      const newTag = newTagPartial.firstElementChild.cloneNode(true);
-                      this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
-                      for (const element of newTag.querySelectorAll("[onloadpartial]"))
-                        localJavaScript[element.getAttribute("onloadpartial")].call(element);
+                      const newTag = document.createRange().createContextualFragment(newTagPartial);
+                      this.closest("form").querySelector('[key="tags"]').append("beforeend", newTag);
+                      for (const element of newTag.querySelectorAll("[onload]"))
+                        localJavaScript[element.getAttribute("onload")].call(element);
                     };
 
                     this.onvalidate = () => {
