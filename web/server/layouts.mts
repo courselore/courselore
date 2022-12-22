@@ -281,7 +281,7 @@ export default async (application: Application): Promise<void> => {
             flex-direction: column;
             overflow: hidden;
           `)}"
-          onload="${response.locals.javascript(javascript`
+          javascript="${response.locals.javascript(javascript`
             this.onscroll = () => {
               this.scroll(0, 0);
             };
@@ -316,7 +316,8 @@ export default async (application: Application): Promise<void> => {
                             <div>$${flash.content}</div>
                             <button
                               class="button button--tight button--tight--inline button--transparent"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
@@ -325,14 +326,14 @@ export default async (application: Application): Promise<void> => {
                                       Close
                                       <span class="keyboard-shortcut">
                                         (<span
-                                          onload="${response.locals
+                                          javascript="${response.locals
                                             .javascript(javascript`
                                             this.hidden = leafac.isAppleDevice;
                                           `)}"
                                           >Esc</span
                                         ><span
                                           class="keyboard-shortcut--cluster"
-                                          onload="${response.locals
+                                          javascript="${response.locals
                                             .javascript(javascript`
                                             this.hidden = !leafac.isAppleDevice;
                                           `)}"
@@ -414,7 +415,7 @@ export default async (application: Application): Promise<void> => {
                       border-radius: var(--border-radius--none);
                       flex: 1;
                     `)}"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "What’s This?",
@@ -468,7 +469,7 @@ export default async (application: Application): Promise<void> => {
                 <div>
                   <button
                     class="button button--transparent"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
@@ -583,7 +584,7 @@ export default async (application: Application): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
-            onload="${response.locals.javascript(javascript`
+            javascript="${response.locals.javascript(javascript`
               if (
                 event?.detail?.previousLocation?.origin !== window.location.origin ||
                 event?.detail?.previousLocation?.pathname !== window.location.pathname ||
@@ -621,7 +622,7 @@ export default async (application: Application): Promise<void> => {
                 css="${response.locals.css(css`
                   align-items: center;
                 `)}"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
@@ -679,7 +680,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
@@ -799,7 +800,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <button
                       class="button button--transparent strong text--green"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -810,7 +811,7 @@ export default async (application: Application): Promise<void> => {
                                 <span>
                                   Courselore
                                   <span
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
@@ -822,7 +823,7 @@ export default async (application: Application): Promise<void> => {
                                   </span>
                                   →
                                   <span
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
@@ -893,7 +894,7 @@ export default async (application: Application): Promise<void> => {
             right: 0;
             left: 0;
           `)}"
-          onload="${response.locals.javascript(javascript`
+          javascript="${response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: "Loading…",
@@ -1241,7 +1242,7 @@ export default async (application: Application): Promise<void> => {
           <a
             href="https://${application.configuration.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
-            onload="${response.locals.javascript(javascript`
+            javascript="${response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
                 content: "Courselore",
@@ -1277,7 +1278,7 @@ export default async (application: Application): Promise<void> => {
                       css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -1394,7 +1395,7 @@ export default async (application: Application): Promise<void> => {
                       css="${response.locals.css(css`
                         max-width: 100%;
                       `)}"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
@@ -1424,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(
@@ -1487,7 +1488,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="dropdown--menu">
                           <button
                             class="dropdown--menu--item button button--transparent"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -1567,7 +1568,7 @@ export default async (application: Application): Promise<void> => {
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(response.locals.user.name)},
@@ -1629,7 +1630,8 @@ export default async (application: Application): Promise<void> => {
                           >
                             <button
                               class="dropdown--menu--item button button--transparent"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.onclick = () => {
                                   localStorage.clear();
                                 };
@@ -1731,7 +1733,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button button--tight button--tight--inline button--transparent"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,

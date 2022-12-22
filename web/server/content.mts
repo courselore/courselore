@@ -381,7 +381,7 @@ export default async (application: Application): Promise<void> => {
 
       if (isExternal)
         element.setAttribute(
-          "onload",
+          "javascript",
           response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
@@ -478,7 +478,7 @@ export default async (application: Application): Promise<void> => {
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Mention ${mention} in the conversation",
@@ -657,7 +657,7 @@ export default async (application: Application): Promise<void> => {
         if (conversation === undefined) continue;
         if (hrefMessageReference === undefined) {
           element.setAttribute(
-            "onload",
+            "javascript",
             response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
@@ -689,7 +689,7 @@ export default async (application: Application): Promise<void> => {
         });
         if (message === undefined) continue;
         element.setAttribute(
-          "onload",
+          "javascript",
           response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
@@ -837,7 +837,7 @@ export default async (application: Application): Promise<void> => {
                   name="content-editor--mode"
                   checked
                   class="visually-hidden"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.isModified = false;
 
                     this.onclick = () => {
@@ -857,7 +857,7 @@ export default async (application: Application): Promise<void> => {
                   type="radio"
                   name="content-editor--mode"
                   class="content-editor--button--preview visually-hidden"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.isModified = false;
 
                     this.onclick = async (event) => {
@@ -902,20 +902,22 @@ export default async (application: Application): Promise<void> => {
                 />
                 <span
                   class="button button--transparent"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
                               `)}"
                               >Ctrl+Alt+P</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
                               `)}"
                               ><i class="bi bi-alt"></i
@@ -972,7 +974,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Help",
@@ -1011,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1019,13 +1021,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+1</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1051,7 +1053,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1059,13 +1061,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+2</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1091,7 +1093,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1099,13 +1101,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+3</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1133,7 +1135,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1141,13 +1143,13 @@ export default async (application: Application): Promise<void> => {
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+B</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>B</span
@@ -1172,7 +1174,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1180,13 +1182,13 @@ export default async (application: Application): Promise<void> => {
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>I</span
@@ -1211,7 +1213,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1219,13 +1221,13 @@ export default async (application: Application): Promise<void> => {
                         Underline
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+U</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>U</span
@@ -1250,7 +1252,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1258,13 +1260,13 @@ export default async (application: Application): Promise<void> => {
                         Strikethrough
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+S</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1290,7 +1292,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1298,13 +1300,13 @@ export default async (application: Application): Promise<void> => {
                         Link
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>K</span
@@ -1331,7 +1333,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1339,13 +1341,13 @@ export default async (application: Application): Promise<void> => {
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+8</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1371,7 +1373,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1379,13 +1381,13 @@ export default async (application: Application): Promise<void> => {
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+7</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1411,7 +1413,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1419,13 +1421,13 @@ export default async (application: Application): Promise<void> => {
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+9</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1453,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1461,13 +1463,13 @@ export default async (application: Application): Promise<void> => {
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+'</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>'</span
@@ -1492,7 +1494,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1500,13 +1502,13 @@ export default async (application: Application): Promise<void> => {
                         Table
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+T</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1533,7 +1535,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1541,13 +1543,13 @@ export default async (application: Application): Promise<void> => {
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+D</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1573,7 +1575,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1581,13 +1583,13 @@ export default async (application: Application): Promise<void> => {
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+F</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1615,7 +1617,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1623,13 +1625,13 @@ export default async (application: Application): Promise<void> => {
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-command"></i>E</span
@@ -1654,7 +1656,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1662,13 +1664,13 @@ export default async (application: Application): Promise<void> => {
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1696,7 +1698,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1704,13 +1706,13 @@ export default async (application: Application): Promise<void> => {
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -1736,7 +1738,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1744,13 +1746,13 @@ export default async (application: Application): Promise<void> => {
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
@@ -1780,7 +1782,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${response.locals.html(
@@ -1804,7 +1806,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${response.locals.html(
@@ -1832,7 +1834,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1840,13 +1842,13 @@ export default async (application: Application): Promise<void> => {
                         Image
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1872,7 +1874,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -1880,13 +1882,13 @@ export default async (application: Application): Promise<void> => {
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Shift+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-shift"></i
@@ -1914,7 +1916,7 @@ export default async (application: Application): Promise<void> => {
                 type="file"
                 multiple
                 hidden
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.isModified = false;
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1996,7 +1998,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <label
                 class="button button--tight button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${response.locals.html(
@@ -2005,13 +2007,13 @@ export default async (application: Application): Promise<void> => {
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
                           (<span
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = leafac.isAppleDevice;
                             `)}"
                             >Ctrl+Alt+0</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `)}"
                             ><i class="bi bi-alt"></i
@@ -2026,7 +2028,7 @@ export default async (application: Application): Promise<void> => {
                 <input
                   type="checkbox"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.isModified = false;
 
                     const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -2092,7 +2094,7 @@ export default async (application: Application): Promise<void> => {
                   font-variant-ligatures: none;
                 }
               `)}"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 autosize(this);
                 autosize.update(this);
 
@@ -2147,7 +2149,7 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
@@ -2159,7 +2161,7 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
@@ -2171,7 +2173,7 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
@@ -2509,7 +2511,7 @@ ${contentSource}</textarea
                       key="mention-user-search--${enrollment.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         this.onclick = () => {
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                             `${enrollment.reference}--${slugify(
@@ -2586,7 +2588,7 @@ ${contentSource}</textarea
               key="refer-to-conversation-or-message-search--${conversation.reference}"
               type="button"
               class="dropdown--menu--item button button--transparent"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                     conversation.reference
@@ -2654,7 +2656,7 @@ ${contentSource}</textarea
                 key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                       `${conversation.reference}/${message.reference}`
@@ -2687,7 +2689,7 @@ ${contentSource}</textarea
             <button
               type="button"
               class="dropdown--menu--item button button--transparent"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                     conversation.reference
@@ -2742,7 +2744,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            onload="${response.locals.javascript(javascript`
+            javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   conversation.reference
@@ -2815,7 +2817,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            onload="${response.locals.javascript(javascript`
+            javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   `${conversation.reference}/${message.reference}`
@@ -2896,7 +2898,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            onload="${response.locals.javascript(javascript`
+            javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
                   `${conversation.reference}/${message.reference}`

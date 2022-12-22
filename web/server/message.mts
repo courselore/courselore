@@ -582,7 +582,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
                     const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                     const newMessage = document.querySelector('[key="new-message"]');
@@ -628,7 +628,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
@@ -694,7 +694,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.copied ??= tippy(this)).setProps({
                     theme: "green",
                     trigger: "manual",
@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         this.onmouseenter = this.onfocus = async () => {
                           const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
                           const messageEditForm = messageEdit.querySelector('[key="form"]');
@@ -869,7 +869,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
@@ -936,7 +936,7 @@ export default async (application: Application): Promise<void> => {
                     <div>
                       <button
                         class="dropdown--menu--item button button--transparent"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           (this.dropdown ??= tippy(this)).setProps({
                             theme: "rose",
                             trigger: "click",
@@ -1068,20 +1068,22 @@ export default async (application: Application): Promise<void> => {
               >
                 <button
                   class="button button--blue"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
                               `)}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
                               `)}"
                               ><i class="bi bi-command"></i
@@ -1103,7 +1105,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="reset"
                   class="button button--transparent"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.onclick = () => {
                       this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
                       this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
@@ -1179,7 +1181,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `)}"
                       ></time>
@@ -1720,7 +1722,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(like.createdAt).toISOString()}"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `)}"
                       ></time>

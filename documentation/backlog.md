@@ -295,7 +295,7 @@ new Notification('Example');
 
 <button
   class="button button--transparent"
-  onload="${response.locals.javascript(javascript`
+  javascript="${response.locals.javascript(javascript`
     this.onclick = async () => {
       if (await Notification.requestPermission() === "denied") return;
       new Notification("Example");

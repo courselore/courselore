@@ -399,7 +399,7 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
               placeholder="Filter…"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -450,7 +450,7 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `)}"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onbeforemorph = (detail) => !detail.liveUpdate;
                 `)}"
               >
@@ -504,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `)}"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Copy Email",
@@ -541,7 +541,7 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             user.lastSeenOnlineAt
                           ).toISOString()}"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `)}"
                         ></time>
@@ -567,7 +567,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Update System Role",
@@ -603,7 +603,8 @@ export default async (application: Application): Promise<void> => {
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
-                                                    onload="${response.locals
+                                                    javascript="${response
+                                                      .locals
                                                       .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         theme: "rose",
@@ -615,7 +616,8 @@ export default async (application: Application): Promise<void> => {
                                                 : isSelf
                                                 ? html`
                                                     type="button"
-                                                    onload="${response.locals
+                                                    javascript="${response
+                                                      .locals
                                                       .javascript(javascript`
                                                       (this.dropdown ??= tippy(this)).setProps({
                                                         theme: "rose",

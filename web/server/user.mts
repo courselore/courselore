@@ -492,7 +492,7 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `)}"
-              onload="${response.locals.javascript(javascript`
+              javascript="${response.locals.javascript(javascript`
                 const element = this;
 
                 (element.tooltip ??= tippy(element)).setProps({
@@ -542,7 +542,7 @@ export default async (application: Application): Promise<void> => {
           enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Staff",
@@ -565,7 +565,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
-        onload="${response.locals.javascript(javascript`
+        javascript="${response.locals.javascript(javascript`
           (this.tooltip ??= tippy(this)).setProps({
             interactive: true,
             appendTo: document.querySelector("body"),
@@ -633,7 +633,7 @@ export default async (application: Application): Promise<void> => {
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
                                   `)}"
-                                  onload="${response.locals
+                                  javascript="${response.locals
                                     .javascript(javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
@@ -681,7 +681,7 @@ export default async (application: Application): Promise<void> => {
                                     datetime="${new Date(
                                       user!.lastSeenOnlineAt
                                     ).toISOString()}"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                     `)}"
@@ -795,7 +795,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
-        onload="${response.locals.javascript(javascript`
+        javascript="${response.locals.javascript(javascript`
           (this.tooltip ??= tippy(this)).setProps({
             touch: false,
             content: "Anonymous to Other Students",
@@ -891,7 +891,7 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                 `)}"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.ondragover = (event) => {
                     if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
@@ -915,7 +915,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Add Avatar",
@@ -956,7 +956,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "Update Avatar",
@@ -992,7 +992,7 @@ export default async (application: Application): Promise<void> => {
                       transform: translate(-20%, -20%);
                       align-items: center;
                     `)}"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         theme: "rose",
                         touch: false,
@@ -1016,7 +1016,7 @@ export default async (application: Application): Promise<void> => {
                   type="file"
                   accept="image/*"
                   hidden
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.isModified = false;
 
                     const avatarChooser = this.closest('[key="avatar-chooser"]');
@@ -1334,7 +1334,7 @@ export default async (application: Application): Promise<void> => {
                 value="${response.locals.user.email}"
                 required
                 class="input--text"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onvalidate = () => {
                     if (!leafac.isModified(this))
                       return "Please provide the email address to which you’d like to update.";
@@ -1348,7 +1348,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       content: "You must confirm your email because this is an important operation that affects your account.",
@@ -1414,7 +1414,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
                       return "New Password & New Password Confirmation don’t match.";
@@ -1721,7 +1721,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       this.onchange = () => {
                         if (this.checked) {
                           this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
@@ -1838,7 +1838,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1867,7 +1867,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1897,7 +1897,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1919,7 +1919,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <label
                   class="button button--tight button--tight--inline disabled"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       content: "You always receive email notifications for staff announcements.",
                     });
@@ -2096,7 +2096,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       content: "You must confirm your email because this is an important operation that affects your account.",
@@ -2117,7 +2117,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--full-width-on-small-screen button--rose"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
                     localStorage.clear();
                   };

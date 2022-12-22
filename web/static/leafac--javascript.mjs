@@ -156,14 +156,14 @@ export function liveNavigation() {
   };
 
   window.addEventListener("DOMContentLoaded", (event) => {
-    for (const element of [...document.querySelectorAll("[onload]")].filter(
+    for (const element of [...document.querySelectorAll("[javascript]")].filter(
       (element) =>
         element.closest("[data-tippy-root]") === null &&
         !ancestors(element)
           .slice(1)
           .some((element) => element.partialParentElement)
     ))
-      window.localJavaScript[element.getAttribute("onload")].call(
+      window.localJavaScript[element.getAttribute("javascript")].call(
         element,
         event
       );
@@ -433,10 +433,10 @@ export function loadPartial(parentElement, partialString) {
   parentElement.forceIsConnected = true;
 
   for (const element of [
-    ...parentElement.querySelectorAll("[onload]"),
-    ...HTMLForJavaScript.querySelectorAll("[onload]"),
+    ...parentElement.querySelectorAll("[javascript]"),
+    ...HTMLForJavaScript.querySelectorAll("[javascript]"),
   ])
-    window.localJavaScript[element.getAttribute("onload")].call(element);
+    window.localJavaScript[element.getAttribute("javascript")].call(element);
 
   document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
 

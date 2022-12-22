@@ -1513,7 +1513,7 @@ export default async (application: Application): Promise<void> => {
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${search !== undefined ? html`checked` : html``}
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             this.isModified = false;
 
                             this.onchange = () => {
@@ -1550,7 +1550,7 @@ export default async (application: Application): Promise<void> => {
                           filters.isQuick !== "true"
                             ? html`checked`
                             : html``}
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             this.isModified = false;
                             
                             this.onchange = () => {
@@ -1624,7 +1624,7 @@ export default async (application: Application): Promise<void> => {
                         flex-direction: column;
                         gap: var(--space--1);
                       `)}"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         this.isModified = false;
                       `)}"
                     >
@@ -1649,7 +1649,7 @@ export default async (application: Application): Promise<void> => {
                         />
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Search",
@@ -1675,7 +1675,8 @@ export default async (application: Application): Promise<void> => {
                                   { addQueryPrefix: true }
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Clear Search",
@@ -1726,7 +1727,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
                                   };
@@ -1757,7 +1759,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
                                   };
@@ -1804,7 +1807,7 @@ export default async (application: Application): Promise<void> => {
                                       ? html``
                                       : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       ${
                                         conversationType === "question"
@@ -1873,7 +1876,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
@@ -1907,7 +1911,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
@@ -1954,7 +1959,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
@@ -1988,7 +1994,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (!this.checked) return;
                                     const form = this.closest("form");
@@ -2071,7 +2078,8 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   trigger: "click",
                                   content: "Pinned conversations are listed first.",
@@ -2105,7 +2113,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
                                   };
@@ -2136,7 +2145,8 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
                                   };
@@ -2163,7 +2173,7 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="button button--tight button--tight--inline button--transparent"
-                                    onload="${response.locals
+                                    javascript="${response.locals
                                       .javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         trigger: "click",
@@ -2222,7 +2232,7 @@ export default async (application: Application): Promise<void> => {
                                           ? html`
                                               <span
                                                 class="text--sky"
-                                                onload="${response.locals
+                                                javascript="${response.locals
                                                   .javascript(javascript`
                                                   (this.tooltip ??= tippy(this)).setProps({
                                                     touch: false,
@@ -2367,7 +2377,7 @@ export default async (application: Application): Promise<void> => {
                           css="${response.locals.css(css`
                             margin-top: var(--space---2);
                           `)}"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             ${
                               response.locals.conversation !== undefined
                                 ? javascript`
@@ -2466,7 +2476,7 @@ export default async (application: Application): Promise<void> => {
                                                   --line-height--2xs
                                                 );
                                               `)}"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
@@ -2662,7 +2672,7 @@ export default async (application: Application): Promise<void> => {
           class="${textColorsConversationParticipants[
             conversation.participants
           ]}"
-          onload="${response.locals.javascript(javascript`
+          javascript="${response.locals.javascript(javascript`
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
@@ -2749,7 +2759,7 @@ export default async (application: Application): Promise<void> => {
           ? html`
               <div
                 class="text--amber"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Pinned conversations are listed first.",
@@ -2805,7 +2815,7 @@ export default async (application: Application): Promise<void> => {
         `)}"
       >
         <div
-          onload="${response.locals.javascript(javascript`
+          javascript="${response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: "Conversation Reference",
@@ -2817,7 +2827,7 @@ export default async (application: Application): Promise<void> => {
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
-          onload="${response.locals.javascript(javascript`
+          javascript="${response.locals.javascript(javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `)}"
         ></time>
@@ -2828,7 +2838,7 @@ export default async (application: Application): Promise<void> => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                   `)}"
                 ></time>
@@ -2864,7 +2874,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <span
                             class="text--sky"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "This tag is visible by staff only.",
@@ -3326,7 +3336,7 @@ export default async (application: Application): Promise<void> => {
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
@@ -3423,7 +3433,7 @@ export default async (application: Application): Promise<void> => {
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               trigger: "click",
                               content: "Tags help to organize conversations.",
@@ -3542,7 +3552,7 @@ export default async (application: Application): Promise<void> => {
                                     ? html`
                                         <span
                                           class="text--sky"
-                                          onload="${response.locals
+                                          javascript="${response.locals
                                             .javascript(javascript`
                                             (this.tooltip ??= tippy(this)).setProps({
                                               touch: false,
@@ -3632,7 +3642,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         key="participants"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
@@ -3670,7 +3680,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`checked`
                                               : html``}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                                            onload="${response.locals
+                                            javascript="${response.locals
                                               .javascript(javascript`
                                               this.isModified = false;
 
@@ -3801,7 +3811,7 @@ export default async (application: Application): Promise<void> => {
                                                 type="text"
                                                 class="input--text"
                                                 placeholder="Filter…"
-                                                onload="${response.locals
+                                                javascript="${response.locals
                                                   .javascript(javascript`
                                                   this.isModified = false;
 
@@ -3870,7 +3880,8 @@ export default async (application: Application): Promise<void> => {
                                                       ? html`checked`
                                                       : html``}
                                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    onload="${response.locals
+                                                    javascript="${response
+                                                      .locals
                                                       .javascript(javascript`
                                                       this.isModified = false;
 
@@ -3941,7 +3952,8 @@ export default async (application: Application): Promise<void> => {
                               required
                               tabindex="-1"
                               class="visually-hidden input--visible-when-enabled-and-checked"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 ${
                                   conversationParticipants === "selected-people"
                                     ? javascript`
@@ -4002,7 +4014,7 @@ export default async (application: Application): Promise<void> => {
                             key="selected-participants--button--${enrollment.reference}"
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Remove Participant",
@@ -4061,7 +4073,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "People receive immediate email notifications for announcements.",
@@ -4102,14 +4114,16 @@ export default async (application: Application): Promise<void> => {
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.onchange = () => {
                                   if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
                                 };
                               `)}"
                             />
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Announcement",
@@ -4121,7 +4135,8 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             <span
                               class="text--orange"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Not an Announcement",
@@ -4146,7 +4161,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "Pinned conversations are listed first.",
@@ -4179,7 +4194,8 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Pin",
@@ -4191,7 +4207,8 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             <span
                               class="text--amber"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Unpin",
@@ -4225,7 +4242,8 @@ export default async (application: Application): Promise<void> => {
                               type="checkbox"
                               name="isAnonymous"
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.isModified = false;
 
                                 this.onchange = () => {
@@ -4236,7 +4254,8 @@ export default async (application: Application): Promise<void> => {
                               `)}"
                             />
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Anonymous to Other Students",
@@ -4262,7 +4281,8 @@ export default async (application: Application): Promise<void> => {
                               </span>
                             </span>
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Set as Signed by You",
@@ -4294,20 +4314,22 @@ export default async (application: Application): Promise<void> => {
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
                               `)}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
                               `)}"
                               ><i class="bi bi-command"></i
@@ -4378,20 +4400,22 @@ export default async (application: Application): Promise<void> => {
                   class="link"
                   name="isDraft"
                   value="true"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${response.locals.html(
                         html`
                           <span class="keyboard-shortcut">
                             <span
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = leafac.isAppleDevice;
                               `)}"
                               >Ctrl+S</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 this.hidden = !leafac.isAppleDevice;
                               `)}"
                               ><i class="bi bi-command"></i>S</span
@@ -4430,7 +4454,7 @@ export default async (application: Application): Promise<void> => {
                           { conversations: request.query.conversations },
                           { addQueryPrefix: true }
                         )}"
-                        onload="${response.locals.javascript(javascript`
+                        javascript="${response.locals.javascript(javascript`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
@@ -4446,7 +4470,7 @@ export default async (application: Application): Promise<void> => {
                             new Date(conversationDraft.createdAt).getTime() -
                               100 * 24 * 60 * 60 * 1000
                           ).toISOString()}"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `)}"
                         ></time>
@@ -4459,7 +4483,8 @@ export default async (application: Application): Promise<void> => {
                                 datetime="${new Date(
                                   conversationDraft.updatedAt
                                 ).toISOString()}"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                 `)}"
                               ></time>
@@ -5168,7 +5193,7 @@ export default async (application: Application): Promise<void> => {
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             this.onclick = () => {
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = true;
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = false;
@@ -5243,7 +5268,7 @@ export default async (application: Application): Promise<void> => {
                                     : textColorsConversationType[
                                         response.locals.conversation.type
                                       ]}"
-                                  onload="${response.locals
+                                  javascript="${response.locals
                                     .javascript(javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
@@ -5368,7 +5393,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
@@ -5391,7 +5416,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
@@ -5470,7 +5495,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
@@ -5491,7 +5516,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
@@ -5544,7 +5569,7 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        onload="${response.locals
+                                        javascript="${response.locals
                                           .javascript(javascript`
                                           (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
@@ -5565,7 +5590,7 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                        onload="${response.locals
+                                        javascript="${response.locals
                                           .javascript(javascript`
                                           (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
@@ -5592,7 +5617,7 @@ export default async (application: Application): Promise<void> => {
                       <div>
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
-                          onload="${response.locals.javascript(javascript`
+                          javascript="${response.locals.javascript(javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Actions",
@@ -5611,7 +5636,7 @@ export default async (application: Application): Promise<void> => {
                                   <div class="dropdown--menu">
                                     <button
                                       class="dropdown--menu--item button button--transparent"
-                                      onload="${response.locals
+                                      javascript="${response.locals
                                         .javascript(javascript`
                                         (this.copied ??= tippy(this)).setProps({
                                           theme: "green",
@@ -5637,7 +5662,7 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            onload="${response.locals
+                                            javascript="${response.locals
                                               .javascript(javascript`
                                               this.onclick = () => {
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
@@ -5768,7 +5793,7 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            onload="${response.locals
+                                            javascript="${response.locals
                                               .javascript(javascript`
                                               if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                 (this.tooltip ??= tippy(this)).setProps({
@@ -5844,7 +5869,7 @@ export default async (application: Application): Promise<void> => {
                                           <div>
                                             <button
                                               class="dropdown--menu--item button button--transparent"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 (this.dropdown ??= tippy(this)).setProps({
                                                   theme: "rose",
@@ -5984,7 +6009,8 @@ export default async (application: Application): Promise<void> => {
                               css="${response.locals.css(css`
                                 flex: 1;
                               `)}"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
@@ -5997,7 +6023,8 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="reset"
                               class="button button--tight button--tight--inline button--transparent text--rose"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
@@ -6006,14 +6033,14 @@ export default async (application: Application): Promise<void> => {
                                       Cancel
                                       <span class="keyboard-shortcut">
                                         (<span
-                                          onload="${response.locals
+                                          javascript="${response.locals
                                             .javascript(javascript`
                                             this.hidden = leafac.isAppleDevice;
                                           `)}"
                                           >Esc</span
                                         ><span
                                           class="keyboard-shortcut--cluster"
-                                          onload="${response.locals
+                                          javascript="${response.locals
                                             .javascript(javascript`
                                             this.hidden = !leafac.isAppleDevice;
                                           `)}"
@@ -6075,7 +6102,8 @@ export default async (application: Application): Promise<void> => {
                                   }
                                   text-align: left;
                                 `)}"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
@@ -6090,7 +6118,7 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      onload="${response.locals
+                                      javascript="${response.locals
                                         .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           content: "This tag is visible by staff only.",
@@ -6133,7 +6161,8 @@ export default async (application: Application): Promise<void> => {
                                 css="${response.locals.css(css`
                                   text-align: left;
                                 `)}"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
@@ -6148,7 +6177,7 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      onload="${response.locals
+                                      javascript="${response.locals
                                         .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           content: "This tag is visible by staff only.",
@@ -6171,7 +6200,8 @@ export default async (application: Application): Promise<void> => {
                           <div>
                             <button
                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Add Tag",
@@ -6258,7 +6288,7 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`
                                                             <span
                                                               class="text--sky"
-                                                              onload="${response
+                                                              javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
@@ -6283,7 +6313,8 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     class="dropdown--menu--item button button--blue text--teal disabled"
-                                                    onload="${response.locals
+                                                    javascript="${response
+                                                      .locals
                                                       .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         theme: "rose",
@@ -6300,7 +6331,7 @@ export default async (application: Application): Promise<void> => {
                                                       ? html`
                                                           <span
                                                             class="text--sky"
-                                                            onload="${response
+                                                            javascript="${response
                                                               .locals
                                                               .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
@@ -6356,7 +6387,7 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`
                                                             <span
                                                               class="text--sky"
-                                                              onload="${response
+                                                              javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
                                                                 (this.tooltip ??= tippy(this)).setProps({
@@ -6506,7 +6537,7 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <div
                                   key="participants"
-                                  onload="${response.locals
+                                  javascript="${response.locals
                                     .javascript(javascript`
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
@@ -6539,7 +6570,8 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`checked`
                                                         : html``}
                                                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                      onload="${response.locals
+                                                      javascript="${response
+                                                        .locals
                                                         .javascript(javascript`
                                                         this.isModified = false;
 
@@ -6677,7 +6709,7 @@ export default async (application: Application): Promise<void> => {
                                                           type="text"
                                                           class="input--text"
                                                           placeholder="Filter…"
-                                                          onload="${response
+                                                          javascript="${response
                                                             .locals
                                                             .javascript(javascript`
                                                             this.isModified = false;
@@ -6756,7 +6788,7 @@ export default async (application: Application): Promise<void> => {
                                                                 ? html`checked`
                                                                 : html``}
                                                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                              onload="${response
+                                                              javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
                                                                 this.isModified = false;
@@ -6826,7 +6858,7 @@ export default async (application: Application): Promise<void> => {
                                         required
                                         tabindex="-1"
                                         class="visually-hidden input--visible-when-enabled-and-checked"
-                                        onload="${response.locals
+                                        javascript="${response.locals
                                           .javascript(javascript`
                                           ${
                                             conversationParticipants ===
@@ -6889,7 +6921,7 @@ export default async (application: Application): Promise<void> => {
                                       key="selected-participants--button--${enrollment.reference}"
                                       type="button"
                                       class="button button--tight button--tight--inline button--transparent"
-                                      onload="${response.locals
+                                      javascript="${response.locals
                                         .javascript(javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           touch: false,
@@ -6962,7 +6994,8 @@ export default async (application: Application): Promise<void> => {
                               class="${textColorsConversationParticipants[
                                 response.locals.conversation.participants
                               ]}"
-                              onload="${response.locals.javascript(javascript`
+                              javascript="${response.locals
+                                .javascript(javascript`
                                 (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Participants",
@@ -7005,7 +7038,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               this.onclick = () => {
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = true;
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = false;
@@ -7044,7 +7077,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         : css``}
                     `)}"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       const scroll = () => {
                         if (
                           [undefined, "GET", "HEAD", "OPTIONS", "TRACE"].includes(event?.detail?.request?.method) &&
@@ -7231,7 +7264,7 @@ export default async (application: Application): Promise<void> => {
                                                 gap: var(--space--4);
                                                 align-items: center;
                                               `)}"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 if (this !== document.querySelector('[key="message--new-separator"]')) {
                                                   this.remove();
@@ -7319,7 +7352,7 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  onload="${response.locals
+                                                  javascript="${response.locals
                                                     .javascript(javascript`
                                                     const element = this;
                                                     leafac.relativizeDateElement(element);
@@ -7452,7 +7485,7 @@ export default async (application: Application): Promise<void> => {
                                                       `
                                                     : css``}
                                                 `)}"
-                                                onload="${response.locals
+                                                javascript="${response.locals
                                                   .javascript(javascript`
                                                   (this.tooltip ??= tippy(this)).setProps({
                                                     touch: false,
@@ -7587,7 +7620,7 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                        onload="${response
+                                                        javascript="${response
                                                           .locals
                                                           .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
@@ -7611,7 +7644,7 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                        onload="${response
+                                                        javascript="${response
                                                           .locals
                                                           .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
@@ -7688,7 +7721,7 @@ export default async (application: Application): Promise<void> => {
                                                   ? html`
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                        onload="${response
+                                                        javascript="${response
                                                           .locals
                                                           .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
@@ -7766,7 +7799,7 @@ export default async (application: Application): Promise<void> => {
                                                         ).length === 0
                                                           ? html``
                                                           : html`
-                                                              onload="${response
+                                                              javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
                                                                 (this.tooltip ??= tippy(this)).setProps({
@@ -7833,7 +7866,7 @@ export default async (application: Application): Promise<void> => {
                                             header += html`
                                               <div
                                                 class="text--lime"
-                                                onload="${response.locals
+                                                javascript="${response.locals
                                                   .javascript(javascript`
                                                   ${
                                                     message.endorsements.filter(
@@ -8013,7 +8046,7 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  onload="${response.locals
+                                                  javascript="${response.locals
                                                     .javascript(javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `)}"
@@ -8027,7 +8060,7 @@ export default async (application: Application): Promise<void> => {
                                                           datetime="${new Date(
                                                             message.updatedAt
                                                           ).toISOString()}"
-                                                          onload="${response
+                                                          javascript="${response
                                                             .locals
                                                             .javascript(javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -8069,7 +8102,7 @@ export default async (application: Application): Promise<void> => {
                                             ></div>
                                             <div
                                               key="message--show--content-area--content"
-                                              onload="${response.locals
+                                              javascript="${response.locals
                                                 .javascript(javascript`
                                                 const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                 (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
@@ -8082,7 +8115,7 @@ export default async (application: Application): Promise<void> => {
                                                       >
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
-                                                          onload="${response
+                                                          javascript="${response
                                                             .locals
                                                             .javascript(javascript`
                                                             this.onclick = () => {
@@ -8247,7 +8280,7 @@ export default async (application: Application): Promise<void> => {
                                                       $${likesCount === 0
                                                         ? html``
                                                         : html`
-                                                            onload="${response
+                                                            javascript="${response
                                                               .locals
                                                               .javascript(javascript`
                                                               (this.tooltip ??= tippy(this)).setProps({
@@ -8283,7 +8316,7 @@ export default async (application: Application): Promise<void> => {
                                                           class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
                                                             ? "text--blue"
                                                             : ""}"
-                                                          onload="${response
+                                                          javascript="${response
                                                             .locals
                                                             .javascript(javascript`
                                                             (this.tooltip ??= tippy(this)).setProps({
@@ -8381,7 +8414,7 @@ export default async (application: Application): Promise<void> => {
                                               messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                  onload="${response.locals
+                                                  javascript="${response.locals
                                                     .javascript(javascript`
                                                     if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
                                                       (this.tooltip ??= tippy(this)).setProps({
@@ -8506,7 +8539,7 @@ export default async (application: Application): Promise<void> => {
                                           <div
                                             key="form"
                                             hidden
-                                            onload="${response.locals
+                                            javascript="${response.locals
                                               .javascript(javascript`
                                               if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
                                               this.partialParentElement = false;
@@ -8746,7 +8779,7 @@ export default async (application: Application): Promise<void> => {
                         padding-top: var(--space--4);
                       `}
                 `)}"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onsubmit = () => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
@@ -8804,12 +8837,14 @@ export default async (application: Application): Promise<void> => {
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.saveFormInputValue(this, "answer");
                                 `)}"
                               />
                               <span
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Answer",
@@ -8821,7 +8856,8 @@ export default async (application: Application): Promise<void> => {
                               </span>
                               <span
                                 class="text--emerald"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Not an Answer",
@@ -8853,7 +8889,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         : css``}
                     `)}"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `)}"
                   >
@@ -8876,7 +8912,7 @@ export default async (application: Application): Promise<void> => {
                               margin: var(--space--1);
                               align-items: center;
                             `)}"
-                            onload="${response.locals.javascript(javascript`
+                            javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: ${response.locals.html(
@@ -8884,14 +8920,14 @@ export default async (application: Application): Promise<void> => {
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
-                                        onload="${response.locals
+                                        javascript="${response.locals
                                           .javascript(javascript`
                                           this.hidden = leafac.isAppleDevice;
                                         `)}"
                                         >Ctrl+Enter</span
                                       ><span
                                         class="keyboard-shortcut--cluster"
-                                        onload="${response.locals
+                                        javascript="${response.locals
                                           .javascript(javascript`
                                           this.hidden = !leafac.isAppleDevice;
                                         `)}"
@@ -8936,7 +8972,8 @@ export default async (application: Application): Promise<void> => {
                                 type="checkbox"
                                 name="isAnonymous"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.isModified = false;
 
                                   this.onchange = () => {
@@ -8947,7 +8984,8 @@ export default async (application: Application): Promise<void> => {
                                 `)}"
                               />
                               <span
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Anonymous to Other Students",
@@ -8973,7 +9011,8 @@ export default async (application: Application): Promise<void> => {
                                 </span>
                               </span>
                               <span
-                                onload="${response.locals.javascript(javascript`
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Signed by You",
@@ -9008,21 +9047,21 @@ export default async (application: Application): Promise<void> => {
                   >
                     <button
                       class="button button--full-width-on-small-screen button--blue"
-                      onload="${response.locals.javascript(javascript`
+                      javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${response.locals.html(
                             html`
                               <span class="keyboard-shortcut">
                                 <span
-                                  onload="${response.locals
+                                  javascript="${response.locals
                                     .javascript(javascript`
                                     this.hidden = leafac.isAppleDevice;
                                   `)}"
                                   >Ctrl+Enter</span
                                 ><span
                                   class="keyboard-shortcut--cluster"
-                                  onload="${response.locals
+                                  javascript="${response.locals
                                     .javascript(javascript`
                                     this.hidden = !leafac.isAppleDevice;
                                   `)}"

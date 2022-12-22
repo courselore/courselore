@@ -69,7 +69,7 @@ export default async (application: Application): Promise<void> => {
               Have the wrong email address?
               <button
                 class="link"
-                onload="${response.locals.javascript(javascript`
+                javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
                     document.querySelector('[key="update-email"]').hidden = false;
                   };
@@ -104,7 +104,7 @@ export default async (application: Application): Promise<void> => {
                   value="${response.locals.user.email}"
                   required
                   class="input--text"
-                  onload="${response.locals.javascript(javascript`
+                  javascript="${response.locals.javascript(javascript`
                     this.onvalidate = () => {
                       if (!leafac.isModified(this))
                         return "Please provide the email address to which you’d like to update.";
@@ -118,7 +118,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    onload="${response.locals.javascript(javascript`
+                    javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
                         content: "You must confirm your email because this is an important operation that affects your account.",
