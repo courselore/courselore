@@ -1732,11 +1732,11 @@ export default async (application: Application): Promise<void> => {
                               autocomplete="off"
                               disabled
                               class="input--text"
-                              onloadpartial="${javascript`
+                              onloadpartial="${response.locals.javascript(javascript`
                                 this.isModified = true;
                                 this.disabled = false;
                                 this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
-                              `}"
+                              `)}"
                             />
                             <div
                               css="${response.locals.css(css`
@@ -1758,31 +1758,31 @@ export default async (application: Application): Promise<void> => {
                                     type="checkbox"
                                     disabled
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    onloadpartial="${javascript`
+                                    onloadpartial="${response.locals.javascript(javascript`
                                       this.isModified = true;
                                       this.disabled = false;
                                       this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
-                                    `}"
+                                    `)}"
                                   />
                                   <span
-                                    onloadpartial="${javascript`
+                                    onloadpartial="${response.locals.javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Set as Visible by Staff Only",
                                       });
-                                    `}"
+                                    `)}"
                                   >
                                     <i class="bi bi-eye"></i>
                                     Visible by Everyone
                                   </span>
                                   <span
                                     class="${textColorsCourseRole.staff}"
-                                    onloadpartial="${javascript`
+                                    onloadpartial="${response.locals.javascript(javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "Set as Visible by Everyone",
                                       });
-                                    `}"
+                                    `)}"
                                   >
                                     <i class="bi bi-mortarboard-fill"></i>
                                     Visible by Staff Only
@@ -1792,7 +1792,7 @@ export default async (application: Application): Promise<void> => {
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                onloadpartial="${javascript`
+                                onloadpartial="${response.locals.javascript(javascript`
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
@@ -1804,7 +1804,7 @@ export default async (application: Application): Promise<void> => {
                                     tag.replaceChildren();
                                     tag.hidden = true;
                                   };
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
@@ -1814,11 +1814,13 @@ export default async (application: Application): Promise<void> => {
                       `
                     )};
 
+                    const localJavaScript = window.localJavaScript;
+
                     this.onclick = () => {
                       const newTag = newTagPartial.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
                       for (const element of newTag.querySelectorAll("[onloadpartial]"))
-                        new Function(element.getAttribute("onloadpartial")).call(element);
+                        localJavaScript[element.getAttribute("onloadpartial")].call(element);
                     };
 
                     this.onvalidate = () => {
