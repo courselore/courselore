@@ -382,7 +382,7 @@ export default async (application: Application): Promise<void> => {
       if (isExternal)
         element.setAttribute(
           "onload",
-          javascript`
+          response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: ${response.locals.html(
@@ -392,7 +392,7 @@ export default async (application: Application): Promise<void> => {
                   : html`External link to <code class="code">${href}</code>`
               )},
             });
-          `
+          `)
         );
     }
 
@@ -658,7 +658,7 @@ export default async (application: Application): Promise<void> => {
         if (hrefMessageReference === undefined) {
           element.setAttribute(
             "onload",
-            javascript`
+            response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
                 content: ${response.locals.html(
@@ -677,7 +677,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 )},
               });
-            `
+            `)
           );
           continue;
         }
@@ -690,7 +690,7 @@ export default async (application: Application): Promise<void> => {
         if (message === undefined) continue;
         element.setAttribute(
           "onload",
-          javascript`
+          response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: ${response.locals.html(
@@ -713,7 +713,7 @@ export default async (application: Application): Promise<void> => {
                 `
               )},
             });
-          `
+          `)
         );
       }
     }
