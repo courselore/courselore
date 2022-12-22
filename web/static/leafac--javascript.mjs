@@ -552,6 +552,8 @@ export function morph(from, to, detail = {}) {
 
     morph(from, to, detail);
   }
+
+  if (from.matches("script")) new Function(from.textContent)();
 }
 
 export function validate(element) {
