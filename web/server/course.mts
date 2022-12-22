@@ -1820,8 +1820,8 @@ export default async (application: Application): Promise<void> => {
                     const localJavaScript = window.localJavaScript;
 
                     this.onclick = () => {
-                      const newTag = document.createRange().createContextualFragment(newTagPartial);
-                      this.closest("form").querySelector('[key="tags"]').append(newTag);
+                      const newTag = document.createRange().createContextualFragment(newTagPartial).firstElementChild;
+                      this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
                       for (const element of newTag.querySelectorAll("[onload]"))
                         localJavaScript[element.getAttribute("onload")].call(element);
                     };
