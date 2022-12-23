@@ -661,21 +661,19 @@ export default async (application: Application): Promise<void> => {
             response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
-                content: ${response.locals.html(
-                  html`
-                    <div
-                      css="${response.locals.css(css`
-                        padding: var(--space--2);
-                      `)}"
-                    >
-                      $${application.server.locals.partials.conversation({
-                        request: requestCourseEnrolled,
-                        response: responseCourseEnrolled,
-                        conversation,
-                      })}
-                    </div>
-                  `
-                )},
+                content: ${response.locals.html(html`
+                  <div
+                    css="${response.locals.css(css`
+                      padding: var(--space--2);
+                    `)}"
+                  >
+                    $${application.server.locals.partials.conversation({
+                      request: requestCourseEnrolled,
+                      response: responseCourseEnrolled,
+                      conversation,
+                    })}
+                  </div>
+                `)},
               });
             `)
           );
@@ -693,25 +691,23 @@ export default async (application: Application): Promise<void> => {
           response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
-              content: ${response.locals.html(
-                html`
-                  <div
-                    css="${response.locals.css(css`
-                      padding: var(--space--2);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `)}"
-                  >
-                    $${application.server.locals.partials.conversation({
-                      request: requestCourseEnrolled,
-                      response: responseCourseEnrolled,
-                      conversation,
-                      message,
-                    })}
-                  </div>
-                `
-              )},
+              content: ${response.locals.html(html`
+                <div
+                  css="${response.locals.css(css`
+                    padding: var(--space--2);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `)}"
+                >
+                  $${application.server.locals.partials.conversation({
+                    request: requestCourseEnrolled,
+                    response: responseCourseEnrolled,
+                    conversation,
+                    message,
+                  })}
+                </div>
+              `)},
             });
           `)
         );
@@ -905,27 +901,23 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(
-                        html`
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `)}"
-                              >Ctrl+Alt+P</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${response.locals
-                                .javascript(javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `)}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>P</span
-                            >
-                          </span>
-                        `
-                      )},
+                      content: ${response.locals.html(html`
+                        <span class="keyboard-shortcut">
+                          <span
+                            javascript="${response.locals.javascript(javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `)}"
+                            >Ctrl+Alt+P</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            javascript="${response.locals.javascript(javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `)}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>P</span
+                          >
+                        </span>
+                      `)},
                     });
 
                     const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -983,26 +975,24 @@ export default async (application: Application): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${response.locals.html(
-                      html`
-                        <p>
-                          You may style text with
-                          <a
-                            href="https://guides.github.com/features/mastering-markdown/"
-                            target="_blank"
-                            class="link"
-                            >GitHub Flavored Markdown</a
-                          >
-                          and include mathematical formulas with
-                          <a
-                            href="https://katex.org/docs/supported.html"
-                            target="_blank"
-                            class="link"
-                            >LaTeX</a
-                          >.
-                        </p>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      <p>
+                        You may style text with
+                        <a
+                          href="https://guides.github.com/features/mastering-markdown/"
+                          target="_blank"
+                          class="link"
+                          >GitHub Flavored Markdown</a
+                        >
+                        and include mathematical formulas with
+                        <a
+                          href="https://katex.org/docs/supported.html"
+                          target="_blank"
+                          class="link"
+                          >LaTeX</a
+                        >.
+                      </p>
+                    `)},
                   });
                 `)}"
               >
@@ -1016,26 +1006,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Heading 1
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+1</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>1</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Heading 1
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+1</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>1</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1056,26 +1044,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Heading 2
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+2</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>2</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Heading 2
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+2</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>2</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1096,26 +1082,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Heading 3
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+3</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>3</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Heading 3
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+3</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>3</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1138,25 +1122,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Bold
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+B</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>B</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Bold
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+B</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>B</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1177,25 +1159,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Italic
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+I</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>I</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Italic
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+I</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>I</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1216,25 +1196,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Underline
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+U</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>U</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Underline
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+U</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>U</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1255,26 +1233,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Strikethrough
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+S</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>S</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Strikethrough
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+S</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>S</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1295,25 +1271,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Link
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+K</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>K</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Link
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+K</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>K</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1336,26 +1310,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Bulleted List
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+8</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>8</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Bulleted List
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+8</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>8</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1376,26 +1348,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Numbered List
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+7</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>7</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Numbered List
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+7</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>7</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1416,26 +1386,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Checklist
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+9</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>9</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Checklist
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+9</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>9</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1458,25 +1426,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Quote
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+'</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>'</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Quote
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+'</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>'</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1497,26 +1463,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Table
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+T</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>T</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Table
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+T</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>T</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1538,26 +1502,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Disclosure
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+D</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>D</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Disclosure
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+D</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>D</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1578,26 +1540,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Footnote
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+F</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>F</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Footnote
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+F</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>F</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1620,25 +1580,23 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Inline Code
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+E</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>E</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Inline Code
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+E</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1659,26 +1617,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Code Block
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+E</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>E</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Code Block
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+E</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1701,26 +1657,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Inline Equation
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+E</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>E</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Inline Equation
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+E</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
                   });
                   
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1741,26 +1695,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Equation Block
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+Shift+E</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>E</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Equation Block
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+Shift+E</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
                   });
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1785,12 +1737,10 @@ export default async (application: Application): Promise<void> => {
                       javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${response.locals.html(
-                            html`
-                              Mention User
-                              <span class="keyboard-shortcut">(@)</span>
-                            `
-                          )},
+                          content: ${response.locals.html(html`
+                            Mention User
+                            <span class="keyboard-shortcut">(@)</span>
+                          `)},
                         });
 
                         const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1809,12 +1759,10 @@ export default async (application: Application): Promise<void> => {
                       javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${response.locals.html(
-                            html`
-                              Refer to Conversation or Message
-                              <span class="keyboard-shortcut">(#)</span>
-                            `
-                          )},
+                          content: ${response.locals.html(html`
+                            Refer to Conversation or Message
+                            <span class="keyboard-shortcut">(#)</span>
+                          `)},
                         });
 
                         const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1837,27 +1785,25 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Image
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+I</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>I</span
-                          >
-                          or drag-and-drop or copy-and-paste)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Image
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+I</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>I</span
+                        >
+                        or drag-and-drop or copy-and-paste)
+                      </span>
+                    `)},
                   });
 
                   this.onclick = () => {
@@ -1877,27 +1823,25 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Attachment
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Shift+K</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-shift"></i
-                            ><i class="bi bi-command"></i>K</span
-                          >
-                          or drag-and-drop or copy-and-paste)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Attachment
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Shift+K</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>K</span
+                        >
+                        or drag-and-drop or copy-and-paste)
+                      </span>
+                    `)},
                   });
 
                   this.onclick = () => {
@@ -1967,22 +1911,20 @@ export default async (application: Application): Promise<void> => {
                   (textarea.uploadingIndicator ??= tippy(textarea)).setProps({
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${response.locals.html(
-                      html`
-                        <div
-                          css="${response.locals.css(css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `)}"
-                        >
-                          $${application.server.locals.partials.spinner({
-                            request,
-                            response,
-                          })}
-                          Uploading…
-                        </div>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      <div
+                        css="${response.locals.css(css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `)}"
+                      >
+                        $${application.server.locals.partials.spinner({
+                          request,
+                          response,
+                        })}
+                        Uploading…
+                      </div>
+                    `)},
                   });
 
                   this.onclick = (event) => {
@@ -2001,27 +1943,25 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(
-                      html`
-                        Programmer Mode
-                        <span class="secondary">(Monospaced Font)</span>
-                        <span class="keyboard-shortcut">
-                          (<span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Alt+0</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>0</span
-                          >)
-                        </span>
-                      `
-                    )},
+                    content: ${response.locals.html(html`
+                      Programmer Mode
+                      <span class="secondary">(Monospaced Font)</span>
+                      <span class="keyboard-shortcut">
+                        (<span
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = leafac.isAppleDevice;
+                          `)}"
+                          >Ctrl+Alt+0</span
+                        ><span
+                          class="keyboard-shortcut--cluster"
+                          javascript="${response.locals.javascript(javascript`
+                            this.hidden = !leafac.isAppleDevice;
+                          `)}"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>0</span
+                        >)
+                      </span>
+                    `)},
                   });
                 `)}"
               >
@@ -2131,86 +2071,82 @@ export default async (application: Application): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${response.locals.html(
-                            html`
-                              <div
-                                css="${response.locals.css(css`
-                                  width: var(--space--56);
-                                  max-height: var(--space--44);
-                                  overflow: auto;
-                                `)}"
-                              >
-                                <p class="heading">
-                                  <i class="bi bi-at"></i>
-                                  Mention User
-                                </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                          content: ${response.locals.html(html`
+                            <div
+                              css="${response.locals.css(css`
+                                width: var(--space--56);
+                                max-height: var(--space--44);
+                                overflow: auto;
+                              `)}"
+                            >
+                              <p class="heading">
+                                <i class="bi bi-at"></i>
+                                Mention User
+                              </p>
+                              <div class="dropdown--menu">
+                                <div key="search-results"></div>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
                                       };
                                     `)}"
-                                  >
-                                    Everyone in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                >
+                                  Everyone in the Conversation
+                                </button>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
                                       };
                                     `)}"
-                                  >
-                                    Staff in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                >
+                                  Staff in the Conversation
+                                </button>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
                                       this.onclick = () => {
                                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
                                       };
                                     `)}"
-                                  >
-                                    Students in the Conversation
-                                  </button>
-                                </div>
+                                >
+                                  Students in the Conversation
+                                </button>
                               </div>
-                            `
-                          )},
+                            </div>
+                          `)},
                         });
 
                         (dropdownMenuTarget.dropdownMenuReference ??= tippy(dropdownMenuTarget)).setProps({
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${response.locals.html(
-                            html`
-                              <div
-                                css="${response.locals.css(css`
-                                  width: var(--space--72);
-                                  max-height: var(--space--44);
-                                  overflow: auto;
-                                `)}"
-                              >
-                                <p class="heading">
-                                  <i class="bi bi-hash"></i>
-                                  Refer to Conversation or Message
-                                </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                </div>
+                          content: ${response.locals.html(html`
+                            <div
+                              css="${response.locals.css(css`
+                                width: var(--space--72);
+                                max-height: var(--space--44);
+                                overflow: auto;
+                              `)}"
+                            >
+                              <p class="heading">
+                                <i class="bi bi-hash"></i>
+                                Refer to Conversation or Message
+                              </p>
+                              <div class="dropdown--menu">
+                                <div key="search-results"></div>
                               </div>
-                            `
-                          )},
+                            </div>
+                          `)},
                         });
 
                         const dropdownMenus = [

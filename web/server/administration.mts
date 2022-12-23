@@ -576,128 +576,122 @@ export default async (application: Application): Promise<void> => {
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
-                            content: ${response.locals.html(
-                              html`
-                                <div class="dropdown--menu">
-                                  $${application.server.locals.helpers.systemRoles.map(
-                                    (systemRole) =>
-                                      html`
-                                        <form
-                                          key="role--${systemRole}"
-                                          method="PATCH"
-                                          action="${action}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="role"
-                                            value="${systemRole}"
-                                          />
-                                          <div>
-                                            <button
-                                              class="dropdown--menu--item button ${systemRole ===
-                                              user.systemRole
-                                                ? "button--blue"
-                                                : "button--transparent"} ${textColorsSystemRole[
-                                                systemRole
-                                              ]}"
-                                              $${isOnlyAdministrator
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                            content: ${response.locals.html(html`
+                              <div class="dropdown--menu">
+                                $${application.server.locals.helpers.systemRoles.map(
+                                  (systemRole) =>
+                                    html`
+                                      <form
+                                        key="role--${systemRole}"
+                                        method="PATCH"
+                                        action="${action}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="role"
+                                          value="${systemRole}"
+                                        />
+                                        <div>
+                                          <button
+                                            class="dropdown--menu--item button ${systemRole ===
+                                            user.systemRole
+                                              ? "button--blue"
+                                              : "button--transparent"} ${textColorsSystemRole[
+                                              systemRole
+                                            ]}"
+                                            $${isOnlyAdministrator
+                                              ? html`
+                                                  type="button"
+                                                  javascript="${response.locals
+                                                    .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         theme: "rose",
                                                         trigger: "click",
                                                         content: "You may not update your own role because you’re the only administrator.",
                                                       });
                                                     `)}"
-                                                  `
-                                                : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                `
+                                              : isSelf
+                                              ? html`
+                                                  type="button"
+                                                  javascript="${response.locals
+                                                    .javascript(javascript`
                                                       (this.dropdown ??= tippy(this)).setProps({
                                                         theme: "rose",
                                                         trigger: "click",
                                                         interactive: true,
                                                         appendTo: document.querySelector("body"),
-                                                        content: ${response.locals.html(
-                                                          html`
-                                                            <form
-                                                              key="role--${systemRole}"
-                                                              method="PATCH"
-                                                              action="${action}"
-                                                              css="${response
-                                                                .locals.css(css`
-                                                                padding: var(
-                                                                  --space--2
-                                                                );
-                                                                display: flex;
-                                                                flex-direction: column;
-                                                                gap: var(
-                                                                  --space--4
-                                                                );
-                                                              `)}"
-                                                            >
-                                                              <input
-                                                                type="hidden"
-                                                                name="role"
-                                                                value="${systemRole}"
-                                                              />
-                                                              <p>
-                                                                Are you sure you
-                                                                want to update
-                                                                your own role to
-                                                                ${systemRole}?
-                                                              </p>
-                                                              <p>
-                                                                <strong
-                                                                  css="${response
-                                                                    .locals
-                                                                    .css(css`
-                                                                    font-weight: var(
-                                                                      --font-weight--bold
-                                                                    );
-                                                                  `)}"
-                                                                >
-                                                                  You may not
-                                                                  undo this
-                                                                  action!
-                                                                </strong>
-                                                              </p>
-                                                              <button
-                                                                class="button button--rose"
+                                                        content: ${response
+                                                          .locals.html(html`
+                                                          <form
+                                                            key="role--${systemRole}"
+                                                            method="PATCH"
+                                                            action="${action}"
+                                                            css="${response
+                                                              .locals.css(css`
+                                                              padding: var(
+                                                                --space--2
+                                                              );
+                                                              display: flex;
+                                                              flex-direction: column;
+                                                              gap: var(
+                                                                --space--4
+                                                              );
+                                                            `)}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="role"
+                                                              value="${systemRole}"
+                                                            />
+                                                            <p>
+                                                              Are you sure you
+                                                              want to update
+                                                              your own role to
+                                                              ${systemRole}?
+                                                            </p>
+                                                            <p>
+                                                              <strong
+                                                                css="${response
+                                                                  .locals
+                                                                  .css(css`
+                                                                  font-weight: var(
+                                                                    --font-weight--bold
+                                                                  );
+                                                                `)}"
                                                               >
-                                                                <i
-                                                                  class="bi bi-pencil-fill"
-                                                                ></i>
-                                                                Update My Own
-                                                                Role to
-                                                                ${lodash.capitalize(
-                                                                  systemRole
-                                                                )}
-                                                              </button>
-                                                            </form>
-                                                          `
-                                                        )},
+                                                                You may not undo
+                                                                this action!
+                                                              </strong>
+                                                            </p>
+                                                            <button
+                                                              class="button button--rose"
+                                                            >
+                                                              <i
+                                                                class="bi bi-pencil-fill"
+                                                              ></i>
+                                                              Update My Own Role
+                                                              to
+                                                              ${lodash.capitalize(
+                                                                systemRole
+                                                              )}
+                                                            </button>
+                                                          </form>
+                                                        `)},
                                                       });
                                                     `)}"
-                                                  `
-                                                : html``}
-                                            >
-                                              $${iconsSystemRole[systemRole]}
-                                              ${lodash.capitalize(systemRole)}
-                                            </button>
-                                          </div>
-                                        </form>
-                                      `
-                                  )}
-                                </div>
-                              `
-                            )},
+                                                `
+                                              : html``}
+                                          >
+                                            $${iconsSystemRole[systemRole]}
+                                            ${lodash.capitalize(systemRole)}
+                                          </button>
+                                        </div>
+                                      </form>
+                                    `
+                                )}
+                              </div>
+                            `)},
                           });
                         `)}"
                       >

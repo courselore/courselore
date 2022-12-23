@@ -941,51 +941,47 @@ export default async (application: Application): Promise<void> => {
                             theme: "rose",
                             trigger: "click",
                             interactive: true,
-                            content: ${response.locals.html(
-                              html`
-                                <form
-                                  method="DELETE"
-                                  action="https://${application.configuration
-                                    .hostname}/courses/${response.locals.course
-                                    .reference}/conversations/${response.locals
-                                    .conversation.reference}/messages/${response
-                                    .locals.message.reference}${qs.stringify(
-                                    {
-                                      conversations:
-                                        request.query.conversations,
-                                      messages: request.query.messages,
-                                    },
-                                    {
-                                      addQueryPrefix: true,
-                                    }
-                                  )}"
-                                  css="${response.locals.css(css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `)}"
-                                >
-                                  <p>
-                                    Are you sure you want to remove this
-                                    message?
-                                  </p>
-                                  <p>
-                                    <strong
-                                      css="${response.locals.css(css`
-                                        font-weight: var(--font-weight--bold);
-                                      `)}"
-                                    >
-                                      You may not undo this action!
-                                    </strong>
-                                  </p>
-                                  <button class="button button--rose">
-                                    <i class="bi bi-trash-fill"></i>
-                                    Remove Message
-                                  </button>
-                                </form>
-                              `
-                            )},
+                            content: ${response.locals.html(html`
+                              <form
+                                method="DELETE"
+                                action="https://${application.configuration
+                                  .hostname}/courses/${response.locals.course
+                                  .reference}/conversations/${response.locals
+                                  .conversation.reference}/messages/${response
+                                  .locals.message.reference}${qs.stringify(
+                                  {
+                                    conversations: request.query.conversations,
+                                    messages: request.query.messages,
+                                  },
+                                  {
+                                    addQueryPrefix: true,
+                                  }
+                                )}"
+                                css="${response.locals.css(css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `)}"
+                              >
+                                <p>
+                                  Are you sure you want to remove this message?
+                                </p>
+                                <p>
+                                  <strong
+                                    css="${response.locals.css(css`
+                                      font-weight: var(--font-weight--bold);
+                                    `)}"
+                                  >
+                                    You may not undo this action!
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-trash-fill"></i>
+                                  Remove Message
+                                </button>
+                              </form>
+                            `)},
                           });
                         `)}"
                       >
@@ -1071,27 +1067,23 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(
-                        html`
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `)}"
-                              >Ctrl+Enter</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${response.locals
-                                .javascript(javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `)}"
-                              ><i class="bi bi-command"></i
-                              ><i class="bi bi-arrow-return-left"></i
-                            ></span>
-                          </span>
-                        `
-                      )},
+                      content: ${response.locals.html(html`
+                        <span class="keyboard-shortcut">
+                          <span
+                            javascript="${response.locals.javascript(javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `)}"
+                            >Ctrl+Enter</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            javascript="${response.locals.javascript(javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `)}"
+                            ><i class="bi bi-command"></i
+                            ><i class="bi bi-arrow-return-left"></i
+                          ></span>
+                        </span>
+                      `)},
                     });
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');

@@ -1556,39 +1556,37 @@ export default async (application: Application): Promise<void> => {
                                   theme: "rose",
                                   trigger: "click",
                                   interactive: true,
-                                  content: ${response.locals.html(
-                                    html`
-                                      <div
-                                        css="${response.locals.css(css`
-                                          padding: var(--space--2)
-                                            var(--space--0);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `)}"
-                                      >
-                                        <p>
-                                          Are you sure you want to remove this
-                                          tag?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            css="${response.locals.css(css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `)}"
-                                          >
-                                            The tag will be removed from all
-                                            conversations and you may not undo
-                                            this action!
-                                          </strong>
-                                        </p>
-                                        <button
-                                          type="button"
-                                          class="button button--rose"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                  content: ${response.locals.html(html`
+                                    <div
+                                      css="${response.locals.css(css`
+                                        padding: var(--space--2) var(--space--0);
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--4);
+                                      `)}"
+                                    >
+                                      <p>
+                                        Are you sure you want to remove this
+                                        tag?
+                                      </p>
+                                      <p>
+                                        <strong
+                                          css="${response.locals.css(css`
+                                            font-weight: var(
+                                              --font-weight--bold
+                                            );
+                                          `)}"
+                                        >
+                                          The tag will be removed from all
+                                          conversations and you may not undo
+                                          this action!
+                                        </strong>
+                                      </p>
+                                      <button
+                                        type="button"
+                                        class="button button--rose"
+                                        javascript="${response.locals
+                                          .javascript(javascript`
                                             this.onclick = () => {
                                               const tag = this.closest('[key^="tag/"]');
                                               tag.classList.add("deleted");
@@ -1606,13 +1604,12 @@ export default async (application: Application): Promise<void> => {
                                               }
                                             };
                                           `)}"
-                                        >
-                                          <i class="bi bi-trash-fill"></i>
-                                          Remove Tag
-                                        </button>
-                                      </div>
-                                    `
-                                  )},
+                                      >
+                                        <i class="bi bi-trash-fill"></i>
+                                        Remove Tag
+                                      </button>
+                                    </div>
+                                  `)},
                                 });
                               `)}"
                             >
@@ -2092,29 +2089,27 @@ export default async (application: Application): Promise<void> => {
                     javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
-                        content: ${response.locals.html(
-                          html`
-                            <div
-                              css="${response.locals.css(css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              <p>
-                                Emails must be separated by commas and/or
-                                newlines, and may include names which may be
-                                quoted or not, for example:
-                              </p>
-                              <pre class="pre"><code>${dedent`
-                                "Scott" <scott@courselore.org>,
-                                Ali <ali@courselore.org>
-                                leandro@courselore.org
-                              `}</code></pre>
-                            </div>
-                          `
-                        )},
+                        content: ${response.locals.html(html`
+                          <div
+                            css="${response.locals.css(css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `)}"
+                          >
+                            <p>
+                              Emails must be separated by commas and/or
+                              newlines, and may include names which may be
+                              quoted or not, for example:
+                            </p>
+                            <pre class="pre"><code>${dedent`
+                              "Scott" <scott@courselore.org>,
+                              Ali <ali@courselore.org>
+                              leandro@courselore.org
+                            `}</code></pre>
+                          </div>
+                        `)},
                       });
                     `)}"
                   >
@@ -2377,63 +2372,59 @@ export default async (application: Application): Promise<void> => {
                                         maxWidth: "none",
                                         content: ${(() => {
                                           const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return response.locals.html(
-                                            html`
+                                          return response.locals.html(html`
+                                            <div
+                                              css="${response.locals.css(css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `)}"
+                                            >
+                                              $${isInvitationExpired
+                                                ? html`
+                                                    <p
+                                                      class="text--rose"
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        display: flex;
+                                                        gap: var(--space--2);
+                                                        justify-content: center;
+                                                      `)}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-calendar-x-fill"
+                                                      ></i>
+                                                      Expired
+                                                    </p>
+                                                  `
+                                                : html``}
                                               <div
                                                 css="${response.locals.css(css`
                                                   display: flex;
-                                                  flex-direction: column;
                                                   gap: var(--space--2);
+                                                  align-items: center;
                                                 `)}"
                                               >
-                                                $${isInvitationExpired
-                                                  ? html`
-                                                      <p
-                                                        class="text--rose"
-                                                        css="${response.locals
-                                                          .css(css`
-                                                          display: flex;
-                                                          gap: var(--space--2);
-                                                          justify-content: center;
-                                                        `)}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-calendar-x-fill"
-                                                        ></i>
-                                                        Expired
-                                                      </p>
-                                                    `
-                                                  : html``}
-                                                <div
+                                                <input
+                                                  type="text"
+                                                  readonly
+                                                  value="${link}"
+                                                  class="input--text"
                                                   css="${response.locals
                                                     .css(css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
-                                                    align-items: center;
+                                                    flex: 1;
                                                   `)}"
-                                                >
-                                                  <input
-                                                    type="text"
-                                                    readonly
-                                                    value="${link}"
-                                                    class="input--text"
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      flex: 1;
-                                                    `)}"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                  javascript="${response.locals
+                                                    .javascript(javascript`
                                                       this.onfocus = () => {
                                                         this.select();
                                                       };
                                                     `)}"
-                                                  />
-                                                  <button
-                                                    class="button button--tight button--transparent"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                />
+                                                <button
+                                                  class="button button--tight button--transparent"
+                                                  javascript="${response.locals
+                                                    .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
                                                         content: "Copy Link",
@@ -2452,41 +2443,37 @@ export default async (application: Application): Promise<void> => {
                                                         check.hidden = true;
                                                       };
                                                     `)}"
+                                                >
+                                                  <span key="stickies">
+                                                    <i
+                                                      class="bi bi-stickies"
+                                                    ></i>
+                                                  </span>
+                                                  <span
+                                                    key="check"
+                                                    hidden
+                                                    class="text--green"
                                                   >
-                                                    <span key="stickies">
-                                                      <i
-                                                        class="bi bi-stickies"
-                                                      ></i>
-                                                    </span>
-                                                    <span
-                                                      key="check"
-                                                      hidden
-                                                      class="text--green"
-                                                    >
-                                                      <i
-                                                        class="bi bi-check-lg"
-                                                      ></i>
-                                                    </span>
-                                                  </button>
-                                                  <a
-                                                    href="${link}"
-                                                    class="button button--tight button--transparent"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                    <i
+                                                      class="bi bi-check-lg"
+                                                    ></i>
+                                                  </span>
+                                                </button>
+                                                <a
+                                                  href="${link}"
+                                                  class="button button--tight button--transparent"
+                                                  javascript="${response.locals
+                                                    .javascript(javascript`
                                                       (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
                                                         content: "See QR Code for Link",
                                                       });
                                                     `)}"
-                                                    ><i
-                                                      class="bi bi-qr-code"
-                                                    ></i
-                                                  ></a>
-                                                </div>
+                                                  ><i class="bi bi-qr-code"></i
+                                                ></a>
                                               </div>
-                                            `
-                                          );
+                                            </div>
+                                          `);
                                         })()},
                                       });
                                     `)}"
@@ -2514,55 +2501,53 @@ export default async (application: Application): Promise<void> => {
                                       (this.dropdown ??= tippy(this)).setProps({
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${response.locals.html(
-                                          html`
-                                            <div class="dropdown--menu">
-                                              <form
-                                                method="PATCH"
-                                                action="${action}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="resend"
-                                                  value="true"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                  $${isUsed
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
+                                        content: ${response.locals.html(html`
+                                          <div class="dropdown--menu">
+                                            <form
+                                              method="PATCH"
+                                              action="${action}"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="resend"
+                                                value="true"
+                                              />
+                                              <button
+                                                class="dropdown--menu--item button button--transparent"
+                                                $${isUsed
+                                                  ? html`
+                                                      type="button"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             theme: "rose",
                                                             trigger: "click",
                                                             content: "You may not resend this invitation because it’s used.",
                                                           });
                                                         `)}"
-                                                      `
-                                                    : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
+                                                    `
+                                                  : isInvitationExpired
+                                                  ? html`
+                                                      type="button"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
                                                           (this.tooltip ??= tippy(this)).setProps({
                                                             theme: "rose",
                                                             trigger: "click",
                                                             content: "You may not resend this invitation because it’s expired.",
                                                           });
                                                         `)}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  <i class="bi bi-envelope"></i>
-                                                  Resend Invitation Email
-                                                </button>
-                                              </form>
-                                            </div>
-                                          `
-                                        )},
+                                                    `
+                                                  : html``}
+                                              >
+                                                <i class="bi bi-envelope"></i>
+                                                Resend Invitation Email
+                                              </button>
+                                            </form>
+                                          </div>
+                                        `)},
                                       });
                                     `)}"
                                   >
@@ -2616,74 +2601,72 @@ export default async (application: Application): Promise<void> => {
                                   (this.dropdown ??= tippy(this)).setProps({
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${response.locals.html(
-                                      html`
-                                        <div class="dropdown--menu">
-                                          $${application.server.locals.helpers.courseRoles.map(
-                                            (courseRole) =>
-                                              html`
-                                                <form
-                                                  key="course-role--${courseRole}"
-                                                  method="PATCH"
-                                                  action="${action}"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="courseRole"
-                                                    value="${courseRole}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button ${courseRole ===
-                                                    invitation.courseRole
-                                                      ? "button--blue"
-                                                      : "button--transparent"} ${textColorsCourseRole[
-                                                      courseRole
-                                                    ]}"
-                                                    $${isUsed
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
+                                    content: ${response.locals.html(html`
+                                      <div class="dropdown--menu">
+                                        $${application.server.locals.helpers.courseRoles.map(
+                                          (courseRole) =>
+                                            html`
+                                              <form
+                                                key="course-role--${courseRole}"
+                                                method="PATCH"
+                                                action="${action}"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="courseRole"
+                                                  value="${courseRole}"
+                                                />
+                                                <button
+                                                  class="dropdown--menu--item button ${courseRole ===
+                                                  invitation.courseRole
+                                                    ? "button--blue"
+                                                    : "button--transparent"} ${textColorsCourseRole[
+                                                    courseRole
+                                                  ]}"
+                                                  $${isUsed
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                             (this.tooltip ??= tippy(this)).setProps({
                                                               theme: "rose",
                                                               trigger: "click",
                                                               content: "You may not update the course role of this invitation because it’s used.",
                                                             });
                                                           `)}"
-                                                        `
-                                                      : isInvitationExpired
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
+                                                      `
+                                                    : isInvitationExpired
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                             (this.tooltip ??= tippy(this)).setProps({
                                                               theme: "rose",
                                                               trigger: "click",
                                                               content: "You may not update the course role of this invitation because it’s expired.",
                                                             });
                                                           `)}"
-                                                        `
-                                                      : html``}
-                                                  >
-                                                    $${iconsCourseRole[
-                                                      courseRole
-                                                    ][
-                                                      courseRole === "staff"
-                                                        ? "fill"
-                                                        : "regular"
-                                                    ]}
-                                                    ${lodash.capitalize(
-                                                      courseRole
-                                                    )}
-                                                  </button>
-                                                </form>
-                                              `
-                                          )}
-                                        </div>
-                                      `
-                                    )},
+                                                      `
+                                                    : html``}
+                                                >
+                                                  $${iconsCourseRole[
+                                                    courseRole
+                                                  ][
+                                                    courseRole === "staff"
+                                                      ? "fill"
+                                                      : "regular"
+                                                  ]}
+                                                  ${lodash.capitalize(
+                                                    courseRole
+                                                  )}
+                                                </button>
+                                              </form>
+                                            `
+                                        )}
+                                      </div>
+                                    `)},
                                   });
                                 `)}"
                               >
@@ -2787,23 +2770,22 @@ export default async (application: Application): Promise<void> => {
                                             .javascript(javascript`
                                             (this.tooltip ??= tippy(this)).setProps({
                                               interactive: true,
-                                              content: ${response.locals.html(
-                                                html`
-                                                  <div>
-                                                    Used
-                                                    <time
-                                                      datetime="${new Date(
-                                                        invitation.usedAt!
-                                                      ).toISOString()}"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                    `)}"
-                                                    ></time>
-                                                  </div>
-                                                `
-                                              )},
+                                              content: ${response.locals
+                                                .html(html`
+                                                <div>
+                                                  Used
+                                                  <time
+                                                    datetime="${new Date(
+                                                      invitation.usedAt!
+                                                    ).toISOString()}"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                      `)}"
+                                                  ></time>
+                                                </div>
+                                              `)},
                                             });
                                           `)}"
                                         >
@@ -2827,46 +2809,45 @@ export default async (application: Application): Promise<void> => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${response.locals.html(
-                                                html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-x-fill"
-                                                      ></i>
-                                                      <span>
-                                                        Expired
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt!
-                                                          ).toISOString()}"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `)}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
-                                                    </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${removeExpirationForm}
-                                                    </div>
+                                              content: ${response.locals
+                                                .html(html`
+                                                <div
+                                                  css="${response.locals
+                                                    .css(css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `)}"
+                                                >
+                                                  <h3 class="heading">
+                                                    <i
+                                                      class="bi bi-calendar-x-fill"
+                                                    ></i>
+                                                    <span>
+                                                      Expired
+                                                      <time
+                                                        datetime="${new Date(
+                                                          invitation.expiresAt!
+                                                        ).toISOString()}"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                        `)}"
+                                                      ></time>
+                                                    </span>
+                                                  </h3>
+                                                  <div class="dropdown--menu">
+                                                    $${updateExpirationForm}
                                                   </div>
-                                                `
-                                              )},
+                                                  <hr
+                                                    class="dropdown--separator"
+                                                  />
+                                                  <div class="dropdown--menu">
+                                                    $${removeExpirationForm}
+                                                  </div>
+                                                </div>
+                                              `)},
                                             });
                                           `)}"
                                         >
@@ -2891,31 +2872,30 @@ export default async (application: Application): Promise<void> => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${response.locals.html(
-                                                html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      padding-top: var(
-                                                        --space--2
-                                                      );
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
-                                                    </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${expireForm}
-                                                    </div>
+                                              content: ${response.locals
+                                                .html(html`
+                                                <div
+                                                  css="${response.locals
+                                                    .css(css`
+                                                    padding-top: var(
+                                                      --space--2
+                                                    );
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `)}"
+                                                >
+                                                  <div class="dropdown--menu">
+                                                    $${updateExpirationForm}
                                                   </div>
-                                                `
-                                              )},
+                                                  <hr
+                                                    class="dropdown--separator"
+                                                  />
+                                                  <div class="dropdown--menu">
+                                                    $${expireForm}
+                                                  </div>
+                                                </div>
+                                              `)},
                                             });
                                           `)}"
                                         >
@@ -2941,47 +2921,46 @@ export default async (application: Application): Promise<void> => {
                                             (this.dropdown ??= tippy(this)).setProps({
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${response.locals.html(
-                                                html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-plus-fill"
-                                                      ></i>
-                                                      <span>
-                                                        Expires
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt
-                                                          ).toISOString()}"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
+                                              content: ${response.locals
+                                                .html(html`
+                                                <div
+                                                  css="${response.locals
+                                                    .css(css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `)}"
+                                                >
+                                                  <h3 class="heading">
+                                                    <i
+                                                      class="bi bi-calendar-plus-fill"
+                                                    ></i>
+                                                    <span>
+                                                      Expires
+                                                      <time
+                                                        datetime="${new Date(
+                                                          invitation.expiresAt
+                                                        ).toISOString()}"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                           `)}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
-                                                    </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${removeExpirationForm}
-                                                      $${expireForm}
-                                                    </div>
+                                                      ></time>
+                                                    </span>
+                                                  </h3>
+                                                  <div class="dropdown--menu">
+                                                    $${updateExpirationForm}
                                                   </div>
-                                                `
-                                              )},
+                                                  <hr
+                                                    class="dropdown--separator"
+                                                  />
+                                                  <div class="dropdown--menu">
+                                                    $${removeExpirationForm}
+                                                    $${expireForm}
+                                                  </div>
+                                                </div>
+                                              `)},
                                             });
                                           `)}"
                                         >
@@ -4252,135 +4231,129 @@ export default async (application: Application): Promise<void> => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${response.locals.html(
-                                html`
-                                  <div class="dropdown--menu">
-                                    $${application.server.locals.helpers.courseRoles.map(
-                                      (courseRole) =>
-                                        html`
-                                          <form
-                                            key="course-role--${courseRole}"
-                                            method="PATCH"
-                                            action="${action}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="courseRole"
-                                              value="${courseRole}"
-                                            />
-                                            <div>
-                                              <button
-                                                class="dropdown--menu--item button ${courseRole ===
-                                                enrollment.courseRole
-                                                  ? "button--blue"
-                                                  : "button--transparent"} ${textColorsCourseRole[
-                                                  courseRole
-                                                ]}"
-                                                $${isOnlyStaff
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                          content: "You may not update your own course role because you’re the only staff member.",
-                                                        });
-                                                      `)}"
-                                                    `
-                                                  : isSelf
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                        (this.dropdown ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                          interactive: true,
-                                                          appendTo: document.querySelector("body"),
-                                                          content: ${response.locals.html(
-                                                            html`
-                                                              <form
-                                                                key="course-role--${courseRole}"
-                                                                method="PATCH"
-                                                                action="${action}"
+                              content: ${response.locals.html(html`
+                                <div class="dropdown--menu">
+                                  $${application.server.locals.helpers.courseRoles.map(
+                                    (courseRole) =>
+                                      html`
+                                        <form
+                                          key="course-role--${courseRole}"
+                                          method="PATCH"
+                                          action="${action}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseRole"
+                                            value="${courseRole}"
+                                          />
+                                          <div>
+                                            <button
+                                              class="dropdown--menu--item button ${courseRole ===
+                                              enrollment.courseRole
+                                                ? "button--blue"
+                                                : "button--transparent"} ${textColorsCourseRole[
+                                                courseRole
+                                              ]}"
+                                              $${isOnlyStaff
+                                                ? html`
+                                                    type="button"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                      (this.tooltip ??= tippy(this)).setProps({
+                                                        theme: "rose",
+                                                        trigger: "click",
+                                                        content: "You may not update your own course role because you’re the only staff member.",
+                                                      });
+                                                    `)}"
+                                                  `
+                                                : isSelf
+                                                ? html`
+                                                    type="button"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                      (this.dropdown ??= tippy(this)).setProps({
+                                                        theme: "rose",
+                                                        trigger: "click",
+                                                        interactive: true,
+                                                        appendTo: document.querySelector("body"),
+                                                        content: ${response
+                                                          .locals.html(html`
+                                                          <form
+                                                            key="course-role--${courseRole}"
+                                                            method="PATCH"
+                                                            action="${action}"
+                                                            css="${response
+                                                              .locals.css(css`
+                                                              padding: var(
+                                                                --space--2
+                                                              );
+                                                              display: flex;
+                                                              flex-direction: column;
+                                                              gap: var(
+                                                                --space--4
+                                                              );
+                                                            `)}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseRole"
+                                                              value="${courseRole}"
+                                                            />
+                                                            <p>
+                                                              Are you sure you
+                                                              want to update
+                                                              your own course
+                                                              role to
+                                                              ${courseRole}?
+                                                            </p>
+                                                            <p>
+                                                              <strong
                                                                 css="${response
                                                                   .locals
                                                                   .css(css`
-                                                                  padding: var(
-                                                                    --space--2
-                                                                  );
-                                                                  display: flex;
-                                                                  flex-direction: column;
-                                                                  gap: var(
-                                                                    --space--4
+                                                                  font-weight: var(
+                                                                    --font-weight--bold
                                                                   );
                                                                 `)}"
                                                               >
-                                                                <input
-                                                                  type="hidden"
-                                                                  name="courseRole"
-                                                                  value="${courseRole}"
-                                                                />
-                                                                <p>
-                                                                  Are you sure
-                                                                  you want to
-                                                                  update your
-                                                                  own course
-                                                                  role to
-                                                                  ${courseRole}?
-                                                                </p>
-                                                                <p>
-                                                                  <strong
-                                                                    css="${response
-                                                                      .locals
-                                                                      .css(css`
-                                                                      font-weight: var(
-                                                                        --font-weight--bold
-                                                                      );
-                                                                    `)}"
-                                                                  >
-                                                                    You may not
-                                                                    undo this
-                                                                    action!
-                                                                  </strong>
-                                                                </p>
-                                                                <button
-                                                                  class="button button--rose"
-                                                                >
-                                                                  <i
-                                                                    class="bi bi-pencil-fill"
-                                                                  ></i>
-                                                                  Update My Own
-                                                                  Course Role to
-                                                                  ${lodash.capitalize(
-                                                                    courseRole
-                                                                  )}
-                                                                </button>
-                                                              </form>
-                                                            `
-                                                          )},
-                                                        });
-                                                      `)}"
-                                                    `
-                                                  : html``}
-                                              >
-                                                $${iconsCourseRole[courseRole][
-                                                  courseRole === "staff"
-                                                    ? "fill"
-                                                    : "regular"
-                                                ]}
-                                                ${lodash.capitalize(courseRole)}
-                                              </button>
-                                            </div>
-                                          </form>
-                                        `
-                                    )}
-                                  </div>
-                                `
-                              )},
+                                                                You may not undo
+                                                                this action!
+                                                              </strong>
+                                                            </p>
+                                                            <button
+                                                              class="button button--rose"
+                                                            >
+                                                              <i
+                                                                class="bi bi-pencil-fill"
+                                                              ></i>
+                                                              Update My Own
+                                                              Course Role to
+                                                              ${lodash.capitalize(
+                                                                courseRole
+                                                              )}
+                                                            </button>
+                                                          </form>
+                                                        `)},
+                                                      });
+                                                    `)}"
+                                                  `
+                                                : html``}
+                                            >
+                                              $${iconsCourseRole[courseRole][
+                                                courseRole === "staff"
+                                                  ? "fill"
+                                                  : "regular"
+                                              ]}
+                                              ${lodash.capitalize(courseRole)}
+                                            </button>
+                                          </div>
+                                        </form>
+                                      `
+                                  )}
+                                </div>
+                              `)},
                             });
                           `)}"
                         >
@@ -4424,46 +4397,44 @@ export default async (application: Application): Promise<void> => {
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${response.locals.html(
-                                        html`
-                                          <form
-                                            method="DELETE"
-                                            action="${action}"
-                                            css="${response.locals.css(css`
-                                              padding: var(--space--2);
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--4);
-                                            `)}"
-                                          >
-                                            <p>
-                                              Are you sure you want to remove
-                                              ${isSelf
-                                                ? "yourself"
-                                                : "this person"}
-                                              from the course?
-                                            </p>
-                                            <p>
-                                              <strong
-                                                css="${response.locals.css(css`
-                                                  font-weight: var(
-                                                    --font-weight--bold
-                                                  );
-                                                `)}"
-                                              >
-                                                You may not undo this action!
-                                              </strong>
-                                            </p>
-                                            <button class="button button--rose">
-                                              <i
-                                                class="bi bi-person-dash-fill"
-                                              ></i>
-                                              Remove ${isSelf ? "Myself" : ""}
-                                              from the Course
-                                            </button>
-                                          </form>
-                                        `
-                                      )},
+                                      content: ${response.locals.html(html`
+                                        <form
+                                          method="DELETE"
+                                          action="${action}"
+                                          css="${response.locals.css(css`
+                                            padding: var(--space--2);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `)}"
+                                        >
+                                          <p>
+                                            Are you sure you want to remove
+                                            ${isSelf
+                                              ? "yourself"
+                                              : "this person"}
+                                            from the course?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              css="${response.locals.css(css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `)}"
+                                            >
+                                              You may not undo this action!
+                                            </strong>
+                                          </p>
+                                          <button class="button button--rose">
+                                            <i
+                                              class="bi bi-person-dash-fill"
+                                            ></i>
+                                            Remove ${isSelf ? "Myself" : ""}
+                                            from the Course
+                                          </button>
+                                        </form>
+                                      `)},
                                     });
                                   `
                             }

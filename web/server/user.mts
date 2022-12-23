@@ -571,70 +571,69 @@ export default async (application: Application): Promise<void> => {
             appendTo: document.querySelector("body"),
             delay: [1000, null],
             touch: ["hold", 1000],
-            content: ${response.locals.html(
-              html`
+            content: ${response.locals.html(html`
+              <div
+                css="${response.locals.css(css`
+                  max-height: var(--space--56);
+                  padding: var(--space--1) var(--space--2);
+                  overflow: auto;
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `)}"
+              >
                 <div
                   css="${response.locals.css(css`
-                    max-height: var(--space--56);
-                    padding: var(--space--1) var(--space--2);
-                    overflow: auto;
                     display: flex;
-                    flex-direction: column;
                     gap: var(--space--4);
+                    align-items: center;
                   `)}"
                 >
+                  <div>
+                    $${application.server.locals.partials.user({
+                      request,
+                      response,
+                      enrollment,
+                      user,
+                      name: false,
+                      size: "xl",
+                    })}
+                  </div>
                   <div
                     css="${response.locals.css(css`
+                      padding-top: var(--space--0-5);
                       display: flex;
-                      gap: var(--space--4);
-                      align-items: center;
+                      flex-direction: column;
+                      gap: var(--space--2);
                     `)}"
                   >
                     <div>
-                      $${application.server.locals.partials.user({
-                        request,
-                        response,
-                        enrollment,
-                        user,
-                        name: false,
-                        size: "xl",
-                      })}
-                    </div>
-                    <div
-                      css="${response.locals.css(css`
-                        padding-top: var(--space--0-5);
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `)}"
-                    >
-                      <div>
-                        <div class="strong">
-                          ${user === "no-longer-enrolled"
-                            ? "No Longer Enrolled"
-                            : user!.name}
-                        </div>
-                        $${user !== "no-longer-enrolled" &&
-                        (response.locals.enrollment?.courseRole === "staff" ||
-                          response.locals.user?.id === user!.id)
-                          ? html`
-                              <div class="secondary">
-                                <span
-                                  css="${response.locals.css(css`
-                                    margin-right: var(--space--2);
-                                  `)}"
-                                >
-                                  ${user!.email}
-                                </span>
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  css="${response.locals.css(css`
-                                    font-size: var(--font-size--xs);
-                                    line-height: var(--line-height--xs);
-                                    display: inline-flex;
-                                  `)}"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                      <div class="strong">
+                        ${user === "no-longer-enrolled"
+                          ? "No Longer Enrolled"
+                          : user!.name}
+                      </div>
+                      $${user !== "no-longer-enrolled" &&
+                      (response.locals.enrollment?.courseRole === "staff" ||
+                        response.locals.user?.id === user!.id)
+                        ? html`
+                            <div class="secondary">
+                              <span
+                                css="${response.locals.css(css`
+                                  margin-right: var(--space--2);
+                                `)}"
+                              >
+                                ${user!.email}
+                              </span>
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                css="${response.locals.css(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: inline-flex;
+                                `)}"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
                                       content: "Copy Email",
@@ -655,72 +654,71 @@ export default async (application: Application): Promise<void> => {
                                       this.copied.hide();
                                     };
                                   `)}"
-                                >
-                                  <i class="bi bi-stickies"></i>
-                                </button>
-                              </div>
-                            `
-                          : html``}
-                        $${user === "no-longer-enrolled"
-                          ? html`
-                              <div class="secondary">
-                                This person has left the course.
-                              </div>
-                            `
-                          : html`
-                              <div
-                                class="secondary"
-                                css="${response.locals.css(css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                `)}"
                               >
-                                <span>
-                                  Last seen online
-                                  <time
-                                    datetime="${new Date(
-                                      user!.lastSeenOnlineAt
-                                    ).toISOString()}"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                <i class="bi bi-stickies"></i>
+                              </button>
+                            </div>
+                          `
+                        : html``}
+                      $${user === "no-longer-enrolled"
+                        ? html`
+                            <div class="secondary">
+                              This person has left the course.
+                            </div>
+                          `
+                        : html`
+                            <div
+                              class="secondary"
+                              css="${response.locals.css(css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                              `)}"
+                            >
+                              <span>
+                                Last seen online
+                                <time
+                                  datetime="${new Date(
+                                    user!.lastSeenOnlineAt
+                                  ).toISOString()}"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
                                       leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                     `)}"
-                                  ></time>
-                                </span>
-                              </div>
-                            `}
-                        $${enrollment !== undefined &&
-                        enrollment !== "no-longer-enrolled" &&
-                        enrollment.courseRole === "staff"
-                          ? html`
-                              <div
-                                class="text--sky"
-                                css="${response.locals.css(css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `)}"
-                              >
-                                <i class="bi bi-mortarboard-fill"></i>
-                                Staff
-                              </div>
-                            `
-                          : html``}
-                      </div>
+                                ></time>
+                              </span>
+                            </div>
+                          `}
+                      $${enrollment !== undefined &&
+                      enrollment !== "no-longer-enrolled" &&
+                      enrollment.courseRole === "staff"
+                        ? html`
+                            <div
+                              class="text--sky"
+                              css="${response.locals.css(css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                display: flex;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <i class="bi bi-mortarboard-fill"></i>
+                              Staff
+                            </div>
+                          `
+                        : html``}
                     </div>
                   </div>
-                  $${user !== "no-longer-enrolled" &&
-                  user!.biographyPreprocessed !== null
-                    ? application.server.locals.partials.content({
-                        request,
-                        response,
-                        contentPreprocessed: user!.biographyPreprocessed,
-                      }).contentProcessed
-                    : html``}
                 </div>
-              `
-            )},
+                $${user !== "no-longer-enrolled" &&
+                user!.biographyPreprocessed !== null
+                  ? application.server.locals.partials.content({
+                      request,
+                      response,
+                      contentPreprocessed: user!.biographyPreprocessed,
+                    }).contentProcessed
+                  : html``}
+              </div>
+            `)},
           });
         `)}"
         >$${userHTML}</span
@@ -1027,22 +1025,20 @@ export default async (application: Application): Promise<void> => {
                     (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                       trigger: "manual",
                       hideOnClick: false,
-                      content: ${response.locals.html(
-                        html`
-                          <div
-                            css="${response.locals.css(css`
-                              display: flex;
-                              gap: var(--space--2);
-                            `)}"
-                          >
-                            $${application.server.locals.partials.spinner({
-                              request,
-                              response,
-                            })}
-                            Uploading…
-                          </div>
-                        `
-                      )},
+                      content: ${response.locals.html(html`
+                        <div
+                          css="${response.locals.css(css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `)}"
+                        >
+                          $${application.server.locals.partials.spinner({
+                            request,
+                            response,
+                          })}
+                          Uploading…
+                        </div>
+                      `)},
                     });
 
                     (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
