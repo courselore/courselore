@@ -1826,8 +1826,10 @@ export default async (application: Application): Promise<void> => {
                     this.onclick = () => {
                       const newTag = document.createRange().createContextualFragment(newTagPartial).firstElementChild;
                       this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
-                      for (const element of newTag.querySelectorAll("[javascript]"))
-                        localJavaScript[element.getAttribute("javascript")].call(element);
+                      leafac.javascript({
+                        event,
+                        element: newTag,
+                      })
                     };
 
                     this.onvalidate = () => {

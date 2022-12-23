@@ -156,17 +156,16 @@ export function liveNavigation() {
   };
 
   window.addEventListener("DOMContentLoaded", (event) => {
-    for (const element of [...document.querySelectorAll("[javascript]")].filter(
-      (element) =>
-        element.closest("[data-tippy-root]") === null &&
-        !ancestors(element)
-          .slice(1)
-          .some((element) => element.partialParentElement)
-    ))
-      window.localJavaScript[element.getAttribute("javascript")].call(
-        element,
-        event
-      );
+    javascript({
+      event,
+      elements: [...document.querySelectorAll("[javascript]")].filter(
+        (element) =>
+          element.closest("[data-tippy-root]") === null &&
+          !ancestors(element)
+            .slice(1)
+            .some((element) => element.partialParentElement)
+      ),
+    });
 
     document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   });
@@ -421,7 +420,7 @@ export function loadPartial(parentElement, partialString) {
   );
   partialHTMLForJavaScript.remove();
 
-  const javascript = document.querySelector(`[key="local-javascript"]`);
+  const javascript_ = document.querySelector(`[key="local-javascript"]`);
   const partialJavaScript = partialDocument.querySelector(
     `[key="local-javascript"]`
   );
@@ -429,7 +428,7 @@ export function loadPartial(parentElement, partialString) {
   const localJavaScript = window.localJavaScript;
   new Function(partialJavaScript.textContent)();
   window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
-  javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
+  javascript_.insertAdjacentText("beforeend", partialJavaScript.textContent);
 
   morph(parentElement, partialDocument.querySelector("body"));
   morph(HTMLForJavaScript, partialHTMLForJavaScript);
@@ -437,11 +436,12 @@ export function loadPartial(parentElement, partialString) {
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
 
-  for (const element of [
-    ...parentElement.querySelectorAll("[javascript]"),
-    ...HTMLForJavaScript.querySelectorAll("[javascript]"),
-  ])
-    window.localJavaScript[element.getAttribute("javascript")].call(element);
+  javascript({
+    elements: [
+      ...parentElement.querySelectorAll("[javascript]"),
+      ...HTMLForJavaScript.querySelectorAll("[javascript]"),
+    ],
+  });
 
   document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
 
@@ -580,6 +580,41 @@ export function morph(from, to, detail = {}) {
 
     morph(from, to, detail);
   }
+}
+
+export function javascript({
+  event = undefined,
+  element = undefined,
+  elements = element.querySelectorAll("[javascript]"),
+}) {
+  for (const element of elements)
+    window.localJavaScript[element.getAttribute("javascript")].call(
+      element,
+      event
+    );
+}
+
+export function setTippy({
+  event,
+  element,
+  elementProperty = "tooltip",
+  tippyProps: { content: tippyContent, ...tippyProps },
+}) {
+  element[elementProperty] ??= tippy(element, {
+    content: document.createRange().createContextualFragment("<div></div>")
+      .firstElementChild,
+  });
+  element[elementProperty].setProps(tippyProps);
+
+  const tippyContentElement = document
+    .createRange()
+    .createContextualFragment(tippyContent).firstElementChild;
+  morph(element[elementProperty].props.content, tippyContentElement);
+
+  javascript({
+    event,
+    element: tippyContentElement,
+  });
 }
 
 export function validate(element) {
