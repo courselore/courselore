@@ -5999,28 +5999,28 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent text--rose"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  theme: "rose",
-                                  touch: false,
-                                  content: ${response.locals.html(html`
-                                    Cancel
-                                    <span class="keyboard-shortcut">
-                                      (<span
-                                        javascript="${response.locals
-                                          .javascript(javascript`
-                                            this.hidden = leafac.isAppleDevice;
-                                          `)}"
-                                        >Esc</span
-                                      ><span
-                                        class="keyboard-shortcut--cluster"
-                                        javascript="${response.locals
-                                          .javascript(javascript`
-                                            this.hidden = !leafac.isAppleDevice;
-                                          `)}"
-                                        ><i class="bi bi-escape"></i></span
-                                      >)
-                                    </span>
-                                  `)},
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    theme: "rose",
+                                    touch: false,
+                                    content: ${response.locals.html(html`
+                                      Cancel
+                                      <span class="keyboard-shortcut">
+                                        (<span
+                                          javascript="${response.locals
+                                            .javascript(javascript`
+                                              this.hidden = leafac.isAppleDevice;
+                                            `)}"
+                                          >Esc</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          javascript="${response.locals
+                                            .javascript(javascript`
+                                              this.hidden = !leafac.isAppleDevice;
+                                            `)}"
+                                          ><i class="bi bi-escape"></i></span
+                                        >)
+                                      </span>
+                                    `)},
                                 });
                                       
                                 this.onclick = () => {
@@ -6502,303 +6502,308 @@ export default async (application: Application): Promise<void> => {
                                   key="participants"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                    (this.dropdown ??= tippy(this)).setProps({
-                                      trigger: "click",
-                                      interactive: true,
-                                      placement: "bottom",
-                                      content: ${response.locals.html(html`
-                                        <div
-                                          key="participants--dropdown"
-                                          css="${response.locals.css(css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `)}"
-                                        >
-                                          <div class="dropdown--menu">
-                                            $${application.server.locals.helpers.conversationParticipantses.map(
-                                              (
-                                                conversationParticipants
-                                              ) => html`
-                                                <label>
-                                                  <input
-                                                    type="radio"
-                                                    name="participants--dropdown--participants"
-                                                    value="${conversationParticipants}"
-                                                    $${response.locals
-                                                      .conversation
-                                                      .participants ===
-                                                    conversationParticipants
-                                                      ? html`checked`
-                                                      : html``}
-                                                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        this.isModified = false;
-
-                                                        this.onchange = () => {
-                                                          this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-
-                                                          const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                          const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-
-                                                          ${
-                                                            conversationParticipants ===
-                                                            "everyone"
-                                                              ? javascript`
-                                                                  selectedParticipants.hidden = true;
-
-                                                                  for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                    element.disabled = true;
-                                                                `
-                                                              : conversationParticipants ===
-                                                                "staff"
-                                                              ? javascript`
-                                                                  selectedParticipants.hidden = false;
-
-                                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                    element.hidden = true;
-                                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-
-                                                                  for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                    element.disabled = element.matches('[data-enrollment-course-role="staff"]');
-                                                                `
-                                                              : conversationParticipants ===
-                                                                "selected-people"
-                                                              ? javascript`
-                                                                  selectedParticipants.hidden = false;
-
-                                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                    element.hidden = false;
-                                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-
-                                                                  for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                    element.disabled = false;
-                                                                `
-                                                              : javascript``
-                                                          }
-
-                                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
-                                                        };
-                                                      `)}"
-                                                  />
-                                                  <span
-                                                    class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
-                                                      conversationParticipants
-                                                    ]}"
-                                                  >
-                                                    $${iconsConversationParticipants[
-                                                      conversationParticipants
-                                                    ].fill}
-                                                    $${labelsConversationParticipants[
-                                                      conversationParticipants
-                                                    ]}
-                                                  </span>
-                                                  <span
-                                                    class="dropdown--menu--item button button--blue"
-                                                  >
-                                                    $${iconsConversationParticipants[
-                                                      conversationParticipants
-                                                    ].fill}
-                                                    $${labelsConversationParticipants[
-                                                      conversationParticipants
-                                                    ]}
-                                                  </span>
-                                                </label>
-                                              `
-                                            )}
-                                          </div>
-
+                                      (this.dropdown ??= tippy(this)).setProps({
+                                        trigger: "click",
+                                        interactive: true,
+                                        placement: "bottom",
+                                        content: ${response.locals.html(html`
                                           <div
-                                            key="participants--dropdown--selected-participants"
-                                            $${[
-                                              "staff",
-                                              "selected-people",
-                                            ].includes(
-                                              response.locals.conversation
-                                                .participants
-                                            )
-                                              ? html``
-                                              : html`hidden`}
+                                            key="participants--dropdown"
                                             css="${response.locals.css(css`
                                               display: flex;
                                               flex-direction: column;
                                               gap: var(--space--2);
                                             `)}"
                                           >
-                                            <hr class="dropdown--separator" />
+                                            <div class="dropdown--menu">
+                                              $${application.server.locals.helpers.conversationParticipantses.map(
+                                                (
+                                                  conversationParticipants
+                                                ) => html`
+                                                  <label>
+                                                    <input
+                                                      type="radio"
+                                                      name="participants--dropdown--participants"
+                                                      value="${conversationParticipants}"
+                                                      $${response.locals
+                                                        .conversation
+                                                        .participants ===
+                                                      conversationParticipants
+                                                        ? html`checked`
+                                                        : html``}
+                                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          this.isModified = false;
 
-                                            $${response.locals
-                                              .courseEnrollmentsCount === 1
-                                              ? html`
-                                                  <p
-                                                    class="secondary"
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      padding: var(--space--0)
-                                                        var(--space--2)
-                                                        var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    You may select participants
-                                                    when there are more people
-                                                    enrolled in the course.
-                                                  </p>
+                                                          this.onchange = () => {
+                                                            this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+
+                                                            const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                            const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+
+                                                            ${
+                                                              conversationParticipants ===
+                                                              "everyone"
+                                                                ? javascript`
+                                                                    selectedParticipants.hidden = true;
+
+                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                      element.disabled = true;
+                                                                  `
+                                                                : conversationParticipants ===
+                                                                  "staff"
+                                                                ? javascript`
+                                                                    selectedParticipants.hidden = false;
+
+                                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                      element.hidden = true;
+                                                                    participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+
+                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                      element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                                  `
+                                                                : conversationParticipants ===
+                                                                  "selected-people"
+                                                                ? javascript`
+                                                                    selectedParticipants.hidden = false;
+
+                                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                      element.hidden = false;
+                                                                    participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+
+                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                      element.disabled = false;
+                                                                  `
+                                                                : javascript``
+                                                            }
+
+                                                            this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                          };
+                                                        `)}"
+                                                    />
+                                                    <span
+                                                      class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
+                                                        conversationParticipants
+                                                      ]}"
+                                                    >
+                                                      $${iconsConversationParticipants[
+                                                        conversationParticipants
+                                                      ].fill}
+                                                      $${labelsConversationParticipants[
+                                                        conversationParticipants
+                                                      ]}
+                                                    </span>
+                                                    <span
+                                                      class="dropdown--menu--item button button--blue"
+                                                    >
+                                                      $${iconsConversationParticipants[
+                                                        conversationParticipants
+                                                      ].fill}
+                                                      $${labelsConversationParticipants[
+                                                        conversationParticipants
+                                                      ]}
+                                                    </span>
+                                                  </label>
                                                 `
-                                              : html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      padding: var(--space--0)
-                                                        var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <label
+                                              )}
+                                            </div>
+
+                                            <div
+                                              key="participants--dropdown--selected-participants"
+                                              $${[
+                                                "staff",
+                                                "selected-people",
+                                              ].includes(
+                                                response.locals.conversation
+                                                  .participants
+                                              )
+                                                ? html``
+                                                : html`hidden`}
+                                              css="${response.locals.css(css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `)}"
+                                            >
+                                              <hr class="dropdown--separator" />
+
+                                              $${response.locals
+                                                .courseEnrollmentsCount === 1
+                                                ? html`
+                                                    <p
+                                                      class="secondary"
                                                       css="${response.locals
                                                         .css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        align-items: baseline;
+                                                        padding: var(--space--0)
+                                                          var(--space--2)
+                                                          var(--space--2);
                                                       `)}"
                                                     >
-                                                      <i
-                                                        class="bi bi-funnel"
-                                                      ></i>
-                                                      <input
-                                                        key="participants--dropdown--selected-participants--filter"
-                                                        type="text"
-                                                        class="input--text"
-                                                        placeholder="Filter…"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            this.isModified = false;
+                                                      You may select
+                                                      participants when there
+                                                      are more people enrolled
+                                                      in the course.
+                                                    </p>
+                                                  `
+                                                : html`
+                                                    <div
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        padding: var(--space--0)
+                                                          var(--space--2);
+                                                      `)}"
+                                                    >
+                                                      <label
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          display: flex;
+                                                          gap: var(--space--2);
+                                                          align-items: baseline;
+                                                        `)}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-funnel"
+                                                        ></i>
+                                                        <input
+                                                          key="participants--dropdown--selected-participants--filter"
+                                                          type="text"
+                                                          class="input--text"
+                                                          placeholder="Filter…"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              this.isModified = false;
 
-                                                            this.oninput = () => {
-                                                              const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                              const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                              const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
-                                                                  continue;
-                                                                let selectedParticipantHidden = filterPhrases.length > 0;
-                                                                for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                                  const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                                  const filterablePhrasesElementChildren = [];
-                                                                  for (const filterablePhrase of filterablePhrases) {
-                                                                    let filterablePhraseElement;
-                                                                    if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                                      filterablePhraseElement = document.createElement("mark");
-                                                                      filterablePhraseElement.classList.add("mark");
-                                                                      selectedParticipantHidden = false;
-                                                                    } else
-                                                                      filterablePhraseElement = document.createElement("span");
-                                                                    filterablePhraseElement.textContent = filterablePhrase;
-                                                                    filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                              this.oninput = () => {
+                                                                const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                                const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                                const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                                for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
+                                                                  if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                                    continue;
+                                                                  let selectedParticipantHidden = filterPhrases.length > 0;
+                                                                  for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                                    const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                                    const filterablePhrasesElementChildren = [];
+                                                                    for (const filterablePhrase of filterablePhrases) {
+                                                                      let filterablePhraseElement;
+                                                                      if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                                        filterablePhraseElement = document.createElement("mark");
+                                                                        filterablePhraseElement.classList.add("mark");
+                                                                        selectedParticipantHidden = false;
+                                                                      } else
+                                                                        filterablePhraseElement = document.createElement("span");
+                                                                      filterablePhraseElement.textContent = filterablePhrase;
+                                                                      filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                                    }
+                                                                    filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                                                                   }
-                                                                  filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                                  selectedParticipant.hidden = selectedParticipantHidden;
                                                                 }
-                                                                selectedParticipant.hidden = selectedParticipantHidden;
-                                                              }
-                                                            };
-                                                          `)}"
-                                                      />
-                                                    </label>
-                                                  </div>
+                                                              };
+                                                            `)}"
+                                                        />
+                                                      </label>
+                                                    </div>
 
-                                                  <hr
-                                                    class="dropdown--separator"
-                                                  />
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
 
-                                                  <div
-                                                    class="dropdown--menu"
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      height: var(--space--40);
-                                                      overflow: auto;
-                                                    `)}"
-                                                  >
-                                                    $${enrollments.map(
-                                                      (enrollment) => html`
-                                                        <label
-                                                          key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                          data-enrollment-course-role="${enrollment.courseRole}"
-                                                          $${response.locals
-                                                            .conversation
-                                                            .participants ===
-                                                            "staff" &&
-                                                          enrollment.courseRole ===
-                                                            "staff"
-                                                            ? html`hidden`
-                                                            : html``}
-                                                        >
-                                                          <input
-                                                            type="checkbox"
-                                                            name="participants--dropdown--selected-participants[]"
-                                                            value="${enrollment.reference}"
-                                                            $${response.locals.conversation.selectedParticipants.find(
-                                                              (
-                                                                selectedParticipant
-                                                              ) =>
-                                                                selectedParticipant.id ===
-                                                                enrollment.id
-                                                            ) !== undefined
-                                                              ? html`checked`
+                                                    <div
+                                                      class="dropdown--menu"
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        height: var(
+                                                          --space--40
+                                                        );
+                                                        overflow: auto;
+                                                      `)}"
+                                                    >
+                                                      $${enrollments.map(
+                                                        (enrollment) => html`
+                                                          <label
+                                                            key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
+                                                            data-enrollment-course-role="${enrollment.courseRole}"
+                                                            $${response.locals
+                                                              .conversation
+                                                              .participants ===
+                                                              "staff" &&
+                                                            enrollment.courseRole ===
+                                                              "staff"
+                                                              ? html`hidden`
                                                               : html``}
-                                                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
-                                                                this.isModified = false;
-
-                                                                this.onchange = () => {
-                                                                  this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
-
-                                                                  this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
-                                                                };
-                                                              `)}"
-                                                          />
-                                                          <span
-                                                            class="dropdown--menu--item button button--transparent"
                                                           >
-                                                            $${application.server.locals.partials.user(
-                                                              {
-                                                                request,
-                                                                response,
-                                                                enrollment,
-                                                                user: enrollment.user,
-                                                                tooltip: false,
-                                                                size: "xs",
-                                                                bold: false,
-                                                              }
-                                                            )}
-                                                          </span>
-                                                          <span
-                                                            class="dropdown--menu--item button button--blue"
-                                                          >
-                                                            $${application.server.locals.partials.user(
-                                                              {
-                                                                request,
-                                                                response,
-                                                                enrollment,
-                                                                user: enrollment.user,
-                                                                tooltip: false,
-                                                                size: "xs",
-                                                                bold: false,
-                                                              }
-                                                            )}
-                                                          </span>
-                                                        </label>
-                                                      `
-                                                    )}
-                                                  </div>
-                                                `}
+                                                            <input
+                                                              type="checkbox"
+                                                              name="participants--dropdown--selected-participants[]"
+                                                              value="${enrollment.reference}"
+                                                              $${response.locals.conversation.selectedParticipants.find(
+                                                                (
+                                                                  selectedParticipant
+                                                                ) =>
+                                                                  selectedParticipant.id ===
+                                                                  enrollment.id
+                                                              ) !== undefined
+                                                                ? html`checked`
+                                                                : html``}
+                                                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                              javascript="${response
+                                                                .locals
+                                                                .javascript(javascript`
+                                                                  this.isModified = false;
+
+                                                                  this.onchange = () => {
+                                                                    this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+
+                                                                    this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                                  };
+                                                                `)}"
+                                                            />
+                                                            <span
+                                                              class="dropdown--menu--item button button--transparent"
+                                                            >
+                                                              $${application.server.locals.partials.user(
+                                                                {
+                                                                  request,
+                                                                  response,
+                                                                  enrollment,
+                                                                  user: enrollment.user,
+                                                                  tooltip:
+                                                                    false,
+                                                                  size: "xs",
+                                                                  bold: false,
+                                                                }
+                                                              )}
+                                                            </span>
+                                                            <span
+                                                              class="dropdown--menu--item button button--blue"
+                                                            >
+                                                              $${application.server.locals.partials.user(
+                                                                {
+                                                                  request,
+                                                                  response,
+                                                                  enrollment,
+                                                                  user: enrollment.user,
+                                                                  tooltip:
+                                                                    false,
+                                                                  size: "xs",
+                                                                  bold: false,
+                                                                }
+                                                              )}
+                                                            </span>
+                                                          </label>
+                                                        `
+                                                      )}
+                                                    </div>
+                                                  `}
+                                            </div>
                                           </div>
-                                        </div>
-                                      `)},
-                                    });
-                                  `)}"
+                                        `)},
+                                      });
+                                    `)}"
                                 >
                                   $${application.server.locals.helpers.conversationParticipantses.map(
                                     (conversationParticipants) => html`
