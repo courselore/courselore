@@ -1510,11 +1510,11 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Visible by Staff Only",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Visible by Staff Only",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-eye"></i>
                                 Visible by Everyone
@@ -1523,11 +1523,11 @@ export default async (application: Application): Promise<void> => {
                                 class="${textColorsCourseRole.staff}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Visible by Everyone",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Visible by Everyone",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-mortarboard-fill"></i>
                                 Visible by Staff Only
@@ -1546,72 +1546,73 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  theme: "rose",
-                                  touch: false,
-                                  content: "Remove Tag",
-                                });
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    theme: "rose",
+                                    touch: false,
+                                    content: "Remove Tag",
+                                  });
 
-                                (this.dropdown ??= tippy(this)).setProps({
-                                  theme: "rose",
-                                  trigger: "click",
-                                  interactive: true,
-                                  content: ${response.locals.html(html`
-                                    <div
-                                      css="${response.locals.css(css`
-                                        padding: var(--space--2) var(--space--0);
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--4);
-                                      `)}"
-                                    >
-                                      <p>
-                                        Are you sure you want to remove this
-                                        tag?
-                                      </p>
-                                      <p>
-                                        <strong
-                                          css="${response.locals.css(css`
-                                            font-weight: var(
-                                              --font-weight--bold
-                                            );
-                                          `)}"
-                                        >
-                                          The tag will be removed from all
-                                          conversations and you may not undo
-                                          this action!
-                                        </strong>
-                                      </p>
-                                      <button
-                                        type="button"
-                                        class="button button--rose"
-                                        javascript="${response.locals
-                                          .javascript(javascript`
-                                            this.onclick = () => {
-                                              const tag = this.closest('[key^="tag/"]');
-                                              tag.classList.add("deleted");
-                                              const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                              tagIconClassList.remove("text--teal");
-                                              tagIconClassList.add("text--rose");
-                                              tag.querySelector('[name$="[delete]"]').disabled = false;
-                                              for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                                element.disabled = true;
-                                                const button = element.closest(".button");
-                                                if (button === null) continue;
-                                                button.classList.add("disabled");
-                                                for (const element of button.querySelectorAll("*"))
-                                                  if (element.tooltip !== undefined) element.tooltip.disable();
-                                              }
-                                            };
-                                          `)}"
+                                  (this.dropdown ??= tippy(this)).setProps({
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${response.locals.html(html`
+                                      <div
+                                        css="${response.locals.css(css`
+                                          padding: var(--space--2)
+                                            var(--space--0);
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--4);
+                                        `)}"
                                       >
-                                        <i class="bi bi-trash-fill"></i>
-                                        Remove Tag
-                                      </button>
-                                    </div>
-                                  `)},
-                                });
-                              `)}"
+                                        <p>
+                                          Are you sure you want to remove this
+                                          tag?
+                                        </p>
+                                        <p>
+                                          <strong
+                                            css="${response.locals.css(css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                            `)}"
+                                          >
+                                            The tag will be removed from all
+                                            conversations and you may not undo
+                                            this action!
+                                          </strong>
+                                        </p>
+                                        <button
+                                          type="button"
+                                          class="button button--rose"
+                                          javascript="${response.locals
+                                            .javascript(javascript`
+                                              this.onclick = () => {
+                                                const tag = this.closest('[key^="tag/"]');
+                                                tag.classList.add("deleted");
+                                                const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                                tagIconClassList.remove("text--teal");
+                                                tagIconClassList.add("text--rose");
+                                                tag.querySelector('[name$="[delete]"]').disabled = false;
+                                                for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                                  element.disabled = true;
+                                                  const button = element.closest(".button");
+                                                  if (button === null) continue;
+                                                  button.classList.add("disabled");
+                                                  for (const element of button.querySelectorAll("*"))
+                                                    if (element.tooltip !== undefined) element.tooltip.disable();
+                                                }
+                                              };
+                                            `)}"
+                                        >
+                                          <i class="bi bi-trash-fill"></i>
+                                          Remove Tag
+                                        </button>
+                                      </div>
+                                    `)},
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-trash"></i>
                             </button>
@@ -1628,28 +1629,28 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Don’t Remove Tag",
-                                });
-                                    
-                                this.onclick = () => {
-                                  const tag = this.closest('[key^="tag/"]');
-                                  tag.classList.remove("deleted");
-                                  const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                  tagIconClassList.remove("text--rose");
-                                  tagIconClassList.add("text--teal");
-                                  tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                    element.disabled = false;
-                                    const button = element.closest(".button");
-                                    if (button === null) continue;
-                                    button.classList.remove("disabled");
-                                    for (const element of button.querySelectorAll("*"))
-                                      if (element.tooltip !== undefined) element.tooltip.enable();
-                                  }
-                                };
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Don’t Remove Tag",
+                                  });
+                                      
+                                  this.onclick = () => {
+                                    const tag = this.closest('[key^="tag/"]');
+                                    tag.classList.remove("deleted");
+                                    const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                    tagIconClassList.remove("text--rose");
+                                    tagIconClassList.add("text--teal");
+                                    tag.querySelector('[name$="[delete]"]').disabled = true;
+                                    for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                      element.disabled = false;
+                                      const button = element.closest(".button");
+                                      if (button === null) continue;
+                                      button.classList.remove("disabled");
+                                      for (const element of button.querySelectorAll("*"))
+                                        if (element.tooltip !== undefined) element.tooltip.enable();
+                                    }
+                                  };
+                                `)}"
                             >
                               <i class="bi bi-recycle"></i>
                             </button>
@@ -1673,11 +1674,11 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--tight button--tight--inline button--transparent"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "See Conversations with This Tag",
-                                    });
-                                  `)}"
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        touch: false,
+                                        content: "See Conversations with This Tag",
+                                      });
+                                    `)}"
                                 >
                                   <i class="bi bi-chat-text"></i>
                                 </a>
@@ -1735,10 +1736,10 @@ export default async (application: Application): Promise<void> => {
                               class="input--text"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                this.isModified = true;
-                                this.disabled = false;
-                                this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
-                              `)}"
+                                  this.isModified = true;
+                                  this.disabled = false;
+                                  this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
+                                `)}"
                             />
                             <div
                               css="${response.locals.css(css`
@@ -1762,19 +1763,19 @@ export default async (application: Application): Promise<void> => {
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      this.isModified = true;
-                                      this.disabled = false;
-                                      this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
-                                    `)}"
+                                        this.isModified = true;
+                                        this.disabled = false;
+                                        this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
+                                      `)}"
                                   />
                                   <span
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Set as Visible by Staff Only",
-                                      });
-                                    `)}"
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          touch: false,
+                                          content: "Set as Visible by Staff Only",
+                                        });
+                                      `)}"
                                   >
                                     <i class="bi bi-eye"></i>
                                     Visible by Everyone
@@ -1783,11 +1784,11 @@ export default async (application: Application): Promise<void> => {
                                     class="${textColorsCourseRole.staff}"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Set as Visible by Everyone",
-                                      });
-                                    `)}"
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          touch: false,
+                                          content: "Set as Visible by Everyone",
+                                        });
+                                      `)}"
                                   >
                                     <i class="bi bi-mortarboard-fill"></i>
                                     Visible by Staff Only
@@ -1799,18 +1800,18 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--tight button--tight--inline button--transparent"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "Remove Tag",
-                                  });
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    });
 
-                                  this.onclick = () => {
-                                    const tag = this.closest('[key^="tag"]');
-                                    tag.replaceChildren();
-                                    tag.hidden = true;
-                                  };
-                                `)}"
+                                    this.onclick = () => {
+                                      const tag = this.closest('[key^="tag"]');
+                                      tag.replaceChildren();
+                                      tag.hidden = true;
+                                    };
+                                  `)}"
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
@@ -2323,11 +2324,11 @@ export default async (application: Application): Promise<void> => {
                                 <span
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Invitation Link",
-                                    });
-                                  `)}"
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        touch: false,
+                                        content: "Invitation Link",
+                                      });
+                                    `)}"
                                 >
                                   <i class="bi bi-link"></i>
                                 </span>
@@ -2336,11 +2337,11 @@ export default async (application: Application): Promise<void> => {
                                 <span
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Invitation Email",
-                                    });
-                                  `)}"
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        touch: false,
+                                        content: "Invitation Email",
+                                      });
+                                    `)}"
                                 >
                                   <i class="bi bi-envelope"></i>
                                 </span>
@@ -2361,122 +2362,128 @@ export default async (application: Application): Promise<void> => {
                                     class="button--see-invitation-link button button--tight button--tight--inline button--transparent strong"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "See Invitation Link",
-                                      });
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          touch: false,
+                                          content: "See Invitation Link",
+                                        });
 
-                                      (this.dropdown ??= tippy(this)).setProps({
-                                        trigger: "click",
-                                        interactive: true,
-                                        maxWidth: "none",
-                                        content: ${(() => {
-                                          const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return response.locals.html(html`
-                                            <div
-                                              css="${response.locals.css(css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `)}"
-                                            >
-                                              $${isInvitationExpired
-                                                ? html`
-                                                    <p
-                                                      class="text--rose"
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        justify-content: center;
-                                                      `)}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-calendar-x-fill"
-                                                      ></i>
-                                                      Expired
-                                                    </p>
-                                                  `
-                                                : html``}
+                                        (this.dropdown ??= tippy(this)).setProps({
+                                          trigger: "click",
+                                          interactive: true,
+                                          maxWidth: "none",
+                                          content: ${(() => {
+                                            const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
+                                            return response.locals.html(html`
                                               <div
                                                 css="${response.locals.css(css`
                                                   display: flex;
+                                                  flex-direction: column;
                                                   gap: var(--space--2);
-                                                  align-items: center;
                                                 `)}"
                                               >
-                                                <input
-                                                  type="text"
-                                                  readonly
-                                                  value="${link}"
-                                                  class="input--text"
+                                                $${isInvitationExpired
+                                                  ? html`
+                                                      <p
+                                                        class="text--rose"
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          display: flex;
+                                                          gap: var(--space--2);
+                                                          justify-content: center;
+                                                        `)}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-calendar-x-fill"
+                                                        ></i>
+                                                        Expired
+                                                      </p>
+                                                    `
+                                                  : html``}
+                                                <div
                                                   css="${response.locals
                                                     .css(css`
-                                                    flex: 1;
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                    align-items: center;
                                                   `)}"
-                                                  javascript="${response.locals
-                                                    .javascript(javascript`
-                                                      this.onfocus = () => {
-                                                        this.select();
-                                                      };
-                                                    `)}"
-                                                />
-                                                <button
-                                                  class="button button--tight button--transparent"
-                                                  javascript="${response.locals
-                                                    .javascript(javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        touch: false,
-                                                        content: "Copy Link",
-                                                      });
-
-                                                      this.onclick = async () => {
-                                                        await navigator.clipboard.writeText(${JSON.stringify(
-                                                          link
-                                                        )});
-                                                        const stickies = this.querySelector('[key="stickies"]');
-                                                        const check = this.querySelector('[key="check"]');
-                                                        stickies.hidden = true;
-                                                        check.hidden = false;
-                                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                        stickies.hidden = false;
-                                                        check.hidden = true;
-                                                      };
-                                                    `)}"
                                                 >
-                                                  <span key="stickies">
-                                                    <i
-                                                      class="bi bi-stickies"
-                                                    ></i>
-                                                  </span>
-                                                  <span
-                                                    key="check"
-                                                    hidden
-                                                    class="text--green"
-                                                  >
-                                                    <i
-                                                      class="bi bi-check-lg"
-                                                    ></i>
-                                                  </span>
-                                                </button>
-                                                <a
-                                                  href="${link}"
-                                                  class="button button--tight button--transparent"
-                                                  javascript="${response.locals
-                                                    .javascript(javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        touch: false,
-                                                        content: "See QR Code for Link",
-                                                      });
+                                                  <input
+                                                    type="text"
+                                                    readonly
+                                                    value="${link}"
+                                                    class="input--text"
+                                                    css="${response.locals
+                                                      .css(css`
+                                                      flex: 1;
                                                     `)}"
-                                                  ><i class="bi bi-qr-code"></i
-                                                ></a>
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        this.onfocus = () => {
+                                                          this.select();
+                                                        };
+                                                      `)}"
+                                                  />
+                                                  <button
+                                                    class="button button--tight button--transparent"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          touch: false,
+                                                          content: "Copy Link",
+                                                        });
+
+                                                        this.onclick = async () => {
+                                                          await navigator.clipboard.writeText(${JSON.stringify(
+                                                            link
+                                                          )});
+                                                          const stickies = this.querySelector('[key="stickies"]');
+                                                          const check = this.querySelector('[key="check"]');
+                                                          stickies.hidden = true;
+                                                          check.hidden = false;
+                                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                          stickies.hidden = false;
+                                                          check.hidden = true;
+                                                        };
+                                                      `)}"
+                                                  >
+                                                    <span key="stickies">
+                                                      <i
+                                                        class="bi bi-stickies"
+                                                      ></i>
+                                                    </span>
+                                                    <span
+                                                      key="check"
+                                                      hidden
+                                                      class="text--green"
+                                                    >
+                                                      <i
+                                                        class="bi bi-check-lg"
+                                                      ></i>
+                                                    </span>
+                                                  </button>
+                                                  <a
+                                                    href="${link}"
+                                                    class="button button--tight button--transparent"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          touch: false,
+                                                          content: "See QR Code for Link",
+                                                        });
+                                                      `)}"
+                                                    ><i
+                                                      class="bi bi-qr-code"
+                                                    ></i
+                                                  ></a>
+                                                </div>
                                               </div>
-                                            </div>
-                                          `);
-                                        })()},
-                                      });
-                                    `)}"
+                                            `);
+                                          })()},
+                                        });
+                                      `)}"
                                   >
                                     ${"*".repeat(
                                       6
@@ -2498,58 +2505,58 @@ export default async (application: Application): Promise<void> => {
                                     `)}"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      (this.dropdown ??= tippy(this)).setProps({
-                                        trigger: "click",
-                                        interactive: true,
-                                        content: ${response.locals.html(html`
-                                          <div class="dropdown--menu">
-                                            <form
-                                              method="PATCH"
-                                              action="${action}"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="resend"
-                                                value="true"
-                                              />
-                                              <button
-                                                class="dropdown--menu--item button button--transparent"
-                                                $${isUsed
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            content: "You may not resend this invitation because it’s used.",
-                                                          });
-                                                        `)}"
-                                                    `
-                                                  : isInvitationExpired
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            content: "You may not resend this invitation because it’s expired.",
-                                                          });
-                                                        `)}"
-                                                    `
-                                                  : html``}
+                                        (this.dropdown ??= tippy(this)).setProps({
+                                          trigger: "click",
+                                          interactive: true,
+                                          content: ${response.locals.html(html`
+                                            <div class="dropdown--menu">
+                                              <form
+                                                method="PATCH"
+                                                action="${action}"
                                               >
-                                                <i class="bi bi-envelope"></i>
-                                                Resend Invitation Email
-                                              </button>
-                                            </form>
-                                          </div>
-                                        `)},
-                                      });
-                                    `)}"
+                                                <input
+                                                  type="hidden"
+                                                  name="resend"
+                                                  value="true"
+                                                />
+                                                <button
+                                                  class="dropdown--menu--item button button--transparent"
+                                                  $${isUsed
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              content: "You may not resend this invitation because it’s used.",
+                                                            });
+                                                          `)}"
+                                                      `
+                                                    : isInvitationExpired
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              content: "You may not resend this invitation because it’s expired.",
+                                                            });
+                                                          `)}"
+                                                      `
+                                                    : html``}
+                                                >
+                                                  <i class="bi bi-envelope"></i>
+                                                  Resend Invitation Email
+                                                </button>
+                                              </form>
+                                            </div>
+                                          `)},
+                                        });
+                                      `)}"
                                   >
                                     <div
                                       class="strong"
@@ -2593,82 +2600,82 @@ export default async (application: Application): Promise<void> => {
                                 ]}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Update Course Role",
-                                  });
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Update Course Role",
+                                    });
 
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${response.locals.html(html`
-                                      <div class="dropdown--menu">
-                                        $${application.server.locals.helpers.courseRoles.map(
-                                          (courseRole) =>
-                                            html`
-                                              <form
-                                                key="course-role--${courseRole}"
-                                                method="PATCH"
-                                                action="${action}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="courseRole"
-                                                  value="${courseRole}"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button ${courseRole ===
-                                                  invitation.courseRole
-                                                    ? "button--blue"
-                                                    : "button--transparent"} ${textColorsCourseRole[
-                                                    courseRole
-                                                  ]}"
-                                                  $${isUsed
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not update the course role of this invitation because it’s used.",
-                                                            });
-                                                          `)}"
-                                                      `
-                                                    : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not update the course role of this invitation because it’s expired.",
-                                                            });
-                                                          `)}"
-                                                      `
-                                                    : html``}
+                                    (this.dropdown ??= tippy(this)).setProps({
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${response.locals.html(html`
+                                        <div class="dropdown--menu">
+                                          $${application.server.locals.helpers.courseRoles.map(
+                                            (courseRole) =>
+                                              html`
+                                                <form
+                                                  key="course-role--${courseRole}"
+                                                  method="PATCH"
+                                                  action="${action}"
                                                 >
-                                                  $${iconsCourseRole[
-                                                    courseRole
-                                                  ][
-                                                    courseRole === "staff"
-                                                      ? "fill"
-                                                      : "regular"
-                                                  ]}
-                                                  ${lodash.capitalize(
-                                                    courseRole
-                                                  )}
-                                                </button>
-                                              </form>
-                                            `
-                                        )}
-                                      </div>
-                                    `)},
-                                  });
-                                `)}"
+                                                  <input
+                                                    type="hidden"
+                                                    name="courseRole"
+                                                    value="${courseRole}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button ${courseRole ===
+                                                    invitation.courseRole
+                                                      ? "button--blue"
+                                                      : "button--transparent"} ${textColorsCourseRole[
+                                                      courseRole
+                                                    ]}"
+                                                    $${isUsed
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                theme: "rose",
+                                                                trigger: "click",
+                                                                content: "You may not update the course role of this invitation because it’s used.",
+                                                              });
+                                                            `)}"
+                                                        `
+                                                      : isInvitationExpired
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                theme: "rose",
+                                                                trigger: "click",
+                                                                content: "You may not update the course role of this invitation because it’s expired.",
+                                                              });
+                                                            `)}"
+                                                        `
+                                                      : html``}
+                                                  >
+                                                    $${iconsCourseRole[
+                                                      courseRole
+                                                    ][
+                                                      courseRole === "staff"
+                                                        ? "fill"
+                                                        : "regular"
+                                                    ]}
+                                                    ${lodash.capitalize(
+                                                      courseRole
+                                                    )}
+                                                  </button>
+                                                </form>
+                                              `
+                                          )}
+                                        </div>
+                                      `)},
+                                    });
+                                  `)}"
                               >
                                 $${iconsCourseRole[invitation.courseRole][
                                   invitation.courseRole === "staff"
@@ -2709,14 +2716,14 @@ export default async (application: Application): Promise<void> => {
                                         class="input--text"
                                         javascript="${response.locals
                                           .javascript(javascript`
-                                          this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+                                            this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
-                                          this.onvalidate = () => {
-                                            const error = leafac.validateLocalizedDateTime(this);
-                                            if (typeof error === "string") return error;
-                                            if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
-                                          };
-                                        `)}"
+                                            this.onvalidate = () => {
+                                              const error = leafac.validateLocalizedDateTime(this);
+                                              if (typeof error === "string") return error;
+                                              if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                                            };
+                                          `)}"
                                       />
                                     </div>
                                     <button
@@ -2768,26 +2775,26 @@ export default async (application: Application): Promise<void> => {
                                           `)}"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              interactive: true,
-                                              content: ${response.locals
-                                                .html(html`
-                                                <div>
-                                                  Used
-                                                  <time
-                                                    datetime="${new Date(
-                                                      invitation.usedAt!
-                                                    ).toISOString()}"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                      `)}"
-                                                  ></time>
-                                                </div>
-                                              `)},
-                                            });
-                                          `)}"
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                interactive: true,
+                                                content: ${response.locals
+                                                  .html(html`
+                                                  <div>
+                                                    Used
+                                                    <time
+                                                      datetime="${new Date(
+                                                        invitation.usedAt!
+                                                      ).toISOString()}"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                        `)}"
+                                                    ></time>
+                                                  </div>
+                                                `)},
+                                              });
+                                            `)}"
                                         >
                                           <i class="bi bi-check-lg"></i>
                                           Used
@@ -2801,55 +2808,55 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--rose"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "Update Expiration",
-                                            });
-                                                                                    
-                                            (this.dropdown ??= tippy(this)).setProps({
-                                              trigger: "click",
-                                              interactive: true,
-                                              content: ${response.locals
-                                                .html(html`
-                                                <div
-                                                  css="${response.locals
-                                                    .css(css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `)}"
-                                                >
-                                                  <h3 class="heading">
-                                                    <i
-                                                      class="bi bi-calendar-x-fill"
-                                                    ></i>
-                                                    <span>
-                                                      Expired
-                                                      <time
-                                                        datetime="${new Date(
-                                                          invitation.expiresAt!
-                                                        ).toISOString()}"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                        `)}"
-                                                      ></time>
-                                                    </span>
-                                                  </h3>
-                                                  <div class="dropdown--menu">
-                                                    $${updateExpirationForm}
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: false,
+                                                content: "Update Expiration",
+                                              });
+                                                                                      
+                                              (this.dropdown ??= tippy(this)).setProps({
+                                                trigger: "click",
+                                                interactive: true,
+                                                content: ${response.locals
+                                                  .html(html`
+                                                  <div
+                                                    css="${response.locals
+                                                      .css(css`
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `)}"
+                                                  >
+                                                    <h3 class="heading">
+                                                      <i
+                                                        class="bi bi-calendar-x-fill"
+                                                      ></i>
+                                                      <span>
+                                                        Expired
+                                                        <time
+                                                          datetime="${new Date(
+                                                            invitation.expiresAt!
+                                                          ).toISOString()}"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                            `)}"
+                                                        ></time>
+                                                      </span>
+                                                    </h3>
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    <div class="dropdown--menu">
+                                                      $${removeExpirationForm}
+                                                    </div>
                                                   </div>
-                                                  <hr
-                                                    class="dropdown--separator"
-                                                  />
-                                                  <div class="dropdown--menu">
-                                                    $${removeExpirationForm}
-                                                  </div>
-                                                </div>
-                                              `)},
-                                            });
-                                          `)}"
+                                                `)},
+                                              });
+                                            `)}"
                                         >
                                           <i class="bi bi-calendar-x-fill"></i>
                                           Expired
@@ -2864,40 +2871,40 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--blue"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "Update Expiration",
-                                            });
-                                                                                    
-                                            (this.dropdown ??= tippy(this)).setProps({
-                                              trigger: "click",
-                                              interactive: true,
-                                              content: ${response.locals
-                                                .html(html`
-                                                <div
-                                                  css="${response.locals
-                                                    .css(css`
-                                                    padding-top: var(
-                                                      --space--2
-                                                    );
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `)}"
-                                                >
-                                                  <div class="dropdown--menu">
-                                                    $${updateExpirationForm}
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: false,
+                                                content: "Update Expiration",
+                                              });
+                                                                                      
+                                              (this.dropdown ??= tippy(this)).setProps({
+                                                trigger: "click",
+                                                interactive: true,
+                                                content: ${response.locals
+                                                  .html(html`
+                                                  <div
+                                                    css="${response.locals
+                                                      .css(css`
+                                                      padding-top: var(
+                                                        --space--2
+                                                      );
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `)}"
+                                                  >
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    <div class="dropdown--menu">
+                                                      $${expireForm}
+                                                    </div>
                                                   </div>
-                                                  <hr
-                                                    class="dropdown--separator"
-                                                  />
-                                                  <div class="dropdown--menu">
-                                                    $${expireForm}
-                                                  </div>
-                                                </div>
-                                              `)},
-                                            });
-                                          `)}"
+                                                `)},
+                                              });
+                                            `)}"
                                         >
                                           <i
                                             class="bi bi-calendar-minus-fill"
@@ -2913,56 +2920,56 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--amber"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "Update Expiration",
-                                            });
-                                            
-                                            (this.dropdown ??= tippy(this)).setProps({
-                                              trigger: "click",
-                                              interactive: true,
-                                              content: ${response.locals
-                                                .html(html`
-                                                <div
-                                                  css="${response.locals
-                                                    .css(css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `)}"
-                                                >
-                                                  <h3 class="heading">
-                                                    <i
-                                                      class="bi bi-calendar-plus-fill"
-                                                    ></i>
-                                                    <span>
-                                                      Expires
-                                                      <time
-                                                        datetime="${new Date(
-                                                          invitation.expiresAt
-                                                        ).toISOString()}"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `)}"
-                                                      ></time>
-                                                    </span>
-                                                  </h3>
-                                                  <div class="dropdown--menu">
-                                                    $${updateExpirationForm}
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: false,
+                                                content: "Update Expiration",
+                                              });
+                                              
+                                              (this.dropdown ??= tippy(this)).setProps({
+                                                trigger: "click",
+                                                interactive: true,
+                                                content: ${response.locals
+                                                  .html(html`
+                                                  <div
+                                                    css="${response.locals
+                                                      .css(css`
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `)}"
+                                                  >
+                                                    <h3 class="heading">
+                                                      <i
+                                                        class="bi bi-calendar-plus-fill"
+                                                      ></i>
+                                                      <span>
+                                                        Expires
+                                                        <time
+                                                          datetime="${new Date(
+                                                            invitation.expiresAt
+                                                          ).toISOString()}"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                            `)}"
+                                                        ></time>
+                                                      </span>
+                                                    </h3>
+                                                    <div class="dropdown--menu">
+                                                      $${updateExpirationForm}
+                                                    </div>
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    <div class="dropdown--menu">
+                                                      $${removeExpirationForm}
+                                                      $${expireForm}
+                                                    </div>
                                                   </div>
-                                                  <hr
-                                                    class="dropdown--separator"
-                                                  />
-                                                  <div class="dropdown--menu">
-                                                    $${removeExpirationForm}
-                                                    $${expireForm}
-                                                  </div>
-                                                </div>
-                                              `)},
-                                            });
-                                          `)}"
+                                                `)},
+                                              });
+                                            `)}"
                                         >
                                           <i
                                             class="bi bi-calendar-plus-fill"
@@ -3794,24 +3801,24 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Copy Link",
-                                });
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Copy Link",
+                                  });
 
-                                this.onclick = async () => {
-                                  await navigator.clipboard.writeText(${JSON.stringify(
-                                    link
-                                  )});
-                                  const stickies = this.querySelector('[key="stickies"]');
-                                  const check = this.querySelector('[key="check"]');
-                                  stickies.hidden = true;
-                                  check.hidden = false;
-                                  await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                  stickies.hidden = false;
-                                  check.hidden = true;
-                                };
-                              `)}"
+                                  this.onclick = async () => {
+                                    await navigator.clipboard.writeText(${JSON.stringify(
+                                      link
+                                    )});
+                                    const stickies = this.querySelector('[key="stickies"]');
+                                    const check = this.querySelector('[key="check"]');
+                                    stickies.hidden = true;
+                                    check.hidden = false;
+                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                    stickies.hidden = false;
+                                    check.hidden = true;
+                                  };
+                                `)}"
                             >
                               <span key="stickies">
                                 <i class="bi bi-stickies"></i>
@@ -4260,12 +4267,12 @@ export default async (application: Application): Promise<void> => {
                                                     javascript="${response
                                                       .locals
                                                       .javascript(javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                        content: "You may not update your own course role because you’re the only staff member.",
-                                                      });
-                                                    `)}"
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          content: "You may not update your own course role because you’re the only staff member.",
+                                                        });
+                                                      `)}"
                                                   `
                                                 : isSelf
                                                 ? html`
@@ -4273,71 +4280,72 @@ export default async (application: Application): Promise<void> => {
                                                     javascript="${response
                                                       .locals
                                                       .javascript(javascript`
-                                                      (this.dropdown ??= tippy(this)).setProps({
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        appendTo: document.querySelector("body"),
-                                                        content: ${response
-                                                          .locals.html(html`
-                                                          <form
-                                                            key="course-role--${courseRole}"
-                                                            method="PATCH"
-                                                            action="${action}"
-                                                            css="${response
-                                                              .locals.css(css`
-                                                              padding: var(
-                                                                --space--2
-                                                              );
-                                                              display: flex;
-                                                              flex-direction: column;
-                                                              gap: var(
-                                                                --space--4
-                                                              );
-                                                            `)}"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="courseRole"
-                                                              value="${courseRole}"
-                                                            />
-                                                            <p>
-                                                              Are you sure you
-                                                              want to update
-                                                              your own course
-                                                              role to
-                                                              ${courseRole}?
-                                                            </p>
-                                                            <p>
-                                                              <strong
-                                                                css="${response
-                                                                  .locals
-                                                                  .css(css`
-                                                                  font-weight: var(
-                                                                    --font-weight--bold
-                                                                  );
-                                                                `)}"
-                                                              >
-                                                                You may not undo
-                                                                this action!
-                                                              </strong>
-                                                            </p>
-                                                            <button
-                                                              class="button button--rose"
+                                                        (this.dropdown ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          appendTo: document.querySelector("body"),
+                                                          content: ${response
+                                                            .locals.html(html`
+                                                            <form
+                                                              key="course-role--${courseRole}"
+                                                              method="PATCH"
+                                                              action="${action}"
+                                                              css="${response
+                                                                .locals.css(css`
+                                                                padding: var(
+                                                                  --space--2
+                                                                );
+                                                                display: flex;
+                                                                flex-direction: column;
+                                                                gap: var(
+                                                                  --space--4
+                                                                );
+                                                              `)}"
                                                             >
-                                                              <i
-                                                                class="bi bi-pencil-fill"
-                                                              ></i>
-                                                              Update My Own
-                                                              Course Role to
-                                                              ${lodash.capitalize(
-                                                                courseRole
-                                                              )}
-                                                            </button>
-                                                          </form>
-                                                        `)},
-                                                      });
-                                                    `)}"
+                                                              <input
+                                                                type="hidden"
+                                                                name="courseRole"
+                                                                value="${courseRole}"
+                                                              />
+                                                              <p>
+                                                                Are you sure you
+                                                                want to update
+                                                                your own course
+                                                                role to
+                                                                ${courseRole}?
+                                                              </p>
+                                                              <p>
+                                                                <strong
+                                                                  css="${response
+                                                                    .locals
+                                                                    .css(css`
+                                                                    font-weight: var(
+                                                                      --font-weight--bold
+                                                                    );
+                                                                  `)}"
+                                                                >
+                                                                  You may not
+                                                                  undo this
+                                                                  action!
+                                                                </strong>
+                                                              </p>
+                                                              <button
+                                                                class="button button--rose"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-pencil-fill"
+                                                                ></i>
+                                                                Update My Own
+                                                                Course Role to
+                                                                ${lodash.capitalize(
+                                                                  courseRole
+                                                                )}
+                                                              </button>
+                                                            </form>
+                                                          `)},
+                                                        });
+                                                      `)}"
                                                   `
                                                 : html``}
                                             >

@@ -1677,11 +1677,11 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--tight button--tight--inline button--transparent"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Clear Search",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Clear Search",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-x-lg"></i>
                               </a>
@@ -1729,10 +1729,10 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-eyeglasses"></i>
@@ -1761,10 +1761,10 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-check-lg"></i>
@@ -1809,26 +1809,26 @@ export default async (application: Application): Promise<void> => {
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      ${
-                                        conversationType === "question"
-                                          ? javascript`
-                                              this.onchange = () => {
-                                                if (this.checked) return;
-                                                for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
-                                                  element.checked = false;
-                                              };
-                                            `
-                                          : conversationType === "note"
-                                          ? javascript`
-                                              this.onchange = () => {
-                                                if (this.checked) return;
-                                                for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isAnnouncement]"]'))
-                                                  element.checked = false;
-                                              };
-                                            `
-                                          : javascript``
-                                      }
-                                    `)}"
+                                        ${
+                                          conversationType === "question"
+                                            ? javascript`
+                                                this.onchange = () => {
+                                                  if (this.checked) return;
+                                                  for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
+                                                    element.checked = false;
+                                                };
+                                              `
+                                            : conversationType === "note"
+                                            ? javascript`
+                                                this.onchange = () => {
+                                                  if (this.checked) return;
+                                                  for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isAnnouncement]"]'))
+                                                    element.checked = false;
+                                                };
+                                              `
+                                            : javascript``
+                                        }
+                                      `)}"
                                   />
                                   <span>
                                     $${iconsConversationType[conversationType]
@@ -1878,13 +1878,13 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (!this.checked) return;
-                                    const form = this.closest("form");
-                                    form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
-                                    form.querySelector('[name="conversations[filters][isResolved]"][value="true"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (!this.checked) return;
+                                      const form = this.closest("form");
+                                      form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
+                                      form.querySelector('[name="conversations[filters][isResolved]"][value="true"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-patch-exclamation"></i>
@@ -1913,13 +1913,13 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (!this.checked) return;
-                                    const form = this.closest("form");
-                                    form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
-                                    form.querySelector('[name="conversations[filters][isResolved]"][value="false"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (!this.checked) return;
+                                      const form = this.closest("form");
+                                      form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
+                                      form.querySelector('[name="conversations[filters][isResolved]"][value="false"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-patch-check"></i>
@@ -1961,13 +1961,13 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (!this.checked) return;
-                                    const form = this.closest("form");
-                                    form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
-                                    form.querySelector('[name="conversations[filters][isAnnouncement]"][value="true"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (!this.checked) return;
+                                      const form = this.closest("form");
+                                      form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
+                                      form.querySelector('[name="conversations[filters][isAnnouncement]"][value="true"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-sticky"></i>
@@ -1996,13 +1996,13 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (!this.checked) return;
-                                    const form = this.closest("form");
-                                    form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
-                                    form.querySelector('[name="conversations[filters][isAnnouncement]"][value="false"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (!this.checked) return;
+                                      const form = this.closest("form");
+                                      form.querySelector('[name="conversations[filters][types][]"][value="note"]').checked = true;
+                                      form.querySelector('[name="conversations[filters][isAnnouncement]"][value="false"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-megaphone"></i>
@@ -2080,11 +2080,11 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  trigger: "click",
-                                  content: "Pinned conversations are listed first.",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    trigger: "click",
+                                    content: "Pinned conversations are listed first.",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-info-circle"></i>
                             </button>
@@ -2115,10 +2115,10 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-pin"></i>
@@ -2147,10 +2147,10 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.onchange = () => {
-                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
-                                  };
-                                `)}"
+                                    this.onchange = () => {
+                                      if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
+                                    };
+                                  `)}"
                               />
                               <span>
                                 <i class="bi bi-pin-angle"></i>
@@ -2175,11 +2175,11 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--tight button--tight--inline button--transparent"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        trigger: "click",
-                                        content: "Tags help to organize conversations.",
-                                      });
-                                    `)}"
+                                        (this.tooltip ??= tippy(this)).setProps({
+                                          trigger: "click",
+                                          content: "Tags help to organize conversations.",
+                                        });
+                                      `)}"
                                   >
                                     <i class="bi bi-info-circle"></i>
                                   </button>
@@ -2234,11 +2234,11 @@ export default async (application: Application): Promise<void> => {
                                                 class="text--sky"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "This tag is visible by staff only.",
-                                                  });
-                                                `)}"
+                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                      touch: false,
+                                                      content: "This tag is visible by staff only.",
+                                                    });
+                                                  `)}"
                                               >
                                                 <i
                                                   class="bi bi-mortarboard-fill"
@@ -2478,18 +2478,18 @@ export default async (application: Application): Promise<void> => {
                                               `)}"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Mark as Read",
-                                                });
-                                                        
-                                                this.onclick = async (event) => {
-                                                  event.preventDefault();
-                                                  event.stopImmediatePropagation();
-                                                  await fetch(this.closest("a").getAttribute("href"), { cache: "no-store" });
-                                                  this.remove();
-                                                };
-                                              `)}"
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Mark as Read",
+                                                  });
+                                                          
+                                                  this.onclick = async (event) => {
+                                                    event.preventDefault();
+                                                    event.stopImmediatePropagation();
+                                                    await fetch(this.closest("a").getAttribute("href"), { cache: "no-store" });
+                                                    this.remove();
+                                                  };
+                                                `)}"
                                             >
                                               ${unreadCount.toString()}
                                             </button>
@@ -3554,11 +3554,11 @@ export default async (application: Application): Promise<void> => {
                                           class="text--sky"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "This tag is visible by staff only.",
-                                            });
-                                          `)}"
+                                              (this.tooltip ??= tippy(this)).setProps({
+                                                touch: false,
+                                                content: "This tag is visible by staff only.",
+                                              });
+                                            `)}"
                                         >
                                           <i class="bi bi-mortarboard-fill"></i>
                                         </span>
@@ -3946,17 +3946,18 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                ${
-                                  conversationParticipants === "selected-people"
-                                    ? javascript`
-                                        this.onvalidate = () => {
-                                          if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                            return "Please select at least one participant.";
-                                        };
-                                      `
-                                    : javascript``
-                                }
-                              `)}"
+                                  ${
+                                    conversationParticipants ===
+                                    "selected-people"
+                                      ? javascript`
+                                          this.onvalidate = () => {
+                                            if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
+                                              return "Please select at least one participant.";
+                                          };
+                                        `
+                                      : javascript``
+                                  }
+                                `)}"
                             />
                             <button
                               type="button"
@@ -4108,19 +4109,19 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                this.onchange = () => {
-                                  if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
-                                };
-                              `)}"
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
+                                  };
+                                `)}"
                             />
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Set as Announcement",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set as Announcement",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-megaphone"></i>
                               Not an Announcement
@@ -4129,11 +4130,11 @@ export default async (application: Application): Promise<void> => {
                               class="text--orange"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Set as Not an Announcement",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set as Not an Announcement",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-megaphone-fill"></i>
                               Announcement
@@ -4188,11 +4189,11 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Pin",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Pin",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-pin-angle"></i>
                               Unpinned
@@ -4201,11 +4202,11 @@ export default async (application: Application): Promise<void> => {
                               class="text--amber"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Unpin",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Unpin",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-pin-fill"></i>
                               Pinned
@@ -4236,23 +4237,23 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                this.isModified = false;
+                                  this.isModified = false;
 
-                                this.onchange = () => {
-                                  localStorage.setItem("anonymity", JSON.stringify(this.checked));  
-                                };
-                                
-                                if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
-                              `)}"
+                                  this.onchange = () => {
+                                    localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                  };
+                                  
+                                  if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
+                                `)}"
                             />
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Set as Anonymous to Other Students",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set as Anonymous to Other Students",
+                                  });
+                                `)}"
                             >
                               <span>
                                 $${application.server.locals.partials.user({
@@ -4275,11 +4276,11 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Set as Signed by You",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Set as Signed by You",
+                                  });
+                                `)}"
                             >
                               <span>
                                 $${application.server.locals.partials.user({
@@ -4469,8 +4470,8 @@ export default async (application: Application): Promise<void> => {
                                 ).toISOString()}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                `)}"
+                                    leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                  `)}"
                               ></time>
                             </div>
                           `
@@ -5254,66 +5255,66 @@ export default async (application: Application): Promise<void> => {
                                       ]}"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Update Conversation Type",
-                                    });
-                                    
-                                    (this.dropdown ??= tippy(this)).setProps({
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${response.locals.html(html`
-                                        <div class="dropdown--menu">
-                                          $${application.server.locals.helpers.conversationTypes.map(
-                                            (conversationType) => html`
-                                              <form
-                                                key="conversation-type--${conversationType}"
-                                                method="PATCH"
-                                                action="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/conversations/${response
-                                                  .locals.conversation
-                                                  .reference}${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      request.query
-                                                        .conversations,
-                                                    messages:
-                                                      request.query.messages,
-                                                  },
-                                                  { addQueryPrefix: true }
-                                                )}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="type"
-                                                  value="${conversationType}"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button ${conversationType ===
-                                                  response.locals.conversation
-                                                    .type
-                                                    ? "button--blue"
-                                                    : "button--transparent"} ${textColorsConversationType[
-                                                    conversationType
-                                                  ]}"
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        touch: false,
+                                        content: "Update Conversation Type",
+                                      });
+                                      
+                                      (this.dropdown ??= tippy(this)).setProps({
+                                        trigger: "click",
+                                        interactive: true,
+                                        content: ${response.locals.html(html`
+                                          <div class="dropdown--menu">
+                                            $${application.server.locals.helpers.conversationTypes.map(
+                                              (conversationType) => html`
+                                                <form
+                                                  key="conversation-type--${conversationType}"
+                                                  method="PATCH"
+                                                  action="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/${response
+                                                    .locals.course
+                                                    .reference}/conversations/${response
+                                                    .locals.conversation
+                                                    .reference}${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        request.query
+                                                          .conversations,
+                                                      messages:
+                                                        request.query.messages,
+                                                    },
+                                                    { addQueryPrefix: true }
+                                                  )}"
                                                 >
-                                                  $${iconsConversationType[
-                                                    conversationType
-                                                  ].fill}
-                                                  $${lodash.capitalize(
-                                                    conversationType
-                                                  )}
-                                                </button>
-                                              </form>
-                                            `
-                                          )}
-                                        </div>
-                                      `)},
-                                    });
-                                  `)}"
+                                                  <input
+                                                    type="hidden"
+                                                    name="type"
+                                                    value="${conversationType}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button ${conversationType ===
+                                                    response.locals.conversation
+                                                      .type
+                                                      ? "button--blue"
+                                                      : "button--transparent"} ${textColorsConversationType[
+                                                      conversationType
+                                                    ]}"
+                                                  >
+                                                    $${iconsConversationType[
+                                                      conversationType
+                                                    ].fill}
+                                                    $${lodash.capitalize(
+                                                      conversationType
+                                                    )}
+                                                  </button>
+                                                </form>
+                                              `
+                                            )}
+                                          </div>
+                                        `)},
+                                      });
+                                    `)}"
                                 >
                                   $${iconsConversationType[
                                     response.locals.conversation.type
@@ -5377,11 +5378,11 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Set as Resolved",
-                                                });
-                                              `)}"
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Set as Resolved",
+                                                  });
+                                                `)}"
                                             >
                                               <i
                                                 class="bi bi-patch-exclamation-fill"
@@ -5400,11 +5401,11 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Set as Unresolved",
-                                                });
-                                              `)}"
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Set as Unresolved",
+                                                  });
+                                                `)}"
                                             >
                                               <i
                                                 class="bi bi-patch-check-fill"
@@ -5479,11 +5480,11 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Set as Announcement",
-                                                });
-                                              `)}"
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Set as Announcement",
+                                                  });
+                                                `)}"
                                             >
                                               <i class="bi bi-megaphone"></i>
                                               Not an Announcement
@@ -5500,11 +5501,11 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Set as Not an Announcement",
-                                                });
-                                              `)}"
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Set as Not an Announcement",
+                                                  });
+                                                `)}"
                                             >
                                               <i
                                                 class="bi bi-megaphone-fill"
@@ -5553,11 +5554,11 @@ export default async (application: Application): Promise<void> => {
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                         javascript="${response.locals
                                           .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Pin",
-                                          });
-                                        `)}"
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              touch: false,
+                                              content: "Pin",
+                                            });
+                                          `)}"
                                       >
                                         <i class="bi bi-pin-angle"></i>
                                         Unpinned
@@ -5574,11 +5575,11 @@ export default async (application: Application): Promise<void> => {
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
                                         javascript="${response.locals
                                           .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Unpin",
-                                          });
-                                        `)}"
+                                            (this.tooltip ??= tippy(this)).setProps({
+                                              touch: false,
+                                              content: "Unpin",
+                                            });
+                                          `)}"
                                       >
                                         <i class="bi bi-pin-fill"></i>
                                         Pinned
@@ -5985,12 +5986,12 @@ export default async (application: Application): Promise<void> => {
                               `)}"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  theme: "green",
-                                  touch: false,
-                                  content: "Update Title",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    theme: "green",
+                                    touch: false,
+                                    content: "Update Title",
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-check-lg"></i>
                             </button>
@@ -6076,12 +6077,12 @@ export default async (application: Application): Promise<void> => {
                                 `)}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "You may not remove this tag because a conversation must have at least one tag.",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "You may not remove this tag because a conversation must have at least one tag.",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
@@ -6092,10 +6093,10 @@ export default async (application: Application): Promise<void> => {
                                       class="text--sky"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          content: "This tag is visible by staff only.",
-                                        });
-                                      `)}"
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            content: "This tag is visible by staff only.",
+                                          });
+                                        `)}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
                                     </span>
@@ -6135,12 +6136,12 @@ export default async (application: Application): Promise<void> => {
                                 `)}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "Remove Tag",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
@@ -6151,10 +6152,10 @@ export default async (application: Application): Promise<void> => {
                                       class="text--sky"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          content: "This tag is visible by staff only.",
-                                        });
-                                      `)}"
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            content: "This tag is visible by staff only.",
+                                          });
+                                        `)}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
                                     </span>
@@ -6174,80 +6175,125 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Add Tag",
-                                });
-                                
-                                (this.dropdown ??= tippy(this)).setProps({
-                                  trigger: "click",
-                                  interactive: true,
-                                  content: ${response.locals.html(html`
-                                    <div
-                                      css="${response.locals.css(css`
-                                        max-height: var(--space--40);
-                                        overflow: auto;
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--2);
-                                      `)}"
-                                    >
-                                      $${response.locals.enrollment
-                                        .courseRole === "staff"
-                                        ? html`
-                                            <div class="dropdown--menu">
-                                              <a
-                                                href="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/settings/tags"
-                                                target="_blank"
-                                                class="dropdown--menu--item button button--transparent"
-                                              >
-                                                <i class="bi bi-sliders"></i>
-                                                Manage Tags
-                                              </a>
-                                            </div>
-
-                                            <hr class="separator" />
-                                          `
-                                        : html``}
-
-                                      <div class="dropdown--menu">
-                                        $${response.locals.tags.map((tag) =>
-                                          !response.locals.conversation.taggings.some(
-                                            (tagging) =>
-                                              tagging.tag.id === tag.id
-                                          )
-                                            ? html`
-                                                <form
-                                                  key="tag--${tag.reference}"
-                                                  method="POST"
-                                                  action="https://${application
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Add Tag",
+                                  });
+                                  
+                                  (this.dropdown ??= tippy(this)).setProps({
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${response.locals.html(html`
+                                      <div
+                                        css="${response.locals.css(css`
+                                          max-height: var(--space--40);
+                                          overflow: auto;
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `)}"
+                                      >
+                                        $${response.locals.enrollment
+                                          .courseRole === "staff"
+                                          ? html`
+                                              <div class="dropdown--menu">
+                                                <a
+                                                  href="https://${application
                                                     .configuration
                                                     .hostname}/courses/${response
                                                     .locals.course
-                                                    .reference}/conversations/${response
-                                                    .locals.conversation
-                                                    .reference}/taggings${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        request.query
-                                                          .conversations,
-                                                      messages:
-                                                        request.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
+                                                    .reference}/settings/tags"
+                                                  target="_blank"
+                                                  class="dropdown--menu--item button button--transparent"
                                                 >
-                                                  <input
-                                                    type="hidden"
-                                                    name="reference"
-                                                    value="${tag.reference}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent text--teal"
+                                                  <i class="bi bi-sliders"></i>
+                                                  Manage Tags
+                                                </a>
+                                              </div>
+
+                                              <hr class="separator" />
+                                            `
+                                          : html``}
+
+                                        <div class="dropdown--menu">
+                                          $${response.locals.tags.map((tag) =>
+                                            !response.locals.conversation.taggings.some(
+                                              (tagging) =>
+                                                tagging.tag.id === tag.id
+                                            )
+                                              ? html`
+                                                  <form
+                                                    key="tag--${tag.reference}"
+                                                    method="POST"
+                                                    action="https://${application
+                                                      .configuration
+                                                      .hostname}/courses/${response
+                                                      .locals.course
+                                                      .reference}/conversations/${response
+                                                      .locals.conversation
+                                                      .reference}/taggings${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          request.query
+                                                            .conversations,
+                                                        messages:
+                                                          request.query
+                                                            .messages,
+                                                      },
+                                                      { addQueryPrefix: true }
+                                                    )}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="reference"
+                                                      value="${tag.reference}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent text--teal"
+                                                    >
+                                                      <i
+                                                        class="bi bi-tag-fill"
+                                                      ></i>
+                                                      ${tag.name}
+                                                      $${tag.staffOnlyAt !==
+                                                      null
+                                                        ? html`
+                                                            <span
+                                                              class="text--sky"
+                                                              javascript="${response
+                                                                .locals
+                                                                .javascript(javascript`
+                                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                                    touch: false,
+                                                                    content: "This tag is visible by staff only.",
+                                                                  });
+                                                                `)}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-mortarboard-fill"
+                                                              ></i>
+                                                            </span>
+                                                          `
+                                                        : html``}
+                                                    </button>
+                                                  </form>
+                                                `
+                                              : response.locals.conversation
+                                                  .taggings.length === 1 &&
+                                                response.locals.conversation
+                                                  .type !== "chat"
+                                              ? html`
+                                                  <div
+                                                    class="dropdown--menu--item button button--blue text--teal disabled"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          theme: "rose",
+                                                          touch: false,
+                                                          content: "You may not remove this tag because a conversation must have at least one tag.",
+                                                        });
+                                                      `)}"
                                                   >
                                                     <i
                                                       class="bi bi-tag-fill"
@@ -6272,109 +6318,71 @@ export default async (application: Application): Promise<void> => {
                                                           </span>
                                                         `
                                                       : html``}
-                                                  </button>
-                                                </form>
-                                              `
-                                            : response.locals.conversation
-                                                .taggings.length === 1 &&
-                                              response.locals.conversation
-                                                .type !== "chat"
-                                            ? html`
-                                                <div
-                                                  class="dropdown--menu--item button button--blue text--teal disabled"
-                                                  javascript="${response.locals
-                                                    .javascript(javascript`
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        theme: "rose",
-                                                        touch: false,
-                                                        content: "You may not remove this tag because a conversation must have at least one tag.",
-                                                      });
-                                                    `)}"
-                                                >
-                                                  <i class="bi bi-tag-fill"></i>
-                                                  ${tag.name}
-                                                  $${tag.staffOnlyAt !== null
-                                                    ? html`
-                                                        <span
-                                                          class="text--sky"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            touch: false,
-                                                            content: "This tag is visible by staff only.",
-                                                          });
-                                                        `)}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-mortarboard-fill"
-                                                          ></i>
-                                                        </span>
-                                                      `
-                                                    : html``}
-                                                </div>
-                                              `
-                                            : html`
-                                                <form
-                                                  key="tag--${tag.reference}"
-                                                  method="DELETE"
-                                                  action="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${response
-                                                    .locals.course
-                                                    .reference}/conversations/${response
-                                                    .locals.conversation
-                                                    .reference}/taggings${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        request.query
-                                                          .conversations,
-                                                      messages:
-                                                        request.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="reference"
-                                                    value="${tag.reference}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--blue text--teal"
+                                                  </div>
+                                                `
+                                              : html`
+                                                  <form
+                                                    key="tag--${tag.reference}"
+                                                    method="DELETE"
+                                                    action="https://${application
+                                                      .configuration
+                                                      .hostname}/courses/${response
+                                                      .locals.course
+                                                      .reference}/conversations/${response
+                                                      .locals.conversation
+                                                      .reference}/taggings${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          request.query
+                                                            .conversations,
+                                                        messages:
+                                                          request.query
+                                                            .messages,
+                                                      },
+                                                      { addQueryPrefix: true }
+                                                    )}"
                                                   >
-                                                    <i
-                                                      class="bi bi-tag-fill"
-                                                    ></i>
-                                                    ${tag.name}
-                                                    $${tag.staffOnlyAt !== null
-                                                      ? html`
-                                                          <span
-                                                            class="text--sky"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
-                                                                (this.tooltip ??= tippy(this)).setProps({
-                                                                  touch: false,
-                                                                  content: "This tag is visible by staff only.",
-                                                                });
-                                                              `)}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-mortarboard-fill"
-                                                            ></i>
-                                                          </span>
-                                                        `
-                                                      : html``}
-                                                  </button>
-                                                </form>
-                                              `
-                                        )}
+                                                    <input
+                                                      type="hidden"
+                                                      name="reference"
+                                                      value="${tag.reference}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--blue text--teal"
+                                                    >
+                                                      <i
+                                                        class="bi bi-tag-fill"
+                                                      ></i>
+                                                      ${tag.name}
+                                                      $${tag.staffOnlyAt !==
+                                                      null
+                                                        ? html`
+                                                            <span
+                                                              class="text--sky"
+                                                              javascript="${response
+                                                                .locals
+                                                                .javascript(javascript`
+                                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                                    touch: false,
+                                                                    content: "This tag is visible by staff only.",
+                                                                  });
+                                                                `)}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-mortarboard-fill"
+                                                              ></i>
+                                                            </span>
+                                                          `
+                                                        : html``}
+                                                    </button>
+                                                  </form>
+                                                `
+                                          )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  `)},
-                                });
-                              `)}"
+                                    `)},
+                                  });
+                                `)}"
                             >
                               <i class="bi bi-tags-fill"></i>
                               Tags
@@ -6884,19 +6892,19 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--tight button--tight--inline button--transparent"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          touch: false,
-                                          content: "Remove Participant",
-                                        });
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            touch: false,
+                                            content: "Remove Participant",
+                                          });
 
-                                        this.onclick = () => {
-                                          this.previousElementSibling.checked = false;
+                                          this.onclick = () => {
+                                            this.previousElementSibling.checked = false;
 
-                                          this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
+                                            this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]').checked = false;
 
-                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
-                                        };
-                                      `)}"
+                                            this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                          };
+                                        `)}"
                                     >
                                       $${application.server.locals.partials.user(
                                         {
@@ -6955,11 +6963,11 @@ export default async (application: Application): Promise<void> => {
                               ]}"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Participants",
-                                });
-                              `)}"
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Participants",
+                                  });
+                                `)}"
                             >
                               $${iconsConversationParticipants[
                                 response.locals.conversation.participants
@@ -7225,22 +7233,22 @@ export default async (application: Application): Promise<void> => {
                                               `)}"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                if (this !== document.querySelector('[key="message--new-separator"]')) {
-                                                  this.remove();
-                                                  return;
-                                                }
+                                                  if (this !== document.querySelector('[key="message--new-separator"]')) {
+                                                    this.remove();
+                                                    return;
+                                                  }
 
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Close",
-                                                });
-                                                           
-                                                this.onclick = () => {
-                                                  this.remove();
-                                                };
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Close",
+                                                  });
+                                                            
+                                                  this.onclick = () => {
+                                                    this.remove();
+                                                  };
 
-                                                this.onbeforeremove = () => false;
-                                              `)}"
+                                                  this.onbeforeremove = () => false;
+                                                `)}"
                                             >
                                               <hr
                                                 class="separator"
@@ -7313,20 +7321,20 @@ export default async (application: Application): Promise<void> => {
                                                   ).toISOString()}"
                                                   javascript="${response.locals
                                                     .javascript(javascript`
-                                                    const element = this;
-                                                    leafac.relativizeDateElement(element);
+                                                      const element = this;
+                                                      leafac.relativizeDateElement(element);
 
-                                                    window.clearTimeout(element.updateTimeout);
-                                                    (function update() {
-                                                      if (!leafac.isConnected(element)) return;
-                                                      const dateSeparators = [...document.querySelectorAll('[key="message--date-separator"]')];
-                                                      const thisDateSeparator = element.closest('[key="message--date-separator"]');
-                                                      const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
-                                                      const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
-                                                      thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                      element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
-                                                    })();
-                                                  `)}"
+                                                      window.clearTimeout(element.updateTimeout);
+                                                      (function update() {
+                                                        if (!leafac.isConnected(element)) return;
+                                                        const dateSeparators = [...document.querySelectorAll('[key="message--date-separator"]')];
+                                                        const thisDateSeparator = element.closest('[key="message--date-separator"]');
+                                                        const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
+                                                        const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
+                                                        thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
+                                                        element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
+                                                      })();
+                                                    `)}"
                                                 ></time>
                                               </span>
                                               <hr
@@ -7446,55 +7454,56 @@ export default async (application: Application): Promise<void> => {
                                                 `)}"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Actions",
-                                                  });
-
-                                                  if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
-                                                    (this.dropdown ??= tippy(this)).setProps({
-                                                      trigger: "click",
-                                                      interactive: true,
-                                                      onHidden: () => { this.onmouseleave(); },
-                                                      content: ${response.locals
-                                                        .html(html`
-                                                        <div
-                                                          key="loading"
-                                                          css="${response.locals
-                                                            .css(css`
-                                                            display: flex;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                            align-items: center;
-                                                          `)}"
-                                                        >
-                                                          $${application.server.locals.partials.spinner(
-                                                            {
-                                                              request,
-                                                              response,
-                                                            }
-                                                          )}
-                                                          Loading…
-                                                        </div>
-                                                        <div
-                                                          key="content"
-                                                          hidden
-                                                        ></div>
-                                                      `)},
+                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                      touch: false,
+                                                      content: "Actions",
                                                     });
 
-                                                  window.clearTimeout(this.dropdownContentTimeout);
-                                                  this.dropdownContentSkipLoading = false;
+                                                    if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
+                                                      (this.dropdown ??= tippy(this)).setProps({
+                                                        trigger: "click",
+                                                        interactive: true,
+                                                        onHidden: () => { this.onmouseleave(); },
+                                                        content: ${response
+                                                          .locals.html(html`
+                                                          <div
+                                                            key="loading"
+                                                            css="${response
+                                                              .locals.css(css`
+                                                              display: flex;
+                                                              gap: var(
+                                                                --space--2
+                                                              );
+                                                              align-items: center;
+                                                            `)}"
+                                                          >
+                                                            $${application.server.locals.partials.spinner(
+                                                              {
+                                                                request,
+                                                                response,
+                                                              }
+                                                            )}
+                                                            Loading…
+                                                          </div>
+                                                          <div
+                                                            key="content"
+                                                            hidden
+                                                          ></div>
+                                                        `)},
+                                                      });
 
-                                                  this.onmouseenter = this.onfocus = async () => {
                                                     window.clearTimeout(this.dropdownContentTimeout);
-                                                    if (this.dropdownContentSkipLoading) return;
-                                                    this.dropdownContentSkipLoading = true;
-                                                    leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                                                      application.configuration
-                                                        .hostname
-                                                    }/courses/${
+                                                    this.dropdownContentSkipLoading = false;
+
+                                                    this.onmouseenter = this.onfocus = async () => {
+                                                      window.clearTimeout(this.dropdownContentTimeout);
+                                                      if (this.dropdownContentSkipLoading) return;
+                                                      this.dropdownContentSkipLoading = true;
+                                                      leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                        application
+                                                          .configuration
+                                                          .hostname
+                                                      }/courses/${
                                                   response.locals.course
                                                     .reference
                                                 }/conversations/${
@@ -7512,21 +7521,21 @@ export default async (application: Application): Promise<void> => {
                                                   },
                                                   { addQueryPrefix: true }
                                                 )}", { cache: "no-store" })).text());
-                                                    this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
-                                                    this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
-                                                    this.dropdown.setProps({});
-                                                  };
+                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                      this.dropdown.setProps({});
+                                                    };
 
-                                                  this.onmouseleave = this.onblur = () => {
-                                                    window.clearTimeout(this.dropdownContentTimeout);
-                                                    if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                    this.dropdownContentTimeout = window.setTimeout(() => {
-                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
-                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
-                                                      this.dropdownContentSkipLoading = false;
-                                                    }, 60 * 1000);
-                                                  };
-                                                `)}"
+                                                    this.onmouseleave = this.onblur = () => {
+                                                      window.clearTimeout(this.dropdownContentTimeout);
+                                                      if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                      this.dropdownContentTimeout = window.setTimeout(() => {
+                                                        this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                        this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                        this.dropdownContentSkipLoading = false;
+                                                      }, 60 * 1000);
+                                                    };
+                                                  `)}"
                                               >
                                                 <i
                                                   class="bi bi-three-dots-vertical"
@@ -7582,11 +7591,11 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            touch: false,
-                                                            content: "Set as Answer",
-                                                          });
-                                                        `)}"
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: "Set as Answer",
+                                                            });
+                                                          `)}"
                                                       >
                                                         <i
                                                           class="bi bi-patch-check"
@@ -7606,11 +7615,11 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            touch: false,
-                                                            content: "Set as Not an Answer",
-                                                          });
-                                                        `)}"
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: "Set as Not an Answer",
+                                                            });
+                                                          `)}"
                                                       >
                                                         <i
                                                           class="bi bi-patch-check-fill"
@@ -7683,58 +7692,58 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            touch: false,
-                                                            content: ${JSON.stringify(
-                                                              `Remove Endorsement${
-                                                                message.endorsements.filter(
-                                                                  (
-                                                                    endorsement
-                                                                  ) =>
-                                                                    endorsement.enrollment !==
-                                                                      "no-longer-enrolled" &&
-                                                                    endorsement
-                                                                      .enrollment
-                                                                      .id !==
-                                                                      response
-                                                                        .locals
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              touch: false,
+                                                              content: ${JSON.stringify(
+                                                                `Remove Endorsement${
+                                                                  message.endorsements.filter(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement.enrollment !==
+                                                                        "no-longer-enrolled" &&
+                                                                      endorsement
                                                                         .enrollment
-                                                                        .id
-                                                                ).length > 0
-                                                                  ? ` (Also endorsed by ${
-                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                        Intl as any
-                                                                      ).ListFormat(
-                                                                        "en"
-                                                                      ).format(
-                                                                        message.endorsements.flatMap(
-                                                                          (
-                                                                            endorsement
-                                                                          ) =>
-                                                                            endorsement.enrollment !==
-                                                                              "no-longer-enrolled" &&
-                                                                            endorsement
-                                                                              .enrollment
-                                                                              .id !==
-                                                                              response
-                                                                                .locals
+                                                                        .id !==
+                                                                        response
+                                                                          .locals
+                                                                          .enrollment
+                                                                          .id
+                                                                  ).length > 0
+                                                                    ? ` (Also endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment !==
+                                                                                "no-longer-enrolled" &&
+                                                                              endorsement
                                                                                 .enrollment
-                                                                                .id
-                                                                              ? [
-                                                                                  endorsement
-                                                                                    .enrollment
-                                                                                    .user
-                                                                                    .name,
-                                                                                ]
-                                                                              : []
+                                                                                .id !==
+                                                                                response
+                                                                                  .locals
+                                                                                  .enrollment
+                                                                                  .id
+                                                                                ? [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
+                                                                                : []
+                                                                          )
                                                                         )
-                                                                      )
-                                                                    })`
-                                                                  : ``
-                                                              }`
-                                                            )},
-                                                          });
-                                                        `)}"
+                                                                      })`
+                                                                    : ``
+                                                                }`
+                                                              )},
+                                                            });
+                                                          `)}"
                                                       >
                                                         <i
                                                           class="bi bi-award-fill"
@@ -7761,34 +7770,34 @@ export default async (application: Application): Promise<void> => {
                                                               javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
-                                                                (this.tooltip ??= tippy(this)).setProps({
-                                                                  touch: false,
-                                                                  content: ${JSON.stringify(
-                                                                    `Endorse (Already endorsed by ${
-                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                        Intl as any
-                                                                      ).ListFormat(
-                                                                        "en"
-                                                                      ).format(
-                                                                        message.endorsements.flatMap(
-                                                                          (
-                                                                            endorsement
-                                                                          ) =>
-                                                                            endorsement.enrollment ===
-                                                                            "no-longer-enrolled"
-                                                                              ? []
-                                                                              : [
-                                                                                  endorsement
-                                                                                    .enrollment
-                                                                                    .user
-                                                                                    .name,
-                                                                                ]
+                                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                                    touch: false,
+                                                                    content: ${JSON.stringify(
+                                                                      `Endorse (Already endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment ===
+                                                                              "no-longer-enrolled"
+                                                                                ? []
+                                                                                : [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
+                                                                          )
                                                                         )
-                                                                      )
-                                                                    })`
-                                                                  )},
-                                                                });
-                                                              `)}"
+                                                                      })`
+                                                                    )},
+                                                                  });
+                                                                `)}"
                                                             `}
                                                       >
                                                         <i
@@ -7827,44 +7836,43 @@ export default async (application: Application): Promise<void> => {
                                                 class="text--lime"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
-                                                  ${
-                                                    message.endorsements.filter(
-                                                      (endorsement) =>
-                                                        endorsement.enrollment !==
-                                                        "no-longer-enrolled"
-                                                    ).length > 0
-                                                      ? javascript`
-                                                          (this.tooltip ??= tippy(this)).setProps({
-                                                            content: ${JSON.stringify(
-                                                              `Endorsed by ${
-                                                                /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                  Intl as any
-                                                                ).ListFormat(
-                                                                  "en"
-                                                                ).format(
-                                                                  message.endorsements.flatMap(
-                                                                    (
-                                                                      endorsement
-                                                                    ) =>
-                                                                      endorsement.enrollment ===
-                                                                      "no-longer-enrolled"
-                                                                        ? []
-                                                                        : [
-                                                                            endorsement
-                                                                              .enrollment
-                                                                              .user
-                                                                              .name,
-                                                                          ]
+                                                    ${
+                                                      message.endorsements.filter(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment !==
+                                                          "no-longer-enrolled"
+                                                      ).length > 0
+                                                        ? javascript`
+                                                            (this.tooltip ??= tippy(this)).setProps({
+                                                              content: ${JSON.stringify(
+                                                                `Endorsed by ${
+                                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                    Intl as any
+                                                                  ).ListFormat(
+                                                                    "en"
+                                                                  ).format(
+                                                                    message.endorsements.flatMap(
+                                                                      (
+                                                                        endorsement
+                                                                      ) =>
+                                                                        endorsement.enrollment ===
+                                                                        "no-longer-enrolled"
+                                                                          ? []
+                                                                          : [
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .user
+                                                                                .name,
+                                                                            ]
+                                                                    )
                                                                   )
-                                                                )
-                                                              }`
-                                                            )},
-                                                          });
-                                                        `
-                                                      : javascript``
-                                                  }
-                                                  
-                                                `)}"
+                                                                }`
+                                                              )},
+                                                            });
+                                                          `
+                                                        : javascript``
+                                                    }
+                                                  `)}"
                                               >
                                                 <i class="bi bi-award"></i>
                                                 ${message.endorsements.length.toString()}
@@ -8007,8 +8015,8 @@ export default async (application: Application): Promise<void> => {
                                                   ).toISOString()}"
                                                   javascript="${response.locals
                                                     .javascript(javascript`
-                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                  `)}"
+                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                    `)}"
                                                 ></time>
 
                                                 $${message.updatedAt !== null
@@ -8022,8 +8030,8 @@ export default async (application: Application): Promise<void> => {
                                                           javascript="${response
                                                             .locals
                                                             .javascript(javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `)}"
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                            `)}"
                                                         ></time>
                                                       </div>
                                                     `
@@ -8063,102 +8071,104 @@ export default async (application: Application): Promise<void> => {
                                               key="message--show--content-area--content"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
-                                                (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
-                                                  trigger: "manual",
-                                                  interactive: true,
-                                                  content: ${response.locals
-                                                    .html(html`
-                                                    <div class="dropdown--menu">
-                                                      <button
-                                                        class="dropdown--menu--item button button--transparent"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            this.onclick = () => {
-                                                              tippy.hideAll();
-                                                              const selection = window.getSelection();
-                                                              const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                              const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                              const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
-                                                              if (
-                                                                selection.isCollapsed ||
-                                                                anchorElement === undefined ||
-                                                                focusElement === undefined ||
-                                                                !contentElement.contains(anchorElement) ||
-                                                                !contentElement.contains(focusElement)
-                                                              ) return;
-                                                              const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                                              const focusPosition = JSON.parse(focusElement.dataset.position);
-                                                              const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                                              const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                              const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
-                                                              const newMessage = document.querySelector('[key="new-message"]');
-                                                              newMessage.querySelector('[key="content-editor--button--write"]')?.click();
-                                                              const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
-                                                              textFieldEdit.wrapSelection(
-                                                                element,
-                                                                ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                  message.authorEnrollment ===
-                                                                  "no-longer-enrolled"
-                                                                    ? javascript``
-                                                                    : javascript`
-                                                                      "@${
-                                                                        message.anonymousAt ===
-                                                                        null
-                                                                          ? `${
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .reference
-                                                                            }--${slugify(
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .user
-                                                                                .name
-                                                                            )}`
-                                                                          : `anonymous`
-                                                                      } · " +
-                                                                    `
-                                                                } "#" + ${JSON.stringify(
-                                                          response.locals
-                                                            .conversation
-                                                            .reference
-                                                        )} + "/" + ${JSON.stringify(
-                                                          message.reference
-                                                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                                ""
-                                                              );
-                                                              element.focus();
-                                                            };
-                                                          `)}"
+                                                  const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
+                                                  (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
+                                                    trigger: "manual",
+                                                    interactive: true,
+                                                    content: ${response.locals
+                                                      .html(html`
+                                                      <div
+                                                        class="dropdown--menu"
                                                       >
-                                                        <i
-                                                          class="bi bi-chat-quote"
-                                                        ></i>
-                                                        Quote
-                                                      </button>
-                                                    </div>
-                                                  `)},
-                                                });
-                                                
-                                                this.onmouseup = (event) => {
-                                                  window.setTimeout(() => {
-                                                    const selection = window.getSelection();
-                                                    const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                    const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                    if (
-                                                      selection.isCollapsed ||
-                                                      anchorElement === undefined ||
-                                                      focusElement === undefined ||
-                                                      !this.contains(anchorElement) ||
-                                                      !this.contains(focusElement)
-                                                    ) return;
-                                                    dropdownMenuTarget.style.top = String(event.layerY) + "px";
-                                                    dropdownMenuTarget.style.left = String(event.layerX) + "px";
-                                                    dropdownMenuTarget.dropdownMenu.show();
+                                                        <button
+                                                          class="dropdown--menu--item button button--transparent"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              this.onclick = () => {
+                                                                tippy.hideAll();
+                                                                const selection = window.getSelection();
+                                                                const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                                const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                                const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
+                                                                if (
+                                                                  selection.isCollapsed ||
+                                                                  anchorElement === undefined ||
+                                                                  focusElement === undefined ||
+                                                                  !contentElement.contains(anchorElement) ||
+                                                                  !contentElement.contains(focusElement)
+                                                                ) return;
+                                                                const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                                                const focusPosition = JSON.parse(focusElement.dataset.position);
+                                                                const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                                                const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                                                const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
+                                                                const newMessage = document.querySelector('[key="new-message"]');
+                                                                newMessage.querySelector('[key="content-editor--button--write"]')?.click();
+                                                                const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
+                                                                textFieldEdit.wrapSelection(
+                                                                  element,
+                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                    message.authorEnrollment ===
+                                                                    "no-longer-enrolled"
+                                                                      ? javascript``
+                                                                      : javascript`
+                                                                          "@${
+                                                                            message.anonymousAt ===
+                                                                            null
+                                                                              ? `${
+                                                                                  message
+                                                                                    .authorEnrollment
+                                                                                    .reference
+                                                                                }--${slugify(
+                                                                                  message
+                                                                                    .authorEnrollment
+                                                                                    .user
+                                                                                    .name
+                                                                                )}`
+                                                                              : `anonymous`
+                                                                          } · " +
+                                                                        `
+                                                                  } "#" + ${JSON.stringify(
+                                                            response.locals
+                                                              .conversation
+                                                              .reference
+                                                          )} + "/" + ${JSON.stringify(
+                                                            message.reference
+                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                  ""
+                                                                );
+                                                                element.focus();
+                                                              };
+                                                            `)}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-chat-quote"
+                                                          ></i>
+                                                          Quote
+                                                        </button>
+                                                      </div>
+                                                    `)},
                                                   });
-                                                };
-                                              `)}"
+                                                  
+                                                  this.onmouseup = (event) => {
+                                                    window.setTimeout(() => {
+                                                      const selection = window.getSelection();
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                      if (
+                                                        selection.isCollapsed ||
+                                                        anchorElement === undefined ||
+                                                        focusElement === undefined ||
+                                                        !this.contains(anchorElement) ||
+                                                        !this.contains(focusElement)
+                                                      ) return;
+                                                      dropdownMenuTarget.style.top = String(event.layerY) + "px";
+                                                      dropdownMenuTarget.style.left = String(event.layerX) + "px";
+                                                      dropdownMenuTarget.dropdownMenu.show();
+                                                    });
+                                                  };
+                                                `)}"
                                             >
                                               $${application.server.locals.partials.content(
                                                 {
@@ -8239,15 +8249,15 @@ export default async (application: Application): Promise<void> => {
                                                             javascript="${response
                                                               .locals
                                                               .javascript(javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                touch: false,
-                                                                content: ${JSON.stringify(
-                                                                  isLiked
-                                                                    ? "Remove Like"
-                                                                    : "Like"
-                                                                )},
-                                                              });
-                                                            `)}"
+                                                                (this.tooltip ??= tippy(this)).setProps({
+                                                                  touch: false,
+                                                                  content: ${JSON.stringify(
+                                                                    isLiked
+                                                                      ? "Remove Like"
+                                                                      : "Like"
+                                                                  )},
+                                                                });
+                                                              `)}"
                                                           `}
                                                     >
                                                       $${isLiked
@@ -8275,58 +8285,58 @@ export default async (application: Application): Promise<void> => {
                                                           javascript="${response
                                                             .locals
                                                             .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              touch: false,
-                                                              content: "See people who liked",
-                                                            });
-                                                            
-                                                            if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
-                                                              (this.dropdown ??= tippy(this)).setProps({
-                                                                trigger: "click",
-                                                                interactive: true,
-                                                                onHidden: () => { this.onmouseleave(); },
-                                                                content: ${response
-                                                                  .locals
-                                                                  .html(html`
-                                                                  <div
-                                                                    key="loading"
-                                                                    css="${response
-                                                                      .locals
-                                                                      .css(css`
-                                                                      display: flex;
-                                                                      gap: var(
-                                                                        --space--2
-                                                                      );
-                                                                      align-items: center;
-                                                                    `)}"
-                                                                  >
-                                                                    $${application.server.locals.partials.spinner(
-                                                                      {
-                                                                        request,
-                                                                        response,
-                                                                      }
-                                                                    )}
-                                                                    Loading…
-                                                                  </div>
-                                                                  <div
-                                                                    key="content"
-                                                                    hidden
-                                                                  ></div>
-                                                                `)},
+                                                              (this.tooltip ??= tippy(this)).setProps({
+                                                                touch: false,
+                                                                content: "See people who liked",
                                                               });
+                                                              
+                                                              if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
+                                                                (this.dropdown ??= tippy(this)).setProps({
+                                                                  trigger: "click",
+                                                                  interactive: true,
+                                                                  onHidden: () => { this.onmouseleave(); },
+                                                                  content: ${response
+                                                                    .locals
+                                                                    .html(html`
+                                                                    <div
+                                                                      key="loading"
+                                                                      css="${response
+                                                                        .locals
+                                                                        .css(css`
+                                                                        display: flex;
+                                                                        gap: var(
+                                                                          --space--2
+                                                                        );
+                                                                        align-items: center;
+                                                                      `)}"
+                                                                    >
+                                                                      $${application.server.locals.partials.spinner(
+                                                                        {
+                                                                          request,
+                                                                          response,
+                                                                        }
+                                                                      )}
+                                                                      Loading…
+                                                                    </div>
+                                                                    <div
+                                                                      key="content"
+                                                                      hidden
+                                                                    ></div>
+                                                                  `)},
+                                                                });
 
-                                                            window.clearTimeout(this.dropdownContentTimeout);
-                                                            this.dropdownContentSkipLoading = false;
-                                                            
-                                                            this.onmouseenter = this.onfocus = async () => {
                                                               window.clearTimeout(this.dropdownContentTimeout);
-                                                              if (this.dropdownContentSkipLoading) return;
-                                                              this.dropdownContentSkipLoading = true;
-                                                              leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                                                                application
-                                                                  .configuration
-                                                                  .hostname
-                                                              }/courses/${
+                                                              this.dropdownContentSkipLoading = false;
+                                                              
+                                                              this.onmouseenter = this.onfocus = async () => {
+                                                                window.clearTimeout(this.dropdownContentTimeout);
+                                                                if (this.dropdownContentSkipLoading) return;
+                                                                this.dropdownContentSkipLoading = true;
+                                                                leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                                  application
+                                                                    .configuration
+                                                                    .hostname
+                                                                }/courses/${
                                                             response.locals
                                                               .course.reference
                                                           }/conversations/${
@@ -8336,21 +8346,21 @@ export default async (application: Application): Promise<void> => {
                                                           }/messages/${
                                                             message.reference
                                                           }/likes", { cache: "no-store" })).text());
-                                                              this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
-                                                              this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
-                                                              this.dropdown.setProps({});
-                                                            };
-                                                            
-                                                            this.onmouseleave = this.onblur = () => {
-                                                              window.clearTimeout(this.dropdownContentTimeout);
-                                                              if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                              this.dropdownContentTimeout = window.setTimeout(() => {
-                                                                this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
-                                                                this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
-                                                                this.dropdownContentSkipLoading = false;
-                                                              }, 60 * 1000);
-                                                            };
-                                                          `)}"
+                                                                this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                                this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                                this.dropdown.setProps({});
+                                                              };
+                                                              
+                                                              this.onmouseleave = this.onblur = () => {
+                                                                window.clearTimeout(this.dropdownContentTimeout);
+                                                                if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                                this.dropdownContentTimeout = window.setTimeout(() => {
+                                                                  this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                                  this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                                  this.dropdownContentSkipLoading = false;
+                                                                }, 60 * 1000);
+                                                              };
+                                                            `)}"
                                                         >
                                                           ${likesCount.toString()}
                                                           Like${likesCount === 1
@@ -8372,51 +8382,51 @@ export default async (application: Application): Promise<void> => {
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   javascript="${response.locals
                                                     .javascript(javascript`
-                                                    if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        onHidden: () => { this.onmouseleave(); },
-                                                        content: ${response
-                                                          .locals.html(html`
-                                                          <div
-                                                            key="loading"
-                                                            css="${response
-                                                              .locals.css(css`
-                                                              display: flex;
-                                                              gap: var(
-                                                                --space--2
-                                                              );
-                                                              align-items: center;
-                                                            `)}"
-                                                          >
-                                                            $${application.server.locals.partials.spinner(
-                                                              {
-                                                                request,
-                                                                response,
-                                                              }
-                                                            )}
-                                                            Loading…
-                                                          </div>
-                                                          <div
-                                                            key="content"
-                                                            hidden
-                                                          ></div>
-                                                        `)},
-                                                      });
+                                                      if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
+                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          onHidden: () => { this.onmouseleave(); },
+                                                          content: ${response
+                                                            .locals.html(html`
+                                                            <div
+                                                              key="loading"
+                                                              css="${response
+                                                                .locals.css(css`
+                                                                display: flex;
+                                                                gap: var(
+                                                                  --space--2
+                                                                );
+                                                                align-items: center;
+                                                              `)}"
+                                                            >
+                                                              $${application.server.locals.partials.spinner(
+                                                                {
+                                                                  request,
+                                                                  response,
+                                                                }
+                                                              )}
+                                                              Loading…
+                                                            </div>
+                                                            <div
+                                                              key="content"
+                                                              hidden
+                                                            ></div>
+                                                          `)},
+                                                        });
 
-                                                    window.clearTimeout(this.tooltipContentTimeout);
-                                                    this.tooltipContentSkipLoading = false;
-                                                    
-                                                    this.onmouseenter = this.onfocus = async () => {
                                                       window.clearTimeout(this.tooltipContentTimeout);
-                                                      if (this.tooltipContentSkipLoading) return;
-                                                      this.tooltipContentSkipLoading = true;
-                                                      leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                                                        application
-                                                          .configuration
-                                                          .hostname
-                                                      }/courses/${
+                                                      this.tooltipContentSkipLoading = false;
+                                                      
+                                                      this.onmouseenter = this.onfocus = async () => {
+                                                        window.clearTimeout(this.tooltipContentTimeout);
+                                                        if (this.tooltipContentSkipLoading) return;
+                                                        this.tooltipContentSkipLoading = true;
+                                                        leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                          application
+                                                            .configuration
+                                                            .hostname
+                                                        }/courses/${
                                                     response.locals.course
                                                       .reference
                                                   }/conversations/${
@@ -8425,21 +8435,21 @@ export default async (application: Application): Promise<void> => {
                                                   }/messages/${
                                                     message.reference
                                                   }/views", { cache: "no-store" })).text());
-                                                      this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
-                                                      this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
-                                                      this.tooltip.setProps({});
-                                                    };
-                                                    
-                                                    this.onmouseleave = this.onblur = () => {
-                                                      window.clearTimeout(this.tooltipContentTimeout);
-                                                      if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
-                                                      this.tooltipContentTimeout = window.setTimeout(() => {
-                                                        this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
-                                                        this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
-                                                        this.tooltipContentSkipLoading = false;
-                                                      }, 60 * 1000);
-                                                    };
-                                                  `)}"
+                                                        this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
+                                                        this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
+                                                        this.tooltip.setProps({});
+                                                      };
+                                                      
+                                                      this.onmouseleave = this.onblur = () => {
+                                                        window.clearTimeout(this.tooltipContentTimeout);
+                                                        if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
+                                                        this.tooltipContentTimeout = window.setTimeout(() => {
+                                                          this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
+                                                          this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
+                                                          this.tooltipContentSkipLoading = false;
+                                                        }, 60 * 1000);
+                                                      };
+                                                    `)}"
                                                 >
                                                   <i class="bi bi-eye"></i>
                                                   ${message.readings.length.toString()}
@@ -8497,10 +8507,10 @@ export default async (application: Application): Promise<void> => {
                                             hidden
                                             javascript="${response.locals
                                               .javascript(javascript`
-                                              if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
-                                              this.partialParentElement = false;
-                                              this.skipLoading = false;
-                                            `)}"
+                                                if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
+                                                this.partialParentElement = false;
+                                                this.skipLoading = false;
+                                              `)}"
                                           ></div>
                                         </div>
                                       </div>
@@ -8795,17 +8805,17 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  leafac.saveFormInputValue(this, "answer");
-                                `)}"
+                                    leafac.saveFormInputValue(this, "answer");
+                                  `)}"
                               />
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Answer",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Answer",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-patch-check"></i>
                                 Not an Answer
@@ -8814,11 +8824,11 @@ export default async (application: Application): Promise<void> => {
                                 class="text--emerald"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Not an Answer",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Not an Answer",
+                                    });
+                                  `)}"
                               >
                                 <i class="bi bi-patch-check-fill"></i>
                                 Answer
@@ -8928,23 +8938,23 @@ export default async (application: Application): Promise<void> => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  this.isModified = false;
+                                    this.isModified = false;
 
-                                  this.onchange = () => {
-                                    localStorage.setItem("anonymity", JSON.stringify(this.checked));  
-                                  };
-                                  
-                                  if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
-                                `)}"
+                                    this.onchange = () => {
+                                      localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                    };
+                                    
+                                    if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
+                                  `)}"
                               />
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Anonymous to Other Students",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Anonymous to Other Students",
+                                    });
+                                  `)}"
                               >
                                 <span>
                                   $${application.server.locals.partials.user({
@@ -8967,11 +8977,11 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Signed by You",
-                                  });
-                                `)}"
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Set as Signed by You",
+                                    });
+                                  `)}"
                               >
                                 <span>
                                   $${application.server.locals.partials.user({

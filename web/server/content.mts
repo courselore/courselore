@@ -2270,8 +2270,7 @@ export default async (application: Application): Promise<void> => {
                           this.focus();
                         };
                       `
-                    : javascript`
-                      `
+                    : javascript``
                 }
               `)}"
             >
