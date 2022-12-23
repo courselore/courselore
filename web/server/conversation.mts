@@ -6956,11 +6956,9 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="submit"
                                 hidden
-                                css="${response.locals.css(
-                                  css`
-                                    display: flex;
-                                  `
-                                )}"
+                                css="${response.locals.css(css`
+                                  display: flex;
+                                `)}"
                               >
                                 <button class="button button--blue">
                                   <i class="bi bi-pencil-fill"></i>
