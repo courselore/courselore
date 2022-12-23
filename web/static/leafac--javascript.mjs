@@ -391,9 +391,12 @@ export function loadDocument(documentString, detail) {
     detail
   );
 
+  const localJavaScript = window.localJavaScript;
   new Function(
     document.querySelector('[key="local-javascript"]').textContent
   )();
+  if (detail.liveUpdate)
+    window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
 
   window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
 
