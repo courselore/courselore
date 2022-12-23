@@ -426,7 +426,9 @@ export function loadPartial(parentElement, partialString) {
     `[key="local-javascript"]`
   );
   partialJavaScript.remove();
+  const localJavaScript = window.localJavaScript;
   new Function(partialJavaScript.textContent)();
+  window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
   javascript.insertAdjacentText("beforeend", partialJavaScript.textContent);
 
   morph(parentElement, partialDocument.querySelector("body"));
