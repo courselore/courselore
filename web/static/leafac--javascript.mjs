@@ -580,16 +580,6 @@ export function morph(from, to, detail = {}) {
   }
 }
 
-export function javascript({
-  event = undefined,
-  element = undefined,
-  elements = element.querySelectorAll("[javascript]"),
-  localJavaScript = window.localJavaScript,
-}) {
-  for (const element of elements)
-    localJavaScript[element.getAttribute("javascript")].call(element, event);
-}
-
 export function setTippy({
   event,
   element,
@@ -929,6 +919,16 @@ export function evaluate({
   elements = element.querySelectorAll("script"),
 }) {
   for (const element of elements) new Function(element.textContent)();
+}
+
+export function javascript({
+  event = undefined,
+  element = undefined,
+  elements = element.querySelectorAll("[javascript]"),
+  localJavaScript = window.localJavaScript,
+}) {
+  for (const element of elements)
+    localJavaScript[element.getAttribute("javascript")].call(element, event);
 }
 
 export function ancestors(element) {
