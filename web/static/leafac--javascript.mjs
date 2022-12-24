@@ -391,9 +391,7 @@ export function loadDocument(documentString, detail) {
   );
 
   const localJavaScript = window.localJavaScript;
-  new Function(
-    document.querySelector('[key="local-javascript"]').textContent
-  )();
+  evaluate({ elements: [document.querySelector('[key="local-javascript"]')] });
   if (detail.liveUpdate)
     window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
 
@@ -426,7 +424,7 @@ export function loadPartial(parentElement, partialString) {
   );
   partialJavaScript.remove();
   const localJavaScript = window.localJavaScript;
-  new Function(partialJavaScript.textContent)();
+  evaluate({ elements: [partialJavaScript] });
   window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
   javascript_.insertAdjacentText("beforeend", partialJavaScript.textContent);
 
