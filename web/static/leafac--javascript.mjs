@@ -384,11 +384,9 @@ export function loadDocument(documentString, detail) {
 
   if (!detail.liveUpdate) tippyStatic.hideAll();
 
-  morph(
-    document.querySelector("body"),
-    newDocument.querySelector("body"),
-    detail
-  );
+  morph(document.querySelector("body"), newDocument.querySelector("body"), {
+    detail,
+  });
 
   const localJavaScript = window.localJavaScript;
   evaluate({ elements: [document.querySelector('[key="local-javascript"]')] });
@@ -446,10 +444,10 @@ export function loadPartial(parentElement, partialString) {
   parentElement.forceIsConnected = false;
 }
 
-export function morph(from, to, detail = {}) {
+export function morph(from, to, event = undefined) {
   if (
-    from.onbeforemorph?.(detail) === false ||
-    (detail.liveUpdate && from.partialParentElement === true)
+    from.onbeforemorph?.(event) === false ||
+    (event?.detail?.liveUpdate && from.partialParentElement === true)
   )
     return;
 
@@ -486,8 +484,8 @@ export function morph(from, to, detail = {}) {
       const key = fromKeys[nodeIndex];
 
       if (
-        detail.liveUpdate &&
-        (node.onbeforeremove?.(detail) === false ||
+        event?.detail?.liveUpdate &&
+        (node.onbeforeremove?.(event) === false ||
           node.matches?.("[data-tippy-root]"))
       )
         continue;
@@ -545,7 +543,7 @@ export function morph(from, to, detail = {}) {
     ])) {
       if (
         attribute === "style" ||
-        (detail.liveUpdate &&
+        (event?.detail?.liveUpdate &&
           ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
             attribute
           ))
@@ -560,7 +558,7 @@ export function morph(from, to, detail = {}) {
         from.setAttribute(attribute, toAttribute);
     }
 
-    if (!detail.liveUpdate)
+    if (!event?.detail?.liveUpdate)
       switch (from.tagName.toLowerCase()) {
         case "input":
           for (const property of [
@@ -576,7 +574,7 @@ export function morph(from, to, detail = {}) {
           break;
       }
 
-    morph(from, to, detail);
+    morph(from, to, event);
   }
 }
 
@@ -593,11 +591,7 @@ export function setTippy({
   element[elementProperty].setProps(tippyProps);
 
   const tippyContentElement = stringToElement(`<div>${tippyContent}</div>`);
-  morph(
-    element[elementProperty].props.content,
-    tippyContentElement,
-    event?.detail
-  );
+  morph(element[elementProperty].props.content, tippyContentElement, event);
   javascript({
     event,
     element: tippyContentElement,
