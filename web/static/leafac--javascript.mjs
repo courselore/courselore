@@ -593,7 +593,11 @@ export function setTippy({
   element[elementProperty].setProps(tippyProps);
 
   const tippyContentElement = stringToElement(`<div>${tippyContent}</div>`);
-  morph(element[elementProperty].props.content, tippyContentElement);
+  morph(
+    element[elementProperty].props.content,
+    tippyContentElement,
+    event?.detail
+  );
   javascript({
     event,
     element: tippyContentElement,
