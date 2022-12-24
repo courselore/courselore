@@ -4,10 +4,7 @@ import qs from "qs";
 import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css, { localCSS } from "@leafac/css";
-import javascript, {
-  localHTMLForJavaScript,
-  localJavaScript,
-} from "@leafac/javascript";
+import javascript, { localJavaScript } from "@leafac/javascript";
 import slugify from "@sindresorhus/slugify";
 import { Application } from "./index.mjs";
 
@@ -634,7 +631,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${response.locals.html(html`
+                            content: ${JSON.stringify(html`
                               <div
                                 key="loading"
                                 css="${response.locals.css(css`
@@ -875,7 +872,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${response.locals.html(html`
+                            content: ${JSON.stringify(html`
                               <div
                                 key="loading"
                                 css="${response.locals.css(css`
@@ -941,7 +938,7 @@ export default async (application: Application): Promise<void> => {
                             theme: "rose",
                             trigger: "click",
                             interactive: true,
-                            content: ${response.locals.html(html`
+                            content: ${JSON.stringify(html`
                               <form
                                 method="DELETE"
                                 action="https://${application.configuration
@@ -1067,7 +1064,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <span class="keyboard-shortcut">
                           <span
                             javascript="${response.locals.javascript(javascript`
@@ -2233,7 +2230,6 @@ export default async (application: Application): Promise<void> => {
           >[0]["request"],
           response: {
             locals: {
-              html: localHTMLForJavaScript(),
               css: localCSS(),
               javascript: localJavaScript(),
               user: {},

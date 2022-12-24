@@ -571,7 +571,7 @@ export default async (application: Application): Promise<void> => {
             appendTo: document.querySelector("body"),
             delay: [1000, null],
             touch: ["hold", 1000],
-            content: ${response.locals.html(html`
+            content: ${JSON.stringify(html`
               <div
                 css="${response.locals.css(css`
                   max-height: var(--space--56);
@@ -1025,7 +1025,7 @@ export default async (application: Application): Promise<void> => {
                     (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                       trigger: "manual",
                       hideOnClick: false,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <div
                           css="${response.locals.css(css`
                             display: flex;

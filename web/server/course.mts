@@ -1556,7 +1556,7 @@ export default async (application: Application): Promise<void> => {
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${response.locals.html(html`
+                                    content: ${JSON.stringify(html`
                                       <div
                                         css="${response.locals.css(css`
                                           padding: var(--space--2)
@@ -2091,7 +2091,7 @@ export default async (application: Application): Promise<void> => {
                     javascript="${response.locals.javascript(javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         trigger: "click",
-                        content: ${response.locals.html(html`
+                        content: ${JSON.stringify(html`
                           <div
                             css="${response.locals.css(css`
                               padding: var(--space--2);
@@ -2374,7 +2374,7 @@ export default async (application: Application): Promise<void> => {
                                           maxWidth: "none",
                                           content: ${(() => {
                                             const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                            return response.locals.html(html`
+                                            return JSON.stringify(html`
                                               <div
                                                 css="${response.locals.css(css`
                                                   display: flex;
@@ -2509,7 +2509,7 @@ export default async (application: Application): Promise<void> => {
                                         (this.dropdown ??= tippy(this)).setProps({
                                           trigger: "click",
                                           interactive: true,
-                                          content: ${response.locals.html(html`
+                                          content: ${JSON.stringify(html`
                                             <div class="dropdown--menu">
                                               <form
                                                 method="PATCH"
@@ -2609,7 +2609,7 @@ export default async (application: Application): Promise<void> => {
                                     (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${response.locals.html(html`
+                                      content: ${JSON.stringify(html`
                                         <div class="dropdown--menu">
                                           $${application.server.locals.helpers.courseRoles.map(
                                             (courseRole) =>
@@ -2778,8 +2778,7 @@ export default async (application: Application): Promise<void> => {
                                             .javascript(javascript`
                                               (this.tooltip ??= tippy(this)).setProps({
                                                 interactive: true,
-                                                content: ${response.locals
-                                                  .html(html`
+                                                content: ${JSON.stringify(html`
                                                   <div>
                                                     Used
                                                     <time
@@ -2817,8 +2816,7 @@ export default async (application: Application): Promise<void> => {
                                               (this.dropdown ??= tippy(this)).setProps({
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${response.locals
-                                                  .html(html`
+                                                content: ${JSON.stringify(html`
                                                   <div
                                                     css="${response.locals
                                                       .css(css`
@@ -2880,8 +2878,7 @@ export default async (application: Application): Promise<void> => {
                                               (this.dropdown ??= tippy(this)).setProps({
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${response.locals
-                                                  .html(html`
+                                                content: ${JSON.stringify(html`
                                                   <div
                                                     css="${response.locals
                                                       .css(css`
@@ -2929,8 +2926,7 @@ export default async (application: Application): Promise<void> => {
                                               (this.dropdown ??= tippy(this)).setProps({
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${response.locals
-                                                  .html(html`
+                                                content: ${JSON.stringify(html`
                                                   <div
                                                     css="${response.locals
                                                       .css(css`
@@ -4239,7 +4235,7 @@ export default async (application: Application): Promise<void> => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${response.locals.html(html`
+                              content: ${JSON.stringify(html`
                                 <div class="dropdown--menu">
                                   $${application.server.locals.helpers.courseRoles.map(
                                     (courseRole) =>
@@ -4286,8 +4282,7 @@ export default async (application: Application): Promise<void> => {
                                                           trigger: "click",
                                                           interactive: true,
                                                           appendTo: document.querySelector("body"),
-                                                          content: ${response
-                                                            .locals.html(html`
+                                                          content: ${JSON.stringify(html`
                                                             <form
                                                               key="course-role--${courseRole}"
                                                               method="PATCH"
@@ -4406,7 +4401,7 @@ export default async (application: Application): Promise<void> => {
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${response.locals.html(html`
+                                      content: ${JSON.stringify(html`
                                         <form
                                           method="DELETE"
                                           action="${action}"

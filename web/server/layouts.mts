@@ -303,7 +303,7 @@ export default async (application: Application): Promise<void> => {
                       theme: ${JSON.stringify(flash.theme)},
                       arrow: false,
                       interactive: true,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <div
                           css="${response.locals.css(css`
                             padding: var(--space--1) var(--space--2);
@@ -319,7 +319,7 @@ export default async (application: Application): Promise<void> => {
                               (this.tooltip ??= tippy(this)).setProps({
                                 theme: "green",
                                 touch: false,
-                                content: ${response.locals.html(html`
+                                content: ${JSON.stringify(html`
                                   Close
                                   <span class="keyboard-shortcut">
                                     (<span
@@ -419,7 +419,7 @@ export default async (application: Application): Promise<void> => {
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${response.locals.html(html`
+                        content: ${JSON.stringify(html`
                           <div
                             css="${response.locals.css(css`
                               padding: var(--space--2);
@@ -466,7 +466,7 @@ export default async (application: Application): Promise<void> => {
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${response.locals.html(html`
+                        content: ${JSON.stringify(html`
                           <div
                             css="${response.locals.css(css`
                               padding: var(--space--2);
@@ -617,7 +617,7 @@ export default async (application: Application): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       <h3 class="heading">
                         $${application.server.locals.partials.logo({
                           size: 12 /* var(--space--3) */,
@@ -673,7 +673,7 @@ export default async (application: Application): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       <h3 class="heading">
                         <i class="bi bi-bug"></i>
                         Report an Issue
@@ -791,7 +791,7 @@ export default async (application: Application): Promise<void> => {
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <h3 class="heading">
                               <i class="bi bi-arrow-up-circle-fill"></i>
                               <span>
@@ -925,7 +925,6 @@ export default async (application: Application): Promise<void> => {
           ></div>
         </div>
 
-        $${response.locals.html.toString()}
         $${response.locals.javascript.toString()}
       </body>
     `;
@@ -1266,7 +1265,7 @@ export default async (application: Application): Promise<void> => {
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <div
                               css="${response.locals.css(css`
                                 max-height: var(--space--80);
@@ -1381,7 +1380,7 @@ export default async (application: Application): Promise<void> => {
                         (this.dropdown ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <div
                               css="${response.locals.css(css`
                                 max-height: var(--space--80);
@@ -1422,7 +1421,7 @@ export default async (application: Application): Promise<void> => {
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${response.locals.html(html`
+                  content: ${JSON.stringify(html`
                     <div
                       css="${response.locals.css(css`
                         display: flex;
@@ -1555,7 +1554,7 @@ export default async (application: Application): Promise<void> => {
                 (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
-                  content: ${response.locals.html(html`
+                  content: ${JSON.stringify(html`
                     <div
                       css="${response.locals.css(css`
                         display: flex;
@@ -1712,7 +1711,7 @@ export default async (application: Application): Promise<void> => {
                       (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
-                        content: ${response.locals.html(
+                        content: ${JSON.stringify(
                           html`<div class="dropdown--menu">$${menu}</div>`
                         )},
                       });
@@ -1778,8 +1777,7 @@ export default async (application: Application): Promise<void> => {
           $${response.locals.css.toString()}
         </head>
         <body>
-          $${body} $${response.locals.html.toString()}
-          $${response.locals.javascript.toString()}
+          $${body} $${response.locals.javascript.toString()}
         </body>
       </html>
     `;

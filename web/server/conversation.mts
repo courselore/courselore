@@ -2682,7 +2682,7 @@ export default async (application: Application): Promise<void> => {
                         delay: [1000, null],
                         touch: ["hold", 1000],
                         onHidden: () => { this.onmouseleave(); },
-                        content: ${response.locals.html(html`
+                        content: ${JSON.stringify(html`
                           <div
                             key="loading"
                             css="${response.locals.css(css`
@@ -3646,7 +3646,7 @@ export default async (application: Application): Promise<void> => {
                           (this.dropdown ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
-                            content: ${response.locals.html(html`
+                            content: ${JSON.stringify(html`
                               <div
                                 key="participants--dropdown"
                                 css="${response.locals.css(css`
@@ -4310,7 +4310,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <span class="keyboard-shortcut">
                           <span
                             javascript="${response.locals.javascript(javascript`
@@ -4392,7 +4392,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <span class="keyboard-shortcut">
                           <span
                             javascript="${response.locals.javascript(javascript`
@@ -5263,7 +5263,7 @@ export default async (application: Application): Promise<void> => {
                                       (this.dropdown ??= tippy(this)).setProps({
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${response.locals.html(html`
+                                        content: ${JSON.stringify(html`
                                           <div class="dropdown--menu">
                                             $${application.server.locals.helpers.conversationTypes.map(
                                               (conversationType) => html`
@@ -5609,7 +5609,7 @@ export default async (application: Application): Promise<void> => {
                             (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
-                              content: ${response.locals.html(html`
+                              content: ${JSON.stringify(html`
                                 <h3 class="heading">
                                   <i class="bi bi-chat-text-fill"></i>
                                   Conversation
@@ -5778,8 +5778,7 @@ export default async (application: Application): Promise<void> => {
                                                   trigger: "click",
                                                   interactive: true,
                                                   onHidden: () => { this.onmouseleave(); },
-                                                  content: ${response.locals
-                                                    .html(html`
+                                                  content: ${JSON.stringify(html`
                                                     <div
                                                       key="loading"
                                                       css="${response.locals
@@ -5853,8 +5852,7 @@ export default async (application: Application): Promise<void> => {
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${response.locals
-                                                    .html(html`
+                                                  content: ${JSON.stringify(html`
                                                     <form
                                                       method="DELETE"
                                                       action="https://${application
@@ -6003,7 +6001,7 @@ export default async (application: Application): Promise<void> => {
                                   (this.tooltip ??= tippy(this)).setProps({
                                     theme: "rose",
                                     touch: false,
-                                    content: ${response.locals.html(html`
+                                    content: ${JSON.stringify(html`
                                       Cancel
                                       <span class="keyboard-shortcut">
                                         (<span
@@ -6183,7 +6181,7 @@ export default async (application: Application): Promise<void> => {
                                   (this.dropdown ??= tippy(this)).setProps({
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${response.locals.html(html`
+                                    content: ${JSON.stringify(html`
                                       <div
                                         css="${response.locals.css(css`
                                           max-height: var(--space--40);
@@ -6514,7 +6512,7 @@ export default async (application: Application): Promise<void> => {
                                         trigger: "click",
                                         interactive: true,
                                         placement: "bottom",
-                                        content: ${response.locals.html(html`
+                                        content: ${JSON.stringify(html`
                                           <div
                                             key="participants--dropdown"
                                             css="${response.locals.css(css`
@@ -8078,8 +8076,7 @@ export default async (application: Application): Promise<void> => {
                                                   (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                     trigger: "manual",
                                                     interactive: true,
-                                                    content: ${response.locals
-                                                      .html(html`
+                                                    content: ${JSON.stringify(html`
                                                       <div
                                                         class="dropdown--menu"
                                                       >
@@ -8298,9 +8295,7 @@ export default async (application: Application): Promise<void> => {
                                                                   trigger: "click",
                                                                   interactive: true,
                                                                   onHidden: () => { this.onmouseleave(); },
-                                                                  content: ${response
-                                                                    .locals
-                                                                    .html(html`
+                                                                  content: ${JSON.stringify(html`
                                                                     <div
                                                                       key="loading"
                                                                       css="${response
@@ -8390,8 +8385,7 @@ export default async (application: Application): Promise<void> => {
                                                           trigger: "click",
                                                           interactive: true,
                                                           onHidden: () => { this.onmouseleave(); },
-                                                          content: ${response
-                                                            .locals.html(html`
+                                                          content: ${JSON.stringify(html`
                                                             <div
                                                               key="loading"
                                                               css="${response
@@ -8884,7 +8878,7 @@ export default async (application: Application): Promise<void> => {
                             javascript="${response.locals.javascript(javascript`
                               (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
-                                content: ${response.locals.html(html`
+                                content: ${JSON.stringify(html`
                                   Send Message
                                   <span class="keyboard-shortcut">
                                     <span
@@ -9017,7 +9011,7 @@ export default async (application: Application): Promise<void> => {
                       javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <span class="keyboard-shortcut">
                               <span
                                 javascript="${response.locals

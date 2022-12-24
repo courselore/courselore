@@ -385,7 +385,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
-              content: ${response.locals.html(
+              content: ${JSON.stringify(
                 href.startsWith("mailto:")
                   ? html`Send email to
                       <code class="code">${href.slice("mailto:".length)}</code>`
@@ -661,7 +661,7 @@ export default async (application: Application): Promise<void> => {
             response.locals.javascript(javascript`
               (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
-                content: ${response.locals.html(html`
+                content: ${JSON.stringify(html`
                   <div
                     css="${response.locals.css(css`
                       padding: var(--space--2);
@@ -691,7 +691,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.javascript(javascript`
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
-              content: ${response.locals.html(html`
+              content: ${JSON.stringify(html`
                 <div
                   css="${response.locals.css(css`
                     padding: var(--space--2);
@@ -901,7 +901,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${response.locals.javascript(javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
-                      content: ${response.locals.html(html`
+                      content: ${JSON.stringify(html`
                         <span class="keyboard-shortcut">
                           <span
                             javascript="${response.locals.javascript(javascript`
@@ -975,7 +975,7 @@ export default async (application: Application): Promise<void> => {
                   (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       <p>
                         You may style text with
                         <a
@@ -1006,7 +1006,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Heading 1
                       <span class="keyboard-shortcut">
                         (<span
@@ -1044,7 +1044,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Heading 2
                       <span class="keyboard-shortcut">
                         (<span
@@ -1082,7 +1082,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Heading 3
                       <span class="keyboard-shortcut">
                         (<span
@@ -1122,7 +1122,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Bold
                       <span class="keyboard-shortcut">
                         (<span
@@ -1159,7 +1159,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Italic
                       <span class="keyboard-shortcut">
                         (<span
@@ -1196,7 +1196,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Underline
                       <span class="keyboard-shortcut">
                         (<span
@@ -1233,7 +1233,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Strikethrough
                       <span class="keyboard-shortcut">
                         (<span
@@ -1271,7 +1271,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Link
                       <span class="keyboard-shortcut">
                         (<span
@@ -1310,7 +1310,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Bulleted List
                       <span class="keyboard-shortcut">
                         (<span
@@ -1348,7 +1348,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Numbered List
                       <span class="keyboard-shortcut">
                         (<span
@@ -1386,7 +1386,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Checklist
                       <span class="keyboard-shortcut">
                         (<span
@@ -1426,7 +1426,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Quote
                       <span class="keyboard-shortcut">
                         (<span
@@ -1463,7 +1463,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Table
                       <span class="keyboard-shortcut">
                         (<span
@@ -1502,7 +1502,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Disclosure
                       <span class="keyboard-shortcut">
                         (<span
@@ -1540,7 +1540,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Footnote
                       <span class="keyboard-shortcut">
                         (<span
@@ -1580,7 +1580,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Inline Code
                       <span class="keyboard-shortcut">
                         (<span
@@ -1617,7 +1617,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Code Block
                       <span class="keyboard-shortcut">
                         (<span
@@ -1657,7 +1657,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Inline Equation
                       <span class="keyboard-shortcut">
                         (<span
@@ -1695,7 +1695,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Equation Block
                       <span class="keyboard-shortcut">
                         (<span
@@ -1737,7 +1737,7 @@ export default async (application: Application): Promise<void> => {
                       javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             Mention User
                             <span class="keyboard-shortcut">(@)</span>
                           `)},
@@ -1759,7 +1759,7 @@ export default async (application: Application): Promise<void> => {
                       javascript="${response.locals.javascript(javascript`
                         (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             Refer to Conversation or Message
                             <span class="keyboard-shortcut">(#)</span>
                           `)},
@@ -1785,7 +1785,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Image
                       <span class="keyboard-shortcut">
                         (<span
@@ -1823,7 +1823,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Attachment
                       <span class="keyboard-shortcut">
                         (<span
@@ -1911,7 +1911,7 @@ export default async (application: Application): Promise<void> => {
                   (textarea.uploadingIndicator ??= tippy(textarea)).setProps({
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       <div
                         css="${response.locals.css(css`
                           display: flex;
@@ -1943,7 +1943,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${response.locals.javascript(javascript`
                   (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
-                    content: ${response.locals.html(html`
+                    content: ${JSON.stringify(html`
                       Programmer Mode
                       <span class="secondary">(Monospaced Font)</span>
                       <span class="keyboard-shortcut">
@@ -2071,7 +2071,7 @@ export default async (application: Application): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <div
                               css="${response.locals.css(css`
                                 width: var(--space--56);
@@ -2130,7 +2130,7 @@ export default async (application: Application): Promise<void> => {
                           placement: "bottom-start",
                           trigger: "manual",
                           interactive: true,
-                          content: ${response.locals.html(html`
+                          content: ${JSON.stringify(html`
                             <div
                               css="${response.locals.css(css`
                                 width: var(--space--72);
