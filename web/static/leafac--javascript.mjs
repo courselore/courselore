@@ -923,6 +923,19 @@ export function saveFormInputValue(element, identifier) {
   }
 }
 
+export function stringToElement(string) {
+  const parentElement = document.createElement("div");
+  parentElement.innerHTML = string;
+  return parentElement.firstElementChild;
+}
+
+export function evaluate({
+  element = undefined,
+  elements = element.querySelectorAll("script"),
+}) {
+  for (const element of elements) new Function(element.textContent)();
+}
+
 export function ancestors(element) {
   const ancestors = [];
   while (element !== null) {
