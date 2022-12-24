@@ -901,7 +901,7 @@ export default async (application: Application): Promise<void> => {
                     this.querySelector('[key="avatar-chooser--upload"]').upload(event.dataTransfer.files);
                   };
 
-                  this.onbeforemorph = (detail) => !detail.liveUpdate;
+                  this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `)}"
               >
                 <div

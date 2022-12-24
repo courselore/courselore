@@ -451,7 +451,7 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--space--2);
                 `)}"
                 javascript="${response.locals.javascript(javascript`
-                  this.onbeforemorph = (detail) => !detail.liveUpdate;
+                  this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `)}"
               >
                 <div>
