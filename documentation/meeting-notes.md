@@ -1,6 +1,31 @@
 # Meeting Notes
 
 <details>
+<summary>2022-12-24</summary>
+
+- Resumed work on pagination, which is causing performance issues.
+- Started improving the treatment of client JavaScript.
+  - `defer`.
+  - Reuse functions (like we already do for CSS).
+  - `morph` tooltips (which improves things on Live-Updates).
+
+</details>
+
+<details>
+<summary>2022-12-17</summary>
+
+- Introduced WebP for better performance & support for videos and animated GIFs.
+- Converted the “Actions” menu to be lazy-loaded, improving the performance significantly.
+- Highest priority: Feature-parity with other platforms.
+- Are replies to announcements sending notifications to everyone? (Later: No, they aren’t.)
+- We considered an option on follow-ups to announcements that would allow a staff member to force sending notifications to everyone, similar to the announcement itself. Ultimately, we decided against it, because the benefit didn’t seem to compensate the complication in the system. For the time being, you can `@everyone`, since most people don’t change the default settings and receive notifications for `@mentions`.
+- We may hire an intern for the summer.
+- Autocomplete for `@everyone`, `@students`, and `@staff` (just focus on the right option as the person is typing).
+- `@mentions` and `#references` widgets should disappear on `␣`.
+
+</details>
+
+<details>
 <summary>2022-12-12</summary>
 
 - Reuse conversations across semesters.
