@@ -37,7 +37,7 @@
     "@leafac/css": "^0.8.1",
     "@leafac/express-async-handler": "^0.0.3",
     "@leafac/html": "^4.0.0",
-    "@leafac/javascript": "^0.3.4",
+    "@leafac/javascript": "^0.4.0",
     "@leafac/sqlite": "^4.0.0",
     "@sindresorhus/slugify": "^2.1.1",
     "argon2": "^0.30.2",
@@ -71,7 +71,7 @@
     "remark-rehype": "^10.1.0",
     "sanitize-xml-string": "^1.1.0",
     "semver": "^7.3.8",
-    "sharp": "^0.31.2",
+    "sharp": "^0.31.3",
     "shiki": "^0.12.1",
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.1"
@@ -82,7 +82,7 @@
     "autocannon": "^7.10.0",
     "caxa": "^3.0.1",
     "nodemon": "^2.0.20",
-    "npm-check-updates": "^16.6.0",
+    "npm-check-updates": "^16.6.2",
     "prettier": "^2.8.1",
     "shx": "^0.3.4"
   }
