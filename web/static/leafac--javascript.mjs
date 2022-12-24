@@ -166,8 +166,6 @@ export function liveNavigation() {
             .some((element) => element.partialParentElement)
       ),
     });
-
-    document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
   });
 
   document.onclick = async (event) => {
@@ -415,15 +413,6 @@ export function loadPartial(parentElement, partialString) {
   const partialCSS = partialDocument.querySelector(`[key="local-css"]`);
   css.insertAdjacentText("beforeend", partialCSS.textContent);
 
-  const HTMLForJavaScript = document.querySelector(
-    `[key="html-for-javascript"]`
-  );
-  const partialHTMLForJavaScript = partialDocument.querySelector(
-    `[key="html-for-javascript"]`
-  );
-  partialHTMLForJavaScript.remove();
-
-  const javascript_ = document.querySelector(`[key="local-javascript"]`);
   const partialJavaScript = partialDocument.querySelector(
     `[key="local-javascript"]`
   );
@@ -431,23 +420,12 @@ export function loadPartial(parentElement, partialString) {
   const localJavaScript = window.localJavaScript;
   evaluate({ elements: [partialJavaScript] });
   window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
-  javascript_.insertAdjacentText("beforeend", partialJavaScript.textContent);
 
   morph(parentElement, partialDocument.querySelector("body"));
-  morph(HTMLForJavaScript, partialHTMLForJavaScript);
 
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
-
-  javascript({
-    elements: [
-      ...parentElement.querySelectorAll("[javascript]"),
-      ...HTMLForJavaScript.querySelectorAll("[javascript]"),
-    ],
-  });
-
-  document.querySelector('[key="html-for-javascript"]')?.replaceChildren();
-
+  javascript({ element: parentElement });
   parentElement.forceIsConnected = false;
 }
 
