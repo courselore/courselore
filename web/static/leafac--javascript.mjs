@@ -584,12 +584,10 @@ export function javascript({
   event = undefined,
   element = undefined,
   elements = element.querySelectorAll("[javascript]"),
+  localJavaScript = window.localJavaScript,
 }) {
   for (const element of elements)
-    window.localJavaScript[element.getAttribute("javascript")].call(
-      element,
-      event
-    );
+    localJavaScript[element.getAttribute("javascript")].call(element, event);
 }
 
 export function setTippy({
@@ -597,21 +595,20 @@ export function setTippy({
   element,
   elementProperty = "tooltip",
   tippyProps: { content: tippyContent, ...tippyProps },
+  localJavaScript = undefined,
 }) {
   element[elementProperty] ??= tippy(element, {
-    content: document.createRange().createContextualFragment("<div></div>")
-      .firstElementChild,
+    content: stringToElement(`<div></div>`),
   });
   element[elementProperty].setProps(tippyProps);
 
-  const tippyContentElement = document
-    .createRange()
-    .createContextualFragment(tippyContent).firstElementChild;
+  const tippyContentElement = stringToElement(`<div>${tippyContent}</div>`);
   morph(element[elementProperty].props.content, tippyContentElement);
 
   javascript({
     event,
     element: tippyContentElement,
+    localJavaScript,
   });
 }
 

@@ -1700,135 +1700,134 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--transparent button--full-width-on-small-screen"
                   javascript="${response.locals.javascript(javascript`
-                    const newTagPartial = ${JSON.stringify(
-                      html`
-                        <div
-                          key="tag"
-                          css="${response.locals.css(css`
-                            padding-bottom: var(--space--4);
-                            border-bottom: var(--border-width--1) solid
-                              var(--color--gray--medium--200);
-                            @media (prefers-color-scheme: dark) {
-                              border-color: var(--color--gray--medium--700);
-                            }
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: baseline;
-                          `)}"
-                        >
-                          <div class="text--teal">
-                            <i class="bi bi-tag-fill"></i>
-                          </div>
-                          <div
-                            css="${response.locals.css(css`
-                              flex: 1;
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
-                            `)}"
-                          >
-                            <input
-                              type="text"
-                              placeholder=" "
-                              required
-                              autocomplete="off"
-                              disabled
-                              class="input--text"
-                              javascript="${response.locals
-                                .javascript(javascript`
-                                  this.isModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
-                                `)}"
-                            />
-                            <div
-                              css="${response.locals.css(css`
-                                display: flex;
-                                flex-wrap: wrap;
-                                column-gap: var(--space--4);
-                                row-gap: var(--space--2);
-                              `)}"
-                            >
-                              <div
-                                css="${response.locals.css(css`
-                                  width: var(--space--40);
-                                `)}"
-                              >
-                                <label
-                                  class="button button--tight button--tight--inline button--justify-start button--transparent"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    disabled
-                                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
-                                        this.isModified = true;
-                                        this.disabled = false;
-                                        this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
-                                      `)}"
-                                  />
-                                  <span
-                                    javascript="${response.locals
-                                      .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          touch: false,
-                                          content: "Set as Visible by Staff Only",
-                                        });
-                                      `)}"
-                                  >
-                                    <i class="bi bi-eye"></i>
-                                    Visible by Everyone
-                                  </span>
-                                  <span
-                                    class="${textColorsCourseRole.staff}"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          touch: false,
-                                          content: "Set as Visible by Everyone",
-                                        });
-                                      `)}"
-                                  >
-                                    <i class="bi bi-mortarboard-fill"></i>
-                                    Visible by Staff Only
-                                  </span>
-                                </label>
-                              </div>
-                              <button
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
-                                javascript="${response.locals
-                                  .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      theme: "rose",
-                                      touch: false,
-                                      content: "Remove Tag",
-                                    });
-
-                                    this.onclick = () => {
-                                      const tag = this.closest('[key^="tag"]');
-                                      tag.replaceChildren();
-                                      tag.hidden = true;
-                                    };
-                                  `)}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      `
-                    )};
-
                     const localJavaScript = window.localJavaScript;
 
                     this.onclick = () => {
-                      const newTag = document.createRange().createContextualFragment(newTagPartial).firstElementChild;
+                      const newTag = leafac.stringToElement(${JSON.stringify(
+                        html`
+                          <div
+                            key="tag"
+                            css="${response.locals.css(css`
+                              padding-bottom: var(--space--4);
+                              border-bottom: var(--border-width--1) solid
+                                var(--color--gray--medium--200);
+                              @media (prefers-color-scheme: dark) {
+                                border-color: var(--color--gray--medium--700);
+                              }
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: baseline;
+                            `)}"
+                          >
+                            <div class="text--teal">
+                              <i class="bi bi-tag-fill"></i>
+                            </div>
+                            <div
+                              css="${response.locals.css(css`
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <input
+                                type="text"
+                                placeholder=" "
+                                required
+                                autocomplete="off"
+                                disabled
+                                class="input--text"
+                                javascript="${response.locals
+                                  .javascript(javascript`
+                                    this.isModified = true;
+                                    this.disabled = false;
+                                    this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
+                                  `)}"
+                              />
+                              <div
+                                css="${response.locals.css(css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `)}"
+                              >
+                                <div
+                                  css="${response.locals.css(css`
+                                    width: var(--space--40);
+                                  `)}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      disabled
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      javascript="${response.locals
+                                        .javascript(javascript`
+                                          this.isModified = true;
+                                          this.disabled = false;
+                                          this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
+                                        `)}"
+                                    />
+                                    <span
+                                      javascript="${response.locals
+                                        .javascript(javascript`
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            touch: false,
+                                            content: "Set as Visible by Staff Only",
+                                          });
+                                        `)}"
+                                    >
+                                      <i class="bi bi-eye"></i>
+                                      Visible by Everyone
+                                    </span>
+                                    <span
+                                      class="${textColorsCourseRole.staff}"
+                                      javascript="${response.locals
+                                        .javascript(javascript`
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            touch: false,
+                                            content: "Set as Visible by Everyone",
+                                          });
+                                        `)}"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                      Visible by Staff Only
+                                    </span>
+                                  </label>
+                                </div>
+                                <button
+                                  type="button"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        theme: "rose",
+                                        touch: false,
+                                        content: "Remove Tag",
+                                      });
+  
+                                      this.onclick = () => {
+                                        const tag = this.closest('[key^="tag"]');
+                                        tag.replaceChildren();
+                                        tag.hidden = true;
+                                      };
+                                    `)}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        `
+                      )});
                       this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
                       leafac.javascript({
                         event,
                         element: newTag,
+                        localJavaScript,
                       })
                     };
 
