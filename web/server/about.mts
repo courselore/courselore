@@ -107,9 +107,13 @@ export default async (application: Application): Promise<void> => {
                             .canonicalHostname}/sign-up"
                           class="button button--blue"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Sign up on a Courselore installation managed by the developers of Courselore.",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Sign up on a Courselore installation managed by the developers of Courselore.",
+                              },
                             });
                           `)}"
                         >
@@ -121,9 +125,13 @@ export default async (application: Application): Promise<void> => {
                             .canonicalHostname}/sign-in"
                           class="button button--transparent"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Sign in on a Courselore installation managed by the developers of Courselore.",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Sign in on a Courselore installation managed by the developers of Courselore.",
+                              },
                             });
                           `)}"
                         >
