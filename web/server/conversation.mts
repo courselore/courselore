@@ -7459,13 +7459,15 @@ export default async (application: Application): Promise<void> => {
                                                       content: "Actions",
                                                     });
 
-                                                    if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
-                                                      (this.dropdown ??= tippy(this)).setProps({
+                                                    leafac.setTippy({
+                                                      event,
+                                                      element: this,
+                                                      elementProperty: "dropdown",
+                                                      tippyProps: {
                                                         trigger: "click",
                                                         interactive: true,
                                                         onHidden: () => { this.onmouseleave(); },
-                                                        content: ${response
-                                                          .locals.html(html`
+                                                        content: ${JSON.stringify(html`
                                                           <div
                                                             key="loading"
                                                             css="${response
@@ -7490,7 +7492,8 @@ export default async (application: Application): Promise<void> => {
                                                             hidden
                                                           ></div>
                                                         `)},
-                                                      });
+                                                      },
+                                                    });
 
                                                     window.clearTimeout(this.dropdownContentTimeout);
                                                     this.dropdownContentSkipLoading = false;
