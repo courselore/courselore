@@ -122,7 +122,7 @@ export function liveNavigation() {
       )
         window.history.pushState(undefined, "", responseURL.href);
 
-      loadDocument(responseText, detail);
+      loadDocument(responseText, { detail });
 
       if (window.location.hash.trim() !== "")
         document
@@ -330,8 +330,10 @@ export async function liveConnection({
         const bufferPartJSON = JSON.parse(bufferPart);
         if (inLiveNavigation) return;
         loadDocument(bufferPartJSON, {
-          previousLocation: { ...window.location },
-          liveUpdate: true,
+          detail: {
+            previousLocation: { ...window.location },
+            liveUpdate: true,
+          },
         });
       }
     } catch (error) {
@@ -367,7 +369,7 @@ export async function liveConnection({
   }
 }
 
-export function loadDocument(documentString, detail) {
+export function loadDocument(documentString, event) {
   const newDocument = new DOMParser().parseFromString(
     documentString,
     "text/html"
@@ -378,24 +380,29 @@ export function loadDocument(documentString, detail) {
 
   const css = document.querySelector(`[key="local-css"]`);
   const newCSS = newDocument.querySelector(`[key="local-css"]`);
-  if (detail.liveUpdate)
+  if (event?.detail?.liveUpdate)
     css.insertAdjacentText("beforeend", newCSS.textContent);
   else css.textContent = newCSS.textContent;
 
-  if (!detail.liveUpdate) tippyStatic.hideAll();
+  if (!event?.detail?.liveUpdate) tippyStatic.hideAll();
 
-  morph(document.querySelector("body"), newDocument.querySelector("body"), {
-    detail,
-  });
+  morph(
+    document.querySelector("body"),
+    newDocument.querySelector("body"),
+    event
+  );
 
   const localJavaScript = window.localJavaScript;
   evaluate({ elements: [document.querySelector('[key="local-javascript"]')] });
-  if (detail.liveUpdate)
+  if (event?.detail?.liveUpdate)
     window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
 
-  window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
+  window.dispatchEvent(
+    new CustomEvent("DOMContentLoaded", { detail: event?.detail })
+  );
 
-  if (!detail.liveUpdate) document.querySelector("[autofocus]")?.focus();
+  if (!event?.detail?.liveUpdate)
+    document.querySelector("[autofocus]")?.focus();
 }
 
 export function loadPartial(parentElement, partialString) {
