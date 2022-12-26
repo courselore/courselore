@@ -188,9 +188,13 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="menu-box--item button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                        },
                       });
                     `)}"
                   >
@@ -1510,9 +1514,13 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Visible by Staff Only",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Visible by Staff Only",
+                                      },
                                     });
                                   `)}"
                               >
@@ -1523,9 +1531,13 @@ export default async (application: Application): Promise<void> => {
                                 class="${textColorsCourseRole.staff}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Visible by Everyone",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Visible by Everyone",
+                                      },
                                     });
                                   `)}"
                               >
@@ -1546,71 +1558,80 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "Remove Tag",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    },
                                   });
 
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${JSON.stringify(html`
-                                      <div
-                                        css="${response.locals.css(css`
-                                          padding: var(--space--2)
-                                            var(--space--0);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `)}"
-                                      >
-                                        <p>
-                                          Are you sure you want to remove this
-                                          tag?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            css="${response.locals.css(css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `)}"
-                                          >
-                                            The tag will be removed from all
-                                            conversations and you may not undo
-                                            this action!
-                                          </strong>
-                                        </p>
-                                        <button
-                                          type="button"
-                                          class="button button--rose"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              this.onclick = () => {
-                                                const tag = this.closest('[key^="tag/"]');
-                                                tag.classList.add("deleted");
-                                                const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                                tagIconClassList.remove("text--teal");
-                                                tagIconClassList.add("text--rose");
-                                                tag.querySelector('[name$="[delete]"]').disabled = false;
-                                                for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                                  element.disabled = true;
-                                                  const button = element.closest(".button");
-                                                  if (button === null) continue;
-                                                  button.classList.add("disabled");
-                                                  for (const element of button.querySelectorAll("*"))
-                                                    if (element.tooltip !== undefined) element.tooltip.disable();
-                                                }
-                                              };
-                                            `)}"
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    elementProperty: "dropdown",
+                                    tippyProps: {
+                                      theme: "rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${JSON.stringify(html`
+                                        <div
+                                          css="${response.locals.css(css`
+                                            padding: var(--space--2)
+                                              var(--space--0);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `)}"
                                         >
-                                          <i class="bi bi-trash-fill"></i>
-                                          Remove Tag
-                                        </button>
-                                      </div>
-                                    `)},
+                                          <p>
+                                            Are you sure you want to remove this
+                                            tag?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              css="${response.locals.css(css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `)}"
+                                            >
+                                              The tag will be removed from all
+                                              conversations and you may not undo
+                                              this action!
+                                            </strong>
+                                          </p>
+                                          <button
+                                            type="button"
+                                            class="button button--rose"
+                                            javascript="${response.locals
+                                              .javascript(javascript`
+                                                this.onclick = () => {
+                                                  const tag = this.closest('[key^="tag/"]');
+                                                  tag.classList.add("deleted");
+                                                  const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                                  tagIconClassList.remove("text--teal");
+                                                  tagIconClassList.add("text--rose");
+                                                  tag.querySelector('[name$="[delete]"]').disabled = false;
+                                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                                    element.disabled = true;
+                                                    const button = element.closest(".button");
+                                                    if (button === null) continue;
+                                                    button.classList.add("disabled");
+                                                    for (const element of button.querySelectorAll("*"))
+                                                      if (element.tooltip !== undefined) element.tooltip.disable();
+                                                  }
+                                                };
+                                              `)}"
+                                          >
+                                            <i class="bi bi-trash-fill"></i>
+                                            Remove Tag
+                                          </button>
+                                        </div>
+                                      `)},  
+                                    },
                                   });
                                 `)}"
                             >
@@ -1629,11 +1650,15 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Don’t Remove Tag",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Don’t Remove Tag",
+                                    },
                                   });
-                                      
+
                                   this.onclick = () => {
                                     const tag = this.closest('[key^="tag/"]');
                                     tag.classList.remove("deleted");
@@ -1674,9 +1699,13 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--tight button--tight--inline button--transparent"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "See Conversations with This Tag",
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "See Conversations with This Tag",
+                                        },
                                       });
                                     `)}"
                                 >
@@ -1774,9 +1803,13 @@ export default async (application: Application): Promise<void> => {
                                     <span
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Set as Visible by Staff Only",
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            tippyProps: {
+                                              touch: false,
+                                              content: "Set as Visible by Staff Only",
+                                            },
                                           });
                                         `)}"
                                     >
@@ -1787,9 +1820,13 @@ export default async (application: Application): Promise<void> => {
                                       class="${textColorsCourseRole.staff}"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Set as Visible by Everyone",
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            tippyProps: {
+                                              touch: false,
+                                              content: "Set as Visible by Everyone",
+                                            },
                                           });
                                         `)}"
                                     >
@@ -1803,10 +1840,14 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--tight button--tight--inline button--transparent"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        theme: "rose",
-                                        touch: false,
-                                        content: "Remove Tag",
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          theme: "rose",
+                                          touch: false,
+                                          content: "Remove Tag",
+                                        },
                                       });
   
                                       this.onclick = () => {
@@ -2089,29 +2130,33 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: ${JSON.stringify(html`
-                          <div
-                            css="${response.locals.css(css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
-                            `)}"
-                          >
-                            <p>
-                              Emails must be separated by commas and/or
-                              newlines, and may include names which may be
-                              quoted or not, for example:
-                            </p>
-                            <pre class="pre"><code>${dedent`
-                              "Scott" <scott@courselore.org>,
-                              Ali <ali@courselore.org>
-                              leandro@courselore.org
-                            `}</code></pre>
-                          </div>
-                        `)},
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: ${JSON.stringify(html`
+                            <div
+                              css="${response.locals.css(css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <p>
+                                Emails must be separated by commas and/or
+                                newlines, and may include names which may be
+                                quoted or not, for example:
+                              </p>
+                              <pre class="pre"><code>${dedent`
+                                "Scott" <scott@courselore.org>,
+                                Ali <ali@courselore.org>
+                                leandro@courselore.org
+                              `}</code></pre>
+                            </div>
+                          `)},  
+                        },
                       });
                     `)}"
                   >
@@ -2214,9 +2259,13 @@ export default async (application: Application): Promise<void> => {
                     />
                     <span
                       javascript="${response.locals.javascript(javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          touch: false,
-                          content: "Set as Expiring",
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "Set as Expiring",
+                          },
                         });
                       `)}"
                     >
@@ -2226,9 +2275,13 @@ export default async (application: Application): Promise<void> => {
                     <span
                       class="text--amber"
                       javascript="${response.locals.javascript(javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          touch: false,
-                          content: "Set as Not Expiring",
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "Set as Not Expiring",
+                          },
                         });
                       `)}"
                     >
@@ -2246,9 +2299,13 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                        },
                       });
                     `)}"
                   >
@@ -2325,9 +2382,13 @@ export default async (application: Application): Promise<void> => {
                                 <span
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Invitation Link",
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Invitation Link",
+                                        },
                                       });
                                     `)}"
                                 >
@@ -2338,9 +2399,13 @@ export default async (application: Application): Promise<void> => {
                                 <span
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Invitation Email",
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Invitation Email",
+                                        },
                                       });
                                     `)}"
                                 >
@@ -2363,126 +2428,146 @@ export default async (application: Application): Promise<void> => {
                                     class="button--see-invitation-link button button--tight button--tight--inline button--transparent strong"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          touch: false,
-                                          content: "See Invitation Link",
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            touch: false,
+                                            content: "See Invitation Link",
+                                          },
                                         });
 
-                                        (this.dropdown ??= tippy(this)).setProps({
-                                          trigger: "click",
-                                          interactive: true,
-                                          maxWidth: "none",
-                                          content: ${(() => {
-                                            const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                            return JSON.stringify(html`
-                                              <div
-                                                css="${response.locals.css(css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `)}"
-                                              >
-                                                $${isInvitationExpired
-                                                  ? html`
-                                                      <p
-                                                        class="text--rose"
-                                                        css="${response.locals
-                                                          .css(css`
-                                                          display: flex;
-                                                          gap: var(--space--2);
-                                                          justify-content: center;
-                                                        `)}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-calendar-x-fill"
-                                                        ></i>
-                                                        Expired
-                                                      </p>
-                                                    `
-                                                  : html``}
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          elementProperty: "dropdown",
+                                          tippyProps: {
+                                            trigger: "click",
+                                            interactive: true,
+                                            maxWidth: "none",
+                                            content: ${(() => {
+                                              const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
+                                              return JSON.stringify(html`
                                                 <div
                                                   css="${response.locals
                                                     .css(css`
                                                     display: flex;
+                                                    flex-direction: column;
                                                     gap: var(--space--2);
-                                                    align-items: center;
                                                   `)}"
                                                 >
-                                                  <input
-                                                    type="text"
-                                                    readonly
-                                                    value="${link}"
-                                                    class="input--text"
+                                                  $${isInvitationExpired
+                                                    ? html`
+                                                        <p
+                                                          class="text--rose"
+                                                          css="${response.locals
+                                                            .css(css`
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                            justify-content: center;
+                                                          `)}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-calendar-x-fill"
+                                                          ></i>
+                                                          Expired
+                                                        </p>
+                                                      `
+                                                    : html``}
+                                                  <div
                                                     css="${response.locals
                                                       .css(css`
-                                                      flex: 1;
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                      align-items: center;
                                                     `)}"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        this.onfocus = () => {
-                                                          this.select();
-                                                        };
-                                                      `)}"
-                                                  />
-                                                  <button
-                                                    class="button button--tight button--transparent"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          touch: false,
-                                                          content: "Copy Link",
-                                                        });
-
-                                                        this.onclick = async () => {
-                                                          await navigator.clipboard.writeText(${JSON.stringify(
-                                                            link
-                                                          )});
-                                                          const stickies = this.querySelector('[key="stickies"]');
-                                                          const check = this.querySelector('[key="check"]');
-                                                          stickies.hidden = true;
-                                                          check.hidden = false;
-                                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                          stickies.hidden = false;
-                                                          check.hidden = true;
-                                                        };
-                                                      `)}"
                                                   >
-                                                    <span key="stickies">
-                                                      <i
-                                                        class="bi bi-stickies"
-                                                      ></i>
-                                                    </span>
-                                                    <span
-                                                      key="check"
-                                                      hidden
-                                                      class="text--green"
-                                                    >
-                                                      <i
-                                                        class="bi bi-check-lg"
-                                                      ></i>
-                                                    </span>
-                                                  </button>
-                                                  <a
-                                                    href="${link}"
-                                                    class="button button--tight button--transparent"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          touch: false,
-                                                          content: "See QR Code for Link",
-                                                        });
+                                                    <input
+                                                      type="text"
+                                                      readonly
+                                                      value="${link}"
+                                                      class="input--text"
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        flex: 1;
                                                       `)}"
-                                                    ><i
-                                                      class="bi bi-qr-code"
-                                                    ></i
-                                                  ></a>
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          this.onfocus = () => {
+                                                            this.select();
+                                                          };
+                                                        `)}"
+                                                    />
+                                                    <button
+                                                      class="button button--tight button--transparent"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.setTippy({
+                                                            event,
+                                                            element: this,
+                                                            tippyProps: {
+                                                              touch: false,
+                                                              content: "Copy Link",
+                                                            },
+                                                          });
+  
+                                                          this.onclick = async () => {
+                                                            await navigator.clipboard.writeText(${JSON.stringify(
+                                                              link
+                                                            )});
+                                                            const stickies = this.querySelector('[key="stickies"]');
+                                                            const check = this.querySelector('[key="check"]');
+                                                            stickies.hidden = true;
+                                                            check.hidden = false;
+                                                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                            stickies.hidden = false;
+                                                            check.hidden = true;
+                                                          };
+                                                        `)}"
+                                                    >
+                                                      <span key="stickies">
+                                                        <i
+                                                          class="bi bi-stickies"
+                                                        ></i>
+                                                      </span>
+                                                      <span
+                                                        key="check"
+                                                        hidden
+                                                        class="text--green"
+                                                      >
+                                                        <i
+                                                          class="bi bi-check-lg"
+                                                        ></i>
+                                                      </span>
+                                                    </button>
+                                                    <a
+                                                      href="${link}"
+                                                      class="button button--tight button--transparent"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.setTippy({
+                                                            event,
+                                                            element: this,
+                                                            tippyProps: {
+                                                              touch: false,
+                                                              content: "See QR Code for Link",
+                                                            },
+                                                          });
+                                                        `)}"
+                                                      ><i
+                                                        class="bi bi-qr-code"
+                                                      ></i
+                                                    ></a>
+                                                  </div>
                                                 </div>
-                                              </div>
-                                            `);
-                                          })()},
+                                              `);
+                                            })()},
+                                          },
                                         });
                                       `)}"
                                   >
@@ -2506,56 +2591,71 @@ export default async (application: Application): Promise<void> => {
                                     `)}"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                        (this.dropdown ??= tippy(this)).setProps({
-                                          trigger: "click",
-                                          interactive: true,
-                                          content: ${JSON.stringify(html`
-                                            <div class="dropdown--menu">
-                                              <form
-                                                method="PATCH"
-                                                action="${action}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="resend"
-                                                  value="true"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                  $${isUsed
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not resend this invitation because it’s used.",
-                                                            });
-                                                          `)}"
-                                                      `
-                                                    : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not resend this invitation because it’s expired.",
-                                                            });
-                                                          `)}"
-                                                      `
-                                                    : html``}
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          elementProperty: "dropdown",
+                                          tippyProps: {
+                                            trigger: "click",
+                                            interactive: true,
+                                            content: ${JSON.stringify(html`
+                                              <div class="dropdown--menu">
+                                                <form
+                                                  method="PATCH"
+                                                  action="${action}"
                                                 >
-                                                  <i class="bi bi-envelope"></i>
-                                                  Resend Invitation Email
-                                                </button>
-                                              </form>
-                                            </div>
-                                          `)},
+                                                  <input
+                                                    type="hidden"
+                                                    name="resend"
+                                                    value="true"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                    $${isUsed
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                tippyProps: {
+                                                                  theme: "rose",
+                                                                  trigger: "click",
+                                                                  content: "You may not resend this invitation because it’s used.",
+                                                                },
+                                                              });
+                                                            `)}"
+                                                        `
+                                                      : isInvitationExpired
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${response
+                                                            .locals
+                                                            .javascript(javascript`
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                tippyProps: {
+                                                                  theme: "rose",
+                                                                  trigger: "click",
+                                                                  content: "You may not resend this invitation because it’s expired.",
+                                                                },
+                                                              });
+                                                            `)}"
+                                                        `
+                                                      : html``}
+                                                  >
+                                                    <i
+                                                      class="bi bi-envelope"
+                                                    ></i>
+                                                    Resend Invitation Email
+                                                  </button>
+                                                </form>
+                                              </div>
+                                            `)},  
+                                          },
                                         });
                                       `)}"
                                   >
@@ -2601,80 +2701,97 @@ export default async (application: Application): Promise<void> => {
                                 ]}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Update Course Role",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Update Course Role",
+                                      },
                                     });
 
-                                    (this.dropdown ??= tippy(this)).setProps({
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${JSON.stringify(html`
-                                        <div class="dropdown--menu">
-                                          $${application.server.locals.helpers.courseRoles.map(
-                                            (courseRole) =>
-                                              html`
-                                                <form
-                                                  key="course-role--${courseRole}"
-                                                  method="PATCH"
-                                                  action="${action}"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="courseRole"
-                                                    value="${courseRole}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button ${courseRole ===
-                                                    invitation.courseRole
-                                                      ? "button--blue"
-                                                      : "button--transparent"} ${textColorsCourseRole[
-                                                      courseRole
-                                                    ]}"
-                                                    $${isUsed
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                theme: "rose",
-                                                                trigger: "click",
-                                                                content: "You may not update the course role of this invitation because it’s used.",
-                                                              });
-                                                            `)}"
-                                                        `
-                                                      : isInvitationExpired
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                theme: "rose",
-                                                                trigger: "click",
-                                                                content: "You may not update the course role of this invitation because it’s expired.",
-                                                              });
-                                                            `)}"
-                                                        `
-                                                      : html``}
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      elementProperty: "dropdown",
+                                      tippyProps: {
+                                        trigger: "click",
+                                        interactive: true,
+                                        content: ${JSON.stringify(html`
+                                          <div class="dropdown--menu">
+                                            $${application.server.locals.helpers.courseRoles.map(
+                                              (courseRole) =>
+                                                html`
+                                                  <form
+                                                    key="course-role--${courseRole}"
+                                                    method="PATCH"
+                                                    action="${action}"
                                                   >
-                                                    $${iconsCourseRole[
-                                                      courseRole
-                                                    ][
-                                                      courseRole === "staff"
-                                                        ? "fill"
-                                                        : "regular"
-                                                    ]}
-                                                    ${lodash.capitalize(
-                                                      courseRole
-                                                    )}
-                                                  </button>
-                                                </form>
-                                              `
-                                          )}
-                                        </div>
-                                      `)},
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseRole"
+                                                      value="${courseRole}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button ${courseRole ===
+                                                      invitation.courseRole
+                                                        ? "button--blue"
+                                                        : "button--transparent"} ${textColorsCourseRole[
+                                                        courseRole
+                                                      ]}"
+                                                      $${isUsed
+                                                        ? html`
+                                                            type="button"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                leafac.setTippy({
+                                                                  event,
+                                                                  element: this,
+                                                                  tippyProps: {
+                                                                    theme: "rose",
+                                                                    trigger: "click",
+                                                                    content: "You may not update the course role of this invitation because it’s used.",
+                                                                  },
+                                                                });
+                                                              `)}"
+                                                          `
+                                                        : isInvitationExpired
+                                                        ? html`
+                                                            type="button"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                leafac.setTippy({
+                                                                  event,
+                                                                  element: this,
+                                                                  tippyProps: {
+                                                                    theme: "rose",
+                                                                    trigger: "click",
+                                                                    content: "You may not update the course role of this invitation because it’s expired.",
+                                                                  },
+                                                                });
+                                                              `)}"
+                                                          `
+                                                        : html``}
+                                                    >
+                                                      $${iconsCourseRole[
+                                                        courseRole
+                                                      ][
+                                                        courseRole === "staff"
+                                                          ? "fill"
+                                                          : "regular"
+                                                      ]}
+                                                      ${lodash.capitalize(
+                                                        courseRole
+                                                      )}
+                                                    </button>
+                                                  </form>
+                                                `
+                                            )}
+                                          </div>
+                                        `)},  
+                                      },
                                     });
                                   `)}"
                               >
@@ -2776,23 +2893,27 @@ export default async (application: Application): Promise<void> => {
                                           `)}"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                interactive: true,
-                                                content: ${JSON.stringify(html`
-                                                  <div>
-                                                    Used
-                                                    <time
-                                                      datetime="${new Date(
-                                                        invitation.usedAt!
-                                                      ).toISOString()}"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                        `)}"
-                                                    ></time>
-                                                  </div>
-                                                `)},
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  interactive: true,
+                                                  content: ${JSON.stringify(html`
+                                                    <div>
+                                                      Used
+                                                      <time
+                                                        datetime="${new Date(
+                                                          invitation.usedAt!
+                                                        ).toISOString()}"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                          `)}"
+                                                      ></time>
+                                                    </div>
+                                                  `)},
+                                                },
                                               });
                                             `)}"
                                         >
@@ -2808,52 +2929,65 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--rose"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "Update Expiration",
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  touch: false,
+                                                  content: "Update Expiration",
+                                                },
                                               });
-                                                                                      
-                                              (this.dropdown ??= tippy(this)).setProps({
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${JSON.stringify(html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-x-fill"
-                                                      ></i>
-                                                      <span>
-                                                        Expired
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt!
-                                                          ).toISOString()}"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                            `)}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
+
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                elementProperty: "dropdown",
+                                                tippyProps: {
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                  content: ${JSON.stringify(html`
+                                                    <div
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `)}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-x-fill"
+                                                        ></i>
+                                                        <span>
+                                                          Expired
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt!
+                                                            ).toISOString()}"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                              `)}"
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${updateExpirationForm}
+                                                      </div>
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${removeExpirationForm}
+                                                      </div>
                                                     </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${removeExpirationForm}
-                                                    </div>
-                                                  </div>
-                                                `)},
+                                                  `)},  
+                                                },
                                               });
                                             `)}"
                                         >
@@ -2870,37 +3004,50 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--blue"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "Update Expiration",
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  touch: false,
+                                                  content: "Update Expiration",
+                                                },
                                               });
-                                                                                      
-                                              (this.dropdown ??= tippy(this)).setProps({
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${JSON.stringify(html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      padding-top: var(
-                                                        --space--2
-                                                      );
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
+
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                elementProperty: "dropdown",
+                                                tippyProps: {
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                  content: ${JSON.stringify(html`
+                                                    <div
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        padding-top: var(
+                                                          --space--2
+                                                        );
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `)}"
+                                                    >
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${updateExpirationForm}
+                                                      </div>
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${expireForm}
+                                                      </div>
                                                     </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${expireForm}
-                                                    </div>
-                                                  </div>
-                                                `)},
+                                                  `)},  
+                                                },
                                               });
                                             `)}"
                                         >
@@ -2918,53 +3065,66 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--tight button--tight--inline button--transparent text--amber"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "Update Expiration",
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  touch: false,
+                                                  content: "Update Expiration",
+                                                },
                                               });
-                                              
-                                              (this.dropdown ??= tippy(this)).setProps({
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${JSON.stringify(html`
-                                                  <div
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `)}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-plus-fill"
-                                                      ></i>
-                                                      <span>
-                                                        Expires
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt
-                                                          ).toISOString()}"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                            `)}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    <div class="dropdown--menu">
-                                                      $${updateExpirationForm}
+
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                elementProperty: "dropdown",
+                                                tippyProps: {
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                  content: ${JSON.stringify(html`
+                                                    <div
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `)}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-plus-fill"
+                                                        ></i>
+                                                        <span>
+                                                          Expires
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt
+                                                            ).toISOString()}"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                              `)}"
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${updateExpirationForm}
+                                                      </div>
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        $${removeExpirationForm}
+                                                        $${expireForm}
+                                                      </div>
                                                     </div>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    <div class="dropdown--menu">
-                                                      $${removeExpirationForm}
-                                                      $${expireForm}
-                                                    </div>
-                                                  </div>
-                                                `)},
+                                                  `)},  
+                                                },
                                               });
                                             `)}"
                                         >
@@ -3798,9 +3958,13 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Copy Link",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Copy Link",
+                                    },
                                   });
 
                                   this.onclick = async () => {
@@ -4164,15 +4328,25 @@ export default async (application: Application): Promise<void> => {
                             display: inline-flex;
                           `)}"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Copy Email",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Copy Email",
+                              },
                             });
 
-                            (this.copied ??= tippy(this)).setProps({
-                              theme: "green",
-                              trigger: "manual",
-                              content: "Copied",
+
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              elementProperty: "copied",
+                              tippyProps: {
+                                theme: "green",
+                                trigger: "manual",
+                                content: "Copied",
+                              },
                             });
 
                             this.onclick = async () => {
@@ -4227,137 +4401,159 @@ export default async (application: Application): Promise<void> => {
                             enrollment.courseRole
                           ]}"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Update Course Role",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Update Course Role",
+                              },
                             });
-                            
-                            (this.dropdown ??= tippy(this)).setProps({
-                              trigger: "click",
-                              interactive: true,
-                              content: ${JSON.stringify(html`
-                                <div class="dropdown--menu">
-                                  $${application.server.locals.helpers.courseRoles.map(
-                                    (courseRole) =>
-                                      html`
-                                        <form
-                                          key="course-role--${courseRole}"
-                                          method="PATCH"
-                                          action="${action}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseRole"
-                                            value="${courseRole}"
-                                          />
-                                          <div>
-                                            <button
-                                              class="dropdown--menu--item button ${courseRole ===
-                                              enrollment.courseRole
-                                                ? "button--blue"
-                                                : "button--transparent"} ${textColorsCourseRole[
-                                                courseRole
-                                              ]}"
-                                              $${isOnlyStaff
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                          content: "You may not update your own course role because you’re the only staff member.",
-                                                        });
-                                                      `)}"
-                                                  `
-                                                : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        (this.dropdown ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                          interactive: true,
-                                                          appendTo: document.querySelector("body"),
-                                                          content: ${JSON.stringify(html`
-                                                            <form
-                                                              key="course-role--${courseRole}"
-                                                              method="PATCH"
-                                                              action="${action}"
-                                                              css="${response
-                                                                .locals.css(css`
-                                                                padding: var(
-                                                                  --space--2
-                                                                );
-                                                                display: flex;
-                                                                flex-direction: column;
-                                                                gap: var(
-                                                                  --space--4
-                                                                );
-                                                              `)}"
-                                                            >
-                                                              <input
-                                                                type="hidden"
-                                                                name="courseRole"
-                                                                value="${courseRole}"
-                                                              />
-                                                              <p>
-                                                                Are you sure you
-                                                                want to update
-                                                                your own course
-                                                                role to
-                                                                ${courseRole}?
-                                                              </p>
-                                                              <p>
-                                                                <strong
+
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              elementProperty: "dropdown",
+                              tippyProps: {
+                                trigger: "click",
+                                interactive: true,
+                                content: ${JSON.stringify(html`
+                                  <div class="dropdown--menu">
+                                    $${application.server.locals.helpers.courseRoles.map(
+                                      (courseRole) =>
+                                        html`
+                                          <form
+                                            key="course-role--${courseRole}"
+                                            method="PATCH"
+                                            action="${action}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="courseRole"
+                                              value="${courseRole}"
+                                            />
+                                            <div>
+                                              <button
+                                                class="dropdown--menu--item button ${courseRole ===
+                                                enrollment.courseRole
+                                                  ? "button--blue"
+                                                  : "button--transparent"} ${textColorsCourseRole[
+                                                  courseRole
+                                                ]}"
+                                                $${isOnlyStaff
+                                                  ? html`
+                                                      type="button"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.setTippy({
+                                                            event,
+                                                            element: this,
+                                                            tippyProps: {
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              content: "You may not update your own course role because you’re the only staff member.",
+                                                            },
+                                                          });
+                                                        `)}"
+                                                    `
+                                                  : isSelf
+                                                  ? html`
+                                                      type="button"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.setTippy({
+                                                            event,
+                                                            element: this,
+                                                            elementProperty: "dropdown",
+                                                            tippyProps: {
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              interactive: true,
+                                                              appendTo: document.querySelector("body"),
+                                                              content: ${JSON.stringify(html`
+                                                                <form
+                                                                  key="course-role--${courseRole}"
+                                                                  method="PATCH"
+                                                                  action="${action}"
                                                                   css="${response
                                                                     .locals
                                                                     .css(css`
-                                                                    font-weight: var(
-                                                                      --font-weight--bold
+                                                                    padding: var(
+                                                                      --space--2
+                                                                    );
+                                                                    display: flex;
+                                                                    flex-direction: column;
+                                                                    gap: var(
+                                                                      --space--4
                                                                     );
                                                                   `)}"
                                                                 >
-                                                                  You may not
-                                                                  undo this
-                                                                  action!
-                                                                </strong>
-                                                              </p>
-                                                              <button
-                                                                class="button button--rose"
-                                                              >
-                                                                <i
-                                                                  class="bi bi-pencil-fill"
-                                                                ></i>
-                                                                Update My Own
-                                                                Course Role to
-                                                                ${lodash.capitalize(
-                                                                  courseRole
-                                                                )}
-                                                              </button>
-                                                            </form>
-                                                          `)},
-                                                        });
-                                                      `)}"
-                                                  `
-                                                : html``}
-                                            >
-                                              $${iconsCourseRole[courseRole][
-                                                courseRole === "staff"
-                                                  ? "fill"
-                                                  : "regular"
-                                              ]}
-                                              ${lodash.capitalize(courseRole)}
-                                            </button>
-                                          </div>
-                                        </form>
-                                      `
-                                  )}
-                                </div>
-                              `)},
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="courseRole"
+                                                                    value="${courseRole}"
+                                                                  />
+                                                                  <p>
+                                                                    Are you sure
+                                                                    you want to
+                                                                    update your
+                                                                    own course
+                                                                    role to
+                                                                    ${courseRole}?
+                                                                  </p>
+                                                                  <p>
+                                                                    <strong
+                                                                      css="${response
+                                                                        .locals
+                                                                        .css(css`
+                                                                        font-weight: var(
+                                                                          --font-weight--bold
+                                                                        );
+                                                                      `)}"
+                                                                    >
+                                                                      You may
+                                                                      not undo
+                                                                      this
+                                                                      action!
+                                                                    </strong>
+                                                                  </p>
+                                                                  <button
+                                                                    class="button button--rose"
+                                                                  >
+                                                                    <i
+                                                                      class="bi bi-pencil-fill"
+                                                                    ></i>
+                                                                    Update My
+                                                                    Own Course
+                                                                    Role to
+                                                                    ${lodash.capitalize(
+                                                                      courseRole
+                                                                    )}
+                                                                  </button>
+                                                                </form>
+                                                              `)},  
+                                                            },
+                                                          });
+                                                        `)}"
+                                                    `
+                                                  : html``}
+                                              >
+                                                $${iconsCourseRole[courseRole][
+                                                  courseRole === "staff"
+                                                    ? "fill"
+                                                    : "regular"
+                                                ]}
+                                                ${lodash.capitalize(courseRole)}
+                                              </button>
+                                            </div>
+                                          </form>
+                                        `
+                                    )}
+                                  </div>
+                                `)},  
+                              },
                             });
                           `)}"
                         >
@@ -4381,64 +4577,78 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="button button--tight button--tight--inline button--transparent"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              theme: "rose",
-                              touch: false,
-                              content: "Remove from the Course",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                theme: "rose",
+                                touch: false,
+                                content: "Remove from the Course",
+                              },
                             });
 
                             ${
                               isOnlyStaff
                                 ? javascript`
-                                    (this.dropdown ??= tippy(this)).setProps({
-                                      theme: "rose",
-                                      trigger: "click",
-                                      content: "You may not remove yourself from the course because you’re the only staff member.",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      elementProperty: "dropdown",
+                                      tippyProps: {
+                                        theme: "rose",
+                                        trigger: "click",
+                                        content: "You may not remove yourself from the course because you’re the only staff member.",
+                                      },
                                     });
                                   `
                                 : javascript`
-                                    (this.dropdown ??= tippy(this)).setProps({
-                                      theme: "rose",
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${JSON.stringify(html`
-                                        <form
-                                          method="DELETE"
-                                          action="${action}"
-                                          css="${response.locals.css(css`
-                                            padding: var(--space--2);
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--4);
-                                          `)}"
-                                        >
-                                          <p>
-                                            Are you sure you want to remove
-                                            ${isSelf
-                                              ? "yourself"
-                                              : "this person"}
-                                            from the course?
-                                          </p>
-                                          <p>
-                                            <strong
-                                              css="${response.locals.css(css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                              `)}"
-                                            >
-                                              You may not undo this action!
-                                            </strong>
-                                          </p>
-                                          <button class="button button--rose">
-                                            <i
-                                              class="bi bi-person-dash-fill"
-                                            ></i>
-                                            Remove ${isSelf ? "Myself" : ""}
-                                            from the Course
-                                          </button>
-                                        </form>
-                                      `)},
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      elementProperty: "dropdown",
+                                      tippyProps: {
+                                        theme: "rose",
+                                        trigger: "click",
+                                        interactive: true,
+                                        content: ${JSON.stringify(html`
+                                          <form
+                                            method="DELETE"
+                                            action="${action}"
+                                            css="${response.locals.css(css`
+                                              padding: var(--space--2);
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--4);
+                                            `)}"
+                                          >
+                                            <p>
+                                              Are you sure you want to remove
+                                              ${isSelf
+                                                ? "yourself"
+                                                : "this person"}
+                                              from the course?
+                                            </p>
+                                            <p>
+                                              <strong
+                                                css="${response.locals.css(css`
+                                                  font-weight: var(
+                                                    --font-weight--bold
+                                                  );
+                                                `)}"
+                                              >
+                                                You may not undo this action!
+                                              </strong>
+                                            </p>
+                                            <button class="button button--rose">
+                                              <i
+                                                class="bi bi-person-dash-fill"
+                                              ></i>
+                                              Remove ${isSelf ? "Myself" : ""}
+                                              from the Course
+                                            </button>
+                                          </form>
+                                        `)},  
+                                      },
                                     });
                                   `
                             }
@@ -4669,9 +4879,13 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
+                        },
                       });
                     `)}"
                   >

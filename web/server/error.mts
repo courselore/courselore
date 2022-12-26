@@ -119,9 +119,13 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        trigger: "click",
-                        content: "You must confirm your email because this is an important operation that affects your account.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "You must confirm your email because this is an important operation that affects your account.",
+                        },
                       });
                     `)}"
                   >

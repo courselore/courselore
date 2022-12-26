@@ -296,62 +296,72 @@ export default async (application: Application): Promise<void> => {
                 : javascript`
                     const body = document.querySelector("body");
 
-                    (body.flash ??= tippy(body)).setProps({
-                      appendTo: body,
-                      trigger: "manual",
-                      hideOnClick: false,
-                      theme: ${JSON.stringify(flash.theme)},
-                      arrow: false,
-                      interactive: true,
-                      content: ${JSON.stringify(html`
-                        <div
-                          css="${response.locals.css(css`
-                            padding: var(--space--1) var(--space--2);
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: flex-start;
-                          `)}"
-                        >
-                          <div>$${flash.content}</div>
-                          <button
-                            class="button button--tight button--tight--inline button--transparent"
-                            javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                theme: "green",
-                                touch: false,
-                                content: ${JSON.stringify(html`
-                                  Close
-                                  <span class="keyboard-shortcut">
-                                    (<span
-                                      javascript="${response.locals
-                                        .javascript(javascript`
-                                          this.hidden = leafac.isAppleDevice;
-                                        `)}"
-                                      >Esc</span
-                                    ><span
-                                      class="keyboard-shortcut--cluster"
-                                      javascript="${response.locals
-                                        .javascript(javascript`
-                                          this.hidden = !leafac.isAppleDevice;
-                                        `)}"
-                                      ><i class="bi bi-escape"></i></span
-                                    >)
-                                  </span>
-                                `)},
-                              });
-
-                              this.onclick = () => {
-                                this.closest("[data-tippy-root]")._tippy.hide();
-                              };
-
-                              const keys = "escape";
-                              (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
+                    leafac.setTippy({
+                      event,
+                      element: body,
+                      elementProperty: "flash",
+                      tippyProps: {
+                        appendTo: body,
+                        trigger: "manual",
+                        hideOnClick: false,
+                        theme: ${JSON.stringify(flash.theme)},
+                        arrow: false,
+                        interactive: true,
+                        content: ${JSON.stringify(html`
+                          <div
+                            css="${response.locals.css(css`
+                              padding: var(--space--1) var(--space--2);
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: flex-start;
                             `)}"
                           >
-                            <i class="bi bi-x-circle"></i>
-                          </button>
-                        </div>
-                      `)},
+                            <div>$${flash.content}</div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    theme: "green",
+                                    touch: false,
+                                    content: ${JSON.stringify(html`
+                                      Close
+                                      <span class="keyboard-shortcut">
+                                        (<span
+                                          javascript="${response.locals
+                                            .javascript(javascript`
+                                              this.hidden = leafac.isAppleDevice;
+                                            `)}"
+                                          >Esc</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          javascript="${response.locals
+                                            .javascript(javascript`
+                                              this.hidden = !leafac.isAppleDevice;
+                                            `)}"
+                                          ><i class="bi bi-escape"></i></span
+                                        >)
+                                      </span>
+                                    `)},
+                                  },
+                                });
+  
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                };
+  
+                                const keys = "escape";
+                                (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
+                              `)}"
+                            >
+                              <i class="bi bi-x-circle"></i>
+                            </button>
+                          </div>
+                        `)},  
+                      },
                     });
                     body.flash.show();
                   `;
@@ -411,42 +421,51 @@ export default async (application: Application): Promise<void> => {
                       flex: 1;
                     `)}"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "What’s This?",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "What’s This?",
+                        },
                       });
 
-                      (this.dropdown ??= tippy(this)).setProps({
-                        trigger: "click",
-                        interactive: true,
-                        content: ${JSON.stringify(html`
-                          <div
-                            css="${response.locals.css(css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `)}"
-                          >
-                            <p>
-                              This bar with an accent color appears at the top
-                              of pages related to this course to help you
-                              differentiate between courses.
-                            </p>
-                            <a
-                              href="https://${application.configuration
-                                .hostname}/courses/${response.locals.course!
-                                .reference}/settings/your-enrollment"
-                              class="button button--blue"
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${JSON.stringify(html`
+                            <div
                               css="${response.locals.css(css`
-                                width: 100%;
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
                               `)}"
                             >
-                              <i class="bi bi-palette-fill"></i>
-                              Update Accent Color
-                            </a>
-                          </div>
-                        `)},
+                              <p>
+                                This bar with an accent color appears at the top
+                                of pages related to this course to help you
+                                differentiate between courses.
+                              </p>
+                              <a
+                                href="https://${application.configuration
+                                  .hostname}/courses/${response.locals.course!
+                                  .reference}/settings/your-enrollment"
+                                class="button button--blue"
+                                css="${response.locals.css(css`
+                                  width: 100%;
+                                `)}"
+                              >
+                                <i class="bi bi-palette-fill"></i>
+                                Update Accent Color
+                              </a>
+                            </div>
+                          `)},  
+                        },
                       });
                     `)}"
                   ></button>
@@ -463,44 +482,49 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.dropdown ??= tippy(this)).setProps({
-                        trigger: "click",
-                        interactive: true,
-                        content: ${JSON.stringify(html`
-                          <div
-                            css="${response.locals.css(css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `)}"
-                          >
-                            <p>
-                              This Courselore installation is running in
-                              demonstration mode and must not be used for real
-                              courses. Any data may be lost, including users,
-                              courses, invitations, conversations, messages, and
-                              so forth. Emails aren’t delivered. You may create
-                              demonstration data to give you a better idea of
-                              what Courselore looks like in use.
-                            </p>
-                            <form
-                              method="POST"
-                              action="https://${application.configuration
-                                .hostname}/demonstration-data"
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${JSON.stringify(html`
+                            <div
+                              css="${response.locals.css(css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `)}"
                             >
-                              <button
-                                class="button button--blue"
-                                css="${response.locals.css(css`
-                                  width: 100%;
-                                `)}"
+                              <p>
+                                This Courselore installation is running in
+                                demonstration mode and must not be used for real
+                                courses. Any data may be lost, including users,
+                                courses, invitations, conversations, messages,
+                                and so forth. Emails aren’t delivered. You may
+                                create demonstration data to give you a better
+                                idea of what Courselore looks like in use.
+                              </p>
+                              <form
+                                method="POST"
+                                action="https://${application.configuration
+                                  .hostname}/demonstration-data"
                               >
-                                <i class="bi bi-easel-fill"></i>
-                                Create Demonstration Data
-                              </button>
-                            </form>
-                          </div>
-                        `)},
+                                <button
+                                  class="button button--blue"
+                                  css="${response.locals.css(css`
+                                    width: 100%;
+                                  `)}"
+                                >
+                                  <i class="bi bi-easel-fill"></i>
+                                  Create Demonstration Data
+                                </button>
+                              </form>
+                            </div>
+                          `)},  
+                        },
                       });
                     `)}"
                   >
@@ -614,48 +638,53 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `)}"
                 javascript="${response.locals.javascript(javascript`
-                  (this.dropdown ??= tippy(this)).setProps({
-                    trigger: "click",
-                    interactive: true,
-                    content: ${JSON.stringify(html`
-                      <h3 class="heading">
-                        $${application.server.locals.partials.logo({
-                          size: 12 /* var(--space--3) */,
-                        })}
-                        <span>
-                          Courselore <br />
-                          Communication Platform for Education <br />
-                          <small
-                            class="secondary"
-                            css="${response.locals.css(css`
-                              font-size: var(--font-size--2xs);
-                              line-height: var(--line-height--2xs);
-                            `)}"
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${JSON.stringify(html`
+                        <h3 class="heading">
+                          $${application.server.locals.partials.logo({
+                            size: 12 /* var(--space--3) */,
+                          })}
+                          <span>
+                            Courselore <br />
+                            Communication Platform for Education <br />
+                            <small
+                              class="secondary"
+                              css="${response.locals.css(css`
+                                font-size: var(--font-size--2xs);
+                                line-height: var(--line-height--2xs);
+                              `)}"
+                            >
+                              Version ${application.version}
+                            </small>
+                          </span>
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="https://${application.configuration
+                              .hostname}/about"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
                           >
-                            Version ${application.version}
-                          </small>
-                        </span>
-                      </h3>
-                      <div class="dropdown--menu">
-                        <a
-                          href="https://${application.configuration
-                            .hostname}/about"
-                          target="_blank"
-                          class="dropdown--menu--item button button--transparent"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                          About
-                        </a>
-                        <a
-                          href="https://github.com/courselore/courselore"
-                          target="_blank"
-                          class="dropdown--menu--item button button--transparent"
-                        >
-                          <i class="bi bi-file-earmark-code"></i>
-                          Source Code
-                        </a>
-                      </div>
-                    `)},
+                            <i class="bi bi-info-circle"></i>
+                            About
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-file-earmark-code"></i>
+                            Source Code
+                          </a>
+                        </div>
+                      `)},  
+                    },
                   });
                 `)}"
               >
@@ -670,106 +699,111 @@ export default async (application: Application): Promise<void> => {
               <button
                 class="button button--transparent"
                 javascript="${response.locals.javascript(javascript`
-                  (this.dropdown ??= tippy(this)).setProps({
-                    trigger: "click",
-                    interactive: true,
-                    content: ${JSON.stringify(html`
-                      <h3 class="heading">
-                        <i class="bi bi-bug"></i>
-                        Report an Issue
-                      </h3>
-                      <div class="dropdown--menu">
-                        <a
-                          href="${application.addresses
-                            .metaCourseloreInvitation}${qs.stringify(
-                            {
-                              redirect: `conversations/new/question${qs.stringify(
-                                {
-                                  newConversation: {
-                                    content: dedent`
-                                      **What did you try to do?**
-
-
-
-                                      **What did you expect to happen?**
-
-
-
-                                      **What really happened?**
-
-
-
-                                      **What error messages (if any) did you run into?**
-
-
-
-                                      **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-
-                                      - Courselore Version: ${application.version}
-                                    `,
-                                    tagsReferences: ["9676584193"],
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${JSON.stringify(html`
+                        <h3 class="heading">
+                          <i class="bi bi-bug"></i>
+                          Report an Issue
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="${application.addresses
+                              .metaCourseloreInvitation}${qs.stringify(
+                              {
+                                redirect: `conversations/new/question${qs.stringify(
+                                  {
+                                    newConversation: {
+                                      content: dedent`
+                                        **What did you try to do?**
+  
+  
+  
+                                        **What did you expect to happen?**
+  
+  
+  
+                                        **What really happened?**
+  
+  
+  
+                                        **What error messages (if any) did you run into?**
+  
+  
+  
+                                        **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+  
+                                        - Courselore Version: ${application.version}
+                                      `,
+                                      tagsReferences: ["9676584193"],
+                                    },
                                   },
-                                },
-                                { addQueryPrefix: true }
-                              )}`,
-                            },
-                            { addQueryPrefix: true }
-                          )}"
-                          target="_blank"
-                          class="dropdown--menu--item button button--transparent"
-                          css="${response.locals.css(css`
-                            align-items: center;
-                          `)}"
-                        >
-                          $${application.server.locals.partials.logo({
-                            size: 14 /* var(--space--3-5) */,
-                          })}
-                          Meta Courselore
-                        </a>
-                        <a
-                          href="${application.server.locals.partials
-                            .reportIssueHref}"
-                          target="_blank"
-                          class="dropdown--menu--item button button--transparent"
-                        >
-                          <i class="bi bi-envelope"></i>
-                          ${application.configuration.administratorEmail}
-                        </a>
-                        <a
-                          href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                            {
-                              body: dedent`
-                                **What did you try to do?**
-
-
-
-                                **What did you expect to happen?**
-
-
-
-                                **What really happened?**
-
-
-
-                                **What error messages (if any) did you run into?**
-
-
-
-                                **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-
-                                - Courselore Version: ${application.version}
-                              `,
-                            },
-                            { addQueryPrefix: true }
-                          )}"
-                          target="_blank"
-                          class="dropdown--menu--item button button--transparent"
-                        >
-                          <i class="bi bi-github"></i>
-                          GitHub Issues
-                        </a>
-                      </div>
-                    `)},
+                                  { addQueryPrefix: true }
+                                )}`,
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                            css="${response.locals.css(css`
+                              align-items: center;
+                            `)}"
+                          >
+                            $${application.server.locals.partials.logo({
+                              size: 14 /* var(--space--3-5) */,
+                            })}
+                            Meta Courselore
+                          </a>
+                          <a
+                            href="${application.server.locals.partials
+                              .reportIssueHref}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-envelope"></i>
+                            ${application.configuration.administratorEmail}
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                              {
+                                body: dedent`
+                                  **What did you try to do?**
+  
+  
+  
+                                  **What did you expect to happen?**
+  
+  
+  
+                                  **What really happened?**
+  
+  
+  
+                                  **What error messages (if any) did you run into?**
+  
+  
+  
+                                  **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+  
+                                  - Courselore Version: ${application.version}
+                                `,
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-github"></i>
+                            GitHub Issues
+                          </a>
+                        </div>
+                      `)},  
+                    },
                   });
                 `)}"
               >
@@ -788,69 +822,83 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button button--transparent strong text--green"
                       javascript="${response.locals.javascript(javascript`
-                        (this.dropdown ??= tippy(this)).setProps({
-                          trigger: "click",
-                          interactive: true,
-                          content: ${JSON.stringify(html`
-                            <h3 class="heading">
-                              <i class="bi bi-arrow-up-circle-fill"></i>
-                              <span>
-                                Courselore
-                                <span
-                                  javascript="${response.locals
-                                    .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Current Courselore version",
-                                      });
-                                    `)}"
-                                >
-                                  ${application.version}
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${JSON.stringify(html`
+                              <h3 class="heading">
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+                                <span>
+                                  Courselore
+                                  <span
+                                    javascript="${response.locals
+                                      .javascript(javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            touch: false,
+                                            content: "Current Courselore version",
+                                          },
+                                        });
+                                      `)}"
+                                  >
+                                    ${application.version}
+                                  </span>
+                                  →
+                                  <span
+                                    javascript="${response.locals
+                                      .javascript(javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            touch: false,
+                                            content: "Latest Courselore version",
+                                          },
+                                        });
+                                      `)}"
+                                  >
+                                    ${response.locals.administrationOptions!
+                                      .latestVersion}
+                                  </span>
                                 </span>
-                                →
-                                <span
-                                  javascript="${response.locals
-                                    .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Latest Courselore version",
-                                      });
-                                    `)}"
-                                >
-                                  ${response.locals.administrationOptions!
-                                    .latestVersion}
-                                </span>
-                              </span>
-                            </h3>
+                              </h3>
 
-                            <div class="dropdown--menu">
-                              <a
-                                href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
-                                target="_blank"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-fire"></i>
-                                Changelog
-                              </a>
-                              <a
-                                href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
-                                target="_blank"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-book"></i>
-                                Update Instructions
-                              </a>
-                              <a
-                                href="https://github.com/courselore/courselore/releases/tag/v${response
-                                  .locals.administrationOptions!.latestVersion}"
-                                target="_blank"
-                                class="dropdown--menu--item button button--green"
-                              >
-                                <i class="bi bi-download"></i>
-                                Download
-                              </a>
-                            </div>
-                          `)},
+                              <div class="dropdown--menu">
+                                <a
+                                  href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-fire"></i>
+                                  Changelog
+                                </a>
+                                <a
+                                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-book"></i>
+                                  Update Instructions
+                                </a>
+                                <a
+                                  href="https://github.com/courselore/courselore/releases/tag/v${response
+                                    .locals.administrationOptions!
+                                    .latestVersion}"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--green"
+                                >
+                                  <i class="bi bi-download"></i>
+                                  Download
+                                </a>
+                              </div>
+                            `)},  
+                          },
                         });
                       `)}"
                     >
@@ -879,9 +927,13 @@ export default async (application: Application): Promise<void> => {
             left: 0;
           `)}"
           javascript="${response.locals.javascript(javascript`
-            (this.tooltip ??= tippy(this)).setProps({
-              touch: false,
-              content: "Loading…",
+            leafac.setTippy({
+              event,
+              element: this,
+              tippyProps: {
+                touch: false,
+                content: "Loading…",
+              },
             });
 
             window.onlivenavigate = () => {
@@ -1226,9 +1278,13 @@ export default async (application: Application): Promise<void> => {
             href="https://${application.configuration.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
             javascript="${response.locals.javascript(javascript`
-              (this.tooltip ??= tippy(this)).setProps({
-                touch: false,
-                content: "Courselore",
+              leafac.setTippy({
+                event,
+                element: this,
+                tippyProps: {
+                  touch: false,
+                  content: "Courselore",
+                },
               });
             `)}"
           >
@@ -1262,87 +1318,92 @@ export default async (application: Application): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       javascript="${response.locals.javascript(javascript`
-                        (this.dropdown ??= tippy(this)).setProps({
-                          trigger: "click",
-                          interactive: true,
-                          content: ${JSON.stringify(html`
-                            <div
-                              css="${response.locals.css(css`
-                                max-height: var(--space--80);
-                                overflow: auto;
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              <div>
-                                <h3 class="heading">
-                                  <i class="bi bi-journal-text"></i>
-                                  ${response.locals.course.name}
-                                </h3>
-                                $${response.locals.course.archivedAt !== null
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${JSON.stringify(html`
+                              <div
+                                css="${response.locals.css(css`
+                                  max-height: var(--space--80);
+                                  overflow: auto;
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `)}"
+                              >
+                                <div>
+                                  <h3 class="heading">
+                                    <i class="bi bi-journal-text"></i>
+                                    ${response.locals.course.name}
+                                  </h3>
+                                  $${response.locals.course.archivedAt !== null
+                                    ? html`
+                                        <div
+                                          css="${response.locals.css(css`
+                                            padding: var(--space--0)
+                                              var(--space--2) var(--space--1);
+                                            margin-top: var(--space---2);
+                                          `)}"
+                                        >
+                                          $${application.server.locals.partials.courseArchived(
+                                            { request, response }
+                                          )}
+                                        </div>
+                                      `
+                                    : html``}
+                                  <div class="dropdown--menu">
+                                    <a
+                                      href="https://${application.configuration
+                                        .hostname}/courses/${response.locals
+                                        .course.reference}"
+                                      class="dropdown--menu--item button ${request.path.includes(
+                                        "/settings/"
+                                      )
+                                        ? "button--transparent"
+                                        : "button--blue"}"
+                                    >
+                                      <i
+                                        class="bi ${request.path.includes(
+                                          "/settings/"
+                                        )
+                                          ? "bi-chat-text"
+                                          : "bi-chat-text-fill"}"
+                                      ></i>
+                                      Conversations
+                                    </a>
+                                    <a
+                                      href="https://${application.configuration
+                                        .hostname}/courses/${response.locals
+                                        .course.reference}/settings"
+                                      class="dropdown--menu--item button ${request.path.includes(
+                                        "/settings/"
+                                      )
+                                        ? "button--blue"
+                                        : "button--transparent"}"
+                                    >
+                                      <i class="bi bi-sliders"></i>
+                                      Course Settings
+                                    </a>
+                                  </div>
+                                </div>
+                                $${response.locals.enrollments.length > 1
                                   ? html`
-                                      <div
-                                        css="${response.locals.css(css`
-                                          padding: var(--space--0)
-                                            var(--space--2) var(--space--1);
-                                          margin-top: var(--space---2);
-                                        `)}"
-                                      >
-                                        $${application.server.locals.partials.courseArchived(
-                                          { request, response }
-                                        )}
+                                      <div>
+                                        <h3 class="heading">
+                                          <i class="bi bi-arrow-left-right"></i>
+                                          Switch to Another Course
+                                        </h3>
+                                        $${courseSwitcher}
                                       </div>
                                     `
                                   : html``}
-                                <div class="dropdown--menu">
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/courses/${response.locals
-                                      .course.reference}"
-                                    class="dropdown--menu--item button ${request.path.includes(
-                                      "/settings/"
-                                    )
-                                      ? "button--transparent"
-                                      : "button--blue"}"
-                                  >
-                                    <i
-                                      class="bi ${request.path.includes(
-                                        "/settings/"
-                                      )
-                                        ? "bi-chat-text"
-                                        : "bi-chat-text-fill"}"
-                                    ></i>
-                                    Conversations
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/courses/${response.locals
-                                      .course.reference}/settings"
-                                    class="dropdown--menu--item button ${request.path.includes(
-                                      "/settings/"
-                                    )
-                                      ? "button--blue"
-                                      : "button--transparent"}"
-                                  >
-                                    <i class="bi bi-sliders"></i>
-                                    Course Settings
-                                  </a>
-                                </div>
                               </div>
-                              $${response.locals.enrollments.length > 1
-                                ? html`
-                                    <div>
-                                      <h3 class="heading">
-                                        <i class="bi bi-arrow-left-right"></i>
-                                        Switch to Another Course
-                                      </h3>
-                                      $${courseSwitcher}
-                                    </div>
-                                  `
-                                : html``}
-                            </div>
-                          `)},
+                            `)},  
+                          },
                         });
                       `)}"
                     >
@@ -1377,19 +1438,24 @@ export default async (application: Application): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       javascript="${response.locals.javascript(javascript`
-                        (this.dropdown ??= tippy(this)).setProps({
-                          trigger: "click",
-                          interactive: true,
-                          content: ${JSON.stringify(html`
-                            <div
-                              css="${response.locals.css(css`
-                                max-height: var(--space--80);
-                                overflow: auto;
-                              `)}"
-                            >
-                              $${courseSwitcher}
-                            </div>
-                          `)},
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${JSON.stringify(html`
+                              <div
+                                css="${response.locals.css(css`
+                                  max-height: var(--space--80);
+                                  overflow: auto;
+                                `)}"
+                              >
+                                $${courseSwitcher}
+                              </div>
+                            `)},  
+                          },
                         });
                       `)}"
                     >
@@ -1405,94 +1471,110 @@ export default async (application: Application): Promise<void> => {
             <button
               class="button button--tight button--tight--inline button--transparent"
               javascript="${response.locals.javascript(javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: false,
-                  content: ${JSON.stringify(
-                    response.locals.invitations!.length === 0
-                      ? "Add"
-                      : `${
-                          response.locals.invitations!.length
-                        } pending invitation${
-                          response.locals.invitations!.length === 1 ? "" : "s"
-                        }`
-                  )},
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: ${JSON.stringify(
+                      response.locals.invitations!.length === 0
+                        ? "Add"
+                        : `${
+                            response.locals.invitations!.length
+                          } pending invitation${
+                            response.locals.invitations!.length === 1 ? "" : "s"
+                          }`
+                    )},  
+                  },
                 });
 
-                (this.dropdown ??= tippy(this)).setProps({
-                  trigger: "click",
-                  interactive: true,
-                  content: ${JSON.stringify(html`
-                    <div
-                      css="${response.locals.css(css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `)}"
-                    >
-                      $${response.locals.invitations!.length === 0
-                        ? html``
-                        : html`
-                            <div>
-                              <h3 class="heading">
-                                <i class="bi bi-journal-arrow-down"></i>
-                                Invitations
-                              </h3>
-                              <div class="dropdown--menu">
-                                $${response.locals.invitations!.map(
-                                  (invitation) => html`
-                                    <a
-                                      key="invitation--${invitation.reference}"
-                                      href="https://${application.configuration
-                                        .hostname}/courses/${invitation.course
-                                        .reference}/invitations/${invitation.reference}"
-                                      class="dropdown--menu--item button button--transparent"
-                                    >
-                                      $${application.server.locals.partials.course(
-                                        {
-                                          request,
-                                          response,
-                                          course: invitation.course,
-                                          tight: true,
-                                        }
-                                      )}
-                                    </a>
-                                  `
-                                )}
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${JSON.stringify(html`
+                      <div
+                        css="${response.locals.css(css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `)}"
+                      >
+                        $${response.locals.invitations!.length === 0
+                          ? html``
+                          : html`
+                              <div>
+                                <h3 class="heading">
+                                  <i class="bi bi-journal-arrow-down"></i>
+                                  Invitations
+                                </h3>
+                                <div class="dropdown--menu">
+                                  $${response.locals.invitations!.map(
+                                    (invitation) => html`
+                                      <a
+                                        key="invitation--${invitation.reference}"
+                                        href="https://${application
+                                          .configuration
+                                          .hostname}/courses/${invitation.course
+                                          .reference}/invitations/${invitation.reference}"
+                                        class="dropdown--menu--item button button--transparent"
+                                      >
+                                        $${application.server.locals.partials.course(
+                                          {
+                                            request,
+                                            response,
+                                            course: invitation.course,
+                                            tight: true,
+                                          }
+                                        )}
+                                      </a>
+                                    `
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            <hr class="dropdown--separator" />
-                          `}
-                      <div class="dropdown--menu">
-                        <button
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              trigger: "click",
-                              content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                            });
-                          `)}"
-                        >
-                          <i class="bi bi-journal-arrow-down"></i>
-                          Enroll in an Existing Course
-                        </button>
-                        $${application.server.locals.helpers.mayCreateCourses({
-                          request,
-                          response,
-                        })
-                          ? html`
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/courses/new"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-journal-plus"></i>
-                                Create a New Course
-                              </a>
-                            `
-                          : html``}
+                              <hr class="dropdown--separator" />
+                            `}
+                        <div class="dropdown--menu">
+                          <button
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${response.locals.javascript(javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  trigger: "click",
+                                  content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                },
+                              });
+                            `)}"
+                          >
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Enroll in an Existing Course
+                          </button>
+                          $${application.server.locals.helpers.mayCreateCourses(
+                            {
+                              request,
+                              response,
+                            }
+                          )
+                            ? html`
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/courses/new"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-journal-plus"></i>
+                                  Create a New Course
+                                </a>
+                              `
+                            : html``}
+                        </div>
                       </div>
-                    </div>
-                  `)},
+                    `)},  
+                  },
                 });
               `)}"
             >
@@ -1546,79 +1628,89 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--circle);
               `)}"
               javascript="${response.locals.javascript(javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: false,
-                  content: ${JSON.stringify(response.locals.user.name)},
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: ${JSON.stringify(response.locals.user.name)},
+                  },
                 });
 
-                (this.dropdown ??= tippy(this)).setProps({
-                  trigger: "click",
-                  interactive: true,
-                  content: ${JSON.stringify(html`
-                    <div
-                      css="${response.locals.css(css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `)}"
-                    >
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${JSON.stringify(html`
                       <div
                         css="${response.locals.css(css`
-                          padding: var(--space--0) var(--space--2);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
                         `)}"
                       >
-                        <p class="strong">${response.locals.user.name}</p>
-                        <p class="secondary">${response.locals.user.email}</p>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      $${response.locals.user.systemRole === "administrator"
-                        ? html`
-                            <div class="dropdown--menu">
-                              <a
-                                class="dropdown--menu--item button button--transparent"
-                                href="https://${application.configuration
-                                  .hostname}/administration"
-                              >
-                                <i class="bi bi-pc-display-horizontal"></i>
-                                Administration
-                              </a>
-                            </div>
-
-                            <hr class="dropdown--separator" />
-                          `
-                        : html``}
-
-                      <div class="dropdown--menu">
-                        <a
-                          class="dropdown--menu--item button button--transparent"
-                          href="https://${application.configuration
-                            .hostname}/settings"
+                        <div
+                          css="${response.locals.css(css`
+                            padding: var(--space--0) var(--space--2);
+                          `)}"
                         >
-                          <i class="bi bi-sliders"></i>
-                          User Settings
-                        </a>
-                        <form
-                          method="DELETE"
-                          action="https://${application.configuration
-                            .hostname}/sign-out"
-                        >
-                          <button
+                          <p class="strong">${response.locals.user.name}</p>
+                          <p class="secondary">${response.locals.user.email}</p>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        $${response.locals.user.systemRole === "administrator"
+                          ? html`
+                              <div class="dropdown--menu">
+                                <a
+                                  class="dropdown--menu--item button button--transparent"
+                                  href="https://${application.configuration
+                                    .hostname}/administration"
+                                >
+                                  <i class="bi bi-pc-display-horizontal"></i>
+                                  Administration
+                                </a>
+                              </div>
+
+                              <hr class="dropdown--separator" />
+                            `
+                          : html``}
+
+                        <div class="dropdown--menu">
+                          <a
                             class="dropdown--menu--item button button--transparent"
-                            javascript="${response.locals.javascript(javascript`
-                              this.onclick = () => {
-                                localStorage.clear();
-                              };
-                            `)}"
+                            href="https://${application.configuration
+                              .hostname}/settings"
                           >
-                            <i class="bi bi-box-arrow-right"></i>
-                            Sign Out
-                          </button>
-                        </form>
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
+                          <form
+                            method="DELETE"
+                            action="https://${application.configuration
+                              .hostname}/sign-out"
+                          >
+                            <button
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                this.onclick = () => {
+                                  localStorage.clear();
+                                };
+                              `)}"
+                            >
+                              <i class="bi bi-box-arrow-right"></i>
+                              Sign Out
+                            </button>
+                          </form>
+                        </div>
                       </div>
-                    </div>
-                  `)},
+                    `)},  
+                  },
                 });
               `)}"
             >
@@ -1708,12 +1800,17 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.dropdown ??= tippy(this)).setProps({
-                        trigger: "click",
-                        interactive: true,
-                        content: ${JSON.stringify(
-                          html`<div class="dropdown--menu">$${menu}</div>`
-                        )},
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${JSON.stringify(
+                            html`<div class="dropdown--menu">$${menu}</div>`
+                          )},
+                        },
                       });
                     `)}"
                   >

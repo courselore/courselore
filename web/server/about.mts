@@ -158,9 +158,13 @@ export default async (application: Application): Promise<void> => {
                       align-items: center;
                     `)}"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",  
+                        },
                       });
                     `)}"
                   >
@@ -173,9 +177,13 @@ export default async (application: Application): Promise<void> => {
                     href="https://github.com/courselore/courselore"
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Courselore is open source and will be free forever for installing on your own server.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Courselore is open source and will be free forever for installing on your own server.",
+                        },
                       });
                     `)}"
                   >
@@ -189,9 +197,13 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.addresses.tryHostname}"
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                        },
                       });
                     `)}"
                   >
@@ -584,9 +596,13 @@ export default async (application: Application): Promise<void> => {
                     line-height: var(--line-height--base);
                   `)}"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      content: "A straightforward way to make text bold, include links, and so forth.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "A straightforward way to make text bold, include links, and so forth.",
+                      },
                     });
                   `)}"
                 >
@@ -601,9 +617,13 @@ export default async (application: Application): Promise<void> => {
                     line-height: var(--line-height--base);
                   `)}"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      content: "A way to write mathematical formulas.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "A way to write mathematical formulas.",
+                      },
                     });
                   `)}"
                 >
@@ -618,9 +638,13 @@ export default async (application: Application): Promise<void> => {
                     line-height: var(--line-height--base);
                   `)}"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      content: "Color computer code to make it easier to read.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "Color computer code to make it easier to read.",
+                      },
                     });
                   `)}"
                 >
@@ -848,9 +872,13 @@ export default async (application: Application): Promise<void> => {
                       .canonicalHostname}/sign-up"
                     class="button button--blue"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Sign up on a Courselore installation managed by the developers of Courselore.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Sign up on a Courselore installation managed by the developers of Courselore.",
+                        },
                       });
                     `)}"
                   >
@@ -862,9 +890,13 @@ export default async (application: Application): Promise<void> => {
                       .canonicalHostname}/sign-in"
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Sign in on a Courselore installation managed by the developers of Courselore.",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Sign in on a Courselore installation managed by the developers of Courselore.",
+                        },
                       });
                     `)}"
                   >
@@ -888,9 +920,13 @@ export default async (application: Application): Promise<void> => {
                 align-items: center;
               `)}"
               javascript="${response.locals.javascript(javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: false,
-                  content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
+                  },
                 });
               `)}"
             >
@@ -903,9 +939,13 @@ export default async (application: Application): Promise<void> => {
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
               javascript="${response.locals.javascript(javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: false,
-                  content: "Courselore is open source and will be free forever for installing on your own server.",
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Courselore is open source and will be free forever for installing on your own server.",
+                  },
                 });
               `)}"
             >
@@ -916,9 +956,13 @@ export default async (application: Application): Promise<void> => {
               href="https://${application.addresses.tryHostname}"
               class="button button--transparent"
               javascript="${response.locals.javascript(javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: false,
-                  content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                  },
                 });
               `)}"
             >

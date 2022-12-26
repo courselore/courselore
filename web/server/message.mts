@@ -626,8 +626,10 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="dropdown--menu--item button button--transparent"
                       javascript="${response.locals.javascript(javascript`
-                        if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                          (this.tooltip ??= tippy(this)).setProps({
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
@@ -648,7 +650,8 @@ export default async (application: Application): Promise<void> => {
                               </div>
                               <div key="content" hidden></div>
                             `)},
-                          });
+                          },
+                        });
 
                         window.clearTimeout(this.tooltipContentTimeout);
                         this.tooltipContentSkipLoading = false;
@@ -692,10 +695,15 @@ export default async (application: Application): Promise<void> => {
               <button
                 class="dropdown--menu--item button button--transparent"
                 javascript="${response.locals.javascript(javascript`
-                  (this.copied ??= tippy(this)).setProps({
-                    theme: "green",
-                    trigger: "manual",
-                    content: "Copied",
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "copied",
+                    tippyProps: {
+                      theme: "green",
+                      trigger: "manual",
+                      content: "Copied",
+                    },
                   });
 
                   this.onclick = async () => {
@@ -867,8 +875,10 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="dropdown--menu--item button button--transparent"
                       javascript="${response.locals.javascript(javascript`
-                        if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                          (this.tooltip ??= tippy(this)).setProps({
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
@@ -889,7 +899,8 @@ export default async (application: Application): Promise<void> => {
                               </div>
                               <div key="content" hidden></div>
                             `)},
-                          });
+                          },
+                        });
 
                         window.clearTimeout(this.tooltipContentTimeout);
                         this.tooltipContentSkipLoading = false;
@@ -934,51 +945,58 @@ export default async (application: Application): Promise<void> => {
                       <button
                         class="dropdown--menu--item button button--transparent"
                         javascript="${response.locals.javascript(javascript`
-                          (this.dropdown ??= tippy(this)).setProps({
-                            theme: "rose",
-                            trigger: "click",
-                            interactive: true,
-                            content: ${JSON.stringify(html`
-                              <form
-                                method="DELETE"
-                                action="https://${application.configuration
-                                  .hostname}/courses/${response.locals.course
-                                  .reference}/conversations/${response.locals
-                                  .conversation.reference}/messages/${response
-                                  .locals.message.reference}${qs.stringify(
-                                  {
-                                    conversations: request.query.conversations,
-                                    messages: request.query.messages,
-                                  },
-                                  {
-                                    addQueryPrefix: true,
-                                  }
-                                )}"
-                                css="${response.locals.css(css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `)}"
-                              >
-                                <p>
-                                  Are you sure you want to remove this message?
-                                </p>
-                                <p>
-                                  <strong
-                                    css="${response.locals.css(css`
-                                      font-weight: var(--font-weight--bold);
-                                    `)}"
-                                  >
-                                    You may not undo this action!
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-trash-fill"></i>
-                                  Remove Message
-                                </button>
-                              </form>
-                            `)},
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            elementProperty: "dropdown",
+                            tippyProps: {
+                              theme: "rose",
+                              trigger: "click",
+                              interactive: true,
+                              content: ${JSON.stringify(html`
+                                <form
+                                  method="DELETE"
+                                  action="https://${application.configuration
+                                    .hostname}/courses/${response.locals.course
+                                    .reference}/conversations/${response.locals
+                                    .conversation.reference}/messages/${response
+                                    .locals.message.reference}${qs.stringify(
+                                    {
+                                      conversations:
+                                        request.query.conversations,
+                                      messages: request.query.messages,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  css="${response.locals.css(css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `)}"
+                                >
+                                  <p>
+                                    Are you sure you want to remove this
+                                    message?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      css="${response.locals.css(css`
+                                        font-weight: var(--font-weight--bold);
+                                      `)}"
+                                    >
+                                      You may not undo this action!
+                                    </strong>
+                                  </p>
+                                  <button class="button button--rose">
+                                    <i class="bi bi-trash-fill"></i>
+                                    Remove Message
+                                  </button>
+                                </form>
+                              `)},  
+                            },
                           });
                         `)}"
                       >
@@ -1062,25 +1080,31 @@ export default async (application: Application): Promise<void> => {
                 <button
                   class="button button--blue"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${JSON.stringify(html`
-                        <span class="keyboard-shortcut">
-                          <span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Enter</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i
-                            ><i class="bi bi-arrow-return-left"></i
-                          ></span>
-                        </span>
-                      `)},
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `)}"
+                              >Ctrl+Enter</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `)}"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                      },
                     });
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');

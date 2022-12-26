@@ -495,9 +495,13 @@ export default async (application: Application): Promise<void> => {
               javascript="${response.locals.javascript(javascript`
                 const element = this;
 
-                (element.tooltip ??= tippy(element)).setProps({
-                  touch: false,
-                  content: "Online",
+                leafac.setTippy({
+                  event,
+                  element,
+                  tippyProps: {
+                    touch: false,
+                    content: "Online",
+                  },
                 });
 
                 window.clearTimeout(element.updateTimeout);
@@ -543,9 +547,13 @@ export default async (application: Application): Promise<void> => {
             ? html`<span
                 class="text--sky"
                 javascript="${response.locals.javascript(javascript`
-                  (this.tooltip ??= tippy(this)).setProps({
-                    touch: false,
-                    content: "Staff",
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: "Staff",
+                    },
                   });
                 `)}"
                 >  <i class="bi bi-mortarboard-fill"></i
@@ -566,159 +574,172 @@ export default async (application: Application): Promise<void> => {
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
         javascript="${response.locals.javascript(javascript`
-          (this.tooltip ??= tippy(this)).setProps({
-            interactive: true,
-            appendTo: document.querySelector("body"),
-            delay: [1000, null],
-            touch: ["hold", 1000],
-            content: ${JSON.stringify(html`
-              <div
-                css="${response.locals.css(css`
-                  max-height: var(--space--56);
-                  padding: var(--space--1) var(--space--2);
-                  overflow: auto;
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `)}"
-              >
+          leafac.setTippy({
+            event,
+            element: this,
+            tippyProps: {
+              interactive: true,
+              appendTo: document.querySelector("body"),
+              delay: [1000, null],
+              touch: ["hold", 1000],
+              content: ${JSON.stringify(html`
                 <div
                   css="${response.locals.css(css`
+                    max-height: var(--space--56);
+                    padding: var(--space--1) var(--space--2);
+                    overflow: auto;
                     display: flex;
+                    flex-direction: column;
                     gap: var(--space--4);
-                    align-items: center;
                   `)}"
                 >
-                  <div>
-                    $${application.server.locals.partials.user({
-                      request,
-                      response,
-                      enrollment,
-                      user,
-                      name: false,
-                      size: "xl",
-                    })}
-                  </div>
                   <div
                     css="${response.locals.css(css`
-                      padding-top: var(--space--0-5);
                       display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
+                      gap: var(--space--4);
+                      align-items: center;
                     `)}"
                   >
                     <div>
-                      <div class="strong">
-                        ${user === "no-longer-enrolled"
-                          ? "No Longer Enrolled"
-                          : user!.name}
-                      </div>
-                      $${user !== "no-longer-enrolled" &&
-                      (response.locals.enrollment?.courseRole === "staff" ||
-                        response.locals.user?.id === user!.id)
-                        ? html`
-                            <div class="secondary">
-                              <span
-                                css="${response.locals.css(css`
-                                  margin-right: var(--space--2);
-                                `)}"
-                              >
-                                ${user!.email}
-                              </span>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
+                      $${application.server.locals.partials.user({
+                        request,
+                        response,
+                        enrollment,
+                        user,
+                        name: false,
+                        size: "xl",
+                      })}
+                    </div>
+                    <div
+                      css="${response.locals.css(css`
+                        padding-top: var(--space--0-5);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `)}"
+                    >
+                      <div>
+                        <div class="strong">
+                          ${user === "no-longer-enrolled"
+                            ? "No Longer Enrolled"
+                            : user!.name}
+                        </div>
+                        $${user !== "no-longer-enrolled" &&
+                        (response.locals.enrollment?.courseRole === "staff" ||
+                          response.locals.user?.id === user!.id)
+                          ? html`
+                              <div class="secondary">
+                                <span
+                                  css="${response.locals.css(css`
+                                    margin-right: var(--space--2);
+                                  `)}"
+                                >
+                                  ${user!.email}
+                                </span>
+                                <button
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  css="${response.locals.css(css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                    display: inline-flex;
+                                  `)}"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Copy Email",
+                                        },
+                                      });
+
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        elementProperty: "copied",
+                                        tippyProps: {
+                                          theme: "green",
+                                          trigger: "manual",
+                                          content: "Copied",
+                                        },
+                                      });
+  
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${JSON.stringify(
+                                          user!.email
+                                        )});
+                                        this.copied.show();
+                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                        this.copied.hide();
+                                      };
+                                    `)}"
+                                >
+                                  <i class="bi bi-stickies"></i>
+                                </button>
+                              </div>
+                            `
+                          : html``}
+                        $${user === "no-longer-enrolled"
+                          ? html`
+                              <div class="secondary">
+                                This person has left the course.
+                              </div>
+                            `
+                          : html`
+                              <div
+                                class="secondary"
                                 css="${response.locals.css(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
-                                  display: inline-flex;
                                 `)}"
-                                javascript="${response.locals
-                                  .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Copy Email",
-                                    });
-
-                                    (this.copied ??= tippy(this)).setProps({
-                                      theme: "green",
-                                      trigger: "manual",
-                                      content: "Copied",
-                                    });
-
-                                    this.onclick = async () => {
-                                      await navigator.clipboard.writeText(${JSON.stringify(
-                                        user!.email
-                                      )});
-                                      this.copied.show();
-                                      await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                      this.copied.hide();
-                                    };
-                                  `)}"
                               >
-                                <i class="bi bi-stickies"></i>
-                              </button>
-                            </div>
-                          `
-                        : html``}
-                      $${user === "no-longer-enrolled"
-                        ? html`
-                            <div class="secondary">
-                              This person has left the course.
-                            </div>
-                          `
-                        : html`
-                            <div
-                              class="secondary"
-                              css="${response.locals.css(css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                              `)}"
-                            >
-                              <span>
-                                Last seen online
-                                <time
-                                  datetime="${new Date(
-                                    user!.lastSeenOnlineAt
-                                  ).toISOString()}"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
-                                      leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                    `)}"
-                                ></time>
-                              </span>
-                            </div>
-                          `}
-                      $${enrollment !== undefined &&
-                      enrollment !== "no-longer-enrolled" &&
-                      enrollment.courseRole === "staff"
-                        ? html`
-                            <div
-                              class="text--sky"
-                              css="${response.locals.css(css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                                display: flex;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              <i class="bi bi-mortarboard-fill"></i>
-                              Staff
-                            </div>
-                          `
-                        : html``}
+                                <span>
+                                  Last seen online
+                                  <time
+                                    datetime="${new Date(
+                                      user!.lastSeenOnlineAt
+                                    ).toISOString()}"
+                                    javascript="${response.locals
+                                      .javascript(javascript`
+                                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                      `)}"
+                                  ></time>
+                                </span>
+                              </div>
+                            `}
+                        $${enrollment !== undefined &&
+                        enrollment !== "no-longer-enrolled" &&
+                        enrollment.courseRole === "staff"
+                          ? html`
+                              <div
+                                class="text--sky"
+                                css="${response.locals.css(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `)}"
+                              >
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Staff
+                              </div>
+                            `
+                          : html``}
+                      </div>
                     </div>
                   </div>
+                  $${user !== "no-longer-enrolled" &&
+                  user!.biographyPreprocessed !== null
+                    ? application.server.locals.partials.content({
+                        request,
+                        response,
+                        contentPreprocessed: user!.biographyPreprocessed,
+                      }).contentProcessed
+                    : html``}
                 </div>
-                $${user !== "no-longer-enrolled" &&
-                user!.biographyPreprocessed !== null
-                  ? application.server.locals.partials.content({
-                      request,
-                      response,
-                      contentPreprocessed: user!.biographyPreprocessed,
-                    }).contentProcessed
-                  : html``}
-              </div>
-            `)},
+              `)},  
+            },
           });
         `)}"
         >$${userHTML}</span
@@ -794,9 +815,13 @@ export default async (application: Application): Promise<void> => {
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
         javascript="${response.locals.javascript(javascript`
-          (this.tooltip ??= tippy(this)).setProps({
-            touch: false,
-            content: "Anonymous to Other Students",
+          leafac.setTippy({
+            event,
+            element: this,
+            tippyProps: {
+              touch: false,
+              content: "Anonymous to Other Students",
+            },
           });
         `)}"
         >$${anonymousHTML}</span
@@ -914,11 +939,15 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Add Avatar",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Add Avatar",
+                        },
                       });
-                      
+
                       this.onclick = () => {
                         this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                       };
@@ -955,11 +984,15 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--transparent"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: "Update Avatar",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Update Avatar",
+                        },
                       });
-                      
+
                       this.onclick = () => {
                         this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                       };
@@ -991,10 +1024,14 @@ export default async (application: Application): Promise<void> => {
                       align-items: center;
                     `)}"
                     javascript="${response.locals.javascript(javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        theme: "rose",
-                        touch: false,
-                        content: "Remove Avatar",
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          theme: "rose",
+                          touch: false,
+                          content: "Remove Avatar",
+                        },
                       });
                       
                       this.onclick = () => {
@@ -1022,28 +1059,38 @@ export default async (application: Application): Promise<void> => {
                     const avatarEmpty = avatarChooser.querySelector('[key="avatar-chooser--empty"]');
                     const avatarFilled = avatarChooser.querySelector('[key="avatar-chooser--filled"]');
 
-                    (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
-                      trigger: "manual",
-                      hideOnClick: false,
-                      content: ${JSON.stringify(html`
-                        <div
-                          css="${response.locals.css(css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `)}"
-                        >
-                          $${application.server.locals.partials.spinner({
-                            request,
-                            response,
-                          })}
-                          Uploading…
-                        </div>
-                      `)},
+                    leafac.setTippy({
+                      event,
+                      element: avatarChooser,
+                      elementProperty: "uploadingIndicator",
+                      tippyProps: {
+                        trigger: "manual",
+                        hideOnClick: false,
+                        content: ${JSON.stringify(html`
+                          <div
+                            css="${response.locals.css(css`
+                              display: flex;
+                              gap: var(--space--2);
+                            `)}"
+                          >
+                            $${application.server.locals.partials.spinner({
+                              request,
+                              response,
+                            })}
+                            Uploading…
+                          </div>
+                        `)},
+                      },
                     });
 
-                    (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
-                      theme: "rose",
-                      trigger: "manual",
+                    leafac.setTippy({
+                      event,
+                      element: avatarChooser,
+                      elementProperty: "uploadingError",
+                      tippyProps: {
+                        theme: "rose",
+                        trigger: "manual",
+                      },
                     });
 
                     this.upload = async (fileList) => {
@@ -1345,9 +1392,13 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      content: "You must confirm your email because this is an important operation that affects your account.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "You must confirm your email because this is an important operation that affects your account.",
+                      },
                     });
                   `)}"
                 >
@@ -1916,8 +1967,12 @@ export default async (application: Application): Promise<void> => {
                 <label
                   class="button button--tight button--tight--inline disabled"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      content: "You always receive email notifications for staff announcements.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        content: "You always receive email notifications for staff announcements.",
+                      },
                     });
                   `)}"
                 >
@@ -2093,9 +2148,13 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      content: "You must confirm your email because this is an important operation that affects your account.",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "You must confirm your email because this is an important operation that affects your account.",
+                      },
                     });
                   `)}"
                 >

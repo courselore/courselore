@@ -1650,9 +1650,13 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="button button--tight button--tight--inline button--transparent"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Search",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Search",
+                              },
                             });
                           `)}"
                         >
@@ -1677,9 +1681,13 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--tight button--tight--inline button--transparent"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Clear Search",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Clear Search",
+                                      },
                                     });
                                   `)}"
                               >
@@ -2080,9 +2088,13 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    content: "Pinned conversations are listed first.",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      trigger: "click",
+                                      content: "Pinned conversations are listed first.",
+                                    },
                                   });
                                 `)}"
                             >
@@ -2175,9 +2187,13 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--tight button--tight--inline button--transparent"
                                     javascript="${response.locals
                                       .javascript(javascript`
-                                        (this.tooltip ??= tippy(this)).setProps({
-                                          trigger: "click",
-                                          content: "Tags help to organize conversations.",
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            trigger: "click",
+                                            content: "Tags help to organize conversations.",
+                                          },
                                         });
                                       `)}"
                                   >
@@ -2234,9 +2250,13 @@ export default async (application: Application): Promise<void> => {
                                                 class="text--sky"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
-                                                    (this.tooltip ??= tippy(this)).setProps({
-                                                      touch: false,
-                                                      content: "This tag is visible by staff only.",
+                                                    leafac.setTippy({
+                                                      event,
+                                                      element: this,
+                                                      tippyProps: {
+                                                        touch: false,
+                                                        content: "This tag is visible by staff only.",
+                                                      },
                                                     });
                                                   `)}"
                                               >
@@ -2478,9 +2498,13 @@ export default async (application: Application): Promise<void> => {
                                               `)}"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Mark as Read",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Mark as Read",
+                                                    },
                                                   });
                                                           
                                                   this.onclick = async (event) => {
@@ -2676,8 +2700,10 @@ export default async (application: Application): Promise<void> => {
             ${
               conversation.selectedParticipants.length > 1
                 ? javascript`
-                    if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                      (this.tooltip ??= tippy(this)).setProps({
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
                         interactive: true,
                         delay: [1000, null],
                         touch: ["hold", 1000],
@@ -2698,8 +2724,9 @@ export default async (application: Application): Promise<void> => {
                             Loading…
                           </div>
                           <div key="content" hidden></div>
-                        `)},
-                      });
+                        `)},  
+                      },
+                    });
 
                     window.clearTimeout(this.tooltipContentTimeout);
                     this.tooltipContentSkipLoading = false;
@@ -2731,9 +2758,13 @@ export default async (application: Application): Promise<void> => {
                     };
                   `
                 : javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: "Participants",
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: "Participants",
+                      },
                     });
                   `
             }
@@ -2760,9 +2791,13 @@ export default async (application: Application): Promise<void> => {
               <div
                 class="text--amber"
                 javascript="${response.locals.javascript(javascript`
-                  (this.tooltip ??= tippy(this)).setProps({
-                    touch: false,
-                    content: "Pinned conversations are listed first.",
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: "Pinned conversations are listed first.",
+                    },
                   });
                 `)}"
               >
@@ -2816,9 +2851,13 @@ export default async (application: Application): Promise<void> => {
       >
         <div
           javascript="${response.locals.javascript(javascript`
-            (this.tooltip ??= tippy(this)).setProps({
-              touch: false,
-              content: "Conversation Reference",
+            leafac.setTippy({
+              event,
+              element: this,
+              tippyProps: {
+                touch: false,
+                content: "Conversation Reference",
+              },
             });
           `)}"
         >
@@ -2875,9 +2914,13 @@ export default async (application: Application): Promise<void> => {
                           <span
                             class="text--sky"
                             javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                touch: false,
-                                content: "This tag is visible by staff only.",
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: "This tag is visible by staff only.",
+                                },
                               });
                             `)}"
                           >
@@ -3434,9 +3477,13 @@ export default async (application: Application): Promise<void> => {
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              trigger: "click",
-                              content: "Tags help to organize conversations.",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                trigger: "click",
+                                content: "Tags help to organize conversations.",
+                              },
                             });
                           `)}"
                         >
@@ -3554,9 +3601,13 @@ export default async (application: Application): Promise<void> => {
                                           class="text--sky"
                                           javascript="${response.locals
                                             .javascript(javascript`
-                                              (this.tooltip ??= tippy(this)).setProps({
-                                                touch: false,
-                                                content: "This tag is visible by staff only.",
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  touch: false,
+                                                  content: "This tag is visible by staff only.",
+                                                },
                                               });
                                             `)}"
                                         >
@@ -3643,284 +3694,295 @@ export default async (application: Application): Promise<void> => {
                       <div
                         key="participants"
                         javascript="${response.locals.javascript(javascript`
-                          (this.dropdown ??= tippy(this)).setProps({
-                            trigger: "click",
-                            interactive: true,
-                            content: ${JSON.stringify(html`
-                              <div
-                                key="participants--dropdown"
-                                css="${response.locals.css(css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `)}"
-                              >
-                                <div class="dropdown--menu">
-                                  $${application.server.locals.helpers.conversationParticipantses.map(
-                                    (conversationParticipants) => html`
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="participants--dropdown--participants"
-                                          value="${conversationParticipants}"
-                                          $${request.query.newConversation
-                                            ?.participants ===
-                                            conversationParticipants ||
-                                          (request.query.newConversation
-                                            ?.participants === undefined &&
-                                            ((request.params.type === "chat" &&
-                                              conversationParticipants ===
-                                                "selected-people") ||
-                                              (request.params.type !== "chat" &&
-                                                conversationParticipants ===
-                                                  "everyone")))
-                                            ? html`checked`
-                                            : html``}
-                                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              this.isModified = false;
-
-                                              this.onchange = () => {  
-                                                this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-
-                                                const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-  
-                                                ${
-                                                  conversationParticipants ===
-                                                  "everyone"
-                                                    ? javascript`
-                                                        selectedParticipants.hidden = true;
-  
-                                                        for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                          element.disabled = true;
-                                                      `
-                                                    : conversationParticipants ===
-                                                      "staff"
-                                                    ? javascript`
-                                                        selectedParticipants.hidden = false;
-  
-                                                        for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                          element.hidden = true;
-                                                        participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-  
-                                                        for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                          element.disabled = element.matches('[data-enrollment-course-role="staff"]');
-                                                      `
-                                                    : conversationParticipants ===
-                                                      "selected-people"
-                                                    ? javascript`
-                                                        selectedParticipants.hidden = false;
-  
-                                                        for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                          element.hidden = false;
-                                                        participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-  
-                                                        for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                          element.disabled = false;
-                                                      `
-                                                    : javascript``
-                                                }
-                                              };
-                                            `)}"
-                                        />
-                                        <span
-                                          class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
-                                            conversationParticipants
-                                          ]}"
-                                        >
-                                          $${iconsConversationParticipants[
-                                            conversationParticipants
-                                          ].fill}
-                                          $${labelsConversationParticipants[
-                                            conversationParticipants
-                                          ]}
-                                        </span>
-                                        <span
-                                          class="dropdown--menu--item button button--blue"
-                                        >
-                                          $${iconsConversationParticipants[
-                                            conversationParticipants
-                                          ].fill}
-                                          $${labelsConversationParticipants[
-                                            conversationParticipants
-                                          ]}
-                                        </span>
-                                      </label>
-                                    `
-                                  )}
-                                </div>
-
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            elementProperty: "dropdown",
+                            tippyProps: {
+                              trigger: "click",
+                              interactive: true,
+                              content: ${JSON.stringify(html`
                                 <div
-                                  key="participants--dropdown--selected-participants"
-                                  $${(typeof request.query.newConversation
-                                    ?.participants === "string" &&
-                                    ["staff", "selected-people"].includes(
-                                      request.query.newConversation.participants
-                                    )) ||
-                                  (request.query.newConversation
-                                    ?.participants === undefined &&
-                                    request.params.type === "chat")
-                                    ? html``
-                                    : html`hidden`}
+                                  key="participants--dropdown"
                                   css="${response.locals.css(css`
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
                                   `)}"
                                 >
-                                  <hr class="dropdown--separator" />
-
-                                  $${response.locals.courseEnrollmentsCount ===
-                                  1
-                                    ? html`
-                                        <p
-                                          class="secondary"
-                                          css="${response.locals.css(css`
-                                            padding: var(--space--0)
-                                              var(--space--2) var(--space--2);
-                                          `)}"
-                                        >
-                                          You may select participants when there
-                                          are more people enrolled in the
-                                          course.
-                                        </p>
+                                  <div class="dropdown--menu">
+                                    $${application.server.locals.helpers.conversationParticipantses.map(
+                                      (conversationParticipants) => html`
+                                        <label>
+                                          <input
+                                            type="radio"
+                                            name="participants--dropdown--participants"
+                                            value="${conversationParticipants}"
+                                            $${request.query.newConversation
+                                              ?.participants ===
+                                              conversationParticipants ||
+                                            (request.query.newConversation
+                                              ?.participants === undefined &&
+                                              ((request.params.type ===
+                                                "chat" &&
+                                                conversationParticipants ===
+                                                  "selected-people") ||
+                                                (request.params.type !==
+                                                  "chat" &&
+                                                  conversationParticipants ===
+                                                    "everyone")))
+                                              ? html`checked`
+                                              : html``}
+                                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                                            javascript="${response.locals
+                                              .javascript(javascript`
+                                                this.isModified = false;
+  
+                                                this.onchange = () => {  
+                                                  this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+  
+                                                  const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                  const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+    
+                                                  ${
+                                                    conversationParticipants ===
+                                                    "everyone"
+                                                      ? javascript`
+                                                          selectedParticipants.hidden = true;
+    
+                                                          for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                            element.disabled = true;
+                                                        `
+                                                      : conversationParticipants ===
+                                                        "staff"
+                                                      ? javascript`
+                                                          selectedParticipants.hidden = false;
+    
+                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                            element.hidden = true;
+                                                          participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+    
+                                                          for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                            element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                        `
+                                                      : conversationParticipants ===
+                                                        "selected-people"
+                                                      ? javascript`
+                                                          selectedParticipants.hidden = false;
+    
+                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                            element.hidden = false;
+                                                          participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+    
+                                                          for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                            element.disabled = false;
+                                                        `
+                                                      : javascript``
+                                                  }
+                                                };
+                                              `)}"
+                                          />
+                                          <span
+                                            class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
+                                              conversationParticipants
+                                            ]}"
+                                          >
+                                            $${iconsConversationParticipants[
+                                              conversationParticipants
+                                            ].fill}
+                                            $${labelsConversationParticipants[
+                                              conversationParticipants
+                                            ]}
+                                          </span>
+                                          <span
+                                            class="dropdown--menu--item button button--blue"
+                                          >
+                                            $${iconsConversationParticipants[
+                                              conversationParticipants
+                                            ].fill}
+                                            $${labelsConversationParticipants[
+                                              conversationParticipants
+                                            ]}
+                                          </span>
+                                        </label>
                                       `
-                                    : html`
-                                        <div
-                                          css="${response.locals.css(css`
-                                            padding: var(--space--0)
-                                              var(--space--2);
-                                          `)}"
-                                        >
-                                          <label
+                                    )}
+                                  </div>
+
+                                  <div
+                                    key="participants--dropdown--selected-participants"
+                                    $${(typeof request.query.newConversation
+                                      ?.participants === "string" &&
+                                      ["staff", "selected-people"].includes(
+                                        request.query.newConversation
+                                          .participants
+                                      )) ||
+                                    (request.query.newConversation
+                                      ?.participants === undefined &&
+                                      request.params.type === "chat")
+                                      ? html``
+                                      : html`hidden`}
+                                    css="${response.locals.css(css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `)}"
+                                  >
+                                    <hr class="dropdown--separator" />
+
+                                    $${response.locals
+                                      .courseEnrollmentsCount === 1
+                                      ? html`
+                                          <p
+                                            class="secondary"
                                             css="${response.locals.css(css`
-                                              display: flex;
-                                              gap: var(--space--2);
-                                              align-items: baseline;
+                                              padding: var(--space--0)
+                                                var(--space--2) var(--space--2);
                                             `)}"
                                           >
-                                            <i class="bi bi-funnel"></i>
-                                            <input
-                                              key="participants--dropdown--selected-participants--filter"
-                                              type="text"
-                                              class="input--text"
-                                              placeholder="Filter…"
-                                              javascript="${response.locals
-                                                .javascript(javascript`
-                                                  this.isModified = false;
-
-                                                  this.oninput = () => {
-                                                    const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                    const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                    const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                      if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
-                                                        continue;
-                                                      let selectedParticipantHidden = filterPhrases.length > 0;
-                                                      for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                        const filterablePhrasesElementChildren = [];
-                                                        for (const filterablePhrase of filterablePhrases) {
-                                                          let filterablePhraseElement;
-                                                          if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                            filterablePhraseElement = document.createElement("mark");
-                                                            filterablePhraseElement.classList.add("mark");
-                                                            selectedParticipantHidden = false;
-                                                          } else
-                                                            filterablePhraseElement = document.createElement("span");
-                                                          filterablePhraseElement.textContent = filterablePhrase;
-                                                          filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                            You may select participants when
+                                            there are more people enrolled in
+                                            the course.
+                                          </p>
+                                        `
+                                      : html`
+                                          <div
+                                            css="${response.locals.css(css`
+                                              padding: var(--space--0)
+                                                var(--space--2);
+                                            `)}"
+                                          >
+                                            <label
+                                              css="${response.locals.css(css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                                align-items: baseline;
+                                              `)}"
+                                            >
+                                              <i class="bi bi-funnel"></i>
+                                              <input
+                                                key="participants--dropdown--selected-participants--filter"
+                                                type="text"
+                                                class="input--text"
+                                                placeholder="Filter…"
+                                                javascript="${response.locals
+                                                  .javascript(javascript`
+                                                    this.isModified = false;
+  
+                                                    this.oninput = () => {
+                                                      const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                      const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                      const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                      for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
+                                                        if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                          continue;
+                                                        let selectedParticipantHidden = filterPhrases.length > 0;
+                                                        for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                          const filterablePhrasesElementChildren = [];
+                                                          for (const filterablePhrase of filterablePhrases) {
+                                                            let filterablePhraseElement;
+                                                            if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                              filterablePhraseElement = document.createElement("mark");
+                                                              filterablePhraseElement.classList.add("mark");
+                                                              selectedParticipantHidden = false;
+                                                            } else
+                                                              filterablePhraseElement = document.createElement("span");
+                                                            filterablePhraseElement.textContent = filterablePhrase;
+                                                            filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                          }
+                                                          filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                                                         }
-                                                        filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                        selectedParticipant.hidden = selectedParticipantHidden;
                                                       }
-                                                      selectedParticipant.hidden = selectedParticipantHidden;
-                                                    }
-                                                  };
-                                                `)}"
-                                            />
-                                          </label>
-                                        </div>
+                                                    };
+                                                  `)}"
+                                              />
+                                            </label>
+                                          </div>
 
-                                        <hr class="dropdown--separator" />
+                                          <hr class="dropdown--separator" />
 
-                                        <div
-                                          class="dropdown--menu"
-                                          css="${response.locals.css(css`
-                                            height: var(--space--40);
-                                            overflow: auto;
-                                          `)}"
-                                        >
-                                          $${enrollments.map(
-                                            (enrollment) => html`
-                                              <label
-                                                key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                data-enrollment-course-role="${enrollment.courseRole}"
-                                                $${request.query.newConversation
-                                                  ?.participants === "staff" &&
-                                                enrollment.courseRole ===
-                                                  "staff"
-                                                  ? html`hidden`
-                                                  : html``}
-                                              >
-                                                <input
-                                                  type="checkbox"
-                                                  name="participants--dropdown--selected-participants[]"
-                                                  value="${enrollment.reference}"
-                                                  $${request.query.newConversation?.selectedParticipants?.includes(
-                                                    enrollment.reference
-                                                  )
-                                                    ? html`checked`
+                                          <div
+                                            class="dropdown--menu"
+                                            css="${response.locals.css(css`
+                                              height: var(--space--40);
+                                              overflow: auto;
+                                            `)}"
+                                          >
+                                            $${enrollments.map(
+                                              (enrollment) => html`
+                                                <label
+                                                  key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
+                                                  data-enrollment-course-role="${enrollment.courseRole}"
+                                                  $${request.query
+                                                    .newConversation
+                                                    ?.participants ===
+                                                    "staff" &&
+                                                  enrollment.courseRole ===
+                                                    "staff"
+                                                    ? html`hidden`
                                                     : html``}
-                                                  class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                  javascript="${response.locals
-                                                    .javascript(javascript`
-                                                      this.isModified = false;
-
-                                                      this.onchange = () => {
-                                                        this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
-                                                      };
-                                                    `)}"
-                                                />
-                                                <span
-                                                  class="dropdown--menu--item button button--transparent"
                                                 >
-                                                  $${application.server.locals.partials.user(
-                                                    {
-                                                      request,
-                                                      response,
-                                                      enrollment,
-                                                      user: enrollment.user,
-                                                      tooltip: false,
-                                                      size: "xs",
-                                                      bold: false,
-                                                    }
-                                                  )}
-                                                </span>
-                                                <span
-                                                  class="dropdown--menu--item button button--blue"
-                                                >
-                                                  $${application.server.locals.partials.user(
-                                                    {
-                                                      request,
-                                                      response,
-                                                      enrollment,
-                                                      user: enrollment.user,
-                                                      tooltip: false,
-                                                      size: "xs",
-                                                      bold: false,
-                                                    }
-                                                  )}
-                                                </span>
-                                              </label>
-                                            `
-                                          )}
-                                        </div>
-                                      `}
+                                                  <input
+                                                    type="checkbox"
+                                                    name="participants--dropdown--selected-participants[]"
+                                                    value="${enrollment.reference}"
+                                                    $${request.query.newConversation?.selectedParticipants?.includes(
+                                                      enrollment.reference
+                                                    )
+                                                      ? html`checked`
+                                                      : html``}
+                                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                    javascript="${response
+                                                      .locals
+                                                      .javascript(javascript`
+                                                        this.isModified = false;
+  
+                                                        this.onchange = () => {
+                                                          this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+                                                        };
+                                                      `)}"
+                                                  />
+                                                  <span
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    $${application.server.locals.partials.user(
+                                                      {
+                                                        request,
+                                                        response,
+                                                        enrollment,
+                                                        user: enrollment.user,
+                                                        tooltip: false,
+                                                        size: "xs",
+                                                        bold: false,
+                                                      }
+                                                    )}
+                                                  </span>
+                                                  <span
+                                                    class="dropdown--menu--item button button--blue"
+                                                  >
+                                                    $${application.server.locals.partials.user(
+                                                      {
+                                                        request,
+                                                        response,
+                                                        enrollment,
+                                                        user: enrollment.user,
+                                                        tooltip: false,
+                                                        size: "xs",
+                                                        bold: false,
+                                                      }
+                                                    )}
+                                                  </span>
+                                                </label>
+                                              `
+                                            )}
+                                          </div>
+                                        `}
+                                  </div>
                                 </div>
-                              </div>
-                            `)},
+                              `)},  
+                            },
                           });
                         `)}"
                       >
@@ -4008,9 +4070,13 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                touch: false,
-                                content: "Remove Participant",
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: "Remove Participant",
+                                },
                               });
 
                               this.onclick = () => {
@@ -4067,9 +4133,13 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                trigger: "click",
-                                content: "People receive immediate email notifications for announcements.",
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  trigger: "click",
+                                  content: "People receive immediate email notifications for announcements.",
+                                },
                               });
                             `)}"
                           >
@@ -4117,9 +4187,13 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Announcement",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Set as Announcement",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4130,9 +4204,13 @@ export default async (application: Application): Promise<void> => {
                               class="text--orange"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Not an Announcement",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Set as Not an Announcement",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4155,9 +4233,13 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                trigger: "click",
-                                content: "Pinned conversations are listed first.",
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  trigger: "click",
+                                  content: "Pinned conversations are listed first.",
+                                },
                               });
                             `)}"
                           >
@@ -4189,9 +4271,13 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Pin",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Pin",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4202,9 +4288,13 @@ export default async (application: Application): Promise<void> => {
                               class="text--amber"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Unpin",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Unpin",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4249,9 +4339,13 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Anonymous to Other Students",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Set as Anonymous to Other Students",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4276,9 +4370,13 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Set as Signed by You",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Set as Signed by You",
+                                    },
                                   });
                                 `)}"
                             >
@@ -4308,25 +4406,31 @@ export default async (application: Application): Promise<void> => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${JSON.stringify(html`
-                        <span class="keyboard-shortcut">
-                          <span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+Enter</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i
-                            ><i class="bi bi-arrow-return-left"></i
-                          ></span>
-                        </span>
-                      `)},
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `)}"
+                              >Ctrl+Enter</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `)}"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                      },
                     });
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
@@ -4390,24 +4494,30 @@ export default async (application: Application): Promise<void> => {
                   name="isDraft"
                   value="true"
                   javascript="${response.locals.javascript(javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${JSON.stringify(html`
-                        <span class="keyboard-shortcut">
-                          <span
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `)}"
-                            >Ctrl+S</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `)}"
-                            ><i class="bi bi-command"></i>S</span
-                          >
-                        </span>
-                      `)},
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `)}"
+                              >Ctrl+S</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              javascript="${response.locals
+                                .javascript(javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `)}"
+                              ><i class="bi bi-command"></i>S</span
+                            >
+                          </span>
+                        `)},  
+                      },
                     });
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
@@ -5255,64 +5365,74 @@ export default async (application: Application): Promise<void> => {
                                       ]}"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.tooltip ??= tippy(this)).setProps({
-                                        touch: false,
-                                        content: "Update Conversation Type",
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Update Conversation Type",
+                                        },
                                       });
-                                      
-                                      (this.dropdown ??= tippy(this)).setProps({
-                                        trigger: "click",
-                                        interactive: true,
-                                        content: ${JSON.stringify(html`
-                                          <div class="dropdown--menu">
-                                            $${application.server.locals.helpers.conversationTypes.map(
-                                              (conversationType) => html`
-                                                <form
-                                                  key="conversation-type--${conversationType}"
-                                                  method="PATCH"
-                                                  action="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${response
-                                                    .locals.course
-                                                    .reference}/conversations/${response
-                                                    .locals.conversation
-                                                    .reference}${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        request.query
-                                                          .conversations,
-                                                      messages:
-                                                        request.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="type"
-                                                    value="${conversationType}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button ${conversationType ===
-                                                    response.locals.conversation
-                                                      .type
-                                                      ? "button--blue"
-                                                      : "button--transparent"} ${textColorsConversationType[
-                                                      conversationType
-                                                    ]}"
+
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        elementProperty: "dropdown",
+                                        tippyProps: {
+                                          trigger: "click",
+                                          interactive: true,
+                                          content: ${JSON.stringify(html`
+                                            <div class="dropdown--menu">
+                                              $${application.server.locals.helpers.conversationTypes.map(
+                                                (conversationType) => html`
+                                                  <form
+                                                    key="conversation-type--${conversationType}"
+                                                    method="PATCH"
+                                                    action="https://${application
+                                                      .configuration
+                                                      .hostname}/courses/${response
+                                                      .locals.course
+                                                      .reference}/conversations/${response
+                                                      .locals.conversation
+                                                      .reference}${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          request.query
+                                                            .conversations,
+                                                        messages:
+                                                          request.query
+                                                            .messages,
+                                                      },
+                                                      { addQueryPrefix: true }
+                                                    )}"
                                                   >
-                                                    $${iconsConversationType[
-                                                      conversationType
-                                                    ].fill}
-                                                    $${lodash.capitalize(
-                                                      conversationType
-                                                    )}
-                                                  </button>
-                                                </form>
-                                              `
-                                            )}
-                                          </div>
-                                        `)},
+                                                    <input
+                                                      type="hidden"
+                                                      name="type"
+                                                      value="${conversationType}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button ${conversationType ===
+                                                      response.locals
+                                                        .conversation.type
+                                                        ? "button--blue"
+                                                        : "button--transparent"} ${textColorsConversationType[
+                                                        conversationType
+                                                      ]}"
+                                                    >
+                                                      $${iconsConversationType[
+                                                        conversationType
+                                                      ].fill}
+                                                      $${lodash.capitalize(
+                                                        conversationType
+                                                      )}
+                                                    </button>
+                                                  </form>
+                                                `
+                                              )}
+                                            </div>
+                                          `)},  
+                                        },
                                       });
                                     `)}"
                                 >
@@ -5378,9 +5498,13 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Set as Resolved",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Set as Resolved",
+                                                    },
                                                   });
                                                 `)}"
                                             >
@@ -5401,9 +5525,13 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Set as Unresolved",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Set as Unresolved",
+                                                    },
                                                   });
                                                 `)}"
                                             >
@@ -5480,9 +5608,13 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Set as Announcement",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Set as Announcement",
+                                                    },
                                                   });
                                                 `)}"
                                             >
@@ -5501,9 +5633,13 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
                                               javascript="${response.locals
                                                 .javascript(javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Set as Not an Announcement",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Set as Not an Announcement",
+                                                    },
                                                   });
                                                 `)}"
                                             >
@@ -5554,9 +5690,13 @@ export default async (application: Application): Promise<void> => {
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                         javascript="${response.locals
                                           .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "Pin",
+                                            leafac.setTippy({
+                                              event,
+                                              element: this,
+                                              tippyProps: {
+                                                touch: false,
+                                                content: "Pin",
+                                              },
                                             });
                                           `)}"
                                       >
@@ -5575,9 +5715,13 @@ export default async (application: Application): Promise<void> => {
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
                                         javascript="${response.locals
                                           .javascript(javascript`
-                                            (this.tooltip ??= tippy(this)).setProps({
-                                              touch: false,
-                                              content: "Unpin",
+                                            leafac.setTippy({
+                                              event,
+                                              element: this,
+                                              tippyProps: {
+                                                touch: false,
+                                                content: "Unpin",
+                                              },
                                             });
                                           `)}"
                                       >
@@ -5601,325 +5745,354 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
                           javascript="${response.locals.javascript(javascript`
-                            (this.tooltip ??= tippy(this)).setProps({
-                              touch: false,
-                              content: "Actions",
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                touch: false,
+                                content: "Actions",
+                              },
                             });
-                            
-                            (this.dropdown ??= tippy(this)).setProps({
-                              trigger: "click",
-                              interactive: true,
-                              content: ${JSON.stringify(html`
-                                <h3 class="heading">
-                                  <i class="bi bi-chat-text-fill"></i>
-                                  Conversation
-                                  #${response.locals.conversation.reference}
-                                </h3>
-                                <div class="dropdown--menu">
-                                  <button
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
-                                        (this.copied ??= tippy(this)).setProps({
-                                          theme: "green",
-                                          trigger: "manual",
-                                          content: "Copied",
-                                        });
 
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText("https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}");
-                                          this.copied.show();
-                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                          this.copied.hide();
-                                        };
-                                      `)}"
-                                  >
-                                    <i class="bi bi-link"></i>
-                                    Copy Conversation Permanent Link
-                                  </button>
-                                  $${mayEditConversation({
-                                    request,
-                                    response,
-                                  })
-                                    ? html`
-                                        <button
-                                          class="dropdown--menu--item button button--transparent"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              this.onclick = () => {
-                                                this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
-                                                this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
-                                                tippy.hideAll();
-                                              };
-                                            `)}"
-                                        >
-                                          <i class="bi bi-pencil"></i>
-                                          Edit Conversation Title
-                                        </button>
-                                      `
-                                    : html``}
-                                  $${response.locals.conversation
-                                    .authorEnrollment !==
-                                    "no-longer-enrolled" &&
-                                  response.locals.conversation.authorEnrollment
-                                    .courseRole === "student" &&
-                                  mayEditConversation({ request, response })
-                                    ? html`
-                                        <form
-                                          method="PATCH"
-                                          action="https://${application
-                                            .configuration
-                                            .hostname}/courses/${response.locals
-                                            .course
-                                            .reference}/conversations/${response
-                                            .locals.conversation
-                                            .reference}${qs.stringify(
-                                            {
-                                              conversations:
-                                                request.query.conversations,
-                                              messages: request.query.messages,
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              elementProperty: "dropdown",
+                              tippyProps: {
+                                trigger: "click",
+                                interactive: true,
+                                content: ${JSON.stringify(html`
+                                  <h3 class="heading">
+                                    <i class="bi bi-chat-text-fill"></i>
+                                    Conversation
+                                    #${response.locals.conversation.reference}
+                                  </h3>
+                                  <div class="dropdown--menu">
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                      javascript="${response.locals
+                                        .javascript(javascript`
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            elementProperty: "copied",
+                                            tippyProps: {
+                                              theme: "green",
+                                              trigger: "manual",
+                                              content: "Copied",
                                             },
-                                            { addQueryPrefix: true }
-                                          )}"
-                                          class="dropdown--menu"
-                                        >
-                                          $${response.locals.conversation
-                                            .anonymousAt === null
-                                            ? html`
-                                                <input
-                                                  key="isAnonymous--true"
-                                                  type="hidden"
-                                                  name="isAnonymous"
-                                                  value="true"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                >
-                                                  <span
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      margin-left: var(
-                                                        --space---0-5
-                                                      );
-                                                    `)}"
-                                                  >
-                                                    $${application.server.locals.partials.user(
-                                                      {
-                                                        request,
-                                                        response,
-                                                        name: false,
-                                                        size: "xs",
-                                                      }
-                                                    )}
-                                                  </span>
-                                                  Set as Anonymous to Other
-                                                  Students
-                                                </button>
-                                              `
-                                            : html`
-                                                <input
-                                                  key="isAnonymous--false"
-                                                  type="hidden"
-                                                  name="isAnonymous"
-                                                  value="false"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                >
-                                                  <span
-                                                    css="${response.locals
-                                                      .css(css`
-                                                      margin-left: var(
-                                                        --space---0-5
-                                                      );
-                                                    `)}"
-                                                  >
-                                                    $${application.server.locals.partials.user(
-                                                      {
-                                                        request,
-                                                        response,
-                                                        user: response.locals
-                                                          .conversation
-                                                          .authorEnrollment
-                                                          .user,
-                                                        decorate: false,
-                                                        name: false,
-                                                        size: "xs",
-                                                      }
-                                                    )}
-                                                  </span>
-                                                  Set as Signed by
-                                                  ${response.locals.conversation
-                                                    .authorEnrollment.id ===
-                                                  response.locals.enrollment.id
-                                                    ? "You"
-                                                    : response.locals
-                                                        .conversation
-                                                        .authorEnrollment.user
-                                                        .name}
-                                                </button>
-                                              `}
-                                        </form>
-                                      `
-                                    : html``}
-                                  $${response.locals.enrollment.courseRole ===
-                                    "staff" &&
-                                  response.locals.enrollments.length > 1 &&
-                                  messages.length > 0 &&
-                                  messages[0].reference ===
-                                    "1" /* TODO: Pagination */
-                                    ? html`
-                                        <button
-                                          class="dropdown--menu--item button button--transparent"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                  onHidden: () => { this.onmouseleave(); },
-                                                  content: ${JSON.stringify(html`
-                                                    <div
-                                                      key="loading"
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        align-items: center;
-                                                      `)}"
-                                                    >
-                                                      $${application.server.locals.partials.spinner(
-                                                        {
-                                                          request,
-                                                          response,
-                                                        }
-                                                      )}
-                                                      Loading…
-                                                    </div>
-                                                    <div
-                                                      key="content"
-                                                      hidden
-                                                    ></div>
-                                                  `)},
-                                                });
-
-                                              window.clearTimeout(this.tooltipContentTimeout);
-                                              this.tooltipContentSkipLoading = false;
-                                              
-                                              this.onmouseenter = this.onfocus = async () => {
-                                                window.clearTimeout(this.tooltipContentTimeout);
-                                                if (this.tooltipContentSkipLoading) return;
-                                                this.tooltipContentSkipLoading = true;
-                                                leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                                                  application.configuration
-                                                    .hostname
-                                                }/courses/${
-                                            response.locals.course.reference
-                                          }/conversations/${
-                                            response.locals.conversation
-                                              .reference
-                                          }/messages/1/reuse", { cache: "no-store" })).text());
-                                                this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
-                                                this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
-                                                this.tooltip.setProps({});
-                                              };
-                                              
-                                              this.onmouseleave = this.onblur = () => {
-                                                window.clearTimeout(this.tooltipContentTimeout);
-                                                if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
-                                                this.tooltipContentTimeout = window.setTimeout(() => {
-                                                  this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
-                                                  this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
-                                                  this.tooltipContentSkipLoading = false;
-                                                }, 60 * 1000);
-                                              };
-                                            `)}"
-                                        >
-                                          <i class="bi bi-recycle"></i>
-                                          Reuse Conversation in Another Course
-                                        </button>
-                                      `
-                                    : html``}
-                                  $${response.locals.enrollment.courseRole ===
-                                  "staff"
-                                    ? html`
-                                        <div>
+                                          });
+  
+                                          this.onclick = async () => {
+                                            await navigator.clipboard.writeText("https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}");
+                                            this.copied.show();
+                                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                            this.copied.hide();
+                                          };
+                                        `)}"
+                                    >
+                                      <i class="bi bi-link"></i>
+                                      Copy Conversation Permanent Link
+                                    </button>
+                                    $${mayEditConversation({
+                                      request,
+                                      response,
+                                    })
+                                      ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
                                             javascript="${response.locals
                                               .javascript(javascript`
-                                                (this.dropdown ??= tippy(this)).setProps({
-                                                  theme: "rose",
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                  content: ${JSON.stringify(html`
-                                                    <form
-                                                      method="DELETE"
-                                                      action="https://${application
-                                                        .configuration
-                                                        .hostname}/courses/${response
-                                                        .locals.course
-                                                        .reference}/conversations/${response
-                                                        .locals.conversation
-                                                        .reference}${qs.stringify(
-                                                        {
-                                                          conversations:
-                                                            request.query
-                                                              .conversations,
-                                                        },
-                                                        {
-                                                          addQueryPrefix: true,
-                                                        }
-                                                      )}"
+                                                this.onclick = () => {
+                                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
+                                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
+                                                  tippy.hideAll();
+                                                };
+                                              `)}"
+                                          >
+                                            <i class="bi bi-pencil"></i>
+                                            Edit Conversation Title
+                                          </button>
+                                        `
+                                      : html``}
+                                    $${response.locals.conversation
+                                      .authorEnrollment !==
+                                      "no-longer-enrolled" &&
+                                    response.locals.conversation
+                                      .authorEnrollment.courseRole ===
+                                      "student" &&
+                                    mayEditConversation({ request, response })
+                                      ? html`
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${response
+                                              .locals.course
+                                              .reference}/conversations/${response
+                                              .locals.conversation
+                                              .reference}${qs.stringify(
+                                              {
+                                                conversations:
+                                                  request.query.conversations,
+                                                messages:
+                                                  request.query.messages,
+                                              },
+                                              { addQueryPrefix: true }
+                                            )}"
+                                            class="dropdown--menu"
+                                          >
+                                            $${response.locals.conversation
+                                              .anonymousAt === null
+                                              ? html`
+                                                  <input
+                                                    key="isAnonymous--true"
+                                                    type="hidden"
+                                                    name="isAnonymous"
+                                                    value="true"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    <span
                                                       css="${response.locals
                                                         .css(css`
-                                                        padding: var(
-                                                          --space--2
+                                                        margin-left: var(
+                                                          --space---0-5
                                                         );
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--4);
                                                       `)}"
                                                     >
-                                                      <p>
-                                                        Are you sure you want to
-                                                        remove this
-                                                        conversation?
-                                                      </p>
-                                                      <p>
-                                                        <strong
+                                                      $${application.server.locals.partials.user(
+                                                        {
+                                                          request,
+                                                          response,
+                                                          name: false,
+                                                          size: "xs",
+                                                        }
+                                                      )}
+                                                    </span>
+                                                    Set as Anonymous to Other
+                                                    Students
+                                                  </button>
+                                                `
+                                              : html`
+                                                  <input
+                                                    key="isAnonymous--false"
+                                                    type="hidden"
+                                                    name="isAnonymous"
+                                                    value="false"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                  >
+                                                    <span
+                                                      css="${response.locals
+                                                        .css(css`
+                                                        margin-left: var(
+                                                          --space---0-5
+                                                        );
+                                                      `)}"
+                                                    >
+                                                      $${application.server.locals.partials.user(
+                                                        {
+                                                          request,
+                                                          response,
+                                                          user: response.locals
+                                                            .conversation
+                                                            .authorEnrollment
+                                                            .user,
+                                                          decorate: false,
+                                                          name: false,
+                                                          size: "xs",
+                                                        }
+                                                      )}
+                                                    </span>
+                                                    Set as Signed by
+                                                    ${response.locals
+                                                      .conversation
+                                                      .authorEnrollment.id ===
+                                                    response.locals.enrollment
+                                                      .id
+                                                      ? "You"
+                                                      : response.locals
+                                                          .conversation
+                                                          .authorEnrollment.user
+                                                          .name}
+                                                  </button>
+                                                `}
+                                          </form>
+                                        `
+                                      : html``}
+                                    $${response.locals.enrollment.courseRole ===
+                                      "staff" &&
+                                    response.locals.enrollments.length > 1 &&
+                                    messages.length > 0 &&
+                                    messages[0].reference ===
+                                      "1" /* TODO: Pagination */
+                                      ? html`
+                                          <button
+                                            class="dropdown--menu--item button button--transparent"
+                                            javascript="${response.locals
+                                              .javascript(javascript`
+                                                leafac.setTippy({
+                                                  event,
+                                                  element: this,
+                                                  tippyProps: {
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    onHidden: () => { this.onmouseleave(); },
+                                                    content: ${JSON.stringify(html`
+                                                      <div
+                                                        key="loading"
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          display: flex;
+                                                          gap: var(--space--2);
+                                                          align-items: center;
+                                                        `)}"
+                                                      >
+                                                        $${application.server.locals.partials.spinner(
+                                                          {
+                                                            request,
+                                                            response,
+                                                          }
+                                                        )}
+                                                        Loading…
+                                                      </div>
+                                                      <div
+                                                        key="content"
+                                                        hidden
+                                                      ></div>
+                                                    `)},
+                                                  },
+                                                });
+  
+                                                window.clearTimeout(this.tooltipContentTimeout);
+                                                this.tooltipContentSkipLoading = false;
+                                                
+                                                this.onmouseenter = this.onfocus = async () => {
+                                                  window.clearTimeout(this.tooltipContentTimeout);
+                                                  if (this.tooltipContentSkipLoading) return;
+                                                  this.tooltipContentSkipLoading = true;
+                                                  leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
+                                                    application.configuration
+                                                      .hostname
+                                                  }/courses/${
+                                              response.locals.course.reference
+                                            }/conversations/${
+                                              response.locals.conversation
+                                                .reference
+                                            }/messages/1/reuse", { cache: "no-store" })).text());
+                                                  this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
+                                                  this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
+                                                  this.tooltip.setProps({});
+                                                };
+                                                
+                                                this.onmouseleave = this.onblur = () => {
+                                                  window.clearTimeout(this.tooltipContentTimeout);
+                                                  if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
+                                                  this.tooltipContentTimeout = window.setTimeout(() => {
+                                                    this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
+                                                    this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
+                                                    this.tooltipContentSkipLoading = false;
+                                                  }, 60 * 1000);
+                                                };
+                                              `)}"
+                                          >
+                                            <i class="bi bi-recycle"></i>
+                                            Reuse Conversation in Another Course
+                                          </button>
+                                        `
+                                      : html``}
+                                    $${response.locals.enrollment.courseRole ===
+                                    "staff"
+                                      ? html`
+                                          <div>
+                                            <button
+                                              class="dropdown--menu--item button button--transparent"
+                                              javascript="${response.locals
+                                                .javascript(javascript`
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    elementProperty: "dropdown",
+                                                    tippyProps: {
+                                                      theme: "rose",
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      content: ${JSON.stringify(html`
+                                                        <form
+                                                          method="DELETE"
+                                                          action="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${response
+                                                            .locals.course
+                                                            .reference}/conversations/${response
+                                                            .locals.conversation
+                                                            .reference}${qs.stringify(
+                                                            {
+                                                              conversations:
+                                                                request.query
+                                                                  .conversations,
+                                                            },
+                                                            {
+                                                              addQueryPrefix:
+                                                                true,
+                                                            }
+                                                          )}"
                                                           css="${response.locals
                                                             .css(css`
-                                                            font-weight: var(
-                                                              --font-weight--bold
+                                                            padding: var(
+                                                              --space--2
+                                                            );
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--4
                                                             );
                                                           `)}"
                                                         >
-                                                          You may not undo this
-                                                          action!
-                                                        </strong>
-                                                      </p>
-                                                      <button
-                                                        class="button button--rose"
-                                                      >
-                                                        <i
-                                                          class="bi bi-trash-fill"
-                                                        ></i>
-                                                        Remove Conversation
-                                                      </button>
-                                                    </form>
-                                                  `)},
-                                                });
-                                              `)}"
-                                          >
-                                            <i class="bi bi-trash"></i>
-                                            Remove Conversation
-                                          </button>
-                                        </div>
-                                      `
-                                    : html``}
-                                </div>
-                              `)},
+                                                          <p>
+                                                            Are you sure you
+                                                            want to remove this
+                                                            conversation?
+                                                          </p>
+                                                          <p>
+                                                            <strong
+                                                              css="${response
+                                                                .locals.css(css`
+                                                                font-weight: var(
+                                                                  --font-weight--bold
+                                                                );
+                                                              `)}"
+                                                            >
+                                                              You may not undo
+                                                              this action!
+                                                            </strong>
+                                                          </p>
+                                                          <button
+                                                            class="button button--rose"
+                                                          >
+                                                            <i
+                                                              class="bi bi-trash-fill"
+                                                            ></i>
+                                                            Remove Conversation
+                                                          </button>
+                                                        </form>
+                                                      `)},  
+                                                    },
+                                                  });
+                                                `)}"
+                                            >
+                                              <i class="bi bi-trash"></i>
+                                              Remove Conversation
+                                            </button>
+                                          </div>
+                                        `
+                                      : html``}
+                                  </div>
+                                `)},  
+                              },
                             });
                           `)}"
                         >
@@ -5984,10 +6157,14 @@ export default async (application: Application): Promise<void> => {
                               `)}"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "green",
-                                    touch: false,
-                                    content: "Update Title",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "green",
+                                      touch: false,
+                                      content: "Update Title",
+                                    },
                                   });
                                 `)}"
                             >
@@ -5998,39 +6175,43 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent text--rose"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    theme: "rose",
-                                    touch: false,
-                                    content: ${JSON.stringify(html`
-                                      Cancel
-                                      <span class="keyboard-shortcut">
-                                        (<span
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              this.hidden = leafac.isAppleDevice;
-                                            `)}"
-                                          >Esc</span
-                                        ><span
-                                          class="keyboard-shortcut--cluster"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
-                                              this.hidden = !leafac.isAppleDevice;
-                                            `)}"
-                                          ><i class="bi bi-escape"></i></span
-                                        >)
-                                      </span>
-                                    `)},
-                                });
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: ${JSON.stringify(html`
+                                        Cancel
+                                        <span class="keyboard-shortcut">
+                                          (<span
+                                            javascript="${response.locals
+                                              .javascript(javascript`
+                                                this.hidden = leafac.isAppleDevice;
+                                              `)}"
+                                            >Esc</span
+                                          ><span
+                                            class="keyboard-shortcut--cluster"
+                                            javascript="${response.locals
+                                              .javascript(javascript`
+                                                this.hidden = !leafac.isAppleDevice;
+                                              `)}"
+                                            ><i class="bi bi-escape"></i></span
+                                          >)
+                                        </span>
+                                      `)},
+                                    },
+                                  });
                                       
-                                this.onclick = () => {
-                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = false;
-                                  this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = true;
-                                };
+                                  this.onclick = () => {
+                                    this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = false;
+                                    this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = true;
+                                  };
 
-                                const input = this.closest('[key="title--edit"]').querySelector('[name="title"]');
+                                  const input = this.closest('[key="title--edit"]').querySelector('[name="title"]');
 
-                                (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
-                              `)}"
+                                  (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
+                                `)}"
                             >
                               <i class="bi bi-x-lg"></i>
                             </button>
@@ -6075,10 +6256,14 @@ export default async (application: Application): Promise<void> => {
                                 `)}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      theme: "rose",
-                                      touch: false,
-                                      content: "You may not remove this tag because a conversation must have at least one tag.",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        theme: "rose",
+                                        touch: false,
+                                        content: "You may not remove this tag because a conversation must have at least one tag.",
+                                      },
                                     });
                                   `)}"
                               >
@@ -6091,8 +6276,12 @@ export default async (application: Application): Promise<void> => {
                                       class="text--sky"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            content: "This tag is visible by staff only.",
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            tippyProps: {
+                                              content: "This tag is visible by staff only.",
+                                            },
                                           });
                                         `)}"
                                     >
@@ -6134,10 +6323,14 @@ export default async (application: Application): Promise<void> => {
                                 `)}"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      theme: "rose",
-                                      touch: false,
-                                      content: "Remove Tag",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        theme: "rose",
+                                        touch: false,
+                                        content: "Remove Tag",
+                                      },
                                     });
                                   `)}"
                               >
@@ -6150,8 +6343,12 @@ export default async (application: Application): Promise<void> => {
                                       class="text--sky"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            content: "This tag is visible by staff only.",
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            tippyProps: {
+                                              content: "This tag is visible by staff only.",
+                                            },
                                           });
                                         `)}"
                                     >
@@ -6173,180 +6370,143 @@ export default async (application: Application): Promise<void> => {
                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Add Tag",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Add Tag",
+                                    },
                                   });
                                   
-                                  (this.dropdown ??= tippy(this)).setProps({
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${JSON.stringify(html`
-                                      <div
-                                        css="${response.locals.css(css`
-                                          max-height: var(--space--40);
-                                          overflow: auto;
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `)}"
-                                      >
-                                        $${response.locals.enrollment
-                                          .courseRole === "staff"
-                                          ? html`
-                                              <div class="dropdown--menu">
-                                                <a
-                                                  href="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${response
-                                                    .locals.course
-                                                    .reference}/settings/tags"
-                                                  target="_blank"
-                                                  class="dropdown--menu--item button button--transparent"
-                                                >
-                                                  <i class="bi bi-sliders"></i>
-                                                  Manage Tags
-                                                </a>
-                                              </div>
-
-                                              <hr class="separator" />
-                                            `
-                                          : html``}
-
-                                        <div class="dropdown--menu">
-                                          $${response.locals.tags.map((tag) =>
-                                            !response.locals.conversation.taggings.some(
-                                              (tagging) =>
-                                                tagging.tag.id === tag.id
-                                            )
-                                              ? html`
-                                                  <form
-                                                    key="tag--${tag.reference}"
-                                                    method="POST"
-                                                    action="https://${application
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    elementProperty: "dropdown",
+                                    tippyProps: {
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${JSON.stringify(html`
+                                        <div
+                                          css="${response.locals.css(css`
+                                            max-height: var(--space--40);
+                                            overflow: auto;
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `)}"
+                                        >
+                                          $${response.locals.enrollment
+                                            .courseRole === "staff"
+                                            ? html`
+                                                <div class="dropdown--menu">
+                                                  <a
+                                                    href="https://${application
                                                       .configuration
                                                       .hostname}/courses/${response
                                                       .locals.course
-                                                      .reference}/conversations/${response
-                                                      .locals.conversation
-                                                      .reference}/taggings${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          request.query
-                                                            .conversations,
-                                                        messages:
-                                                          request.query
-                                                            .messages,
-                                                      },
-                                                      { addQueryPrefix: true }
-                                                    )}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="reference"
-                                                      value="${tag.reference}"
-                                                    />
-                                                    <button
-                                                      class="dropdown--menu--item button button--transparent text--teal"
-                                                    >
-                                                      <i
-                                                        class="bi bi-tag-fill"
-                                                      ></i>
-                                                      ${tag.name}
-                                                      $${tag.staffOnlyAt !==
-                                                      null
-                                                        ? html`
-                                                            <span
-                                                              class="text--sky"
-                                                              javascript="${response
-                                                                .locals
-                                                                .javascript(javascript`
-                                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                                    touch: false,
-                                                                    content: "This tag is visible by staff only.",
-                                                                  });
-                                                                `)}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-mortarboard-fill"
-                                                              ></i>
-                                                            </span>
-                                                          `
-                                                        : html``}
-                                                    </button>
-                                                  </form>
-                                                `
-                                              : response.locals.conversation
-                                                  .taggings.length === 1 &&
-                                                response.locals.conversation
-                                                  .type !== "chat"
-                                              ? html`
-                                                  <div
-                                                    class="dropdown--menu--item button button--blue text--teal disabled"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
-                                                        (this.tooltip ??= tippy(this)).setProps({
-                                                          theme: "rose",
-                                                          touch: false,
-                                                          content: "You may not remove this tag because a conversation must have at least one tag.",
-                                                        });
-                                                      `)}"
+                                                      .reference}/settings/tags"
+                                                    target="_blank"
+                                                    class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <i
-                                                      class="bi bi-tag-fill"
+                                                      class="bi bi-sliders"
                                                     ></i>
-                                                    ${tag.name}
-                                                    $${tag.staffOnlyAt !== null
-                                                      ? html`
-                                                          <span
-                                                            class="text--sky"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
-                                                                (this.tooltip ??= tippy(this)).setProps({
-                                                                  touch: false,
-                                                                  content: "This tag is visible by staff only.",
-                                                                });
-                                                              `)}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-mortarboard-fill"
-                                                            ></i>
-                                                          </span>
-                                                        `
-                                                      : html``}
-                                                  </div>
-                                                `
-                                              : html`
-                                                  <form
-                                                    key="tag--${tag.reference}"
-                                                    method="DELETE"
-                                                    action="https://${application
-                                                      .configuration
-                                                      .hostname}/courses/${response
-                                                      .locals.course
-                                                      .reference}/conversations/${response
-                                                      .locals.conversation
-                                                      .reference}/taggings${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          request.query
-                                                            .conversations,
-                                                        messages:
-                                                          request.query
-                                                            .messages,
-                                                      },
-                                                      { addQueryPrefix: true }
-                                                    )}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="reference"
-                                                      value="${tag.reference}"
-                                                    />
-                                                    <button
-                                                      class="dropdown--menu--item button button--blue text--teal"
+                                                    Manage Tags
+                                                  </a>
+                                                </div>
+
+                                                <hr class="separator" />
+                                              `
+                                            : html``}
+
+                                          <div class="dropdown--menu">
+                                            $${response.locals.tags.map((tag) =>
+                                              !response.locals.conversation.taggings.some(
+                                                (tagging) =>
+                                                  tagging.tag.id === tag.id
+                                              )
+                                                ? html`
+                                                    <form
+                                                      key="tag--${tag.reference}"
+                                                      method="POST"
+                                                      action="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}/conversations/${response
+                                                        .locals.conversation
+                                                        .reference}/taggings${qs.stringify(
+                                                        {
+                                                          conversations:
+                                                            request.query
+                                                              .conversations,
+                                                          messages:
+                                                            request.query
+                                                              .messages,
+                                                        },
+                                                        { addQueryPrefix: true }
+                                                      )}"
+                                                    >
+                                                      <input
+                                                        type="hidden"
+                                                        name="reference"
+                                                        value="${tag.reference}"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--transparent text--teal"
+                                                      >
+                                                        <i
+                                                          class="bi bi-tag-fill"
+                                                        ></i>
+                                                        ${tag.name}
+                                                        $${tag.staffOnlyAt !==
+                                                        null
+                                                          ? html`
+                                                              <span
+                                                                class="text--sky"
+                                                                javascript="${response
+                                                                  .locals
+                                                                  .javascript(javascript`
+                                                                    leafac.setTippy({
+                                                                      event,
+                                                                      element: this,
+                                                                      tippyProps: {
+                                                                        touch: false,
+                                                                        content: "This tag is visible by staff only.",
+                                                                      },
+                                                                    });
+                                                                  `)}"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-mortarboard-fill"
+                                                                ></i>
+                                                              </span>
+                                                            `
+                                                          : html``}
+                                                      </button>
+                                                    </form>
+                                                  `
+                                                : response.locals.conversation
+                                                    .taggings.length === 1 &&
+                                                  response.locals.conversation
+                                                    .type !== "chat"
+                                                ? html`
+                                                    <div
+                                                      class="dropdown--menu--item button button--blue text--teal disabled"
+                                                      javascript="${response
+                                                        .locals
+                                                        .javascript(javascript`
+                                                          leafac.setTippy({
+                                                            event,
+                                                            element: this,
+                                                            tippyProps: {
+                                                              theme: "rose",
+                                                              touch: false,
+                                                              content: "You may not remove this tag because a conversation must have at least one tag.",
+                                                            },
+                                                          });
+                                                        `)}"
                                                     >
                                                       <i
                                                         class="bi bi-tag-fill"
@@ -6360,9 +6520,13 @@ export default async (application: Application): Promise<void> => {
                                                               javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
-                                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                                    touch: false,
-                                                                    content: "This tag is visible by staff only.",
+                                                                  leafac.setTippy({
+                                                                    event,
+                                                                    element: this,
+                                                                    tippyProps: {
+                                                                      touch: false,
+                                                                      content: "This tag is visible by staff only.",
+                                                                    },
                                                                   });
                                                                 `)}"
                                                             >
@@ -6372,13 +6536,74 @@ export default async (application: Application): Promise<void> => {
                                                             </span>
                                                           `
                                                         : html``}
-                                                    </button>
-                                                  </form>
-                                                `
-                                          )}
+                                                    </div>
+                                                  `
+                                                : html`
+                                                    <form
+                                                      key="tag--${tag.reference}"
+                                                      method="DELETE"
+                                                      action="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}/conversations/${response
+                                                        .locals.conversation
+                                                        .reference}/taggings${qs.stringify(
+                                                        {
+                                                          conversations:
+                                                            request.query
+                                                              .conversations,
+                                                          messages:
+                                                            request.query
+                                                              .messages,
+                                                        },
+                                                        { addQueryPrefix: true }
+                                                      )}"
+                                                    >
+                                                      <input
+                                                        type="hidden"
+                                                        name="reference"
+                                                        value="${tag.reference}"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--blue text--teal"
+                                                      >
+                                                        <i
+                                                          class="bi bi-tag-fill"
+                                                        ></i>
+                                                        ${tag.name}
+                                                        $${tag.staffOnlyAt !==
+                                                        null
+                                                          ? html`
+                                                              <span
+                                                                class="text--sky"
+                                                                javascript="${response
+                                                                  .locals
+                                                                  .javascript(javascript`
+                                                                    leafac.setTippy({
+                                                                      event,
+                                                                      element: this,
+                                                                      tippyProps: {
+                                                                        touch: false,
+                                                                        content: "This tag is visible by staff only.",
+                                                                      },
+                                                                    });
+                                                                  `)}"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-mortarboard-fill"
+                                                                ></i>
+                                                              </span>
+                                                            `
+                                                          : html``}
+                                                      </button>
+                                                    </form>
+                                                  `
+                                            )}
+                                          </div>
                                         </div>
-                                      </div>
-                                    `)},
+                                      `)},  
+                                    },
                                   });
                                 `)}"
                             >
@@ -6508,306 +6733,319 @@ export default async (application: Application): Promise<void> => {
                                   key="participants"
                                   javascript="${response.locals
                                     .javascript(javascript`
-                                      (this.dropdown ??= tippy(this)).setProps({
-                                        trigger: "click",
-                                        interactive: true,
-                                        placement: "bottom",
-                                        content: ${JSON.stringify(html`
-                                          <div
-                                            key="participants--dropdown"
-                                            css="${response.locals.css(css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
-                                            `)}"
-                                          >
-                                            <div class="dropdown--menu">
-                                              $${application.server.locals.helpers.conversationParticipantses.map(
-                                                (
-                                                  conversationParticipants
-                                                ) => html`
-                                                  <label>
-                                                    <input
-                                                      type="radio"
-                                                      name="participants--dropdown--participants"
-                                                      value="${conversationParticipants}"
-                                                      $${response.locals
-                                                        .conversation
-                                                        .participants ===
-                                                      conversationParticipants
-                                                        ? html`checked`
-                                                        : html``}
-                                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
-                                                          this.isModified = false;
-
-                                                          this.onchange = () => {
-                                                            this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
-
-                                                            const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                            const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
-
-                                                            ${
-                                                              conversationParticipants ===
-                                                              "everyone"
-                                                                ? javascript`
-                                                                    selectedParticipants.hidden = true;
-
-                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                      element.disabled = true;
-                                                                  `
-                                                                : conversationParticipants ===
-                                                                  "staff"
-                                                                ? javascript`
-                                                                    selectedParticipants.hidden = false;
-
-                                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                      element.hidden = true;
-                                                                    participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-
-                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                      element.disabled = element.matches('[data-enrollment-course-role="staff"]');
-                                                                  `
-                                                                : conversationParticipants ===
-                                                                  "selected-people"
-                                                                ? javascript`
-                                                                    selectedParticipants.hidden = false;
-
-                                                                    for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
-                                                                      element.hidden = false;
-                                                                    participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
-
-                                                                    for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                      element.disabled = false;
-                                                                  `
-                                                                : javascript``
-                                                            }
-
-                                                            this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
-                                                          };
-                                                        `)}"
-                                                    />
-                                                    <span
-                                                      class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
-                                                        conversationParticipants
-                                                      ]}"
-                                                    >
-                                                      $${iconsConversationParticipants[
-                                                        conversationParticipants
-                                                      ].fill}
-                                                      $${labelsConversationParticipants[
-                                                        conversationParticipants
-                                                      ]}
-                                                    </span>
-                                                    <span
-                                                      class="dropdown--menu--item button button--blue"
-                                                    >
-                                                      $${iconsConversationParticipants[
-                                                        conversationParticipants
-                                                      ].fill}
-                                                      $${labelsConversationParticipants[
-                                                        conversationParticipants
-                                                      ]}
-                                                    </span>
-                                                  </label>
-                                                `
-                                              )}
-                                            </div>
-
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        elementProperty: "dropdown",
+                                        tippyProps: {
+                                          trigger: "click",
+                                          interactive: true,
+                                          placement: "bottom",
+                                          content: ${JSON.stringify(html`
                                             <div
-                                              key="participants--dropdown--selected-participants"
-                                              $${[
-                                                "staff",
-                                                "selected-people",
-                                              ].includes(
-                                                response.locals.conversation
-                                                  .participants
-                                              )
-                                                ? html``
-                                                : html`hidden`}
+                                              key="participants--dropdown"
                                               css="${response.locals.css(css`
                                                 display: flex;
                                                 flex-direction: column;
                                                 gap: var(--space--2);
                                               `)}"
                                             >
-                                              <hr class="dropdown--separator" />
-
-                                              $${response.locals
-                                                .courseEnrollmentsCount === 1
-                                                ? html`
-                                                    <p
-                                                      class="secondary"
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        padding: var(--space--0)
-                                                          var(--space--2)
-                                                          var(--space--2);
-                                                      `)}"
-                                                    >
-                                                      You may select
-                                                      participants when there
-                                                      are more people enrolled
-                                                      in the course.
-                                                    </p>
+                                              <div class="dropdown--menu">
+                                                $${application.server.locals.helpers.conversationParticipantses.map(
+                                                  (
+                                                    conversationParticipants
+                                                  ) => html`
+                                                    <label>
+                                                      <input
+                                                        type="radio"
+                                                        name="participants--dropdown--participants"
+                                                        value="${conversationParticipants}"
+                                                        $${response.locals
+                                                          .conversation
+                                                          .participants ===
+                                                        conversationParticipants
+                                                          ? html`checked`
+                                                          : html``}
+                                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                        javascript="${response
+                                                          .locals
+                                                          .javascript(javascript`
+                                                            this.isModified = false;
+  
+                                                            this.onchange = () => {
+                                                              this.closest("form").querySelector('[name="participants"][value="${conversationParticipants}"]').checked = true;
+  
+                                                              const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                              const selectedParticipants = participantsDropdown.querySelector('[key="participants--dropdown--selected-participants"]');
+  
+                                                              ${
+                                                                conversationParticipants ===
+                                                                "everyone"
+                                                                  ? javascript`
+                                                                      selectedParticipants.hidden = true;
+  
+                                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                        element.disabled = true;
+                                                                    `
+                                                                  : conversationParticipants ===
+                                                                    "staff"
+                                                                  ? javascript`
+                                                                      selectedParticipants.hidden = false;
+  
+                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                        element.hidden = true;
+                                                                      participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+  
+                                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                        element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                                    `
+                                                                  : conversationParticipants ===
+                                                                    "selected-people"
+                                                                  ? javascript`
+                                                                      selectedParticipants.hidden = false;
+  
+                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                        element.hidden = false;
+                                                                      participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+  
+                                                                      for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
+                                                                        element.disabled = false;
+                                                                    `
+                                                                  : javascript``
+                                                              }
+  
+                                                              this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                            };
+                                                          `)}"
+                                                      />
+                                                      <span
+                                                        class="dropdown--menu--item button button--transparent ${textColorsConversationParticipants[
+                                                          conversationParticipants
+                                                        ]}"
+                                                      >
+                                                        $${iconsConversationParticipants[
+                                                          conversationParticipants
+                                                        ].fill}
+                                                        $${labelsConversationParticipants[
+                                                          conversationParticipants
+                                                        ]}
+                                                      </span>
+                                                      <span
+                                                        class="dropdown--menu--item button button--blue"
+                                                      >
+                                                        $${iconsConversationParticipants[
+                                                          conversationParticipants
+                                                        ].fill}
+                                                        $${labelsConversationParticipants[
+                                                          conversationParticipants
+                                                        ]}
+                                                      </span>
+                                                    </label>
                                                   `
-                                                : html`
-                                                    <div
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        padding: var(--space--0)
-                                                          var(--space--2);
-                                                      `)}"
-                                                    >
-                                                      <label
+                                                )}
+                                              </div>
+
+                                              <div
+                                                key="participants--dropdown--selected-participants"
+                                                $${[
+                                                  "staff",
+                                                  "selected-people",
+                                                ].includes(
+                                                  response.locals.conversation
+                                                    .participants
+                                                )
+                                                  ? html``
+                                                  : html`hidden`}
+                                                css="${response.locals.css(css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `)}"
+                                              >
+                                                <hr
+                                                  class="dropdown--separator"
+                                                />
+
+                                                $${response.locals
+                                                  .courseEnrollmentsCount === 1
+                                                  ? html`
+                                                      <p
+                                                        class="secondary"
                                                         css="${response.locals
                                                           .css(css`
-                                                          display: flex;
-                                                          gap: var(--space--2);
-                                                          align-items: baseline;
+                                                          padding: var(
+                                                              --space--0
+                                                            )
+                                                            var(--space--2)
+                                                            var(--space--2);
                                                         `)}"
                                                       >
-                                                        <i
-                                                          class="bi bi-funnel"
-                                                        ></i>
-                                                        <input
-                                                          key="participants--dropdown--selected-participants--filter"
-                                                          type="text"
-                                                          class="input--text"
-                                                          placeholder="Filter…"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              this.isModified = false;
-
-                                                              this.oninput = () => {
-                                                                const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                                                                const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                                const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
-                                                                for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                  if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
-                                                                    continue;
-                                                                  let selectedParticipantHidden = filterPhrases.length > 0;
-                                                                  for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                                    const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                                                                    const filterablePhrasesElementChildren = [];
-                                                                    for (const filterablePhrase of filterablePhrases) {
-                                                                      let filterablePhraseElement;
-                                                                      if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                                                                        filterablePhraseElement = document.createElement("mark");
-                                                                        filterablePhraseElement.classList.add("mark");
-                                                                        selectedParticipantHidden = false;
-                                                                      } else
-                                                                        filterablePhraseElement = document.createElement("span");
-                                                                      filterablePhraseElement.textContent = filterablePhrase;
-                                                                      filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                        You may select
+                                                        participants when there
+                                                        are more people enrolled
+                                                        in the course.
+                                                      </p>
+                                                    `
+                                                  : html`
+                                                      <div
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          padding: var(
+                                                              --space--0
+                                                            )
+                                                            var(--space--2);
+                                                        `)}"
+                                                      >
+                                                        <label
+                                                          css="${response.locals
+                                                            .css(css`
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                            align-items: baseline;
+                                                          `)}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-funnel"
+                                                          ></i>
+                                                          <input
+                                                            key="participants--dropdown--selected-participants--filter"
+                                                            type="text"
+                                                            class="input--text"
+                                                            placeholder="Filter…"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                this.isModified = false;
+  
+                                                                this.oninput = () => {
+                                                                  const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                                                                  const participantsDropdown = this.closest('[key="participants--dropdown"]');
+                                                                  const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                                  for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
+                                                                    if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                                      continue;
+                                                                    let selectedParticipantHidden = filterPhrases.length > 0;
+                                                                    for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                                      const filterablePhrasesElementChildren = [];
+                                                                      for (const filterablePhrase of filterablePhrases) {
+                                                                        let filterablePhraseElement;
+                                                                        if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                                                                          filterablePhraseElement = document.createElement("mark");
+                                                                          filterablePhraseElement.classList.add("mark");
+                                                                          selectedParticipantHidden = false;
+                                                                        } else
+                                                                          filterablePhraseElement = document.createElement("span");
+                                                                        filterablePhraseElement.textContent = filterablePhrase;
+                                                                        filterablePhrasesElementChildren.push(filterablePhraseElement);
+                                                                      }
+                                                                      filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                                                                     }
-                                                                    filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                                                                    selectedParticipant.hidden = selectedParticipantHidden;
                                                                   }
-                                                                  selectedParticipant.hidden = selectedParticipantHidden;
-                                                                }
-                                                              };
-                                                            `)}"
-                                                        />
-                                                      </label>
-                                                    </div>
+                                                                };
+                                                              `)}"
+                                                          />
+                                                        </label>
+                                                      </div>
 
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
 
-                                                    <div
-                                                      class="dropdown--menu"
-                                                      css="${response.locals
-                                                        .css(css`
-                                                        height: var(
-                                                          --space--40
-                                                        );
-                                                        overflow: auto;
-                                                      `)}"
-                                                    >
-                                                      $${enrollments.map(
-                                                        (enrollment) => html`
-                                                          <label
-                                                            key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                            data-enrollment-course-role="${enrollment.courseRole}"
-                                                            $${response.locals
-                                                              .conversation
-                                                              .participants ===
-                                                              "staff" &&
-                                                            enrollment.courseRole ===
-                                                              "staff"
-                                                              ? html`hidden`
-                                                              : html``}
-                                                          >
-                                                            <input
-                                                              type="checkbox"
-                                                              name="participants--dropdown--selected-participants[]"
-                                                              value="${enrollment.reference}"
-                                                              $${response.locals.conversation.selectedParticipants.find(
-                                                                (
-                                                                  selectedParticipant
-                                                                ) =>
-                                                                  selectedParticipant.id ===
-                                                                  enrollment.id
-                                                              ) !== undefined
-                                                                ? html`checked`
+                                                      <div
+                                                        class="dropdown--menu"
+                                                        css="${response.locals
+                                                          .css(css`
+                                                          height: var(
+                                                            --space--40
+                                                          );
+                                                          overflow: auto;
+                                                        `)}"
+                                                      >
+                                                        $${enrollments.map(
+                                                          (enrollment) => html`
+                                                            <label
+                                                              key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
+                                                              data-enrollment-course-role="${enrollment.courseRole}"
+                                                              $${response.locals
+                                                                .conversation
+                                                                .participants ===
+                                                                "staff" &&
+                                                              enrollment.courseRole ===
+                                                                "staff"
+                                                                ? html`hidden`
                                                                 : html``}
-                                                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                              javascript="${response
-                                                                .locals
-                                                                .javascript(javascript`
-                                                                  this.isModified = false;
-
-                                                                  this.onchange = () => {
-                                                                    this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
-
-                                                                    this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
-                                                                  };
-                                                                `)}"
-                                                            />
-                                                            <span
-                                                              class="dropdown--menu--item button button--transparent"
                                                             >
-                                                              $${application.server.locals.partials.user(
-                                                                {
-                                                                  request,
-                                                                  response,
-                                                                  enrollment,
-                                                                  user: enrollment.user,
-                                                                  tooltip:
-                                                                    false,
-                                                                  size: "xs",
-                                                                  bold: false,
-                                                                }
-                                                              )}
-                                                            </span>
-                                                            <span
-                                                              class="dropdown--menu--item button button--blue"
-                                                            >
-                                                              $${application.server.locals.partials.user(
-                                                                {
-                                                                  request,
-                                                                  response,
-                                                                  enrollment,
-                                                                  user: enrollment.user,
-                                                                  tooltip:
-                                                                    false,
-                                                                  size: "xs",
-                                                                  bold: false,
-                                                                }
-                                                              )}
-                                                            </span>
-                                                          </label>
-                                                        `
-                                                      )}
-                                                    </div>
-                                                  `}
+                                                              <input
+                                                                type="checkbox"
+                                                                name="participants--dropdown--selected-participants[]"
+                                                                value="${enrollment.reference}"
+                                                                $${response.locals.conversation.selectedParticipants.find(
+                                                                  (
+                                                                    selectedParticipant
+                                                                  ) =>
+                                                                    selectedParticipant.id ===
+                                                                    enrollment.id
+                                                                ) !== undefined
+                                                                  ? html`checked`
+                                                                  : html``}
+                                                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                                                javascript="${response
+                                                                  .locals
+                                                                  .javascript(javascript`
+                                                                    this.isModified = false;
+  
+                                                                    this.onchange = () => {
+                                                                      this.closest("form").querySelector('[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]').checked = this.checked;
+  
+                                                                      this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                                    };
+                                                                  `)}"
+                                                              />
+                                                              <span
+                                                                class="dropdown--menu--item button button--transparent"
+                                                              >
+                                                                $${application.server.locals.partials.user(
+                                                                  {
+                                                                    request,
+                                                                    response,
+                                                                    enrollment,
+                                                                    user: enrollment.user,
+                                                                    tooltip:
+                                                                      false,
+                                                                    size: "xs",
+                                                                    bold: false,
+                                                                  }
+                                                                )}
+                                                              </span>
+                                                              <span
+                                                                class="dropdown--menu--item button button--blue"
+                                                              >
+                                                                $${application.server.locals.partials.user(
+                                                                  {
+                                                                    request,
+                                                                    response,
+                                                                    enrollment,
+                                                                    user: enrollment.user,
+                                                                    tooltip:
+                                                                      false,
+                                                                    size: "xs",
+                                                                    bold: false,
+                                                                  }
+                                                                )}
+                                                              </span>
+                                                            </label>
+                                                          `
+                                                        )}
+                                                      </div>
+                                                    `}
+                                              </div>
                                             </div>
-                                          </div>
-                                        `)},
+                                          `)},  
+                                        },
                                       });
                                     `)}"
                                 >
@@ -6890,9 +7128,13 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--tight button--tight--inline button--transparent"
                                       javascript="${response.locals
                                         .javascript(javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Remove Participant",
+                                          leafac.setTippy({
+                                            event,
+                                            element: this,
+                                            tippyProps: {
+                                              touch: false,
+                                              content: "Remove Participant",
+                                            },
                                           });
 
                                           this.onclick = () => {
@@ -6961,9 +7203,13 @@ export default async (application: Application): Promise<void> => {
                               ]}"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                  (this.tooltip ??= tippy(this)).setProps({
-                                    touch: false,
-                                    content: "Participants",
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Participants",
+                                    },
                                   });
                                 `)}"
                             >
@@ -7236,9 +7482,13 @@ export default async (application: Application): Promise<void> => {
                                                     return;
                                                   }
 
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Close",
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Close",
+                                                    },
                                                   });
                                                             
                                                   this.onclick = () => {
@@ -7452,9 +7702,13 @@ export default async (application: Application): Promise<void> => {
                                                 `)}"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
-                                                    (this.tooltip ??= tippy(this)).setProps({
-                                                      touch: false,
-                                                      content: "Actions",
+                                                    leafac.setTippy({
+                                                      event,
+                                                      element: this,
+                                                      tippyProps: {
+                                                        touch: false,
+                                                        content: "Actions",
+                                                      },
                                                     });
 
                                                     leafac.setTippy({
@@ -7592,9 +7846,13 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              touch: false,
-                                                              content: "Set as Answer",
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Answer",
+                                                              },
                                                             });
                                                           `)}"
                                                       >
@@ -7616,9 +7874,13 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              touch: false,
-                                                              content: "Set as Not an Answer",
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Not an Answer",
+                                                              },
                                                             });
                                                           `)}"
                                                       >
@@ -7693,56 +7955,60 @@ export default async (application: Application): Promise<void> => {
                                                         javascript="${response
                                                           .locals
                                                           .javascript(javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              touch: false,
-                                                              content: ${JSON.stringify(
-                                                                `Remove Endorsement${
-                                                                  message.endorsements.filter(
-                                                                    (
-                                                                      endorsement
-                                                                    ) =>
-                                                                      endorsement.enrollment !==
-                                                                        "no-longer-enrolled" &&
-                                                                      endorsement
-                                                                        .enrollment
-                                                                        .id !==
-                                                                        response
-                                                                          .locals
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: ${JSON.stringify(
+                                                                  `Remove Endorsement${
+                                                                    message.endorsements.filter(
+                                                                      (
+                                                                        endorsement
+                                                                      ) =>
+                                                                        endorsement.enrollment !==
+                                                                          "no-longer-enrolled" &&
+                                                                        endorsement
                                                                           .enrollment
-                                                                          .id
-                                                                  ).length > 0
-                                                                    ? ` (Also endorsed by ${
-                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                          Intl as any
-                                                                        ).ListFormat(
-                                                                          "en"
-                                                                        ).format(
-                                                                          message.endorsements.flatMap(
-                                                                            (
-                                                                              endorsement
-                                                                            ) =>
-                                                                              endorsement.enrollment !==
-                                                                                "no-longer-enrolled" &&
-                                                                              endorsement
-                                                                                .enrollment
-                                                                                .id !==
-                                                                                response
-                                                                                  .locals
+                                                                          .id !==
+                                                                          response
+                                                                            .locals
+                                                                            .enrollment
+                                                                            .id
+                                                                    ).length > 0
+                                                                      ? ` (Also endorsed by ${
+                                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                            Intl as any
+                                                                          ).ListFormat(
+                                                                            "en"
+                                                                          ).format(
+                                                                            message.endorsements.flatMap(
+                                                                              (
+                                                                                endorsement
+                                                                              ) =>
+                                                                                endorsement.enrollment !==
+                                                                                  "no-longer-enrolled" &&
+                                                                                endorsement
                                                                                   .enrollment
-                                                                                  .id
-                                                                                ? [
-                                                                                    endorsement
-                                                                                      .enrollment
-                                                                                      .user
-                                                                                      .name,
-                                                                                  ]
-                                                                                : []
+                                                                                  .id !==
+                                                                                  response
+                                                                                    .locals
+                                                                                    .enrollment
+                                                                                    .id
+                                                                                  ? [
+                                                                                      endorsement
+                                                                                        .enrollment
+                                                                                        .user
+                                                                                        .name,
+                                                                                    ]
+                                                                                  : []
+                                                                            )
                                                                           )
-                                                                        )
-                                                                      })`
-                                                                    : ``
-                                                                }`
-                                                              )},
+                                                                        })`
+                                                                      : ``
+                                                                  }`
+                                                                )},  
+                                                              },
                                                             });
                                                           `)}"
                                                       >
@@ -7771,32 +8037,36 @@ export default async (application: Application): Promise<void> => {
                                                               javascript="${response
                                                                 .locals
                                                                 .javascript(javascript`
-                                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                                    touch: false,
-                                                                    content: ${JSON.stringify(
-                                                                      `Endorse (Already endorsed by ${
-                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                          Intl as any
-                                                                        ).ListFormat(
-                                                                          "en"
-                                                                        ).format(
-                                                                          message.endorsements.flatMap(
-                                                                            (
-                                                                              endorsement
-                                                                            ) =>
-                                                                              endorsement.enrollment ===
-                                                                              "no-longer-enrolled"
-                                                                                ? []
-                                                                                : [
-                                                                                    endorsement
-                                                                                      .enrollment
-                                                                                      .user
-                                                                                      .name,
-                                                                                  ]
+                                                                  leafac.setTippy({
+                                                                    event,
+                                                                    element: this,
+                                                                    tippyProps: {
+                                                                      touch: false,
+                                                                      content: ${JSON.stringify(
+                                                                        `Endorse (Already endorsed by ${
+                                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                            Intl as any
+                                                                          ).ListFormat(
+                                                                            "en"
+                                                                          ).format(
+                                                                            message.endorsements.flatMap(
+                                                                              (
+                                                                                endorsement
+                                                                              ) =>
+                                                                                endorsement.enrollment ===
+                                                                                "no-longer-enrolled"
+                                                                                  ? []
+                                                                                  : [
+                                                                                      endorsement
+                                                                                        .enrollment
+                                                                                        .user
+                                                                                        .name,
+                                                                                    ]
+                                                                            )
                                                                           )
-                                                                        )
-                                                                      })`
-                                                                    )},
+                                                                        })`
+                                                                      )},  
+                                                                    },
                                                                   });
                                                                 `)}"
                                                             `}
@@ -7844,31 +8114,35 @@ export default async (application: Application): Promise<void> => {
                                                           "no-longer-enrolled"
                                                       ).length > 0
                                                         ? javascript`
-                                                            (this.tooltip ??= tippy(this)).setProps({
-                                                              content: ${JSON.stringify(
-                                                                `Endorsed by ${
-                                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                    Intl as any
-                                                                  ).ListFormat(
-                                                                    "en"
-                                                                  ).format(
-                                                                    message.endorsements.flatMap(
-                                                                      (
-                                                                        endorsement
-                                                                      ) =>
-                                                                        endorsement.enrollment ===
-                                                                        "no-longer-enrolled"
-                                                                          ? []
-                                                                          : [
-                                                                              endorsement
-                                                                                .enrollment
-                                                                                .user
-                                                                                .name,
-                                                                            ]
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                content: ${JSON.stringify(
+                                                                  `Endorsed by ${
+                                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                      Intl as any
+                                                                    ).ListFormat(
+                                                                      "en"
+                                                                    ).format(
+                                                                      message.endorsements.flatMap(
+                                                                        (
+                                                                          endorsement
+                                                                        ) =>
+                                                                          endorsement.enrollment ===
+                                                                          "no-longer-enrolled"
+                                                                            ? []
+                                                                            : [
+                                                                                endorsement
+                                                                                  .enrollment
+                                                                                  .user
+                                                                                  .name,
+                                                                              ]
+                                                                      )
                                                                     )
-                                                                  )
-                                                                }`
-                                                              )},
+                                                                  }`
+                                                                )},  
+                                                              },
                                                             });
                                                           `
                                                         : javascript``
@@ -8073,82 +8347,87 @@ export default async (application: Application): Promise<void> => {
                                               javascript="${response.locals
                                                 .javascript(javascript`
                                                   const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
-                                                  (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
-                                                    trigger: "manual",
-                                                    interactive: true,
-                                                    content: ${JSON.stringify(html`
-                                                      <div
-                                                        class="dropdown--menu"
-                                                      >
-                                                        <button
-                                                          class="dropdown--menu--item button button--transparent"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
-                                                              this.onclick = () => {
-                                                                tippy.hideAll();
-                                                                const selection = window.getSelection();
-                                                                const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                                const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                                const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
-                                                                if (
-                                                                  selection.isCollapsed ||
-                                                                  anchorElement === undefined ||
-                                                                  focusElement === undefined ||
-                                                                  !contentElement.contains(anchorElement) ||
-                                                                  !contentElement.contains(focusElement)
-                                                                ) return;
-                                                                const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                                                const focusPosition = JSON.parse(focusElement.dataset.position);
-                                                                const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                                                const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                                const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
-                                                                const newMessage = document.querySelector('[key="new-message"]');
-                                                                newMessage.querySelector('[key="content-editor--button--write"]')?.click();
-                                                                const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
-                                                                textFieldEdit.wrapSelection(
-                                                                  element,
-                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                    message.authorEnrollment ===
-                                                                    "no-longer-enrolled"
-                                                                      ? javascript``
-                                                                      : javascript`
-                                                                          "@${
-                                                                            message.anonymousAt ===
-                                                                            null
-                                                                              ? `${
-                                                                                  message
-                                                                                    .authorEnrollment
-                                                                                    .reference
-                                                                                }--${slugify(
-                                                                                  message
-                                                                                    .authorEnrollment
-                                                                                    .user
-                                                                                    .name
-                                                                                )}`
-                                                                              : `anonymous`
-                                                                          } · " +
-                                                                        `
-                                                                  } "#" + ${JSON.stringify(
-                                                            response.locals
-                                                              .conversation
-                                                              .reference
-                                                          )} + "/" + ${JSON.stringify(
-                                                            message.reference
-                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                                  ""
-                                                                );
-                                                                element.focus();
-                                                              };
-                                                            `)}"
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: dropdownMenuTarget,
+                                                    elementProperty: "dropdownMenu",
+                                                    tippyProps: {
+                                                      trigger: "manual",
+                                                      interactive: true,
+                                                      content: ${JSON.stringify(html`
+                                                        <div
+                                                          class="dropdown--menu"
                                                         >
-                                                          <i
-                                                            class="bi bi-chat-quote"
-                                                          ></i>
-                                                          Quote
-                                                        </button>
-                                                      </div>
-                                                    `)},
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            javascript="${response
+                                                              .locals
+                                                              .javascript(javascript`
+                                                                this.onclick = () => {
+                                                                  tippy.hideAll();
+                                                                  const selection = window.getSelection();
+                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                                  const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
+                                                                  if (
+                                                                    selection.isCollapsed ||
+                                                                    anchorElement === undefined ||
+                                                                    focusElement === undefined ||
+                                                                    !contentElement.contains(anchorElement) ||
+                                                                    !contentElement.contains(focusElement)
+                                                                  ) return;
+                                                                  const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                                                  const focusPosition = JSON.parse(focusElement.dataset.position);
+                                                                  const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                                                  const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                                                  const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
+                                                                  const newMessage = document.querySelector('[key="new-message"]');
+                                                                  newMessage.querySelector('[key="content-editor--button--write"]')?.click();
+                                                                  const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
+                                                                  textFieldEdit.wrapSelection(
+                                                                    element,
+                                                                    ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                      message.authorEnrollment ===
+                                                                      "no-longer-enrolled"
+                                                                        ? javascript``
+                                                                        : javascript`
+                                                                            "@${
+                                                                              message.anonymousAt ===
+                                                                              null
+                                                                                ? `${
+                                                                                    message
+                                                                                      .authorEnrollment
+                                                                                      .reference
+                                                                                  }--${slugify(
+                                                                                    message
+                                                                                      .authorEnrollment
+                                                                                      .user
+                                                                                      .name
+                                                                                  )}`
+                                                                                : `anonymous`
+                                                                            } · " +
+                                                                          `
+                                                                    } "#" + ${JSON.stringify(
+                                                              response.locals
+                                                                .conversation
+                                                                .reference
+                                                            )} + "/" + ${JSON.stringify(
+                                                              message.reference
+                                                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                    ""
+                                                                  );
+                                                                  element.focus();
+                                                                };
+                                                              `)}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-chat-quote"
+                                                            ></i>
+                                                            Quote
+                                                          </button>
+                                                        </div>
+                                                      `)},  
+                                                    },
                                                   });
                                                   
                                                   this.onmouseup = (event) => {
@@ -8249,13 +8528,17 @@ export default async (application: Application): Promise<void> => {
                                                             javascript="${response
                                                               .locals
                                                               .javascript(javascript`
-                                                                (this.tooltip ??= tippy(this)).setProps({
-                                                                  touch: false,
-                                                                  content: ${JSON.stringify(
-                                                                    isLiked
-                                                                      ? "Remove Like"
-                                                                      : "Like"
-                                                                  )},
+                                                                leafac.setTippy({
+                                                                  event,
+                                                                  element: this,
+                                                                  tippyProps: {
+                                                                    touch: false,
+                                                                    content: ${JSON.stringify(
+                                                                      isLiked
+                                                                        ? "Remove Like"
+                                                                        : "Like"
+                                                                    )},
+                                                                  },
                                                                 });
                                                               `)}"
                                                           `}
@@ -8285,13 +8568,20 @@ export default async (application: Application): Promise<void> => {
                                                           javascript="${response
                                                             .locals
                                                             .javascript(javascript`
-                                                              (this.tooltip ??= tippy(this)).setProps({
-                                                                touch: false,
-                                                                content: "See people who liked",
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                tippyProps: {
+                                                                  touch: false,
+                                                                  content: "See people who liked",
+                                                                },
                                                               });
                                                               
-                                                              if (!(event?.detail?.liveUpdate === true && this?.dropdown?.state?.isShown))
-                                                                (this.dropdown ??= tippy(this)).setProps({
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                elementProperty: "dropdown",
+                                                                tippyProps: {
                                                                   trigger: "click",
                                                                   interactive: true,
                                                                   onHidden: () => { this.onmouseleave(); },
@@ -8321,7 +8611,8 @@ export default async (application: Application): Promise<void> => {
                                                                       hidden
                                                                     ></div>
                                                                   `)},
-                                                                });
+                                                                },
+                                                              });
 
                                                               window.clearTimeout(this.dropdownContentTimeout);
                                                               this.dropdownContentSkipLoading = false;
@@ -8380,8 +8671,10 @@ export default async (application: Application): Promise<void> => {
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   javascript="${response.locals
                                                     .javascript(javascript`
-                                                      if (!(event?.detail?.liveUpdate === true && this?.tooltip?.state?.isShown))
-                                                        (this.tooltip ??= tippy(this)).setProps({
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        tippyProps: {
                                                           trigger: "click",
                                                           interactive: true,
                                                           onHidden: () => { this.onmouseleave(); },
@@ -8410,7 +8703,8 @@ export default async (application: Application): Promise<void> => {
                                                               hidden
                                                             ></div>
                                                           `)},
-                                                        });
+                                                        },
+                                                      });
 
                                                       window.clearTimeout(this.tooltipContentTimeout);
                                                       this.tooltipContentSkipLoading = false;
@@ -8808,9 +9102,13 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Answer",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Answer",
+                                      },
                                     });
                                   `)}"
                               >
@@ -8821,9 +9119,13 @@ export default async (application: Application): Promise<void> => {
                                 class="text--emerald"
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Not an Answer",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Not an Answer",
+                                      },
                                     });
                                   `)}"
                               >
@@ -8876,28 +9178,32 @@ export default async (application: Application): Promise<void> => {
                               align-items: center;
                             `)}"
                             javascript="${response.locals.javascript(javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                touch: false,
-                                content: ${JSON.stringify(html`
-                                  Send Message
-                                  <span class="keyboard-shortcut">
-                                    <span
-                                      javascript="${response.locals
-                                        .javascript(javascript`
-                                          this.hidden = leafac.isAppleDevice;
-                                        `)}"
-                                      >Ctrl+Enter</span
-                                    ><span
-                                      class="keyboard-shortcut--cluster"
-                                      javascript="${response.locals
-                                        .javascript(javascript`
-                                          this.hidden = !leafac.isAppleDevice;
-                                        `)}"
-                                      ><i class="bi bi-command"></i
-                                      ><i class="bi bi-arrow-return-left"></i
-                                    ></span>
-                                  </span>
-                                `)},
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: ${JSON.stringify(html`
+                                    Send Message
+                                    <span class="keyboard-shortcut">
+                                      <span
+                                        javascript="${response.locals
+                                          .javascript(javascript`
+                                            this.hidden = leafac.isAppleDevice;
+                                          `)}"
+                                        >Ctrl+Enter</span
+                                      ><span
+                                        class="keyboard-shortcut--cluster"
+                                        javascript="${response.locals
+                                          .javascript(javascript`
+                                            this.hidden = !leafac.isAppleDevice;
+                                          `)}"
+                                        ><i class="bi bi-command"></i
+                                        ><i class="bi bi-arrow-return-left"></i
+                                      ></span>
+                                    </span>
+                                  `)},
+                                },
                               });
                             `)}"
                           >
@@ -8947,9 +9253,13 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Anonymous to Other Students",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Anonymous to Other Students",
+                                      },
                                     });
                                   `)}"
                               >
@@ -8974,9 +9284,13 @@ export default async (application: Application): Promise<void> => {
                               <span
                                 javascript="${response.locals
                                   .javascript(javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      touch: false,
-                                      content: "Set as Signed by You",
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Signed by You",
+                                      },
                                     });
                                   `)}"
                               >
@@ -9009,27 +9323,31 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button button--full-width-on-small-screen button--blue"
                       javascript="${response.locals.javascript(javascript`
-                        (this.tooltip ??= tippy(this)).setProps({
-                          touch: false,
-                          content: ${JSON.stringify(html`
-                            <span class="keyboard-shortcut">
-                              <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
-                                    this.hidden = leafac.isAppleDevice;
-                                  `)}"
-                                >Ctrl+Enter</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                javascript="${response.locals
-                                  .javascript(javascript`
-                                    this.hidden = !leafac.isAppleDevice;
-                                  `)}"
-                                ><i class="bi bi-command"></i
-                                ><i class="bi bi-arrow-return-left"></i
-                              ></span>
-                            </span>
-                          `)},
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: ${JSON.stringify(html`
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${response.locals
+                                    .javascript(javascript`
+                                      this.hidden = leafac.isAppleDevice;
+                                    `)}"
+                                  >Ctrl+Enter</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
+                                      this.hidden = !leafac.isAppleDevice;
+                                    `)}"
+                                  ><i class="bi bi-command"></i
+                                  ><i class="bi bi-arrow-return-left"></i
+                                ></span>
+                              </span>
+                            `)},
+                          },
                         });
 
                         const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
