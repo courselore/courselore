@@ -452,6 +452,36 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
+  if (application.configuration.environment === "development")
+    application.server.get<
+      {},
+      any,
+      {},
+      {},
+      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+    >("/live-updates", (request, response) => {
+      application.database.run(
+        sql`
+          UPDATE "liveConnectionsMetadata"
+          SET "liveUpdateAt" = ${new Date().toISOString()}
+        `
+      );
+
+      for (const port of application.ports.serverEvents)
+        application.got
+          .post(`http://127.0.0.1:${port}/live-updates`)
+          .catch((error) => {
+            response.locals.log(
+              "LIVE-UPDATES",
+              "FAILED TO EMIT POST ‘/live-updates’ EVENT",
+              String(error),
+              error?.stack
+            );
+          });
+
+      response.end();
+    });
+
   application.serverEvents.once("stop", () => {
     for (const liveConnection of liveConnections.values())
       liveConnection.response.end();
