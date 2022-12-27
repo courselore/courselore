@@ -484,13 +484,14 @@ export default async (application: Application): Promise<void> => {
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
+                    data-mention="${mention}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.setTippy({
                         event,
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: "Mention ${mention} in the conversation",
+                          content: "Mention " + this.dataset.mention + " in the conversation",
                         },
                       });
                     `)}"
@@ -871,6 +872,10 @@ export default async (application: Application): Promise<void> => {
                   type="radio"
                   name="content-editor--mode"
                   class="content-editor--button--preview visually-hidden"
+                  data-url="https://${application.configuration
+                    .hostname}${response.locals.course === undefined
+                    ? ""
+                    : `/courses/${response.locals.course.reference}`}/content-editor/preview"
                   javascript="${response.locals.javascript(javascript`
                     this.isModified = false;
 
@@ -894,13 +899,7 @@ export default async (application: Application): Promise<void> => {
                       leafac.loadPartial(
                         preview,
                         await (
-                          await fetch(${JSON.stringify(
-                            `https://${application.configuration.hostname}${
-                              response.locals.course === undefined
-                                ? ""
-                                : `/courses/${response.locals.course.reference}`
-                            }/content-editor/preview`
-                          )}, {
+                          await fetch(this.dataset.url, {
                             cache: "no-store",
                             method: "POST",
                             headers: { "CSRF-Protection": "true", },
@@ -927,15 +926,15 @@ export default async (application: Application): Promise<void> => {
                             <span
                               javascript="${response.locals
                                 .javascript(javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `)}"
+                                  this.hidden = leafac.isAppleDevice;
+                                `)}"
                               >Ctrl+Alt+P</span
                             ><span
                               class="keyboard-shortcut--cluster"
                               javascript="${response.locals
                                 .javascript(javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `)}"
+                                  this.hidden = !leafac.isAppleDevice;
+                                `)}"
                               ><i class="bi bi-alt"></i
                               ><i class="bi bi-command"></i>P</span
                             >
@@ -1998,9 +1997,9 @@ export default async (application: Application): Promise<void> => {
                     tippy.hideAll();
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
-                    const response = await (await fetch(${JSON.stringify(
-                      `https://${application.configuration.hostname}/content-editor/attachments`
-                    )}, {
+                    const response = await (await fetch("https://${
+                      application.configuration.hostname
+                    }/content-editor/attachments", {
                       cache: "no-store",
                       method: "POST",
                       headers: { "CSRF-Protection": "true", },
@@ -2596,13 +2595,12 @@ ${contentSource}</textarea
                       key="mention-user-search--${enrollment.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
+                      data-complete="${enrollment.reference}--${slugify(
+                        enrollment.user.name
+                      )}"
                       javascript="${response.locals.javascript(javascript`
                         this.onclick = () => {
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                            `${enrollment.reference}--${slugify(
-                              enrollment.user.name
-                            )}`
-                          )});  
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);  
                         };
                     `)}"
                     >
@@ -2673,11 +2671,10 @@ ${contentSource}</textarea
               key="refer-to-conversation-or-message-search--${conversation.reference}"
               type="button"
               class="dropdown--menu--item button button--transparent"
+              data-complete="${conversation.reference}"
               javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                    conversation.reference
-                  )});
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
                 };
               `)}"
             >
@@ -2741,11 +2738,10 @@ ${contentSource}</textarea
                 key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
+                data-complete="${conversation.reference}/${message.reference}"
                 javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                      `${conversation.reference}/${message.reference}`
-                    )});
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
                   };
                 `)}"
               >
@@ -2774,11 +2770,10 @@ ${contentSource}</textarea
             <button
               type="button"
               class="dropdown--menu--item button button--transparent"
+              data-complete="${conversation.reference}"
               javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                    conversation.reference
-                  )});
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
                 };
               `)}"
             >
@@ -2829,11 +2824,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
+            data-complete="${conversation.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                  conversation.reference
-                )});
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
               };
             `)}"
           >
@@ -2902,11 +2896,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
+            data-complete="${conversation.reference}/${message.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                  `${conversation.reference}/${message.reference}`
-                )});
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
               };
             `)}"
           >
@@ -2983,11 +2976,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
+            data-complete="${conversation.reference}/${message.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${JSON.stringify(
-                  `${conversation.reference}/${message.reference}`
-                )});
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.dataset.complete);
               };
             `)}"
           >

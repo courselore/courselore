@@ -504,6 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `)}"
+                        data-email="${user.email}"
                         javascript="${response.locals.javascript(javascript`
                           leafac.setTippy({
                             event,
@@ -513,7 +514,6 @@ export default async (application: Application): Promise<void> => {
                               content: "Copy Email",
                             },
                           });
-
 
                           leafac.setTippy({
                             event,
@@ -527,9 +527,7 @@ export default async (application: Application): Promise<void> => {
                           });
 
                           this.onclick = async () => {
-                            await navigator.clipboard.writeText(${JSON.stringify(
-                              user.email
-                            )});
+                            await navigator.clipboard.writeText(this.dataset.email);
                             this.copied.show();
                             await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                             this.copied.hide();
