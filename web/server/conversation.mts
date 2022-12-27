@@ -7452,9 +7452,7 @@ export default async (application: Application): Promise<void> => {
                                               }
                                             `}
                                       `)}"
-                                      javascript-content-source="${JSON.stringify(
-                                        message.contentSource
-                                      )}"
+                                      javascript-content-source="${message.contentSource}"
                                     >
                                       $${message === firstUnreadMessage &&
                                       message !== messages[0]
@@ -8380,7 +8378,7 @@ export default async (application: Application): Promise<void> => {
                                                                   const focusPosition = JSON.parse(focusElement.getAttribute("javascript-position"));
                                                                   const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                                   const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                                  const content = JSON.parse(anchorElement.closest("[javascript-content-source]").getAttribute("javascript-content-source"));
+                                                                  const content = anchorElement.closest("[javascript-content-source]").getAttribute("javascript-content-source");
                                                                   const newMessage = document.querySelector('[key="new-message"]');
                                                                   newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                                                                   const element = newMessage.querySelector('[key="content-editor--write--textarea"]');

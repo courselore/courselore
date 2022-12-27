@@ -581,7 +581,7 @@ export default async (application: Application): Promise<void> => {
                 class="dropdown--menu--item button button--transparent"
                 javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
-                    const content = JSON.parse(this.closest("[javascript-content-source]").getAttribute("javascript-content-source"));
+                    const content = this.closest("[javascript-content-source]").getAttribute("javascript-content-source");
                     const newMessage = document.querySelector('[key="new-message"]');
                     newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                     const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
