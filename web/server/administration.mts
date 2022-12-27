@@ -407,7 +407,7 @@ export default async (application: Application): Promise<void> => {
                   for (const user of document.querySelectorAll('[key^="user/"]')) {
                     let userHidden = filterPhrases.length > 0;
                     for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
-                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                       const filterablePhrasesElementChildren = [];
                       for (const filterablePhrase of filterablePhrases) {
                         let filterablePhraseElement;
@@ -527,7 +527,7 @@ export default async (application: Application): Promise<void> => {
                           });
 
                           this.onclick = async () => {
-                            await navigator.clipboard.writeText(this.dataset.email);
+                            await navigator.clipboard.writeText(this.getAttribute("data-email"));
                             this.copied.show();
                             await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                             this.copied.hide();

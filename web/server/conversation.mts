@@ -3878,7 +3878,7 @@ export default async (application: Application): Promise<void> => {
                                                           continue;
                                                         let selectedParticipantHidden = filterPhrases.length > 0;
                                                         for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                                                           const filterablePhrasesElementChildren = [];
                                                           for (const filterablePhrase of filterablePhrases) {
                                                             let filterablePhraseElement;
@@ -6928,7 +6928,7 @@ export default async (application: Application): Promise<void> => {
                                                                       continue;
                                                                     let selectedParticipantHidden = filterPhrases.length > 0;
                                                                     for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                                                                       const filterablePhrasesElementChildren = [];
                                                                       for (const filterablePhrase of filterablePhrases) {
                                                                         let filterablePhraseElement;
@@ -8366,8 +8366,8 @@ export default async (application: Application): Promise<void> => {
                                                                 this.onclick = () => {
                                                                   tippy.hideAll();
                                                                   const selection = window.getSelection();
-                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                                   const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
                                                                   if (
                                                                     selection.isCollapsed ||
@@ -8376,11 +8376,11 @@ export default async (application: Application): Promise<void> => {
                                                                     !contentElement.contains(anchorElement) ||
                                                                     !contentElement.contains(focusElement)
                                                                   ) return;
-                                                                  const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                                                  const focusPosition = JSON.parse(focusElement.dataset.position);
+                                                                  const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
+                                                                  const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
                                                                   const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                                   const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                                  const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
+                                                                  const content = JSON.parse(anchorElement.closest("[data-content-source]").getAttribute("data-content-source"));
                                                                   const newMessage = document.querySelector('[key="new-message"]');
                                                                   newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                                                                   const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
@@ -8433,8 +8433,8 @@ export default async (application: Application): Promise<void> => {
                                                   this.onmouseup = (event) => {
                                                     window.setTimeout(() => {
                                                       const selection = window.getSelection();
-                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
-                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("position") === "string");
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("position") === "string");
                                                       if (
                                                         selection.isCollapsed ||
                                                         anchorElement === undefined ||

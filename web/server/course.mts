@@ -4229,7 +4229,7 @@ export default async (application: Application): Promise<void> => {
                     for (const enrollment of document.querySelectorAll('[key^="enrollment/"]')) {
                       let enrollmentHidden = filterPhrases.length > 0;
                       for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
-                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                        const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                         const filterablePhrasesElementChildren = [];
                         for (const filterablePhrase of filterablePhrases) {
                           let filterablePhraseElement;
