@@ -8433,8 +8433,10 @@ export default async (application: Application): Promise<void> => {
                                                   this.onmouseup = (event) => {
                                                     window.setTimeout(() => {
                                                       const selection = window.getSelection();
-                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("position") === "string");
-                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("position") === "string");
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      console.log(anchorElement);
+                                                      console.log(focusElement);
                                                       if (
                                                         selection.isCollapsed ||
                                                         anchorElement === undefined ||
