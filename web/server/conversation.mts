@@ -8364,8 +8364,8 @@ export default async (application: Application): Promise<void> => {
                                                                 this.onclick = () => {
                                                                   tippy.hideAll();
                                                                   const selection = window.getSelection();
-                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
-                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
+                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                                   const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
                                                                   if (
                                                                     selection.isCollapsed ||
@@ -8374,8 +8374,8 @@ export default async (application: Application): Promise<void> => {
                                                                     !contentElement.contains(anchorElement) ||
                                                                     !contentElement.contains(focusElement)
                                                                   ) return;
-                                                                  const anchorPosition = JSON.parse(anchorElement.getAttribute("javascript-position"));
-                                                                  const focusPosition = JSON.parse(focusElement.getAttribute("javascript-position"));
+                                                                  const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
+                                                                  const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
                                                                   const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                                   const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                                                                   const content = anchorElement.closest("[javascript-content-source]").getAttribute("javascript-content-source");
@@ -8431,8 +8431,8 @@ export default async (application: Application): Promise<void> => {
                                                   this.onmouseup = (event) => {
                                                     window.setTimeout(() => {
                                                       const selection = window.getSelection();
-                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
-                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                       if (
                                                         selection.isCollapsed ||
                                                         anchorElement === undefined ||
