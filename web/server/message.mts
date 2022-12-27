@@ -1176,7 +1176,12 @@ export default async (application: Application): Promise<void> => {
             >
               $${response.locals.message.readings.reverse().map(
                 (reading) => html`
-                  <div class="dropdown--menu--item">
+                  <div
+                    key="reading/${reading.enrollment === "no-longer-enrolled"
+                      ? reading.enrollment
+                      : reading.enrollment.reference}"
+                    class="dropdown--menu--item"
+                  >
                     $${application.server.locals.partials.user({
                       request,
                       response,
@@ -1717,7 +1722,12 @@ export default async (application: Application): Promise<void> => {
             >
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
-                  <div class="dropdown--menu--item">
+                  <div
+                    key="like/${like.enrollment === "no-longer-enrolled"
+                      ? like.enrollment
+                      : like.enrollment.reference}"
+                    class="dropdown--menu--item"
+                  >
                     $${application.server.locals.partials.user({
                       request,
                       response,
