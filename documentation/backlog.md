@@ -762,6 +762,17 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Use esbuild to build server?
+
+  - `npx esbuild ./server/index.mts --platform=node --packages=external --format=esm --bundle --minify --sourcemap --outfile=./build/server/index.mjs`
+  - Pros:
+    - About 2~3x faster than `tsc` in our codebase.
+    - May generate a single file, minify, and so forth.
+  - Const:
+    - More complexity.
+    - Can’t typecheck (add `npx tsc --noEmit` to `npm test`).
+    - Can’t generate `.d.ts` (relevant for libraries).
+
 - Update GitHub Actions to use Node 16:
   - https://github.com/softprops/action-gh-release
   - https://github.com/webfactory/ssh-agent
