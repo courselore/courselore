@@ -92,9 +92,9 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: |
           cat >> ~/.ssh/known_hosts << "EOF"
-          courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICWWOrbDaoT85jPDWCR5MQHSxdZoJjG3BM0Bvi+4KKzM
-          courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGV4mj3txjlVmqurhAxRZeto4EZpAoemgAd5F/zN6vgZ4Z7Z8bJ7IMBeRi/IXV24dhQjKtOdbMNY8Il7xWG005kk31cGMSW+FdrxZOqRZklnDFn+iwVjKj49gkLcNnGxsq/+N8XJ+I/iOPdTlJAJAdWYOc3lDhae+JoOdslKqBdM9v4WlvpiBfLzZ/3Ci+8+ZnytVnS+lXvROzaKFqKPvcA6g4Euu6ZHaZCxeZ0s8Tg+kQwR1AKht8xxuz0hTL5hKtzBOlwFxf4IQNprSXPzXdktCJzVu3fSdEP8XZPiKjqH9QY3jd4e+inJ/P3AaT7egqEalmkd4Or1JqDTkOpeOrqxPU2zePpLDa1STweh9/4WK/4sptGLrj441exGDxmkGvosLgJSrUQJV0cUGiEhla2FhnDS+006KId0oLYLTlobrjSZh5yn5aQtmDhD10p+Dbl++3PeL5+ieZ2CmIh2e91at6hB5kerB3e7nCQEYT71eRzfa4fZq0JLVsJ8/rsG0=
-          courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGwqB/EeHrmeLQLYcbsgwpn6za1kjpmiz3vDSDiGdZ/4gUwyKMDHIlwQc5aofmeEAXG6lvrbnfFnapkmudWTy/g=
+          courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBL+HplfvrH+yvoOFV7WeZBUarNo0hxX5yur1VmjB6bPNGGOR1sMBVWlk7KBgvPmIDMHW9VjkbSf0KUJ0TOOFB6Q=
+          courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCebK3hsOaiDRg6LSCFsOY7QeJueZy7J+aBft1IcYHJEZw+vxxYUoeVbbxK6Kh5AmTRdyp86Z9mXWZYWT1L6jtRAo8kEGlx7FEuqhLAN3DTSj69EiT6vDa/wakz0b5NQkBIqS48dXc4Ob32ONucm1uX+btNNhiwOD5nU5nGa2wQWXb7zuxrVCgUktIUWeLSchw2gp4pQTLKNiVJWJQMOqWwwJ1PNDSqSRyQwLpR78g9EscwTfUEXQu0O1HFzSGpPzMek/6jsnRxW2VOhDE/CLVUqsbI3VsvjJnoWxNbai5f5rBnRNUFevtvQP6eQbRRCzsGlKnvDMk+5nRKJ+SmewzLydhAtYc7M/PmPms7G2+SHsSTpV9VF6E9t3UmCoQ2ruk+twjhlxc62UV210818g96s/m7rHkG0+XtMVcAiPMbVK8zm+d1njnf9wku5jDooV+lV5Ymyc+2GF/fZ0RlBXN/U1mxtv3ySxTYRcrOc0iv7KyBfyc6UGEU15+2CzaXxx8=
+          courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEE2I9w2iErs1EV4TwI9cb2C653YPon245Zr37fAW1X0
           EOF
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
