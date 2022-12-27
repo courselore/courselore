@@ -3758,19 +3758,19 @@ export default async (application: Application): Promise<void> => {
                                                       ? javascript`
                                                           selectedParticipants.hidden = false;
     
-                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                          for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
                                                             element.hidden = true;
                                                           participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
     
                                                           for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                            element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                            element.disabled = element.matches('[javascript-enrollment-course-role="staff"]');
                                                         `
                                                       : conversationParticipants ===
                                                         "selected-people"
                                                       ? javascript`
                                                           selectedParticipants.hidden = false;
     
-                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                          for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
                                                             element.hidden = false;
                                                           participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
     
@@ -3874,11 +3874,11 @@ export default async (application: Application): Promise<void> => {
                                                       const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                       const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
                                                       for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                        if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                        if (participantsIsStaff && selectedParticipant.matches('[javascript-enrollment-course-role="staff"]'))
                                                           continue;
                                                         let selectedParticipantHidden = filterPhrases.length > 0;
-                                                        for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
+                                                        for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[javascript-filterable-phrases]")) {
+                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
                                                           const filterablePhrasesElementChildren = [];
                                                           for (const filterablePhrase of filterablePhrases) {
                                                             let filterablePhraseElement;
@@ -3914,7 +3914,7 @@ export default async (application: Application): Promise<void> => {
                                               (enrollment) => html`
                                                 <label
                                                   key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                  data-enrollment-course-role="${enrollment.courseRole}"
+                                                  javascript-enrollment-course-role="${enrollment.courseRole}"
                                                   $${request.query
                                                     .newConversation
                                                     ?.participants ===
@@ -4046,7 +4046,6 @@ export default async (application: Application): Promise<void> => {
                             type="checkbox"
                             name="selectedParticipantsReferences[]"
                             value="${enrollment.reference}"
-                            data-enrollment-course-role="${enrollment.courseRole}"
                             $${request.query.newConversation?.selectedParticipants?.includes(
                               enrollment.reference
                             )
@@ -4064,6 +4063,7 @@ export default async (application: Application): Promise<void> => {
                               : html`disabled`}
                             tabindex="-1"
                             class="visually-hidden input--visible-when-enabled-and-checked"
+                            javascript-enrollment-course-role="${enrollment.courseRole}"
                           />
                           <button
                             key="selected-participants--button--${enrollment.reference}"
@@ -6792,19 +6792,19 @@ export default async (application: Application): Promise<void> => {
                                                                   ? javascript`
                                                                       selectedParticipants.hidden = false;
   
-                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                      for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
                                                                         element.hidden = true;
                                                                       participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
                                                                       for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                        element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                                        element.disabled = element.matches('[javascript-enrollment-course-role="staff"]');
                                                                     `
                                                                   : conversationParticipants ===
                                                                     "selected-people"
                                                                   ? javascript`
                                                                       selectedParticipants.hidden = false;
   
-                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                                      for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
                                                                         element.hidden = false;
                                                                       participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
@@ -6924,11 +6924,11 @@ export default async (application: Application): Promise<void> => {
                                                                   const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                                   const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
                                                                   for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                    if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                                    if (participantsIsStaff && selectedParticipant.matches('[javascript-enrollment-course-role="staff"]'))
                                                                       continue;
                                                                     let selectedParticipantHidden = filterPhrases.length > 0;
-                                                                    for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
-                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
+                                                                    for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[javascript-filterable-phrases]")) {
+                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
                                                                       const filterablePhrasesElementChildren = [];
                                                                       for (const filterablePhrase of filterablePhrases) {
                                                                         let filterablePhraseElement;
@@ -6969,7 +6969,7 @@ export default async (application: Application): Promise<void> => {
                                                           (enrollment) => html`
                                                             <label
                                                               key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                              data-enrollment-course-role="${enrollment.courseRole}"
+                                                              javascript-enrollment-course-role="${enrollment.courseRole}"
                                                               $${response.locals
                                                                 .conversation
                                                                 .participants ===
@@ -7104,7 +7104,6 @@ export default async (application: Application): Promise<void> => {
                                       type="checkbox"
                                       name="selectedParticipantsReferences[]"
                                       value="${enrollment.reference}"
-                                      data-enrollment-course-role="${enrollment.courseRole}"
                                       $${response.locals.conversation.selectedParticipants.find(
                                         (selectedParticipant) =>
                                           selectedParticipant.id ===
@@ -7121,6 +7120,7 @@ export default async (application: Application): Promise<void> => {
                                         : html`disabled`}
                                       tabindex="-1"
                                       class="visually-hidden input--visible-when-enabled-and-checked"
+                                      javascript-enrollment-course-role="${enrollment.courseRole}"
                                     />
                                     <button
                                       key="selected-participants--button--${enrollment.reference}"
@@ -7434,9 +7434,6 @@ export default async (application: Application): Promise<void> => {
                                   html`
                                     <div
                                       key="message/${message.reference}"
-                                      data-content-source="${JSON.stringify(
-                                        message.contentSource
-                                      )}"
                                       class="message"
                                       css="${response.locals.css(css`
                                         ${response.locals.conversation.type ===
@@ -7455,6 +7452,9 @@ export default async (application: Application): Promise<void> => {
                                               }
                                             `}
                                       `)}"
+                                      javascript-content-source="${JSON.stringify(
+                                        message.contentSource
+                                      )}"
                                     >
                                       $${message === firstUnreadMessage &&
                                       message !== messages[0]
@@ -8366,8 +8366,8 @@ export default async (application: Application): Promise<void> => {
                                                                 this.onclick = () => {
                                                                   tippy.hideAll();
                                                                   const selection = window.getSelection();
-                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                  const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
+                                                                  const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
                                                                   const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
                                                                   if (
                                                                     selection.isCollapsed ||
@@ -8376,11 +8376,11 @@ export default async (application: Application): Promise<void> => {
                                                                     !contentElement.contains(anchorElement) ||
                                                                     !contentElement.contains(focusElement)
                                                                   ) return;
-                                                                  const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
-                                                                  const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
+                                                                  const anchorPosition = JSON.parse(anchorElement.getAttribute("javascript-position"));
+                                                                  const focusPosition = JSON.parse(focusElement.getAttribute("javascript-position"));
                                                                   const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                                   const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                                  const content = JSON.parse(anchorElement.closest("[data-content-source]").getAttribute("data-content-source"));
+                                                                  const content = JSON.parse(anchorElement.closest("[javascript-content-source]").getAttribute("javascript-content-source"));
                                                                   const newMessage = document.querySelector('[key="new-message"]');
                                                                   newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                                                                   const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
@@ -8433,8 +8433,8 @@ export default async (application: Application): Promise<void> => {
                                                   this.onmouseup = (event) => {
                                                     window.setTimeout(() => {
                                                       const selection = window.getSelection();
-                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("javascript-position") === "string");
                                                       if (
                                                         selection.isCollapsed ||
                                                         anchorElement === undefined ||

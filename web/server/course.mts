@@ -1481,10 +1481,10 @@ export default async (application: Application): Promise<void> => {
                           type="text"
                           name="tags[${index.toString()}][name]"
                           value="${tag.name}"
-                          data-disable-on-delete="true"
                           required
                           autocomplete="off"
                           class="input--text"
+                          javascript-disable-on-delete="true"
                         />
                         <div
                           css="${response.locals.css(css`
@@ -1508,8 +1508,8 @@ export default async (application: Application): Promise<void> => {
                                 $${tag.staffOnlyAt === null
                                   ? html``
                                   : html`checked`}
-                                data-disable-on-delete="true"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                                javascript-disable-on-delete="true"
                               />
                               <span
                                 javascript="${response.locals
@@ -1615,7 +1615,7 @@ export default async (application: Application): Promise<void> => {
                                                   tagIconClassList.remove("text--teal");
                                                   tagIconClassList.add("text--rose");
                                                   tag.querySelector('[name$="[delete]"]').disabled = false;
-                                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                                  for (const element of tag.querySelectorAll('[javascript-disable-on-delete="true"]')) {
                                                     element.disabled = true;
                                                     const button = element.closest(".button");
                                                     if (button === null) continue;
@@ -1666,7 +1666,7 @@ export default async (application: Application): Promise<void> => {
                                     tagIconClassList.remove("text--rose");
                                     tagIconClassList.add("text--teal");
                                     tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                    for (const element of tag.querySelectorAll('[javascript-disable-on-delete="true"]')) {
                                       element.disabled = false;
                                       const button = element.closest(".button");
                                       if (button === null) continue;
@@ -4228,8 +4228,8 @@ export default async (application: Application): Promise<void> => {
                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                     for (const enrollment of document.querySelectorAll('[key^="enrollment/"]')) {
                       let enrollmentHidden = filterPhrases.length > 0;
-                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
-                        const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
+                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[javascript-filterable-phrases]")) {
+                        const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
                         const filterablePhrasesElementChildren = [];
                         for (const filterablePhrase of filterablePhrases) {
                           let filterablePhraseElement;
@@ -4298,25 +4298,25 @@ export default async (application: Application): Promise<void> => {
                   >
                     <div>
                       <div
-                        data-filterable-phrases="${JSON.stringify(
+                        class="strong"
+                        javascript-filterable-phrases="${JSON.stringify(
                           application.server.locals.helpers.splitFilterablePhrases(
                             enrollment.user.name
                           )
                         )}"
-                        class="strong"
                       >
                         ${enrollment.user.name}
                       </div>
                       <div class="secondary">
                         <span
-                          data-filterable-phrases="${JSON.stringify(
+                          css="${response.locals.css(css`
+                            margin-right: var(--space--2);
+                          `)}"
+                          javascript-filterable-phrases="${JSON.stringify(
                             application.server.locals.helpers.splitFilterablePhrases(
                               enrollment.user.email
                             )
                           )}"
-                          css="${response.locals.css(css`
-                            margin-right: var(--space--2);
-                          `)}"
                         >
                           ${enrollment.user.email}
                         </span>

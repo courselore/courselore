@@ -484,14 +484,14 @@ export default async (application: Application): Promise<void> => {
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
-                    data-mention="${mention}"
+                    javascript-mention="${mention}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.setTippy({
                         event,
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: "Mention " + this.getAttribute("data-mention") + " in the conversation",
+                          content: "Mention " + this.getAttribute("javascript-mention") + " in the conversation",
                         },
                       });
                     `)}"
@@ -872,7 +872,7 @@ export default async (application: Application): Promise<void> => {
                   type="radio"
                   name="content-editor--mode"
                   class="content-editor--button--preview visually-hidden"
-                  data-url="https://${application.configuration
+                  javascript-url="https://${application.configuration
                     .hostname}${response.locals.course === undefined
                     ? ""
                     : `/courses/${response.locals.course.reference}`}/content-editor/preview"
@@ -899,7 +899,7 @@ export default async (application: Application): Promise<void> => {
                       leafac.loadPartial(
                         preview,
                         await (
-                          await fetch(this.getAttribute("data-url"), {
+                          await fetch(this.getAttribute("javascript-url"), {
                             cache: "no-store",
                             method: "POST",
                             headers: { "CSRF-Protection": "true", },
@@ -2595,12 +2595,12 @@ ${contentSource}</textarea
                       key="mention-user-search--${enrollment.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      data-complete="${enrollment.reference}--${slugify(
+                      javascript-complete="${enrollment.reference}--${slugify(
                         enrollment.user.name
                       )}"
                       javascript="${response.locals.javascript(javascript`
                         this.onclick = () => {
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));  
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));  
                         };
                     `)}"
                     >
@@ -2671,10 +2671,10 @@ ${contentSource}</textarea
               key="refer-to-conversation-or-message-search--${conversation.reference}"
               type="button"
               class="dropdown--menu--item button button--transparent"
-              data-complete="${conversation.reference}"
+              javascript-complete="${conversation.reference}"
               javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                 };
               `)}"
             >
@@ -2738,10 +2738,10 @@ ${contentSource}</textarea
                 key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                data-complete="${conversation.reference}/${message.reference}"
+                javascript-complete="${conversation.reference}/${message.reference}"
                 javascript="${response.locals.javascript(javascript`
                   this.onclick = () => {
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                   };
                 `)}"
               >
@@ -2770,10 +2770,10 @@ ${contentSource}</textarea
             <button
               type="button"
               class="dropdown--menu--item button button--transparent"
-              data-complete="${conversation.reference}"
+              javascript-complete="${conversation.reference}"
               javascript="${response.locals.javascript(javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                 };
               `)}"
             >
@@ -2824,10 +2824,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}"
+            javascript-complete="${conversation.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
             `)}"
           >
@@ -2896,10 +2896,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}/${message.reference}"
+            javascript-complete="${conversation.reference}/${message.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
             `)}"
           >
@@ -2976,10 +2976,10 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}/${message.reference}"
+            javascript-complete="${conversation.reference}/${message.reference}"
             javascript="${response.locals.javascript(javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
             `)}"
           >

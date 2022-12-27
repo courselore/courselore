@@ -696,7 +696,7 @@ const { app, BrowserWindow } = require("electron");
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
   - Edit message forms.
-    - Use `data-content-source` that’s already used by the quoting mechanism.
+    - Use `javascript-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
   - Content processor should only attach position information that we’ll actually use.
     - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
