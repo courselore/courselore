@@ -616,9 +616,9 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.isModified = false;
-                `)}"
+                `}"
               />
             </label>
             <label class="label">
@@ -628,9 +628,9 @@ export default async (application: Application): Promise<void> => {
                 name="password"
                 required
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.isModified = false;
-                `)}"
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -862,9 +862,9 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.isModified = false;
-                `)}"
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -1160,12 +1160,12 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };
-                `)}"
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -1400,12 +1400,12 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
                   };
-                `)}"
+                `}"
               />
             </label>
             <button class="button button--blue">

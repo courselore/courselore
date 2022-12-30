@@ -187,7 +187,7 @@ export default async (application: Application): Promise<void> => {
                   </a>
                   <button
                     class="menu-box--item button button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -196,7 +196,7 @@ export default async (application: Application): Promise<void> => {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         },
                       });
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-journal-arrow-down"></i>
                     Enroll in an Existing Course
@@ -333,9 +333,9 @@ export default async (application: Application): Promise<void> => {
                   name="year"
                   class="input--text"
                   autocomplete="off"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.defaultValue = new Date().getFullYear().toString();
-                  `)}"
+                  `}"
                 />
               </label>
               <label class="label">
@@ -345,10 +345,10 @@ export default async (application: Application): Promise<void> => {
                   name="term"
                   class="input--text"
                   autocomplete="off"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     const month = new Date().getMonth() + 1;
                     this.defaultValue = month < 4 || month > 9 ? "Spring" : "Fall";
-                  `)}"
+                  `}"
                 />
               </label>
             </div>
@@ -746,12 +746,12 @@ export default async (application: Application): Promise<void> => {
             line-height: var(--line-height--xs);
             justify-content: center;
           `}"
-          javascript="${response.locals.javascript(javascript`
+          javascript="${javascript`
             this.onclick = () => {
               for (const element of leafac.nextSiblings(this).slice(1))
                 element.hidden = !element.hidden;
             };
-          `)}"
+          `}"
         >
           <i class="bi bi-archive"></i>
           Archived Courses
@@ -1228,9 +1228,9 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             response.locals.course.archivedAt
                           ).toISOString()}"
-                          javascript="${response.locals.javascript(javascript`
+                          javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                          `)}"
+                          `}"
                         ></time
                         >.
                       </span>
@@ -1432,9 +1432,9 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                `)}"
+                `}"
               >
                 $${response.locals.tags.map(
                   (tag, index) => html`
@@ -1462,9 +1462,9 @@ export default async (application: Application): Promise<void> => {
                         name="tags[${index.toString()}][delete]"
                         value="true"
                         disabled
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           this.isModified = true;
-                        `)}"
+                        `}"
                       />
                       <div key="tag--icon" class="text--teal">
                         <i class="bi bi-tag-fill"></i>
@@ -1512,8 +1512,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript-disable-on-delete="true"
                               />
                               <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                javascript="${javascript`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -1522,15 +1521,14 @@ export default async (application: Application): Promise<void> => {
                                         content: "Set as Visible by Staff Only",
                                       },
                                     });
-                                  `)}"
+                                  `}"
                               >
                                 <i class="bi bi-eye"></i>
                                 Visible by Everyone
                               </span>
                               <span
                                 class="${textColorsCourseRole.staff}"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                javascript="${javascript`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -1539,7 +1537,7 @@ export default async (application: Application): Promise<void> => {
                                         content: "Set as Visible by Everyone",
                                       },
                                     });
-                                  `)}"
+                                  `}"
                               >
                                 <i class="bi bi-mortarboard-fill"></i>
                                 Visible by Staff Only
@@ -1556,8 +1554,7 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -1606,8 +1603,7 @@ export default async (application: Application): Promise<void> => {
                                           <button
                                             type="button"
                                             class="button button--rose"
-                                            javascript="${response.locals
-                                              .javascript(javascript`
+                                            javascript="${javascript`
                                                 this.onclick = () => {
                                                   const tag = this.closest('[key^="tag/"]');
                                                   tag.classList.add("deleted");
@@ -1624,7 +1620,7 @@ export default async (application: Application): Promise<void> => {
                                                       if (element.tooltip !== undefined) element.tooltip.disable();
                                                   }
                                                 };
-                                              `)}"
+                                              `}"
                                           >
                                             <i class="bi bi-trash-fill"></i>
                                             Remove Tag
@@ -1633,7 +1629,7 @@ export default async (application: Application): Promise<void> => {
                                       `)},  
                                     },
                                   });
-                                `)}"
+                                `}"
                             >
                               <i class="bi bi-trash"></i>
                             </button>
@@ -1648,8 +1644,7 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -1675,7 +1670,7 @@ export default async (application: Application): Promise<void> => {
                                         if (element.tooltip !== undefined) element.tooltip.enable();
                                     }
                                   };
-                                `)}"
+                                `}"
                             >
                               <i class="bi bi-recycle"></i>
                             </button>
@@ -1697,8 +1692,7 @@ export default async (application: Application): Promise<void> => {
                                   )}"
                                   target="_blank"
                                   class="button button--tight button--tight--inline button--transparent"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                                  javascript="${javascript`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -1707,7 +1701,7 @@ export default async (application: Application): Promise<void> => {
                                           content: "See Conversations with This Tag",
                                         },
                                       });
-                                    `)}"
+                                    `}"
                                 >
                                   <i class="bi bi-chat-text"></i>
                                 </a>
@@ -1728,7 +1722,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--transparent button--full-width-on-small-screen"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     const localJavaScript = window.localJavaScript;
 
                     this.onclick = () => {
@@ -1766,12 +1760,11 @@ export default async (application: Application): Promise<void> => {
                                 autocomplete="off"
                                 disabled
                                 class="input--text"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                javascript="${javascript`
                                     this.isModified = true;
                                     this.disabled = false;
                                     this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
-                                  `)}"
+                                  `}"
                               />
                               <div
                                 css="${css`
@@ -1793,16 +1786,14 @@ export default async (application: Application): Promise<void> => {
                                       type="checkbox"
                                       disabled
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      javascript="${response.locals
-                                        .javascript(javascript`
+                                      javascript="${javascript`
                                           this.isModified = true;
                                           this.disabled = false;
                                           this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
-                                        `)}"
+                                        `}"
                                     />
                                     <span
-                                      javascript="${response.locals
-                                        .javascript(javascript`
+                                      javascript="${javascript`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -1811,15 +1802,14 @@ export default async (application: Application): Promise<void> => {
                                               content: "Set as Visible by Staff Only",
                                             },
                                           });
-                                        `)}"
+                                        `}"
                                     >
                                       <i class="bi bi-eye"></i>
                                       Visible by Everyone
                                     </span>
                                     <span
                                       class="${textColorsCourseRole.staff}"
-                                      javascript="${response.locals
-                                        .javascript(javascript`
+                                      javascript="${javascript`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -1828,7 +1818,7 @@ export default async (application: Application): Promise<void> => {
                                               content: "Set as Visible by Everyone",
                                             },
                                           });
-                                        `)}"
+                                        `}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
                                       Visible by Staff Only
@@ -1838,8 +1828,7 @@ export default async (application: Application): Promise<void> => {
                                 <button
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                                  javascript="${javascript`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -1855,7 +1844,7 @@ export default async (application: Application): Promise<void> => {
                                         tag.replaceChildren();
                                         tag.hidden = true;
                                       };
-                                    `)}"
+                                    `}"
                                 >
                                   <i class="bi bi-trash"></i>
                                 </button>
@@ -1876,7 +1865,7 @@ export default async (application: Application): Promise<void> => {
                       if ([...this.closest("form").querySelector('[key="tags"]').children].filter((tag) => !tag.hidden).length === 0)
                         return "Please add at least one tag.";
                     };
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-plus-circle"></i>
                   Add Tag
@@ -2069,7 +2058,7 @@ export default async (application: Application): Promise<void> => {
                       value="link"
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         this.onchange = () => {
                           const form = this.closest("form");
                           const emails = form.querySelector('[key="emails"]');
@@ -2079,7 +2068,7 @@ export default async (application: Application): Promise<void> => {
                           form.querySelector('[key="button--create-invitation"]').hidden = false;
                           form.querySelector('[key="button--send-invitation-emails"]').hidden = true;
                         };
-                      `)}"
+                      `}"
                     />
                     <span>
                       <i class="bi bi-link"></i>
@@ -2099,7 +2088,7 @@ export default async (application: Application): Promise<void> => {
                       value="email"
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         this.onchange = () => {
                           const form = this.closest("form");
                           const emails = form.querySelector('[key="emails"]');
@@ -2109,7 +2098,7 @@ export default async (application: Application): Promise<void> => {
                           form.querySelector('[key="button--create-invitation"]').hidden = true;
                           form.querySelector('[key="button--send-invitation-emails"]').hidden = false;
                         };
-                      `)}"
+                      `}"
                     />
                     <span>
                       <i class="bi bi-envelope"></i>
@@ -2129,7 +2118,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -2158,7 +2147,7 @@ export default async (application: Application): Promise<void> => {
                           `)},  
                         },
                       });
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>
@@ -2171,7 +2160,7 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     height: var(--space--32);
                   `}"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.onvalidate = () => {
                       const emails = [];
                       for (let email of this.value.split(${/[,\n]/})) {
@@ -2196,7 +2185,7 @@ export default async (application: Application): Promise<void> => {
                       )
                         return "Match the requested format.";
                     };
-                  `)}"
+                  `}"
                 ></textarea>
               </div>
 
@@ -2248,17 +2237,17 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="checkbox"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         this.onchange = () => {
                           const expiresAt = this.closest("form").querySelector('[key="expires-at"]');
                           expiresAt.hidden = !this.checked;
                           for (const element of expiresAt.querySelectorAll("*"))
                             if (element.disabled !== undefined) element.disabled = !this.checked;
                         };
-                      `)}"
+                      `}"
                     />
                     <span
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2267,14 +2256,14 @@ export default async (application: Application): Promise<void> => {
                             content: "Set as Expiring",
                           },
                         });
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-calendar-minus"></i>
                       Doesn’t Expire
                     </span>
                     <span
                       class="text--amber"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2283,7 +2272,7 @@ export default async (application: Application): Promise<void> => {
                             content: "Set as Not Expiring",
                           },
                         });
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-calendar-plus-fill"></i>
                       Expires
@@ -2298,7 +2287,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -2307,7 +2296,7 @@ export default async (application: Application): Promise<void> => {
                           content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
                         },
                       });
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>
@@ -2320,7 +2309,7 @@ export default async (application: Application): Promise<void> => {
                   autocomplete="off"
                   disabled
                   class="input--text"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                     this.onvalidate = () => {
@@ -2328,7 +2317,7 @@ export default async (application: Application): Promise<void> => {
                       if (typeof error === "string") return error;
                       if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                     };
-                  `)}"
+                  `}"
                 />
               </div>
 
@@ -2380,8 +2369,7 @@ export default async (application: Application): Promise<void> => {
                           $${invitation.email === null
                             ? html`
                                 <span
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                                  javascript="${javascript`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -2390,15 +2378,14 @@ export default async (application: Application): Promise<void> => {
                                           content: "Invitation Link",
                                         },
                                       });
-                                    `)}"
+                                    `}"
                                 >
                                   <i class="bi bi-link"></i>
                                 </span>
                               `
                             : html`
                                 <span
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                                  javascript="${javascript`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -2407,7 +2394,7 @@ export default async (application: Application): Promise<void> => {
                                           content: "Invitation Email",
                                         },
                                       });
-                                    `)}"
+                                    `}"
                                 >
                                   <i class="bi bi-envelope"></i>
                                 </span>
@@ -2426,8 +2413,7 @@ export default async (application: Application): Promise<void> => {
                                 <div>
                                   <button
                                     class="button--see-invitation-link button button--tight button--tight--inline button--transparent strong"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         leafac.setTippy({
                                           event,
                                           element: this,
@@ -2489,19 +2475,15 @@ export default async (application: Application): Promise<void> => {
                                                       css="${css`
                                                         flex: 1;
                                                       `}"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
+                                                      javascript="${javascript`
                                                           this.onfocus = () => {
                                                             this.select();
                                                           };
-                                                        `)}"
+                                                        `}"
                                                     />
                                                     <button
                                                       class="button button--tight button--transparent"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
+                                                      javascript="${javascript`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -2523,7 +2505,7 @@ export default async (application: Application): Promise<void> => {
                                                             stickies.hidden = false;
                                                             check.hidden = true;
                                                           };
-                                                        `)}"
+                                                        `}"
                                                     >
                                                       <span key="stickies">
                                                         <i
@@ -2543,9 +2525,7 @@ export default async (application: Application): Promise<void> => {
                                                     <a
                                                       href="${link}"
                                                       class="button button--tight button--transparent"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
+                                                      javascript="${javascript`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -2554,7 +2534,7 @@ export default async (application: Application): Promise<void> => {
                                                               content: "See QR Code for Link",
                                                             },
                                                           });
-                                                        `)}"
+                                                        `}"
                                                       ><i
                                                         class="bi bi-qr-code"
                                                       ></i
@@ -2565,7 +2545,7 @@ export default async (application: Application): Promise<void> => {
                                             })()},
                                           },
                                         });
-                                      `)}"
+                                      `}"
                                   >
                                     ${"*".repeat(
                                       6
@@ -2585,8 +2565,7 @@ export default async (application: Application): Promise<void> => {
                                       align-items: flex-start;
                                       gap: var(--space--0);
                                     `}"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         leafac.setTippy({
                                           event,
                                           element: this,
@@ -2610,9 +2589,7 @@ export default async (application: Application): Promise<void> => {
                                                     $${isUsed
                                                       ? html`
                                                           type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
+                                                          javascript="${javascript`
                                                               leafac.setTippy({
                                                                 event,
                                                                 element: this,
@@ -2622,14 +2599,12 @@ export default async (application: Application): Promise<void> => {
                                                                   content: "You may not resend this invitation because it’s used.",
                                                                 },
                                                               });
-                                                            `)}"
+                                                            `}"
                                                         `
                                                       : isInvitationExpired
                                                       ? html`
                                                           type="button"
-                                                          javascript="${response
-                                                            .locals
-                                                            .javascript(javascript`
+                                                          javascript="${javascript`
                                                               leafac.setTippy({
                                                                 event,
                                                                 element: this,
@@ -2639,7 +2614,7 @@ export default async (application: Application): Promise<void> => {
                                                                   content: "You may not resend this invitation because it’s expired.",
                                                                 },
                                                               });
-                                                            `)}"
+                                                            `}"
                                                         `
                                                       : html``}
                                                   >
@@ -2653,7 +2628,7 @@ export default async (application: Application): Promise<void> => {
                                             `)},  
                                           },
                                         });
-                                      `)}"
+                                      `}"
                                   >
                                     <div
                                       class="strong"
@@ -2695,8 +2670,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--tight button--tight--inline button--transparent ${textColorsCourseRole[
                                   invitation.courseRole
                                 ]}"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                javascript="${javascript`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -2738,9 +2712,7 @@ export default async (application: Application): Promise<void> => {
                                                       $${isUsed
                                                         ? html`
                                                             type="button"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
+                                                            javascript="${javascript`
                                                                 leafac.setTippy({
                                                                   event,
                                                                   element: this,
@@ -2750,14 +2722,12 @@ export default async (application: Application): Promise<void> => {
                                                                     content: "You may not update the course role of this invitation because it’s used.",
                                                                   },
                                                                 });
-                                                              `)}"
+                                                              `}"
                                                           `
                                                         : isInvitationExpired
                                                         ? html`
                                                             type="button"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
+                                                            javascript="${javascript`
                                                                 leafac.setTippy({
                                                                   event,
                                                                   element: this,
@@ -2767,7 +2737,7 @@ export default async (application: Application): Promise<void> => {
                                                                     content: "You may not update the course role of this invitation because it’s expired.",
                                                                   },
                                                                 });
-                                                              `)}"
+                                                              `}"
                                                           `
                                                         : html``}
                                                     >
@@ -2789,7 +2759,7 @@ export default async (application: Application): Promise<void> => {
                                         `)},  
                                       },
                                     });
-                                  `)}"
+                                  `}"
                               >
                                 $${iconsCourseRole[invitation.courseRole][
                                   invitation.courseRole === "staff"
@@ -2828,8 +2798,7 @@ export default async (application: Application): Promise<void> => {
                                         required
                                         autocomplete="off"
                                         class="input--text"
-                                        javascript="${response.locals
-                                          .javascript(javascript`
+                                        javascript="${javascript`
                                             this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                                             this.onvalidate = () => {
@@ -2837,7 +2806,7 @@ export default async (application: Application): Promise<void> => {
                                               if (typeof error === "string") return error;
                                               if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                                             };
-                                          `)}"
+                                          `}"
                                       />
                                     </div>
                                     <button
@@ -2887,8 +2856,7 @@ export default async (application: Application): Promise<void> => {
                                           css="${css`
                                             cursor: default;
                                           `}"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                          javascript="${javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -2901,17 +2869,15 @@ export default async (application: Application): Promise<void> => {
                                                         datetime="${new Date(
                                                           invitation.usedAt!
                                                         ).toISOString()}"
-                                                        javascript="${response
-                                                          .locals
-                                                          .javascript(javascript`
+                                                        javascript="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `)}"
+                                                          `}"
                                                       ></time>
                                                     </div>
                                                   `)},
                                                 },
                                               });
-                                            `)}"
+                                            `}"
                                         >
                                           <i class="bi bi-check-lg"></i>
                                           Used
@@ -2923,8 +2889,7 @@ export default async (application: Application): Promise<void> => {
                                       <div>
                                         <button
                                           class="button button--tight button--tight--inline button--transparent text--rose"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                          javascript="${javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -2959,11 +2924,9 @@ export default async (application: Application): Promise<void> => {
                                                             datetime="${new Date(
                                                               invitation.expiresAt!
                                                             ).toISOString()}"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
+                                                            javascript="${javascript`
                                                                 leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                              `)}"
+                                                              `}"
                                                           ></time>
                                                         </span>
                                                       </h3>
@@ -2984,7 +2947,7 @@ export default async (application: Application): Promise<void> => {
                                                   `)},  
                                                 },
                                               });
-                                            `)}"
+                                            `}"
                                         >
                                           <i class="bi bi-calendar-x-fill"></i>
                                           Expired
@@ -2997,8 +2960,7 @@ export default async (application: Application): Promise<void> => {
                                       <div>
                                         <button
                                           class="button button--tight button--tight--inline button--transparent text--blue"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                          javascript="${javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -3043,7 +3005,7 @@ export default async (application: Application): Promise<void> => {
                                                   `)},  
                                                 },
                                               });
-                                            `)}"
+                                            `}"
                                         >
                                           <i
                                             class="bi bi-calendar-minus-fill"
@@ -3057,8 +3019,7 @@ export default async (application: Application): Promise<void> => {
                                       <div>
                                         <button
                                           class="button button--tight button--tight--inline button--transparent text--amber"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                          javascript="${javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -3093,11 +3054,9 @@ export default async (application: Application): Promise<void> => {
                                                             datetime="${new Date(
                                                               invitation.expiresAt
                                                             ).toISOString()}"
-                                                            javascript="${response
-                                                              .locals
-                                                              .javascript(javascript`
+                                                            javascript="${javascript`
                                                                 leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                              `)}"
+                                                              `}"
                                                           ></time>
                                                         </span>
                                                       </h3>
@@ -3119,7 +3078,7 @@ export default async (application: Application): Promise<void> => {
                                                   `)},  
                                                 },
                                               });
-                                            `)}"
+                                            `}"
                                         >
                                           <i
                                             class="bi bi-calendar-plus-fill"
@@ -3277,14 +3236,14 @@ export default async (application: Application): Promise<void> => {
               Invitation link created successfully.
               <button
                 class="link"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onclick = () => {
                     tippy.hideAll();
                     const button = document.querySelector('[key="invitation--${invitation.reference}"] .button--see-invitation-link');
                     button.click();
                     button.tooltip.hide();
                   };
-                `)}"
+                `}"
               >
                 See invitation link</button
               >.
@@ -3940,17 +3899,16 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               flex: 1;
                             `}"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.onfocus = () => {
                                 this.select();
                               };
-                            `)}"
+                            `}"
                           />
                           <div>
                             <button
                               class="button button--tight button--transparent"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -3972,7 +3930,7 @@ export default async (application: Application): Promise<void> => {
                                     stickies.hidden = false;
                                     check.hidden = true;
                                   };
-                                `)}"
+                                `}"
                             >
                               <span key="stickies">
                                 <i class="bi bi-stickies"></i>
@@ -4214,7 +4172,7 @@ export default async (application: Application): Promise<void> => {
                 type="text"
                 class="input--text"
                 placeholder="Filter…"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.isModified = false;
 
                   this.oninput = () => {
@@ -4240,7 +4198,7 @@ export default async (application: Application): Promise<void> => {
                       enrollment.hidden = enrollmentHidden;
                     }
                   };
-                `)}"
+                `}"
               />
             </label>
 
@@ -4266,9 +4224,9 @@ export default async (application: Application): Promise<void> => {
                     display: flex;
                     gap: var(--space--2);
                   `}"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                  `)}"
+                  `}"
                 >
                   <div>
                     $${application.server.locals.partials.user({
@@ -4320,7 +4278,7 @@ export default async (application: Application): Promise<void> => {
                             line-height: var(--line-height--xs);
                             display: inline-flex;
                           `}"
-                          javascript="${response.locals.javascript(javascript`
+                          javascript="${javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -4350,7 +4308,7 @@ export default async (application: Application): Promise<void> => {
                               await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                               this.copied.hide();
                             };
-                          `)}"
+                          `}"
                         >
                           <i class="bi bi-stickies"></i>
                         </button>
@@ -4367,9 +4325,9 @@ export default async (application: Application): Promise<void> => {
                             datetime="${new Date(
                               enrollment.user.lastSeenOnlineAt
                             ).toISOString()}"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                            `)}"
+                            `}"
                           ></time>
                         </span>
                       </div>
@@ -4393,7 +4351,7 @@ export default async (application: Application): Promise<void> => {
                           class="button button--tight button--tight--inline button--transparent ${textColorsCourseRole[
                             enrollment.courseRole
                           ]}"
-                          javascript="${response.locals.javascript(javascript`
+                          javascript="${javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -4436,9 +4394,7 @@ export default async (application: Application): Promise<void> => {
                                                 $${isOnlyStaff
                                                   ? html`
                                                       type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
+                                                      javascript="${javascript`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -4448,14 +4404,12 @@ export default async (application: Application): Promise<void> => {
                                                               content: "You may not update your own course role because you’re the only staff member.",
                                                             },
                                                           });
-                                                        `)}"
+                                                        `}"
                                                     `
                                                   : isSelf
                                                   ? html`
                                                       type="button"
-                                                      javascript="${response
-                                                        .locals
-                                                        .javascript(javascript`
+                                                      javascript="${javascript`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -4525,7 +4479,7 @@ export default async (application: Application): Promise<void> => {
                                                               `)},  
                                                             },
                                                           });
-                                                        `)}"
+                                                        `}"
                                                     `
                                                   : html``}
                                               >
@@ -4544,7 +4498,7 @@ export default async (application: Application): Promise<void> => {
                                 `)},  
                               },
                             });
-                          `)}"
+                          `}"
                         >
                           $${iconsCourseRole[enrollment.courseRole][
                             enrollment.courseRole === "staff"
@@ -4565,7 +4519,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          javascript="${response.locals.javascript(javascript`
+                          javascript="${javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -4641,7 +4595,7 @@ export default async (application: Application): Promise<void> => {
                                     });
                                   `
                             }
-                          `)}"
+                          `}"
                         >
                           <i class="bi bi-person-dash"></i>
                         </button>
@@ -4867,7 +4821,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -4876,7 +4830,7 @@ export default async (application: Application): Promise<void> => {
                           content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                         },
                       });
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>

@@ -69,11 +69,11 @@ export default async (application: Application): Promise<void> => {
               Have the wrong email address?
               <button
                 class="link"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onclick = () => {
                     document.querySelector('[key="update-email"]').hidden = false;
                   };
-              `)}"
+              `}"
               >
                 Update email
               </button>
@@ -104,12 +104,12 @@ export default async (application: Application): Promise<void> => {
                   value="${response.locals.user.email}"
                   required
                   class="input--text"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.onvalidate = () => {
                       if (!leafac.isModified(this))
                         return "Please provide the email address to which you’d like to update.";
                     };
-                  `)}"
+                  `}"
                 />
               </label>
               <div class="label">
@@ -118,7 +118,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -127,7 +127,7 @@ export default async (application: Application): Promise<void> => {
                           content: "You must confirm your email because this is an important operation that affects your account.",
                         },
                       });
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>

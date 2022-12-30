@@ -579,7 +579,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onclick = () => {
                     const content = this.closest("[javascript-content-source]").getAttribute("javascript-content-source");
                     const newMessage = document.querySelector('[key="new-message"]');
@@ -614,7 +614,7 @@ export default async (application: Application): Promise<void> => {
                     element.focus();
                     tippy.hideAll();
                   };
-                `)}"
+                `}"
               >
                 <i class="bi bi-reply"></i>
                 Reply
@@ -625,7 +625,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -683,7 +683,7 @@ export default async (application: Application): Promise<void> => {
                             this.tooltipContentSkipLoading = false;
                           }, 60 * 1000);
                         };
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-eye"></i>
                       ${response.locals.message.readings.length.toString()}
@@ -694,7 +694,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -727,7 +727,7 @@ export default async (application: Application): Promise<void> => {
                     await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                     this.copied.hide();
                   };
-                `)}"
+                `}"
               >
                 <i class="bi bi-link"></i>
                 Copy Message Permanent Link
@@ -741,7 +741,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         this.onmouseenter = this.onfocus = async () => {
                           const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
                           const messageEditForm = messageEdit.querySelector('[key="form"]');
@@ -773,7 +773,7 @@ export default async (application: Application): Promise<void> => {
                           autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
                           tippy.hideAll();
                         };
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-pencil"></i>
                       Edit Message
@@ -874,7 +874,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -932,7 +932,7 @@ export default async (application: Application): Promise<void> => {
                             this.tooltipContentSkipLoading = false;
                           }, 60 * 1000);
                         };
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-recycle"></i>
                       Reuse Message in Another Course
@@ -944,7 +944,7 @@ export default async (application: Application): Promise<void> => {
                     <div>
                       <button
                         class="dropdown--menu--item button button--transparent"
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -998,7 +998,7 @@ export default async (application: Application): Promise<void> => {
                               `)},  
                             },
                           });
-                        `)}"
+                        `}"
                       >
                         <i class="bi bi-trash"></i>
                         Remove Message
@@ -1079,7 +1079,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <button
                   class="button button--blue"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1088,17 +1088,15 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
-                                `)}"
+                                `}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   this.hidden = !leafac.isAppleDevice;
-                                `)}"
+                                `}"
                               ><i class="bi bi-command"></i
                               ><i class="bi bi-arrow-return-left"></i
                             ></span>
@@ -1110,7 +1108,7 @@ export default async (application: Application): Promise<void> => {
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-pencil-fill"></i>
                   Update Message
@@ -1118,7 +1116,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="reset"
                   class="button button--transparent"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.onclick = () => {
                       this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
                       this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
@@ -1128,7 +1126,7 @@ export default async (application: Application): Promise<void> => {
                       messageEdit.querySelector('[key="form"]').hidden = true;
                       messageEdit.querySelector('[key="form"]').skipLoading = false;
                     };
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-x-lg"></i>
                   Cancel
@@ -1199,9 +1197,9 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
-                        `)}"
+                        `}"
                       ></time>
                     </span>
                   </div>
@@ -1745,9 +1743,9 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(like.createdAt).toISOString()}"
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
-                        `)}"
+                        `}"
                       ></time>
                     </span>
                   </div>

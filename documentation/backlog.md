@@ -295,12 +295,12 @@ new Notification('Example');
 
 <button
   class="button button--transparent"
-  javascript="${response.locals.javascript(javascript`
+  javascript="${javascript`
     this.onclick = async () => {
       if (await Notification.requestPermission() === "denied") return;
       new Notification("Example");
     };
-  `)}"
+  `}"
 >
   <i class="bi bi-bell"></i>
   Send Notification

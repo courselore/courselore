@@ -485,7 +485,7 @@ export default async (application: Application): Promise<void> => {
                   mentions.add(mention);
                   mentionHTML = html`<span
                     javascript-mention="${mention}"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -494,7 +494,7 @@ export default async (application: Application): Promise<void> => {
                           content: "Mention " + this.getAttribute("javascript-mention") + " in the conversation",
                         },
                       });
-                    `)}"
+                    `}"
                     >@${lodash.capitalize(mention)}</span
                   >`;
                   break;
@@ -852,7 +852,7 @@ export default async (application: Application): Promise<void> => {
                   name="content-editor--mode"
                   checked
                   class="visually-hidden"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     this.onclick = () => {
@@ -860,7 +860,7 @@ export default async (application: Application): Promise<void> => {
                       this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]').hidden = true;
                       this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]').hidden = true;  
                     };
-                  `)}"
+                  `}"
                 />
                 <span class="button button--transparent">
                   <i class="bi bi-pencil"></i>
@@ -876,7 +876,7 @@ export default async (application: Application): Promise<void> => {
                     .hostname}${response.locals.course === undefined
                     ? ""
                     : `/courses/${response.locals.course.reference}`}/content-editor/preview"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     this.onclick = async (event) => {
@@ -911,11 +911,11 @@ export default async (application: Application): Promise<void> => {
                       loading.hidden = true;
                       preview.hidden = false;
                     };
-                  `)}"
+                  `}"
                 />
                 <span
                   class="button button--transparent"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -924,17 +924,15 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
-                                `)}"
+                                `}"
                               >Ctrl+Alt+P</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              javascript="${javascript`
                                   this.hidden = !leafac.isAppleDevice;
-                                `)}"
+                                `}"
                               ><i class="bi bi-alt"></i
                               ><i class="bi bi-command"></i>P</span
                             >
@@ -946,7 +944,7 @@ export default async (application: Application): Promise<void> => {
                     const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-eyeglasses"></i>
                   Preview
@@ -989,7 +987,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1026,7 +1024,7 @@ export default async (application: Application): Promise<void> => {
                       `)},  
                     },
                   });
-                `)}"
+                `}"
               >
                 <i class="bi bi-info-circle"></i>
               </button>
@@ -1035,7 +1033,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1045,15 +1043,15 @@ export default async (application: Application): Promise<void> => {
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+1</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>1</span
                           >)
@@ -1070,14 +1068,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-h1"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1087,15 +1085,15 @@ export default async (application: Application): Promise<void> => {
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+2</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>2</span
                           >)
@@ -1112,14 +1110,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-h2"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1129,15 +1127,15 @@ export default async (application: Application): Promise<void> => {
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+3</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>3</span
                           >)
@@ -1154,7 +1152,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-h3"></i>
               </button>
@@ -1163,7 +1161,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1173,15 +1171,15 @@ export default async (application: Application): Promise<void> => {
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+B</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>B</span
                           >)
                         </span>
@@ -1197,14 +1195,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+b", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-bold"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1214,15 +1212,15 @@ export default async (application: Application): Promise<void> => {
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>I</span
                           >)
                         </span>
@@ -1238,14 +1236,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+i", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-italic"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1255,15 +1253,15 @@ export default async (application: Application): Promise<void> => {
                         Underline
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+U</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>U</span
                           >)
                         </span>
@@ -1279,14 +1277,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+u", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-underline"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1296,15 +1294,15 @@ export default async (application: Application): Promise<void> => {
                         Strikethrough
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+S</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>S</span
                           >)
@@ -1321,14 +1319,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+s", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-type-strikethrough"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1338,15 +1336,15 @@ export default async (application: Application): Promise<void> => {
                         Link
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>K</span
                           >)
                         </span>
@@ -1362,7 +1360,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+k", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-link"></i>
               </button>
@@ -1371,7 +1369,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1381,15 +1379,15 @@ export default async (application: Application): Promise<void> => {
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+8</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>8</span
                           >)
@@ -1406,14 +1404,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+8", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-list-ul"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1423,15 +1421,15 @@ export default async (application: Application): Promise<void> => {
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+7</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>7</span
                           >)
@@ -1448,14 +1446,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+7", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-list-ol"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1465,15 +1463,15 @@ export default async (application: Application): Promise<void> => {
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+9</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>9</span
                           >)
@@ -1490,7 +1488,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+9", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-ui-checks"></i>
               </button>
@@ -1499,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1509,15 +1507,15 @@ export default async (application: Application): Promise<void> => {
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+'</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>'</span
                           >)
                         </span>
@@ -1533,14 +1531,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-quote"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1550,15 +1548,15 @@ export default async (application: Application): Promise<void> => {
                         Table
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+T</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>T</span
                           >)
@@ -1576,14 +1574,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+t", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-table"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1593,15 +1591,15 @@ export default async (application: Application): Promise<void> => {
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+D</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>D</span
                           >)
@@ -1618,14 +1616,14 @@ export default async (application: Application): Promise<void> => {
                   };
                   
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+d", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1635,15 +1633,15 @@ export default async (application: Application): Promise<void> => {
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+F</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>F</span
                           >)
@@ -1660,7 +1658,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+f", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-card-text"></i>
               </button>
@@ -1669,7 +1667,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1679,15 +1677,15 @@ export default async (application: Application): Promise<void> => {
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
@@ -1703,14 +1701,14 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-code"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1720,15 +1718,15 @@ export default async (application: Application): Promise<void> => {
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -1745,7 +1743,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+e", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-code-square"></i>
               </button>
@@ -1754,7 +1752,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1764,15 +1762,15 @@ export default async (application: Application): Promise<void> => {
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -1789,14 +1787,14 @@ export default async (application: Application): Promise<void> => {
                   };
                 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+e", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-calculator"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1806,15 +1804,15 @@ export default async (application: Application): Promise<void> => {
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -1831,7 +1829,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+shift+e", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-calculator-fill"></i>
               </button>
@@ -1842,7 +1840,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1861,14 +1859,14 @@ export default async (application: Application): Promise<void> => {
                           textFieldEdit.wrapSelection(textarea, " @", "");
                           textarea.focus();
                         };
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-at"></i>
                     </button>
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1887,7 +1885,7 @@ export default async (application: Application): Promise<void> => {
                           textFieldEdit.wrapSelection(textarea, " #", "");
                           textarea.focus();
                         };
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-hash"></i>
                     </button>
@@ -1898,7 +1896,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1908,15 +1906,15 @@ export default async (application: Application): Promise<void> => {
                         Image
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>I</span
                           >
@@ -1933,14 +1931,14 @@ export default async (application: Application): Promise<void> => {
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+i", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-image"></i>
               </button>
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1950,15 +1948,15 @@ export default async (application: Application): Promise<void> => {
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Shift+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>K</span
                           >
@@ -1975,7 +1973,7 @@ export default async (application: Application): Promise<void> => {
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
 
                   (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
-                `)}"
+                `}"
               >
                 <i class="bi bi-paperclip"></i>
               </button>
@@ -1984,7 +1982,7 @@ export default async (application: Application): Promise<void> => {
                 type="file"
                 multiple
                 hidden
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.isModified = false;
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -2069,13 +2067,13 @@ export default async (application: Application): Promise<void> => {
                   this.onchange = () => {
                     this.upload(this.files);
                   };
-                `)}"
+                `}"
               />
             </div>
             <div>
               <label
                 class="button button--tight button--transparent"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -2086,15 +2084,15 @@ export default async (application: Application): Promise<void> => {
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             >Ctrl+Alt+0</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript="${response.locals.javascript(javascript`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
-                            `)}"
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>0</span
                           >)
@@ -2102,12 +2100,12 @@ export default async (application: Application): Promise<void> => {
                       `)},  
                     },
                   });
-                `)}"
+                `}"
               >
                 <input
                   type="checkbox"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -2121,7 +2119,7 @@ export default async (application: Application): Promise<void> => {
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+0", () => { this.click(); return false; });
 
                     if (JSON.parse(localStorage.getItem("content-editor--write--textarea--programmer-mode") ?? "false")) this.click();
-                  `)}"
+                  `}"
                 />
                 <span>
                   <i class="bi bi-braces-asterisk"></i>
@@ -2173,7 +2171,7 @@ export default async (application: Application): Promise<void> => {
                   font-variant-ligatures: none;
                 }
               `}"
-              javascript="${response.locals.javascript(javascript`
+              javascript="${javascript`
                 autosize(this);
                 autosize.update(this);
 
@@ -2231,36 +2229,33 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         this.onclick = () => {
                                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
                                         };
-                                      `)}"
+                                      `}"
                                   >
                                     Everyone in the Conversation
                                   </button>
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         this.onclick = () => {
                                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
                                         };
-                                      `)}"
+                                      `}"
                                   >
                                     Staff in the Conversation
                                   </button>
                                   <button
                                     type="button"
                                     class="dropdown--menu--item button button--transparent"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         this.onclick = () => {
                                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
                                         };
-                                      `)}"
+                                      `}"
                                   >
                                     Students in the Conversation
                                   </button>
@@ -2421,7 +2416,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     : javascript``
                 }
-              `)}"
+              `}"
             >
 ${contentSource}</textarea
             >
@@ -2598,11 +2593,11 @@ ${contentSource}</textarea
                       javascript-complete="${enrollment.reference}--${slugify(
                         enrollment.user.name
                       )}"
-                      javascript="${response.locals.javascript(javascript`
+                      javascript="${javascript`
                         this.onclick = () => {
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));  
                         };
-                    `)}"
+                    `}"
                     >
                       $${application.server.locals.partials.user({
                         request,
@@ -2672,11 +2667,11 @@ ${contentSource}</textarea
               type="button"
               class="dropdown--menu--item button button--transparent"
               javascript-complete="${conversation.reference}"
-              javascript="${response.locals.javascript(javascript`
+              javascript="${javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                 };
-              `)}"
+              `}"
             >
               <span>
                 <span class="secondary">
@@ -2739,11 +2734,11 @@ ${contentSource}</textarea
                 type="button"
                 class="dropdown--menu--item button button--transparent"
                 javascript-complete="${conversation.reference}/${message.reference}"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onclick = () => {
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                   };
-                `)}"
+                `}"
               >
                 <div>
                   <div>
@@ -2771,11 +2766,11 @@ ${contentSource}</textarea
               type="button"
               class="dropdown--menu--item button button--transparent"
               javascript-complete="${conversation.reference}"
-              javascript="${response.locals.javascript(javascript`
+              javascript="${javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
                 };
-              `)}"
+              `}"
             >
               <span>
                 <span class="secondary">
@@ -2825,11 +2820,11 @@ ${contentSource}</textarea
             type="button"
             class="dropdown--menu--item button button--transparent"
             javascript-complete="${conversation.reference}"
-            javascript="${response.locals.javascript(javascript`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
-            `)}"
+            `}"
           >
             <span>
               <span class="secondary">#${conversation.reference}</span>
@@ -2897,11 +2892,11 @@ ${contentSource}</textarea
             type="button"
             class="dropdown--menu--item button button--transparent"
             javascript-complete="${conversation.reference}/${message.reference}"
-            javascript="${response.locals.javascript(javascript`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
-            `)}"
+            `}"
           >
             <div>
               <div>
@@ -2977,11 +2972,11 @@ ${contentSource}</textarea
             type="button"
             class="dropdown--menu--item button button--transparent"
             javascript-complete="${conversation.reference}/${message.reference}"
-            javascript="${response.locals.javascript(javascript`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("javascript-complete"));
               };
-            `)}"
+            `}"
           >
             <div>
               <div>

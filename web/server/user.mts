@@ -492,7 +492,7 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `}"
-              javascript="${response.locals.javascript(javascript`
+              javascript="${javascript`
                 const element = this;
 
                 leafac.setTippy({
@@ -512,7 +512,7 @@ export default async (application: Application): Promise<void> => {
                   ).getTime()} > 5 * 60 * 1000;
                   element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 2 * 1000);
                 })();
-              `)}"
+              `}"
             ></span>
           </span>`;
       }
@@ -546,7 +546,7 @@ export default async (application: Application): Promise<void> => {
           enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -555,7 +555,7 @@ export default async (application: Application): Promise<void> => {
                       content: "Staff",
                     },
                   });
-                `)}"
+                `}"
                 >  <i class="bi bi-mortarboard-fill"></i
               ></span>`
             : html``}</span
@@ -573,7 +573,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
-        javascript="${response.locals.javascript(javascript`
+        javascript="${javascript`
           leafac.setTippy({
             event,
             element: this,
@@ -643,8 +643,7 @@ export default async (application: Application): Promise<void> => {
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
                                   `}"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                                  javascript="${javascript`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -673,7 +672,7 @@ export default async (application: Application): Promise<void> => {
                                         await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                         this.copied.hide();
                                       };
-                                    `)}"
+                                    `}"
                                 >
                                   <i class="bi bi-stickies"></i>
                                 </button>
@@ -700,10 +699,9 @@ export default async (application: Application): Promise<void> => {
                                     datetime="${new Date(
                                       user!.lastSeenOnlineAt
                                     ).toISOString()}"
-                                    javascript="${response.locals
-                                      .javascript(javascript`
+                                    javascript="${javascript`
                                         leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                      `)}"
+                                      `}"
                                   ></time>
                                 </span>
                               </div>
@@ -741,7 +739,7 @@ export default async (application: Application): Promise<void> => {
               `)},  
             },
           });
-        `)}"
+        `}"
         >$${userHTML}</span
       >`;
 
@@ -814,7 +812,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
-        javascript="${response.locals.javascript(javascript`
+        javascript="${javascript`
           leafac.setTippy({
             event,
             element: this,
@@ -823,7 +821,7 @@ export default async (application: Application): Promise<void> => {
               content: "Anonymous to Other Students",
             },
           });
-        `)}"
+        `}"
         >$${anonymousHTML}</span
       >`;
 
@@ -914,7 +912,7 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                 `}"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.ondragover = (event) => {
                     if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
@@ -927,7 +925,7 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                `)}"
+                `}"
               >
                 <div
                   key="avatar-chooser--empty"
@@ -938,7 +936,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -951,7 +949,7 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = () => {
                         this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                       };
-                    `)}"
+                    `}"
                   >
                     <div
                       css="${css`
@@ -983,7 +981,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -996,7 +994,7 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = () => {
                         this.closest("form").querySelector('[key="avatar-chooser--upload"]').click();
                       };
-                    `)}"
+                    `}"
                   >
                     <img
                       src="${response.locals.user.avatar ?? ""}"
@@ -1023,7 +1021,7 @@ export default async (application: Application): Promise<void> => {
                       transform: translate(-20%, -20%);
                       align-items: center;
                     `}"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1041,7 +1039,7 @@ export default async (application: Application): Promise<void> => {
                         form.querySelector('[key="avatar-chooser--empty"]').hidden = false;
                         form.querySelector('[key="avatar-chooser--filled"]').hidden = true;
                       };
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-trash-fill"></i>
                   </button>
@@ -1051,7 +1049,7 @@ export default async (application: Application): Promise<void> => {
                   type="file"
                   accept="image/*"
                   hidden
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     const avatarChooser = this.closest('[key="avatar-chooser"]');
@@ -1123,7 +1121,7 @@ export default async (application: Application): Promise<void> => {
                     this.onchange = () => {
                       this.upload(this.files);
                     };
-                  `)}"
+                  `}"
                 />
                 <input
                   type="text"
@@ -1377,12 +1375,12 @@ export default async (application: Application): Promise<void> => {
                 value="${response.locals.user.email}"
                 required
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (!leafac.isModified(this))
                       return "Please provide the email address to which you’d like to update.";
                   };
-                `)}"
+                `}"
               />
             </label>
             <div class="label">
@@ -1391,7 +1389,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1400,7 +1398,7 @@ export default async (application: Application): Promise<void> => {
                         content: "You must confirm your email because this is an important operation that affects your account.",
                       },
                     });
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
@@ -1461,12 +1459,12 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
                       return "New Password & New Password Confirmation don’t match.";
                   };
-                `)}"
+                `}"
               />
             </label>
 
@@ -1768,7 +1766,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (this.checked) {
                           this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
@@ -1780,7 +1778,7 @@ export default async (application: Application): Promise<void> => {
                           element.closest("label").classList[this.checked ? "remove" : "add"]("disabled");
                         }
                       };
-                    `)}"
+                    `}"
                   />
                   All messages
                 </label>
@@ -1885,7 +1883,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1893,7 +1891,7 @@ export default async (application: Application): Promise<void> => {
                           element.onchange();
                         }
                       };
-                    `)}"
+                    `}"
                   />
                   @mentions
                 </label>
@@ -1914,7 +1912,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1923,7 +1921,7 @@ export default async (application: Application): Promise<void> => {
                         }
                         if (this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                       };
-                    `)}"
+                    `}"
                   />
                   Messages in conversations in which you participated
                 </label>
@@ -1944,7 +1942,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript="${response.locals.javascript(javascript`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1953,7 +1951,7 @@ export default async (application: Application): Promise<void> => {
                         }
                         if (!this.checked) this.closest("form").querySelector('[name="isEmailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                       };
-                    `)}"
+                    `}"
                   />
                   Messages in conversations you started
                 </label>
@@ -1966,7 +1964,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <label
                   class="button button--tight button--tight--inline disabled"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1974,7 +1972,7 @@ export default async (application: Application): Promise<void> => {
                         content: "You always receive email notifications for staff announcements.",
                       },
                     });
-                  `)}"
+                  `}"
                 >
                   <input
                     type="checkbox"
@@ -2147,7 +2145,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript="${response.locals.javascript(javascript`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2156,7 +2154,7 @@ export default async (application: Application): Promise<void> => {
                         content: "You must confirm your email because this is an important operation that affects your account.",
                       },
                     });
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
@@ -2172,11 +2170,11 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--full-width-on-small-screen button--rose"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onclick = () => {
                     localStorage.clear();
                   };
-                `)}"
+                `}"
               >
                 <i class="bi bi-person-x-fill"></i>
                 Remove Your Account

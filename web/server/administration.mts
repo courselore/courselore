@@ -399,7 +399,7 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
               placeholder="Filter…"
-              javascript="${response.locals.javascript(javascript`
+              javascript="${javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -425,7 +425,7 @@ export default async (application: Application): Promise<void> => {
                     user.hidden = userHidden;
                   }
                 };
-              `)}"
+              `}"
             />
           </label>
 
@@ -450,9 +450,9 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `}"
-                javascript="${response.locals.javascript(javascript`
+                javascript="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                `)}"
+                `}"
               >
                 <div>
                   $${application.server.locals.partials.user({
@@ -505,7 +505,7 @@ export default async (application: Application): Promise<void> => {
                           display: inline-flex;
                         `}"
                         javascript-email="${user.email}"
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -532,7 +532,7 @@ export default async (application: Application): Promise<void> => {
                             await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                             this.copied.hide();
                           };
-                        `)}"
+                        `}"
                       >
                         <i class="bi bi-stickies"></i>
                       </button>
@@ -549,9 +549,9 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             user.lastSeenOnlineAt
                           ).toISOString()}"
-                          javascript="${response.locals.javascript(javascript`
+                          javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                          `)}"
+                          `}"
                         ></time>
                       </span>
                     </div>
@@ -575,7 +575,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
-                        javascript="${response.locals.javascript(javascript`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -618,9 +618,7 @@ export default async (application: Application): Promise<void> => {
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                    javascript="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -630,14 +628,12 @@ export default async (application: Application): Promise<void> => {
                                                             content: "You may not update your own role because you’re the only administrator.",
                                                           },
                                                         });
-                                                      `)}"
+                                                      `}"
                                                   `
                                                 : isSelf
                                                 ? html`
                                                     type="button"
-                                                    javascript="${response
-                                                      .locals
-                                                      .javascript(javascript`
+                                                    javascript="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -704,7 +700,7 @@ export default async (application: Application): Promise<void> => {
                                                             `)},  
                                                           },
                                                         });
-                                                      `)}"
+                                                      `}"
                                                   `
                                                 : html``}
                                             >
@@ -719,7 +715,7 @@ export default async (application: Application): Promise<void> => {
                               `)},  
                             },
                           });
-                        `)}"
+                        `}"
                       >
                         $${iconsSystemRole[user.systemRole]}
                         ${lodash.capitalize(user.systemRole)}
