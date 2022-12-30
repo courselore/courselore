@@ -1065,8 +1065,6 @@ export default async (application: Application): Promise<void> => {
             `}"
           ></div>
         </div>
-
-        $${response.locals.javascript.toString()}
       </body>
     `;
 
@@ -1102,7 +1100,6 @@ export default async (application: Application): Promise<void> => {
             href="https://${application.configuration.hostname}/${application
               .static["index.css"]}"
           />
-          $${response.locals.css.toString()}
 
           <script
             src="https://${application.configuration.hostname}/${application
@@ -1955,17 +1952,7 @@ export default async (application: Application): Promise<void> => {
     if (typeof request.header("Live-Connection") !== "string")
       delete response.locals.liveConnectionNonce;
 
-    return html`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          $${response.locals.css.toString()}
-        </head>
-        <body>
-          $${body} $${response.locals.javascript.toString()}
-        </body>
-      </html>
-    `;
+    return body;
   };
 
   application.server.locals.partials.logo = (() => {

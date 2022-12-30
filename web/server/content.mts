@@ -382,7 +382,7 @@ export default async (application: Application): Promise<void> => {
       if (isExternal)
         element.setAttribute(
           "javascript",
-          response.locals.javascript(javascript`
+          javascript`
             leafac.setTippy({
               event,
               element: this,
@@ -398,7 +398,7 @@ export default async (application: Application): Promise<void> => {
                 )},  
               },
             });
-          `)
+          `
         );
     }
 
@@ -669,7 +669,7 @@ export default async (application: Application): Promise<void> => {
         if (hrefMessageReference === undefined) {
           element.setAttribute(
             "javascript",
-            response.locals.javascript(javascript`
+            javascript`
               leafac.setTippy({
                 event,
                 element: this,
@@ -690,7 +690,7 @@ export default async (application: Application): Promise<void> => {
                   `)},  
                 },
               });
-            `)
+            `
           );
           continue;
         }
@@ -703,7 +703,7 @@ export default async (application: Application): Promise<void> => {
         if (message === undefined) continue;
         element.setAttribute(
           "javascript",
-          response.locals.javascript(javascript`
+          javascript`
             leafac.setTippy({
               event,
               element: this,
@@ -728,7 +728,7 @@ export default async (application: Application): Promise<void> => {
                 `)},  
               },
             });
-          `)
+          `
         );
       }
     }
