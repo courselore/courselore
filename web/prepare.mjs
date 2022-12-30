@@ -21,8 +21,6 @@ await execa("tsc", undefined, {
   stdio: "inherit",
 });
 
-// TODO: Source maps.
-
 const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 let applicationCSS = "";
 let applicationJavaScript = "";
@@ -119,6 +117,9 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
     break;
   }
 
+const baseFileHash = baseX(
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+);
 for (const source of [
   "about/ali-madooei.webp",
   "about/eliot-smith.webp",
@@ -133,10 +134,9 @@ for (const source of [
   const extension = path.extname(source);
   const destination = path.join(
     "./build/static",
-    `${source.slice(0, -extension.length)}--${crypto
-      .createHash("sha1")
-      .update(await fs.readFile(source))
-      .digest("hex")}${extension}`
+    `${source.slice(0, -extension.length)}--${baseFileHash.encode(
+      xxhash.XXHash3.hash(await fs.readFile(source))
+    )}${extension}`
   );
   paths[source] = destination.slice("./build/static/".length);
   await fs.mkdir(path.dirname(destination), { recursive: true });
