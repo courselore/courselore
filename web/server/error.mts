@@ -89,7 +89,7 @@ export default async (application: Application): Promise<void> => {
               )}"
               hidden
               novalidate
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -178,7 +178,7 @@ export default async (application: Application): Promise<void> => {
                     <hr class="separator" />
 
                     <p
-                      class="${css`
+                      css="${css`
                         font-weight: var(--font-weight--bold);
                       `}"
                     >

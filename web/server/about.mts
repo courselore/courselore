@@ -36,7 +36,7 @@ export default async (application: Application): Promise<void> => {
         `,
         body: html`
           <div
-            class="${css`
+            css="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -48,7 +48,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -58,7 +58,8 @@ export default async (application: Application): Promise<void> => {
             >
               <a
                 href="https://${application.configuration.hostname}/about"
-                class="heading--display button button--transparent ${css`
+                class="heading--display button button--transparent"
+                css="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -71,7 +72,8 @@ export default async (application: Application): Promise<void> => {
                 Courselore
               </a>
               <h3
-                class="secondary ${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -81,7 +83,7 @@ export default async (application: Application): Promise<void> => {
               </h3>
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -151,7 +153,8 @@ export default async (application: Application): Promise<void> => {
                 <div>
                   <a
                     href="${application.addresses.metaCourseloreInvitation}"
-                    class="button button--transparent ${css`
+                    class="button button--transparent"
+                    css="${css`
                       align-items: center;
                     `}"
                     javascript="${response.locals.javascript(javascript`
@@ -212,7 +215,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 max-width: var(--width--3xl);
               `}"
             >
@@ -222,7 +225,8 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img light ${css`
+                class="img light"
+                css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -237,7 +241,8 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img dark ${css`
+                class="img dark"
+                css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -250,7 +255,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -301,7 +306,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <div>
                 <div
-                  class="${css`
+                  css="${css`
                     color: var(--color--violet--700);
                     background-color: var(--color--violet--200);
                     @media (prefers-color-scheme: dark) {
@@ -311,7 +316,8 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <i
-                    class="bi bi-chat-text-fill ${css`
+                    class="bi bi-chat-text-fill"
+                    css="${css`
                       margin-left: var(--space--0-5);
                     `}"
                   ></i>
@@ -327,7 +333,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <div>
                 <div
-                  class="${css`
+                  css="${css`
                     color: var(--color--sky--700);
                     background-color: var(--color--sky--200);
                     @media (prefers-color-scheme: dark) {
@@ -348,7 +354,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <div>
                 <div
-                  class="${css`
+                  css="${css`
                     color: var(--color--green--700);
                     background-color: var(--color--green--200);
                     @media (prefers-color-scheme: dark) {
@@ -358,7 +364,8 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <i
-                    class="bi bi-file-earmark-code-fill ${css`
+                    class="bi bi-file-earmark-code-fill"
+                    css="${css`
                       margin-left: var(--space--0-5);
                     `}"
                   ></i>
@@ -373,7 +380,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -388,7 +395,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -397,7 +404,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <p
-                class="heading--display ${css`
+                class="heading--display"
+                css="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -407,7 +415,8 @@ export default async (application: Application): Promise<void> => {
                 Carefully Designed
               </p>
               <p
-                class="secondary ${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -419,7 +428,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 max-width: var(--width--3xl);
               `}"
             >
@@ -429,7 +438,8 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
-                class="img ${css`
+                class="img"
+                css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -442,7 +452,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -461,7 +471,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -470,7 +480,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <p
-                class="heading--display ${css`
+                class="heading--display"
+                css="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -481,7 +492,8 @@ export default async (application: Application): Promise<void> => {
                 Mobile Support
               </p>
               <p
-                class="secondary ${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -493,7 +505,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 max-width: var(--width--3xl);
               `}"
             >
@@ -503,7 +515,8 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img light ${css`
+                class="img light"
+                css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -518,7 +531,8 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img dark ${css`
+                class="img dark"
+                css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -531,7 +545,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -546,7 +560,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -555,7 +569,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <p
-                class="heading--display ${css`
+                class="heading--display"
+                css="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -565,7 +580,8 @@ export default async (application: Application): Promise<void> => {
                 Rich-Text Messages
               </p>
               <p
-                class="secondary ${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -574,7 +590,8 @@ export default async (application: Application): Promise<void> => {
                 Markdown
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
@@ -594,7 +611,8 @@ export default async (application: Application): Promise<void> => {
                   LaTeX
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
@@ -614,7 +632,8 @@ export default async (application: Application): Promise<void> => {
                   Syntax highlighting
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
@@ -637,7 +656,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
               `}"
@@ -680,7 +699,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -693,7 +712,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -702,7 +721,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <h2
-                class="heading--display ${css`
+                class="heading--display"
+                css="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -714,7 +734,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 gap: var(--space--14);
                 flex-direction: column;
@@ -796,7 +816,8 @@ export default async (application: Application): Promise<void> => {
               </a>
 
               <h3
-                class="secondary ${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -830,7 +851,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            class="${css`
+            css="${css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               font-weight: var(--font-weight--bold);
@@ -894,7 +915,8 @@ export default async (application: Application): Promise<void> => {
                 `}
             <a
               href="${application.addresses.metaCourseloreInvitation}"
-              class="button button--transparent ${css`
+              class="button button--transparent"
+              css="${css`
                 align-items: center;
               `}"
               javascript="${response.locals.javascript(javascript`

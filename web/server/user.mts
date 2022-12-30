@@ -328,7 +328,7 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                class="${css`
+                css="${css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
                   @media (prefers-color-scheme: dark) {
@@ -356,7 +356,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <foreignObject x="2" y="-2" width="24" height="24">
                   <span
-                    class="${css`
+                    css="${css`
                       font-size: var(--font-size--xl);
                       line-height: var(--line-height--xl);
                     `}"
@@ -370,7 +370,7 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                class="${css`
+                css="${css`
                   ${{
                     xs: css`
                       width: var(--space--4);
@@ -395,7 +395,7 @@ export default async (application: Application): Promise<void> => {
               />`
             : html`<svg
                 viewBox="0 0 24 24"
-                class="${css`
+                css="${css`
                   color: var(--color--${user.avatarlessBackgroundColor}--700);
                   background-color: var(
                     --color--${user.avatarlessBackgroundColor}--200
@@ -429,7 +429,7 @@ export default async (application: Application): Promise<void> => {
                   x="12"
                   y="16"
                   text-anchor="middle"
-                  class="${css`
+                  css="${css`
                     font-size: var(--font-size--2xs);
                     line-height: var(--line-height--2xs);
                     font-weight: var(--font-weight--black);
@@ -449,7 +449,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            class="${css`
+            css="${css`
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
@@ -469,7 +469,7 @@ export default async (application: Application): Promise<void> => {
             $${userAvatar}
             <span
               hidden
-              class="${css`
+              css="${css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
       if (name !== false)
         userName = html`<span
           ><span
-            class="${css`
+            css="${css`
               ${bold
                 ? css`
                     font-weight: var(--font-weight--bold);
@@ -584,7 +584,7 @@ export default async (application: Application): Promise<void> => {
               touch: ["hold", 1000],
               content: ${JSON.stringify(html`
                 <div
-                  class="${css`
+                  css="${css`
                     max-height: var(--space--56);
                     padding: var(--space--1) var(--space--2);
                     overflow: auto;
@@ -594,7 +594,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <div
-                    class="${css`
+                    css="${css`
                       display: flex;
                       gap: var(--space--4);
                       align-items: center;
@@ -611,7 +611,7 @@ export default async (application: Application): Promise<void> => {
                       })}
                     </div>
                     <div
-                      class="${css`
+                      css="${css`
                         padding-top: var(--space--0-5);
                         display: flex;
                         flex-direction: column;
@@ -630,14 +630,15 @@ export default async (application: Application): Promise<void> => {
                           ? html`
                               <div class="secondary">
                                 <span
-                                  class="${css`
+                                  css="${css`
                                     margin-right: var(--space--2);
                                   `}"
                                 >
                                   ${user!.email}
                                 </span>
                                 <button
-                                  class="button button--tight button--tight--inline button--transparent ${css`
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  css="${css`
                                     font-size: var(--font-size--xs);
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
@@ -687,7 +688,8 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html`
                               <div
-                                class="secondary ${css`
+                                class="secondary"
+                                css="${css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                 `}"
@@ -711,7 +713,8 @@ export default async (application: Application): Promise<void> => {
                         enrollment.courseRole === "staff"
                           ? html`
                               <div
-                                class="text--sky ${css`
+                                class="text--sky"
+                                css="${css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                   display: flex;
@@ -749,7 +752,7 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          class="${css`
+          css="${css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
@@ -777,7 +780,7 @@ export default async (application: Application): Promise<void> => {
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
-              class="${css`
+              css="${css`
                 font-size: var(--font-size--xl);
                 line-height: var(--line-height--xl);
               `}"
@@ -789,7 +792,7 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
-          class="${css`
+          css="${css`
             ${bold
               ? css`
                   font-weight: var(--font-weight--bold);
@@ -874,14 +877,14 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/profile"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 gap: var(--space--4);
                 @media (max-width: 400px) {
@@ -891,7 +894,7 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="avatar-chooser"
-                class="${css`
+                css="${css`
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -951,7 +954,7 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         width: var(--space--4);
                         height: var(--space--4);
                         transform: scale(8);
@@ -999,7 +1002,7 @@ export default async (application: Application): Promise<void> => {
                       src="${response.locals.user.avatar ?? ""}"
                       alt="Avatar"
                       loading="lazy"
-                      class="${css`
+                      css="${css`
                         width: 100%;
                         height: 100%;
                         border-radius: var(--border-radius--circle);
@@ -1008,7 +1011,8 @@ export default async (application: Application): Promise<void> => {
                   </button>
                   <button
                     type="button"
-                    class="button button--rose ${css`
+                    class="button button--rose"
+                    css="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       place-self: end;
@@ -1064,7 +1068,7 @@ export default async (application: Application): Promise<void> => {
                         hideOnClick: false,
                         content: ${JSON.stringify(html`
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               gap: var(--space--2);
                             `}"
@@ -1130,7 +1134,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                class="${css`
+                css="${css`
                   flex: 1;
                   display: flex;
                   flex-direction: column;
@@ -1358,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/email-and-password"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1426,7 +1430,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/email-and-password"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1742,7 +1746,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/notifications"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1751,7 +1755,7 @@ export default async (application: Application): Promise<void> => {
             <div key="isEmailNotificationsFor" class="label">
               <p class="label--text">Email Notifications</p>
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -1785,7 +1789,7 @@ export default async (application: Application): Promise<void> => {
               <div
                 hidden
                 TODO
-                class="${css`
+                css="${css`
                   margin-left: var(--space--10);
                   display: flex;
                   flex-wrap: wrap;
@@ -1868,7 +1872,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -1896,7 +1900,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -1926,7 +1930,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -1956,7 +1960,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -2131,7 +2135,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/account"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);

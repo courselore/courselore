@@ -257,7 +257,7 @@ export default async (application: Application): Promise<void> => {
   }) => {
     const layoutBaseBody = html`
       <body
-        class="${css`
+        css="${css`
           font-family: "Public SansVariable", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
@@ -271,7 +271,7 @@ export default async (application: Application): Promise<void> => {
       >
         <div
           key="viewport"
-          class="${css`
+          css="${css`
             position: absolute;
             top: 0;
             right: 0;
@@ -309,7 +309,7 @@ export default async (application: Application): Promise<void> => {
                         interactive: true,
                         content: ${JSON.stringify(html`
                           <div
-                            class="${css`
+                            css="${css`
                               padding: var(--space--1) var(--space--2);
                               display: flex;
                               gap: var(--space--2);
@@ -401,13 +401,14 @@ export default async (application: Application): Promise<void> => {
             : html`
                 <div
                   key="header--accent-color"
-                  class="${css`
+                  css="${css`
                     height: var(--border-width--8);
                     display: flex;
                   `}"
                 >
                   <button
-                    class="button ${css`
+                    class="button"
+                    css="${css`
                       background-color: var(
                         --color--${response.locals.enrollment.accentColor}--500
                       );
@@ -438,7 +439,7 @@ export default async (application: Application): Promise<void> => {
                           interactive: true,
                           content: ${JSON.stringify(html`
                             <div
-                              class="${css`
+                              css="${css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -454,7 +455,8 @@ export default async (application: Application): Promise<void> => {
                                 href="https://${application.configuration
                                   .hostname}/courses/${response.locals.course!
                                   .reference}/settings/your-enrollment"
-                                class="button button--blue ${css`
+                                class="button button--blue"
+                                css="${css`
                                   width: 100%;
                                 `}"
                               >
@@ -489,7 +491,7 @@ export default async (application: Application): Promise<void> => {
                           interactive: true,
                           content: ${JSON.stringify(html`
                             <div
-                              class="${css`
+                              css="${css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -511,7 +513,8 @@ export default async (application: Application): Promise<void> => {
                                   .hostname}/demonstration-data"
                               >
                                 <button
-                                  class="button button--blue ${css`
+                                  class="button button--blue"
+                                  css="${css`
                                     width: 100%;
                                   `}"
                                 >
@@ -644,7 +647,7 @@ export default async (application: Application): Promise<void> => {
               header += html`
                 <div
                   key="header--meta"
-                  class="${css`
+                  css="${css`
                     justify-content: center;
                     flex-wrap: wrap;
                   `}"
@@ -659,7 +662,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="header"
-                    class="${css`
+                    css="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       background-color: var(--color--gray--medium--100);
@@ -687,7 +690,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="main"
-            class="${css`
+            css="${css`
               flex: 1;
               overflow: auto;
             `}"
@@ -705,7 +708,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="footer"
-            class="${css`
+            css="${css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -725,7 +728,8 @@ export default async (application: Application): Promise<void> => {
           >
             <div>
               <button
-                class="button button--transparent ${css`
+                class="button button--transparent"
+                css="${css`
                   align-items: center;
                 `}"
                 javascript="${response.locals.javascript(javascript`
@@ -745,7 +749,8 @@ export default async (application: Application): Promise<void> => {
                             Courselore <br />
                             Communication Platform for Education <br />
                             <small
-                              class="secondary ${css`
+                              class="secondary"
+                              css="${css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
                               `}"
@@ -839,7 +844,8 @@ export default async (application: Application): Promise<void> => {
                               { addQueryPrefix: true }
                             )}"
                             target="_blank"
-                            class="dropdown--menu--item button button--transparent ${css`
+                            class="dropdown--menu--item button button--transparent"
+                            css="${css`
                               align-items: center;
                             `}"
                           >
@@ -991,7 +997,7 @@ export default async (application: Application): Promise<void> => {
                         });
                       `)}"
                     >
-                    <span class="${css`
+                    <span css="${css`
                       display: flex;
                       gap: var(--space--2);
                       animation: bounce 1s 3;
@@ -1009,7 +1015,7 @@ export default async (application: Application): Promise<void> => {
         <div
           key="progress-bar"
           hidden
-          class="${css`
+          css="${css`
             position: fixed;
             top: 0;
             right: 0;
@@ -1045,7 +1051,7 @@ export default async (application: Application): Promise<void> => {
           `)}"
         >
           <div
-            class="${css`
+            css="${css`
               height: var(--border-width--4);
               background-color: var(--color--blue--500);
               @media (prefers-color-scheme: dark) {
@@ -1166,7 +1172,7 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--box"
-          class="${css`
+          css="${css`
             min-width: 100%;
             min-height: 100%;
             display: flex;
@@ -1175,7 +1181,7 @@ export default async (application: Application): Promise<void> => {
           `}"
         >
           <div
-            class="${css`
+            css="${css`
               flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
@@ -1186,14 +1192,15 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               key="main--logo"
-              class="${css`
+              css="${css`
                 display: flex;
                 justify-content: center;
               `}"
             >
               <a
                 href="https://${application.configuration.hostname}/"
-                class="heading--display button button--transparent ${css`
+                class="heading--display button button--transparent"
+                css="${css`
                   align-items: center;
                 `}"
               >
@@ -1202,7 +1209,7 @@ export default async (application: Application): Promise<void> => {
             </div>
             <div
               key="main--${request.path}"
-              class="${css`
+              css="${css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -1222,7 +1229,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="main--try"
-                    class="${css`
+                    css="${css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1236,7 +1243,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `}"
@@ -1244,7 +1251,7 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      class="${css`
+                      css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -1264,7 +1271,8 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/demonstration-data"
                       >
                         <button
-                          class="button button--amber ${css`
+                          class="button button--amber"
+                          css="${css`
                             width: 100%;
                           `}"
                         >
@@ -1279,7 +1287,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="main--demonstration"
-                    class="${css`
+                    css="${css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1293,7 +1301,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `}"
@@ -1301,7 +1309,7 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      class="${css`
+                      css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -1321,7 +1329,8 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/demonstration-data"
                       >
                         <button
-                          class="button button--amber ${css`
+                          class="button button--amber"
+                          css="${css`
                             width: 100%;
                           `}"
                         >
@@ -1353,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
       extraHeaders: html`
         <div
           key="header--menu--primary"
-          class="${css`
+          css="${css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
             gap: var(--space--4);
@@ -1378,7 +1387,7 @@ export default async (application: Application): Promise<void> => {
           </a>
 
           <div
-            class="${css`
+            css="${css`
               font-size: var(--font-size--sm);
               line-height: var(--line-height--sm);
               flex: 1;
@@ -1399,7 +1408,8 @@ export default async (application: Application): Promise<void> => {
               return response.locals.course !== undefined
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent strong ${css`
+                      class="button button--tight button--tight--inline button--transparent strong"
+                      css="${css`
                         max-width: 100%;
                       `}"
                       javascript="${response.locals.javascript(javascript`
@@ -1412,7 +1422,7 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                class="${css`
+                                css="${css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                   display: flex;
@@ -1428,7 +1438,7 @@ export default async (application: Application): Promise<void> => {
                                   $${response.locals.course.archivedAt !== null
                                     ? html`
                                         <div
-                                          class="${css`
+                                          css="${css`
                                             padding: var(--space--0)
                                               var(--space--2) var(--space--1);
                                             margin-top: var(--space---2);
@@ -1494,7 +1504,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
-                        class="${css`
+                        css="${css`
                           white-space: nowrap;
                           overflow: hidden;
                           text-overflow: ellipsis;
@@ -1518,7 +1528,8 @@ export default async (application: Application): Promise<void> => {
                 : showCourseSwitcher && response.locals.enrollments.length > 0
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent ${css`
+                      class="button button--tight button--tight--inline button--transparent"
+                      css="${css`
                         max-width: 100%;
                       `}"
                       javascript="${response.locals.javascript(javascript`
@@ -1531,7 +1542,7 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                class="${css`
+                                css="${css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                 `}"
@@ -1581,7 +1592,7 @@ export default async (application: Application): Promise<void> => {
                     interactive: true,
                     content: ${JSON.stringify(html`
                       <div
-                        class="${css`
+                        css="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
@@ -1663,7 +1674,7 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <div
-                class="${css`
+                css="${css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
@@ -1671,7 +1682,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
@@ -1687,7 +1698,7 @@ export default async (application: Application): Promise<void> => {
                   ? html``
                   : html`
                       <div
-                        class="${css`
+                        css="${css`
                           background-color: var(--color--rose--500);
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
@@ -1706,7 +1717,8 @@ export default async (application: Application): Promise<void> => {
 
           <div>
             <button
-              class="button button--tight button--tight--inline button--transparent ${css`
+              class="button button--tight button--tight--inline button--transparent"
+              css="${css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `}"
@@ -1729,14 +1741,14 @@ export default async (application: Application): Promise<void> => {
                     interactive: true,
                     content: ${JSON.stringify(html`
                       <div
-                        class="${css`
+                        css="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
                         `}"
                       >
                         <div
-                          class="${css`
+                          css="${css`
                             padding: var(--space--0) var(--space--2);
                           `}"
                         >
@@ -1828,13 +1840,13 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--main--${request.path}"
-          class="${css`
+          css="${css`
             display: flex;
             justify-content: center;
           `}"
         >
           <div
-            class="${css`
+            css="${css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -1868,7 +1880,7 @@ export default async (application: Application): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary--${request.path}"
-                class="${css`
+                css="${css`
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
@@ -1876,7 +1888,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     padding: var(--space--1) var(--space--0);
                   `}"
                 >
@@ -1906,7 +1918,7 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--settings--${request.path}"
-          class="${css`
+          css="${css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
@@ -1918,7 +1930,7 @@ export default async (application: Application): Promise<void> => {
             : html`
                 <div
                   key="layout--settings--menu"
-                  class="${css`
+                  css="${css`
                     flex: 1;
                     max-width: var(--space--64);
                     @media (max-width: 699px) {
@@ -1931,7 +1943,7 @@ export default async (application: Application): Promise<void> => {
               `}
           <div
             key="layout--settings--main"
-            class="${css`
+            css="${css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -2025,19 +2037,19 @@ export default async (application: Application): Promise<void> => {
       fill="none"
       stroke="currentColor"
       stroke-width="4"
-      class="${css`
+      css="${css`
         animation: var(--animation--spin);
       `}"
     >
       <path
         d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
-        class="${css`
+        css="${css`
           opacity: var(--opacity--25);
         `}"
       />
       <path
         d="M 2 10 A 8 8 0 0 0 15.5 15.5"
-        class="${css`
+        css="${css`
           opacity: var(--opacity--75);
         `}"
       />

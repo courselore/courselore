@@ -636,7 +636,7 @@ export default async (application: Application): Promise<void> => {
                             content: ${JSON.stringify(html`
                               <div
                                 key="loading"
-                                class="${css`
+                                css="${css`
                                   display: flex;
                                   gap: var(--space--2);
                                   align-items: center;
@@ -819,7 +819,7 @@ export default async (application: Application): Promise<void> => {
                               class="dropdown--menu--item button button--transparent"
                             >
                               <span
-                                class="${css`
+                                css="${css`
                                   margin-left: var(--space---0-5);
                                 `}"
                               >
@@ -844,7 +844,7 @@ export default async (application: Application): Promise<void> => {
                               class="dropdown--menu--item button button--transparent"
                             >
                               <span
-                                class="${css`
+                                css="${css`
                                   margin-left: var(--space---0-5);
                                 `}"
                               >
@@ -885,7 +885,7 @@ export default async (application: Application): Promise<void> => {
                             content: ${JSON.stringify(html`
                               <div
                                 key="loading"
-                                class="${css`
+                                css="${css`
                                   display: flex;
                                   gap: var(--space--2);
                                   align-items: center;
@@ -970,7 +970,7 @@ export default async (application: Application): Promise<void> => {
                                       addQueryPrefix: true,
                                     }
                                   )}"
-                                  class="${css`
+                                  css="${css`
                                     padding: var(--space--2);
                                     display: flex;
                                     flex-direction: column;
@@ -983,7 +983,7 @@ export default async (application: Application): Promise<void> => {
                                   </p>
                                   <p>
                                     <strong
-                                      class="${css`
+                                      css="${css`
                                         font-weight: var(--font-weight--bold);
                                       `}"
                                     >
@@ -1055,7 +1055,7 @@ export default async (application: Application): Promise<void> => {
                 { addQueryPrefix: true }
               )}"
               novalidate
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--2);
@@ -1069,7 +1069,7 @@ export default async (application: Application): Promise<void> => {
               })}
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                   gap: var(--space--2);
                   @media (max-width: 400px) {
@@ -1166,7 +1166,8 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu ${css`
+              class="dropdown--menu"
+              css="${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
@@ -1190,7 +1191,8 @@ export default async (application: Application): Promise<void> => {
                     })}
                      
                     <span
-                      class="secondary ${css`
+                      class="secondary"
+                      css="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                       `}"
@@ -1598,7 +1600,8 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu ${css`
+              class="dropdown--menu"
+              css="${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
@@ -1709,7 +1712,8 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu ${css`
+              class="dropdown--menu"
+              css="${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
@@ -1733,7 +1737,8 @@ export default async (application: Application): Promise<void> => {
                     })}
                      
                     <span
-                      class="secondary ${css`
+                      class="secondary"
+                      css="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                       `}"

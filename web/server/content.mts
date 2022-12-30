@@ -677,7 +677,7 @@ export default async (application: Application): Promise<void> => {
                   touch: false,
                   content: ${JSON.stringify(html`
                     <div
-                      class="${css`
+                      css="${css`
                         padding: var(--space--2);
                       `}"
                     >
@@ -711,7 +711,7 @@ export default async (application: Application): Promise<void> => {
                 touch: false,
                 content: ${JSON.stringify(html`
                   <div
-                    class="${css`
+                    css="${css`
                       padding: var(--space--2);
                       display: flex;
                       flex-direction: column;
@@ -807,7 +807,7 @@ export default async (application: Application): Promise<void> => {
   }) => html`
     <div
       key="content-editor"
-      class="${css`
+      css="${css`
         min-width: var(--space--0);
       `}"
     >
@@ -815,7 +815,7 @@ export default async (application: Application): Promise<void> => {
         ? html``
         : html`
             <div
-              class="${css`
+              css="${css`
                 display: flex;
                 gap: var(--space--1);
 
@@ -955,7 +955,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           `}
       <div
-        class="${css`
+        css="${css`
           background-color: var(--color--gray--medium--100);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--800);
@@ -966,7 +966,7 @@ export default async (application: Application): Promise<void> => {
         <div key="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
-            class="${css`
+            css="${css`
               padding: var(--space--1) var(--space--0);
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
@@ -2047,7 +2047,7 @@ export default async (application: Application): Promise<void> => {
                       hideOnClick: false,
                       content: ${JSON.stringify(html`
                         <div
-                          class="${css`
+                          css="${css`
                             display: flex;
                             gap: var(--space--2);
                           `}"
@@ -2133,13 +2133,13 @@ export default async (application: Application): Promise<void> => {
             </div>
           </div>
           <div
-            class="${css`
+            css="${css`
               position: relative;
             `}"
           >
             <div
               key="content-editor--write--textarea--dropdown-menu-target"
-              class="${css`
+              css="${css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
                 position: absolute;
@@ -2149,7 +2149,8 @@ export default async (application: Application): Promise<void> => {
               key="content-editor--write--textarea"
               name="${name}"
               $${required ? html`required` : html``}
-              class="input--text input--text--textarea ${css`
+              class="input--text input--text--textarea"
+              css="${css`
                 ${compact
                   ? css`
                       height: var(--space--14);
@@ -2215,7 +2216,7 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                class="${css`
+                                css="${css`
                                   width: var(--space--56);
                                   max-height: var(--space--44);
                                   overflow: auto;
@@ -2279,7 +2280,7 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                class="${css`
+                                css="${css`
                                   width: var(--space--72);
                                   max-height: var(--space--44);
                                   overflow: auto;
@@ -2433,7 +2434,8 @@ ${contentSource}</textarea
               <div
                 key="content-editor--loading"
                 hidden
-                class="strong ${css`
+                class="strong"
+                css="${css`
                   padding: var(--space--4);
                   display: flex;
                   justify-content: center;
@@ -2451,7 +2453,7 @@ ${contentSource}</textarea
               <div
                 key="content-editor--preview"
                 hidden
-                class="${css`
+                css="${css`
                   padding: var(--space--4);
                 `}"
               ></div>

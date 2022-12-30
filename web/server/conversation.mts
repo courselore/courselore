@@ -1035,14 +1035,14 @@ export default async (application: Application): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary"
-                class="${css`
+                css="${css`
                   @media (min-width: 900px) {
                     display: none;
                   }
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     padding: var(--space--1) var(--space--0);
                   `}"
                 >
@@ -1062,7 +1062,7 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--conversation"
-          class="${css`
+          css="${css`
             width: 100%;
             height: 100%;
             display: flex;
@@ -1071,7 +1071,7 @@ export default async (application: Application): Promise<void> => {
           <div
             key="layout--conversation--sidebar--/${response.locals.course
               .reference}"
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               @media (max-width: 899px) {
@@ -1093,7 +1093,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -1108,7 +1108,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
-                class="${css`
+                css="${css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
@@ -1117,7 +1117,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -1129,7 +1129,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <div
-                    class="${css`
+                    css="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -1139,7 +1139,8 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      class="strong ${css`
+                      class="strong"
+                      css="${css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
                       `}"
@@ -1222,7 +1223,7 @@ export default async (application: Application): Promise<void> => {
                   <hr class="separator" />
 
                   <div
-                    class="${css`
+                    css="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -1233,7 +1234,8 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      class="strong ${css`
+                      class="strong"
+                      css="${css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
                       `}"
@@ -1487,7 +1489,7 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="search-and-filters"
-                    class="${css`
+                    css="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -1496,7 +1498,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         display: flex;
                         column-gap: var(--space--4);
                         row-gap: var(--space--2);
@@ -1617,7 +1619,7 @@ export default async (application: Application): Promise<void> => {
                         filters.isQuick !== "true")
                         ? html``
                         : html`hidden`}
-                      class="${css`
+                      css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--1);
@@ -1629,7 +1631,7 @@ export default async (application: Application): Promise<void> => {
                       <div
                         key="search"
                         $${search !== undefined ? html`` : html`hidden`}
-                        class="${css`
+                        css="${css`
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
@@ -1701,7 +1703,7 @@ export default async (application: Application): Promise<void> => {
                         filters.isQuick !== "true"
                           ? html``
                           : html`hidden`}
-                        class="${css`
+                        css="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
@@ -1710,7 +1712,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <div class="label--text">Unread</div>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1787,7 +1789,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1859,7 +1861,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Question Resolved</p>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -1942,7 +1944,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Announcement</p>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -2025,7 +2027,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Participants</p>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -2100,7 +2102,7 @@ export default async (application: Application): Promise<void> => {
                             </button>
                           </div>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
@@ -2199,7 +2201,7 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                 </div>
                                 <div
-                                  class="${css`
+                                  css="${css`
                                     display: flex;
                                     flex-wrap: wrap;
                                     column-gap: var(--space--6);
@@ -2210,7 +2212,7 @@ export default async (application: Application): Promise<void> => {
                                     (tag) => html`
                                       <div
                                         key="tag--${tag.reference}"
-                                        class="${css`
+                                        css="${css`
                                           display: flex;
                                           gap: var(--space--2);
                                         `}"
@@ -2271,7 +2273,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `}
                         <div
-                          class="${css`
+                          css="${css`
                             margin-top: var(--space--2);
                             display: flex;
                             gap: var(--space--2);
@@ -2315,13 +2317,13 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              class="${css`
+              css="${css`
                 flex: 1;
                 overflow: auto;
               `}"
             >
               <div
-                class="${css`
+                css="${css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
@@ -2330,7 +2332,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -2344,7 +2346,7 @@ export default async (application: Application): Promise<void> => {
                   $${conversationsWithSearchResults.length === 0
                     ? html`
                         <div
-                          class="${css`
+                          css="${css`
                             display: flex;
                             flex-direction: column;
                             align-items: center;
@@ -2360,7 +2362,7 @@ export default async (application: Application): Promise<void> => {
                         $${conversationsPage > 1
                           ? html`
                               <div
-                                class="${css`
+                                css="${css`
                                   display: flex;
                                   justify-content: center;
                                 `}"
@@ -2392,7 +2394,7 @@ export default async (application: Application): Promise<void> => {
 
                         <div
                           key="conversations"
-                          class="${css`
+                          css="${css`
                             margin-top: var(--space---2);
                           `}"
                           javascript="${response.locals.javascript(javascript`
@@ -2435,7 +2437,8 @@ export default async (application: Application): Promise<void> => {
                                   )}"
                                   class="button ${isSelected
                                     ? "button--blue"
-                                    : "button--transparent"} ${css`
+                                    : "button--transparent"}"
+                                  css="${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
                                     );
@@ -2453,7 +2456,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <div
-                                    class="${css`
+                                    css="${css`
                                       flex: 1;
                                       max-width: 100%;
                                     `}"
@@ -2468,7 +2471,7 @@ export default async (application: Application): Promise<void> => {
                                     )}
                                   </div>
                                   <div
-                                    class="${css`
+                                    css="${css`
                                       width: var(--space--4);
                                       display: flex;
                                       justify-content: flex-end;
@@ -2484,7 +2487,8 @@ export default async (application: Application): Promise<void> => {
                                         ? html``
                                         : html`
                                             <button
-                                              class="button button--tight button--blue ${css`
+                                              class="button button--tight button--blue"
+                                              css="${css`
                                                 font-size: var(
                                                   --font-size--2xs
                                                 );
@@ -2521,7 +2525,8 @@ export default async (application: Application): Promise<void> => {
                             }
                           ).join(html`
                             <hr
-                              class="separator ${css`
+                              class="separator"
+                              css="${css`
                                 margin: var(--space---px) var(--space--0);
                               `}"
                             />
@@ -2532,7 +2537,7 @@ export default async (application: Application): Promise<void> => {
                               <hr class="separator" />
 
                               <div
-                                class="${css`
+                                css="${css`
                                   display: flex;
                                   justify-content: center;
                                 `}"
@@ -2567,7 +2572,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="layout--conversation--main--${request.path}"
-            class="${css`
+            css="${css`
               overflow: auto;
               flex: 1;
               ${sidebarOnSmallScreen
@@ -2580,7 +2585,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              class="${css`
+              css="${css`
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
@@ -2602,7 +2607,7 @@ export default async (application: Application): Promise<void> => {
                 ? body
                 : html`
                     <div
-                      class="${css`
+                      css="${css`
                         min-width: var(--width--0);
                         max-width: var(--width--prose);
                         display: flex;
@@ -2632,14 +2637,14 @@ export default async (application: Application): Promise<void> => {
   }) => html`
     <div
       key="partial--conversation--${conversation.reference}"
-      class="${css`
+      css="${css`
         display: flex;
         flex-direction: column;
         gap: var(--space--1);
       `}"
     >
       <div
-        class="${css`
+        css="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2706,7 +2711,7 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <div
                             key="loading"
-                            class="${css`
+                            css="${css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
@@ -2810,7 +2815,8 @@ export default async (application: Application): Promise<void> => {
       </h3>
 
       <div
-        class="secondary ${css`
+        class="secondary"
+        css="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
         `}"
@@ -2833,7 +2839,8 @@ export default async (application: Application): Promise<void> => {
       </div>
 
       <div
-        class="secondary ${css`
+        class="secondary"
+        css="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2883,7 +2890,7 @@ export default async (application: Application): Promise<void> => {
         ? html``
         : html`
             <div
-              class="${css`
+              css="${css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 display: flex;
@@ -3086,7 +3093,8 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu ${css`
+              class="dropdown--menu"
+              css="${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
@@ -3288,68 +3296,64 @@ export default async (application: Application): Promise<void> => {
           `,
           body: html`
             <h2 class="heading">
-              $${
-                request.params.type === "note"
-                  ? html`
-                      $${iconsConversationType.note.fill} Post
-                      ${response.locals.conversationsCount === 0
-                        ? "the First"
-                        : "a New"}
-                      Note
-                    `
-                  : request.params.type === "question"
-                  ? html`
-                      $${iconsConversationType.question.fill} Ask
-                      ${response.locals.conversationsCount === 0
-                        ? "the First"
-                        : "a New"}
-                      Question
-                    `
-                  : request.params.type === "chat"
-                  ? html`
-                      $${iconsConversationType.chat.fill} Start
-                      ${response.locals.conversationsCount === 0
-                        ? "the First"
-                        : "a New"}
-                      Chat
-                    `
-                  : html`
-                      <i class="bi bi-chat-text-fill"></i>
-                      Start
-                      ${response.locals.conversationsCount === 0
-                        ? "the First"
-                        : "a New"}
-                      Conversation
-                    `
-              }
+              $${request.params.type === "note"
+                ? html`
+                    $${iconsConversationType.note.fill} Post
+                    ${response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Note
+                  `
+                : request.params.type === "question"
+                ? html`
+                    $${iconsConversationType.question.fill} Ask
+                    ${response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Question
+                  `
+                : request.params.type === "chat"
+                ? html`
+                    $${iconsConversationType.chat.fill} Start
+                    ${response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Chat
+                  `
+                : html`
+                    <i class="bi bi-chat-text-fill"></i>
+                    Start
+                    ${response.locals.conversationsCount === 0
+                      ? "the First"
+                      : "a New"}
+                    Conversation
+                  `}
             </h2>
 
             <form
               method="POST"
-              action="https://${application.configuration.hostname}/courses/${
-            response.locals.course.reference
-          }/conversations${qs.stringify(
-            { conversations: request.query.conversations },
-            { addQueryPrefix: true }
-          )}"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/conversations${qs.stringify(
+                { conversations: request.query.conversations },
+                { addQueryPrefix: true }
+              )}"
               novalidate
-              class="${css`
+              css="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
               <div
-                $${
-                  typeof request.params.type === "string"
-                    ? html`hidden`
-                    : html``
-                }
+                $${typeof request.params.type === "string"
+                  ? html`hidden`
+                  : html``}
                 class="label"
               >
                 <p class="label--text">Type</p>
                 <div
-                  class="${css`
+                  css="${css`
                     display: flex;
                     flex-wrap: wrap;
                     column-gap: var(--space--8);
@@ -3424,17 +3428,14 @@ export default async (application: Application): Promise<void> => {
                 type="text"
                 name="title"
                 required
-                $${
-                  typeof conversationDraft?.title === "string" &&
-                  conversationDraft.title.trim() !== ""
-                    ? html`value="${conversationDraft.title}"`
-                    : conversationDraft === undefined &&
-                      typeof request.query.newConversation?.title ===
-                        "string" &&
-                      request.query.newConversation.title.trim() !== ""
-                    ? html`value="${request.query.newConversation.title}"`
-                    : html``
-                }
+                $${typeof conversationDraft?.title === "string" &&
+                conversationDraft.title.trim() !== ""
+                  ? html`value="${conversationDraft.title}"`
+                  : conversationDraft === undefined &&
+                    typeof request.query.newConversation?.title === "string" &&
+                    request.query.newConversation.title.trim() !== ""
+                  ? html`value="${request.query.newConversation.title}"`
+                  : html``}
                 placeholder="Title…"
                 autocomplete="off"
                 $${conversationDraft === undefined ? html`autofocus` : html``}
@@ -3465,18 +3466,17 @@ export default async (application: Application): Promise<void> => {
                       )) ||
                       request.query.newConversation?.type === undefined)),
               })}
-              $${
-                response.locals.tags.length === 0 &&
-                response.locals.enrollment.courseRole !== "staff"
-                  ? html``
-                  : html`
-                      <div class="label">
-                        <div class="label--text">
-                          Tags
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            javascript="${response.locals.javascript(javascript`
+              $${response.locals.tags.length === 0 &&
+              response.locals.enrollment.courseRole !== "staff"
+                ? html``
+                : html`
+                    <div class="label">
+                      <div class="label--text">
+                        Tags
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          javascript="${response.locals.javascript(javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -3486,123 +3486,121 @@ export default async (application: Application): Promise<void> => {
                               },
                             });
                           `)}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                          $${response.locals.tags.length > 0 &&
-                          response.locals.enrollment.courseRole === "staff"
-                            ? html`
-                                <div
-                                  class="${css`
-                                    flex: 1;
-                                    display: flex;
-                                    justify-content: flex-end;
-                                  `}"
-                                >
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/courses/${response.locals
-                                      .course.reference}/settings/tags"
-                                    target="_blank"
-                                    class="button button--tight button--tight--inline button--transparent secondary"
-                                  >
-                                    <i class="bi bi-sliders"></i>
-                                    Manage Tags
-                                  </a>
-                                </div>
-                              `
-                            : html``}
-                        </div>
-                        <div
-                          class="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--8);
-                            row-gap: var(--space--2);
-                          `}"
                         >
-                          $${response.locals.tags.length === 0 &&
-                          response.locals.enrollment.courseRole === "staff"
-                            ? html`
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                        $${response.locals.tags.length > 0 &&
+                        response.locals.enrollment.courseRole === "staff"
+                          ? html`
+                              <div
+                                css="${css`
+                                  flex: 1;
+                                  display: flex;
+                                  justify-content: flex-end;
+                                `}"
+                              >
                                 <a
                                   href="https://${application.configuration
                                     .hostname}/courses/${response.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
-                                  class="button button--tight button--tight--inline button--inline button--transparent secondary"
+                                  class="button button--tight button--tight--inline button--transparent secondary"
                                 >
                                   <i class="bi bi-sliders"></i>
-                                  Create the First Tag
+                                  Manage Tags
                                 </a>
-                              `
-                            : response.locals.tags.map(
-                                (tag) => html`
-                                  <div
-                                    key="tag--${tag.reference}"
-                                    class="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `}"
+                              </div>
+                            `
+                          : html``}
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--8);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        $${response.locals.tags.length === 0 &&
+                        response.locals.enrollment.courseRole === "staff"
+                          ? html`
+                              <a
+                                href="https://${application.configuration
+                                  .hostname}/courses/${response.locals.course
+                                  .reference}/settings/tags"
+                                target="_blank"
+                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
+                              >
+                                <i class="bi bi-sliders"></i>
+                                Create the First Tag
+                              </a>
+                            `
+                          : response.locals.tags.map(
+                              (tag) => html`
+                                <div
+                                  key="tag--${tag.reference}"
+                                  css="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--transparent"
                                   >
-                                    <label
-                                      class="button button--tight button--tight--inline button--transparent"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="tagsReferences[]"
-                                        value="${tag.reference}"
-                                        $${(typeof conversationDraft?.tagsReferences ===
+                                    <input
+                                      type="checkbox"
+                                      name="tagsReferences[]"
+                                      value="${tag.reference}"
+                                      $${(typeof conversationDraft?.tagsReferences ===
+                                        "string" &&
+                                        JSON.parse(
+                                          conversationDraft.tagsReferences
+                                        ).includes(tag.reference)) ||
+                                      (conversationDraft === undefined &&
+                                        Array.isArray(
+                                          request.query.newConversation
+                                            ?.tagsReferences
+                                        ) &&
+                                        request.query.newConversation!.tagsReferences.includes(
+                                          tag.reference
+                                        ))
+                                        ? html`checked`
+                                        : html``}
+                                      $${
+                                        // TODO: Drafts
+                                        (typeof request.params.type ===
                                           "string" &&
-                                          JSON.parse(
-                                            conversationDraft.tagsReferences
-                                          ).includes(tag.reference)) ||
-                                        (conversationDraft === undefined &&
-                                          Array.isArray(
-                                            request.query.newConversation
-                                              ?.tagsReferences
-                                          ) &&
-                                          request.query.newConversation!.tagsReferences.includes(
-                                            tag.reference
-                                          ))
-                                          ? html`checked`
-                                          : html``}
-                                        $${
-                                          // TODO: Drafts
-                                          (typeof request.params.type ===
-                                            "string" &&
+                                          ["question", "note"].includes(
+                                            request.params.type
+                                          )) ||
+                                        (request.params.type === undefined &&
+                                          ((typeof request.query.newConversation
+                                            ?.type === "string" &&
                                             ["question", "note"].includes(
-                                              request.params.type
+                                              request.query.newConversation.type
                                             )) ||
-                                          (request.params.type === undefined &&
-                                            ((typeof request.query
-                                              .newConversation?.type ===
-                                              "string" &&
-                                              ["question", "note"].includes(
-                                                request.query.newConversation
-                                                  .type
-                                              )) ||
-                                              request.query.newConversation
-                                                ?.type === undefined))
-                                            ? html`required`
-                                            : html``
-                                        }
-                                        class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      />
-                                      <span>
-                                        <i class="bi bi-tag"></i>
-                                        ${tag.name}
-                                      </span>
-                                      <span class="text--teal">
-                                        <i class="bi bi-tag-fill"></i>
-                                        ${tag.name}
-                                      </span>
-                                    </label>
-                                    $${tag.staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--sky"
-                                            javascript="${response.locals
-                                              .javascript(javascript`
+                                            request.query.newConversation
+                                              ?.type === undefined))
+                                          ? html`required`
+                                          : html``
+                                      }
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    />
+                                    <span>
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </span>
+                                    <span class="text--teal">
+                                      <i class="bi bi-tag-fill"></i>
+                                      ${tag.name}
+                                    </span>
+                                  </label>
+                                  $${tag.staffOnlyAt !== null
+                                    ? html`
+                                        <span
+                                          class="text--sky"
+                                          javascript="${response.locals
+                                            .javascript(javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -3612,20 +3610,17 @@ export default async (application: Application): Promise<void> => {
                                                 },
                                               });
                                             `)}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </div>
-                                `
-                              )}
-                        </div>
+                                        >
+                                          <i class="bi bi-mortarboard-fill"></i>
+                                        </span>
+                                      `
+                                    : html``}
+                                </div>
+                              `
+                            )}
                       </div>
-                    `
-              }
+                    </div>
+                  `}
               $${(() => {
                 const enrollments = application.database
                   .all<{
@@ -3689,7 +3684,7 @@ export default async (application: Application): Promise<void> => {
                   <div class="label">
                     <div class="label--text">Participants</div>
                     <div
-                      class="${css`
+                      css="${css`
                         display: flex;
                         flex-wrap: wrap;
                         column-gap: var(--space--8);
@@ -3709,7 +3704,7 @@ export default async (application: Application): Promise<void> => {
                               content: ${JSON.stringify(html`
                                 <div
                                   key="participants--dropdown"
-                                  class="${css`
+                                  css="${css`
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
@@ -3827,7 +3822,7 @@ export default async (application: Application): Promise<void> => {
                                       request.params.type === "chat")
                                       ? html``
                                       : html`hidden`}
-                                    class="${css`
+                                    css="${css`
                                       display: flex;
                                       flex-direction: column;
                                       gap: var(--space--2);
@@ -3839,7 +3834,8 @@ export default async (application: Application): Promise<void> => {
                                       .courseEnrollmentsCount === 1
                                       ? html`
                                           <p
-                                            class="secondary ${css`
+                                            class="secondary"
+                                            css="${css`
                                               padding: var(--space--0)
                                                 var(--space--2) var(--space--2);
                                             `}"
@@ -3851,13 +3847,13 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html`
                                           <div
-                                            class="${css`
+                                            css="${css`
                                               padding: var(--space--0)
                                                 var(--space--2);
                                             `}"
                                           >
                                             <label
-                                              class="${css`
+                                              css="${css`
                                                 display: flex;
                                                 gap: var(--space--2);
                                                 align-items: baseline;
@@ -3908,7 +3904,8 @@ export default async (application: Application): Promise<void> => {
                                           <hr class="dropdown--separator" />
 
                                           <div
-                                            class="dropdown--menu ${css`
+                                            class="dropdown--menu"
+                                            css="${css`
                                               height: var(--space--40);
                                               overflow: auto;
                                             `}"
@@ -4107,37 +4104,35 @@ export default async (application: Application): Promise<void> => {
               })()}
 
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                   flex-wrap: wrap;
                   column-gap: var(--space--8);
                   row-gap: var(--space--4);
                 `}"
               >
-                $${
-                  response.locals.enrollment.courseRole === "staff"
-                    ? html`
-                        <div
-                          key="new-conversation--announcement"
-                          $${request.params.type === "note" ||
-                          (request.params.type === undefined &&
-                            (conversationDraft?.type === "note" ||
-                              (conversationDraft === undefined &&
-                                request.query.newConversation?.type ===
-                                  "note")))
-                            ? html``
-                            : html`hidden`}
-                          class="label ${css`
-                            width: var(--space--44);
-                          `}"
-                        >
-                          <div class="label--text">
-                            Announcement
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                $${response.locals.enrollment.courseRole === "staff"
+                  ? html`
+                      <div
+                        key="new-conversation--announcement"
+                        $${request.params.type === "note" ||
+                        (request.params.type === undefined &&
+                          (conversationDraft?.type === "note" ||
+                            (conversationDraft === undefined &&
+                              request.query.newConversation?.type === "note")))
+                          ? html``
+                          : html`hidden`}
+                        class="label"
+                        css="${css`
+                          width: var(--space--44);
+                        `}"
+                      >
+                        <div class="label--text">
+                          Announcement
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${response.locals.javascript(javascript`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4147,51 +4142,51 @@ export default async (application: Application): Promise<void> => {
                                 },
                               });
                             `)}"
-                            >
-                              <i class="bi bi-info-circle"></i>
-                            </button>
-                          </div>
-                          <div
-                            class="${css`
-                              display: flex;
-                            `}"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isAnnouncement"
-                                $${request.params.type === "note" ||
-                                (request.params.type === undefined &&
-                                  (conversationDraft?.type === "note" ||
-                                    (conversationDraft === undefined &&
-                                      request.query.newConversation?.type ===
-                                        "note")))
-                                  ? html``
-                                  : html`disabled`}
-                                $${(
-                                  conversationDraft as any
-                                ) /* TODO: Conversation drafts */
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnnouncement"
+                              $${request.params.type === "note" ||
+                              (request.params.type === undefined &&
+                                (conversationDraft?.type === "note" ||
+                                  (conversationDraft === undefined &&
+                                    request.query.newConversation?.type ===
+                                      "note")))
+                                ? html``
+                                : html`disabled`}
+                              $${(
+                                conversationDraft as any
+                              ) /* TODO: Conversation drafts */
+                                ?.isAnnouncement === "true" ||
+                              (conversationDraft === undefined &&
+                                (request.query.newConversation
                                   ?.isAnnouncement === "true" ||
-                                (conversationDraft === undefined &&
-                                  (request.query.newConversation
-                                    ?.isAnnouncement === "true" ||
-                                    request.query.newConversation
-                                      ?.isAnnouncement === undefined))
-                                  ? html`checked`
-                                  : html``}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                  request.query.newConversation
+                                    ?.isAnnouncement === undefined))
+                                ? html`checked`
+                                : html``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
                                   };
                                 `)}"
-                              />
-                              <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            />
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4201,14 +4196,14 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <i class="bi bi-megaphone"></i>
-                                Not an Announcement
-                              </span>
-                              <span
-                                class="text--orange"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            >
+                              <i class="bi bi-megaphone"></i>
+                              Not an Announcement
+                            </span>
+                            <span
+                              class="text--orange"
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4218,26 +4213,26 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <i class="bi bi-megaphone-fill"></i>
-                                Announcement
-                              </span>
-                            </label>
-                          </div>
+                            >
+                              <i class="bi bi-megaphone-fill"></i>
+                              Announcement
+                            </span>
+                          </label>
                         </div>
+                      </div>
 
-                        <div
-                          class="label ${css`
-                            width: var(--space--24);
-                          `}"
-                        >
-                          <div class="label--text">
-                            Pin
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                      <div
+                        class="label"
+                        css="${css`
+                          width: var(--space--24);
+                        `}"
+                      >
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${response.locals.javascript(javascript`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4247,35 +4242,35 @@ export default async (application: Application): Promise<void> => {
                                 },
                               });
                             `)}"
-                            >
-                              <i class="bi bi-info-circle"></i>
-                            </button>
-                          </div>
-                          <div
-                            class="${css`
-                              display: flex;
-                            `}"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isPinned"
-                                $${conversationDraft?.isPinned === "true" ||
-                                (conversationDraft === undefined &&
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isPinned"
+                              $${conversationDraft?.isPinned === "true" ||
+                              (conversationDraft === undefined &&
+                                (request.query.newConversation?.isPinned ===
+                                  "true" ||
                                   (request.query.newConversation?.isPinned ===
-                                    "true" ||
-                                    (request.query.newConversation?.isPinned ===
-                                      undefined &&
-                                      request.params.type === "note")))
-                                  ? html`checked`
-                                  : html``}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                                    undefined &&
+                                    request.params.type === "note")))
+                                ? html`checked`
+                                : html``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4285,14 +4280,14 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <i class="bi bi-pin-angle"></i>
-                                Unpinned
-                              </span>
-                              <span
-                                class="text--amber"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            >
+                              <i class="bi bi-pin-angle"></i>
+                              Unpinned
+                            </span>
+                            <span
+                              class="text--amber"
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4302,35 +4297,36 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <i class="bi bi-pin-fill"></i>
-                                Pinned
-                              </span>
-                            </label>
-                          </div>
+                            >
+                              <i class="bi bi-pin-fill"></i>
+                              Pinned
+                            </span>
+                          </label>
                         </div>
-                      `
-                    : html`
+                      </div>
+                    `
+                  : html`
+                      <div
+                        class="label"
+                        css="${css`
+                          width: var(--space--60);
+                        `}"
+                      >
+                        <p class="label--text">Anonymity</p>
                         <div
-                          class="label ${css`
-                            width: var(--space--60);
+                          css="${css`
+                            display: flex;
                           `}"
                         >
-                          <p class="label--text">Anonymity</p>
-                          <div
-                            class="${css`
-                              display: flex;
-                            `}"
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isAnonymous"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   this.isModified = false;
 
                                   this.onchange = () => {
@@ -4339,10 +4335,10 @@ export default async (application: Application): Promise<void> => {
                                   
                                   if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                                 `)}"
-                              />
-                              <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            />
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4352,28 +4348,28 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <span>
-                                  $${application.server.locals.partials.user({
-                                    request,
-                                    response,
-                                    user: response.locals.user,
-                                    decorate: false,
-                                    name: false,
-                                    size: "xs",
-                                  })}
-                                  <span
-                                    class="${css`
-                                      margin-left: var(--space--1);
-                                    `}"
-                                  >
-                                    Signed by You
-                                  </span>
+                            >
+                              <span>
+                                $${application.server.locals.partials.user({
+                                  request,
+                                  response,
+                                  user: response.locals.user,
+                                  decorate: false,
+                                  name: false,
+                                  size: "xs",
+                                })}
+                                <span
+                                  css="${css`
+                                    margin-left: var(--space--1);
+                                  `}"
+                                >
+                                  Signed by You
                                 </span>
                               </span>
-                              <span
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                            </span>
+                            <span
+                              javascript="${response.locals
+                                .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4383,28 +4379,27 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                              >
-                                <span>
-                                  $${application.server.locals.partials.user({
-                                    request,
-                                    response,
-                                    name: false,
-                                    size: "xs",
-                                  })}
-                                  <span
-                                    class="${css`
-                                      margin-left: var(--space--1);
-                                    `}"
-                                  >
-                                    Anonymous to Other Students
-                                  </span>
+                            >
+                              <span>
+                                $${application.server.locals.partials.user({
+                                  request,
+                                  response,
+                                  name: false,
+                                  size: "xs",
+                                })}
+                                <span
+                                  css="${css`
+                                    margin-left: var(--space--1);
+                                  `}"
+                                >
+                                  Anonymous to Other Students
                                 </span>
                               </span>
-                            </label>
-                          </div>
+                            </span>
+                          </label>
                         </div>
-                      `
-                }
+                      </div>
+                    `}
               </div>
 
               <div>
@@ -4447,46 +4442,45 @@ export default async (application: Application): Promise<void> => {
                     };
                   `)}"
                 >
-                  $${
-                    request.params.type === "note"
-                      ? html`
-                          $${iconsConversationType.note.fill} Post
-                          ${response.locals.conversationsCount === 0
-                            ? "the First"
-                            : "a New"}
-                          Note
-                        `
-                      : request.params.type === "question"
-                      ? html`
-                          $${iconsConversationType.question.fill} Ask
-                          ${response.locals.conversationsCount === 0
-                            ? "the First"
-                            : "a New"}
-                          Question
-                        `
-                      : request.params.type === "chat"
-                      ? html`
-                          $${iconsConversationType.chat.fill} Start
-                          ${response.locals.conversationsCount === 0
-                            ? "the First"
-                            : "a New"}
-                          Chat
-                        `
-                      : html`
-                          <i class="bi bi-chat-text-fill"></i>
-                          Start
-                          ${response.locals.conversationsCount === 0
-                            ? "the First"
-                            : "a New"}
-                          Conversation
-                        `
-                  }
+                  $${request.params.type === "note"
+                    ? html`
+                        $${iconsConversationType.note.fill} Post
+                        ${response.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Note
+                      `
+                    : request.params.type === "question"
+                    ? html`
+                        $${iconsConversationType.question.fill} Ask
+                        ${response.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Question
+                      `
+                    : request.params.type === "chat"
+                    ? html`
+                        $${iconsConversationType.chat.fill} Start
+                        ${response.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Chat
+                      `
+                    : html`
+                        <i class="bi bi-chat-text-fill"></i>
+                        Start
+                        ${response.locals.conversationsCount === 0
+                          ? "the First"
+                          : "a New"}
+                        Conversation
+                      `}
                 </button>
               </div>
 
               <div
                 hidden
-                class="secondary "${css`
+                class="secondary"
+                css="${css`
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   display: flex;
@@ -4539,63 +4533,61 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-file-earmark-text"></i>
                   Save Draft
                 </button>
-                $${
-                  conversationDraft !== undefined
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="conversationDraftReference"
-                          value="${conversationDraft.reference}"
-                        />
-                        <button
-                          class="link text--rose"
-                          formmethod="DELETE"
-                          formaction="https://${application.configuration
-                            .hostname}/courses/${response.locals.course
-                            .reference}/conversations/new${qs.stringify(
-                            { conversations: request.query.conversations },
-                            { addQueryPrefix: true }
-                          )}"
-                          javascript="${response.locals.javascript(javascript`
+                $${conversationDraft !== undefined
+                  ? html`
+                      <input
+                        type="hidden"
+                        name="conversationDraftReference"
+                        value="${conversationDraft.reference}"
+                      />
+                      <button
+                        class="link text--rose"
+                        formmethod="DELETE"
+                        formaction="https://${application.configuration
+                          .hostname}/courses/${response.locals.course
+                          .reference}/conversations/new${qs.stringify(
+                          { conversations: request.query.conversations },
+                          { addQueryPrefix: true }
+                        )}"
+                        javascript="${response.locals.javascript(javascript`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
                         `)}"
-                        >
-                          <i class="bi bi-trash"></i>
-                          Remove Draft
-                        </button>
-                        <div>
-                          Draft created
-                          <time
-                            datetime="${new Date(
-                              new Date(conversationDraft.createdAt).getTime() -
-                                100 * 24 * 60 * 60 * 1000
-                            ).toISOString()}"
-                            javascript="${response.locals.javascript(javascript`
+                      >
+                        <i class="bi bi-trash"></i>
+                        Remove Draft
+                      </button>
+                      <div>
+                        Draft created
+                        <time
+                          datetime="${new Date(
+                            new Date(conversationDraft.createdAt).getTime() -
+                              100 * 24 * 60 * 60 * 1000
+                          ).toISOString()}"
+                          javascript="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `)}"
-                          ></time>
-                        </div>
-                        $${conversationDraft.updatedAt !== null
-                          ? html`
-                              <div>
-                                Updated
-                                <time
-                                  datetime="${new Date(
-                                    conversationDraft.updatedAt
-                                  ).toISOString()}"
-                                  javascript="${response.locals
-                                    .javascript(javascript`
+                        ></time>
+                      </div>
+                      $${conversationDraft.updatedAt !== null
+                        ? html`
+                            <div>
+                              Updated
+                              <time
+                                datetime="${new Date(
+                                  conversationDraft.updatedAt
+                                ).toISOString()}"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                   `)}"
-                                ></time>
-                              </div>
-                            `
-                          : html``}
-                      `
-                    : html``
-                }
+                              ></time>
+                            </div>
+                          `
+                        : html``}
+                    `
+                  : html``}
               </div>
             </form>
           `,
@@ -5240,7 +5232,7 @@ export default async (application: Application): Promise<void> => {
           mainIsAScrollingPane: response.locals.conversation.type === "chat",
           body: html`
             <div
-              class="${css`
+              css="${css`
                 flex: 1;
                 display: flex;
                 flex-direction: column;
@@ -5249,7 +5241,7 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="conversation--header"
-                class="${css`
+                css="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -5273,7 +5265,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     ${response.locals.conversation.type === "chat"
                       ? css`
                           flex: 1;
@@ -5291,7 +5283,8 @@ export default async (application: Application): Promise<void> => {
                     ? html`
                         <button
                           key="conversation--header--compact"
-                          class="button button--tight button--tight--inline button--transparent strong ${css`
+                          class="button button--tight button--tight--inline button--transparent strong"
+                          css="${css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `}"
@@ -5303,7 +5296,7 @@ export default async (application: Application): Promise<void> => {
                           `)}"
                         >
                           <span
-                            class="${css`
+                            css="${css`
                               flex: 1;
                               text-align: left;
                               white-space: nowrap;
@@ -5330,14 +5323,14 @@ export default async (application: Application): Promise<void> => {
                     $${response.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
-                    class="${css`
+                    css="${css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
                     `}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         display: flex;
@@ -5345,7 +5338,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        class="${css`
+                        css="${css`
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
@@ -5554,7 +5547,8 @@ export default async (application: Application): Promise<void> => {
                                   null
                                 ? html`
                                     <div
-                                      class="text--rose ${css`
+                                      class="text--rose"
+                                      css="${css`
                                         display: flex;
                                         gap: var(--space--1);
                                       `}"
@@ -5567,7 +5561,8 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 : html`
                                     <div
-                                      class="text--emerald ${css`
+                                      class="text--emerald"
+                                      css="${css`
                                         display: flex;
                                         gap: var(--space--1);
                                       `}"
@@ -5860,7 +5855,7 @@ export default async (application: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      class="${css`
+                                                      css="${css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
@@ -5890,7 +5885,7 @@ export default async (application: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      class="${css`
+                                                      css="${css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
@@ -5947,7 +5942,7 @@ export default async (application: Application): Promise<void> => {
                                                     content: ${JSON.stringify(html`
                                                       <div
                                                         key="loading"
-                                                        class="${css`
+                                                        css="${css`
                                                           display: flex;
                                                           gap: var(--space--2);
                                                           align-items: center;
@@ -6042,7 +6037,7 @@ export default async (application: Application): Promise<void> => {
                                                                 true,
                                                             }
                                                           )}"
-                                                          class="${css`
+                                                          css="${css`
                                                             padding: var(
                                                               --space--2
                                                             );
@@ -6060,7 +6055,7 @@ export default async (application: Application): Promise<void> => {
                                                           </p>
                                                           <p>
                                                             <strong
-                                                              class="${css`
+                                                              css="${css`
                                                                 font-weight: var(
                                                                   --font-weight--bold
                                                                 );
@@ -6103,7 +6098,8 @@ export default async (application: Application): Promise<void> => {
 
                     <h2
                       key="title--show"
-                      class="strong ${css`
+                      class="strong"
+                      css="${css`
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `}"
@@ -6135,7 +6131,7 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             novalidate
                             hidden
-                            class="${css`
+                            css="${css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
@@ -6150,7 +6146,8 @@ export default async (application: Application): Promise<void> => {
                               class="input--text"
                             />
                             <button
-                              class="button button--tight button--tight--inline button--transparent text--green ${css`
+                              class="button button--tight button--tight--inline button--transparent text--green"
+                              css="${css`
                                 flex: 1;
                               `}"
                               javascript="${response.locals
@@ -6238,13 +6235,14 @@ export default async (application: Application): Promise<void> => {
                         )
                           tags += html`
                             <div
-                              class="${css`
+                              css="${css`
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
                             >
                               <span
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled ${css`
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled"
+                                css="${css`
                                   color: var(--color--teal--600);
                                   @media (prefers-color-scheme: dark) {
                                     color: var(--color--teal--500);
@@ -6303,7 +6301,7 @@ export default async (application: Application): Promise<void> => {
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              class="${css`
+                              css="${css`
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
@@ -6314,7 +6312,8 @@ export default async (application: Application): Promise<void> => {
                                 value="${tagging.tag.reference}"
                               />
                               <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal ${css`
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
+                                css="${css`
                                   text-align: left;
                                 `}"
                                 javascript="${response.locals
@@ -6384,7 +6383,7 @@ export default async (application: Application): Promise<void> => {
                                       interactive: true,
                                       content: ${JSON.stringify(html`
                                         <div
-                                          class="${css`
+                                          css="${css`
                                             max-height: var(--space--40);
                                             overflow: auto;
                                             display: flex;
@@ -6612,7 +6611,7 @@ export default async (application: Application): Promise<void> => {
                       return tags !== html``
                         ? html`
                             <div
-                              class="${css`
+                              css="${css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -6705,7 +6704,7 @@ export default async (application: Application): Promise<void> => {
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              class="${css`
+                              css="${css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -6714,7 +6713,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               <div
-                                class="${css`
+                                css="${css`
                                   max-height: var(--space--24);
                                   padding: var(--space--1);
                                   margin: var(--space---1);
@@ -6740,7 +6739,7 @@ export default async (application: Application): Promise<void> => {
                                           content: ${JSON.stringify(html`
                                             <div
                                               key="participants--dropdown"
-                                              class="${css`
+                                              css="${css`
                                                 display: flex;
                                                 flex-direction: column;
                                                 gap: var(--space--2);
@@ -6852,7 +6851,7 @@ export default async (application: Application): Promise<void> => {
                                                 )
                                                   ? html``
                                                   : html`hidden`}
-                                                class="${css`
+                                                css="${css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
@@ -6866,7 +6865,8 @@ export default async (application: Application): Promise<void> => {
                                                   .courseEnrollmentsCount === 1
                                                   ? html`
                                                       <p
-                                                        class="secondary ${css`
+                                                        class="secondary"
+                                                        css="${css`
                                                           padding: var(
                                                               --space--0
                                                             )
@@ -6882,7 +6882,7 @@ export default async (application: Application): Promise<void> => {
                                                     `
                                                   : html`
                                                       <div
-                                                        class="${css`
+                                                        css="${css`
                                                           padding: var(
                                                               --space--0
                                                             )
@@ -6890,7 +6890,7 @@ export default async (application: Application): Promise<void> => {
                                                         `}"
                                                       >
                                                         <label
-                                                          class="${css`
+                                                          css="${css`
                                                             display: flex;
                                                             gap: var(
                                                               --space--2
@@ -6948,7 +6948,8 @@ export default async (application: Application): Promise<void> => {
                                                       />
 
                                                       <div
-                                                        class="dropdown--menu ${css`
+                                                        class="dropdown--menu"
+                                                        css="${css`
                                                           height: var(
                                                             --space--40
                                                           );
@@ -7155,7 +7156,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="submit"
                                 hidden
-                                class="${css`
+                                css="${css`
                                   display: flex;
                                 `}"
                               >
@@ -7169,7 +7170,7 @@ export default async (application: Application): Promise<void> => {
                         })()
                       : html`
                           <div
-                            class="${css`
+                            css="${css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
                               max-height: var(--space--24);
@@ -7261,7 +7262,7 @@ export default async (application: Application): Promise<void> => {
 
                 return html`
                   <div
-                    class="${css`
+                    css="${css`
                       ${response.locals.conversation.type === "chat"
                         ? css`
                             flex: 1;
@@ -7336,7 +7337,7 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         ${response.locals.conversation.type === "chat"
                           ? css`
                               flex: 1;
@@ -7349,7 +7350,7 @@ export default async (application: Application): Promise<void> => {
                       $${messages.length === 0
                         ? html`
                             <div
-                              class="${css`
+                              css="${css`
                                 padding: var(--space--4) var(--space--0);
                                 display: flex;
                                 flex-direction: column;
@@ -7373,7 +7374,7 @@ export default async (application: Application): Promise<void> => {
                         : html`
                             <div
                               key="messages"
-                              class="${css`
+                              css="${css`
                                 ${response.locals.conversation.type === "chat"
                                   ? css`
                                       padding: var(--space--4) var(--space--0);
@@ -7385,7 +7386,7 @@ export default async (application: Application): Promise<void> => {
                               (moreMessagesExist && messagesReverse)
                                 ? html`
                                     <div
-                                      class="${css`
+                                      css="${css`
                                         display: flex;
                                         justify-content: center;
                                       `}"
@@ -7424,7 +7425,8 @@ export default async (application: Application): Promise<void> => {
                                   html`
                                     <div
                                       key="message/${message.reference}"
-                                      class="message ${css`
+                                      class="message"
+                                      css="${css`
                                         ${response.locals.conversation.type ===
                                         "chat"
                                           ? css``
@@ -7448,7 +7450,8 @@ export default async (application: Application): Promise<void> => {
                                         ? html`
                                             <button
                                               key="message--new-separator"
-                                              class="button button--transparent ${css`
+                                              class="button button--transparent"
+                                              css="${css`
                                                 width: calc(
                                                   var(--space--2) + 100% +
                                                     var(--space--2)
@@ -7485,7 +7488,8 @@ export default async (application: Application): Promise<void> => {
                                                 `)}"
                                             >
                                               <hr
-                                                class="separator ${css`
+                                                class="separator"
+                                                css="${css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -7508,7 +7512,8 @@ export default async (application: Application): Promise<void> => {
                                                 New
                                               </span>
                                               <hr
-                                                class="separator ${css`
+                                                class="separator"
+                                                css="${css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -7529,7 +7534,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               hidden
                                               key="message--date-separator"
-                                              class="${css`
+                                              css="${css`
                                                 margin: var(--space--2)
                                                   var(--space--0);
                                                 display: flex;
@@ -7538,7 +7543,8 @@ export default async (application: Application): Promise<void> => {
                                               `}"
                                             >
                                               <hr
-                                                class="separator ${css`
+                                                class="separator"
+                                                css="${css`
                                                   flex: 1;
                                                 `}"
                                               />
@@ -7569,7 +7575,8 @@ export default async (application: Application): Promise<void> => {
                                                 ></time>
                                               </span>
                                               <hr
-                                                class="separator ${css`
+                                                class="separator"
+                                                css="${css`
                                                   flex: 1;
                                                 `}"
                                               />
@@ -7579,7 +7586,7 @@ export default async (application: Application): Promise<void> => {
 
                                       <div
                                         key="message--highlight"
-                                        class="${css`
+                                        css="${css`
                                           padding: var(--space--2);
                                           ${response.locals.conversation
                                             .type === "chat"
@@ -7650,7 +7657,8 @@ export default async (application: Application): Promise<void> => {
                                           const actions = html`
                                             <div key="message--actions">
                                               <button
-                                                class="button button--tight button--tight--inline button--transparent secondary ${css`
+                                                class="button button--tight button--tight--inline button--transparent secondary"
+                                                css="${css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -7703,7 +7711,7 @@ export default async (application: Application): Promise<void> => {
                                                         content: ${JSON.stringify(html`
                                                           <div
                                                             key="loading"
-                                                            class="${css`
+                                                            css="${css`
                                                               display: flex;
                                                               gap: var(
                                                                 --space--2
@@ -8144,7 +8152,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--header"
-                                                    class="${css`
+                                                    css="${css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8156,7 +8164,7 @@ export default async (application: Application): Promise<void> => {
                                                     `}"
                                                   >
                                                     <div
-                                                      class="${css`
+                                                      css="${css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -8180,13 +8188,14 @@ export default async (application: Application): Promise<void> => {
                                               : html``}
 
                                             <div
-                                              class="${css`
+                                              css="${css`
                                                 display: flex;
                                                 gap: var(--space--2);
                                               `}"
                                             >
                                               <div
-                                                class="secondary ${css`
+                                                class="secondary"
+                                                css="${css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -8202,7 +8211,8 @@ export default async (application: Application): Promise<void> => {
                                                 `}"
                                               >
                                                 <div
-                                                  class="strong ${css`
+                                                  class="strong"
+                                                  css="${css`
                                                     font-size: var(
                                                       --font-size--sm
                                                     );
@@ -8297,7 +8307,7 @@ export default async (application: Application): Promise<void> => {
 
                                         <div
                                           key="message--show"
-                                          class="${css`
+                                          css="${css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
@@ -8305,13 +8315,13 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           <div
                                             key="message--show--content-area"
-                                            class="${css`
+                                            css="${css`
                                               position: relative;
                                             `}"
                                           >
                                             <div
                                               key="message--show--content-area--dropdown-menu-target"
-                                              class="${css`
+                                              css="${css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
                                                 position: absolute;
@@ -8465,7 +8475,7 @@ export default async (application: Application): Promise<void> => {
                                             )
                                               messageShowFooter += html`
                                                 <div
-                                                  class="${css`
+                                                  css="${css`
                                                     display: flex;
                                                     gap: var(--space--1);
                                                   `}"
@@ -8562,7 +8572,7 @@ export default async (application: Application): Promise<void> => {
                                                                   content: ${JSON.stringify(html`
                                                                     <div
                                                                       key="loading"
-                                                                      class="${css`
+                                                                      css="${css`
                                                                         display: flex;
                                                                         gap: var(
                                                                           --space--2
@@ -8653,7 +8663,7 @@ export default async (application: Application): Promise<void> => {
                                                           content: ${JSON.stringify(html`
                                                             <div
                                                               key="loading"
-                                                              class="${css`
+                                                              css="${css`
                                                                 display: flex;
                                                                 gap: var(
                                                                   --space--2
@@ -8723,7 +8733,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--show--footer"
-                                                    class="${css`
+                                                    css="${css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8748,7 +8758,8 @@ export default async (application: Application): Promise<void> => {
                                         <div key="message--edit" hidden>
                                           <div
                                             key="loading"
-                                            class="strong ${css`
+                                            class="strong"
+                                            css="${css`
                                               display: flex;
                                               gap: var(--space--2);
                                               justify-content: center;
@@ -8781,7 +8792,7 @@ export default async (application: Application): Promise<void> => {
                               (moreMessagesExist && !messagesReverse)
                                 ? html`
                                     <div
-                                      class="${css`
+                                      css="${css`
                                         display: flex;
                                         justify-content: center;
                                       `}"
@@ -8819,7 +8830,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
-                                class="${css`
+                                css="${css`
                                   opacity: var(--opacity--50);
                                   ${response.locals.conversation.type === "chat"
                                     ? css``
@@ -8835,7 +8846,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <div
-                                  class="${css`
+                                  css="${css`
                                     padding: var(--space--2);
                                     ${response.locals.conversation.type ===
                                     "chat"
@@ -8884,13 +8895,14 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <div
-                                    class="${css`
+                                    css="${css`
                                       display: flex;
                                       gap: var(--space--2);
                                     `}"
                                   >
                                     <div
-                                      class="secondary ${css`
+                                      class="secondary"
+                                      css="${css`
                                         font-size: var(--font-size--xs);
                                         line-height: var(--line-height--xs);
                                         flex: 1;
@@ -8903,7 +8915,8 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       <div
                                         key="message--new-message--placeholder--anonymous--false"
-                                        class="strong ${css`
+                                        class="strong"
+                                        css="${css`
                                           font-size: var(--font-size--sm);
                                           line-height: var(--line-height--sm);
                                         `}"
@@ -8925,7 +8938,8 @@ export default async (application: Application): Promise<void> => {
                                         : html`
                                             <div
                                               key="message--new-message--placeholder--anonymous--true"
-                                              class="strong ${css`
+                                              class="strong"
+                                              css="${css`
                                                 font-size: var(--font-size--sm);
                                                 line-height: var(
                                                   --line-height--sm
@@ -8958,7 +8972,7 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                   <div
                                     key="message--new-message--placeholder--content"
-                                    class="${css`
+                                    css="${css`
                                       white-space: pre-line;
                                     `}"
                                   ></div>
@@ -8984,7 +8998,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 novalidate
-                class="${css`
+                css="${css`
                   ${response.locals.conversation.type === "chat"
                     ? css`
                         padding-right: var(--space--4);
@@ -9025,7 +9039,7 @@ export default async (application: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  class="${css`
+                  css="${css`
                     display: flex;
                     flex-direction: column;
                     ${response.locals.conversation.type === "chat"
@@ -9045,7 +9059,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                             `}"
                           >
@@ -9106,7 +9120,7 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
-                    class="${css`
+                    css="${css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -9132,7 +9146,8 @@ export default async (application: Application): Promise<void> => {
                     $${response.locals.conversation.type === "chat"
                       ? html`
                           <button
-                            class="button button--blue ${css`
+                            class="button button--blue"
+                            css="${css`
                               position: relative;
                               place-self: end;
                               width: var(--font-size--2xl);
@@ -9173,7 +9188,8 @@ export default async (application: Application): Promise<void> => {
                             `)}"
                           >
                             <i
-                              class="bi bi-send-fill ${css`
+                              class="bi bi-send-fill"
+                              css="${css`
                                 position: relative;
                                 top: var(--space--px);
                                 right: var(--space--px);
@@ -9192,7 +9208,7 @@ export default async (application: Application): Promise<void> => {
                             ? html``
                             : html`<p class="label--text">Anonymity</p>`}
                           <div
-                            class="${css`
+                            css="${css`
                               display: flex;
                             `}"
                           >
@@ -9237,7 +9253,7 @@ export default async (application: Application): Promise<void> => {
                                     size: "xs",
                                   })}
                                   <span
-                                    class="${css`
+                                    css="${css`
                                       margin-left: var(--space--1);
                                     `}"
                                   >
@@ -9266,7 +9282,7 @@ export default async (application: Application): Promise<void> => {
                                     size: "xs",
                                   })}
                                   <span
-                                    class="${css`
+                                    css="${css`
                                       margin-left: var(--space--1);
                                     `}"
                                   >

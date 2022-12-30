@@ -597,7 +597,7 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -639,7 +639,7 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
@@ -843,7 +843,7 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -873,7 +873,7 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
@@ -1130,7 +1130,7 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1350,7 +1350,7 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1414,7 +1414,7 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);

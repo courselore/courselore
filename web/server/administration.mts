@@ -198,7 +198,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/administration/system-settings"
             novalidate
-            class="${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -207,7 +207,7 @@ export default async (application: Application): Promise<void> => {
             <div class="label">
               <p class="label--text">Users Who May Create Courses</p>
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -227,7 +227,7 @@ export default async (application: Application): Promise<void> => {
                 </label>
               </div>
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -248,7 +248,7 @@ export default async (application: Application): Promise<void> => {
                 </label>
               </div>
               <div
-                class="${css`
+                css="${css`
                   display: flex;
                 `}"
               >
@@ -388,7 +388,7 @@ export default async (application: Application): Promise<void> => {
           </h2>
 
           <label
-            class="${css`
+            css="${css`
               display: flex;
               gap: var(--space--2);
               align-items: baseline;
@@ -440,7 +440,7 @@ export default async (application: Application): Promise<void> => {
             return html`
               <div
                 key="user/${user.reference}"
-                class="${css`
+                css="${css`
                   padding-top: var(--space--2);
                   border-top: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -464,7 +464,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  class="${css`
+                  css="${css`
                     flex: 1;
                     margin-top: var(--space--0-5);
                     display: flex;
@@ -486,7 +486,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                     <div class="secondary">
                       <span
-                        class="${css`
+                        css="${css`
                           margin-right: var(--space--2);
                         `}"
                         javascript-filterable-phrases="${JSON.stringify(
@@ -498,7 +498,8 @@ export default async (application: Application): Promise<void> => {
                         ${user.email}
                       </span>
                       <button
-                        class="button button--tight button--tight--inline button--transparent ${css`
+                        class="button button--tight button--tight--inline button--transparent"
+                        css="${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                           display: inline-flex;
@@ -537,7 +538,8 @@ export default async (application: Application): Promise<void> => {
                       </button>
                     </div>
                     <div
-                      class="secondary ${css`
+                      class="secondary"
+                      css="${css`
                         font-size: var(--font-size--xs);
                       `}"
                     >
@@ -556,14 +558,14 @@ export default async (application: Application): Promise<void> => {
                   </div>
 
                   <div
-                    class="${css`
+                    css="${css`
                       display: flex;
                       flex-wrap: wrap;
                       gap: var(--space--2);
                     `}"
                   >
                     <div
-                      class="${css`
+                      css="${css`
                         width: var(--space--28);
                         display: flex;
                         justify-content: flex-start;
@@ -650,7 +652,7 @@ export default async (application: Application): Promise<void> => {
                                                                 key="role--${systemRole}"
                                                                 method="PATCH"
                                                                 action="${action}"
-                                                                class="${css`
+                                                                css="${css`
                                                                   padding: var(
                                                                     --space--2
                                                                   );
@@ -675,7 +677,7 @@ export default async (application: Application): Promise<void> => {
                                                                 </p>
                                                                 <p>
                                                                   <strong
-                                                                    class="${css`
+                                                                    css="${css`
                                                                       font-weight: var(
                                                                         --font-weight--bold
                                                                       );
