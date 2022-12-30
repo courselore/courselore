@@ -1,12 +1,75 @@
-import url from "node:url";
 import fs from "node:fs/promises";
 import { execa } from "execa";
+import { globby } from "globby";
+import babel from "@babel/core";
+import babelGenerator from "@babel/generator";
+import xxhash from "xxhash-addon";
+import baseX from "base-x";
+import html from "@leafac/html";
+import css from "@leafac/css";
+import javascript from "@leafac/javascript";
 
 await execa("tsc", undefined, {
-  cwd: url.fileURLToPath(new URL("./server/", import.meta.url)),
+  cwd: "./server/",
   preferLocal: true,
   stdio: "inherit",
 });
+
+// TODO: Source maps.
+
+const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
+let applicationCSS = "";
+let applicationJavaScript = "";
+for (const file of await globby("./build/server/**/*.mjs"))
+  await fs.writeFile(
+    file,
+    (
+      await babel.transformFileAsync(file, {
+        plugins: [
+          {
+            visitor: {
+              TaggedTemplateExpression(path) {
+                switch (path.node.tag.name) {
+                  case "css": {
+                    const css_ = new Function(
+                      "css",
+                      `return (${babelGenerator.default(path.node).code});`
+                    )(css);
+                    const identifier = baseIdentifier.encode(
+                      xxhash.XXHash3.hash(Buffer.from(css_))
+                    );
+                    applicationCSS =
+                      css`
+                        ${`[css~="${identifier}"]`.repeat(6)} {
+                          ${css_}
+                        }
+                      ` + applicationCSS;
+                    path.replaceWith(babel.types.stringLiteral(identifier));
+                    break;
+                  }
+
+                  case "javascript": {
+                    const javascript_ = new Function(
+                      "html",
+                      "css",
+                      "javascript",
+                      `return (${babelGenerator.default(path.node).code});`
+                    )(html, css, javascript);
+                    const identifier = baseIdentifier.encode(
+                      xxhash.XXHash3.hash(Buffer.from(javascript_))
+                    );
+                    applicationJavaScript += javascript`${identifier}: (event) => { ${javascript_} },`;
+                    path.replaceWith(babel.types.stringLiteral(identifier));
+                    break;
+                  }
+                }
+              },
+            },
+          },
+        ],
+      })
+    ).code
+  );
 
 /*
 import path from "node:path";
