@@ -82,6 +82,7 @@
     "@babel/core": "^7.20.7",
     "0x": "^5.4.1",
     "autocannon": "^7.10.0",
+    "autoprefixer": "^10.4.13",
     "base-x": "^4.0.0",
     "caxa": "^3.0.1",
     "esbuild": "^0.16.12",
@@ -89,6 +90,8 @@
     "license-checker": "^25.0.1",
     "nodemon": "^2.0.20",
     "npm-check-updates": "^16.6.2",
+    "postcss": "^8.4.20",
+    "postcss-nested": "^6.0.0",
     "prettier": "^2.8.1",
     "shx": "^0.3.4",
     "xxhash-addon": "^2.0.1"
