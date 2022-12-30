@@ -3,20 +3,11 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
 import { asyncHandler } from "@leafac/express-async-handler";
-import { localCSS } from "@leafac/css";
-import { localJavaScript } from "@leafac/javascript";
 import { Application } from "./index.mjs";
 
 export type ApplicationBase = {
   server: {
     locals: {
-      ResponseLocals: {
-        Base: Application["server"]["locals"]["ResponseLocals"]["Logging"] & {
-          css: ReturnType<typeof localCSS>;
-          javascript: ReturnType<typeof localJavaScript>;
-        };
-      };
-
       configuration: {
         cookies: express.CookieOptions;
       };
@@ -38,11 +29,8 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
+    Application["server"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
-    response.locals.css = localCSS();
-    response.locals.javascript = localJavaScript();
-
     if (
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
       request.header("CSRF-Protection") !== "true"
@@ -57,7 +45,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
+    Application["server"]["locals"]["ResponseLocals"]["Logging"]
   >(cookieParser());
 
   application.server.locals.configuration.cookies = {
@@ -72,7 +60,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
+    Application["server"]["locals"]["ResponseLocals"]["Logging"]
   >(express.urlencoded({ extended: true }));
 
   application.serverEvents.use<{}, any, {}, {}, {}>(
@@ -88,7 +76,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Base"]
+    Application["server"]["locals"]["ResponseLocals"]["Logging"]
   >(
     expressFileUpload({
       createParentPath: true,
