@@ -1,7 +1,4 @@
 {
-  "scripts": {
-    "prepare": "tsc"
-  },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
     "@types/dedent": "^0.7.0",

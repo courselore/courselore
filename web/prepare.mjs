@@ -1,3 +1,14 @@
+import url from "node:url";
+import fs from "node:fs/promises";
+import { execa } from "execa";
+
+await execa("tsc", undefined, {
+  cwd: url.fileURLToPath(new URL("./server/", import.meta.url)),
+  preferLocal: true,
+  stdio: "inherit",
+});
+
+/*
 import path from "node:path";
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
@@ -1246,3 +1257,4 @@ for (const source of [
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
 }
+*/
