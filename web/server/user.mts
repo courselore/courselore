@@ -328,7 +328,7 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                css="${response.locals.css(css`
+                class="${css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
                   @media (prefers-color-scheme: dark) {
@@ -352,14 +352,14 @@ export default async (application: Application): Promise<void> => {
                     `,
                   }[size]}
                   border-radius: var(--border-radius--circle);
-                `)}"
+                `}"
               >
                 <foreignObject x="2" y="-2" width="24" height="24">
                   <span
-                    css="${response.locals.css(css`
+                    class="${css`
                       font-size: var(--font-size--xl);
                       line-height: var(--line-height--xl);
-                    `)}"
+                    `}"
                   >
                     <i class="bi bi-emoji-smile-upside-down"></i>
                   </span>
@@ -370,7 +370,7 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                css="${response.locals.css(css`
+                class="${css`
                   ${{
                     xs: css`
                       width: var(--space--4);
@@ -391,11 +391,11 @@ export default async (application: Application): Promise<void> => {
                   @media (prefers-color-scheme: dark) {
                     filter: brightness(var(--brightness--90));
                   }
-                `)}"
+                `}"
               />`
             : html`<svg
                 viewBox="0 0 24 24"
-                css="${response.locals.css(css`
+                class="${css`
                   color: var(--color--${user.avatarlessBackgroundColor}--700);
                   background-color: var(
                     --color--${user.avatarlessBackgroundColor}--200
@@ -423,18 +423,18 @@ export default async (application: Application): Promise<void> => {
                     `,
                   }[size]}
                   border-radius: var(--border-radius--circle);
-                `)}"
+                `}"
               >
                 <text
                   x="12"
                   y="16"
                   text-anchor="middle"
-                  css="${response.locals.css(css`
+                  class="${css`
                     font-size: var(--font-size--2xs);
                     line-height: var(--line-height--2xs);
                     font-weight: var(--font-weight--black);
                     fill: currentColor;
-                  `)}"
+                  `}"
                 >
                   ${(() => {
                     const nameParts = user.name.split(/\s+/);
@@ -449,7 +449,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css="${response.locals.css(css`
+            class="${css`
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
@@ -464,12 +464,12 @@ export default async (application: Application): Promise<void> => {
                 `,
                 xl: css``,
               }[size]}
-            `)}"
+            `}"
           >
             $${userAvatar}
             <span
               hidden
-              css="${response.locals.css(css`
+              class="${css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
@@ -491,7 +491,7 @@ export default async (application: Application): Promise<void> => {
                 }[size]}
                 border-radius: var(--border-radius--circle);
                 place-self: end;
-              `)}"
+              `}"
               javascript="${response.locals.javascript(javascript`
                 const element = this;
 
@@ -520,13 +520,13 @@ export default async (application: Application): Promise<void> => {
       if (name !== false)
         userName = html`<span
           ><span
-            css="${response.locals.css(css`
+            class="${css`
               ${bold
                 ? css`
                     font-weight: var(--font-weight--bold);
                   `
                 : css``}
-            `)}"
+            `}"
             $${name === true && user !== "no-longer-enrolled"
               ? html`
                   javascript-filterable-phrases="${JSON.stringify(
@@ -584,21 +584,21 @@ export default async (application: Application): Promise<void> => {
               touch: ["hold", 1000],
               content: ${JSON.stringify(html`
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     max-height: var(--space--56);
                     padding: var(--space--1) var(--space--2);
                     overflow: auto;
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
-                  `)}"
+                  `}"
                 >
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       display: flex;
                       gap: var(--space--4);
                       align-items: center;
-                    `)}"
+                    `}"
                   >
                     <div>
                       $${application.server.locals.partials.user({
@@ -611,12 +611,12 @@ export default async (application: Application): Promise<void> => {
                       })}
                     </div>
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         padding-top: var(--space--0-5);
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
-                      `)}"
+                      `}"
                     >
                       <div>
                         <div class="strong">
@@ -630,19 +630,18 @@ export default async (application: Application): Promise<void> => {
                           ? html`
                               <div class="secondary">
                                 <span
-                                  css="${response.locals.css(css`
+                                  class="${css`
                                     margin-right: var(--space--2);
-                                  `)}"
+                                  `}"
                                 >
                                   ${user!.email}
                                 </span>
                                 <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  css="${response.locals.css(css`
+                                  class="button button--tight button--tight--inline button--transparent ${css`
                                     font-size: var(--font-size--xs);
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
-                                  `)}"
+                                  `}"
                                   javascript="${response.locals
                                     .javascript(javascript`
                                       leafac.setTippy({
@@ -688,11 +687,10 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html`
                               <div
-                                class="secondary"
-                                css="${response.locals.css(css`
+                                class="secondary ${css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
-                                `)}"
+                                `}"
                               >
                                 <span>
                                   Last seen online
@@ -713,13 +711,12 @@ export default async (application: Application): Promise<void> => {
                         enrollment.courseRole === "staff"
                           ? html`
                               <div
-                                class="text--sky"
-                                css="${response.locals.css(css`
+                                class="text--sky ${css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                   display: flex;
                                   gap: var(--space--2);
-                                `)}"
+                                `}"
                               >
                                 <i class="bi bi-mortarboard-fill"></i>
                                 Staff
@@ -752,7 +749,7 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          css="${response.locals.css(css`
+          class="${css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
@@ -776,14 +773,14 @@ export default async (application: Application): Promise<void> => {
               `,
             }[size]}
             border-radius: var(--border-radius--circle);
-          `)}"
+          `}"
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
-              css="${response.locals.css(css`
+              class="${css`
                 font-size: var(--font-size--xl);
                 line-height: var(--line-height--xl);
-              `)}"
+              `}"
             >
               <i class="bi bi-incognito"></i>
             </span>
@@ -792,13 +789,13 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
-          css="${response.locals.css(css`
+          class="${css`
             ${bold
               ? css`
                   font-weight: var(--font-weight--bold);
                 `
               : css``}
-          `)}"
+          `}"
           >Anonymous</span
         >`;
     }
@@ -877,24 +874,24 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/profile"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 gap: var(--space--4);
                 @media (max-width: 400px) {
                   flex-direction: column;
                 }
-              `)}"
+              `}"
             >
               <div
                 key="avatar-chooser"
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -913,7 +910,7 @@ export default async (application: Application): Promise<void> => {
                       }
                     }
                   }
-                `)}"
+                `}"
                 javascript="${response.locals.javascript(javascript`
                   this.ondragover = (event) => {
                     if (!event.dataTransfer.types.includes("Files")) return;
@@ -954,14 +951,14 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         width: var(--space--4);
                         height: var(--space--4);
                         transform: scale(8);
                         svg {
                           vertical-align: var(--space--0);
                         }
-                      `)}"
+                      `}"
                     >
                       $${application.server.locals.partials.user({
                         request,
@@ -1002,17 +999,16 @@ export default async (application: Application): Promise<void> => {
                       src="${response.locals.user.avatar ?? ""}"
                       alt="Avatar"
                       loading="lazy"
-                      css="${response.locals.css(css`
+                      class="${css`
                         width: 100%;
                         height: 100%;
                         border-radius: var(--border-radius--circle);
-                      `)}"
+                      `}"
                     />
                   </button>
                   <button
                     type="button"
-                    class="button button--rose"
-                    css="${response.locals.css(css`
+                    class="button button--rose ${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       place-self: end;
@@ -1022,7 +1018,7 @@ export default async (application: Application): Promise<void> => {
                       border-radius: var(--border-radius--circle);
                       transform: translate(-20%, -20%);
                       align-items: center;
-                    `)}"
+                    `}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.setTippy({
                         event,
@@ -1068,10 +1064,10 @@ export default async (application: Application): Promise<void> => {
                         hideOnClick: false,
                         content: ${JSON.stringify(html`
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.partials.spinner({
                               request,
@@ -1134,12 +1130,12 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   flex: 1;
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
-                `)}"
+                `}"
               >
                 <label class="label">
                   <p class="label--text">Name</p>
@@ -1362,11 +1358,11 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/email-and-password"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Email</p>
@@ -1430,11 +1426,11 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/email-and-password"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Current Password</p>
@@ -1746,18 +1742,18 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/notifications"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <div key="isEmailNotificationsFor" class="label">
               <p class="label--text">Email Notifications</p>
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -1789,13 +1785,13 @@ export default async (application: Application): Promise<void> => {
               <div
                 hidden
                 TODO
-                css="${response.locals.css(css`
+                class="${css`
                   margin-left: var(--space--10);
                   display: flex;
                   flex-wrap: wrap;
                   column-gap: var(--space--8);
                   row-gap: var(--space--1);
-                `)}"
+                `}"
               >
                 <label
                   class="button button--tight button--tight--inline ${response
@@ -1872,9 +1868,9 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -1900,9 +1896,9 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -1930,9 +1926,9 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -1960,9 +1956,9 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label
                   class="button button--tight button--tight--inline disabled"
@@ -2135,11 +2131,11 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/settings/account"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <div class="label">
               <p class="label--text">

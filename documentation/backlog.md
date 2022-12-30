@@ -1057,7 +1057,7 @@ test("/preview (Text processor)", async () => {
             $${app.configuration.host === app.configuration.canonicalHost
               ? html`
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       color: var(--color--green--700);
                       background-color: var(--color--green--100);
                       @media (prefers-color-scheme: dark) {
@@ -1089,13 +1089,13 @@ test("/preview (Text processor)", async () => {
                           }
                         }
                       }
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-gift-fill"></i>
                     </div>

@@ -1035,16 +1035,16 @@ export default async (application: Application): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary"
-                css="${response.locals.css(css`
+                class="${css`
                   @media (min-width: 900px) {
                     display: none;
                   }
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     padding: var(--space--1) var(--space--0);
-                  `)}"
+                  `}"
                 >
                   <a
                     href="https://${application.configuration
@@ -1062,16 +1062,16 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--conversation"
-          css="${response.locals.css(css`
+          class="${css`
             width: 100%;
             height: 100%;
             display: flex;
-          `)}"
+          `}"
         >
           <div
             key="layout--conversation--sidebar--/${response.locals.course
               .reference}"
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               @media (max-width: 899px) {
@@ -1090,10 +1090,10 @@ export default async (application: Application): Promise<void> => {
                   border-color: var(--color--gray--medium--700);
                 }
               }
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -1105,19 +1105,19 @@ export default async (application: Application): Promise<void> => {
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--gray--medium--700);
                 }
-              `)}"
+              `}"
             >
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
                     justify-content: center;
                   }
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -1126,24 +1126,23 @@ export default async (application: Application): Promise<void> => {
                       min-width: var(--width--0);
                       max-width: var(--width--prose);
                     }
-                  `)}"
+                  `}"
                 >
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
                       align-items: baseline;
                       gap: var(--space--2);
                       flex-wrap: wrap;
-                    `)}"
+                    `}"
                   >
                     <div
-                      class="strong"
-                      css="${response.locals.css(css`
+                      class="strong ${css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
-                      `)}"
+                      `}"
                     >
                       New:
                     </div>
@@ -1223,7 +1222,7 @@ export default async (application: Application): Promise<void> => {
                   <hr class="separator" />
 
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
@@ -1231,14 +1230,13 @@ export default async (application: Application): Promise<void> => {
                       column-gap: var(--space--4);
                       row-gap: var(--space--2);
                       flex-wrap: wrap;
-                    `)}"
+                    `}"
                   >
                     <div
-                      class="strong"
-                      css="${response.locals.css(css`
+                      class="strong ${css`
                         font-size: var(--font-size--2xs);
                         line-height: var(--line-height--2xs);
-                      `)}"
+                      `}"
                     >
                       Quick Filters:
                     </div>
@@ -1489,21 +1487,21 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="search-and-filters"
-                    css="${response.locals.css(css`
+                    class="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         display: flex;
                         column-gap: var(--space--4);
                         row-gap: var(--space--2);
                         flex-wrap: wrap;
-                      `)}"
+                      `}"
                     >
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -1619,11 +1617,11 @@ export default async (application: Application): Promise<void> => {
                         filters.isQuick !== "true")
                         ? html``
                         : html`hidden`}
-                      css="${response.locals.css(css`
+                      class="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--1);
-                      `)}"
+                      `}"
                       javascript="${response.locals.javascript(javascript`
                         this.isModified = false;
                       `)}"
@@ -1631,11 +1629,11 @@ export default async (application: Application): Promise<void> => {
                       <div
                         key="search"
                         $${search !== undefined ? html`` : html`hidden`}
-                        css="${response.locals.css(css`
+                        class="${css`
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
-                        `)}"
+                        `}"
                       >
                         <input
                           type="text"
@@ -1703,21 +1701,21 @@ export default async (application: Application): Promise<void> => {
                         filters.isQuick !== "true"
                           ? html``
                           : html`hidden`}
-                        css="${response.locals.css(css`
+                        class="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `)}"
+                        `}"
                       >
                         <div class="label">
                           <div class="label--text">Unread</div>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -1789,12 +1787,12 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.helpers.conversationTypes.map(
                               (conversationType) => html`
@@ -1861,12 +1859,12 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Question Resolved</p>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -1944,12 +1942,12 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Announcement</p>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -2027,12 +2025,12 @@ export default async (application: Application): Promise<void> => {
                         <div class="label">
                           <p class="label--text">Participants</p>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.helpers.conversationParticipantses.map(
                               (conversationParticipants) => html`
@@ -2102,12 +2100,12 @@ export default async (application: Application): Promise<void> => {
                             </button>
                           </div>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--6);
                               row-gap: var(--space--2);
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -2201,21 +2199,21 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                 </div>
                                 <div
-                                  css="${response.locals.css(css`
+                                  class="${css`
                                     display: flex;
                                     flex-wrap: wrap;
                                     column-gap: var(--space--6);
                                     row-gap: var(--space--2);
-                                  `)}"
+                                  `}"
                                 >
                                   $${response.locals.tags.map(
                                     (tag) => html`
                                       <div
                                         key="tag--${tag.reference}"
-                                        css="${response.locals.css(css`
+                                        class="${css`
                                           display: flex;
                                           gap: var(--space--2);
-                                        `)}"
+                                        `}"
                                       >
                                         <label
                                           class="button button--tight button--tight--inline button--transparent"
@@ -2273,14 +2271,14 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `}
                         <div
-                          css="${response.locals.css(css`
+                          class="${css`
                             margin-top: var(--space--2);
                             display: flex;
                             gap: var(--space--2);
                             & > * {
                               flex: 1;
                             }
-                          `)}"
+                          `}"
                         >
                           <button
                             class="button button--tight button--tight--inline button--transparent"
@@ -2317,22 +2315,22 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 flex: 1;
                 overflow: auto;
-              `)}"
+              `}"
             >
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   margin: var(--space--4);
                   @media (max-width: 899px) {
                     display: flex;
                     justify-content: center;
                   }
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -2341,16 +2339,16 @@ export default async (application: Application): Promise<void> => {
                       min-width: var(--width--0);
                       max-width: var(--width--prose);
                     }
-                  `)}"
+                  `}"
                 >
                   $${conversationsWithSearchResults.length === 0
                     ? html`
                         <div
-                          css="${response.locals.css(css`
+                          class="${css`
                             display: flex;
                             flex-direction: column;
                             align-items: center;
-                          `)}"
+                          `}"
                         >
                           <div class="decorative-icon">
                             <i class="bi bi-chat-text"></i>
@@ -2362,10 +2360,10 @@ export default async (application: Application): Promise<void> => {
                         $${conversationsPage > 1
                           ? html`
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   display: flex;
                                   justify-content: center;
-                                `)}"
+                                `}"
                               >
                                 <a
                                   href="${qs.stringify(
@@ -2394,9 +2392,9 @@ export default async (application: Application): Promise<void> => {
 
                         <div
                           key="conversations"
-                          css="${response.locals.css(css`
+                          class="${css`
                             margin-top: var(--space---2);
-                          `)}"
+                          `}"
                           javascript="${response.locals.javascript(javascript`
                             ${
                               response.locals.conversation !== undefined
@@ -2437,8 +2435,7 @@ export default async (application: Application): Promise<void> => {
                                   )}"
                                   class="button ${isSelected
                                     ? "button--blue"
-                                    : "button--transparent"}"
-                                  css="${response.locals.css(css`
+                                    : "button--transparent"} ${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
                                     );
@@ -2453,13 +2450,13 @@ export default async (application: Application): Promise<void> => {
                                           }
                                         `
                                       : css``}
-                                  `)}"
+                                  `}"
                                 >
                                   <div
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       flex: 1;
                                       max-width: 100%;
-                                    `)}"
+                                    `}"
                                   >
                                     $${application.server.locals.partials.conversation(
                                       {
@@ -2471,11 +2468,11 @@ export default async (application: Application): Promise<void> => {
                                     )}
                                   </div>
                                   <div
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       width: var(--space--4);
                                       display: flex;
                                       justify-content: flex-end;
-                                    `)}"
+                                    `}"
                                   >
                                     $${(() => {
                                       const unreadCount =
@@ -2487,15 +2484,14 @@ export default async (application: Application): Promise<void> => {
                                         ? html``
                                         : html`
                                             <button
-                                              class="button button--tight button--blue"
-                                              css="${response.locals.css(css`
+                                              class="button button--tight button--blue ${css`
                                                 font-size: var(
                                                   --font-size--2xs
                                                 );
                                                 line-height: var(
                                                   --line-height--2xs
                                                 );
-                                              `)}"
+                                              `}"
                                               javascript="${response.locals
                                                 .javascript(javascript`
                                                   leafac.setTippy({
@@ -2525,10 +2521,9 @@ export default async (application: Application): Promise<void> => {
                             }
                           ).join(html`
                             <hr
-                              class="separator"
-                              css="${response.locals.css(css`
+                              class="separator ${css`
                                 margin: var(--space---px) var(--space--0);
-                              `)}"
+                              `}"
                             />
                           `)}
                         </div>
@@ -2537,10 +2532,10 @@ export default async (application: Application): Promise<void> => {
                               <hr class="separator" />
 
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   display: flex;
                                   justify-content: center;
-                                `)}"
+                                `}"
                               >
                                 <a
                                   href="${qs.stringify(
@@ -2572,7 +2567,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="layout--conversation--main--${request.path}"
-            css="${response.locals.css(css`
+            class="${css`
               overflow: auto;
               flex: 1;
               ${sidebarOnSmallScreen
@@ -2582,10 +2577,10 @@ export default async (application: Application): Promise<void> => {
                     }
                   `
                 : css``}
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
@@ -2601,13 +2596,13 @@ export default async (application: Application): Promise<void> => {
                         margin-left: var(--space--8);
                       }
                     `}
-              `)}"
+              `}"
             >
               $${mainIsAScrollingPane
                 ? body
                 : html`
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         min-width: var(--width--0);
                         max-width: var(--width--prose);
                         display: flex;
@@ -2616,7 +2611,7 @@ export default async (application: Application): Promise<void> => {
                         @media (max-width: 899px) {
                           flex: 1;
                         }
-                      `)}"
+                      `}"
                     >
                       $${body}
                     </div>
@@ -2637,14 +2632,14 @@ export default async (application: Application): Promise<void> => {
   }) => html`
     <div
       key="partial--conversation--${conversation.reference}"
-      css="${response.locals.css(css`
+      class="${css`
         display: flex;
         flex-direction: column;
         gap: var(--space--1);
-      `)}"
+      `}"
     >
       <div
-        css="${response.locals.css(css`
+        class="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2656,7 +2651,7 @@ export default async (application: Application): Promise<void> => {
             display: flex;
             gap: var(--space--1);
           }
-        `)}"
+        `}"
       >
         <div
           class="${conversation.type === "question" &&
@@ -2711,11 +2706,11 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <div
                             key="loading"
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.partials.spinner({
                               request,
@@ -2815,11 +2810,10 @@ export default async (application: Application): Promise<void> => {
       </h3>
 
       <div
-        class="secondary"
-        css="${response.locals.css(css`
+        class="secondary ${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
-        `)}"
+        `}"
       >
         $${application.server.locals.partials.user({
           request,
@@ -2839,15 +2833,14 @@ export default async (application: Application): Promise<void> => {
       </div>
 
       <div
-        class="secondary"
-        css="${response.locals.css(css`
+        class="secondary ${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
           flex-wrap: wrap;
           column-gap: var(--space--3);
           row-gap: var(--space--0-5);
-        `)}"
+        `}"
       >
         <div
           javascript="${response.locals.javascript(javascript`
@@ -2890,7 +2883,7 @@ export default async (application: Application): Promise<void> => {
         ? html``
         : html`
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 display: flex;
@@ -2902,7 +2895,7 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--1);
                 }
-              `)}"
+              `}"
             >
               $${conversation.taggings.map(
                 (tagging) => html`
@@ -3093,13 +3086,12 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu"
-              css="${response.locals.css(css`
+              class="dropdown--menu ${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
-              `)}"
+              `}"
             >
               $${response.locals.conversation.selectedParticipants.map(
                 (selectedParticipant) => html`
@@ -3296,69 +3288,73 @@ export default async (application: Application): Promise<void> => {
           `,
           body: html`
             <h2 class="heading">
-              $${request.params.type === "note"
-                ? html`
-                    $${iconsConversationType.note.fill} Post
-                    ${response.locals.conversationsCount === 0
-                      ? "the First"
-                      : "a New"}
-                    Note
-                  `
-                : request.params.type === "question"
-                ? html`
-                    $${iconsConversationType.question.fill} Ask
-                    ${response.locals.conversationsCount === 0
-                      ? "the First"
-                      : "a New"}
-                    Question
-                  `
-                : request.params.type === "chat"
-                ? html`
-                    $${iconsConversationType.chat.fill} Start
-                    ${response.locals.conversationsCount === 0
-                      ? "the First"
-                      : "a New"}
-                    Chat
-                  `
-                : html`
-                    <i class="bi bi-chat-text-fill"></i>
-                    Start
-                    ${response.locals.conversationsCount === 0
-                      ? "the First"
-                      : "a New"}
-                    Conversation
-                  `}
+              $${
+                request.params.type === "note"
+                  ? html`
+                      $${iconsConversationType.note.fill} Post
+                      ${response.locals.conversationsCount === 0
+                        ? "the First"
+                        : "a New"}
+                      Note
+                    `
+                  : request.params.type === "question"
+                  ? html`
+                      $${iconsConversationType.question.fill} Ask
+                      ${response.locals.conversationsCount === 0
+                        ? "the First"
+                        : "a New"}
+                      Question
+                    `
+                  : request.params.type === "chat"
+                  ? html`
+                      $${iconsConversationType.chat.fill} Start
+                      ${response.locals.conversationsCount === 0
+                        ? "the First"
+                        : "a New"}
+                      Chat
+                    `
+                  : html`
+                      <i class="bi bi-chat-text-fill"></i>
+                      Start
+                      ${response.locals.conversationsCount === 0
+                        ? "the First"
+                        : "a New"}
+                      Conversation
+                    `
+              }
             </h2>
 
             <form
               method="POST"
-              action="https://${application.configuration
-                .hostname}/courses/${response.locals.course
-                .reference}/conversations${qs.stringify(
-                { conversations: request.query.conversations },
-                { addQueryPrefix: true }
-              )}"
+              action="https://${application.configuration.hostname}/courses/${
+            response.locals.course.reference
+          }/conversations${qs.stringify(
+            { conversations: request.query.conversations },
+            { addQueryPrefix: true }
+          )}"
               novalidate
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `)}"
+              `}"
             >
               <div
-                $${typeof request.params.type === "string"
-                  ? html`hidden`
-                  : html``}
+                $${
+                  typeof request.params.type === "string"
+                    ? html`hidden`
+                    : html``
+                }
                 class="label"
               >
                 <p class="label--text">Type</p>
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     display: flex;
                     flex-wrap: wrap;
                     column-gap: var(--space--8);
                     row-gap: var(--space--2);
-                  `)}"
+                  `}"
                 >
                   $${application.server.locals.helpers.conversationTypes.map(
                     (conversationType) => html`
@@ -3428,14 +3424,17 @@ export default async (application: Application): Promise<void> => {
                 type="text"
                 name="title"
                 required
-                $${typeof conversationDraft?.title === "string" &&
-                conversationDraft.title.trim() !== ""
-                  ? html`value="${conversationDraft.title}"`
-                  : conversationDraft === undefined &&
-                    typeof request.query.newConversation?.title === "string" &&
-                    request.query.newConversation.title.trim() !== ""
-                  ? html`value="${request.query.newConversation.title}"`
-                  : html``}
+                $${
+                  typeof conversationDraft?.title === "string" &&
+                  conversationDraft.title.trim() !== ""
+                    ? html`value="${conversationDraft.title}"`
+                    : conversationDraft === undefined &&
+                      typeof request.query.newConversation?.title ===
+                        "string" &&
+                      request.query.newConversation.title.trim() !== ""
+                    ? html`value="${request.query.newConversation.title}"`
+                    : html``
+                }
                 placeholder="Title…"
                 autocomplete="off"
                 $${conversationDraft === undefined ? html`autofocus` : html``}
@@ -3466,17 +3465,18 @@ export default async (application: Application): Promise<void> => {
                       )) ||
                       request.query.newConversation?.type === undefined)),
               })}
-              $${response.locals.tags.length === 0 &&
-              response.locals.enrollment.courseRole !== "staff"
-                ? html``
-                : html`
-                    <div class="label">
-                      <div class="label--text">
-                        Tags
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          javascript="${response.locals.javascript(javascript`
+              $${
+                response.locals.tags.length === 0 &&
+                response.locals.enrollment.courseRole !== "staff"
+                  ? html``
+                  : html`
+                      <div class="label">
+                        <div class="label--text">
+                          Tags
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${response.locals.javascript(javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -3486,121 +3486,123 @@ export default async (application: Application): Promise<void> => {
                               },
                             });
                           `)}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                          $${response.locals.tags.length > 0 &&
+                          response.locals.enrollment.courseRole === "staff"
+                            ? html`
+                                <div
+                                  class="${css`
+                                    flex: 1;
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  `}"
+                                >
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${response.locals
+                                      .course.reference}/settings/tags"
+                                    target="_blank"
+                                    class="button button--tight button--tight--inline button--transparent secondary"
+                                  >
+                                    <i class="bi bi-sliders"></i>
+                                    Manage Tags
+                                  </a>
+                                </div>
+                              `
+                            : html``}
+                        </div>
+                        <div
+                          class="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--8);
+                            row-gap: var(--space--2);
+                          `}"
                         >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                        $${response.locals.tags.length > 0 &&
-                        response.locals.enrollment.courseRole === "staff"
-                          ? html`
-                              <div
-                                css="${response.locals.css(css`
-                                  flex: 1;
-                                  display: flex;
-                                  justify-content: flex-end;
-                                `)}"
-                              >
+                          $${response.locals.tags.length === 0 &&
+                          response.locals.enrollment.courseRole === "staff"
+                            ? html`
                                 <a
                                   href="https://${application.configuration
                                     .hostname}/courses/${response.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
-                                  class="button button--tight button--tight--inline button--transparent secondary"
+                                  class="button button--tight button--tight--inline button--inline button--transparent secondary"
                                 >
                                   <i class="bi bi-sliders"></i>
-                                  Manage Tags
+                                  Create the First Tag
                                 </a>
-                              </div>
-                            `
-                          : html``}
-                      </div>
-                      <div
-                        css="${response.locals.css(css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--8);
-                          row-gap: var(--space--2);
-                        `)}"
-                      >
-                        $${response.locals.tags.length === 0 &&
-                        response.locals.enrollment.courseRole === "staff"
-                          ? html`
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/courses/${response.locals.course
-                                  .reference}/settings/tags"
-                                target="_blank"
-                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
-                              >
-                                <i class="bi bi-sliders"></i>
-                                Create the First Tag
-                              </a>
-                            `
-                          : response.locals.tags.map(
-                              (tag) => html`
-                                <div
-                                  key="tag--${tag.reference}"
-                                  css="${response.locals.css(css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `)}"
-                                >
-                                  <label
-                                    class="button button--tight button--tight--inline button--transparent"
+                              `
+                            : response.locals.tags.map(
+                                (tag) => html`
+                                  <div
+                                    key="tag--${tag.reference}"
+                                    class="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
                                   >
-                                    <input
-                                      type="checkbox"
-                                      name="tagsReferences[]"
-                                      value="${tag.reference}"
-                                      $${(typeof conversationDraft?.tagsReferences ===
-                                        "string" &&
-                                        JSON.parse(
-                                          conversationDraft.tagsReferences
-                                        ).includes(tag.reference)) ||
-                                      (conversationDraft === undefined &&
-                                        Array.isArray(
-                                          request.query.newConversation
-                                            ?.tagsReferences
-                                        ) &&
-                                        request.query.newConversation!.tagsReferences.includes(
-                                          tag.reference
-                                        ))
-                                        ? html`checked`
-                                        : html``}
-                                      $${
-                                        // TODO: Drafts
-                                        (typeof request.params.type ===
+                                    <label
+                                      class="button button--tight button--tight--inline button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="tagsReferences[]"
+                                        value="${tag.reference}"
+                                        $${(typeof conversationDraft?.tagsReferences ===
                                           "string" &&
-                                          ["question", "note"].includes(
-                                            request.params.type
-                                          )) ||
-                                        (request.params.type === undefined &&
-                                          ((typeof request.query.newConversation
-                                            ?.type === "string" &&
-                                            ["question", "note"].includes(
-                                              request.query.newConversation.type
-                                            )) ||
+                                          JSON.parse(
+                                            conversationDraft.tagsReferences
+                                          ).includes(tag.reference)) ||
+                                        (conversationDraft === undefined &&
+                                          Array.isArray(
                                             request.query.newConversation
-                                              ?.type === undefined))
-                                          ? html`required`
-                                          : html``
-                                      }
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    />
-                                    <span>
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </span>
-                                    <span class="text--teal">
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tag.name}
-                                    </span>
-                                  </label>
-                                  $${tag.staffOnlyAt !== null
-                                    ? html`
-                                        <span
-                                          class="text--sky"
-                                          javascript="${response.locals
-                                            .javascript(javascript`
+                                              ?.tagsReferences
+                                          ) &&
+                                          request.query.newConversation!.tagsReferences.includes(
+                                            tag.reference
+                                          ))
+                                          ? html`checked`
+                                          : html``}
+                                        $${
+                                          // TODO: Drafts
+                                          (typeof request.params.type ===
+                                            "string" &&
+                                            ["question", "note"].includes(
+                                              request.params.type
+                                            )) ||
+                                          (request.params.type === undefined &&
+                                            ((typeof request.query
+                                              .newConversation?.type ===
+                                              "string" &&
+                                              ["question", "note"].includes(
+                                                request.query.newConversation
+                                                  .type
+                                              )) ||
+                                              request.query.newConversation
+                                                ?.type === undefined))
+                                            ? html`required`
+                                            : html``
+                                        }
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      />
+                                      <span>
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </span>
+                                      <span class="text--teal">
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${tag.name}
+                                      </span>
+                                    </label>
+                                    $${tag.staffOnlyAt !== null
+                                      ? html`
+                                          <span
+                                            class="text--sky"
+                                            javascript="${response.locals
+                                              .javascript(javascript`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -3610,17 +3612,20 @@ export default async (application: Application): Promise<void> => {
                                                 },
                                               });
                                             `)}"
-                                        >
-                                          <i class="bi bi-mortarboard-fill"></i>
-                                        </span>
-                                      `
-                                    : html``}
-                                </div>
-                              `
-                            )}
+                                          >
+                                            <i
+                                              class="bi bi-mortarboard-fill"
+                                            ></i>
+                                          </span>
+                                        `
+                                      : html``}
+                                  </div>
+                                `
+                              )}
+                        </div>
                       </div>
-                    </div>
-                  `}
+                    `
+              }
               $${(() => {
                 const enrollments = application.database
                   .all<{
@@ -3684,12 +3689,12 @@ export default async (application: Application): Promise<void> => {
                   <div class="label">
                     <div class="label--text">Participants</div>
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         display: flex;
                         flex-wrap: wrap;
                         column-gap: var(--space--8);
                         row-gap: var(--space--4);
-                      `)}"
+                      `}"
                     >
                       <div
                         key="participants"
@@ -3704,11 +3709,11 @@ export default async (application: Application): Promise<void> => {
                               content: ${JSON.stringify(html`
                                 <div
                                   key="participants--dropdown"
-                                  css="${response.locals.css(css`
+                                  class="${css`
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
-                                  `)}"
+                                  `}"
                                 >
                                   <div class="dropdown--menu">
                                     $${application.server.locals.helpers.conversationParticipantses.map(
@@ -3822,11 +3827,11 @@ export default async (application: Application): Promise<void> => {
                                       request.params.type === "chat")
                                       ? html``
                                       : html`hidden`}
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       display: flex;
                                       flex-direction: column;
                                       gap: var(--space--2);
-                                    `)}"
+                                    `}"
                                   >
                                     <hr class="dropdown--separator" />
 
@@ -3834,11 +3839,10 @@ export default async (application: Application): Promise<void> => {
                                       .courseEnrollmentsCount === 1
                                       ? html`
                                           <p
-                                            class="secondary"
-                                            css="${response.locals.css(css`
+                                            class="secondary ${css`
                                               padding: var(--space--0)
                                                 var(--space--2) var(--space--2);
-                                            `)}"
+                                            `}"
                                           >
                                             You may select participants when
                                             there are more people enrolled in
@@ -3847,17 +3851,17 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html`
                                           <div
-                                            css="${response.locals.css(css`
+                                            class="${css`
                                               padding: var(--space--0)
                                                 var(--space--2);
-                                            `)}"
+                                            `}"
                                           >
                                             <label
-                                              css="${response.locals.css(css`
+                                              class="${css`
                                                 display: flex;
                                                 gap: var(--space--2);
                                                 align-items: baseline;
-                                              `)}"
+                                              `}"
                                             >
                                               <i class="bi bi-funnel"></i>
                                               <input
@@ -3904,11 +3908,10 @@ export default async (application: Application): Promise<void> => {
                                           <hr class="dropdown--separator" />
 
                                           <div
-                                            class="dropdown--menu"
-                                            css="${response.locals.css(css`
+                                            class="dropdown--menu ${css`
                                               height: var(--space--40);
                                               overflow: auto;
-                                            `)}"
+                                            `}"
                                           >
                                             $${enrollments.map(
                                               (enrollment) => html`
@@ -4104,35 +4107,37 @@ export default async (application: Application): Promise<void> => {
               })()}
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
                   flex-wrap: wrap;
                   column-gap: var(--space--8);
                   row-gap: var(--space--4);
-                `)}"
+                `}"
               >
-                $${response.locals.enrollment.courseRole === "staff"
-                  ? html`
-                      <div
-                        key="new-conversation--announcement"
-                        $${request.params.type === "note" ||
-                        (request.params.type === undefined &&
-                          (conversationDraft?.type === "note" ||
-                            (conversationDraft === undefined &&
-                              request.query.newConversation?.type === "note")))
-                          ? html``
-                          : html`hidden`}
-                        class="label"
-                        css="${response.locals.css(css`
-                          width: var(--space--44);
-                        `)}"
-                      >
-                        <div class="label--text">
-                          Announcement
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            javascript="${response.locals.javascript(javascript`
+                $${
+                  response.locals.enrollment.courseRole === "staff"
+                    ? html`
+                        <div
+                          key="new-conversation--announcement"
+                          $${request.params.type === "note" ||
+                          (request.params.type === undefined &&
+                            (conversationDraft?.type === "note" ||
+                              (conversationDraft === undefined &&
+                                request.query.newConversation?.type ===
+                                  "note")))
+                            ? html``
+                            : html`hidden`}
+                          class="label ${css`
+                            width: var(--space--44);
+                          `}"
+                        >
+                          <div class="label--text">
+                            Announcement
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                              javascript="${response.locals
+                                .javascript(javascript`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4142,51 +4147,51 @@ export default async (application: Application): Promise<void> => {
                                 },
                               });
                             `)}"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </div>
+                          <div
+                            class="${css`
+                              display: flex;
+                            `}"
                           >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                        <div
-                          css="${response.locals.css(css`
-                            display: flex;
-                          `)}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="isAnnouncement"
-                              $${request.params.type === "note" ||
-                              (request.params.type === undefined &&
-                                (conversationDraft?.type === "note" ||
-                                  (conversationDraft === undefined &&
-                                    request.query.newConversation?.type ===
-                                      "note")))
-                                ? html``
-                                : html`disabled`}
-                              $${(
-                                conversationDraft as any
-                              ) /* TODO: Conversation drafts */
-                                ?.isAnnouncement === "true" ||
-                              (conversationDraft === undefined &&
-                                (request.query.newConversation
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="isAnnouncement"
+                                $${request.params.type === "note" ||
+                                (request.params.type === undefined &&
+                                  (conversationDraft?.type === "note" ||
+                                    (conversationDraft === undefined &&
+                                      request.query.newConversation?.type ===
+                                        "note")))
+                                  ? html``
+                                  : html`disabled`}
+                                $${(
+                                  conversationDraft as any
+                                ) /* TODO: Conversation drafts */
                                   ?.isAnnouncement === "true" ||
-                                  request.query.newConversation
-                                    ?.isAnnouncement === undefined))
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                                (conversationDraft === undefined &&
+                                  (request.query.newConversation
+                                    ?.isAnnouncement === "true" ||
+                                    request.query.newConversation
+                                      ?.isAnnouncement === undefined))
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
                                   };
                                 `)}"
-                            />
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              />
+                              <span
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4196,14 +4201,14 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <i class="bi bi-megaphone"></i>
-                              Not an Announcement
-                            </span>
-                            <span
-                              class="text--orange"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              >
+                                <i class="bi bi-megaphone"></i>
+                                Not an Announcement
+                              </span>
+                              <span
+                                class="text--orange"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4213,26 +4218,26 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <i class="bi bi-megaphone-fill"></i>
-                              Announcement
-                            </span>
-                          </label>
+                              >
+                                <i class="bi bi-megaphone-fill"></i>
+                                Announcement
+                              </span>
+                            </label>
+                          </div>
                         </div>
-                      </div>
 
-                      <div
-                        class="label"
-                        css="${response.locals.css(css`
-                          width: var(--space--24);
-                        `)}"
-                      >
-                        <div class="label--text">
-                          Pin
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            javascript="${response.locals.javascript(javascript`
+                        <div
+                          class="label ${css`
+                            width: var(--space--24);
+                          `}"
+                        >
+                          <div class="label--text">
+                            Pin
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                              javascript="${response.locals
+                                .javascript(javascript`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4242,35 +4247,35 @@ export default async (application: Application): Promise<void> => {
                                 },
                               });
                             `)}"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </div>
+                          <div
+                            class="${css`
+                              display: flex;
+                            `}"
                           >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                        <div
-                          css="${response.locals.css(css`
-                            display: flex;
-                          `)}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="isPinned"
-                              $${conversationDraft?.isPinned === "true" ||
-                              (conversationDraft === undefined &&
-                                (request.query.newConversation?.isPinned ===
-                                  "true" ||
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="isPinned"
+                                $${conversationDraft?.isPinned === "true" ||
+                                (conversationDraft === undefined &&
                                   (request.query.newConversation?.isPinned ===
-                                    undefined &&
-                                    request.params.type === "note")))
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                                    "true" ||
+                                    (request.query.newConversation?.isPinned ===
+                                      undefined &&
+                                      request.params.type === "note")))
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <span
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4280,14 +4285,14 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <i class="bi bi-pin-angle"></i>
-                              Unpinned
-                            </span>
-                            <span
-                              class="text--amber"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              >
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </span>
+                              <span
+                                class="text--amber"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4297,36 +4302,35 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <i class="bi bi-pin-fill"></i>
-                              Pinned
-                            </span>
-                          </label>
+                              >
+                                <i class="bi bi-pin-fill"></i>
+                                Pinned
+                              </span>
+                            </label>
+                          </div>
                         </div>
-                      </div>
-                    `
-                  : html`
-                      <div
-                        class="label"
-                        css="${response.locals.css(css`
-                          width: var(--space--60);
-                        `)}"
-                      >
-                        <p class="label--text">Anonymity</p>
+                      `
+                    : html`
                         <div
-                          css="${response.locals.css(css`
-                            display: flex;
-                          `)}"
+                          class="label ${css`
+                            width: var(--space--60);
+                          `}"
                         >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                          <p class="label--text">Anonymity</p>
+                          <div
+                            class="${css`
+                              display: flex;
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="isAnonymous"
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              javascript="${response.locals
-                                .javascript(javascript`
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="isAnonymous"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   this.isModified = false;
 
                                   this.onchange = () => {
@@ -4335,10 +4339,10 @@ export default async (application: Application): Promise<void> => {
                                   
                                   if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                                 `)}"
-                            />
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              />
+                              <span
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4348,28 +4352,28 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <span>
-                                $${application.server.locals.partials.user({
-                                  request,
-                                  response,
-                                  user: response.locals.user,
-                                  decorate: false,
-                                  name: false,
-                                  size: "xs",
-                                })}
-                                <span
-                                  css="${response.locals.css(css`
-                                    margin-left: var(--space--1);
-                                  `)}"
-                                >
-                                  Signed by You
+                              >
+                                <span>
+                                  $${application.server.locals.partials.user({
+                                    request,
+                                    response,
+                                    user: response.locals.user,
+                                    decorate: false,
+                                    name: false,
+                                    size: "xs",
+                                  })}
+                                  <span
+                                    class="${css`
+                                      margin-left: var(--space--1);
+                                    `}"
+                                  >
+                                    Signed by You
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                            <span
-                              javascript="${response.locals
-                                .javascript(javascript`
+                              <span
+                                javascript="${response.locals
+                                  .javascript(javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4379,27 +4383,28 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `)}"
-                            >
-                              <span>
-                                $${application.server.locals.partials.user({
-                                  request,
-                                  response,
-                                  name: false,
-                                  size: "xs",
-                                })}
-                                <span
-                                  css="${response.locals.css(css`
-                                    margin-left: var(--space--1);
-                                  `)}"
-                                >
-                                  Anonymous to Other Students
+                              >
+                                <span>
+                                  $${application.server.locals.partials.user({
+                                    request,
+                                    response,
+                                    name: false,
+                                    size: "xs",
+                                  })}
+                                  <span
+                                    class="${css`
+                                      margin-left: var(--space--1);
+                                    `}"
+                                  >
+                                    Anonymous to Other Students
+                                  </span>
                                 </span>
                               </span>
-                            </span>
-                          </label>
+                            </label>
+                          </div>
                         </div>
-                      </div>
-                    `}
+                      `
+                }
               </div>
 
               <div>
@@ -4442,52 +4447,53 @@ export default async (application: Application): Promise<void> => {
                     };
                   `)}"
                 >
-                  $${request.params.type === "note"
-                    ? html`
-                        $${iconsConversationType.note.fill} Post
-                        ${response.locals.conversationsCount === 0
-                          ? "the First"
-                          : "a New"}
-                        Note
-                      `
-                    : request.params.type === "question"
-                    ? html`
-                        $${iconsConversationType.question.fill} Ask
-                        ${response.locals.conversationsCount === 0
-                          ? "the First"
-                          : "a New"}
-                        Question
-                      `
-                    : request.params.type === "chat"
-                    ? html`
-                        $${iconsConversationType.chat.fill} Start
-                        ${response.locals.conversationsCount === 0
-                          ? "the First"
-                          : "a New"}
-                        Chat
-                      `
-                    : html`
-                        <i class="bi bi-chat-text-fill"></i>
-                        Start
-                        ${response.locals.conversationsCount === 0
-                          ? "the First"
-                          : "a New"}
-                        Conversation
-                      `}
+                  $${
+                    request.params.type === "note"
+                      ? html`
+                          $${iconsConversationType.note.fill} Post
+                          ${response.locals.conversationsCount === 0
+                            ? "the First"
+                            : "a New"}
+                          Note
+                        `
+                      : request.params.type === "question"
+                      ? html`
+                          $${iconsConversationType.question.fill} Ask
+                          ${response.locals.conversationsCount === 0
+                            ? "the First"
+                            : "a New"}
+                          Question
+                        `
+                      : request.params.type === "chat"
+                      ? html`
+                          $${iconsConversationType.chat.fill} Start
+                          ${response.locals.conversationsCount === 0
+                            ? "the First"
+                            : "a New"}
+                          Chat
+                        `
+                      : html`
+                          <i class="bi bi-chat-text-fill"></i>
+                          Start
+                          ${response.locals.conversationsCount === 0
+                            ? "the First"
+                            : "a New"}
+                          Conversation
+                        `
+                  }
                 </button>
               </div>
 
               <div
                 hidden
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary "${css`
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   display: flex;
                   column-gap: var(--space--8);
                   row-gap: var(--space--2);
                   flex-wrap: wrap;
-                `)}"
+                `}"
               >
                 <button
                   class="link"
@@ -4533,61 +4539,63 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-file-earmark-text"></i>
                   Save Draft
                 </button>
-                $${conversationDraft !== undefined
-                  ? html`
-                      <input
-                        type="hidden"
-                        name="conversationDraftReference"
-                        value="${conversationDraft.reference}"
-                      />
-                      <button
-                        class="link text--rose"
-                        formmethod="DELETE"
-                        formaction="https://${application.configuration
-                          .hostname}/courses/${response.locals.course
-                          .reference}/conversations/new${qs.stringify(
-                          { conversations: request.query.conversations },
-                          { addQueryPrefix: true }
-                        )}"
-                        javascript="${response.locals.javascript(javascript`
+                $${
+                  conversationDraft !== undefined
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="conversationDraftReference"
+                          value="${conversationDraft.reference}"
+                        />
+                        <button
+                          class="link text--rose"
+                          formmethod="DELETE"
+                          formaction="https://${application.configuration
+                            .hostname}/courses/${response.locals.course
+                            .reference}/conversations/new${qs.stringify(
+                            { conversations: request.query.conversations },
+                            { addQueryPrefix: true }
+                          )}"
+                          javascript="${response.locals.javascript(javascript`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
                         `)}"
-                      >
-                        <i class="bi bi-trash"></i>
-                        Remove Draft
-                      </button>
-                      <div>
-                        Draft created
-                        <time
-                          datetime="${new Date(
-                            new Date(conversationDraft.createdAt).getTime() -
-                              100 * 24 * 60 * 60 * 1000
-                          ).toISOString()}"
-                          javascript="${response.locals.javascript(javascript`
+                        >
+                          <i class="bi bi-trash"></i>
+                          Remove Draft
+                        </button>
+                        <div>
+                          Draft created
+                          <time
+                            datetime="${new Date(
+                              new Date(conversationDraft.createdAt).getTime() -
+                                100 * 24 * 60 * 60 * 1000
+                            ).toISOString()}"
+                            javascript="${response.locals.javascript(javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `)}"
-                        ></time>
-                      </div>
-                      $${conversationDraft.updatedAt !== null
-                        ? html`
-                            <div>
-                              Updated
-                              <time
-                                datetime="${new Date(
-                                  conversationDraft.updatedAt
-                                ).toISOString()}"
-                                javascript="${response.locals
-                                  .javascript(javascript`
+                          ></time>
+                        </div>
+                        $${conversationDraft.updatedAt !== null
+                          ? html`
+                              <div>
+                                Updated
+                                <time
+                                  datetime="${new Date(
+                                    conversationDraft.updatedAt
+                                  ).toISOString()}"
+                                  javascript="${response.locals
+                                    .javascript(javascript`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                   `)}"
-                              ></time>
-                            </div>
-                          `
-                        : html``}
-                    `
-                  : html``}
+                                ></time>
+                              </div>
+                            `
+                          : html``}
+                      `
+                    : html``
+                }
               </div>
             </form>
           `,
@@ -5232,16 +5240,16 @@ export default async (application: Application): Promise<void> => {
           mainIsAScrollingPane: response.locals.conversation.type === "chat",
           body: html`
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 flex: 1;
                 display: flex;
                 flex-direction: column;
                 min-width: var(--space--0);
-              `)}"
+              `}"
             >
               <div
                 key="conversation--header"
-                css="${response.locals.css(css`
+                class="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -5262,10 +5270,10 @@ export default async (application: Application): Promise<void> => {
                         }
                       `
                     : css``}
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     ${response.locals.conversation.type === "chat"
                       ? css`
                           flex: 1;
@@ -5277,17 +5285,16 @@ export default async (application: Application): Promise<void> => {
                           }
                         `
                       : css``}
-                  `)}"
+                  `}"
                 >
                   $${response.locals.conversation.type === "chat"
                     ? html`
                         <button
                           key="conversation--header--compact"
-                          class="button button--tight button--tight--inline button--transparent strong"
-                          css="${response.locals.css(css`
+                          class="button button--tight button--tight--inline button--transparent strong ${css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
-                          `)}"
+                          `}"
                           javascript="${response.locals.javascript(javascript`
                             this.onclick = () => {
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = true;
@@ -5296,13 +5303,13 @@ export default async (application: Application): Promise<void> => {
                           `)}"
                         >
                           <span
-                            css="${response.locals.css(css`
+                            class="${css`
                               flex: 1;
                               text-align: left;
                               white-space: nowrap;
                               overflow: hidden;
                               text-overflow: ellipsis;
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.helpers.highlightSearchResult(
                               html`${response.locals.conversation.title}`,
@@ -5323,22 +5330,22 @@ export default async (application: Application): Promise<void> => {
                     $${response.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
-                    css="${response.locals.css(css`
+                    class="${css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         display: flex;
                         gap: var(--space--4);
-                      `)}"
+                      `}"
                     >
                       <div
-                        css="${response.locals.css(css`
+                        class="${css`
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
@@ -5349,7 +5356,7 @@ export default async (application: Application): Promise<void> => {
                             display: flex;
                             gap: var(--space--1);
                           }
-                        `)}"
+                        `}"
                       >
                         $${mayEditConversation({ request, response })
                           ? html`
@@ -5547,11 +5554,10 @@ export default async (application: Application): Promise<void> => {
                                   null
                                 ? html`
                                     <div
-                                      class="text--rose"
-                                      css="${response.locals.css(css`
+                                      class="text--rose ${css`
                                         display: flex;
                                         gap: var(--space--1);
-                                      `)}"
+                                      `}"
                                     >
                                       <i
                                         class="bi bi-patch-exclamation-fill"
@@ -5561,11 +5567,10 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 : html`
                                     <div
-                                      class="text--emerald"
-                                      css="${response.locals.css(css`
+                                      class="text--emerald ${css`
                                         display: flex;
                                         gap: var(--space--1);
-                                      `)}"
+                                      `}"
                                     >
                                       <i class="bi bi-patch-check-fill"></i>
                                       Resolved
@@ -5855,12 +5860,11 @@ export default async (application: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      css="${response.locals
-                                                        .css(css`
+                                                      class="${css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
-                                                      `)}"
+                                                      `}"
                                                     >
                                                       $${application.server.locals.partials.user(
                                                         {
@@ -5886,12 +5890,11 @@ export default async (application: Application): Promise<void> => {
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
                                                     <span
-                                                      css="${response.locals
-                                                        .css(css`
+                                                      class="${css`
                                                         margin-left: var(
                                                           --space---0-5
                                                         );
-                                                      `)}"
+                                                      `}"
                                                     >
                                                       $${application.server.locals.partials.user(
                                                         {
@@ -5944,12 +5947,11 @@ export default async (application: Application): Promise<void> => {
                                                     content: ${JSON.stringify(html`
                                                       <div
                                                         key="loading"
-                                                        css="${response.locals
-                                                          .css(css`
+                                                        class="${css`
                                                           display: flex;
                                                           gap: var(--space--2);
                                                           align-items: center;
-                                                        `)}"
+                                                        `}"
                                                       >
                                                         $${application.server.locals.partials.spinner(
                                                           {
@@ -6040,8 +6042,7 @@ export default async (application: Application): Promise<void> => {
                                                                 true,
                                                             }
                                                           )}"
-                                                          css="${response.locals
-                                                            .css(css`
+                                                          class="${css`
                                                             padding: var(
                                                               --space--2
                                                             );
@@ -6050,7 +6051,7 @@ export default async (application: Application): Promise<void> => {
                                                             gap: var(
                                                               --space--4
                                                             );
-                                                          `)}"
+                                                          `}"
                                                         >
                                                           <p>
                                                             Are you sure you
@@ -6059,12 +6060,11 @@ export default async (application: Application): Promise<void> => {
                                                           </p>
                                                           <p>
                                                             <strong
-                                                              css="${response
-                                                                .locals.css(css`
+                                                              class="${css`
                                                                 font-weight: var(
                                                                   --font-weight--bold
                                                                 );
-                                                              `)}"
+                                                              `}"
                                                             >
                                                               You may not undo
                                                               this action!
@@ -6103,11 +6103,10 @@ export default async (application: Application): Promise<void> => {
 
                     <h2
                       key="title--show"
-                      class="strong"
-                      css="${response.locals.css(css`
+                      class="strong ${css`
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
-                      `)}"
+                      `}"
                     >
                       $${application.server.locals.helpers.highlightSearchResult(
                         html`${response.locals.conversation.title}`,
@@ -6136,11 +6135,11 @@ export default async (application: Application): Promise<void> => {
                             )}"
                             novalidate
                             hidden
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
-                            `)}"
+                            `}"
                           >
                             <input
                               type="text"
@@ -6151,10 +6150,9 @@ export default async (application: Application): Promise<void> => {
                               class="input--text"
                             />
                             <button
-                              class="button button--tight button--tight--inline button--transparent text--green"
-                              css="${response.locals.css(css`
+                              class="button button--tight button--tight--inline button--transparent text--green ${css`
                                 flex: 1;
-                              `)}"
+                              `}"
                               javascript="${response.locals
                                 .javascript(javascript`
                                   leafac.setTippy({
@@ -6240,20 +6238,19 @@ export default async (application: Application): Promise<void> => {
                         )
                           tags += html`
                             <div
-                              css="${response.locals.css(css`
+                              class="${css`
                                 display: flex;
                                 gap: var(--space--2);
-                              `)}"
+                              `}"
                             >
                               <span
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled"
-                                css="${response.locals.css(css`
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal disabled ${css`
                                   color: var(--color--teal--600);
                                   @media (prefers-color-scheme: dark) {
                                     color: var(--color--teal--500);
                                   }
                                   text-align: left;
-                                `)}"
+                                `}"
                                 javascript="${response.locals
                                   .javascript(javascript`
                                     leafac.setTippy({
@@ -6306,10 +6303,10 @@ export default async (application: Application): Promise<void> => {
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              css="${response.locals.css(css`
+                              class="${css`
                                 display: flex;
                                 gap: var(--space--2);
-                              `)}"
+                              `}"
                             >
                               <input
                                 type="hidden"
@@ -6317,10 +6314,9 @@ export default async (application: Application): Promise<void> => {
                                 value="${tagging.tag.reference}"
                               />
                               <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                css="${response.locals.css(css`
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal ${css`
                                   text-align: left;
-                                `)}"
+                                `}"
                                 javascript="${response.locals
                                   .javascript(javascript`
                                     leafac.setTippy({
@@ -6388,13 +6384,13 @@ export default async (application: Application): Promise<void> => {
                                       interactive: true,
                                       content: ${JSON.stringify(html`
                                         <div
-                                          css="${response.locals.css(css`
+                                          class="${css`
                                             max-height: var(--space--40);
                                             overflow: auto;
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
-                                          `)}"
+                                          `}"
                                         >
                                           $${response.locals.enrollment
                                             .courseRole === "staff"
@@ -6616,7 +6612,7 @@ export default async (application: Application): Promise<void> => {
                       return tags !== html``
                         ? html`
                             <div
-                              css="${response.locals.css(css`
+                              class="${css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -6628,7 +6624,7 @@ export default async (application: Application): Promise<void> => {
                                   display: flex;
                                   gap: var(--space--1);
                                 }
-                              `)}"
+                              `}"
                             >
                               $${tags}
                             </div>
@@ -6709,16 +6705,16 @@ export default async (application: Application): Promise<void> => {
                                 },
                                 { addQueryPrefix: true }
                               )}"
-                              css="${response.locals.css(css`
+                              class="${css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--2);
-                              `)}"
+                              `}"
                             >
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   max-height: var(--space--24);
                                   padding: var(--space--1);
                                   margin: var(--space---1);
@@ -6727,7 +6723,7 @@ export default async (application: Application): Promise<void> => {
                                   flex-wrap: wrap;
                                   column-gap: var(--space--8);
                                   row-gap: var(--space--1);
-                                `)}"
+                                `}"
                               >
                                 <div
                                   key="participants"
@@ -6744,11 +6740,11 @@ export default async (application: Application): Promise<void> => {
                                           content: ${JSON.stringify(html`
                                             <div
                                               key="participants--dropdown"
-                                              css="${response.locals.css(css`
+                                              class="${css`
                                                 display: flex;
                                                 flex-direction: column;
                                                 gap: var(--space--2);
-                                              `)}"
+                                              `}"
                                             >
                                               <div class="dropdown--menu">
                                                 $${application.server.locals.helpers.conversationParticipantses.map(
@@ -6856,11 +6852,11 @@ export default async (application: Application): Promise<void> => {
                                                 )
                                                   ? html``
                                                   : html`hidden`}
-                                                css="${response.locals.css(css`
+                                                class="${css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
-                                                `)}"
+                                                `}"
                                               >
                                                 <hr
                                                   class="dropdown--separator"
@@ -6870,15 +6866,13 @@ export default async (application: Application): Promise<void> => {
                                                   .courseEnrollmentsCount === 1
                                                   ? html`
                                                       <p
-                                                        class="secondary"
-                                                        css="${response.locals
-                                                          .css(css`
+                                                        class="secondary ${css`
                                                           padding: var(
                                                               --space--0
                                                             )
                                                             var(--space--2)
                                                             var(--space--2);
-                                                        `)}"
+                                                        `}"
                                                       >
                                                         You may select
                                                         participants when there
@@ -6888,23 +6882,21 @@ export default async (application: Application): Promise<void> => {
                                                     `
                                                   : html`
                                                       <div
-                                                        css="${response.locals
-                                                          .css(css`
+                                                        class="${css`
                                                           padding: var(
                                                               --space--0
                                                             )
                                                             var(--space--2);
-                                                        `)}"
+                                                        `}"
                                                       >
                                                         <label
-                                                          css="${response.locals
-                                                            .css(css`
+                                                          class="${css`
                                                             display: flex;
                                                             gap: var(
                                                               --space--2
                                                             );
                                                             align-items: baseline;
-                                                          `)}"
+                                                          `}"
                                                         >
                                                           <i
                                                             class="bi bi-funnel"
@@ -6956,14 +6948,12 @@ export default async (application: Application): Promise<void> => {
                                                       />
 
                                                       <div
-                                                        class="dropdown--menu"
-                                                        css="${response.locals
-                                                          .css(css`
+                                                        class="dropdown--menu ${css`
                                                           height: var(
                                                             --space--40
                                                           );
                                                           overflow: auto;
-                                                        `)}"
+                                                        `}"
                                                       >
                                                         $${enrollments.map(
                                                           (enrollment) => html`
@@ -7165,9 +7155,9 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="submit"
                                 hidden
-                                css="${response.locals.css(css`
+                                class="${css`
                                   display: flex;
-                                `)}"
+                                `}"
                               >
                                 <button class="button button--blue">
                                   <i class="bi bi-pencil-fill"></i>
@@ -7179,7 +7169,7 @@ export default async (application: Application): Promise<void> => {
                         })()
                       : html`
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
                               max-height: var(--space--24);
@@ -7195,7 +7185,7 @@ export default async (application: Application): Promise<void> => {
                                 display: flex;
                                 gap: var(--space--1);
                               }
-                            `)}"
+                            `}"
                           >
                             <div
                               class="${textColorsConversationParticipants[
@@ -7271,7 +7261,7 @@ export default async (application: Application): Promise<void> => {
 
                 return html`
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       ${response.locals.conversation.type === "chat"
                         ? css`
                             flex: 1;
@@ -7287,7 +7277,7 @@ export default async (application: Application): Promise<void> => {
                             }
                           `
                         : css``}
-                    `)}"
+                    `}"
                     javascript="${response.locals.javascript(javascript`
                       const scroll = () => {
                         if (
@@ -7346,7 +7336,7 @@ export default async (application: Application): Promise<void> => {
                     `)}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         ${response.locals.conversation.type === "chat"
                           ? css`
                               flex: 1;
@@ -7354,18 +7344,18 @@ export default async (application: Application): Promise<void> => {
                               max-width: var(--width--prose);
                             `
                           : css``}
-                      `)}"
+                      `}"
                     >
                       $${messages.length === 0
                         ? html`
                             <div
-                              css="${response.locals.css(css`
+                              class="${css`
                                 padding: var(--space--4) var(--space--0);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
                                 align-items: center;
-                              `)}"
+                              `}"
                             >
                               <div class="decorative-icon">
                                 <i class="bi bi-chat-text"></i>
@@ -7383,22 +7373,22 @@ export default async (application: Application): Promise<void> => {
                         : html`
                             <div
                               key="messages"
-                              css="${response.locals.css(css`
+                              class="${css`
                                 ${response.locals.conversation.type === "chat"
                                   ? css`
                                       padding: var(--space--4) var(--space--0);
                                     `
                                   : css``}
-                              `)}"
+                              `}"
                             >
                               $${afterMessage !== undefined ||
                               (moreMessagesExist && messagesReverse)
                                 ? html`
                                     <div
-                                      css="${response.locals.css(css`
+                                      class="${css`
                                         display: flex;
                                         justify-content: center;
-                                      `)}"
+                                      `}"
                                     >
                                       <a
                                         href="https://${application
@@ -7434,8 +7424,7 @@ export default async (application: Application): Promise<void> => {
                                   html`
                                     <div
                                       key="message/${message.reference}"
-                                      class="message"
-                                      css="${response.locals.css(css`
+                                      class="message ${css`
                                         ${response.locals.conversation.type ===
                                         "chat"
                                           ? css``
@@ -7451,7 +7440,7 @@ export default async (application: Application): Promise<void> => {
                                                 );
                                               }
                                             `}
-                                      `)}"
+                                      `}"
                                       javascript-content-source="${message.contentSource}"
                                     >
                                       $${message === firstUnreadMessage &&
@@ -7459,8 +7448,7 @@ export default async (application: Application): Promise<void> => {
                                         ? html`
                                             <button
                                               key="message--new-separator"
-                                              class="button button--transparent"
-                                              css="${response.locals.css(css`
+                                              class="button button--transparent ${css`
                                                 width: calc(
                                                   var(--space--2) + 100% +
                                                     var(--space--2)
@@ -7472,7 +7460,7 @@ export default async (application: Application): Promise<void> => {
                                                 display: flex;
                                                 gap: var(--space--4);
                                                 align-items: center;
-                                              `)}"
+                                              `}"
                                               javascript="${response.locals
                                                 .javascript(javascript`
                                                   if (this !== document.querySelector('[key="message--new-separator"]')) {
@@ -7497,8 +7485,7 @@ export default async (application: Application): Promise<void> => {
                                                 `)}"
                                             >
                                               <hr
-                                                class="separator"
-                                                css="${response.locals.css(css`
+                                                class="separator ${css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -7508,7 +7495,7 @@ export default async (application: Application): Promise<void> => {
                                                       --color--rose--500
                                                     );
                                                   }
-                                                `)}"
+                                                `}"
                                               />
                                               <span class="heading text--rose">
                                                 <i class="bi bi-fire"></i>
@@ -7521,8 +7508,7 @@ export default async (application: Application): Promise<void> => {
                                                 New
                                               </span>
                                               <hr
-                                                class="separator"
-                                                css="${response.locals.css(css`
+                                                class="separator ${css`
                                                   flex: 1;
                                                   border-color: var(
                                                     --color--rose--600
@@ -7532,7 +7518,7 @@ export default async (application: Application): Promise<void> => {
                                                       --color--rose--500
                                                     );
                                                   }
-                                                `)}"
+                                                `}"
                                               />
                                             </button>
                                           `
@@ -7543,19 +7529,18 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               hidden
                                               key="message--date-separator"
-                                              css="${response.locals.css(css`
+                                              class="${css`
                                                 margin: var(--space--2)
                                                   var(--space--0);
                                                 display: flex;
                                                 gap: var(--space--4);
                                                 align-items: center;
-                                              `)}"
+                                              `}"
                                             >
                                               <hr
-                                                class="separator"
-                                                css="${response.locals.css(css`
+                                                class="separator ${css`
                                                   flex: 1;
-                                                `)}"
+                                                `}"
                                               />
                                               <span class="heading secondary">
                                                 <i
@@ -7584,10 +7569,9 @@ export default async (application: Application): Promise<void> => {
                                                 ></time>
                                               </span>
                                               <hr
-                                                class="separator"
-                                                css="${response.locals.css(css`
+                                                class="separator ${css`
                                                   flex: 1;
-                                                `)}"
+                                                `}"
                                               />
                                             </div>
                                           `
@@ -7595,7 +7579,7 @@ export default async (application: Application): Promise<void> => {
 
                                       <div
                                         key="message--highlight"
-                                        css="${response.locals.css(css`
+                                        class="${css`
                                           padding: var(--space--2);
                                           ${response.locals.conversation
                                             .type === "chat"
@@ -7660,14 +7644,13 @@ export default async (application: Application): Promise<void> => {
                                                 }
                                               `
                                             : css``}
-                                        `)}"
+                                        `}"
                                       >
                                         $${(() => {
                                           const actions = html`
                                             <div key="message--actions">
                                               <button
-                                                class="button button--tight button--tight--inline button--transparent secondary"
-                                                css="${response.locals.css(css`
+                                                class="button button--tight button--tight--inline button--transparent secondary ${css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -7697,7 +7680,7 @@ export default async (application: Application): Promise<void> => {
                                                         }
                                                       `
                                                     : css``}
-                                                `)}"
+                                                `}"
                                                 javascript="${response.locals
                                                   .javascript(javascript`
                                                     leafac.setTippy({
@@ -7720,14 +7703,13 @@ export default async (application: Application): Promise<void> => {
                                                         content: ${JSON.stringify(html`
                                                           <div
                                                             key="loading"
-                                                            css="${response
-                                                              .locals.css(css`
+                                                            class="${css`
                                                               display: flex;
                                                               gap: var(
                                                                 --space--2
                                                               );
                                                               align-items: center;
-                                                            `)}"
+                                                            `}"
                                                           >
                                                             $${application.server.locals.partials.spinner(
                                                               {
@@ -8162,8 +8144,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--header"
-                                                    css="${response.locals
-                                                      .css(css`
+                                                    class="${css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8172,11 +8153,10 @@ export default async (application: Application): Promise<void> => {
                                                       );
                                                       display: flex;
                                                       gap: var(--space--4);
-                                                    `)}"
+                                                    `}"
                                                   >
                                                     <div
-                                                      css="${response.locals
-                                                        .css(css`
+                                                      class="${css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -8190,7 +8170,7 @@ export default async (application: Application): Promise<void> => {
                                                           display: flex;
                                                           gap: var(--space--1);
                                                         }
-                                                      `)}"
+                                                      `}"
                                                     >
                                                       $${header}
                                                     </div>
@@ -8200,14 +8180,13 @@ export default async (application: Application): Promise<void> => {
                                               : html``}
 
                                             <div
-                                              css="${response.locals.css(css`
+                                              class="${css`
                                                 display: flex;
                                                 gap: var(--space--2);
-                                              `)}"
+                                              `}"
                                             >
                                               <div
-                                                class="secondary"
-                                                css="${response.locals.css(css`
+                                                class="secondary ${css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -8220,19 +8199,17 @@ export default async (application: Application): Promise<void> => {
                                                   align-items: baseline;
                                                   column-gap: var(--space--4);
                                                   row-gap: var(--space--2);
-                                                `)}"
+                                                `}"
                                               >
                                                 <div
-                                                  class="strong"
-                                                  css="${response.locals
-                                                    .css(css`
+                                                  class="strong ${css`
                                                     font-size: var(
                                                       --font-size--sm
                                                     );
                                                     line-height: var(
                                                       --line-height--sm
                                                     );
-                                                  `)}"
+                                                  `}"
                                                 >
                                                   $${application.server.locals.partials.user(
                                                     {
@@ -8320,25 +8297,25 @@ export default async (application: Application): Promise<void> => {
 
                                         <div
                                           key="message--show"
-                                          css="${response.locals.css(css`
+                                          class="${css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
-                                          `)}"
+                                          `}"
                                         >
                                           <div
                                             key="message--show--content-area"
-                                            css="${response.locals.css(css`
+                                            class="${css`
                                               position: relative;
-                                            `)}"
+                                            `}"
                                           >
                                             <div
                                               key="message--show--content-area--dropdown-menu-target"
-                                              css="${response.locals.css(css`
+                                              class="${css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
                                                 position: absolute;
-                                              `)}"
+                                              `}"
                                             ></div>
                                             <div
                                               key="message--show--content-area--content"
@@ -8488,11 +8465,10 @@ export default async (application: Application): Promise<void> => {
                                             )
                                               messageShowFooter += html`
                                                 <div
-                                                  css="${response.locals
-                                                    .css(css`
+                                                  class="${css`
                                                     display: flex;
                                                     gap: var(--space--1);
-                                                  `)}"
+                                                  `}"
                                                 >
                                                   <form
                                                     method="${isLiked
@@ -8586,15 +8562,13 @@ export default async (application: Application): Promise<void> => {
                                                                   content: ${JSON.stringify(html`
                                                                     <div
                                                                       key="loading"
-                                                                      css="${response
-                                                                        .locals
-                                                                        .css(css`
+                                                                      class="${css`
                                                                         display: flex;
                                                                         gap: var(
                                                                           --space--2
                                                                         );
                                                                         align-items: center;
-                                                                      `)}"
+                                                                      `}"
                                                                     >
                                                                       $${application.server.locals.partials.spinner(
                                                                         {
@@ -8679,14 +8653,13 @@ export default async (application: Application): Promise<void> => {
                                                           content: ${JSON.stringify(html`
                                                             <div
                                                               key="loading"
-                                                              css="${response
-                                                                .locals.css(css`
+                                                              class="${css`
                                                                 display: flex;
                                                                 gap: var(
                                                                   --space--2
                                                                 );
                                                                 align-items: center;
-                                                              `)}"
+                                                              `}"
                                                             >
                                                               $${application.server.locals.partials.spinner(
                                                                 {
@@ -8750,8 +8723,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`
                                                   <div
                                                     key="message--show--footer"
-                                                    css="${response.locals
-                                                      .css(css`
+                                                    class="${css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -8764,7 +8736,7 @@ export default async (application: Application): Promise<void> => {
                                                         --space--8
                                                       );
                                                       row-gap: var(--space--1);
-                                                    `)}"
+                                                    `}"
                                                   >
                                                     $${messageShowFooter}
                                                   </div>
@@ -8776,12 +8748,11 @@ export default async (application: Application): Promise<void> => {
                                         <div key="message--edit" hidden>
                                           <div
                                             key="loading"
-                                            class="strong"
-                                            css="${response.locals.css(css`
+                                            class="strong ${css`
                                               display: flex;
                                               gap: var(--space--2);
                                               justify-content: center;
-                                            `)}"
+                                            `}"
                                           >
                                             $${application.server.locals.partials.spinner(
                                               {
@@ -8810,10 +8781,10 @@ export default async (application: Application): Promise<void> => {
                               (moreMessagesExist && !messagesReverse)
                                 ? html`
                                     <div
-                                      css="${response.locals.css(css`
+                                      class="${css`
                                         display: flex;
                                         justify-content: center;
-                                      `)}"
+                                      `}"
                                     >
                                       <a
                                         href="https://${application
@@ -8848,7 +8819,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
-                                css="${response.locals.css(css`
+                                class="${css`
                                   opacity: var(--opacity--50);
                                   ${response.locals.conversation.type === "chat"
                                     ? css``
@@ -8861,10 +8832,10 @@ export default async (application: Application): Promise<void> => {
                                           );
                                         }
                                       `}
-                                `)}"
+                                `}"
                               >
                                 <div
-                                  css="${response.locals.css(css`
+                                  class="${css`
                                     padding: var(--space--2);
                                     ${response.locals.conversation.type ===
                                     "chat"
@@ -8910,17 +8881,16 @@ export default async (application: Application): Promise<void> => {
                                           }
                                         `
                                       : css``}
-                                  `)}"
+                                  `}"
                                 >
                                   <div
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       display: flex;
                                       gap: var(--space--2);
-                                    `)}"
+                                    `}"
                                   >
                                     <div
-                                      class="secondary"
-                                      css="${response.locals.css(css`
+                                      class="secondary ${css`
                                         font-size: var(--font-size--xs);
                                         line-height: var(--line-height--xs);
                                         flex: 1;
@@ -8929,15 +8899,14 @@ export default async (application: Application): Promise<void> => {
                                         align-items: baseline;
                                         column-gap: var(--space--4);
                                         row-gap: var(--space--2);
-                                      `)}"
+                                      `}"
                                     >
                                       <div
                                         key="message--new-message--placeholder--anonymous--false"
-                                        class="strong"
-                                        css="${response.locals.css(css`
+                                        class="strong ${css`
                                           font-size: var(--font-size--sm);
                                           line-height: var(--line-height--sm);
-                                        `)}"
+                                        `}"
                                       >
                                         $${application.server.locals.partials.user(
                                           {
@@ -8956,13 +8925,12 @@ export default async (application: Application): Promise<void> => {
                                         : html`
                                             <div
                                               key="message--new-message--placeholder--anonymous--true"
-                                              class="strong"
-                                              css="${response.locals.css(css`
+                                              class="strong ${css`
                                                 font-size: var(--font-size--sm);
                                                 line-height: var(
                                                   --line-height--sm
                                                 );
-                                              `)}"
+                                              `}"
                                             >
                                               $${application.server.locals.partials.user(
                                                 {
@@ -8990,9 +8958,9 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                   <div
                                     key="message--new-message--placeholder--content"
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       white-space: pre-line;
-                                    `)}"
+                                    `}"
                                   ></div>
                                 </div>
                               </div>
@@ -9016,7 +8984,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 novalidate
-                css="${response.locals.css(css`
+                class="${css`
                   ${response.locals.conversation.type === "chat"
                     ? css`
                         padding-right: var(--space--4);
@@ -9033,7 +9001,7 @@ export default async (application: Application): Promise<void> => {
                     : css`
                         padding-top: var(--space--4);
                       `}
-                `)}"
+                `}"
                 javascript="${response.locals.javascript(javascript`
                   this.onsubmit = () => {
                     window.setTimeout(() => {
@@ -9057,7 +9025,7 @@ export default async (application: Application): Promise<void> => {
                 `)}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     display: flex;
                     flex-direction: column;
                     ${response.locals.conversation.type === "chat"
@@ -9070,16 +9038,16 @@ export default async (application: Application): Promise<void> => {
                       : css`
                           gap: var(--space--4);
                         `}
-                  `)}"
+                  `}"
                 >
                   $${response.locals.conversation.type === "question"
                     ? html`
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -9138,7 +9106,7 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
-                    css="${response.locals.css(css`
+                    class="${css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -9151,7 +9119,7 @@ export default async (application: Application): Promise<void> => {
                             }
                           `
                         : css``}
-                    `)}"
+                    `}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `)}"
@@ -9164,8 +9132,7 @@ export default async (application: Application): Promise<void> => {
                     $${response.locals.conversation.type === "chat"
                       ? html`
                           <button
-                            class="button button--blue"
-                            css="${response.locals.css(css`
+                            class="button button--blue ${css`
                               position: relative;
                               place-self: end;
                               width: var(--font-size--2xl);
@@ -9174,7 +9141,7 @@ export default async (application: Application): Promise<void> => {
                               border-radius: var(--border-radius--circle);
                               margin: var(--space--1);
                               align-items: center;
-                            `)}"
+                            `}"
                             javascript="${response.locals.javascript(javascript`
                               leafac.setTippy({
                                 event,
@@ -9206,12 +9173,11 @@ export default async (application: Application): Promise<void> => {
                             `)}"
                           >
                             <i
-                              class="bi bi-send-fill"
-                              css="${response.locals.css(css`
+                              class="bi bi-send-fill ${css`
                                 position: relative;
                                 top: var(--space--px);
                                 right: var(--space--px);
-                              `)}"
+                              `}"
                             ></i>
                           </button>
                         `
@@ -9226,9 +9192,9 @@ export default async (application: Application): Promise<void> => {
                             ? html``
                             : html`<p class="label--text">Anonymity</p>`}
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               display: flex;
-                            `)}"
+                            `}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -9271,9 +9237,9 @@ export default async (application: Application): Promise<void> => {
                                     size: "xs",
                                   })}
                                   <span
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       margin-left: var(--space--1);
-                                    `)}"
+                                    `}"
                                   >
                                     Signed by You
                                   </span>
@@ -9300,9 +9266,9 @@ export default async (application: Application): Promise<void> => {
                                     size: "xs",
                                   })}
                                   <span
-                                    css="${response.locals.css(css`
+                                    class="${css`
                                       margin-left: var(--space--1);
-                                    `)}"
+                                    `}"
                                   >
                                     Anonymous to Other Students
                                   </span>

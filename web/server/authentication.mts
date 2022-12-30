@@ -597,11 +597,11 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Email</p>
@@ -639,11 +639,11 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
-            `)}"
+            `}"
           >
             <p>
               Don’t have an account?
@@ -843,11 +843,11 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Email</p>
@@ -873,11 +873,11 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
-            `)}"
+            `}"
           >
             <p>
               Don’t have an account?
@@ -1130,11 +1130,11 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Name</p>
@@ -1350,11 +1350,11 @@ export default async (application: Application): Promise<void> => {
               { addQueryPrefix: true }
             )}"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <label class="label">
               <p class="label--text">Name</p>
@@ -1414,11 +1414,11 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
-            `)}"
+            `}"
           >
             <p>
               Already have an account account?

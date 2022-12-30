@@ -89,11 +89,11 @@ export default async (application: Application): Promise<void> => {
               )}"
               hidden
               novalidate
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `)}"
+              `}"
             >
               <label class="label">
                 <p class="label--text">Email</p>
@@ -178,9 +178,9 @@ export default async (application: Application): Promise<void> => {
                     <hr class="separator" />
 
                     <p
-                      css="${response.locals.css(css`
+                      class="${css`
                         font-weight: var(--font-weight--bold);
-                      `)}"
+                      `}"
                     >
                       This Courselore installation is running in demonstration
                       mode and doesn’t send emails.

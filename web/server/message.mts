@@ -636,11 +636,11 @@ export default async (application: Application): Promise<void> => {
                             content: ${JSON.stringify(html`
                               <div
                                 key="loading"
-                                css="${response.locals.css(css`
+                                class="${css`
                                   display: flex;
                                   gap: var(--space--2);
                                   align-items: center;
-                                `)}"
+                                `}"
                               >
                                 $${application.server.locals.partials.spinner({
                                   request,
@@ -819,9 +819,9 @@ export default async (application: Application): Promise<void> => {
                               class="dropdown--menu--item button button--transparent"
                             >
                               <span
-                                css="${response.locals.css(css`
+                                class="${css`
                                   margin-left: var(--space---0-5);
-                                `)}"
+                                `}"
                               >
                                 $${application.server.locals.partials.user({
                                   request,
@@ -844,9 +844,9 @@ export default async (application: Application): Promise<void> => {
                               class="dropdown--menu--item button button--transparent"
                             >
                               <span
-                                css="${response.locals.css(css`
+                                class="${css`
                                   margin-left: var(--space---0-5);
-                                `)}"
+                                `}"
                               >
                                 $${application.server.locals.partials.user({
                                   request,
@@ -885,11 +885,11 @@ export default async (application: Application): Promise<void> => {
                             content: ${JSON.stringify(html`
                               <div
                                 key="loading"
-                                css="${response.locals.css(css`
+                                class="${css`
                                   display: flex;
                                   gap: var(--space--2);
                                   align-items: center;
-                                `)}"
+                                `}"
                               >
                                 $${application.server.locals.partials.spinner({
                                   request,
@@ -970,12 +970,12 @@ export default async (application: Application): Promise<void> => {
                                       addQueryPrefix: true,
                                     }
                                   )}"
-                                  css="${response.locals.css(css`
+                                  class="${css`
                                     padding: var(--space--2);
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--4);
-                                  `)}"
+                                  `}"
                                 >
                                   <p>
                                     Are you sure you want to remove this
@@ -983,9 +983,9 @@ export default async (application: Application): Promise<void> => {
                                   </p>
                                   <p>
                                     <strong
-                                      css="${response.locals.css(css`
+                                      class="${css`
                                         font-weight: var(--font-weight--bold);
-                                      `)}"
+                                      `}"
                                     >
                                       You may not undo this action!
                                     </strong>
@@ -1055,11 +1055,11 @@ export default async (application: Application): Promise<void> => {
                 { addQueryPrefix: true }
               )}"
               novalidate
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--2);
-              `)}"
+              `}"
             >
               $${application.server.locals.partials.contentEditor({
                 request,
@@ -1069,13 +1069,13 @@ export default async (application: Application): Promise<void> => {
               })}
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
                   gap: var(--space--2);
                   @media (max-width: 400px) {
                     flex-direction: column;
                   }
-                `)}"
+                `}"
               >
                 <button
                   class="button button--blue"
@@ -1166,13 +1166,12 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu"
-              css="${response.locals.css(css`
+              class="dropdown--menu ${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
-              `)}"
+              `}"
             >
               $${response.locals.message.readings.reverse().map(
                 (reading) => html`
@@ -1191,11 +1190,10 @@ export default async (application: Application): Promise<void> => {
                     })}
                      
                     <span
-                      class="secondary"
-                      css="${response.locals.css(css`
+                      class="secondary ${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
-                      `)}"
+                      `}"
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
@@ -1600,13 +1598,12 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu"
-              css="${response.locals.css(css`
+              class="dropdown--menu ${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
-              `)}"
+              `}"
             >
               $${application.server.locals.partials.courses({
                 request,
@@ -1712,13 +1709,12 @@ export default async (application: Application): Promise<void> => {
           response,
           body: html`
             <div
-              class="dropdown--menu"
-              css="${response.locals.css(css`
+              class="dropdown--menu ${css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
                 gap: var(--space--2);
-              `)}"
+              `}"
             >
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
@@ -1737,11 +1733,10 @@ export default async (application: Application): Promise<void> => {
                     })}
                      
                     <span
-                      class="secondary"
-                      css="${response.locals.css(css`
+                      class="secondary ${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
-                      `)}"
+                      `}"
                     >
                       <time
                         datetime="${new Date(like.createdAt).toISOString()}"

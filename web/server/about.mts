@@ -36,7 +36,7 @@ export default async (application: Application): Promise<void> => {
         `,
         body: html`
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -45,26 +45,25 @@ export default async (application: Application): Promise<void> => {
               @media (max-width: 959px) {
                 flex-direction: column;
               }
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `)}"
+              `}"
             >
               <a
                 href="https://${application.configuration.hostname}/about"
-                class="heading--display button button--transparent"
-                css="${response.locals.css(css`
+                class="heading--display button button--transparent ${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `)}"
+                `}"
               >
                 $${application.server.locals.partials.logo({
                   size: 48 /* var(--space--12) */,
@@ -72,18 +71,17 @@ export default async (application: Application): Promise<void> => {
                 Courselore
               </a>
               <h3
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary ${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `)}"
+                `}"
               >
                 Communication Platform for Education
               </h3>
 
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -97,7 +95,7 @@ export default async (application: Application): Promise<void> => {
                       flex-direction: column;
                     }
                   }
-                `)}"
+                `}"
               >
                 <div>
                   $${response.locals.user === undefined
@@ -153,10 +151,9 @@ export default async (application: Application): Promise<void> => {
                 <div>
                   <a
                     href="${application.addresses.metaCourseloreInvitation}"
-                    class="button button--transparent"
-                    css="${response.locals.css(css`
+                    class="button button--transparent ${css`
                       align-items: center;
-                    `)}"
+                    `}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.setTippy({
                         event,
@@ -215,9 +212,9 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 max-width: var(--width--3xl);
-              `)}"
+              `}"
             >
               <img
                 src="https://${application.configuration.hostname}/${application
@@ -225,15 +222,14 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img light"
-                css="${response.locals.css(css`
+                class="img light ${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `)}"
+                `}"
               />
               <img
                 src="https://${application.configuration.hostname}/${application
@@ -241,21 +237,20 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img dark"
-                css="${response.locals.css(css`
+                class="img dark ${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `)}"
+                `}"
               />
             </div>
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -301,25 +296,24 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
               }
-            `)}"
+            `}"
           >
             <div>
               <div>
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     color: var(--color--violet--700);
                     background-color: var(--color--violet--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--violet--200);
                       background-color: var(--color--violet--700);
                     }
-                  `)}"
+                  `}"
                 >
                   <i
-                    class="bi bi-chat-text-fill"
-                    css="${response.locals.css(css`
+                    class="bi bi-chat-text-fill ${css`
                       margin-left: var(--space--0-5);
-                    `)}"
+                    `}"
                   ></i>
                 </div>
                 <h2 class="heading--display">Forum & Chat</h2>
@@ -333,14 +327,14 @@ export default async (application: Application): Promise<void> => {
             <div>
               <div>
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     color: var(--color--sky--700);
                     background-color: var(--color--sky--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--sky--200);
                       background-color: var(--color--sky--700);
                     }
-                  `)}"
+                  `}"
                 >
                   <i class="bi bi-mortarboard-fill"></i>
                 </div>
@@ -354,20 +348,19 @@ export default async (application: Application): Promise<void> => {
             <div>
               <div>
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     color: var(--color--green--700);
                     background-color: var(--color--green--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--green--200);
                       background-color: var(--color--green--700);
                     }
-                  `)}"
+                  `}"
                 >
                   <i
-                    class="bi bi-file-earmark-code-fill"
-                    css="${response.locals.css(css`
+                    class="bi bi-file-earmark-code-fill ${css`
                       margin-left: var(--space--0-5);
-                    `)}"
+                    `}"
                   ></i>
                 </div>
                 <h2 class="heading--display">Open Source</h2>
@@ -380,7 +373,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -392,35 +385,33 @@ export default async (application: Application): Promise<void> => {
               @media (min-width: 890px) {
                 flex-direction: row-reverse;
               }
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `)}"
+              `}"
             >
               <p
-                class="heading--display"
-                css="${response.locals.css(css`
+                class="heading--display ${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `)}"
+                `}"
               >
                 Carefully Designed
               </p>
               <p
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary ${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `)}"
+                `}"
               >
                 Beautiful during the day. Elegant at night. <br />
                 Always a joy to look at.
@@ -428,9 +419,9 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 max-width: var(--width--3xl);
-              `)}"
+              `}"
             >
               <img
                 src="https://${application.configuration.hostname}/${application
@@ -438,21 +429,20 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
-                class="img"
-                css="${response.locals.css(css`
+                class="img ${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `)}"
+                `}"
               />
             </div>
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -468,36 +458,34 @@ export default async (application: Application): Promise<void> => {
               @media (min-width: 890px) {
                 gap: var(--space--24);
               }
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `)}"
+              `}"
             >
               <p
-                class="heading--display"
-                css="${response.locals.css(css`
+                class="heading--display ${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `)}"
+                `}"
               >
                 First-Class <br />
                 Mobile Support
               </p>
               <p
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary ${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `)}"
+                `}"
               >
                 It just works. Right from the browser. <br />
                 No nagging to install an app.
@@ -505,9 +493,9 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 max-width: var(--width--3xl);
-              `)}"
+              `}"
             >
               <img
                 src="https://${application.configuration.hostname}/${application
@@ -515,15 +503,14 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img light"
-                css="${response.locals.css(css`
+                class="img light ${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `)}"
+                `}"
               />
               <img
                 src="https://${application.configuration.hostname}/${application
@@ -531,21 +518,20 @@ export default async (application: Application): Promise<void> => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img dark"
-                css="${response.locals.css(css`
+                class="img dark ${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `)}"
+                `}"
               />
             </div>
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -557,44 +543,41 @@ export default async (application: Application): Promise<void> => {
               @media (min-width: 860px) {
                 flex-direction: row-reverse;
               }
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `)}"
+              `}"
             >
               <p
-                class="heading--display"
-                css="${response.locals.css(css`
+                class="heading--display ${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `)}"
+                `}"
               >
                 Rich-Text Messages
               </p>
               <p
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary ${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `)}"
+                `}"
               >
                 Markdown
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  css="${response.locals.css(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `)}"
+                  `}"
                   javascript="${response.locals.javascript(javascript`
                     leafac.setTippy({
                       event,
@@ -611,11 +594,10 @@ export default async (application: Application): Promise<void> => {
                   LaTeX
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  css="${response.locals.css(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `)}"
+                  `}"
                   javascript="${response.locals.javascript(javascript`
                     leafac.setTippy({
                       event,
@@ -632,11 +614,10 @@ export default async (application: Application): Promise<void> => {
                   Syntax highlighting
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  css="${response.locals.css(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `)}"
+                  `}"
                   javascript="${response.locals.javascript(javascript`
                     leafac.setTippy({
                       event,
@@ -656,10 +637,10 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
-              `)}"
+              `}"
               javascript="${response.locals.javascript(javascript`
                 this.isModified = false;
               `)}"
@@ -699,7 +680,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -709,32 +690,31 @@ export default async (application: Application): Promise<void> => {
               padding: var(--space--32) var(--space--8);
               align-items: center;
               gap: var(--space--14);
-            `)}"
+            `}"
           >
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `)}"
+              `}"
             >
               <h2
-                class="heading--display"
-                css="${response.locals.css(css`
+                class="heading--display ${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `)}"
+                `}"
               >
                 The Team
               </h2>
             </div>
 
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 gap: var(--space--14);
                 flex-direction: column;
@@ -752,7 +732,7 @@ export default async (application: Application): Promise<void> => {
                     flex: 1;
                   }
                 }
-              `)}"
+              `}"
             >
               <a
                 href="https://www.cs.jhu.edu/~scott/"
@@ -816,14 +796,13 @@ export default async (application: Application): Promise<void> => {
               </a>
 
               <h3
-                class="secondary"
-                css="${response.locals.css(css`
+                class="secondary ${css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
                   text-align: center;
                   margin-bottom: var(--space---12);
-                `)}"
+                `}"
               >
                 Alumni
               </h3>
@@ -851,7 +830,7 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               font-weight: var(--font-weight--bold);
@@ -863,7 +842,7 @@ export default async (application: Application): Promise<void> => {
               @media (max-width: 1159px) {
                 flex-direction: column;
               }
-            `)}"
+            `}"
           >
             $${response.locals.user === undefined
               ? html`
@@ -915,10 +894,9 @@ export default async (application: Application): Promise<void> => {
                 `}
             <a
               href="${application.addresses.metaCourseloreInvitation}"
-              class="button button--transparent"
-              css="${response.locals.css(css`
+              class="button button--transparent ${css`
                 align-items: center;
-              `)}"
+              `}"
               javascript="${response.locals.javascript(javascript`
                 leafac.setTippy({
                   event,

@@ -198,18 +198,18 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/administration/system-settings"
             novalidate
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <div class="label">
               <p class="label--text">Users Who May Create Courses</p>
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -227,9 +227,9 @@ export default async (application: Application): Promise<void> => {
                 </label>
               </div>
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -248,9 +248,9 @@ export default async (application: Application): Promise<void> => {
                 </label>
               </div>
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: flex;
-                `)}"
+                `}"
               >
                 <label class="button button--tight button--tight--inline">
                   <input
@@ -388,11 +388,11 @@ export default async (application: Application): Promise<void> => {
           </h2>
 
           <label
-            css="${response.locals.css(css`
+            class="${css`
               display: flex;
               gap: var(--space--2);
               align-items: baseline;
-            `)}"
+            `}"
           >
             <i class="bi bi-funnel"></i>
             <input
@@ -440,7 +440,7 @@ export default async (application: Application): Promise<void> => {
             return html`
               <div
                 key="user/${user.reference}"
-                css="${response.locals.css(css`
+                class="${css`
                   padding-top: var(--space--2);
                   border-top: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -449,7 +449,7 @@ export default async (application: Application): Promise<void> => {
                   }
                   display: flex;
                   gap: var(--space--2);
-                `)}"
+                `}"
                 javascript="${response.locals.javascript(javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `)}"
@@ -464,14 +464,14 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     flex: 1;
                     margin-top: var(--space--0-5);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
                     min-width: var(--space--0);
-                  `)}"
+                  `}"
                 >
                   <div>
                     <div
@@ -486,9 +486,9 @@ export default async (application: Application): Promise<void> => {
                     </div>
                     <div class="secondary">
                       <span
-                        css="${response.locals.css(css`
+                        class="${css`
                           margin-right: var(--space--2);
-                        `)}"
+                        `}"
                         javascript-filterable-phrases="${JSON.stringify(
                           application.server.locals.helpers.splitFilterablePhrases(
                             user.email
@@ -498,12 +498,11 @@ export default async (application: Application): Promise<void> => {
                         ${user.email}
                       </span>
                       <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        css="${response.locals.css(css`
+                        class="button button--tight button--tight--inline button--transparent ${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                           display: inline-flex;
-                        `)}"
+                        `}"
                         javascript-email="${user.email}"
                         javascript="${response.locals.javascript(javascript`
                           leafac.setTippy({
@@ -538,10 +537,9 @@ export default async (application: Application): Promise<void> => {
                       </button>
                     </div>
                     <div
-                      class="secondary"
-                      css="${response.locals.css(css`
+                      class="secondary ${css`
                         font-size: var(--font-size--xs);
-                      `)}"
+                      `}"
                     >
                       <span>
                         Last seen online
@@ -558,18 +556,18 @@ export default async (application: Application): Promise<void> => {
                   </div>
 
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       display: flex;
                       flex-wrap: wrap;
                       gap: var(--space--2);
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         width: var(--space--28);
                         display: flex;
                         justify-content: flex-start;
-                      `)}"
+                      `}"
                     >
                       <button
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
@@ -652,9 +650,7 @@ export default async (application: Application): Promise<void> => {
                                                                 key="role--${systemRole}"
                                                                 method="PATCH"
                                                                 action="${action}"
-                                                                css="${response
-                                                                  .locals
-                                                                  .css(css`
+                                                                class="${css`
                                                                   padding: var(
                                                                     --space--2
                                                                   );
@@ -663,7 +659,7 @@ export default async (application: Application): Promise<void> => {
                                                                   gap: var(
                                                                     --space--4
                                                                   );
-                                                                `)}"
+                                                                `}"
                                                               >
                                                                 <input
                                                                   type="hidden"
@@ -679,13 +675,11 @@ export default async (application: Application): Promise<void> => {
                                                                 </p>
                                                                 <p>
                                                                   <strong
-                                                                    css="${response
-                                                                      .locals
-                                                                      .css(css`
+                                                                    class="${css`
                                                                       font-weight: var(
                                                                         --font-weight--bold
                                                                       );
-                                                                    `)}"
+                                                                    `}"
                                                                   >
                                                                     You may not
                                                                     undo this

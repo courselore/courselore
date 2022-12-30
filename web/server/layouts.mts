@@ -257,7 +257,7 @@ export default async (application: Application): Promise<void> => {
   }) => {
     const layoutBaseBody = html`
       <body
-        css="${response.locals.css(css`
+        class="${css`
           font-family: "Public SansVariable", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
@@ -267,11 +267,11 @@ export default async (application: Application): Promise<void> => {
             color: var(--color--gray--medium--200);
             background-color: var(--color--gray--medium--900);
           }
-        `)}"
+        `}"
       >
         <div
           key="viewport"
-          css="${response.locals.css(css`
+          class="${css`
             position: absolute;
             top: 0;
             right: 0;
@@ -280,7 +280,7 @@ export default async (application: Application): Promise<void> => {
             display: flex;
             flex-direction: column;
             overflow: hidden;
-          `)}"
+          `}"
           javascript="${response.locals.javascript(javascript`
             this.onscroll = () => {
               this.scroll(0, 0);
@@ -309,12 +309,12 @@ export default async (application: Application): Promise<void> => {
                         interactive: true,
                         content: ${JSON.stringify(html`
                           <div
-                            css="${response.locals.css(css`
+                            class="${css`
                               padding: var(--space--1) var(--space--2);
                               display: flex;
                               gap: var(--space--2);
                               align-items: flex-start;
-                            `)}"
+                            `}"
                           >
                             <div>$${flash.content}</div>
                             <button
@@ -401,14 +401,13 @@ export default async (application: Application): Promise<void> => {
             : html`
                 <div
                   key="header--accent-color"
-                  css="${response.locals.css(css`
+                  class="${css`
                     height: var(--border-width--8);
                     display: flex;
-                  `)}"
+                  `}"
                 >
                   <button
-                    class="button"
-                    css="${response.locals.css(css`
+                    class="button ${css`
                       background-color: var(
                         --color--${response.locals.enrollment.accentColor}--500
                       );
@@ -419,7 +418,7 @@ export default async (application: Application): Promise<void> => {
                       }
                       border-radius: var(--border-radius--none);
                       flex: 1;
-                    `)}"
+                    `}"
                     javascript="${response.locals.javascript(javascript`
                       leafac.setTippy({
                         event,
@@ -439,12 +438,12 @@ export default async (application: Application): Promise<void> => {
                           interactive: true,
                           content: ${JSON.stringify(html`
                             <div
-                              css="${response.locals.css(css`
+                              class="${css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
-                              `)}"
+                              `}"
                             >
                               <p>
                                 This bar with an accent color appears at the top
@@ -455,10 +454,9 @@ export default async (application: Application): Promise<void> => {
                                 href="https://${application.configuration
                                   .hostname}/courses/${response.locals.course!
                                   .reference}/settings/your-enrollment"
-                                class="button button--blue"
-                                css="${response.locals.css(css`
+                                class="button button--blue ${css`
                                   width: 100%;
-                                `)}"
+                                `}"
                               >
                                 <i class="bi bi-palette-fill"></i>
                                 Update Accent Color
@@ -491,12 +489,12 @@ export default async (application: Application): Promise<void> => {
                           interactive: true,
                           content: ${JSON.stringify(html`
                             <div
-                              css="${response.locals.css(css`
+                              class="${css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
-                              `)}"
+                              `}"
                             >
                               <p>
                                 This Courselore installation is running in
@@ -513,10 +511,9 @@ export default async (application: Application): Promise<void> => {
                                   .hostname}/demonstration-data"
                               >
                                 <button
-                                  class="button button--blue"
-                                  css="${response.locals.css(css`
+                                  class="button button--blue ${css`
                                     width: 100%;
-                                  `)}"
+                                  `}"
                                 >
                                   <i class="bi bi-easel-fill"></i>
                                   Create Demonstration Data
@@ -647,10 +644,10 @@ export default async (application: Application): Promise<void> => {
               header += html`
                 <div
                   key="header--meta"
-                  css="${response.locals.css(css`
+                  class="${css`
                     justify-content: center;
                     flex-wrap: wrap;
-                  `)}"
+                  `}"
                 >
                   $${headerMeta}
                 </div>
@@ -662,7 +659,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="header"
-                    css="${response.locals.css(css`
+                    class="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       background-color: var(--color--gray--medium--100);
@@ -680,7 +677,7 @@ export default async (application: Application): Promise<void> => {
                         }
                         display: flex;
                       }
-                    `)}"
+                    `}"
                   >
                     $${header}
                   </div>
@@ -690,10 +687,10 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="main"
-            css="${response.locals.css(css`
+            class="${css`
               flex: 1;
               overflow: auto;
-            `)}"
+            `}"
             javascript="${response.locals.javascript(javascript`
               if (
                 event?.detail?.previousLocation?.origin !== window.location.origin ||
@@ -708,7 +705,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="footer"
-            css="${response.locals.css(css`
+            class="${css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -724,14 +721,13 @@ export default async (application: Application): Promise<void> => {
               display: flex;
               justify-content: center;
               flex-wrap: wrap;
-            `)}"
+            `}"
           >
             <div>
               <button
-                class="button button--transparent"
-                css="${response.locals.css(css`
+                class="button button--transparent ${css`
                   align-items: center;
-                `)}"
+                `}"
                 javascript="${response.locals.javascript(javascript`
                   leafac.setTippy({
                     event,
@@ -749,11 +745,10 @@ export default async (application: Application): Promise<void> => {
                             Courselore <br />
                             Communication Platform for Education <br />
                             <small
-                              class="secondary"
-                              css="${response.locals.css(css`
+                              class="secondary ${css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
-                              `)}"
+                              `}"
                             >
                               Version ${application.version}
                             </small>
@@ -844,10 +839,9 @@ export default async (application: Application): Promise<void> => {
                               { addQueryPrefix: true }
                             )}"
                             target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                            css="${response.locals.css(css`
+                            class="dropdown--menu--item button button--transparent ${css`
                               align-items: center;
-                            `)}"
+                            `}"
                           >
                             $${application.server.locals.partials.logo({
                               size: 14 /* var(--space--3-5) */,
@@ -997,11 +991,11 @@ export default async (application: Application): Promise<void> => {
                         });
                       `)}"
                     >
-                    <span css="${response.locals.css(css`
+                    <span class="${css`
                       display: flex;
                       gap: var(--space--2);
                       animation: bounce 1s 3;
-                    `)}">
+                    `}">
                       <i class="bi bi-arrow-up-circle-fill"></i>
                       Update Courselore
                       <span>
@@ -1015,12 +1009,12 @@ export default async (application: Application): Promise<void> => {
         <div
           key="progress-bar"
           hidden
-          css="${response.locals.css(css`
+          class="${css`
             position: fixed;
             top: 0;
             right: 0;
             left: 0;
-          `)}"
+          `}"
           javascript="${response.locals.javascript(javascript`
             leafac.setTippy({
               event,
@@ -1051,7 +1045,7 @@ export default async (application: Application): Promise<void> => {
           `)}"
         >
           <div
-            css="${response.locals.css(css`
+            class="${css`
               height: var(--border-width--4);
               background-color: var(--color--blue--500);
               @media (prefers-color-scheme: dark) {
@@ -1068,7 +1062,7 @@ export default async (application: Application): Promise<void> => {
               transition-timing-function: var(
                 --transition-timing-function--in-out
               );
-            `)}"
+            `}"
           ></div>
         </div>
 
@@ -1172,44 +1166,43 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--box"
-          css="${response.locals.css(css`
+          class="${css`
             min-width: 100%;
             min-height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-          `)}"
+          `}"
         >
           <div
-            css="${response.locals.css(css`
+            class="${css`
               flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             <div
               key="main--logo"
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 justify-content: center;
-              `)}"
+              `}"
             >
               <a
                 href="https://${application.configuration.hostname}/"
-                class="heading--display button button--transparent"
-                css="${response.locals.css(css`
+                class="heading--display button button--transparent ${css`
                   align-items: center;
-                `)}"
+                `}"
               >
                 $${application.server.locals.partials.logo()} Courselore
               </a>
             </div>
             <div
               key="main--${request.path}"
-              css="${response.locals.css(css`
+              class="${css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -1219,7 +1212,7 @@ export default async (application: Application): Promise<void> => {
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `)}"
+              `}"
             >
               $${body}
             </div>
@@ -1229,7 +1222,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="main--try"
-                    css="${response.locals.css(css`
+                    class="${css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1240,22 +1233,22 @@ export default async (application: Application): Promise<void> => {
                       border-radius: var(--border-radius--lg);
                       display: flex;
                       gap: var(--space--4);
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
-                      `)}"
+                      `}"
                     >
                       <p>
                         This is a demonstration installation of Courselore and
@@ -1271,10 +1264,9 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/demonstration-data"
                       >
                         <button
-                          class="button button--amber"
-                          css="${response.locals.css(css`
+                          class="button button--amber ${css`
                             width: 100%;
-                          `)}"
+                          `}"
                         >
                           <i class="bi bi-easel-fill"></i>
                           Create Demonstration Data
@@ -1287,7 +1279,7 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="main--demonstration"
-                    css="${response.locals.css(css`
+                    class="${css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -1298,22 +1290,22 @@ export default async (application: Application): Promise<void> => {
                       border-radius: var(--border-radius--lg);
                       display: flex;
                       gap: var(--space--4);
-                    `)}"
+                    `}"
                   >
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
-                      `)}"
+                      `}"
                     >
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
-                      `)}"
+                      `}"
                     >
                       <p>
                         This Courselore installation is running in demonstration
@@ -1329,10 +1321,9 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/demonstration-data"
                       >
                         <button
-                          class="button button--amber"
-                          css="${response.locals.css(css`
+                          class="button button--amber ${css`
                             width: 100%;
-                          `)}"
+                          `}"
                         >
                           <i class="bi bi-easel-fill"></i>
                           Create Demonstration Data
@@ -1362,12 +1353,12 @@ export default async (application: Application): Promise<void> => {
       extraHeaders: html`
         <div
           key="header--menu--primary"
-          css="${response.locals.css(css`
+          class="${css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
             gap: var(--space--4);
             align-items: center;
-          `)}"
+          `}"
         >
           <a
             href="https://${application.configuration.hostname}/"
@@ -1387,12 +1378,12 @@ export default async (application: Application): Promise<void> => {
           </a>
 
           <div
-            css="${response.locals.css(css`
+            class="${css`
               font-size: var(--font-size--sm);
               line-height: var(--line-height--sm);
               flex: 1;
               min-width: var(--width--0);
-            `)}"
+            `}"
           >
             $${(() => {
               const courseSwitcher = html`
@@ -1408,10 +1399,9 @@ export default async (application: Application): Promise<void> => {
               return response.locals.course !== undefined
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent strong"
-                      css="${response.locals.css(css`
+                      class="button button--tight button--tight--inline button--transparent strong ${css`
                         max-width: 100%;
-                      `)}"
+                      `}"
                       javascript="${response.locals.javascript(javascript`
                         leafac.setTippy({
                           event,
@@ -1422,13 +1412,13 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   max-height: var(--space--80);
                                   overflow: auto;
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
-                                `)}"
+                                `}"
                               >
                                 <div>
                                   <h3 class="heading">
@@ -1438,11 +1428,11 @@ export default async (application: Application): Promise<void> => {
                                   $${response.locals.course.archivedAt !== null
                                     ? html`
                                         <div
-                                          css="${response.locals.css(css`
+                                          class="${css`
                                             padding: var(--space--0)
                                               var(--space--2) var(--space--1);
                                             margin-top: var(--space---2);
-                                          `)}"
+                                          `}"
                                         >
                                           $${application.server.locals.partials.courseArchived(
                                             { request, response }
@@ -1504,11 +1494,11 @@ export default async (application: Application): Promise<void> => {
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
-                        css="${response.locals.css(css`
+                        class="${css`
                           white-space: nowrap;
                           overflow: hidden;
                           text-overflow: ellipsis;
-                        `)}"
+                        `}"
                       >
                         ${response.locals.course.name}
                       </span>
@@ -1528,10 +1518,9 @@ export default async (application: Application): Promise<void> => {
                 : showCourseSwitcher && response.locals.enrollments.length > 0
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent"
-                      css="${response.locals.css(css`
+                      class="button button--tight button--tight--inline button--transparent ${css`
                         max-width: 100%;
-                      `)}"
+                      `}"
                       javascript="${response.locals.javascript(javascript`
                         leafac.setTippy({
                           event,
@@ -1542,10 +1531,10 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   max-height: var(--space--80);
                                   overflow: auto;
-                                `)}"
+                                `}"
                               >
                                 $${courseSwitcher}
                               </div>
@@ -1592,11 +1581,11 @@ export default async (application: Application): Promise<void> => {
                     interactive: true,
                     content: ${JSON.stringify(html`
                       <div
-                        css="${response.locals.css(css`
+                        class="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `)}"
+                        `}"
                       >
                         $${response.locals.invitations!.length === 0
                           ? html``
@@ -1674,15 +1663,15 @@ export default async (application: Application): Promise<void> => {
               `)}"
             >
               <div
-                css="${response.locals.css(css`
+                class="${css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
                   }
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
@@ -1690,7 +1679,7 @@ export default async (application: Application): Promise<void> => {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                  `)}"
+                  `}"
                 >
                   +
                 </div>
@@ -1698,7 +1687,7 @@ export default async (application: Application): Promise<void> => {
                   ? html``
                   : html`
                       <div
-                        css="${response.locals.css(css`
+                        class="${css`
                           background-color: var(--color--rose--500);
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
@@ -1708,7 +1697,7 @@ export default async (application: Application): Promise<void> => {
                           border-radius: var(--border-radius--circle);
                           justify-self: end;
                           transform: translateY(50%);
-                        `)}"
+                        `}"
                       ></div>
                     `}
               </div>
@@ -1717,11 +1706,10 @@ export default async (application: Application): Promise<void> => {
 
           <div>
             <button
-              class="button button--tight button--tight--inline button--transparent"
-              css="${response.locals.css(css`
+              class="button button--tight button--tight--inline button--transparent ${css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
-              `)}"
+              `}"
               javascript="${response.locals.javascript(javascript`
                 leafac.setTippy({
                   event,
@@ -1741,16 +1729,16 @@ export default async (application: Application): Promise<void> => {
                     interactive: true,
                     content: ${JSON.stringify(html`
                       <div
-                        css="${response.locals.css(css`
+                        class="${css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `)}"
+                        `}"
                       >
                         <div
-                          css="${response.locals.css(css`
+                          class="${css`
                             padding: var(--space--0) var(--space--2);
-                          `)}"
+                          `}"
                         >
                           <p class="strong">${response.locals.user.name}</p>
                           <p class="secondary">${response.locals.user.email}</p>
@@ -1840,13 +1828,13 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--main--${request.path}"
-          css="${response.locals.css(css`
+          class="${css`
             display: flex;
             justify-content: center;
-          `)}"
+          `}"
         >
           <div
-            css="${response.locals.css(css`
+            class="${css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -1854,7 +1842,7 @@ export default async (application: Application): Promise<void> => {
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             $${body}
           </div>
@@ -1880,17 +1868,17 @@ export default async (application: Application): Promise<void> => {
           : html`
               <div
                 key="header--menu--secondary--${request.path}"
-                css="${response.locals.css(css`
+                class="${css`
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
                   }
-                `)}"
+                `}"
               >
                 <div
-                  css="${response.locals.css(css`
+                  class="${css`
                     padding: var(--space--1) var(--space--0);
-                  `)}"
+                  `}"
                 >
                   <button
                     class="button button--tight button--tight--inline button--transparent"
@@ -1918,39 +1906,39 @@ export default async (application: Application): Promise<void> => {
       body: html`
         <div
           key="layout--settings--${request.path}"
-          css="${response.locals.css(css`
+          class="${css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
             gap: var(--space--8);
-          `)}"
+          `}"
         >
           $${menu === html``
             ? html``
             : html`
                 <div
                   key="layout--settings--menu"
-                  css="${response.locals.css(css`
+                  class="${css`
                     flex: 1;
                     max-width: var(--space--64);
                     @media (max-width: 699px) {
                       display: none;
                     }
-                  `)}"
+                  `}"
                 >
                   <div class="menu-box">$${menu}</div>
                 </div>
               `}
           <div
             key="layout--settings--main"
-            css="${response.locals.css(css`
+            class="${css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `)}"
+            `}"
           >
             $${body}
           </div>
@@ -2037,21 +2025,21 @@ export default async (application: Application): Promise<void> => {
       fill="none"
       stroke="currentColor"
       stroke-width="4"
-      css="${response.locals.css(css`
+      class="${css`
         animation: var(--animation--spin);
-      `)}"
+      `}"
     >
       <path
         d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
-        css="${response.locals.css(css`
+        class="${css`
           opacity: var(--opacity--25);
-        `)}"
+        `}"
       />
       <path
         d="M 2 10 A 8 8 0 0 0 15.5 15.5"
-        css="${response.locals.css(css`
+        class="${css`
           opacity: var(--opacity--75);
-        `)}"
+        `}"
       />
     </svg>
   `;

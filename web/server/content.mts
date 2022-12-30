@@ -677,9 +677,9 @@ export default async (application: Application): Promise<void> => {
                   touch: false,
                   content: ${JSON.stringify(html`
                     <div
-                      css="${response.locals.css(css`
+                      class="${css`
                         padding: var(--space--2);
-                      `)}"
+                      `}"
                     >
                       $${application.server.locals.partials.conversation({
                         request: requestCourseEnrolled,
@@ -711,12 +711,12 @@ export default async (application: Application): Promise<void> => {
                 touch: false,
                 content: ${JSON.stringify(html`
                   <div
-                    css="${response.locals.css(css`
+                    class="${css`
                       padding: var(--space--2);
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                    `)}"
+                    `}"
                   >
                     $${application.server.locals.partials.conversation({
                       request: requestCourseEnrolled,
@@ -807,15 +807,15 @@ export default async (application: Application): Promise<void> => {
   }) => html`
     <div
       key="content-editor"
-      css="${response.locals.css(css`
+      class="${css`
         min-width: var(--space--0);
-      `)}"
+      `}"
     >
       $${compact
         ? html``
         : html`
             <div
-              css="${response.locals.css(css`
+              class="${css`
                 display: flex;
                 gap: var(--space--1);
 
@@ -843,7 +843,7 @@ export default async (application: Application): Promise<void> => {
                     background-color: var(--color--gray--medium--700);
                   }
                 }
-              `)}"
+              `}"
             >
               <label>
                 <input
@@ -955,18 +955,18 @@ export default async (application: Application): Promise<void> => {
             </div>
           `}
       <div
-        css="${response.locals.css(css`
+        class="${css`
           background-color: var(--color--gray--medium--100);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--800);
           }
           border-radius: var(--border-radius--lg);
-        `)}"
+        `}"
       >
         <div key="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
-            css="${response.locals.css(css`
+            class="${css`
               padding: var(--space--1) var(--space--0);
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
@@ -983,7 +983,7 @@ export default async (application: Application): Promise<void> => {
                 }
                 margin-left: var(--space--0-5);
               }
-            `)}"
+            `}"
           >
             <div>
               <button
@@ -2047,10 +2047,10 @@ export default async (application: Application): Promise<void> => {
                       hideOnClick: false,
                       content: ${JSON.stringify(html`
                         <div
-                          css="${response.locals.css(css`
+                          class="${css`
                             display: flex;
                             gap: var(--space--2);
-                          `)}"
+                          `}"
                         >
                           $${application.server.locals.partials.spinner({
                             request,
@@ -2133,24 +2133,23 @@ export default async (application: Application): Promise<void> => {
             </div>
           </div>
           <div
-            css="${response.locals.css(css`
+            class="${css`
               position: relative;
-            `)}"
+            `}"
           >
             <div
               key="content-editor--write--textarea--dropdown-menu-target"
-              css="${response.locals.css(css`
+              class="${css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
                 position: absolute;
-              `)}"
+              `}"
             ></div>
             <textarea
               key="content-editor--write--textarea"
               name="${name}"
               $${required ? html`required` : html``}
-              class="input--text input--text--textarea"
-              css="${response.locals.css(css`
+              class="input--text input--text--textarea ${css`
                 ${compact
                   ? css`
                       height: var(--space--14);
@@ -2172,7 +2171,7 @@ export default async (application: Application): Promise<void> => {
                     var(--font-family--monospace);
                   font-variant-ligatures: none;
                 }
-              `)}"
+              `}"
               javascript="${response.locals.javascript(javascript`
                 autosize(this);
                 autosize.update(this);
@@ -2216,11 +2215,11 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   width: var(--space--56);
                                   max-height: var(--space--44);
                                   overflow: auto;
-                                `)}"
+                                `}"
                               >
                                 <p class="heading">
                                   <i class="bi bi-at"></i>
@@ -2280,11 +2279,11 @@ export default async (application: Application): Promise<void> => {
                             interactive: true,
                             content: ${JSON.stringify(html`
                               <div
-                                css="${response.locals.css(css`
+                                class="${css`
                                   width: var(--space--72);
                                   max-height: var(--space--44);
                                   overflow: auto;
-                                `)}"
+                                `}"
                               >
                                 <p class="heading">
                                   <i class="bi bi-hash"></i>
@@ -2434,14 +2433,13 @@ ${contentSource}</textarea
               <div
                 key="content-editor--loading"
                 hidden
-                class="strong"
-                css="${response.locals.css(css`
+                class="strong ${css`
                   padding: var(--space--4);
                   display: flex;
                   justify-content: center;
                   align-items: center;
                   gap: var(--space--2);
-                `)}"
+                `}"
               >
                 $${application.server.locals.partials.spinner({
                   request,
@@ -2453,9 +2451,9 @@ ${contentSource}</textarea
               <div
                 key="content-editor--preview"
                 hidden
-                css="${response.locals.css(css`
+                class="${css`
                   padding: var(--space--4);
-                `)}"
+                `}"
               ></div>
             `}
       </div>
