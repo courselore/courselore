@@ -2163,10 +2163,10 @@ export default async (application: Application): Promise<void> => {
                   javascript="${javascript`
                     this.onvalidate = () => {
                       const emails = [];
-                      for (let email of this.value.split(${/[,\n]/})) {
+                      for (let email of this.value.split(/[,\\n]/)) {
                         email = email.trim();
                         let name = null;
-                        const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                        const match = email.match(/^(?<name>.*)<(?<email>.*)>$/);
                         if (match !== null) {
                           email = match.groups.email.trim();
                           name = match.groups.name.trim();

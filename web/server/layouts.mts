@@ -1486,10 +1486,10 @@ export default async (application: Application): Promise<void> => {
             })()}
 
             document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-              response.locals.enrollment?.accentColor
+              response.locals.enrollment?.accentColor ?? ""
             }--500"));
             document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-              response.locals.enrollment?.accentColor
+              response.locals.enrollment?.accentColor ?? ""
             }--600"));
 
             ${

@@ -52,20 +52,20 @@ for (const file of await globby("./build/server/**/*.mjs"))
                     break;
                   }
 
-                  case "javascript": {
-                    const javascript_ = new Function(
-                      "html",
-                      "css",
-                      "javascript",
-                      `return (${babelGenerator.default(path.node).code});`
-                    )(html, css, javascript);
-                    const identifier = baseIdentifier.encode(
-                      xxhash.XXHash3.hash(Buffer.from(javascript_))
-                    );
-                    applicationJavaScript += javascript`export const ${identifier} = (event) => { ${javascript_} };`;
-                    path.replaceWith(babel.types.stringLiteral(identifier));
-                    break;
-                  }
+                  // case "javascript": {
+                  //   const javascript_ = new Function(
+                  //     "html",
+                  //     "css",
+                  //     "javascript",
+                  //     `return (${babelGenerator.default(path.node).code});`
+                  //   )(html, css, javascript);
+                  //   const identifier = baseIdentifier.encode(
+                  //     xxhash.XXHash3.hash(Buffer.from(javascript_))
+                  //   );
+                  //   applicationJavaScript += javascript`export const ${identifier} = (event) => { ${javascript_} };`;
+                  //   path.replaceWith(babel.types.stringLiteral(identifier));
+                  //   break;
+                  // }
                 }
               },
             },

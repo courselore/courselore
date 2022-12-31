@@ -509,7 +509,9 @@ export default async (application: Application): Promise<void> => {
                   if (!leafac.isConnected(element)) return;
                   element.hidden = Date.now() - ${new Date(
                     user.lastSeenOnlineAt
-                  ).getTime()} > 5 * 60 * 1000;
+                  )
+                    .getTime()
+                    .toString()} > 5 * 60 * 1000;
                   element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 2 * 1000);
                 })();
               `}"
