@@ -52,20 +52,34 @@ for (const file of await globby("./build/server/**/*.mjs"))
                     break;
                   }
 
-                  // case "javascript": {
-                  //   const javascript_ = new Function(
-                  //     "html",
-                  //     "css",
-                  //     "javascript",
-                  //     `return (${babelGenerator.default(path.node).code});`
-                  //   )(html, css, javascript);
-                  //   const identifier = baseIdentifier.encode(
-                  //     xxhash.XXHash3.hash(Buffer.from(javascript_))
-                  //   );
-                  //   applicationJavaScript += javascript`export const ${identifier} = (event) => { ${javascript_} };`;
-                  //   path.replaceWith(babel.types.stringLiteral(identifier));
-                  //   break;
-                  // }
+                  case "javascript": {
+                    const expressions = path.node.quasi.expressions.slice();
+                    for (const [index, pathExpression] of path
+                      .get("quasi.expressions")
+                      .entries())
+                      pathExpression.replaceWith(
+                        babel.types.stringLiteral(`$$${index}`)
+                      );
+                    const javascript_ = babelGenerator.default(path.node).code;
+                    const identifier = baseIdentifier.encode(
+                      xxhash.XXHash3.hash(Buffer.from(javascript_))
+                    );
+                    applicationJavaScript += javascript`export const ${identifier} = (${[
+                      "event",
+                      ...expressions.map((value, index) => `$$${index}`),
+                    ].join(", ")}) => { ${javascript_} };`;
+                    path.replaceWith(
+                      babel.template.ast`
+                        JSON.stringify({
+                          function: ${babel.types.stringLiteral(identifier)},
+                          arguments: ${babel.types.arrayExpression(
+                            expressions
+                          )},
+                        })
+                      `
+                    );
+                    break;
+                  }
                 }
               },
             },
