@@ -5,6 +5,10 @@ import { execa } from "execa";
 import { globby } from "globby";
 import babel from "@babel/core";
 import babelGenerator from "@babel/generator";
+import { unified } from "unified";
+import rehypeParse from "rehype-parse";
+import rehypePresetMinify from "rehype-preset-minify";
+import rehypeStringify from "rehype-stringify";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import autoprefixer from "autoprefixer";
@@ -24,6 +28,10 @@ await execa("tsc", undefined, {
 const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 let applicationCSS = "";
 let applicationJavaScript = "";
+const htmlMinifier = unified()
+  .use(rehypeParse, { fragment: true, emitParseErrors: true })
+  .use(rehypePresetMinify)
+  .use(rehypeStringify);
 for (const file of await globby("./build/server/**/*.mjs"))
   await fs.writeFile(
     file,
@@ -34,6 +42,24 @@ for (const file of await globby("./build/server/**/*.mjs"))
             visitor: {
               TaggedTemplateExpression(path) {
                 switch (path.node.tag.name) {
+                  case "html": {
+                    path.node.quasi.quasis = htmlMinifier
+                      .processSync(
+                        path.node.quasi.quasis
+                          .map(
+                            (templateElement) => templateElement.value.cooked
+                          )
+                          .join("◊◊◊◊")
+                      )
+                      .value.split("◊◊◊◊")
+                      .map((templateElementValueCooked) =>
+                        babel.types.templateElement({
+                          raw: templateElementValueCooked,
+                        })
+                      );
+                    break;
+                  }
+
                   case "css": {
                     const css_ = new Function(
                       "css",
@@ -54,10 +80,8 @@ for (const file of await globby("./build/server/**/*.mjs"))
 
                   case "javascript": {
                     const expressions = path.node.quasi.expressions.slice();
-                    for (const [index, pathExpression] of path
-                      .get("quasi.expressions")
-                      .entries())
-                      pathExpression.replaceWith(
+                    path.node.quasi.expressions =
+                      path.node.quasi.expressions.map((expression, index) =>
                         babel.types.stringLiteral(`$$${index}`)
                       );
                     const javascript_ = babelGenerator.default(path.node).code;
