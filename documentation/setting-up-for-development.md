@@ -72,7 +72,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 4. Install the following Visual Studio Code extensions:
 
    - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged templates in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
 5. Clone the codebase, install the dependencies, and run Courselore:
@@ -122,7 +122,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 4. Install the following Visual Studio Code extensions:
 
    - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged templates in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
 5. Clone the codebase, install the dependencies, and run Courselore:
@@ -179,7 +179,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 4. Install the following Visual Studio Code extensions:
 
    - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged templates in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
 5. Clone the codebase, install the dependencies, and run Courselore:
