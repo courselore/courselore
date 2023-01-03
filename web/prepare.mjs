@@ -112,7 +112,9 @@ for (const file of await globby("./build/server/**/*.mjs"))
   );
 
 applicationCSS = (
-  await postcss([postcssNested, autoprefixer]).process(applicationCSS)
+  await postcss([postcssNested, autoprefixer]).process(applicationCSS, {
+    from: undefined,
+  })
 ).css;
 
 await fs.writeFile("./static/application.css", applicationCSS);
