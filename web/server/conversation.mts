@@ -3742,19 +3742,19 @@ export default async (application: Application): Promise<void> => {
                                                       ? javascript`
                                                           selectedParticipants.hidden = false;
     
-                                                          for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
+                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                             element.hidden = true;
                                                           participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
     
                                                           for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                            element.disabled = element.matches('[javascript-enrollment-course-role="staff"]');
+                                                            element.disabled = element.matches('[data-enrollment-course-role="staff"]');
                                                         `
                                                       : conversationParticipants ===
                                                         "selected-people"
                                                       ? javascript`
                                                           selectedParticipants.hidden = false;
     
-                                                          for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
+                                                          for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                             element.hidden = false;
                                                           participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
     
@@ -3857,11 +3857,11 @@ export default async (application: Application): Promise<void> => {
                                                       const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                       const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
                                                       for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                        if (participantsIsStaff && selectedParticipant.matches('[javascript-enrollment-course-role="staff"]'))
+                                                        if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
                                                           continue;
                                                         let selectedParticipantHidden = filterPhrases.length > 0;
-                                                        for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[javascript-filterable-phrases]")) {
-                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
+                                                        for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                          const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                                                           const filterablePhrasesElementChildren = [];
                                                           for (const filterablePhrase of filterablePhrases) {
                                                             let filterablePhraseElement;
@@ -3897,7 +3897,7 @@ export default async (application: Application): Promise<void> => {
                                               (enrollment) => html`
                                                 <label
                                                   key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                  javascript-enrollment-course-role="${enrollment.courseRole}"
+                                                  data-enrollment-course-role="${enrollment.courseRole}"
                                                   $${request.query
                                                     .newConversation
                                                     ?.participants ===
@@ -4043,7 +4043,7 @@ export default async (application: Application): Promise<void> => {
                               : html`disabled`}
                             tabindex="-1"
                             class="visually-hidden input--visible-when-enabled-and-checked"
-                            javascript-enrollment-course-role="${enrollment.courseRole}"
+                            data-enrollment-course-role="${enrollment.courseRole}"
                           />
                           <button
                             key="selected-participants--button--${enrollment.reference}"
@@ -6723,19 +6723,19 @@ export default async (application: Application): Promise<void> => {
                                                                   ? javascript`
                                                                       selectedParticipants.hidden = false;
   
-                                                                      for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
+                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                                         element.hidden = true;
                                                                       participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
                                                                       for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                                        element.disabled = element.matches('[javascript-enrollment-course-role="staff"]');
+                                                                        element.disabled = element.matches('[data-enrollment-course-role="staff"]');
                                                                     `
                                                                   : conversationParticipants ===
                                                                     "selected-people"
                                                                   ? javascript`
                                                                       selectedParticipants.hidden = false;
   
-                                                                      for (const element of selectedParticipants.querySelectorAll('[javascript-enrollment-course-role="staff"]'))
+                                                                      for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                                         element.hidden = false;
                                                                       participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
   
@@ -6850,11 +6850,11 @@ export default async (application: Application): Promise<void> => {
                                                                   const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                                   const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
                                                                   for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                    if (participantsIsStaff && selectedParticipant.matches('[javascript-enrollment-course-role="staff"]'))
+                                                                    if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
                                                                       continue;
                                                                     let selectedParticipantHidden = filterPhrases.length > 0;
-                                                                    for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[javascript-filterable-phrases]")) {
-                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
+                                                                    for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
+                                                                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                                                                       const filterablePhrasesElementChildren = [];
                                                                       for (const filterablePhrase of filterablePhrases) {
                                                                         let filterablePhraseElement;
@@ -6894,7 +6894,7 @@ export default async (application: Application): Promise<void> => {
                                                           (enrollment) => html`
                                                             <label
                                                               key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                              javascript-enrollment-course-role="${enrollment.courseRole}"
+                                                              data-enrollment-course-role="${enrollment.courseRole}"
                                                               $${response.locals
                                                                 .conversation
                                                                 .participants ===
@@ -7042,7 +7042,7 @@ export default async (application: Application): Promise<void> => {
                                         : html`disabled`}
                                       tabindex="-1"
                                       class="visually-hidden input--visible-when-enabled-and-checked"
-                                      javascript-enrollment-course-role="${enrollment.courseRole}"
+                                      data-enrollment-course-role="${enrollment.courseRole}"
                                     />
                                     <button
                                       key="selected-participants--button--${enrollment.reference}"
@@ -7372,7 +7372,7 @@ export default async (application: Application): Promise<void> => {
                                               }
                                             `}
                                       `}"
-                                      javascript-content-source="${message.contentSource}"
+                                      data-content-source="${message.contentSource}"
                                     >
                                       $${message === firstUnreadMessage &&
                                       message !== messages[0]
@@ -8276,7 +8276,7 @@ export default async (application: Application): Promise<void> => {
                                                                   const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
                                                                   const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                                   const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                                  const content = anchorElement.closest("[javascript-content-source]").getAttribute("javascript-content-source");
+                                                                  const content = anchorElement.closest("[data-content-source]").getAttribute("data-content-source");
                                                                   const newMessage = document.querySelector('[key="new-message"]');
                                                                   newMessage.querySelector('[key="content-editor--button--write"]')?.click();
                                                                   const element = newMessage.querySelector('[key="content-editor--write--textarea"]');

@@ -406,8 +406,8 @@ export default async (application: Application): Promise<void> => {
                   const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                   for (const user of document.querySelectorAll('[key^="user/"]')) {
                     let userHidden = filterPhrases.length > 0;
-                    for (const filterablePhrasesElement of user.querySelectorAll("[javascript-filterable-phrases]")) {
-                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
+                    for (const filterablePhrasesElement of user.querySelectorAll("[data-filterable-phrases]")) {
+                      const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                       const filterablePhrasesElementChildren = [];
                       for (const filterablePhrase of filterablePhrases) {
                         let filterablePhraseElement;
@@ -476,7 +476,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <div
                       class="strong"
-                      javascript-filterable-phrases="${JSON.stringify(
+                      data-filterable-phrases="${JSON.stringify(
                         application.server.locals.helpers.splitFilterablePhrases(
                           user.name
                         )
@@ -489,7 +489,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           margin-right: var(--space--2);
                         `}"
-                        javascript-filterable-phrases="${JSON.stringify(
+                        data-filterable-phrases="${JSON.stringify(
                           application.server.locals.helpers.splitFilterablePhrases(
                             user.email
                           )
@@ -504,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `}"
-                        javascript-email="${user.email}"
+                        data-email="${user.email}"
                         javascript="${javascript`
                           leafac.setTippy({
                             event,
@@ -527,7 +527,7 @@ export default async (application: Application): Promise<void> => {
                           });
 
                           this.onclick = async () => {
-                            await navigator.clipboard.writeText(this.getAttribute("javascript-email"));
+                            await navigator.clipboard.writeText(this.getAttribute("data-email"));
                             this.copied.show();
                             await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                             this.copied.hide();

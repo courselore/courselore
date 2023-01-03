@@ -531,7 +531,7 @@ export default async (application: Application): Promise<void> => {
             `}"
             $${name === true && user !== "no-longer-enrolled"
               ? html`
-                  javascript-filterable-phrases="${JSON.stringify(
+                  data-filterable-phrases="${JSON.stringify(
                     application.server.locals.helpers.splitFilterablePhrases(
                       user.name
                     )

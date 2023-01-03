@@ -1484,7 +1484,7 @@ export default async (application: Application): Promise<void> => {
                           required
                           autocomplete="off"
                           class="input--text"
-                          javascript-disable-on-delete="true"
+                          data-disable-on-delete="true"
                         />
                         <div
                           css="${css`
@@ -1509,7 +1509,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`checked`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-disable-on-delete="true"
+                                data-disable-on-delete="true"
                               />
                               <span
                                 javascript="${javascript`
@@ -1611,7 +1611,7 @@ export default async (application: Application): Promise<void> => {
                                                   tagIconClassList.remove("text--teal");
                                                   tagIconClassList.add("text--rose");
                                                   tag.querySelector('[name$="[delete]"]').disabled = false;
-                                                  for (const element of tag.querySelectorAll('[javascript-disable-on-delete="true"]')) {
+                                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
                                                     element.disabled = true;
                                                     const button = element.closest(".button");
                                                     if (button === null) continue;
@@ -1661,7 +1661,7 @@ export default async (application: Application): Promise<void> => {
                                     tagIconClassList.remove("text--rose");
                                     tagIconClassList.add("text--teal");
                                     tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll('[javascript-disable-on-delete="true"]')) {
+                                    for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
                                       element.disabled = false;
                                       const button = element.closest(".button");
                                       if (button === null) continue;
@@ -4179,8 +4179,8 @@ export default async (application: Application): Promise<void> => {
                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                     for (const enrollment of document.querySelectorAll('[key^="enrollment/"]')) {
                       let enrollmentHidden = filterPhrases.length > 0;
-                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[javascript-filterable-phrases]")) {
-                        const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("javascript-filterable-phrases"));
+                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                        const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                         const filterablePhrasesElementChildren = [];
                         for (const filterablePhrase of filterablePhrases) {
                           let filterablePhraseElement;
@@ -4250,7 +4250,7 @@ export default async (application: Application): Promise<void> => {
                     <div>
                       <div
                         class="strong"
-                        javascript-filterable-phrases="${JSON.stringify(
+                        data-filterable-phrases="${JSON.stringify(
                           application.server.locals.helpers.splitFilterablePhrases(
                             enrollment.user.name
                           )
@@ -4263,7 +4263,7 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             margin-right: var(--space--2);
                           `}"
-                          javascript-filterable-phrases="${JSON.stringify(
+                          data-filterable-phrases="${JSON.stringify(
                             application.server.locals.helpers.splitFilterablePhrases(
                               enrollment.user.email
                             )
