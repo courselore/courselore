@@ -98,9 +98,7 @@ export type Application = {
   ApplicationContent &
   ApplicationHelpers;
 
-if (
-  url.fileURLToPath(import.meta.url) === (await fs.realpath(process.argv[1]))
-) {
+if (await node.isExecuted(import.meta.url)) {
   const version = JSON.parse(
     await fs.readFile(new URL("../../package.json", import.meta.url), "utf8")
   ).version;
