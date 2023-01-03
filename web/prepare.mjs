@@ -25,9 +25,9 @@ await execa("tsc", undefined, {
   stdio: "inherit",
 });
 
-const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 let applicationCSS = "";
 let applicationJavaScript = "";
+const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 const htmlMinifier = unified()
   .use(rehypeParse, { fragment: true, emitParseErrors: true })
   .use(rehypePresetMinify)
@@ -121,7 +121,7 @@ await fs.writeFile("./static/application.mjs", applicationJavaScript);
 const esbuildResult = await esbuild.build({
   absWorkingDir: url.fileURLToPath(new URL("./static/", import.meta.url)),
   entryPoints: ["./index.mjs"],
-  outdir: "./build/static/",
+  outdir: "../build/static/",
   entryNames: "[dir]/[name]--[hash]",
   assetNames: "[dir]/[name]--[hash]",
 
@@ -148,8 +148,8 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   esbuildResult.metafile.outputs
 ))
   if (entryPoint === "index.mjs" && typeof cssBundle === "string") {
-    paths["index.css"] = cssBundle.slice("./build/static/".length);
-    paths["index.mjs"] = javascriptBundle.slice("./build/static/".length);
+    paths["index.css"] = cssBundle.slice("../build/static/".length);
+    paths["index.mjs"] = javascriptBundle.slice("../build/static/".length);
     break;
   }
 
@@ -157,15 +157,15 @@ const baseFileHash = baseX(
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 );
 for (const source of [
-  "about/ali-madooei.webp",
-  "about/eliot-smith.webp",
-  "about/leandro-facchinetti.webp",
-  "about/main-screen--dark.webp",
-  "about/main-screen--light-and-dark.webp",
-  "about/main-screen--light.webp",
-  "about/main-screen--phone--dark.webp",
-  "about/main-screen--phone--light.webp",
-  "about/scott-smith.webp",
+  "./static/about/ali-madooei.webp",
+  "./static/about/eliot-smith.webp",
+  "./static/about/leandro-facchinetti.webp",
+  "./static/about/main-screen--dark.webp",
+  "./static/about/main-screen--light-and-dark.webp",
+  "./static/about/main-screen--light.webp",
+  "./static/about/main-screen--phone--dark.webp",
+  "./static/about/main-screen--phone--light.webp",
+  "./static/about/scott-smith.webp",
 ]) {
   const extension = path.extname(source);
   const destination = path.join(
