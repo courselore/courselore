@@ -27,7 +27,7 @@ export async function time(title, function_) {
   console.log(`${title}: ${(process.hrtime.bigint() - start) / 1_000_000n}ms`);
 }
 
-await time("TypeScript", async () => {
+await time("Server: TypeScript", async () => {
   await execa("tsc", undefined, {
     cwd: "./server/",
     preferLocal: true,
@@ -37,7 +37,7 @@ await time("TypeScript", async () => {
 
 let applicationCSS = "";
 let applicationJavaScript = "";
-await time("Minify HTML and extract CSS & JavaScript", async () => {
+await time("Server: Minify HTML and extract CSS & JavaScript", async () => {
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const htmlMinifier = unified()
     .use(rehypeParse, { fragment: true, emitParseErrors: true })
@@ -123,7 +123,7 @@ await time("Minify HTML and extract CSS & JavaScript", async () => {
     );
 });
 
-await time("PostCSS", async () => {
+await time("Static: PostCSS", async () => {
   applicationCSS = (
     await postcss([postcssNested, autoprefixer]).process(applicationCSS, {
       from: undefined,
@@ -135,7 +135,7 @@ await fs.writeFile("./static/application.css", applicationCSS);
 await fs.writeFile("./static/application.mjs", applicationJavaScript);
 
 let esbuildResult;
-await time("esbuild", async () => {
+await time("Static: esbuild", async () => {
   esbuildResult = await esbuild.build({
     absWorkingDir: url.fileURLToPath(new URL("./static/", import.meta.url)),
     entryPoints: ["./index.mjs"],
@@ -172,7 +172,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
     break;
   }
 
-await time("Copy static files with cache busting", async () => {
+await time("Static: Copy static files with cache busting", async () => {
   const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
   for (const source of [
     "./static/about/ali-madooei.webp",
@@ -205,7 +205,7 @@ await fs.writeFile(
   JSON.stringify(paths, undefined, 2)
 );
 
-await time("Copy static files without cache busting", async () => {
+await time("Static: Copy static files without cache busting", async () => {
   for (const source of [
     "./static/apple-touch-icon.png",
     "./static/favicon.ico",
