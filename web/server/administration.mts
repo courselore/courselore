@@ -475,25 +475,25 @@ export default async (application: Application): Promise<void> => {
                 >
                   <div>
                     <div
-                      class="strong"
                       data-filterable-phrases="${JSON.stringify(
                         application.server.locals.helpers.splitFilterablePhrases(
                           user.name
                         )
                       )}"
+                      class="strong"
                     >
                       ${user.name}
                     </div>
                     <div class="secondary">
                       <span
-                        css="${css`
-                          margin-right: var(--space--2);
-                        `}"
                         data-filterable-phrases="${JSON.stringify(
                           application.server.locals.helpers.splitFilterablePhrases(
                             user.email
                           )
                         )}"
+                        css="${css`
+                          margin-right: var(--space--2);
+                        `}"
                       >
                         ${user.email}
                       </span>
