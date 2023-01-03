@@ -23,7 +23,7 @@
     "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && node ./build/server/index.mjs ./configuration/profile.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./server/**/*.mts\" --check \"./static/prepare.mjs\" --check \"./configuration/**/*.mjs\" --end-of-line auto",
-    "test:license": "license-checker --production --summary",
+    "test:license": "license-checker --summary && (cd ./server/ && license-checker --summary && cd ..) && (cd ./static/ && license-checker --summary && cd ..)",
     "clean:all": "npm run clean:build && npm run clean:data && npm run clean:node_modules",
     "clean:build": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
