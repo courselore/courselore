@@ -169,12 +169,14 @@ for (const source of [
 ]) {
   const extension = path.extname(source);
   const destination = path.join(
-    "./build/static",
+    "./build",
     `${source.slice(0, -extension.length)}--${baseFileHash.encode(
       xxhash.XXHash3.hash(await fs.readFile(source))
     )}${extension}`
   );
-  paths[source] = destination.slice("./build/static/".length);
+  paths[source.slice("./static/".length)] = destination.slice(
+    "./build/static/".length
+  );
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
 }
@@ -189,7 +191,7 @@ for (const source of [
   "./static/favicon.ico",
   "./static/node_modules/fake-avatars/avatars/",
 ]) {
-  const destination = path.join("./build/static", source);
+  const destination = path.join("./build", source);
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
 }
