@@ -6,7 +6,7 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 <p align="center">
-<a href="https://courselore.org"><img src="web/static/about/main-screen--light.png" alt="Courselore Main Screen" width="960"></a>
+<a href="https://courselore.org"><img src="web/static/about/main-screen--light.webp" alt="Courselore Main Screen" width="960"></a>
 </p>
 <h3 align="center">
 <a href="https://courselore.org">Hosted Installation</a> ·
