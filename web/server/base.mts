@@ -16,7 +16,10 @@ export type ApplicationBase = {
 };
 
 export default async (application: Application): Promise<void> => {
-  if (false && application.configuration.environment === "development")
+  if (
+    process.env.SLOW === "true" &&
+    application.configuration.environment === "development"
+  )
     application.server.use<{}, any, {}, {}, {}>(
       asyncHandler(async (request, response, next) => {
         await timers.setTimeout(5 * 1000, undefined, { ref: false });
