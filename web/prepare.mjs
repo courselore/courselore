@@ -41,70 +41,68 @@ for (const file of await globby("./build/server/**/*.mjs"))
           {
             visitor: {
               TaggedTemplateExpression(path) {
-                switch (path.node.tag.name) {
-                  case "html": {
-                    path.node.quasi.quasis = htmlMinifier
-                      .processSync(
-                        path.node.quasi.quasis
-                          .map(
-                            (templateElement) => templateElement.value.cooked
-                          )
-                          .join("◊◊◊◊")
-                      )
-                      .value.split("◊◊◊◊")
-                      .map((templateElementValueCooked) =>
-                        babel.types.templateElement({
-                          raw: templateElementValueCooked,
-                        })
-                      );
-                    break;
-                  }
-
-                  case "css": {
-                    const css_ = new Function(
-                      "css",
-                      `return (${babelGenerator.default(path.node).code});`
-                    )(css);
-                    const identifier = baseIdentifier.encode(
-                      xxhash.XXHash3.hash(Buffer.from(css_))
-                    );
-                    applicationCSS =
-                      css`
-                        ${`[css~="${identifier}"]`.repeat(6)} {
-                          ${css_}
-                        }
-                      ` + applicationCSS;
-                    path.replaceWith(babel.types.stringLiteral(identifier));
-                    break;
-                  }
-
-                  case "javascript": {
-                    const expressions = path.node.quasi.expressions.slice();
-                    path.node.quasi.expressions =
-                      path.node.quasi.expressions.map((expression, index) =>
-                        babel.types.stringLiteral(`$$${index}`)
-                      );
-                    const javascript_ = babelGenerator.default(path.node).code;
-                    const identifier = baseIdentifier.encode(
-                      xxhash.XXHash3.hash(Buffer.from(javascript_))
-                    );
-                    applicationJavaScript += javascript`export const ${identifier} = (${[
-                      "event",
-                      ...expressions.map((value, index) => `$$${index}`),
-                    ].join(", ")}) => { ${javascript_} };`;
-                    path.replaceWith(
-                      babel.template.ast`
-                        JSON.stringify({
-                          function: ${babel.types.stringLiteral(identifier)},
-                          arguments: ${babel.types.arrayExpression(
-                            expressions
-                          )},
-                        })
-                      `
-                    );
-                    break;
-                  }
-                }
+                // switch (path.node.tag.name) {
+                //   case "html": {
+                //     path.node.quasi.quasis = htmlMinifier
+                //       .processSync(
+                //         path.node.quasi.quasis
+                //           .map(
+                //             (templateElement) => templateElement.value.cooked
+                //           )
+                //           .join("◊◊◊◊")
+                //       )
+                //       .value.split("◊◊◊◊")
+                //       .map((templateElementValueCooked) =>
+                //         babel.types.templateElement({
+                //           raw: templateElementValueCooked,
+                //         })
+                //       );
+                //     break;
+                //   }
+                //   case "css": {
+                //     const css_ = new Function(
+                //       "css",
+                //       `return (${babelGenerator.default(path.node).code});`
+                //     )(css);
+                //     const identifier = baseIdentifier.encode(
+                //       xxhash.XXHash3.hash(Buffer.from(css_))
+                //     );
+                //     applicationCSS =
+                //       css`
+                //         ${`[css~="${identifier}"]`.repeat(6)} {
+                //           ${css_}
+                //         }
+                //       ` + applicationCSS;
+                //     path.replaceWith(babel.types.stringLiteral(identifier));
+                //     break;
+                //   }
+                //   case "javascript": {
+                //     const expressions = path.node.quasi.expressions.slice();
+                //     path.node.quasi.expressions =
+                //       path.node.quasi.expressions.map((expression, index) =>
+                //         babel.types.stringLiteral(`$$${index}`)
+                //       );
+                //     const javascript_ = babelGenerator.default(path.node).code;
+                //     const identifier = baseIdentifier.encode(
+                //       xxhash.XXHash3.hash(Buffer.from(javascript_))
+                //     );
+                //     applicationJavaScript += javascript`export const ${identifier} = (${[
+                //       "event",
+                //       ...expressions.map((value, index) => `$$${index}`),
+                //     ].join(", ")}) => { ${javascript_} };`;
+                //     path.replaceWith(
+                //       babel.template.ast`
+                //         JSON.stringify({
+                //           function: ${babel.types.stringLiteral(identifier)},
+                //           arguments: ${babel.types.arrayExpression(
+                //             expressions
+                //           )},
+                //         })
+                //       `
+                //     );
+                //     break;
+                //   }
+                // }
               },
             },
           },

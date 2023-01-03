@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
-    "@leafac/css": "^0.9.3",
+    "@leafac/css": "^0.9.4",
     "@leafac/express-async-handler": "^0.0.3",
     "@leafac/html": "^4.0.0",
     "@leafac/javascript": "^0.5.2",
@@ -85,7 +85,7 @@
     "autoprefixer": "^10.4.13",
     "base-x": "^4.0.0",
     "caxa": "^3.0.1",
-    "esbuild": "^0.16.12",
+    "esbuild": "^0.16.13",
     "globby": "^13.1.3",
     "license-checker": "^25.0.1",
     "nodemon": "^2.0.20",
