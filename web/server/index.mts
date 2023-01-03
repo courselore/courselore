@@ -12,6 +12,7 @@ import lodash from "lodash";
 import { execa, ExecaChildProcess } from "execa";
 import { got } from "got";
 import * as Got from "got";
+import * as node from "@leafac/node";
 import caddyfile from "dedent";
 import dedent from "dedent";
 import logging, { ApplicationLogging } from "./logging.mjs";
@@ -143,29 +144,7 @@ if (
           processNumber: string;
         }
       ) => {
-        const stop = new Promise<void>((resolve) => {
-          const processKeepAlive = new AbortController();
-          timers
-            .setInterval(1 << 30, undefined, {
-              signal: processKeepAlive.signal,
-            })
-            [Symbol.asyncIterator]()
-            .next()
-            .catch(() => {});
-          for (const event of [
-            "exit",
-            "SIGHUP",
-            "SIGINT",
-            "SIGQUIT",
-            "SIGTERM",
-            "SIGUSR2",
-            "SIGBREAK",
-          ])
-            process.on(event, () => {
-              processKeepAlive.abort();
-              resolve();
-            });
-        });
+        const eventLoopActive = node.eventLoopActive();
 
         const application = {
           name: "courselore",
@@ -447,7 +426,7 @@ if (
                   childProcesses.delete(childProcess);
                 }
               })();
-            await stop;
+            await eventLoopActive;
             restartChildProcesses = false;
             for (const childProcess of childProcesses)
               childProcess.kill(undefined, {
@@ -469,7 +448,7 @@ if (
               application.ports.serverEvents[application.process.number],
               "127.0.0.1"
             );
-            await stop;
+            await eventLoopActive;
             server.close();
             events.close();
             serverApplication.emit("stop");
@@ -484,7 +463,7 @@ if (
               application.ports.workerEvents[application.process.number],
               "127.0.0.1"
             );
-            await stop;
+            await eventLoopActive;
             events.close();
             eventsApplication.emit("stop");
             break;
