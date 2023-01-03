@@ -28,6 +28,7 @@ window.textareaCaret = textareaCaret;
 import * as textFieldEdit from "text-field-edit";
 window.textFieldEdit = textFieldEdit;
 
+// import * as leafac from "@leafac/javascript/static/index.mjs";
 import * as leafac from "./leafac--javascript.mjs";
 window.leafac = leafac;
 
