@@ -28,7 +28,7 @@ export async function time(title, function_) {
 }
 
 // TODO: Either remove this, or restore it and remove ‘tsc --noEmit’ from ‘package.json’
-// await time("Server: TypeScript", async () => {
+// await time("[Server] TypeScript", async () => {
 //   await execa("tsc", undefined, {
 //     cwd: "./server/",
 //     preferLocal: true,
@@ -36,7 +36,7 @@ export async function time(title, function_) {
 //   });
 // });
 
-await time("Server: esbuild", async () => {
+await time("[Server] esbuild", async () => {
   await esbuild.build({
     absWorkingDir: url.fileURLToPath(new URL("./server/", import.meta.url)),
     entryPoints: await globby("./**/*.mts", { cwd: "./server/" }),
@@ -51,7 +51,7 @@ await time("Server: esbuild", async () => {
 
 let staticCSS = "";
 let staticJavaScript = "";
-await time("Server: Babel", async () => {
+await time("[Server] Babel", async () => {
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const htmlMinifier = unified()
     .use(rehypeParse, { fragment: true, emitParseErrors: true })
@@ -137,7 +137,7 @@ await time("Server: Babel", async () => {
     );
 });
 
-await time("Static: PostCSS", async () => {
+await time("[Static] PostCSS", async () => {
   staticCSS = (
     await postcss([postcssNested, autoprefixer]).process(staticCSS, {
       from: undefined,
@@ -149,7 +149,7 @@ await fs.writeFile("./static/application.css", staticCSS);
 await fs.writeFile("./static/application.mjs", staticJavaScript);
 
 let esbuildResult;
-await time("Static: esbuild", async () => {
+await time("[Static] esbuild", async () => {
   esbuildResult = await esbuild.build({
     absWorkingDir: url.fileURLToPath(new URL("./static/", import.meta.url)),
     entryPoints: ["./index.mjs"],
@@ -186,7 +186,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
     break;
   }
 
-await time("Static: Copy static files with cache busting", async () => {
+await time("[Static] Copy static files with cache busting", async () => {
   const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
   for (const source of [
     "./static/about/ali-madooei.webp",
@@ -219,7 +219,7 @@ await fs.writeFile(
   JSON.stringify(paths, undefined, 2)
 );
 
-await time("Static: Copy static files without cache busting", async () => {
+await time("[Static] Copy static files without cache busting", async () => {
   for (const source of [
     "./static/apple-touch-icon.png",
     "./static/favicon.ico",
