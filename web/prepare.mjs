@@ -155,9 +155,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
     break;
   }
 
-const baseFileHash = baseX(
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-);
+const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 for (const source of [
   "./static/about/ali-madooei.webp",
   "./static/about/eliot-smith.webp",
@@ -177,7 +175,7 @@ for (const source of [
     )}${extension}`
   );
   paths[source.slice("./static/".length)] = destination.slice(
-    "./build/static/".length
+    "build/static/".length
   );
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
