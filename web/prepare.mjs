@@ -35,9 +35,11 @@ await time("Server: TypeScript", async () => {
   });
 });
 
-let applicationCSS = "";
-let applicationJavaScript = "";
-await time("Server: Minify HTML and extract CSS & JavaScript", async () => {
+let staticCSS = "";
+let staticJavaScript = "";
+await time(
+  "Server: Minify HTML and extract static CSS & JavaScript",
+  async () => {
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const htmlMinifier = unified()
     .use(rehypeParse, { fragment: true, emitParseErrors: true })
@@ -78,12 +80,12 @@ await time("Server: Minify HTML and extract CSS & JavaScript", async () => {
                   //     const identifier = baseIdentifier.encode(
                   //       xxhash.XXHash3.hash(Buffer.from(css_))
                   //     );
-                  //     applicationCSS =
+                    //     staticCSS =
                   //       css`
                   //         ${`[css~="${identifier}"]`.repeat(6)} {
                   //           ${css_}
                   //         }
-                  //       ` + applicationCSS;
+                    //       ` + staticCSS;
                   //     path.replaceWith(babel.types.stringLiteral(identifier));
                   //     break;
                   //   }
@@ -97,7 +99,7 @@ await time("Server: Minify HTML and extract CSS & JavaScript", async () => {
                   //     const identifier = baseIdentifier.encode(
                   //       xxhash.XXHash3.hash(Buffer.from(javascript_))
                   //     );
-                  //     applicationJavaScript += javascript`export const ${identifier} = (${[
+                    //     staticJavaScript += javascript`export const ${identifier} = (${[
                   //       "event",
                   //       ...expressions.map((value, index) => `$$${index}`),
                   //     ].join(", ")}) => { ${javascript_} };`;
@@ -121,18 +123,19 @@ await time("Server: Minify HTML and extract CSS & JavaScript", async () => {
         })
       ).code
     );
-});
+  }
+);
 
 await time("Static: PostCSS", async () => {
-  applicationCSS = (
-    await postcss([postcssNested, autoprefixer]).process(applicationCSS, {
+  staticCSS = (
+    await postcss([postcssNested, autoprefixer]).process(staticCSS, {
       from: undefined,
     })
   ).css;
 });
 
-await fs.writeFile("./static/application.css", applicationCSS);
-await fs.writeFile("./static/application.mjs", applicationJavaScript);
+await fs.writeFile("./static/application.css", staticCSS);
+await fs.writeFile("./static/application.mjs", staticJavaScript);
 
 let esbuildResult;
 await time("Static: esbuild", async () => {
