@@ -101,7 +101,7 @@ export default async (application: Application): Promise<void> => {
                       Math.random() < 0.6
                         ? `https://${
                             application.configuration.hostname
-                          }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.webp`
+                          }/node_modules/fake-avatars/avatars/webp/${avatarIndices.shift()}.webp`
                         : null
                     },
                     ${lodash.sample(
@@ -729,7 +729,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img
 <img class="fit-picture"
       src="https://${
         application.configuration.hostname
-      }/node_modules/fake-avatars/avatars/1.webp"
+      }/node_modules/fake-avatars/avatars/webp/1.webp"
       alt="Grapefruit slice atop a pile of other slices">
 
 ---
@@ -746,7 +746,7 @@ Animated GIFs
 
 [<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>](https://${
           application.configuration.hostname
-        }/node_modules/fake-avatars/avatars/1.webp)
+        }/node_modules/fake-avatars/avatars/webp/1.webp)
 
 
 ---
@@ -764,7 +764,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 <div class="warning">
     <img src="https://${
       application.configuration.hostname
-    }/node_modules/fake-avatars/avatars/1.webp"
+    }/node_modules/fake-avatars/avatars/webp/1.webp"
           alt="An intimidating leopard.">
     <p>Beware of the leopard</p>
 </div>
@@ -1059,7 +1059,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption
 <figure>
     <img src="https://${
       application.configuration.hostname
-    }/node_modules/fake-avatars/avatars/1.webp"
+    }/node_modules/fake-avatars/avatars/webp/1.webp"
           alt="Elephant at sunset">
     <figcaption>An elephant at sunset</figcaption>
 </figure>
