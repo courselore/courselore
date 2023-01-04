@@ -1,3 +1,4 @@
+import * as node from "@leafac/node";
 import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
@@ -54,11 +55,11 @@ export default async (application: Application): Promise<void> => {
     if (response.locals.log !== undefined) return next();
 
     const id = Math.random().toString(36).slice(2);
-    const time = process.hrtime.bigint();
+    const start = process.hrtime.bigint();
     response.locals.log = (...messageParts) => {
       application.log(
         id,
-        `${(process.hrtime.bigint() - time) / 1_000_000n}ms`,
+        `${node.elapsedTime(start)}ms`,
         request.ip,
         request.method,
         request.originalUrl,
