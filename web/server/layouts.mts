@@ -248,6 +248,7 @@ export type ApplicationLayouts = {
 };
 
 export default async (application: Application): Promise<void> => {
+  // REVISIT
   css`
     .label {
       display: flex;
@@ -1526,6 +1527,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button"
+                    REVISIT
                     css="${css`
                       background-color: var(
                         --color--${response.locals.enrollment.accentColor}--500

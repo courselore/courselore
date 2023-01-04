@@ -20,6 +20,8 @@ import html from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
 
+// TODO: Minimize the CSS/JavaScript before hashing it, because it leads to more reuse.
+
 // TODO: Either remove this, or restore it and remove ‘tsc --noEmit’ from ‘package.json’
 // await time("[Server] TypeScript", async () => {
 //   await execa("tsc", undefined, {

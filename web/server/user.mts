@@ -328,6 +328,7 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
+                REVISIT
                 css="${css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
@@ -370,6 +371,7 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
+                REVISIT
                 css="${css`
                   ${{
                     xs: css`
@@ -395,6 +397,7 @@ export default async (application: Application): Promise<void> => {
               />`
             : html`<svg
                 viewBox="0 0 24 24"
+                REVISIT
                 css="${css`
                   color: var(--color--${user.avatarlessBackgroundColor}--700);
                   background-color: var(
@@ -449,6 +452,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
+            REVISIT
             css="${css`
               display: inline-grid;
               & > * {
@@ -469,6 +473,7 @@ export default async (application: Application): Promise<void> => {
             $${userAvatar}
             <span
               hidden
+              REVISIT
               css="${css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
@@ -522,6 +527,7 @@ export default async (application: Application): Promise<void> => {
       if (name !== false)
         userName = html`<span
           ><span
+            REVISIT
             css="${css`
               ${bold
                 ? css`
@@ -752,6 +758,7 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
+          REVISIT
           css="${css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
@@ -792,6 +799,7 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
+        REVISIT
           css="${css`
             ${bold
               ? css`

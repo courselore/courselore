@@ -1071,6 +1071,7 @@ export default async (application: Application): Promise<void> => {
           <div
             key="layout--conversation--sidebar--/${response.locals.course
               .reference}"
+            REVISIT
             css="${css`
               display: flex;
               flex-direction: column;
@@ -2425,6 +2426,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button ${isSelected
                                     ? "button--blue"
                                     : "button--transparent"}"
+                                  REVISIT
                                   css="${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
@@ -2558,6 +2560,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="layout--conversation--main--${request.path}"
+            REVISIT
             css="${css`
               overflow: auto;
               flex: 1;
@@ -2571,6 +2574,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
+              REVISIT
               css="${css`
                 @media (max-width: 899px) {
                   display: flex;
@@ -5208,6 +5212,7 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="conversation--header"
+                REVISIT
                 css="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
@@ -5232,6 +5237,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
+                  REVISIT
                   css="${css`
                     ${response.locals.conversation.type === "chat"
                       ? css`
@@ -6267,16 +6273,16 @@ export default async (application: Application): Promise<void> => {
                                   text-align: left;
                                 `}"
                                 javascript="${javascript`
-                                    leafac.setTippy({
-                                      event,
-                                      element: this,
-                                      tippyProps: {
-                                        theme: "rose",
-                                        touch: false,
-                                        content: "Remove Tag",
-                                      },
-                                    });
-                                  `}"
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    },
+                                  });
+                                `}"
                               >
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
@@ -7191,6 +7197,7 @@ export default async (application: Application): Promise<void> => {
 
                 return html`
                   <div
+                    REVISIT
                     css="${css`
                       ${response.locals.conversation.type === "chat"
                         ? css`
@@ -7266,6 +7273,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
+                      REVISIT
                       css="${css`
                         ${response.locals.conversation.type === "chat"
                           ? css`
@@ -7303,6 +7311,7 @@ export default async (application: Application): Promise<void> => {
                         : html`
                             <div
                               key="messages"
+                              REVISIT
                               css="${css`
                                 ${response.locals.conversation.type === "chat"
                                   ? css`
@@ -7355,6 +7364,7 @@ export default async (application: Application): Promise<void> => {
                                     <div
                                       key="message/${message.reference}"
                                       class="message"
+                                      REVISIT
                                       css="${css`
                                         ${response.locals.conversation.type ===
                                         "chat"
@@ -7513,6 +7523,7 @@ export default async (application: Application): Promise<void> => {
 
                                       <div
                                         key="message--highlight"
+                                        REVISIT
                                         css="${css`
                                           padding: var(--space--2);
                                           ${response.locals.conversation
@@ -7585,6 +7596,7 @@ export default async (application: Application): Promise<void> => {
                                             <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
+                                                REVISIT
                                                 css="${css`
                                                   font-size: var(
                                                     --font-size--xs
@@ -8735,6 +8747,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
+                                REVISIT
                                 css="${css`
                                   opacity: var(--opacity--50);
                                   ${response.locals.conversation.type === "chat"
@@ -8751,6 +8764,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <div
+                                  REVISIT
                                   css="${css`
                                     padding: var(--space--2);
                                     ${response.locals.conversation.type ===
@@ -8903,6 +8917,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 novalidate
+                REVISIT
                 css="${css`
                   ${response.locals.conversation.type === "chat"
                     ? css`
@@ -8944,6 +8959,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
+                  REVISIT
                   css="${css`
                     display: flex;
                     flex-direction: column;
@@ -9022,6 +9038,7 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
+                    REVISIT
                     css="${css`
                       display: grid;
                       & > * {

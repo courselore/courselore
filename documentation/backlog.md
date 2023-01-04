@@ -2,6 +2,14 @@
 
 ## TO ORGANIZE
 
+- There’s a issue when running Courselore for the first time in the new multiprocess architecture: Caddy may ask for your password, but you may not see it.
+  - It still works if you see it and type in the password, even as other stuff has scrolled by.
+  - Potential solutions:
+    - Run Caddy before spawning children processes
+    - Document this quirk.
+
+---
+
 - Performance improvements:
   - HTML sanitization is a significant overhead.
   - `slugify` is expensive, and it may be cacheable.

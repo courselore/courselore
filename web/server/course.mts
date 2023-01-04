@@ -620,6 +620,7 @@ export default async (application: Application): Promise<void> => {
       <div>
         <div
           class="button button--tight ${tight ? "button--tight--inline" : ""}"
+          REVISIT
           css="${css`
             cursor: default;
             ${enrollment === undefined
@@ -2857,27 +2858,27 @@ export default async (application: Application): Promise<void> => {
                                             cursor: default;
                                           `}"
                                           javascript="${javascript`
-                                              leafac.setTippy({
-                                                event,
-                                                element: this,
-                                                tippyProps: {
-                                                  interactive: true,
-                                                  content: ${JSON.stringify(html`
-                                                    <div>
-                                                      Used
-                                                      <time
-                                                        datetime="${new Date(
-                                                          invitation.usedAt!
-                                                        ).toISOString()}"
-                                                        javascript="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `}"
-                                                      ></time>
-                                                    </div>
-                                                  `)},
-                                                },
-                                              });
-                                            `}"
+                                            leafac.setTippy({
+                                              event,
+                                              element: this,
+                                              tippyProps: {
+                                                interactive: true,
+                                                content: ${JSON.stringify(html`
+                                                  <div>
+                                                    Used
+                                                    <time
+                                                      datetime="${new Date(
+                                                        invitation.usedAt!
+                                                      ).toISOString()}"
+                                                      javascript="${javascript`
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                        `}"
+                                                    ></time>
+                                                  </div>
+                                                `)},
+                                              },
+                                            });
+                                          `}"
                                         >
                                           <i class="bi bi-check-lg"></i>
                                           Used
@@ -4854,6 +4855,7 @@ export default async (application: Application): Promise<void> => {
                           ? html`checked`
                           : html``}
                         class="input--radio"
+                        REVISIT
                         css="${css`
                           background-color: var(--color--${accentColor}--500);
                           &:hover,
