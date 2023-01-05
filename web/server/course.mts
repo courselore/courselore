@@ -620,16 +620,22 @@ export default async (application: Application): Promise<void> => {
       <div>
         <div
           class="button button--tight ${tight ? "button--tight--inline" : ""}"
+          style="${enrollment === undefined
+            ? ``
+            : `
+              --color--accent-color--100: var(--color--${enrollment.accentColor}--100);
+              --color--accent-color--200: var(--color--${enrollment.accentColor}--200);
+              --color--accent-color--700: var(--color--${enrollment.accentColor}--700);
+              --color--accent-color--800: var(--color--${enrollment.accentColor}--800);
+            `}"
           css="${enrollment === undefined
             ? css``
             : css`
-                color: var(--color--${enrollment.accentColor}--700);
-                background-color: var(--color--${enrollment.accentColor}--100);
+                color: var(--color--accent-color--700);
+                background-color: var(--color--accent-color--100);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--${enrollment.accentColor}--200);
-                  background-color: var(
-                    --color--${enrollment.accentColor}--800
-                  );
+                  color: var(--color--accent-color--200);
+                  background-color: var(--color--accent-color--800);
                 }
               `} ${css`
             cursor: default;
