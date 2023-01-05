@@ -2427,7 +2427,13 @@ export default async (application: Application): Promise<void> => {
                                     ? "button--blue"
                                     : "button--transparent"}"
                                   REVISIT
-                                  css="${css`
+                                  css="${isSelected
+                                    ? css`
+                                        & + * {
+                                          margin-bottom: var(--space--0);
+                                        }
+                                      `
+                                    : css``} ${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
                                     );
@@ -2435,13 +2441,6 @@ export default async (application: Application): Promise<void> => {
                                     margin-left: var(--space---2);
                                     position: relative;
                                     align-items: center;
-                                    ${isSelected
-                                      ? css`
-                                          & + * {
-                                            margin-bottom: var(--space--0);
-                                          }
-                                        `
-                                      : css``}
                                   `}"
                                 >
                                   <div
