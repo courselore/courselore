@@ -2426,7 +2426,6 @@ export default async (application: Application): Promise<void> => {
                                   class="button ${isSelected
                                     ? "button--blue"
                                     : "button--transparent"}"
-                                  REVISIT
                                   css="${isSelected
                                     ? css`
                                         & + * {
