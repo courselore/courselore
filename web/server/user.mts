@@ -328,30 +328,28 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                REVISIT
-                css="${css`
+                css="${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                    vertical-align: var(--space---1);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    vertical-align: var(--space---1-5);
+                  `,
+                  xl: css`
+                    width: var(--space--32);
+                    height: var(--space--32);
+                  `,
+                }[size]} ${css`
                   color: var(--color--rose--700);
                   background-color: var(--color--rose--200);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--rose--200);
                     background-color: var(--color--rose--700);
                   }
-                  ${{
-                    xs: css`
-                      width: var(--space--4);
-                      height: var(--space--4);
-                      vertical-align: var(--space---1);
-                    `,
-                    sm: css`
-                      width: var(--space--6);
-                      height: var(--space--6);
-                      vertical-align: var(--space---1-5);
-                    `,
-                    xl: css`
-                      width: var(--space--32);
-                      height: var(--space--32);
-                    `,
-                  }[size]}
                   border-radius: var(--border-radius--circle);
                 `}"
               >
@@ -371,24 +369,22 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                REVISIT
-                css="${css`
-                  ${{
-                    xs: css`
-                      width: var(--space--4);
-                      height: var(--space--4);
-                      vertical-align: var(--space---1);
-                    `,
-                    sm: css`
-                      width: var(--space--6);
-                      height: var(--space--6);
-                      vertical-align: var(--space---1-5);
-                    `,
-                    xl: css`
-                      width: var(--space--32);
-                      height: var(--space--32);
-                    `,
-                  }[size]}
+                css="${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                    vertical-align: var(--space---1);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    vertical-align: var(--space---1-5);
+                  `,
+                  xl: css`
+                    width: var(--space--32);
+                    height: var(--space--32);
+                  `,
+                }[size]} ${css`
                   border-radius: var(--border-radius--circle);
                   @media (prefers-color-scheme: dark) {
                     filter: brightness(var(--brightness--90));
@@ -397,34 +393,36 @@ export default async (application: Application): Promise<void> => {
               />`
             : html`<svg
                 viewBox="0 0 24 24"
-                REVISIT
-                css="${css`
-                  color: var(--color--${user.avatarlessBackgroundColor}--700);
+                style="
+                  --color--avatarless-background-color--200: var(--color--${user.avatarlessBackgroundColor}--200);
+                  --color--avatarless-background-color--700: var(--color--${user.avatarlessBackgroundColor}--700);
+                "
+                css="${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                    vertical-align: var(--space---1);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    vertical-align: var(--space---1-5);
+                  `,
+                  xl: css`
+                    width: var(--space--32);
+                    height: var(--space--32);
+                  `,
+                }[size]} ${css`
+                  color: var(--color--avatarless-background-color--700);
                   background-color: var(
-                    --color--${user.avatarlessBackgroundColor}--200
+                    --color--avatarless-background-color--200
                   );
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--${user.avatarlessBackgroundColor}--200);
+                    color: var(--color--avatarless-background-color--200);
                     background-color: var(
-                      --color--${user.avatarlessBackgroundColor}--700
+                      --color--avatarless-background-color--700
                     );
                   }
-                  ${{
-                    xs: css`
-                      width: var(--space--4);
-                      height: var(--space--4);
-                      vertical-align: var(--space---1);
-                    `,
-                    sm: css`
-                      width: var(--space--6);
-                      height: var(--space--6);
-                      vertical-align: var(--space---1-5);
-                    `,
-                    xl: css`
-                      width: var(--space--32);
-                      height: var(--space--32);
-                    `,
-                  }[size]}
                   border-radius: var(--border-radius--circle);
                 `}"
               >
@@ -799,7 +797,7 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
-        REVISIT
+          REVISIT
           css="${css`
             ${bold
               ? css`
