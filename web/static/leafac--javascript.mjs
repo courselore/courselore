@@ -383,19 +383,16 @@ export async function liveConnection({
 }
 
 export function loadDocument(documentString, event) {
+  if (!event?.detail?.liveUpdate) tippyStatic.hideAll();
+
   const newDocument = new DOMParser().parseFromString(
     documentString,
     "text/html"
   );
 
-  document.querySelector("title").textContent =
-    newDocument.querySelector("title").textContent;
-
-  if (!event?.detail?.liveUpdate) tippyStatic.hideAll();
-
   morph(
-    document.querySelector("body"),
-    newDocument.querySelector("body"),
+    document.querySelector("html"),
+    newDocument.querySelector("html"),
     event
   );
 
