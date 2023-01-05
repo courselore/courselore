@@ -1071,17 +1071,17 @@ export default async (application: Application): Promise<void> => {
           <div
             key="layout--conversation--sidebar--/${response.locals.course
               .reference}"
-            REVISIT
-            css="${css`
+            css="${sidebarOnSmallScreen
+              ? css``
+              : css`
+                  @media (max-width: 899px) {
+                    display: none;
+                  }
+                `} ${css`
               display: flex;
               flex-direction: column;
               @media (max-width: 899px) {
                 flex: 1;
-                ${sidebarOnSmallScreen
-                  ? css``
-                  : css`
-                      display: none;
-                    `}
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
