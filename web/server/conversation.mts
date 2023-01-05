@@ -7187,24 +7187,21 @@ export default async (application: Application): Promise<void> => {
 
                 return html`
                   <div
-                    REVISIT
-                    css="${css`
-                      ${response.locals.conversation.type === "chat"
-                        ? css`
-                            flex: 1;
-                            padding-right: var(--space--4);
-                            padding-left: var(--space--4);
-                            @media (min-width: 900px) {
-                              padding-left: var(--space--8);
-                            }
-                            overflow: auto;
-                            display: flex;
-                            @media (max-width: 899px) {
-                              justify-content: center;
-                            }
-                          `
-                        : css``}
-                    `}"
+                    css="${response.locals.conversation.type === "chat"
+                      ? css`
+                          flex: 1;
+                          padding-right: var(--space--4);
+                          padding-left: var(--space--4);
+                          @media (min-width: 900px) {
+                            padding-left: var(--space--8);
+                          }
+                          overflow: auto;
+                          display: flex;
+                          @media (max-width: 899px) {
+                            justify-content: center;
+                          }
+                        `
+                      : css``}"
                     javascript="${javascript`
                       const scroll = () => {
                         if (
