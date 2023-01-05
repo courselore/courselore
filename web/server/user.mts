@@ -450,48 +450,44 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            REVISIT
-            css="${css`
+            css="${{
+              xs: css`
+                vertical-align: var(--space---1);
+              `,
+              sm: css`
+                vertical-align: var(--space---1-5);
+              `,
+              xl: css``,
+            }[size]} ${css`
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
                 position: relative;
               }
-              ${{
-                xs: css`
-                  vertical-align: var(--space---1);
-                `,
-                sm: css`
-                  vertical-align: var(--space---1-5);
-                `,
-                xl: css``,
-              }[size]}
             `}"
           >
             $${userAvatar}
             <span
               hidden
-              REVISIT
-              css="${css`
+              css="${{
+                xs: css`
+                  width: var(--space--1);
+                  height: var(--space--1);
+                `,
+                sm: css`
+                  width: var(--space--1-5);
+                  height: var(--space--1-5);
+                `,
+                xl: css`
+                  width: var(--space--3);
+                  height: var(--space--3);
+                  transform: translate(-100%, -100%);
+                `,
+              }[size]} ${css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
                 }
-                ${{
-                  xs: css`
-                    width: var(--space--1);
-                    height: var(--space--1);
-                  `,
-                  sm: css`
-                    width: var(--space--1-5);
-                    height: var(--space--1-5);
-                  `,
-                  xl: css`
-                    width: var(--space--3);
-                    height: var(--space--3);
-                    transform: translate(-100%, -100%);
-                  `,
-                }[size]}
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `}"
@@ -525,14 +521,11 @@ export default async (application: Application): Promise<void> => {
       if (name !== false)
         userName = html`<span
           ><span
-            REVISIT
-            css="${css`
-              ${bold
-                ? css`
-                    font-weight: var(--font-weight--bold);
-                  `
-                : css``}
-            `}"
+            css="${bold
+              ? css`
+                  font-weight: var(--font-weight--bold);
+                `
+              : css``}"
             $${name === true && user !== "no-longer-enrolled"
               ? html`
                   data-filterable-phrases="${JSON.stringify(
@@ -756,30 +749,28 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          REVISIT
-          css="${css`
+          css="${{
+            xs: css`
+              width: var(--space--4);
+              height: var(--space--4);
+              vertical-align: var(--space---1);
+            `,
+            sm: css`
+              width: var(--space--6);
+              height: var(--space--6);
+              vertical-align: var(--space---1-5);
+            `,
+            xl: css`
+              width: var(--space--32);
+              height: var(--space--32);
+            `,
+          }[size]} ${css`
             color: var(--color--violet--700);
             background-color: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
               color: var(--color--violet--200);
               background-color: var(--color--violet--700);
             }
-            ${{
-              xs: css`
-                width: var(--space--4);
-                height: var(--space--4);
-                vertical-align: var(--space---1);
-              `,
-              sm: css`
-                width: var(--space--6);
-                height: var(--space--6);
-                vertical-align: var(--space---1-5);
-              `,
-              xl: css`
-                width: var(--space--32);
-                height: var(--space--32);
-              `,
-            }[size]}
             border-radius: var(--border-radius--circle);
           `}"
         >
@@ -797,14 +788,11 @@ export default async (application: Application): Promise<void> => {
 
       if (name !== false)
         anonymousName = html`<span
-          REVISIT
-          css="${css`
-            ${bold
-              ? css`
-                  font-weight: var(--font-weight--bold);
-                `
-              : css``}
-          `}"
+          css="${bold
+            ? css`
+                font-weight: var(--font-weight--bold);
+              `
+            : css``}"
           >Anonymous</span
         >`;
     }
