@@ -2558,17 +2558,15 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="layout--conversation--main--${request.path}"
-            REVISIT
-            css="${css`
+            css="${sidebarOnSmallScreen
+              ? css`
+                  @media (max-width: 899px) {
+                    display: none;
+                  }
+                `
+              : css``} ${css`
               overflow: auto;
               flex: 1;
-              ${sidebarOnSmallScreen
-                ? css`
-                    @media (max-width: 899px) {
-                      display: none;
-                    }
-                  `
-                : css``}
             `}"
           >
             <div
