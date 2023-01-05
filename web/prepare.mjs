@@ -108,39 +108,39 @@ await node.time("[Server] Babel", async () => {
                       break;
                     }
 
-                    case "javascript": {
-                      let javascript_ = "";
-                      for (const [
-                        index,
-                        quasi,
-                      ] of path.node.quasi.quasis.entries())
-                        javascript_ +=
-                          (index === 0 ? `` : `$$${index - 1}`) +
-                          quasi.value.cooked;
-                      const identifier = baseIdentifier.encode(
-                        xxhash.XXHash3.hash(Buffer.from(javascript_))
-                      );
-                      if (!staticJavaScriptIdentifiers.has(identifier)) {
-                        staticJavaScriptIdentifiers.add(identifier);
-                        staticJavaScript += javascript`export const ${identifier} = (${[
-                          "event",
-                          ...path.node.quasi.expressions.map(
-                            (value, index) => `$$${index}`
-                          ),
-                        ].join(", ")}) => { ${javascript_} };`;
-                      }
-                      path.replaceWith(
-                        babel.template.ast`
-                          JSON.stringify({
-                            function: ${babel.types.stringLiteral(identifier)},
-                            arguments: ${babel.types.arrayExpression(
-                              path.node.quasi.expressions
-                            )},
-                          })
-                        `
-                      );
-                      break;
-                    }
+                    // case "javascript": {
+                    //   let javascript_ = "";
+                    //   for (const [
+                    //     index,
+                    //     quasi,
+                    //   ] of path.node.quasi.quasis.entries())
+                    //     javascript_ +=
+                    //       (index === 0 ? `` : `$$${index - 1}`) +
+                    //       quasi.value.cooked;
+                    //   const identifier = baseIdentifier.encode(
+                    //     xxhash.XXHash3.hash(Buffer.from(javascript_))
+                    //   );
+                    //   if (!staticJavaScriptIdentifiers.has(identifier)) {
+                    //     staticJavaScriptIdentifiers.add(identifier);
+                    //     staticJavaScript += javascript`export const ${identifier} = (${[
+                    //       "event",
+                    //       ...path.node.quasi.expressions.map(
+                    //         (value, index) => `$$${index}`
+                    //       ),
+                    //     ].join(", ")}) => { ${javascript_} };`;
+                    //   }
+                    //   path.replaceWith(
+                    //     babel.template.ast`
+                    //       JSON.stringify({
+                    //         function: ${babel.types.stringLiteral(identifier)},
+                    //         arguments: ${babel.types.arrayExpression(
+                    //           path.node.quasi.expressions
+                    //         )},
+                    //       })
+                    //     `
+                    //   );
+                    //   break;
+                    // }
                   }
                 },
               },
