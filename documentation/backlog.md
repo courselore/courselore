@@ -7,6 +7,16 @@
   - Potential solutions:
     - Run Caddy before spawning children processes
     - Document this quirk.
+- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that `` JSON.stringify(html`...`) `` is a thing.
+- Issue: Using `enrollment.accentColor` in CSS
+  - Potential solutions:
+    - Inline `style=""` and CSS variables
+      - Could we automate this in compilation?
+        - Perhaps, the difficulty is that it needs to be aware of the `css="..."` stuff, because it’ll need to put a `style="..."` adjacent to it.
+          - That’s how astroturf does it, for example.
+          - For the time being, it seems like to too much magic and error-prone. Let’s do it by hand…
+    - JavaScript
+    - `switch`/`case` and lots of copy-and-paste
 
 ---
 
