@@ -7260,16 +7260,13 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      REVISIT
-                      css="${css`
-                        ${response.locals.conversation.type === "chat"
-                          ? css`
-                              flex: 1;
-                              min-width: var(--width--0);
-                              max-width: var(--width--prose);
-                            `
-                          : css``}
-                      `}"
+                      css="${response.locals.conversation.type === "chat"
+                        ? css`
+                            flex: 1;
+                            min-width: var(--width--0);
+                            max-width: var(--width--prose);
+                          `
+                        : css``}"
                     >
                       $${messages.length === 0
                         ? html`
