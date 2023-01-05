@@ -1592,15 +1592,16 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button"
-                    REVISIT
+                    style="
+                      --color--accent-color--500: var(--color--${response.locals
+                      .enrollment.accentColor}--500);
+                      --color--accent-color--600: var(--color--${response.locals
+                      .enrollment.accentColor}--600);
+                    "
                     css="${css`
-                      background-color: var(
-                        --color--${response.locals.enrollment.accentColor}--500
-                      );
+                      background-color: var(--color--accent-color--500);
                       @media (prefers-color-scheme: dark) {
-                        background-color: var(
-                          --color--${response.locals.enrollment.accentColor}--600
-                        );
+                        background-color: var(--color--accent-color--600);
                       }
                       border-radius: var(--border-radius--none);
                       flex: 1;
