@@ -81,21 +81,23 @@ await node.time("[Server] Babel", async () => {
                     //   }
 
                     case "css": {
-                      if (path.node.quasi.expressions.length > 0) return; // TODO: REMOVE
-                      const css_ = new Function(
-                        "css",
-                        `return (${babelGenerator.default(path.node).code});`
-                      )(css);
-                      const identifier = baseIdentifier.encode(
-                        xxhash.XXHash3.hash(Buffer.from(css_))
-                      );
-                      staticCSS =
-                        css`
-                          ${`[css~="${identifier}"]`.repeat(6)} {
-                            ${css_}
-                          }
-                        ` + staticCSS;
-                      path.replaceWith(babel.types.stringLiteral(identifier));
+                      // TODO: REMOVE TRY
+                      try {
+                        const css_ = new Function(
+                          "css",
+                          `return (${babelGenerator.default(path.node).code});`
+                        )(css);
+                        const identifier = baseIdentifier.encode(
+                          xxhash.XXHash3.hash(Buffer.from(css_))
+                        );
+                        staticCSS =
+                          css`
+                            ${`[css~="${identifier}"]`.repeat(6)} {
+                              ${css_}
+                            }
+                          ` + staticCSS;
+                        path.replaceWith(babel.types.stringLiteral(identifier));
+                      } catch {}
                       break;
                     }
 
