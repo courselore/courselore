@@ -391,12 +391,6 @@ export function loadDocument(documentString, event) {
   document.querySelector("title").textContent =
     newDocument.querySelector("title").textContent;
 
-  const css = document.querySelector(`[key="local-css"]`);
-  const newCSS = newDocument.querySelector(`[key="local-css"]`);
-  if (event?.detail?.liveUpdate)
-    css.insertAdjacentText("beforeend", newCSS.textContent);
-  else css.textContent = newCSS.textContent;
-
   if (!event?.detail?.liveUpdate) tippyStatic.hideAll();
 
   morph(
@@ -404,11 +398,6 @@ export function loadDocument(documentString, event) {
     newDocument.querySelector("body"),
     event
   );
-
-  const localJavaScript = window.localJavaScript;
-  evaluate({ elements: [document.querySelector('[key="local-javascript"]')] });
-  if (event?.detail?.liveUpdate)
-    window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
 
   window.dispatchEvent(
     new CustomEvent("DOMContentLoaded", { detail: event?.detail })
