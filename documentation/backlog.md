@@ -17,6 +17,7 @@
           - For the time being, it seems like to too much magic and error-prone. Let’s do it by hand…
     - JavaScript
     - `switch`/`case` and lots of copy-and-paste
+- Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
 
 ---
 
