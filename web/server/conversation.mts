@@ -2570,23 +2570,21 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              REVISIT
-              css="${css`
+              css="${mainIsAScrollingPane
+                ? css`
+                    height: 100%;
+                    display: flex;
+                  `
+                : css`
+                    margin: var(--space--4);
+                    @media (min-width: 900px) {
+                      margin-left: var(--space--8);
+                    }
+                  `} ${css`
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
                 }
-                ${mainIsAScrollingPane
-                  ? css`
-                      height: 100%;
-                      display: flex;
-                    `
-                  : css`
-                      margin: var(--space--4);
-                      @media (min-width: 900px) {
-                        margin-left: var(--space--8);
-                      }
-                    `}
               `}"
             >
               $${mainIsAScrollingPane
