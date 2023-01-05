@@ -254,9 +254,9 @@ export default async (application: Application): Promise<void> => {
     head,
     extraHeaders = html``,
     body,
-  }) => html`
-    <!DOCTYPE html>
-    <html lang="en">
+  }) =>
+    `<!DOCTYPE html><html lang="en">` +
+    html`
       <head>
         <meta name="version" content="${application.version}" />
 
@@ -2255,8 +2255,7 @@ export default async (application: Application): Promise<void> => {
           ></div>
         </div>
       </body>
-    </html>
-  `;
+    `;
 
   if (application.configuration.environment !== "production")
     application.server.delete<
