@@ -8868,25 +8868,22 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 novalidate
-                REVISIT
-                css="${css`
-                  ${response.locals.conversation.type === "chat"
-                    ? css`
-                        padding-right: var(--space--4);
-                        padding-bottom: var(--space--4);
-                        padding-left: var(--space--4);
-                        @media (min-width: 900px) {
-                          padding-left: var(--space--8);
-                        }
-                        display: flex;
-                        @media (max-width: 899px) {
-                          justify-content: center;
-                        }
-                      `
-                    : css`
-                        padding-top: var(--space--4);
-                      `}
-                `}"
+                css="${response.locals.conversation.type === "chat"
+                  ? css`
+                      padding-right: var(--space--4);
+                      padding-bottom: var(--space--4);
+                      padding-left: var(--space--4);
+                      @media (min-width: 900px) {
+                        padding-left: var(--space--8);
+                      }
+                      display: flex;
+                      @media (max-width: 899px) {
+                        justify-content: center;
+                      }
+                    `
+                  : css`
+                      padding-top: var(--space--4);
+                    `}"
                 javascript="${javascript`
                   this.onsubmit = () => {
                     window.setTimeout(() => {
@@ -8910,20 +8907,18 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  REVISIT
-                  css="${css`
+                  css="${response.locals.conversation.type === "chat"
+                    ? css`
+                        gap: var(--space--2);
+                        flex: 1;
+                        min-width: var(--width--0);
+                        max-width: var(--width--prose);
+                      `
+                    : css`
+                        gap: var(--space--4);
+                      `} ${css`
                     display: flex;
                     flex-direction: column;
-                    ${response.locals.conversation.type === "chat"
-                      ? css`
-                          gap: var(--space--2);
-                          flex: 1;
-                          min-width: var(--width--0);
-                          max-width: var(--width--prose);
-                        `
-                      : css`
-                          gap: var(--space--4);
-                        `}
                   `}"
                 >
                   $${response.locals.conversation.type === "question"
@@ -8989,20 +8984,17 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
-                    REVISIT
-                    css="${css`
+                    css="${response.locals.conversation.type === "chat"
+                      ? css`
+                          textarea {
+                            padding-right: var(--space--8);
+                          }
+                        `
+                      : css``} ${css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
                       }
-
-                      ${response.locals.conversation.type === "chat"
-                        ? css`
-                            textarea {
-                              padding-right: var(--space--8);
-                            }
-                          `
-                        : css``}
                     `}"
                     javascript="${javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
