@@ -68,7 +68,7 @@ await node.time("[Server] Babel", async () => {
               visitor: {
                 TaggedTemplateExpression(path) {
                   switch (path.node.tag.name) {
-                    // TODO: Either enable this or revert ‘layouts.mts’ to use ‘doctype’, ‘head’, and ‘body’ as usual.
+                    // TODO
                     // case "html": {
                     //   path.node.quasi.quasis = htmlMinifier
                     //     .processSync(
@@ -108,6 +108,7 @@ await node.time("[Server] Babel", async () => {
                       break;
                     }
 
+                    // TODO
                     // case "javascript": {
                     //   let javascript_ = "";
                     //   for (const [
