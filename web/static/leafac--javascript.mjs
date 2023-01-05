@@ -385,14 +385,11 @@ export async function liveConnection({
 export function loadDocument(documentString, event) {
   if (!event?.detail?.liveUpdate) tippyStatic.hideAll();
 
-  const newDocument = new DOMParser().parseFromString(
-    documentString,
-    "text/html"
-  );
-
   morph(
     document.querySelector("html"),
-    newDocument.querySelector("html"),
+    new DOMParser()
+      .parseFromString(documentString, "text/html")
+      .querySelector("html"),
     event
   );
 
@@ -405,24 +402,7 @@ export function loadDocument(documentString, event) {
 }
 
 export function loadPartial(parentElement, partialString) {
-  const partialDocument = new DOMParser().parseFromString(
-    partialString,
-    "text/html"
-  );
-
-  const css = document.querySelector(`[key="local-css"]`);
-  const partialCSS = partialDocument.querySelector(`[key="local-css"]`);
-  css.insertAdjacentText("beforeend", partialCSS.textContent);
-
-  const partialJavaScript = partialDocument.querySelector(
-    `[key="local-javascript"]`
-  );
-  partialJavaScript.remove();
-  const localJavaScript = window.localJavaScript;
-  evaluate({ elements: [partialJavaScript] });
-  window.localJavaScript = { ...localJavaScript, ...window.localJavaScript };
-
-  morph(parentElement, partialDocument.querySelector("body"));
+  morph(parentElement, stringToElement(`<div>${partialString}</div>`));
 
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
@@ -569,7 +549,6 @@ export function setTippy({
   element,
   elementProperty = "tooltip",
   tippyProps: { content: tippyContent, ...tippyProps },
-  localJavaScript = undefined,
 }) {
   element[elementProperty] ??= tippy(element, {
     content: stringToElement(`<div></div>`),
@@ -585,7 +564,6 @@ export function setTippy({
   javascript({
     event,
     element: tippyContentElement,
-    localJavaScript,
   });
 }
 
@@ -920,10 +898,12 @@ export function javascript({
   event = undefined,
   element = undefined,
   elements = element.querySelectorAll("[javascript]"),
-  localJavaScript = window.localJavaScript,
 }) {
   for (const element of elements)
-    localJavaScript[element.getAttribute("javascript")].call(element, event);
+    window.localJavaScript[element.getAttribute("javascript")].call(
+      element,
+      event
+    );
 }
 
 export function ancestors(element) {

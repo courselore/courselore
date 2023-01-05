@@ -18,6 +18,7 @@
     - JavaScript
     - `switch`/`case` and lots of copy-and-paste
 - Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
+- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
 
 ---
 
