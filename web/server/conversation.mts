@@ -5207,44 +5207,40 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="conversation--header"
                 REVISIT
-                css="${css`
+                css="${response.locals.conversation.type === "chat"
+                  ? css`
+                      padding-top: var(--space--4);
+                      padding-right: var(--space--4);
+                      padding-left: var(--space--4);
+                      @media (min-width: 900px) {
+                        padding-left: var(--space--8);
+                      }
+                      display: flex;
+                      @media (max-width: 899px) {
+                        justify-content: center;
+                      }
+                    `
+                  : css``} ${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                  ${response.locals.conversation.type === "chat"
-                    ? css`
-                        padding-top: var(--space--4);
-                        padding-right: var(--space--4);
-                        padding-left: var(--space--4);
-                        @media (min-width: 900px) {
-                          padding-left: var(--space--8);
-                        }
-                        display: flex;
-                        @media (max-width: 899px) {
-                          justify-content: center;
-                        }
-                      `
-                    : css``}
                 `}"
               >
                 <div
-                  REVISIT
-                  css="${css`
-                    ${response.locals.conversation.type === "chat"
-                      ? css`
+                  css="${response.locals.conversation.type === "chat"
+                    ? css`
+                        flex: 1;
+                        min-width: var(--width--0);
+                        max-width: var(--width--prose);
+                        display: flex;
+                        & > * {
                           flex: 1;
-                          min-width: var(--width--0);
-                          max-width: var(--width--prose);
-                          display: flex;
-                          & > * {
-                            flex: 1;
-                          }
-                        `
-                      : css``}
-                  `}"
+                        }
+                      `
+                    : css``}"
                 >
                   $${response.locals.conversation.type === "chat"
                     ? html`
