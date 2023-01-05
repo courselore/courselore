@@ -2148,15 +2148,16 @@ export default async (application: Application): Promise<void> => {
               name="${name}"
               $${required ? html`required` : html``}
               class="input--text input--text--textarea"
-              REVISIT
+              REVISITED
+              style="${compact
+                ? css`
+                    --height: var(--space--14);
+                  `
+                : css`
+                    --height: var(--space--20);
+                  `}"
               css="${css`
-                ${compact
-                  ? css`
-                      height: var(--space--14);
-                    `
-                  : css`
-                      height: var(--space--20);
-                    `}
+                height: var(--height);
                 max-height: var(--space--64);
 
                 &.drag {
