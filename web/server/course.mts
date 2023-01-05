@@ -4851,28 +4851,29 @@ export default async (application: Application): Promise<void> => {
                           ? html`checked`
                           : html``}
                         class="input--radio"
-                        REVISIT
+                        style="
+                          --color--accentColor--400: var(--color--${accentColor}--400);
+                          --color--accentColor--500: var(--color--${accentColor}--500);
+                          --color--accentColor--600: var(--color--${accentColor}--600);
+                          --color--accentColor--700: var(--color--${accentColor}--700);
+                        "
                         css="${css`
-                          background-color: var(--color--${accentColor}--500);
+                          background-color: var(--color--accentColor--500);
                           &:hover,
                           &:focus-within {
-                            background-color: var(--color--${accentColor}--400);
+                            background-color: var(--color--accentColor--400);
                           }
                           &:active {
-                            background-color: var(--color--${accentColor}--600);
+                            background-color: var(--color--accentColor--600);
                           }
                           @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--${accentColor}--600);
+                            background-color: var(--color--accentColor--600);
                             &:hover,
                             &:focus-within {
-                              background-color: var(
-                                --color--${accentColor}--500
-                              );
+                              background-color: var(--color--accentColor--500);
                             }
                             &:active {
-                              background-color: var(
-                                --color--${accentColor}--700
-                              );
+                              background-color: var(--color--accentColor--700);
                             }
                           }
                         `}"
