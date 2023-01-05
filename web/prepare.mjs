@@ -109,14 +109,14 @@ await node.time("[Server] Babel", async () => {
                     }
 
                     case "javascript": {
-                      const expressions = path.node.quasi.expressions.slice();
-                      path.node.quasi.expressions =
-                        path.node.quasi.expressions.map((expression, index) =>
-                          babel.types.stringLiteral(`$$${index}`)
-                        );
-                      const javascript_ = babelGenerator.default(
-                        path.node
-                      ).code;
+                      let javascript_ = "";
+                      for (const [
+                        index,
+                        quasi,
+                      ] of path.node.quasi.quasis.entries())
+                        javascript_ +=
+                          (index === 0 ? `` : `$$${index - 1}`) +
+                          quasi.value.cooked;
                       const identifier = baseIdentifier.encode(
                         xxhash.XXHash3.hash(Buffer.from(javascript_))
                       );
@@ -124,20 +124,20 @@ await node.time("[Server] Babel", async () => {
                         staticJavaScriptIdentifiers.add(identifier);
                         staticJavaScript += javascript`export const ${identifier} = (${[
                           "event",
-                          ...expressions.map((value, index) => `$$${index}`),
+                          ...path.node.quasi.expressions.map(
+                            (value, index) => `$$${index}`
+                          ),
                         ].join(", ")}) => { ${javascript_} };`;
                       }
                       path.replaceWith(
                         babel.template.ast`
-                            JSON.stringify({
-                              function: ${babel.types.stringLiteral(
-                                identifier
-                              )},
-                              arguments: ${babel.types.arrayExpression(
-                                expressions
-                              )},
-                            })
-                          `
+                          JSON.stringify({
+                            function: ${babel.types.stringLiteral(identifier)},
+                            arguments: ${babel.types.arrayExpression(
+                              path.node.quasi.expressions
+                            )},
+                          })
+                        `
                       );
                       break;
                     }
