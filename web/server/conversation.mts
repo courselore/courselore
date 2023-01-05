@@ -7563,37 +7563,35 @@ export default async (application: Application): Promise<void> => {
                                             <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
-                                                REVISIT
-                                                css="${css`
+                                                css="${response.locals
+                                                  .conversation.type === "chat"
+                                                  ? css`
+                                                      transition-property: var(
+                                                        --transition-property--opacity
+                                                      );
+                                                      transition-duration: var(
+                                                        --transition-duration--150
+                                                      );
+                                                      transition-timing-function: var(
+                                                        --transition-timing-function--in-out
+                                                      );
+                                                      .message:not(
+                                                          :hover,
+                                                          :focus-within
+                                                        )
+                                                        & {
+                                                        opacity: var(
+                                                          --opacity--0
+                                                        );
+                                                      }
+                                                    `
+                                                  : css``} ${css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
                                                   line-height: var(
                                                     --line-height--xs
                                                   );
-                                                  ${response.locals.conversation
-                                                    .type === "chat"
-                                                    ? css`
-                                                        transition-property: var(
-                                                          --transition-property--opacity
-                                                        );
-                                                        transition-duration: var(
-                                                          --transition-duration--150
-                                                        );
-                                                        transition-timing-function: var(
-                                                          --transition-timing-function--in-out
-                                                        );
-                                                        .message:not(
-                                                            :hover,
-                                                            :focus-within
-                                                          )
-                                                          & {
-                                                          opacity: var(
-                                                            --opacity--0
-                                                          );
-                                                        }
-                                                      `
-                                                    : css``}
                                                 `}"
                                                 javascript="${javascript`
                                                     leafac.setTippy({
@@ -8714,70 +8712,56 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
-                                REVISIT
-                                css="${css`
+                                css="${response.locals.conversation.type ===
+                                "chat"
+                                  ? css``
+                                  : css`
+                                      border-bottom: var(--border-width--4)
+                                        solid var(--color--gray--medium--200);
+                                      @media (prefers-color-scheme: dark) {
+                                        border-color: var(
+                                          --color--gray--medium--700
+                                        );
+                                      }
+                                    `} ${css`
                                   opacity: var(--opacity--50);
-                                  ${response.locals.conversation.type === "chat"
-                                    ? css``
-                                    : css`
-                                        border-bottom: var(--border-width--4)
-                                          solid var(--color--gray--medium--200);
-                                        @media (prefers-color-scheme: dark) {
-                                          border-color: var(
-                                            --color--gray--medium--700
-                                          );
-                                        }
-                                      `}
                                 `}"
                               >
                                 <div
-                                  REVISIT
-                                  css="${css`
+                                  css="${response.locals.conversation.type ===
+                                  "chat"
+                                    ? css`
+                                        gap: var(--space--1);
+                                        transition-property: var(
+                                          --transition-property--colors
+                                        );
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--in-out
+                                        );
+                                        &:hover,
+                                        &:focus-within {
+                                          background-color: var(
+                                            --color--gray--medium--100
+                                          );
+                                          @media (prefers-color-scheme: dark) {
+                                            background-color: var(
+                                              --color--gray--medium--800
+                                            );
+                                          }
+                                        }
+                                      `
+                                    : css`
+                                        padding-bottom: var(--space--4);
+                                        gap: var(--space--2);
+                                      `} ${css`
                                     padding: var(--space--2);
-                                    ${response.locals.conversation.type ===
-                                    "chat"
-                                      ? css``
-                                      : css`
-                                          padding-bottom: var(--space--4);
-                                        `}
                                     border-radius: var(--border-radius--lg);
                                     margin: var(--space--0) var(--space---2);
                                     display: flex;
                                     flex-direction: column;
-                                    ${response.locals.conversation.type ===
-                                    "chat"
-                                      ? css`
-                                          gap: var(--space--1);
-                                        `
-                                      : css`
-                                          gap: var(--space--2);
-                                        `}
-
-                                    ${response.locals.conversation.type ===
-                                    "chat"
-                                      ? css`
-                                          transition-property: var(
-                                            --transition-property--colors
-                                          );
-                                          transition-duration: var(
-                                            --transition-duration--150
-                                          );
-                                          transition-timing-function: var(
-                                            --transition-timing-function--in-out
-                                          );
-                                          &:hover,
-                                          &:focus-within {
-                                            background-color: var(
-                                              --color--gray--medium--100
-                                            );
-                                            @media (prefers-color-scheme: dark) {
-                                              background-color: var(
-                                                --color--gray--medium--800
-                                              );
-                                            }
-                                          }
-                                        `
-                                      : css``}
                                   `}"
                                 >
                                   <div
