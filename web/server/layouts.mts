@@ -257,46 +257,42 @@ export default async (application: Application): Promise<void> => {
   }) =>
     `<!DOCTYPE html><html lang="en">` +
     html`
-      <head>
-        <meta name="version" content="${application.version}" />
+      <meta name="version" content="${application.version}" />
 
-        <meta
-          name="description"
-          content="Communication Platform for Education"
-        />
+      <meta name="description" content="Communication Platform for Education" />
 
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        />
-        <meta
-          key="theme-color--light"
-          name="theme-color"
-          media="(prefers-color-scheme: light)"
-          content=""
-        />
-        <meta
-          key="theme-color--dark"
-          name="theme-color"
-          media="(prefers-color-scheme: dark)"
-          content=""
-        />
-        <link
-          rel="stylesheet"
-          href="https://${application.configuration.hostname}/${application
-            .static["index.css"]}"
-        />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <meta
+        key="theme-color--light"
+        name="theme-color"
+        media="(prefers-color-scheme: light)"
+        content=""
+      />
+      <meta
+        key="theme-color--dark"
+        name="theme-color"
+        media="(prefers-color-scheme: dark)"
+        content=""
+      />
+      <link
+        rel="stylesheet"
+        href="https://${application.configuration.hostname}/${application
+          .static["index.css"]}"
+      />
 
-        <script
-          src="https://${application.configuration.hostname}/${application
-            .static["index.mjs"]}"
-          defer
-        ></script>
+      <script
+        src="https://${application.configuration.hostname}/${application.static[
+          "index.mjs"
+        ]}"
+        defer
+      ></script>
 
-        $${head}
-      </head>
+      $${head}
 
-      <body
+      <div
         css="${css`
           @at-root {
             .label {
@@ -2254,7 +2250,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           ></div>
         </div>
-      </body>
+      </div>
     `;
 
   if (application.configuration.environment !== "production")

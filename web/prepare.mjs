@@ -45,13 +45,19 @@ await node.time("[Server] esbuild", async () => {
 });
 
 let staticCSS = "";
+const staticCSSIdentifiers = new Set();
 let staticJavaScript = "";
+const staticJavaScriptIdentifiers = new Set();
 await node.time("[Server] Babel", async () => {
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const htmlMinifier = unified()
     .use(rehypeParse, { fragment: true, emitParseErrors: true })
-    .use(rehypePresetMinify)
-    .use(rehypeStringify);
+    // .use(rehypePresetMinify)
+    .use(rehypeStringify, {
+      allowDangerousCharacters: true,
+      allowDangerousHtml: true,
+      preferUnquoted: false,
+    });
   for (const file of await globby("./build/server/**/*.mjs"))
     await fs.writeFile(
       file,
@@ -62,23 +68,24 @@ await node.time("[Server] Babel", async () => {
               visitor: {
                 TaggedTemplateExpression(path) {
                   switch (path.node.tag.name) {
-                    //   case "html": {
-                    //     path.node.quasi.quasis = htmlMinifier
-                    //       .processSync(
-                    //         path.node.quasi.quasis
-                    //           .map(
-                    //             (templateElement) => templateElement.value.cooked
-                    //           )
-                    //           .join("◊◊◊◊")
-                    //       )
-                    //       .value.split("◊◊◊◊")
-                    //       .map((templateElementValueCooked) =>
-                    //         babel.types.templateElement({
-                    //           raw: templateElementValueCooked,
-                    //         })
-                    //       );
-                    //     break;
-                    //   }
+                    // TODO: Either enable this or revert ‘layouts.mts’ to use ‘doctype’, ‘head’, and ‘body’ as usual.
+                    // case "html": {
+                    //   path.node.quasi.quasis = htmlMinifier
+                    //     .processSync(
+                    //       path.node.quasi.quasis
+                    //         .map(
+                    //           (templateElement) => templateElement.value.cooked
+                    //         )
+                    //         .join("◊◊◊◊")
+                    //     )
+                    //     .value.split("◊◊◊◊")
+                    //     .map((templateElementValueCooked) =>
+                    //       babel.types.templateElement({
+                    //         raw: templateElementValueCooked,
+                    //       })
+                    //     );
+                    //   break;
+                    // }
 
                     case "css": {
                       const css_ = new Function(
@@ -88,42 +95,52 @@ await node.time("[Server] Babel", async () => {
                       const identifier = baseIdentifier.encode(
                         xxhash.XXHash3.hash(Buffer.from(css_))
                       );
-                      staticCSS =
-                        css`
-                          ${`[css~="${identifier}"]`.repeat(6)} {
-                            ${css_}
-                          }
-                        ` + staticCSS;
+                      if (!staticCSSIdentifiers.has(identifier)) {
+                        staticCSSIdentifiers.add(identifier);
+                        staticCSS =
+                          css`
+                            ${`[css~="${identifier}"]`.repeat(6)} {
+                              ${css_}
+                            }
+                          ` + staticCSS;
+                      }
                       path.replaceWith(babel.types.stringLiteral(identifier));
                       break;
                     }
 
-                    //   case "javascript": {
-                    //     const expressions = path.node.quasi.expressions.slice();
-                    //     path.node.quasi.expressions =
-                    //       path.node.quasi.expressions.map((expression, index) =>
-                    //         babel.types.stringLiteral(`$$${index}`)
-                    //       );
-                    //     const javascript_ = babelGenerator.default(path.node).code;
-                    //     const identifier = baseIdentifier.encode(
-                    //       xxhash.XXHash3.hash(Buffer.from(javascript_))
-                    //     );
-                    //     staticJavaScript += javascript`export const ${identifier} = (${[
-                    //       "event",
-                    //       ...expressions.map((value, index) => `$$${index}`),
-                    //     ].join(", ")}) => { ${javascript_} };`;
-                    //     path.replaceWith(
-                    //       babel.template.ast`
-                    //         JSON.stringify({
-                    //           function: ${babel.types.stringLiteral(identifier)},
-                    //           arguments: ${babel.types.arrayExpression(
-                    //             expressions
-                    //           )},
-                    //         })
-                    //       `
-                    //     );
-                    //     break;
-                    //   }
+                    case "javascript": {
+                      const expressions = path.node.quasi.expressions.slice();
+                      path.node.quasi.expressions =
+                        path.node.quasi.expressions.map((expression, index) =>
+                          babel.types.stringLiteral(`$$${index}`)
+                        );
+                      const javascript_ = babelGenerator.default(
+                        path.node
+                      ).code;
+                      const identifier = baseIdentifier.encode(
+                        xxhash.XXHash3.hash(Buffer.from(javascript_))
+                      );
+                      if (!staticJavaScriptIdentifiers.has(identifier)) {
+                        staticJavaScriptIdentifiers.add(identifier);
+                        staticJavaScript += javascript`export const ${identifier} = (${[
+                          "event",
+                          ...expressions.map((value, index) => `$$${index}`),
+                        ].join(", ")}) => { ${javascript_} };`;
+                      }
+                      path.replaceWith(
+                        babel.template.ast`
+                            JSON.stringify({
+                              function: ${babel.types.stringLiteral(
+                                identifier
+                              )},
+                              arguments: ${babel.types.arrayExpression(
+                                expressions
+                              )},
+                            })
+                          `
+                      );
+                      break;
+                    }
                   }
                 },
               },
