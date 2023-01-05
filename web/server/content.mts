@@ -871,10 +871,6 @@ export default async (application: Application): Promise<void> => {
                   type="radio"
                   name="content-editor--mode"
                   class="content-editor--button--preview visually-hidden"
-                  data-url="https://${application.configuration
-                    .hostname}${response.locals.course === undefined
-                    ? ""
-                    : `/courses/${response.locals.course.reference}`}/content-editor/preview"
                   javascript="${javascript`
                     this.isModified = false;
 
@@ -898,7 +894,13 @@ export default async (application: Application): Promise<void> => {
                       leafac.loadPartial(
                         preview,
                         await (
-                          await fetch(this.getAttribute("data-url"), {
+                          await fetch(${`https://${
+                            application.configuration.hostname
+                          }${
+                            response.locals.course === undefined
+                              ? ""
+                              : `/courses/${response.locals.course.reference}`
+                          }/content-editor/preview`}, {
                             cache: "no-store",
                             method: "POST",
                             headers: { "CSRF-Protection": "true", },
@@ -2586,12 +2588,11 @@ ${contentSource}</textarea
                       key="mention-user-search--${enrollment.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      data-complete="${enrollment.reference}--${slugify(
-                        enrollment.user.name
-                      )}"
                       javascript="${javascript`
                         this.onclick = () => {
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));  
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${
+                            enrollment.reference
+                          }--${slugify(enrollment.user.name)}`});  
                         };
                     `}"
                     >
@@ -2662,10 +2663,9 @@ ${contentSource}</textarea
               key="refer-to-conversation-or-message-search--${conversation.reference}"
               type="button"
               class="dropdown--menu--item button button--transparent"
-              data-complete="${conversation.reference}"
               javascript="${javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
                 };
               `}"
             >
@@ -2729,10 +2729,9 @@ ${contentSource}</textarea
                 key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                data-complete="${conversation.reference}/${message.reference}"
                 javascript="${javascript`
                   this.onclick = () => {
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
                   };
                 `}"
               >
@@ -2761,10 +2760,9 @@ ${contentSource}</textarea
             <button
               type="button"
               class="dropdown--menu--item button button--transparent"
-              data-complete="${conversation.reference}"
               javascript="${javascript`
                 this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
                 };
               `}"
             >
@@ -2815,10 +2813,9 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}"
             javascript="${javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
               };
             `}"
           >
@@ -2887,10 +2884,9 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}/${message.reference}"
             javascript="${javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
               };
             `}"
           >
@@ -2967,10 +2963,9 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            data-complete="${conversation.reference}/${message.reference}"
             javascript="${javascript`
               this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(this.getAttribute("data-complete"));
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
               };
             `}"
           >
