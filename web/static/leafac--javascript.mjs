@@ -103,9 +103,7 @@ export function liveNavigation() {
         "Live-Navigation-External-Redirect"
       );
       if (typeof externalRedirect === "string") {
-        window.location.assign(
-          response.headers.get("Live-Navigation-External-Redirect")
-        );
+        window.location.assign(externalRedirect);
         return;
       }
 
@@ -135,15 +133,20 @@ export function liveNavigation() {
         if (isGet && !(event instanceof PopStateEvent))
           window.history.pushState(undefined, "", requestURL.href);
 
-        (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content:
-            "Something went wrong when trying to perform this action. Please try reloading the page.",
+        setTippy({
+          event,
+          element: body,
+          elementProperty: "liveNavigationErrorTooltip",
+          tippyProps: {
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content:
+              "Something went wrong when trying to perform this action. Please try reloading the page.",
+          },
         });
         body.liveNavigationErrorTooltip.show();
 
@@ -268,15 +271,19 @@ export async function liveConnection({
 
       if (response.status === 422) {
         console.error(response);
-        (body.liveConnectionValidationErrorTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content:
-            "Failed to connect to server. Please try reloading the page.",
+        setTippy({
+          element: body,
+          elementProperty: "liveConnectionValidationErrorTooltip",
+          tippyProps: {
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content:
+              "Failed to connect to server. Please try reloading the page.",
+          },
         });
         body.liveConnectionValidationErrorTooltip.show();
         return;
@@ -295,14 +302,18 @@ export async function liveConnection({
         console.error(
           `NEW SERVER VERSION: ${serverVersion} → ${newServerVersion}`
         );
-        (body.liveConnectionNewServerVersionTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: newServerVersionMessage,
+        setTippy({
+          element: body,
+          elementProperty: "liveConnectionNewServerVersionTooltip",
+          tippyProps: {
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content: newServerVersionMessage,
+          },
         });
         body.liveConnectionNewServerVersionTooltip.show();
         return;
@@ -340,14 +351,18 @@ export async function liveConnection({
       console.error(error);
 
       if (!connected) {
-        (body.liveConnectionOfflineTooltip ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content: offlineMessage,
+        setTippy({
+          element: body,
+          elementProperty: "liveConnectionOfflineTooltip",
+          tippyProps: {
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content: offlineMessage,
+          },
         });
         body.liveConnectionOfflineTooltip.show();
       }
@@ -564,7 +579,7 @@ export function morph(from, to, event = undefined) {
 }
 
 export function setTippy({
-  event,
+  event = undefined,
   element,
   elementProperty = "tooltip",
   tippyProps: { content: tippyContent, ...tippyProps },
@@ -609,10 +624,14 @@ export function validate(element) {
       element.closest(
         "[hidden], .visually-hidden, .visually-hidden--interactive:not(:focus):not(:focus-within):not(:active)"
       )?.parentElement ?? element;
-    (target.validationErrorTooltip ??= tippy(target)).setProps({
-      theme: "error",
-      trigger: "manual",
-      content: error,
+    setTippy({
+      element: target,
+      elementProperty: "validationErrorTooltip",
+      tippyProps: {
+        theme: "error",
+        trigger: "manual",
+        content: error,
+      },
     });
     target.validationErrorTooltip.show();
     target.focus();
@@ -733,9 +752,13 @@ export function relativizeDateTimeElement(element, options = {}) {
   (function update() {
     if (!isConnected(element)) return;
     const dateTime = element.getAttribute("datetime");
-    (target.relativizeDateTimeElementTooltip ??= tippy(target)).setProps({
-      touch: false,
-      content: formatUTCDateTime(dateTime),
+    setTippy({
+      element: target,
+      elementProperty: "relativizeDateTimeElementTooltip",
+      tippyProps: {
+        touch: false,
+        content: formatUTCDateTime(dateTime),
+      },
     });
     element.textContent = relativizeDateTime(dateTime, options);
     element.relativizeDateTimeElementTimeout = window.setTimeout(
