@@ -620,23 +620,19 @@ export default async (application: Application): Promise<void> => {
       <div>
         <div
           class="button button--tight ${tight ? "button--tight--inline" : ""}"
-          REVISIT
-          css="${css`
-            cursor: default;
-            ${enrollment === undefined
-              ? css``
-              : css`
-                  color: var(--color--${enrollment.accentColor}--700);
+          css="${enrollment === undefined
+            ? css``
+            : css`
+                color: var(--color--${enrollment.accentColor}--700);
+                background-color: var(--color--${enrollment.accentColor}--100);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--${enrollment.accentColor}--200);
                   background-color: var(
-                    --color--${enrollment.accentColor}--100
+                    --color--${enrollment.accentColor}--800
                   );
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--${enrollment.accentColor}--200);
-                    background-color: var(
-                      --color--${enrollment.accentColor}--800
-                    );
-                  }
-                `}
+                }
+              `} ${css`
+            cursor: default;
           `}"
         >
           $${enrollment === undefined
