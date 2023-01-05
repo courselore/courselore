@@ -484,14 +484,13 @@ export default async (application: Application): Promise<void> => {
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
-                    data-mention="${mention}"
                     javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: "Mention " + this.getAttribute("data-mention") + " in the conversation",
+                          content: "Mention " + ${mention} + " in the conversation",
                         },
                       });
                     `}"
