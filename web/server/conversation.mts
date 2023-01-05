@@ -5206,7 +5206,6 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="conversation--header"
-                REVISIT
                 css="${response.locals.conversation.type === "chat"
                   ? css`
                       padding-top: var(--space--4);
@@ -7295,14 +7294,12 @@ export default async (application: Application): Promise<void> => {
                         : html`
                             <div
                               key="messages"
-                              REVISIT
-                              css="${css`
-                                ${response.locals.conversation.type === "chat"
-                                  ? css`
-                                      padding: var(--space--4) var(--space--0);
-                                    `
-                                  : css``}
-                              `}"
+                              css="${response.locals.conversation.type ===
+                              "chat"
+                                ? css`
+                                    padding: var(--space--4) var(--space--0);
+                                  `
+                                : css``}"
                             >
                               $${afterMessage !== undefined ||
                               (moreMessagesExist && messagesReverse)
