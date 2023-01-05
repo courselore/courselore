@@ -61,68 +61,71 @@ await node.time("[Server] Babel", async () => {
             {
               visitor: {
                 TaggedTemplateExpression(path) {
-                  // switch (path.node.tag.name) {
-                  //   case "html": {
-                  //     path.node.quasi.quasis = htmlMinifier
-                  //       .processSync(
-                  //         path.node.quasi.quasis
-                  //           .map(
-                  //             (templateElement) => templateElement.value.cooked
-                  //           )
-                  //           .join("◊◊◊◊")
-                  //       )
-                  //       .value.split("◊◊◊◊")
-                  //       .map((templateElementValueCooked) =>
-                  //         babel.types.templateElement({
-                  //           raw: templateElementValueCooked,
-                  //         })
-                  //       );
-                  //     break;
-                  //   }
-                  //   case "css": {
-                  //     const css_ = new Function(
-                  //       "css",
-                  //       `return (${babelGenerator.default(path.node).code});`
-                  //     )(css);
-                  //     const identifier = baseIdentifier.encode(
-                  //       xxhash.XXHash3.hash(Buffer.from(css_))
-                  //     );
-                  //     staticCSS =
-                  //       css`
-                  //         ${`[css~="${identifier}"]`.repeat(6)} {
-                  //           ${css_}
-                  //         }
-                  //       ` + staticCSS;
-                  //     path.replaceWith(babel.types.stringLiteral(identifier));
-                  //     break;
-                  //   }
-                  //   case "javascript": {
-                  //     const expressions = path.node.quasi.expressions.slice();
-                  //     path.node.quasi.expressions =
-                  //       path.node.quasi.expressions.map((expression, index) =>
-                  //         babel.types.stringLiteral(`$$${index}`)
-                  //       );
-                  //     const javascript_ = babelGenerator.default(path.node).code;
-                  //     const identifier = baseIdentifier.encode(
-                  //       xxhash.XXHash3.hash(Buffer.from(javascript_))
-                  //     );
-                  //     staticJavaScript += javascript`export const ${identifier} = (${[
-                  //       "event",
-                  //       ...expressions.map((value, index) => `$$${index}`),
-                  //     ].join(", ")}) => { ${javascript_} };`;
-                  //     path.replaceWith(
-                  //       babel.template.ast`
-                  //         JSON.stringify({
-                  //           function: ${babel.types.stringLiteral(identifier)},
-                  //           arguments: ${babel.types.arrayExpression(
-                  //             expressions
-                  //           )},
-                  //         })
-                  //       `
-                  //     );
-                  //     break;
-                  //   }
-                  // }
+                  switch (path.node.tag.name) {
+                    //   case "html": {
+                    //     path.node.quasi.quasis = htmlMinifier
+                    //       .processSync(
+                    //         path.node.quasi.quasis
+                    //           .map(
+                    //             (templateElement) => templateElement.value.cooked
+                    //           )
+                    //           .join("◊◊◊◊")
+                    //       )
+                    //       .value.split("◊◊◊◊")
+                    //       .map((templateElementValueCooked) =>
+                    //         babel.types.templateElement({
+                    //           raw: templateElementValueCooked,
+                    //         })
+                    //       );
+                    //     break;
+                    //   }
+
+                    case "css": {
+                      if (path.node.quasi.expressions.length > 0) return; // TODO: REMOVE
+                      const css_ = new Function(
+                        "css",
+                        `return (${babelGenerator.default(path.node).code});`
+                      )(css);
+                      const identifier = baseIdentifier.encode(
+                        xxhash.XXHash3.hash(Buffer.from(css_))
+                      );
+                      staticCSS =
+                        css`
+                          ${`[css~="${identifier}"]`.repeat(6)} {
+                            ${css_}
+                          }
+                        ` + staticCSS;
+                      path.replaceWith(babel.types.stringLiteral(identifier));
+                      break;
+                    }
+
+                    //   case "javascript": {
+                    //     const expressions = path.node.quasi.expressions.slice();
+                    //     path.node.quasi.expressions =
+                    //       path.node.quasi.expressions.map((expression, index) =>
+                    //         babel.types.stringLiteral(`$$${index}`)
+                    //       );
+                    //     const javascript_ = babelGenerator.default(path.node).code;
+                    //     const identifier = baseIdentifier.encode(
+                    //       xxhash.XXHash3.hash(Buffer.from(javascript_))
+                    //     );
+                    //     staticJavaScript += javascript`export const ${identifier} = (${[
+                    //       "event",
+                    //       ...expressions.map((value, index) => `$$${index}`),
+                    //     ].join(", ")}) => { ${javascript_} };`;
+                    //     path.replaceWith(
+                    //       babel.template.ast`
+                    //         JSON.stringify({
+                    //           function: ${babel.types.stringLiteral(identifier)},
+                    //           arguments: ${babel.types.arrayExpression(
+                    //             expressions
+                    //           )},
+                    //         })
+                    //       `
+                    //     );
+                    //     break;
+                    //   }
+                  }
                 },
               },
             },
