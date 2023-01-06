@@ -4,7 +4,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
 import cryptoRandomString from "crypto-random-string";
@@ -2196,34 +2195,34 @@ export default async (application: Application): Promise<void> => {
               right: 0;
               left: 0;
             `}"
-            javascript-TODO="${javascript_TODO`
-            leafac.setTippy({
-              event,
-              element: this,
-              tippyProps: {
-                touch: false,
-                content: "Loading…",
-              },
-            });
+            javascript="${javascript`
+              leafac.setTippy({
+                event,
+                element: this,
+                tippyProps: {
+                  touch: false,
+                  content: "Loading…",
+                },
+              });
 
-            window.onlivenavigate = () => {
-              const parentElement = this;
-              parentElement.hidden = false;
-              const element = parentElement.querySelector("div");
-              let width = 5;
-              window.clearTimeout(element.updateTimeout);
-              (function update() {
-                if (parentElement.hidden || !leafac.isConnected(element)) return;
-                element.style.width = width.toString() + "%";
-                width += (95 - width) / (20 + Math.random() * 15);
-                element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
-              })();
-            };
+              window.onlivenavigate = () => {
+                const parentElement = this;
+                parentElement.hidden = false;
+                const element = parentElement.querySelector("div");
+                let width = 5;
+                window.clearTimeout(element.updateTimeout);
+                (function update() {
+                  if (parentElement.hidden || !leafac.isConnected(element)) return;
+                  element.style.width = width.toString() + "%";
+                  width += (95 - width) / (20 + Math.random() * 15);
+                  element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
+                })();
+              };
 
-            window.onlivenavigateerror = () => {
-              this.hidden = true;
-            };
-          `}"
+              window.onlivenavigateerror = () => {
+                this.hidden = true;
+              };
+            `}"
           >
             <div
               css="${css`
@@ -2498,7 +2497,7 @@ export default async (application: Application): Promise<void> => {
           <a
             href="https://${application.configuration.hostname}/"
             class="button button--tight button--tight--inline button--transparent"
-            javascript-TODO="${javascript_TODO`
+            javascript="${javascript`
               leafac.setTippy({
                 event,
                 element: this,
@@ -2538,7 +2537,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         max-width: 100%;
                       `}"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2658,7 +2657,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         max-width: 100%;
                       `}"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2691,7 +2690,7 @@ export default async (application: Application): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 leafac.setTippy({
                   event,
                   element: this,
@@ -2761,7 +2760,7 @@ export default async (application: Application): Promise<void> => {
                         <div class="dropdown--menu">
                           <button
                             class="dropdown--menu--item button button--transparent"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -2848,7 +2847,7 @@ export default async (application: Application): Promise<void> => {
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `}"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 leafac.setTippy({
                   event,
                   element: this,
@@ -2917,7 +2916,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <button
                               class="dropdown--menu--item button button--transparent"
-                              javascript-TODO="${javascript_TODO`
+                              javascript="${javascript`
                                 this.onclick = () => {
                                   localStorage.clear();
                                 };
@@ -3019,7 +3018,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button button--tight button--tight--inline button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -3027,9 +3026,9 @@ export default async (application: Application): Promise<void> => {
                         tippyProps: {
                           trigger: "click",
                           interactive: true,
-                          content: ${html`<div class="dropdown--menu">
-                            $${menu}
-                          </div>`},
+                          content: ${html`
+                            <div class="dropdown--menu">$${menu}</div>
+                          `},
                         },
                       });
                     `}"
