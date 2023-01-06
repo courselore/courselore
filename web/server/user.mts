@@ -6,7 +6,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
@@ -1368,7 +1367,7 @@ export default async (application: Application): Promise<void> => {
                 value="${response.locals.user.email}"
                 required
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (!leafac.isModified(this))
                       return "Please provide the email address to which you’d like to update.";
@@ -1382,7 +1381,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1452,7 +1451,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
                       return "New Password & New Password Confirmation don’t match.";
@@ -1759,7 +1758,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (this.checked) {
                           this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
@@ -1876,7 +1875,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1905,7 +1904,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1935,7 +1934,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1957,7 +1956,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <label
                   class="button button--tight button--tight--inline disabled"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2138,7 +2137,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2163,7 +2162,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--full-width-on-small-screen button--rose"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onclick = () => {
                     localStorage.clear();
                   };
