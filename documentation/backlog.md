@@ -7,7 +7,7 @@
   - Potential solutions:
     - Run Caddy before spawning children processes
     - Document this quirk.
-- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that `` JSON.stringify(html`...`) `` is a thing.
+- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
 - Issue: Using `enrollment.accentColor` in CSS
   - Potential solutions:
     - Inline `style=""` and CSS variables

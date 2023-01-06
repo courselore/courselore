@@ -389,7 +389,7 @@ export default async (application: Application): Promise<void> => {
               element: this,
               tippyProps: {
                 touch: false,
-                content: ${JSON.stringify(
+                content: ${(
                   href.startsWith("mailto:")
                     ? html`Send email to
                         <code class="code"
@@ -675,7 +675,7 @@ export default async (application: Application): Promise<void> => {
                 element: this,
                 tippyProps: {
                   touch: false,
-                  content: ${JSON.stringify(html`
+                  content: ${(html`
                     <div
                       css="${css`
                         padding: var(--space--2);
@@ -709,7 +709,7 @@ export default async (application: Application): Promise<void> => {
               element: this,
               tippyProps: {
                 touch: false,
-                content: ${JSON.stringify(html`
+                content: ${(html`
                   <div
                     css="${css`
                       padding: var(--space--2);
@@ -923,7 +923,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -1006,7 +1006,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "click",
                       interactive: true,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         <p>
                           You may style text with
                           <a
@@ -1041,7 +1041,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
@@ -1083,7 +1083,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
@@ -1125,7 +1125,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
@@ -1169,7 +1169,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
@@ -1210,7 +1210,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
@@ -1251,7 +1251,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Underline
                         <span class="keyboard-shortcut">
                           (<span
@@ -1292,7 +1292,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Strikethrough
                         <span class="keyboard-shortcut">
                           (<span
@@ -1334,7 +1334,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Link
                         <span class="keyboard-shortcut">
                           (<span
@@ -1377,7 +1377,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
@@ -1419,7 +1419,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
@@ -1461,7 +1461,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
@@ -1505,7 +1505,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
@@ -1546,7 +1546,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Table
                         <span class="keyboard-shortcut">
                           (<span
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
@@ -1631,7 +1631,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
@@ -1675,7 +1675,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
@@ -1716,7 +1716,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
@@ -1760,7 +1760,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
@@ -1802,7 +1802,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
@@ -1848,7 +1848,7 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               Mention User
                               <span class="keyboard-shortcut">(@)</span>
                             `)},
@@ -1874,7 +1874,7 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               Refer to Conversation or Message
                               <span class="keyboard-shortcut">(#)</span>
                             `)},  
@@ -1904,7 +1904,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Image
                         <span class="keyboard-shortcut">
                           (<span
@@ -1946,7 +1946,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
@@ -2045,7 +2045,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "manual",
                       hideOnClick: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         <div
                           css="${css`
                             display: flex;
@@ -2081,7 +2081,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${JSON.stringify(html`
+                      content: ${(html`
                         Programmer Mode
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
@@ -2211,7 +2211,7 @@ export default async (application: Application): Promise<void> => {
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               <div
                                 css="${css`
                                   width: var(--space--56);
@@ -2272,7 +2272,7 @@ export default async (application: Application): Promise<void> => {
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               <div
                                 css="${css`
                                   width: var(--space--72);
@@ -2295,7 +2295,7 @@ export default async (application: Application): Promise<void> => {
                         const dropdownMenus = [
                           {
                             trigger: "@",
-                            route: ${JSON.stringify(
+                            route: ${(
                               `https://${
                                 application.configuration.hostname
                               }/courses/${response.locals.course.reference}/${
@@ -2308,7 +2308,7 @@ export default async (application: Application): Promise<void> => {
                           },
                           {
                             trigger: "#",
-                            route: ${JSON.stringify(
+                            route: ${(
                               `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,

@@ -582,7 +582,7 @@ export default async (application: Application): Promise<void> => {
               appendTo: document.querySelector("body"),
               delay: [1000, null],
               touch: ["hold", 1000],
-              content: ${JSON.stringify(html`
+              content: ${(html`
                 <div
                   css="${css`
                     max-height: var(--space--56);
@@ -665,7 +665,7 @@ export default async (application: Application): Promise<void> => {
                                       });
   
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${JSON.stringify(
+                                        await navigator.clipboard.writeText(${(
                                           user!.email
                                         )});
                                         this.copied.show();
@@ -1061,7 +1061,7 @@ export default async (application: Application): Promise<void> => {
                       tippyProps: {
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <div
                             css="${css`
                               display: flex;

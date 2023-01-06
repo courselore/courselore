@@ -592,7 +592,7 @@ export default async (application: Application): Promise<void> => {
                             tippyProps: {
                               trigger: "click",
                               interactive: true,
-                              content: ${JSON.stringify(html`
+                              content: ${(html`
                                 <div class="dropdown--menu">
                                   $${application.server.locals.helpers.systemRoles.map(
                                     (systemRole) =>
@@ -643,7 +643,7 @@ export default async (application: Application): Promise<void> => {
                                                             trigger: "click",
                                                             interactive: true,
                                                             appendTo: document.querySelector("body"),
-                                                            content: ${JSON.stringify(html`
+                                                            content: ${(html`
                                                               <form
                                                                 key="role--${systemRole}"
                                                                 method="PATCH"

@@ -2391,7 +2391,7 @@ export default async (application: Application): Promise<void> => {
                               response.locals.conversation !== undefined
                                 ? javascript_TODO`
                                     window.setTimeout(() => {
-                                      if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
+                                      if (event?.detail?.previousLocation?.href?.startsWith(${(
                                         `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
                                       )})) return;
                                       this.querySelector('[key="conversation--${
@@ -2693,7 +2693,7 @@ export default async (application: Application): Promise<void> => {
                         delay: [1000, null],
                         touch: ["hold", 1000],
                         onHidden: () => { this.onmouseleave(); },
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <div
                             key="loading"
                             css="${css`
@@ -3368,7 +3368,7 @@ export default async (application: Application): Promise<void> => {
                             this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
-                                element.required = ${JSON.stringify(
+                                element.required = ${(
                                   conversationType !== "chat"
                                 )};
 
@@ -3377,12 +3377,12 @@ export default async (application: Application): Promise<void> => {
                                 "staff"
                                   ? javascript_TODO`
                                       const notification = form.querySelector('[key="new-conversation--announcement"]');
-                                      notification.hidden = ${JSON.stringify(
+                                      notification.hidden = ${(
                                         conversationType !== "note"
                                       )};
                                       for (const element of leafac.descendants(notification))
                                         if (element.disabled !== undefined)
-                                          element.disabled = ${JSON.stringify(
+                                          element.disabled = ${(
                                             conversationType !== "note"
                                           )};
                                     `
@@ -3685,7 +3685,7 @@ export default async (application: Application): Promise<void> => {
                             tippyProps: {
                               trigger: "click",
                               interactive: true,
-                              content: ${JSON.stringify(html`
+                              content: ${(html`
                                 <div
                                   key="participants--dropdown"
                                   css="${css`
@@ -4382,7 +4382,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -4468,7 +4468,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -5343,7 +5343,7 @@ export default async (application: Application): Promise<void> => {
                                         tippyProps: {
                                           trigger: "click",
                                           interactive: true,
-                                          content: ${JSON.stringify(html`
+                                          content: ${(html`
                                             <div class="dropdown--menu">
                                               $${application.server.locals.helpers.conversationTypes.map(
                                                 (conversationType) => html`
@@ -5717,7 +5717,7 @@ export default async (application: Application): Promise<void> => {
                               tippyProps: {
                                 trigger: "click",
                                 interactive: true,
-                                content: ${JSON.stringify(html`
+                                content: ${(html`
                                   <h3 class="heading">
                                     <i class="bi bi-chat-text-fill"></i>
                                     Conversation
@@ -5892,7 +5892,7 @@ export default async (application: Application): Promise<void> => {
                                                     trigger: "click",
                                                     interactive: true,
                                                     onHidden: () => { this.onmouseleave(); },
-                                                    content: ${JSON.stringify(html`
+                                                    content: ${(html`
                                                       <div
                                                         key="loading"
                                                         css="${css`
@@ -5969,7 +5969,7 @@ export default async (application: Application): Promise<void> => {
                                                       theme: "rose",
                                                       trigger: "click",
                                                       interactive: true,
-                                                      content: ${JSON.stringify(html`
+                                                      content: ${(html`
                                                         <form
                                                           method="DELETE"
                                                           action="https://${application
@@ -6126,7 +6126,7 @@ export default async (application: Application): Promise<void> => {
                                     tippyProps: {
                                       theme: "rose",
                                       touch: false,
-                                      content: ${JSON.stringify(html`
+                                      content: ${(html`
                                         Cancel
                                         <span class="keyboard-shortcut">
                                           (<span
@@ -6324,7 +6324,7 @@ export default async (application: Application): Promise<void> => {
                                     tippyProps: {
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${JSON.stringify(html`
+                                      content: ${(html`
                                         <div
                                           css="${css`
                                             max-height: var(--space--40);
@@ -6670,7 +6670,7 @@ export default async (application: Application): Promise<void> => {
                                           trigger: "click",
                                           interactive: true,
                                           placement: "bottom",
-                                          content: ${JSON.stringify(html`
+                                          content: ${(html`
                                             <div
                                               key="participants--dropdown"
                                               css="${css`
@@ -7612,7 +7612,7 @@ export default async (application: Application): Promise<void> => {
                                                         trigger: "click",
                                                         interactive: true,
                                                         onHidden: () => { this.onmouseleave(); },
-                                                        content: ${JSON.stringify(html`
+                                                        content: ${(html`
                                                           <div
                                                             key="loading"
                                                             css="${css`
@@ -7846,7 +7846,7 @@ export default async (application: Application): Promise<void> => {
                                                               element: this,
                                                               tippyProps: {
                                                                 touch: false,
-                                                                content: ${JSON.stringify(
+                                                                content: ${(
                                                                   `Remove Endorsement${
                                                                     message.endorsements.filter(
                                                                       (
@@ -7926,7 +7926,7 @@ export default async (application: Application): Promise<void> => {
                                                                     element: this,
                                                                     tippyProps: {
                                                                       touch: false,
-                                                                      content: ${JSON.stringify(
+                                                                      content: ${(
                                                                         `Endorse (Already endorsed by ${
                                                                           /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                                             Intl as any
@@ -8001,7 +8001,7 @@ export default async (application: Application): Promise<void> => {
                                                               event,
                                                               element: this,
                                                               tippyProps: {
-                                                                content: ${JSON.stringify(
+                                                                content: ${(
                                                                   `Endorsed by ${
                                                                     /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                                       Intl as any
@@ -8230,7 +8230,7 @@ export default async (application: Application): Promise<void> => {
                                                     tippyProps: {
                                                       trigger: "manual",
                                                       interactive: true,
-                                                      content: ${JSON.stringify(html`
+                                                      content: ${(html`
                                                         <div
                                                           class="dropdown--menu"
                                                         >
@@ -8281,11 +8281,11 @@ export default async (application: Application): Promise<void> => {
                                                                                 : `anonymous`
                                                                             } · " +
                                                                           `
-                                                                    } "#" + ${JSON.stringify(
+                                                                    } "#" + ${(
                                                               response.locals
                                                                 .conversation
                                                                 .reference
-                                                            )} + "/" + ${JSON.stringify(
+                                                            )} + "/" + ${(
                                                               message.reference
                                                             )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
                                                                     ""
@@ -8404,7 +8404,7 @@ export default async (application: Application): Promise<void> => {
                                                                   element: this,
                                                                   tippyProps: {
                                                                     touch: false,
-                                                                    content: ${JSON.stringify(
+                                                                    content: ${(
                                                                       isLiked
                                                                         ? "Remove Like"
                                                                         : "Like"
@@ -8454,7 +8454,7 @@ export default async (application: Application): Promise<void> => {
                                                                   trigger: "click",
                                                                   interactive: true,
                                                                   onHidden: () => { this.onmouseleave(); },
-                                                                  content: ${JSON.stringify(html`
+                                                                  content: ${(html`
                                                                     <div
                                                                       key="loading"
                                                                       css="${css`
@@ -8544,7 +8544,7 @@ export default async (application: Application): Promise<void> => {
                                                           trigger: "click",
                                                           interactive: true,
                                                           onHidden: () => { this.onmouseleave(); },
-                                                          content: ${JSON.stringify(html`
+                                                          content: ${(html`
                                                             <div
                                                               key="loading"
                                                               css="${css`
@@ -9026,7 +9026,7 @@ export default async (application: Application): Promise<void> => {
                                 element: this,
                                 tippyProps: {
                                   touch: false,
-                                  content: ${JSON.stringify(html`
+                                  content: ${(html`
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
@@ -9166,7 +9166,7 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               <span class="keyboard-shortcut">
                                 <span
                                   javascript-TODO="${javascript_TODO`

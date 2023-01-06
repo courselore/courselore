@@ -1577,7 +1577,7 @@ export default async (application: Application): Promise<void> => {
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${JSON.stringify(html`
+                                      content: ${(html`
                                         <div
                                           css="${css`
                                             padding: var(--space--2)
@@ -1731,7 +1731,7 @@ export default async (application: Application): Promise<void> => {
                     const applicationJavaScript = window.applicationJavaScript;
 
                     this.onclick = () => {
-                      const newTag = leafac.stringToElement(${JSON.stringify(
+                      const newTag = leafac.stringToElement(${(
                         html`
                           <div
                             key="tag"
@@ -2129,7 +2129,7 @@ export default async (application: Application): Promise<void> => {
                         element: this,
                         tippyProps: {
                           trigger: "click",
-                          content: ${JSON.stringify(html`
+                          content: ${(html`
                             <div
                               css="${css`
                                 padding: var(--space--2);
@@ -2438,7 +2438,7 @@ export default async (application: Application): Promise<void> => {
                                             maxWidth: "none",
                                             content: ${(() => {
                                               const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                              return JSON.stringify(html`
+                                              return (html`
                                                 <div
                                                   css="${css`
                                                     display: flex;
@@ -2499,7 +2499,7 @@ export default async (application: Application): Promise<void> => {
                                                           });
   
                                                           this.onclick = async () => {
-                                                            await navigator.clipboard.writeText(${JSON.stringify(
+                                                            await navigator.clipboard.writeText(${(
                                                               link
                                                             )});
                                                             const stickies = this.querySelector('[key="stickies"]');
@@ -2578,7 +2578,7 @@ export default async (application: Application): Promise<void> => {
                                           tippyProps: {
                                             trigger: "click",
                                             interactive: true,
-                                            content: ${JSON.stringify(html`
+                                            content: ${(html`
                                               <div class="dropdown--menu">
                                                 <form
                                                   method="PATCH"
@@ -2692,7 +2692,7 @@ export default async (application: Application): Promise<void> => {
                                       tippyProps: {
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${JSON.stringify(html`
+                                        content: ${(html`
                                           <div class="dropdown--menu">
                                             $${application.server.locals.helpers.courseRoles.map(
                                               (courseRole) =>
@@ -2867,7 +2867,7 @@ export default async (application: Application): Promise<void> => {
                                               element: this,
                                               tippyProps: {
                                                 interactive: true,
-                                                content: ${JSON.stringify(html`
+                                                content: ${(html`
                                                   <div>
                                                     Used
                                                     <time
@@ -2911,7 +2911,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${JSON.stringify(html`
+                                                  content: ${(html`
                                                     <div
                                                       css="${css`
                                                         display: flex;
@@ -2982,7 +2982,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${JSON.stringify(html`
+                                                  content: ${(html`
                                                     <div
                                                       css="${css`
                                                         padding-top: var(
@@ -3041,7 +3041,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${JSON.stringify(html`
+                                                  content: ${(html`
                                                     <div
                                                       css="${css`
                                                         display: flex;
@@ -3924,7 +3924,7 @@ export default async (application: Application): Promise<void> => {
                                   });
 
                                   this.onclick = async () => {
-                                    await navigator.clipboard.writeText(${JSON.stringify(
+                                    await navigator.clipboard.writeText(${(
                                       link
                                     )});
                                     const stickies = this.querySelector('[key="stickies"]');
@@ -4306,7 +4306,7 @@ export default async (application: Application): Promise<void> => {
                             });
 
                             this.onclick = async () => {
-                              await navigator.clipboard.writeText(${JSON.stringify(
+                              await navigator.clipboard.writeText(${(
                                 enrollment.user.email
                               )});
                               this.copied.show();
@@ -4373,7 +4373,7 @@ export default async (application: Application): Promise<void> => {
                               tippyProps: {
                                 trigger: "click",
                                 interactive: true,
-                                content: ${JSON.stringify(html`
+                                content: ${(html`
                                   <div class="dropdown--menu">
                                     $${application.server.locals.helpers.courseRoles.map(
                                       (courseRole) =>
@@ -4424,7 +4424,7 @@ export default async (application: Application): Promise<void> => {
                                                               trigger: "click",
                                                               interactive: true,
                                                               appendTo: document.querySelector("body"),
-                                                              content: ${JSON.stringify(html`
+                                                              content: ${(html`
                                                                 <form
                                                                   key="course-role--${courseRole}"
                                                                   method="PATCH"
@@ -4558,7 +4558,7 @@ export default async (application: Application): Promise<void> => {
                                         theme: "rose",
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${JSON.stringify(html`
+                                        content: ${(html`
                                           <form
                                             method="DELETE"
                                             action="${action}"

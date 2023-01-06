@@ -605,9 +605,9 @@ export default async (application: Application): Promise<void> => {
                                 : `anonymous`
                             } · " +
                           `
-                      } "#" + ${JSON.stringify(
+                      } "#" + ${(
                   response.locals.conversation.reference
-                )} + "/" + ${JSON.stringify(
+                )} + "/" + ${(
                   response.locals.message.reference
                 )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
                       ""
@@ -634,7 +634,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               <div
                                 key="loading"
                                 css="${css`
@@ -883,7 +883,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${JSON.stringify(html`
+                            content: ${(html`
                               <div
                                 key="loading"
                                 css="${css`
@@ -954,7 +954,7 @@ export default async (application: Application): Promise<void> => {
                               theme: "rose",
                               trigger: "click",
                               interactive: true,
-                              content: ${JSON.stringify(html`
+                              content: ${(html`
                                 <form
                                   method="DELETE"
                                   action="https://${application.configuration
@@ -1086,7 +1086,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${JSON.stringify(html`
+                        content: ${(html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
