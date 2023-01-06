@@ -32,8 +32,8 @@ window.textFieldEdit = textFieldEdit;
 import * as leafac from "./leafac--javascript.mjs";
 window.leafac = leafac;
 
-import * as localJavaScript from "./application.mjs";
-window.localJavaScript = localJavaScript;
+import * as applicationJavaScript from "./application.mjs";
+window.applicationJavaScript = applicationJavaScript;
 
 leafac.customFormValidation();
 leafac.warnAboutLosingInputs();

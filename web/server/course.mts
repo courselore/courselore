@@ -1726,8 +1726,8 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--transparent button--full-width-on-small-screen"
                   javascript="${javascript`
-                    // TODO: It isn’t necessary to juggle ‘localJavaScript’ anymore.
-                    const localJavaScript = window.localJavaScript;
+                    // TODO: It isn’t necessary to juggle ‘applicationJavaScript’ anymore.
+                    const applicationJavaScript = window.applicationJavaScript;
 
                     this.onclick = () => {
                       const newTag = leafac.stringToElement(${JSON.stringify(
@@ -1861,7 +1861,7 @@ export default async (application: Application): Promise<void> => {
                       leafac.javascript({
                         event,
                         element: newTag,
-                        localJavaScript,
+                        applicationJavaScript,
                       })
                     };
 

@@ -901,7 +901,7 @@ export function javascript({
 }) {
   const javascript = JSON.parse(element.getAttribute("javascript"));
   for (const element of elements)
-    window.localJavaScript[javascript.function].call(
+    window.applicationJavaScript[javascript.function].call(
       element,
       event,
       ...javascript.arguments
