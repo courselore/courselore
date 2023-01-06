@@ -1614,7 +1614,7 @@ export default async (application: Application): Promise<void> => {
                           tippyProps: {
                             trigger: "click",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 css="${css`
                                   padding: var(--space--2);
@@ -1641,7 +1641,7 @@ export default async (application: Application): Promise<void> => {
                                   Update Accent Color
                                 </a>
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
                       `}"
@@ -1666,7 +1666,7 @@ export default async (application: Application): Promise<void> => {
                         tippyProps: {
                           trigger: "click",
                           interactive: true,
-                          content: ${(html`
+                          content: ${html`
                             <div
                               css="${css`
                                 padding: var(--space--2);
@@ -1700,7 +1700,7 @@ export default async (application: Application): Promise<void> => {
                                 </button>
                               </form>
                             </div>
-                          `)},  
+                          `},  
                         },
                       });
                     `}"
@@ -1724,7 +1724,7 @@ export default async (application: Application): Promise<void> => {
                         tippyProps: {
                           trigger: "click",
                           interactive: true,
-                          content: ${(html`
+                          content: ${html`
                             <div class="dropdown--menu">
                               <button
                                 class="dropdown--menu--item button button--transparent"
@@ -1794,7 +1794,7 @@ export default async (application: Application): Promise<void> => {
                                 Crash
                               </a>
                             </div>
-                          `)},  
+                          `},  
                         },
                       });
                     `}"
@@ -1916,7 +1916,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "click",
                       interactive: true,
-                      content: ${(html`
+                      content: ${html`
                         <h3 class="heading">
                           $${application.server.locals.partials.logo({
                             size: 12 /* var(--space--3) */,
@@ -1954,7 +1954,7 @@ export default async (application: Application): Promise<void> => {
                             Source Code
                           </a>
                         </div>
-                      `)},  
+                      `},  
                     },
                   });
                 `}"
@@ -1977,7 +1977,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "click",
                       interactive: true,
-                      content: ${(html`
+                      content: ${html`
                         <h3 class="heading">
                           <i class="bi bi-bug"></i>
                           Report an Issue
@@ -2073,7 +2073,7 @@ export default async (application: Application): Promise<void> => {
                             GitHub Issues
                           </a>
                         </div>
-                      `)},  
+                      `},  
                     },
                   });
                 `}"
@@ -2100,7 +2100,7 @@ export default async (application: Application): Promise<void> => {
                           tippyProps: {
                             trigger: "click",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <h3 class="heading">
                                 <i class="bi bi-arrow-up-circle-fill"></i>
                                 <span>
@@ -2166,7 +2166,7 @@ export default async (application: Application): Promise<void> => {
                                   Download
                                 </a>
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
                       `}"
@@ -2545,7 +2545,7 @@ export default async (application: Application): Promise<void> => {
                           tippyProps: {
                             trigger: "click",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 css="${css`
                                   max-height: var(--space--80);
@@ -2622,7 +2622,7 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : html``}
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
                       `}"
@@ -2665,7 +2665,7 @@ export default async (application: Application): Promise<void> => {
                           tippyProps: {
                             trigger: "click",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 css="${css`
                                   max-height: var(--space--80);
@@ -2674,7 +2674,7 @@ export default async (application: Application): Promise<void> => {
                               >
                                 $${courseSwitcher}
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
                       `}"
@@ -2696,7 +2696,7 @@ export default async (application: Application): Promise<void> => {
                   element: this,
                   tippyProps: {
                     touch: false,
-                    content: ${(
+                    content: ${
                       response.locals.invitations!.length === 0
                         ? "Add"
                         : `${
@@ -2704,7 +2704,7 @@ export default async (application: Application): Promise<void> => {
                           } pending invitation${
                             response.locals.invitations!.length === 1 ? "" : "s"
                           }`
-                    )},  
+                    },  
                   },
                 });
 
@@ -2715,7 +2715,7 @@ export default async (application: Application): Promise<void> => {
                   tippyProps: {
                     trigger: "click",
                     interactive: true,
-                    content: ${(html`
+                    content: ${html`
                       <div
                         css="${css`
                           display: flex;
@@ -2793,7 +2793,7 @@ export default async (application: Application): Promise<void> => {
                             : html``}
                         </div>
                       </div>
-                    `)},  
+                    `},  
                   },
                 });
               `}"
@@ -2853,7 +2853,7 @@ export default async (application: Application): Promise<void> => {
                   element: this,
                   tippyProps: {
                     touch: false,
-                    content: ${(response.locals.user.name)},
+                    content: ${response.locals.user.name},
                   },
                 });
 
@@ -2864,7 +2864,7 @@ export default async (application: Application): Promise<void> => {
                   tippyProps: {
                     trigger: "click",
                     interactive: true,
-                    content: ${(html`
+                    content: ${html`
                       <div
                         css="${css`
                           display: flex;
@@ -2928,7 +2928,7 @@ export default async (application: Application): Promise<void> => {
                           </form>
                         </div>
                       </div>
-                    `)},  
+                    `},  
                   },
                 });
               `}"
@@ -3026,9 +3026,9 @@ export default async (application: Application): Promise<void> => {
                         tippyProps: {
                           trigger: "click",
                           interactive: true,
-                          content: ${(
-                            html`<div class="dropdown--menu">$${menu}</div>`
-                          )},
+                          content: ${html`<div class="dropdown--menu">
+                            $${menu}
+                          </div>`},
                         },
                       });
                     `}"

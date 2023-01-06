@@ -2391,9 +2391,7 @@ export default async (application: Application): Promise<void> => {
                               response.locals.conversation !== undefined
                                 ? javascript_TODO`
                                     window.setTimeout(() => {
-                                      if (event?.detail?.previousLocation?.href?.startsWith(${(
-                                        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-                                      )})) return;
+                                      if (event?.detail?.previousLocation?.href?.startsWith(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}`})) return;
                                       this.querySelector('[key="conversation--${
                                         response.locals.conversation.reference
                                       }"]')?.scrollIntoView({ block: "center" });
@@ -2693,7 +2691,7 @@ export default async (application: Application): Promise<void> => {
                         delay: [1000, null],
                         touch: ["hold", 1000],
                         onHidden: () => { this.onmouseleave(); },
-                        content: ${(html`
+                        content: ${html`
                           <div
                             key="loading"
                             css="${css`
@@ -2709,7 +2707,7 @@ export default async (application: Application): Promise<void> => {
                             Loading…
                           </div>
                           <div key="content" hidden></div>
-                        `)},  
+                        `},  
                       },
                     });
 
@@ -3368,23 +3366,23 @@ export default async (application: Application): Promise<void> => {
                             this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
-                                element.required = ${(
+                                element.required = ${
                                   conversationType !== "chat"
-                                )};
+                                };
 
                               ${
                                 response.locals.enrollment.courseRole ===
                                 "staff"
                                   ? javascript_TODO`
                                       const notification = form.querySelector('[key="new-conversation--announcement"]');
-                                      notification.hidden = ${(
+                                      notification.hidden = ${
                                         conversationType !== "note"
-                                      )};
+                                      };
                                       for (const element of leafac.descendants(notification))
                                         if (element.disabled !== undefined)
-                                          element.disabled = ${(
+                                          element.disabled = ${
                                             conversationType !== "note"
-                                          )};
+                                          };
                                     `
                                   : javascript_TODO``
                               }
@@ -3685,7 +3683,7 @@ export default async (application: Application): Promise<void> => {
                             tippyProps: {
                               trigger: "click",
                               interactive: true,
-                              content: ${(html`
+                              content: ${html`
                                 <div
                                   key="participants--dropdown"
                                   css="${css`
@@ -3961,7 +3959,7 @@ export default async (application: Application): Promise<void> => {
                                         `}
                                   </div>
                                 </div>
-                              `)},  
+                              `},  
                             },
                           });
                         `}"
@@ -4382,7 +4380,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${(html`
+                        content: ${html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -4398,7 +4396,7 @@ export default async (application: Application): Promise<void> => {
                               ><i class="bi bi-arrow-return-left"></i
                             ></span>
                           </span>
-                        `)},
+                        `},
                       },
                     });
 
@@ -4468,7 +4466,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${(html`
+                        content: ${html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -4483,7 +4481,7 @@ export default async (application: Application): Promise<void> => {
                               ><i class="bi bi-command"></i>S</span
                             >
                           </span>
-                        `)},  
+                        `},  
                       },
                     });
 
@@ -5343,7 +5341,7 @@ export default async (application: Application): Promise<void> => {
                                         tippyProps: {
                                           trigger: "click",
                                           interactive: true,
-                                          content: ${(html`
+                                          content: ${html`
                                             <div class="dropdown--menu">
                                               $${application.server.locals.helpers.conversationTypes.map(
                                                 (conversationType) => html`
@@ -5393,7 +5391,7 @@ export default async (application: Application): Promise<void> => {
                                                 `
                                               )}
                                             </div>
-                                          `)},  
+                                          `},  
                                         },
                                       });
                                     `}"
@@ -5717,7 +5715,7 @@ export default async (application: Application): Promise<void> => {
                               tippyProps: {
                                 trigger: "click",
                                 interactive: true,
-                                content: ${(html`
+                                content: ${html`
                                   <h3 class="heading">
                                     <i class="bi bi-chat-text-fill"></i>
                                     Conversation
@@ -5892,7 +5890,7 @@ export default async (application: Application): Promise<void> => {
                                                     trigger: "click",
                                                     interactive: true,
                                                     onHidden: () => { this.onmouseleave(); },
-                                                    content: ${(html`
+                                                    content: ${html`
                                                       <div
                                                         key="loading"
                                                         css="${css`
@@ -5913,7 +5911,7 @@ export default async (application: Application): Promise<void> => {
                                                         key="content"
                                                         hidden
                                                       ></div>
-                                                    `)},
+                                                    `},
                                                   },
                                                 });
   
@@ -5969,7 +5967,7 @@ export default async (application: Application): Promise<void> => {
                                                       theme: "rose",
                                                       trigger: "click",
                                                       interactive: true,
-                                                      content: ${(html`
+                                                      content: ${html`
                                                         <form
                                                           method="DELETE"
                                                           action="https://${application
@@ -6026,7 +6024,7 @@ export default async (application: Application): Promise<void> => {
                                                             Remove Conversation
                                                           </button>
                                                         </form>
-                                                      `)},  
+                                                      `},  
                                                     },
                                                   });
                                                 `}"
@@ -6038,7 +6036,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                   </div>
-                                `)},  
+                                `},  
                               },
                             });
                           `}"
@@ -6126,7 +6124,7 @@ export default async (application: Application): Promise<void> => {
                                     tippyProps: {
                                       theme: "rose",
                                       touch: false,
-                                      content: ${(html`
+                                      content: ${html`
                                         Cancel
                                         <span class="keyboard-shortcut">
                                           (<span
@@ -6142,7 +6140,7 @@ export default async (application: Application): Promise<void> => {
                                             ><i class="bi bi-escape"></i></span
                                           >)
                                         </span>
-                                      `)},
+                                      `},
                                     },
                                   });
                                       
@@ -6324,7 +6322,7 @@ export default async (application: Application): Promise<void> => {
                                     tippyProps: {
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${(html`
+                                      content: ${html`
                                         <div
                                           css="${css`
                                             max-height: var(--space--40);
@@ -6532,7 +6530,7 @@ export default async (application: Application): Promise<void> => {
                                             )}
                                           </div>
                                         </div>
-                                      `)},  
+                                      `},  
                                     },
                                   });
                                 `}"
@@ -6670,7 +6668,7 @@ export default async (application: Application): Promise<void> => {
                                           trigger: "click",
                                           interactive: true,
                                           placement: "bottom",
-                                          content: ${(html`
+                                          content: ${html`
                                             <div
                                               key="participants--dropdown"
                                               css="${css`
@@ -6963,7 +6961,7 @@ export default async (application: Application): Promise<void> => {
                                                     `}
                                               </div>
                                             </div>
-                                          `)},  
+                                          `},  
                                         },
                                       });
                                     `}"
@@ -7612,7 +7610,7 @@ export default async (application: Application): Promise<void> => {
                                                         trigger: "click",
                                                         interactive: true,
                                                         onHidden: () => { this.onmouseleave(); },
-                                                        content: ${(html`
+                                                        content: ${html`
                                                           <div
                                                             key="loading"
                                                             css="${css`
@@ -7635,7 +7633,7 @@ export default async (application: Application): Promise<void> => {
                                                             key="content"
                                                             hidden
                                                           ></div>
-                                                        `)},
+                                                        `},
                                                       },
                                                     });
 
@@ -7846,54 +7844,52 @@ export default async (application: Application): Promise<void> => {
                                                               element: this,
                                                               tippyProps: {
                                                                 touch: false,
-                                                                content: ${(
-                                                                  `Remove Endorsement${
-                                                                    message.endorsements.filter(
-                                                                      (
-                                                                        endorsement
-                                                                      ) =>
-                                                                        endorsement.enrollment !==
-                                                                          "no-longer-enrolled" &&
-                                                                        endorsement
+                                                                content: ${`Remove Endorsement${
+                                                                  message.endorsements.filter(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement.enrollment !==
+                                                                        "no-longer-enrolled" &&
+                                                                      endorsement
+                                                                        .enrollment
+                                                                        .id !==
+                                                                        response
+                                                                          .locals
                                                                           .enrollment
-                                                                          .id !==
-                                                                          response
-                                                                            .locals
-                                                                            .enrollment
-                                                                            .id
-                                                                    ).length > 0
-                                                                      ? ` (Also endorsed by ${
-                                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                            Intl as any
-                                                                          ).ListFormat(
-                                                                            "en"
-                                                                          ).format(
-                                                                            message.endorsements.flatMap(
-                                                                              (
-                                                                                endorsement
-                                                                              ) =>
-                                                                                endorsement.enrollment !==
-                                                                                  "no-longer-enrolled" &&
-                                                                                endorsement
+                                                                          .id
+                                                                  ).length > 0
+                                                                    ? ` (Also endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment !==
+                                                                                "no-longer-enrolled" &&
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .id !==
+                                                                                response
+                                                                                  .locals
                                                                                   .enrollment
-                                                                                  .id !==
-                                                                                  response
-                                                                                    .locals
-                                                                                    .enrollment
-                                                                                    .id
-                                                                                  ? [
-                                                                                      endorsement
-                                                                                        .enrollment
-                                                                                        .user
-                                                                                        .name,
-                                                                                    ]
-                                                                                  : []
-                                                                            )
+                                                                                  .id
+                                                                                ? [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
+                                                                                : []
                                                                           )
-                                                                        })`
-                                                                      : ``
-                                                                  }`
-                                                                )},  
+                                                                        )
+                                                                      })`
+                                                                    : ``
+                                                                }`},  
                                                               },
                                                             });
                                                           `}"
@@ -7926,30 +7922,28 @@ export default async (application: Application): Promise<void> => {
                                                                     element: this,
                                                                     tippyProps: {
                                                                       touch: false,
-                                                                      content: ${(
-                                                                        `Endorse (Already endorsed by ${
-                                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                            Intl as any
-                                                                          ).ListFormat(
-                                                                            "en"
-                                                                          ).format(
-                                                                            message.endorsements.flatMap(
-                                                                              (
-                                                                                endorsement
-                                                                              ) =>
-                                                                                endorsement.enrollment ===
-                                                                                "no-longer-enrolled"
-                                                                                  ? []
-                                                                                  : [
-                                                                                      endorsement
-                                                                                        .enrollment
-                                                                                        .user
-                                                                                        .name,
-                                                                                    ]
-                                                                            )
+                                                                      content: ${`Endorse (Already endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment ===
+                                                                              "no-longer-enrolled"
+                                                                                ? []
+                                                                                : [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
                                                                           )
-                                                                        })`
-                                                                      )},  
+                                                                        )
+                                                                      })`},  
                                                                     },
                                                                   });
                                                                 `}"
@@ -8001,30 +7995,28 @@ export default async (application: Application): Promise<void> => {
                                                               event,
                                                               element: this,
                                                               tippyProps: {
-                                                                content: ${(
-                                                                  `Endorsed by ${
-                                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                      Intl as any
-                                                                    ).ListFormat(
-                                                                      "en"
-                                                                    ).format(
-                                                                      message.endorsements.flatMap(
-                                                                        (
-                                                                          endorsement
-                                                                        ) =>
-                                                                          endorsement.enrollment ===
-                                                                          "no-longer-enrolled"
-                                                                            ? []
-                                                                            : [
-                                                                                endorsement
-                                                                                  .enrollment
-                                                                                  .user
-                                                                                  .name,
-                                                                              ]
-                                                                      )
+                                                                content: ${`Endorsed by ${
+                                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                    Intl as any
+                                                                  ).ListFormat(
+                                                                    "en"
+                                                                  ).format(
+                                                                    message.endorsements.flatMap(
+                                                                      (
+                                                                        endorsement
+                                                                      ) =>
+                                                                        endorsement.enrollment ===
+                                                                        "no-longer-enrolled"
+                                                                          ? []
+                                                                          : [
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .user
+                                                                                .name,
+                                                                            ]
                                                                     )
-                                                                  }`
-                                                                )},  
+                                                                  )
+                                                                }`},  
                                                               },
                                                             });
                                                           `
@@ -8230,7 +8222,7 @@ export default async (application: Application): Promise<void> => {
                                                     tippyProps: {
                                                       trigger: "manual",
                                                       interactive: true,
-                                                      content: ${(html`
+                                                      content: ${html`
                                                         <div
                                                           class="dropdown--menu"
                                                         >
@@ -8281,13 +8273,13 @@ export default async (application: Application): Promise<void> => {
                                                                                 : `anonymous`
                                                                             } · " +
                                                                           `
-                                                                    } "#" + ${(
+                                                                    } "#" + ${
                                                               response.locals
                                                                 .conversation
                                                                 .reference
-                                                            )} + "/" + ${(
+                                                            } + "/" + ${
                                                               message.reference
-                                                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                            } + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
                                                                     ""
                                                                   );
                                                                   element.focus();
@@ -8300,7 +8292,7 @@ export default async (application: Application): Promise<void> => {
                                                             Quote
                                                           </button>
                                                         </div>
-                                                      `)},  
+                                                      `},  
                                                     },
                                                   });
                                                   
@@ -8404,11 +8396,11 @@ export default async (application: Application): Promise<void> => {
                                                                   element: this,
                                                                   tippyProps: {
                                                                     touch: false,
-                                                                    content: ${(
+                                                                    content: ${
                                                                       isLiked
                                                                         ? "Remove Like"
                                                                         : "Like"
-                                                                    )},
+                                                                    },
                                                                   },
                                                                 });
                                                               `}"
@@ -8454,7 +8446,7 @@ export default async (application: Application): Promise<void> => {
                                                                   trigger: "click",
                                                                   interactive: true,
                                                                   onHidden: () => { this.onmouseleave(); },
-                                                                  content: ${(html`
+                                                                  content: ${html`
                                                                     <div
                                                                       key="loading"
                                                                       css="${css`
@@ -8477,7 +8469,7 @@ export default async (application: Application): Promise<void> => {
                                                                       key="content"
                                                                       hidden
                                                                     ></div>
-                                                                  `)},
+                                                                  `},
                                                                 },
                                                               });
 
@@ -8544,7 +8536,7 @@ export default async (application: Application): Promise<void> => {
                                                           trigger: "click",
                                                           interactive: true,
                                                           onHidden: () => { this.onmouseleave(); },
-                                                          content: ${(html`
+                                                          content: ${html`
                                                             <div
                                                               key="loading"
                                                               css="${css`
@@ -8567,7 +8559,7 @@ export default async (application: Application): Promise<void> => {
                                                               key="content"
                                                               hidden
                                                             ></div>
-                                                          `)},
+                                                          `},
                                                         },
                                                       });
 
@@ -9026,7 +9018,7 @@ export default async (application: Application): Promise<void> => {
                                 element: this,
                                 tippyProps: {
                                   touch: false,
-                                  content: ${(html`
+                                  content: ${html`
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
@@ -9043,7 +9035,7 @@ export default async (application: Application): Promise<void> => {
                                         ><i class="bi bi-arrow-return-left"></i
                                       ></span>
                                     </span>
-                                  `)},
+                                  `},
                                 },
                               });
                             `}"
@@ -9166,7 +9158,7 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${(html`
+                            content: ${html`
                               <span class="keyboard-shortcut">
                                 <span
                                   javascript-TODO="${javascript_TODO`
@@ -9182,7 +9174,7 @@ export default async (application: Application): Promise<void> => {
                                   ><i class="bi bi-arrow-return-left"></i
                                 ></span>
                               </span>
-                            `)},
+                            `},
                           },
                         });
 

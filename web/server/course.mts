@@ -1577,7 +1577,7 @@ export default async (application: Application): Promise<void> => {
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${(html`
+                                      content: ${html`
                                         <div
                                           css="${css`
                                             padding: var(--space--2)
@@ -1630,7 +1630,7 @@ export default async (application: Application): Promise<void> => {
                                             Remove Tag
                                           </button>
                                         </div>
-                                      `)},  
+                                      `},  
                                     },
                                   });
                                 `}"
@@ -1731,74 +1731,73 @@ export default async (application: Application): Promise<void> => {
                     const applicationJavaScript = window.applicationJavaScript;
 
                     this.onclick = () => {
-                      const newTag = leafac.stringToElement(${(
-                        html`
+                      const newTag = leafac.stringToElement(${html`
+                        <div
+                          key="tag"
+                          css="${css`
+                            padding-bottom: var(--space--4);
+                            border-bottom: var(--border-width--1) solid
+                              var(--color--gray--medium--200);
+                            @media (prefers-color-scheme: dark) {
+                              border-color: var(--color--gray--medium--700);
+                            }
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: baseline;
+                          `}"
+                        >
+                          <div class="text--teal">
+                            <i class="bi bi-tag-fill"></i>
+                          </div>
                           <div
-                            key="tag"
                             css="${css`
-                              padding-bottom: var(--space--4);
-                              border-bottom: var(--border-width--1) solid
-                                var(--color--gray--medium--200);
-                              @media (prefers-color-scheme: dark) {
-                                border-color: var(--color--gray--medium--700);
-                              }
+                              flex: 1;
                               display: flex;
+                              flex-direction: column;
                               gap: var(--space--2);
-                              align-items: baseline;
                             `}"
                           >
-                            <div class="text--teal">
-                              <i class="bi bi-tag-fill"></i>
-                            </div>
-                            <div
-                              css="${css`
-                                flex: 1;
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <input
-                                type="text"
-                                placeholder=" "
-                                required
-                                autocomplete="off"
-                                disabled
-                                class="input--text"
-                                javascript-TODO="${javascript_TODO`
+                            <input
+                              type="text"
+                              placeholder=" "
+                              required
+                              autocomplete="off"
+                              disabled
+                              class="input--text"
+                              javascript-TODO="${javascript_TODO`
                                     this.isModified = true;
                                     this.disabled = false;
                                     this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
                                   `}"
-                              />
+                            />
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--4);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
                               <div
                                 css="${css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--2);
+                                  width: var(--space--40);
                                 `}"
                               >
-                                <div
-                                  css="${css`
-                                    width: var(--space--40);
-                                  `}"
+                                <label
+                                  class="button button--tight button--tight--inline button--justify-start button--transparent"
                                 >
-                                  <label
-                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      javascript-TODO="${javascript_TODO`
+                                  <input
+                                    type="checkbox"
+                                    disabled
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    javascript-TODO="${javascript_TODO`
                                           this.isModified = true;
                                           this.disabled = false;
                                           this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
                                         `}"
-                                    />
-                                    <span
-                                      javascript-TODO="${javascript_TODO`
+                                  />
+                                  <span
+                                    javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -1808,13 +1807,13 @@ export default async (application: Application): Promise<void> => {
                                             },
                                           });
                                         `}"
-                                    >
-                                      <i class="bi bi-eye"></i>
-                                      Visible by Everyone
-                                    </span>
-                                    <span
-                                      class="${textColorsCourseRole.staff}"
-                                      javascript-TODO="${javascript_TODO`
+                                  >
+                                    <i class="bi bi-eye"></i>
+                                    Visible by Everyone
+                                  </span>
+                                  <span
+                                    class="${textColorsCourseRole.staff}"
+                                    javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -1824,16 +1823,16 @@ export default async (application: Application): Promise<void> => {
                                             },
                                           });
                                         `}"
-                                    >
-                                      <i class="bi bi-mortarboard-fill"></i>
-                                      Visible by Staff Only
-                                    </span>
-                                  </label>
-                                </div>
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  javascript-TODO="${javascript_TODO`
+                                  >
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                    Visible by Staff Only
+                                  </span>
+                                </label>
+                              </div>
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                javascript-TODO="${javascript_TODO`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -1850,14 +1849,13 @@ export default async (application: Application): Promise<void> => {
                                         tag.hidden = true;
                                       };
                                     `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                              </div>
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
                             </div>
                           </div>
-                        `
-                      )});
+                        </div>
+                      `});
                       this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
                       leafac.javascript({
                         event,
@@ -2129,7 +2127,7 @@ export default async (application: Application): Promise<void> => {
                         element: this,
                         tippyProps: {
                           trigger: "click",
-                          content: ${(html`
+                          content: ${html`
                             <div
                               css="${css`
                                 padding: var(--space--2);
@@ -2149,7 +2147,7 @@ export default async (application: Application): Promise<void> => {
                                 leandro@courselore.org
                               `}</code></pre>
                             </div>
-                          `)},  
+                          `},  
                         },
                       });
                     `}"
@@ -2438,7 +2436,7 @@ export default async (application: Application): Promise<void> => {
                                             maxWidth: "none",
                                             content: ${(() => {
                                               const link = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/invitations/${invitation.reference}`;
-                                              return (html`
+                                              return html`
                                                 <div
                                                   css="${css`
                                                     display: flex;
@@ -2499,9 +2497,7 @@ export default async (application: Application): Promise<void> => {
                                                           });
   
                                                           this.onclick = async () => {
-                                                            await navigator.clipboard.writeText(${(
-                                                              link
-                                                            )});
+                                                            await navigator.clipboard.writeText(${link});
                                                             const stickies = this.querySelector('[key="stickies"]');
                                                             const check = this.querySelector('[key="check"]');
                                                             stickies.hidden = true;
@@ -2546,7 +2542,7 @@ export default async (application: Application): Promise<void> => {
                                                     ></a>
                                                   </div>
                                                 </div>
-                                              `);
+                                              `;
                                             })()},
                                           },
                                         });
@@ -2578,7 +2574,7 @@ export default async (application: Application): Promise<void> => {
                                           tippyProps: {
                                             trigger: "click",
                                             interactive: true,
-                                            content: ${(html`
+                                            content: ${html`
                                               <div class="dropdown--menu">
                                                 <form
                                                   method="PATCH"
@@ -2630,7 +2626,7 @@ export default async (application: Application): Promise<void> => {
                                                   </button>
                                                 </form>
                                               </div>
-                                            `)},  
+                                            `},  
                                           },
                                         });
                                       `}"
@@ -2692,7 +2688,7 @@ export default async (application: Application): Promise<void> => {
                                       tippyProps: {
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${(html`
+                                        content: ${html`
                                           <div class="dropdown--menu">
                                             $${application.server.locals.helpers.courseRoles.map(
                                               (courseRole) =>
@@ -2761,7 +2757,7 @@ export default async (application: Application): Promise<void> => {
                                                 `
                                             )}
                                           </div>
-                                        `)},  
+                                        `},  
                                       },
                                     });
                                   `}"
@@ -2867,7 +2863,7 @@ export default async (application: Application): Promise<void> => {
                                               element: this,
                                               tippyProps: {
                                                 interactive: true,
-                                                content: ${(html`
+                                                content: ${html`
                                                   <div>
                                                     Used
                                                     <time
@@ -2879,7 +2875,7 @@ export default async (application: Application): Promise<void> => {
                                                         `}"
                                                     ></time>
                                                   </div>
-                                                `)},
+                                                `},
                                               },
                                             });
                                           `}"
@@ -2911,7 +2907,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${(html`
+                                                  content: ${html`
                                                     <div
                                                       css="${css`
                                                         display: flex;
@@ -2949,7 +2945,7 @@ export default async (application: Application): Promise<void> => {
                                                         $${removeExpirationForm}
                                                       </div>
                                                     </div>
-                                                  `)},  
+                                                  `},  
                                                 },
                                               });
                                             `}"
@@ -2982,7 +2978,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${(html`
+                                                  content: ${html`
                                                     <div
                                                       css="${css`
                                                         padding-top: var(
@@ -3007,7 +3003,7 @@ export default async (application: Application): Promise<void> => {
                                                         $${expireForm}
                                                       </div>
                                                     </div>
-                                                  `)},  
+                                                  `},  
                                                 },
                                               });
                                             `}"
@@ -3041,7 +3037,7 @@ export default async (application: Application): Promise<void> => {
                                                 tippyProps: {
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${(html`
+                                                  content: ${html`
                                                     <div
                                                       css="${css`
                                                         display: flex;
@@ -3080,7 +3076,7 @@ export default async (application: Application): Promise<void> => {
                                                         $${expireForm}
                                                       </div>
                                                     </div>
-                                                  `)},  
+                                                  `},  
                                                 },
                                               });
                                             `}"
@@ -3924,9 +3920,7 @@ export default async (application: Application): Promise<void> => {
                                   });
 
                                   this.onclick = async () => {
-                                    await navigator.clipboard.writeText(${(
-                                      link
-                                    )});
+                                    await navigator.clipboard.writeText(${link});
                                     const stickies = this.querySelector('[key="stickies"]');
                                     const check = this.querySelector('[key="check"]');
                                     stickies.hidden = true;
@@ -4306,9 +4300,7 @@ export default async (application: Application): Promise<void> => {
                             });
 
                             this.onclick = async () => {
-                              await navigator.clipboard.writeText(${(
-                                enrollment.user.email
-                              )});
+                              await navigator.clipboard.writeText(${enrollment.user.email});
                               this.copied.show();
                               await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                               this.copied.hide();
@@ -4373,7 +4365,7 @@ export default async (application: Application): Promise<void> => {
                               tippyProps: {
                                 trigger: "click",
                                 interactive: true,
-                                content: ${(html`
+                                content: ${html`
                                   <div class="dropdown--menu">
                                     $${application.server.locals.helpers.courseRoles.map(
                                       (courseRole) =>
@@ -4424,7 +4416,7 @@ export default async (application: Application): Promise<void> => {
                                                               trigger: "click",
                                                               interactive: true,
                                                               appendTo: document.querySelector("body"),
-                                                              content: ${(html`
+                                                              content: ${html`
                                                                 <form
                                                                   key="course-role--${courseRole}"
                                                                   method="PATCH"
@@ -4481,7 +4473,7 @@ export default async (application: Application): Promise<void> => {
                                                                     )}
                                                                   </button>
                                                                 </form>
-                                                              `)},  
+                                                              `},  
                                                             },
                                                           });
                                                         `}"
@@ -4500,7 +4492,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                     )}
                                   </div>
-                                `)},  
+                                `},  
                               },
                             });
                           `}"
@@ -4558,7 +4550,7 @@ export default async (application: Application): Promise<void> => {
                                         theme: "rose",
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${(html`
+                                        content: ${html`
                                           <form
                                             method="DELETE"
                                             action="${action}"
@@ -4595,7 +4587,7 @@ export default async (application: Application): Promise<void> => {
                                               from the Course
                                             </button>
                                           </form>
-                                        `)},  
+                                        `},  
                                       },
                                     });
                                   `

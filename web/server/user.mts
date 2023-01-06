@@ -582,7 +582,7 @@ export default async (application: Application): Promise<void> => {
               appendTo: document.querySelector("body"),
               delay: [1000, null],
               touch: ["hold", 1000],
-              content: ${(html`
+              content: ${html`
                 <div
                   css="${css`
                     max-height: var(--space--56);
@@ -665,9 +665,9 @@ export default async (application: Application): Promise<void> => {
                                       });
   
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${(
+                                        await navigator.clipboard.writeText(${
                                           user!.email
-                                        )});
+                                        });
                                         this.copied.show();
                                         await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                         this.copied.hide();
@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
                       }).contentProcessed
                     : html``}
                 </div>
-              `)},  
+              `},  
             },
           });
         `}"
@@ -1061,7 +1061,7 @@ export default async (application: Application): Promise<void> => {
                       tippyProps: {
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${(html`
+                        content: ${html`
                           <div
                             css="${css`
                               display: flex;
@@ -1074,7 +1074,7 @@ export default async (application: Application): Promise<void> => {
                             })}
                             Uploading…
                           </div>
-                        `)},
+                        `},
                       },
                     });
 

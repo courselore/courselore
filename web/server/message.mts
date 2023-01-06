@@ -605,11 +605,11 @@ export default async (application: Application): Promise<void> => {
                                 : `anonymous`
                             } · " +
                           `
-                      } "#" + ${(
+                      } "#" + ${
                   response.locals.conversation.reference
-                )} + "/" + ${(
+                } + "/" + ${
                   response.locals.message.reference
-                )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
+                } + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
                       ""
                     );
                     element.focus();
@@ -634,7 +634,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 key="loading"
                                 css="${css`
@@ -650,7 +650,7 @@ export default async (application: Application): Promise<void> => {
                                 Loading…
                               </div>
                               <div key="content" hidden></div>
-                            `)},
+                            `},
                           },
                         });
 
@@ -883,7 +883,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onHidden: () => { this.onmouseleave(); },
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 key="loading"
                                 css="${css`
@@ -899,7 +899,7 @@ export default async (application: Application): Promise<void> => {
                                 Loading…
                               </div>
                               <div key="content" hidden></div>
-                            `)},
+                            `},
                           },
                         });
 
@@ -954,7 +954,7 @@ export default async (application: Application): Promise<void> => {
                               theme: "rose",
                               trigger: "click",
                               interactive: true,
-                              content: ${(html`
+                              content: ${html`
                                 <form
                                   method="DELETE"
                                   action="https://${application.configuration
@@ -996,7 +996,7 @@ export default async (application: Application): Promise<void> => {
                                     Remove Message
                                   </button>
                                 </form>
-                              `)},  
+                              `},  
                             },
                           });
                         `}"
@@ -1086,7 +1086,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${(html`
+                        content: ${html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -1102,7 +1102,7 @@ export default async (application: Application): Promise<void> => {
                               ><i class="bi bi-arrow-return-left"></i
                             ></span>
                           </span>
-                        `)},
+                        `},
                       },
                     });
 

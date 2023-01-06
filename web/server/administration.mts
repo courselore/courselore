@@ -592,7 +592,7 @@ export default async (application: Application): Promise<void> => {
                             tippyProps: {
                               trigger: "click",
                               interactive: true,
-                              content: ${(html`
+                              content: ${html`
                                 <div class="dropdown--menu">
                                   $${application.server.locals.helpers.systemRoles.map(
                                     (systemRole) =>
@@ -643,7 +643,7 @@ export default async (application: Application): Promise<void> => {
                                                             trigger: "click",
                                                             interactive: true,
                                                             appendTo: document.querySelector("body"),
-                                                            content: ${(html`
+                                                            content: ${html`
                                                               <form
                                                                 key="role--${systemRole}"
                                                                 method="PATCH"
@@ -697,7 +697,7 @@ export default async (application: Application): Promise<void> => {
                                                                   )}
                                                                 </button>
                                                               </form>
-                                                            `)},  
+                                                            `},  
                                                           },
                                                         });
                                                       `}"
@@ -712,7 +712,7 @@ export default async (application: Application): Promise<void> => {
                                       `
                                   )}
                                 </div>
-                              `)},  
+                              `},  
                             },
                           });
                         `}"

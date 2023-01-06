@@ -389,14 +389,14 @@ export default async (application: Application): Promise<void> => {
               element: this,
               tippyProps: {
                 touch: false,
-                content: ${(
+                content: ${
                   href.startsWith("mailto:")
                     ? html`Send email to
                         <code class="code"
                           >${href.slice("mailto:".length)}</code
                         >`
                     : html`External link to <code class="code">${href}</code>`
-                )},  
+                },  
               },
             });
           `
@@ -675,7 +675,7 @@ export default async (application: Application): Promise<void> => {
                 element: this,
                 tippyProps: {
                   touch: false,
-                  content: ${(html`
+                  content: ${html`
                     <div
                       css="${css`
                         padding: var(--space--2);
@@ -687,7 +687,7 @@ export default async (application: Application): Promise<void> => {
                         conversation,
                       })}
                     </div>
-                  `)},  
+                  `},  
                 },
               });
             `
@@ -709,7 +709,7 @@ export default async (application: Application): Promise<void> => {
               element: this,
               tippyProps: {
                 touch: false,
-                content: ${(html`
+                content: ${html`
                   <div
                     css="${css`
                       padding: var(--space--2);
@@ -725,7 +725,7 @@ export default async (application: Application): Promise<void> => {
                       message,
                     })}
                   </div>
-                `)},  
+                `},  
               },
             });
           `
@@ -923,7 +923,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         touch: false,
-                        content: ${(html`
+                        content: ${html`
                           <span class="keyboard-shortcut">
                             <span
                               javascript-TODO="${javascript_TODO`
@@ -939,7 +939,7 @@ export default async (application: Application): Promise<void> => {
                               ><i class="bi bi-command"></i>P</span
                             >
                           </span>
-                        `)},  
+                        `},  
                       },
                     });
 
@@ -1006,7 +1006,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "click",
                       interactive: true,
-                      content: ${(html`
+                      content: ${html`
                         <p>
                           You may style text with
                           <a
@@ -1023,7 +1023,7 @@ export default async (application: Application): Promise<void> => {
                             >LaTeX</a
                           >.
                         </p>
-                      `)},  
+                      `},  
                     },
                   });
                 `}"
@@ -1041,7 +1041,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
@@ -1058,7 +1058,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>1</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1083,7 +1083,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
@@ -1100,7 +1100,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>2</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1125,7 +1125,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
@@ -1142,7 +1142,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>3</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1169,7 +1169,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
@@ -1185,7 +1185,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>B</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1210,7 +1210,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
@@ -1226,7 +1226,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>I</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1251,7 +1251,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Underline
                         <span class="keyboard-shortcut">
                           (<span
@@ -1267,7 +1267,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>U</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1292,7 +1292,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Strikethrough
                         <span class="keyboard-shortcut">
                           (<span
@@ -1309,7 +1309,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>S</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1334,7 +1334,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Link
                         <span class="keyboard-shortcut">
                           (<span
@@ -1350,7 +1350,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>K</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1377,7 +1377,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
@@ -1394,7 +1394,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>8</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1419,7 +1419,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
@@ -1436,7 +1436,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>7</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1461,7 +1461,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
@@ -1478,7 +1478,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>9</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1505,7 +1505,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
@@ -1521,7 +1521,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>'</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1546,7 +1546,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Table
                         <span class="keyboard-shortcut">
                           (<span
@@ -1563,7 +1563,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>T</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
@@ -1606,7 +1606,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>D</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1631,7 +1631,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
@@ -1648,7 +1648,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>F</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1675,7 +1675,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
@@ -1691,7 +1691,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1716,7 +1716,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
@@ -1733,7 +1733,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1760,7 +1760,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
@@ -1777,7 +1777,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
                   
@@ -1802,7 +1802,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
@@ -1819,7 +1819,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1848,10 +1848,10 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${(html`
+                            content: ${html`
                               Mention User
                               <span class="keyboard-shortcut">(@)</span>
-                            `)},
+                            `},
                           },
                         });
 
@@ -1874,10 +1874,10 @@ export default async (application: Application): Promise<void> => {
                           element: this,
                           tippyProps: {
                             touch: false,
-                            content: ${(html`
+                            content: ${html`
                               Refer to Conversation or Message
                               <span class="keyboard-shortcut">(#)</span>
-                            `)},  
+                            `},  
                           },
                         });
 
@@ -1904,7 +1904,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Image
                         <span class="keyboard-shortcut">
                           (<span
@@ -1922,7 +1922,7 @@ export default async (application: Application): Promise<void> => {
                           >
                           or drag-and-drop or copy-and-paste)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -1946,7 +1946,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
@@ -1964,7 +1964,7 @@ export default async (application: Application): Promise<void> => {
                           >
                           or drag-and-drop or copy-and-paste)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -2045,7 +2045,7 @@ export default async (application: Application): Promise<void> => {
                     tippyProps: {
                       trigger: "manual",
                       hideOnClick: false,
-                      content: ${(html`
+                      content: ${html`
                         <div
                           css="${css`
                             display: flex;
@@ -2058,7 +2058,7 @@ export default async (application: Application): Promise<void> => {
                           })}
                           Uploading…
                         </div>
-                      `)},  
+                      `},  
                     },
                   });
 
@@ -2081,7 +2081,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: ${(html`
+                      content: ${html`
                         Programmer Mode
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
@@ -2099,7 +2099,7 @@ export default async (application: Application): Promise<void> => {
                             ><i class="bi bi-command"></i>0</span
                           >)
                         </span>
-                      `)},  
+                      `},  
                     },
                   });
                 `}"
@@ -2211,7 +2211,7 @@ export default async (application: Application): Promise<void> => {
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 css="${css`
                                   width: var(--space--56);
@@ -2260,7 +2260,7 @@ export default async (application: Application): Promise<void> => {
                                   </button>
                                 </div>
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
 
@@ -2272,7 +2272,7 @@ export default async (application: Application): Promise<void> => {
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${(html`
+                            content: ${html`
                               <div
                                 css="${css`
                                   width: var(--space--72);
@@ -2288,29 +2288,25 @@ export default async (application: Application): Promise<void> => {
                                   <div key="search-results"></div>
                                 </div>
                               </div>
-                            `)},  
+                            `},  
                           },
                         });
 
                         const dropdownMenus = [
                           {
                             trigger: "@",
-                            route: ${(
-                              `https://${
-                                application.configuration.hostname
-                              }/courses/${response.locals.course.reference}/${
-                                response.locals.conversation !== undefined
-                                  ? `conversations/${response.locals.conversation.reference}/`
-                                  : ``
-                              }content-editor/mention-user-search`
-                            )},
+                            route: ${`https://${
+                              application.configuration.hostname
+                            }/courses/${response.locals.course.reference}/${
+                              response.locals.conversation !== undefined
+                                ? `conversations/${response.locals.conversation.reference}/`
+                                : ``
+                            }content-editor/mention-user-search`},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
                           },
                           {
                             trigger: "#",
-                            route: ${(
-                              `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
-                            )},
+                            route: ${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`},
                             dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
                         ];
