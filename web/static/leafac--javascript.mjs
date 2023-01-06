@@ -899,10 +899,12 @@ export function javascript({
   element = undefined,
   elements = element.querySelectorAll("[javascript]"),
 }) {
+  const javascript = JSON.parse(element.getAttribute("javascript"));
   for (const element of elements)
-    window.localJavaScript[element.getAttribute("javascript")].call(
+    window.localJavaScript[javascript.function].call(
       element,
-      event
+      event,
+      ...javascript.arguments
     );
 }
 

@@ -1594,11 +1594,11 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button"
                       style="
-                      --color--accent-color--500: var(--color--${response.locals
-                        .enrollment.accentColor}--500);
-                      --color--accent-color--600: var(--color--${response.locals
-                        .enrollment.accentColor}--600);
-                    "
+                        --color--accent-color--500: var(--color--${response
+                        .locals.enrollment.accentColor}--500);
+                        --color--accent-color--600: var(--color--${response
+                        .locals.enrollment.accentColor}--600);
+                      "
                       css="${css`
                         background-color: var(--color--accent-color--500);
                         @media (prefers-color-scheme: dark) {
@@ -1608,53 +1608,53 @@ export default async (application: Application): Promise<void> => {
                         flex: 1;
                       `}"
                       javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          touch: false,
-                          content: "What’s This?",
-                        },
-                      });
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "What’s This?",
+                          },
+                        });
 
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        elementProperty: "dropdown",
-                        tippyProps: {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${JSON.stringify(html`
-                            <div
-                              css="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p>
-                                This bar with an accent color appears at the top
-                                of pages related to this course to help you
-                                differentiate between courses.
-                              </p>
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/courses/${response.locals.course!
-                                  .reference}/settings/your-enrollment"
-                                class="button button--blue"
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${JSON.stringify(html`
+                              <div
                                 css="${css`
-                                  width: 100%;
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
                                 `}"
                               >
-                                <i class="bi bi-palette-fill"></i>
-                                Update Accent Color
-                              </a>
-                            </div>
-                          `)},  
-                        },
-                      });
-                    `}"
+                                <p>
+                                  This bar with an accent color appears at the
+                                  top of pages related to this course to help
+                                  you differentiate between courses.
+                                </p>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/courses/${response.locals.course!
+                                    .reference}/settings/your-enrollment"
+                                  class="button button--blue"
+                                  css="${css`
+                                    width: 100%;
+                                  `}"
+                                >
+                                  <i class="bi bi-palette-fill"></i>
+                                  Update Accent Color
+                                </a>
+                              </div>
+                            `)},  
+                          },
+                        });
+                      `}"
                     ></button>
                   </div>
                 `}
