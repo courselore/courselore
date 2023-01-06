@@ -492,7 +492,7 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `}"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 const element = this;
 
                 leafac.setTippy({
@@ -509,9 +509,7 @@ export default async (application: Application): Promise<void> => {
                   if (!leafac.isConnected(element)) return;
                   element.hidden = Date.now() - ${new Date(
                     user.lastSeenOnlineAt
-                  )
-                    .getTime()
-                    .toString()} > 5 * 60 * 1000;
+                  ).getTime()} > 5 * 60 * 1000;
                   element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 2 * 1000);
                 })();
               `}"
@@ -546,7 +544,7 @@ export default async (application: Application): Promise<void> => {
           enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -573,7 +571,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
-        javascript-TODO="${javascript_TODO`
+        javascript="${javascript`
           leafac.setTippy({
             event,
             element: this,
@@ -643,36 +641,36 @@ export default async (application: Application): Promise<void> => {
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
                                   `}"
-                                  javascript-TODO="${javascript_TODO`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          touch: false,
-                                          content: "Copy Email",
-                                        },
-                                      });
+                                  javascript="${javascript`
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Copy Email",
+                                      },
+                                    });
 
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        elementProperty: "copied",
-                                        tippyProps: {
-                                          theme: "green",
-                                          trigger: "manual",
-                                          content: "Copied",
-                                        },
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      elementProperty: "copied",
+                                      tippyProps: {
+                                        theme: "green",
+                                        trigger: "manual",
+                                        content: "Copied",
+                                      },
+                                    });
+
+                                    this.onclick = async () => {
+                                      await navigator.clipboard.writeText(${
+                                        user!.email
                                       });
-  
-                                      this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${
-                                          user!.email
-                                        });
-                                        this.copied.show();
-                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                        this.copied.hide();
-                                      };
-                                    `}"
+                                      this.copied.show();
+                                      await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                      this.copied.hide();
+                                    };
+                                  `}"
                                 >
                                   <i class="bi bi-stickies"></i>
                                 </button>
@@ -699,9 +697,9 @@ export default async (application: Application): Promise<void> => {
                                     datetime="${new Date(
                                       user!.lastSeenOnlineAt
                                     ).toISOString()}"
-                                    javascript-TODO="${javascript_TODO`
-                                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                      `}"
+                                    javascript="${javascript`
+                                      leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                    `}"
                                   ></time>
                                 </span>
                               </div>
@@ -809,7 +807,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
-        javascript-TODO="${javascript_TODO`
+        javascript="${javascript`
           leafac.setTippy({
             event,
             element: this,
@@ -909,7 +907,7 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                 `}"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.ondragover = (event) => {
                     if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
@@ -933,7 +931,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -978,7 +976,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1018,7 +1016,7 @@ export default async (application: Application): Promise<void> => {
                       transform: translate(-20%, -20%);
                       align-items: center;
                     `}"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1046,7 +1044,7 @@ export default async (application: Application): Promise<void> => {
                   type="file"
                   accept="image/*"
                   hidden
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     const avatarChooser = this.closest('[key="avatar-chooser"]');
@@ -1094,9 +1092,7 @@ export default async (application: Application): Promise<void> => {
                       this.value = "";
                       tippy.hideAll();
                       avatarChooser.uploadingIndicator.show();
-                      const response = await fetch("https://${
-                        application.configuration.hostname
-                      }/settings/profile/avatar", {
+                      const response = await fetch(${`https://${application.configuration.hostname}/settings/profile/avatar`}, {
                         cache: "no-store",
                         method: "POST",
                         headers: { "CSRF-Protection": "true", },
