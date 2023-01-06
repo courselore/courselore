@@ -19,7 +19,6 @@ import xxhash from "xxhash-addon";
 import baseX from "base-x";
 import html from "@leafac/html";
 import css from "@leafac/css";
-import javascript from "@leafac/javascript";
 
 // TODO: Minimize the CSS/JavaScript before hashing it, because it leads to more reuse.
 
@@ -102,11 +101,9 @@ await node.time("[Server] Babel", async () => {
                       if (!staticCSSIdentifiers.has(identifier)) {
                         staticCSSIdentifiers.add(identifier);
                         staticCSS =
-                          css`
-                            ${`[css~="${identifier}"]`.repeat(6)} {
-                              ${css_}
-                            }
-                          ` + staticCSS;
+                          `${`[css~="${identifier}"]`.repeat(
+                            6
+                          )} {\n${css_}}\n\n` + staticCSS;
                       }
                       path.replaceWith(babel.types.stringLiteral(identifier));
                       break;
@@ -129,7 +126,7 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticJavaScriptIdentifiers.has(identifier)) {
                         staticJavaScriptIdentifiers.add(identifier);
-                        staticJavaScript += javascript`export function ${identifier}(${[
+                        staticJavaScript += `export function ${identifier}(${[
                           "event",
                           ...path.node.quasi.expressions.map(
                             (value, index) => `$$${index}`
