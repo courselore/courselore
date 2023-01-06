@@ -1597,7 +1597,7 @@ export default async (application: Application): Promise<void> => {
                         border-radius: var(--border-radius--none);
                         flex: 1;
                       `}"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1658,52 +1658,53 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <button
                       class="button button--transparent"
-                      javascript-TODO="${javascript_TODO`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        elementProperty: "dropdown",
-                        tippyProps: {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${html`
-                            <div
-                              css="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p>
-                                This Courselore installation is running in
-                                demonstration mode and must not be used for real
-                                courses. Any data may be lost, including users,
-                                courses, invitations, conversations, messages,
-                                and so forth. Emails aren’t delivered. You may
-                                create demonstration data to give you a better
-                                idea of what Courselore looks like in use.
-                              </p>
-                              <form
-                                method="POST"
-                                action="https://${application.configuration
-                                  .hostname}/demonstration-data"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
                               >
-                                <button
-                                  class="button button--blue"
-                                  css="${css`
-                                    width: 100%;
-                                  `}"
+                                <p>
+                                  This Courselore installation is running in
+                                  demonstration mode and must not be used for
+                                  real courses. Any data may be lost, including
+                                  users, courses, invitations, conversations,
+                                  messages, and so forth. Emails aren’t
+                                  delivered. You may create demonstration data
+                                  to give you a better idea of what Courselore
+                                  looks like in use.
+                                </p>
+                                <form
+                                  method="POST"
+                                  action="https://${application.configuration
+                                    .hostname}/demonstration-data"
                                 >
-                                  <i class="bi bi-easel-fill"></i>
-                                  Create Demonstration Data
-                                </button>
-                              </form>
-                            </div>
-                          `},  
-                        },
-                      });
-                    `}"
+                                  <button
+                                    class="button button--blue"
+                                    css="${css`
+                                      width: 100%;
+                                    `}"
+                                  >
+                                    <i class="bi bi-easel-fill"></i>
+                                    Create Demonstration Data
+                                  </button>
+                                </form>
+                              </div>
+                            `},  
+                          },
+                        });
+                      `}"
                     >
                       <i class="bi bi-easel"></i>
                       Demonstration Mode
@@ -1716,7 +1717,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <button
                       class="button button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1728,12 +1729,12 @@ export default async (application: Application): Promise<void> => {
                             <div class="dropdown--menu">
                               <button
                                 class="dropdown--menu--item button button--transparent"
-                                javascript-TODO="${javascript_TODO`
-                                    this.onclick = async () => {
-                                      await fetch("https://${application.configuration.hostname}/live-updates", { cache: "no-store" });
-                                      this.classList.add("button--green");
-                                    };
-                                  `}"
+                                javascript="${javascript`
+                                  this.onclick = async () => {
+                                    await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
+                                    this.classList.add("button--green");
+                                  };
+                                `}"
                               >
                                 <i class="bi bi-arrow-clockwise"></i>
                                 Live-Updates
@@ -1870,14 +1871,14 @@ export default async (application: Application): Promise<void> => {
                 flex: 1;
                 overflow: auto;
               `}"
-              javascript-TODO="${javascript_TODO`
-              if (
-                event?.detail?.previousLocation?.origin !== window.location.origin ||
-                event?.detail?.previousLocation?.pathname !== window.location.pathname ||
-                event?.detail?.previousLocation?.search !== window.location.search
-              )
-                this.scroll(0, 0);
-            `}"
+              javascript="${javascript`
+                if (
+                  event?.detail?.previousLocation?.origin !== window.location.origin ||
+                  event?.detail?.previousLocation?.pathname !== window.location.pathname ||
+                  event?.detail?.previousLocation?.search !== window.location.search
+                )
+                  this.scroll(0, 0);
+              `}"
             >
               $${body}
             </div>
@@ -1908,56 +1909,56 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     align-items: center;
                   `}"
-                  javascript-TODO="${javascript_TODO`
-                  leafac.setTippy({
-                    event,
-                    element: this,
-                    elementProperty: "dropdown",
-                    tippyProps: {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${html`
-                        <h3 class="heading">
-                          $${application.server.locals.partials.logo({
-                            size: 12 /* var(--space--3) */,
-                          })}
-                          <span>
-                            Courselore <br />
-                            Communication Platform for Education <br />
-                            <small
-                              class="secondary"
-                              css="${css`
-                                font-size: var(--font-size--2xs);
-                                line-height: var(--line-height--2xs);
-                              `}"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      elementProperty: "dropdown",
+                      tippyProps: {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${html`
+                          <h3 class="heading">
+                            $${application.server.locals.partials.logo({
+                              size: 12 /* var(--space--3) */,
+                            })}
+                            <span>
+                              Courselore <br />
+                              Communication Platform for Education <br />
+                              <small
+                                class="secondary"
+                                css="${css`
+                                  font-size: var(--font-size--2xs);
+                                  line-height: var(--line-height--2xs);
+                                `}"
+                              >
+                                Version ${application.version}
+                              </small>
+                            </span>
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="https://${application.configuration
+                                .hostname}/about"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
                             >
-                              Version ${application.version}
-                            </small>
-                          </span>
-                        </h3>
-                        <div class="dropdown--menu">
-                          <a
-                            href="https://${application.configuration
-                              .hostname}/about"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                            About
-                          </a>
-                          <a
-                            href="https://github.com/courselore/courselore"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-file-earmark-code"></i>
-                            Source Code
-                          </a>
-                        </div>
-                      `},  
-                    },
-                  });
-                `}"
+                              <i class="bi bi-info-circle"></i>
+                              About
+                            </a>
+                            <a
+                              href="https://github.com/courselore/courselore"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-file-earmark-code"></i>
+                              Source Code
+                            </a>
+                          </div>
+                        `},  
+                      },
+                    });
+                  `}"
                 >
                   $${application.server.locals.partials.logo({
                     size: 16 /* var(--space--4) */,
@@ -1969,114 +1970,114 @@ export default async (application: Application): Promise<void> => {
               <div>
                 <button
                   class="button button--transparent"
-                  javascript-TODO="${javascript_TODO`
-                  leafac.setTippy({
-                    event,
-                    element: this,
-                    elementProperty: "dropdown",
-                    tippyProps: {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${html`
-                        <h3 class="heading">
-                          <i class="bi bi-bug"></i>
-                          Report an Issue
-                        </h3>
-                        <div class="dropdown--menu">
-                          <a
-                            href="${application.addresses
-                              .metaCourseloreInvitation}${qs.stringify(
-                              {
-                                redirect: `conversations/new/question${qs.stringify(
-                                  {
-                                    newConversation: {
-                                      content: dedent`
-                                        **What did you try to do?**
-  
-  
-  
-                                        **What did you expect to happen?**
-  
-  
-  
-                                        **What really happened?**
-  
-  
-  
-                                        **What error messages (if any) did you run into?**
-  
-  
-  
-                                        **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-  
-                                        - Courselore Version: ${application.version}
-                                      `,
-                                      tagsReferences: ["9676584193"],
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      elementProperty: "dropdown",
+                      tippyProps: {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${html`
+                          <h3 class="heading">
+                            <i class="bi bi-bug"></i>
+                            Report an Issue
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="${application.addresses
+                                .metaCourseloreInvitation}${qs.stringify(
+                                {
+                                  redirect: `conversations/new/question${qs.stringify(
+                                    {
+                                      newConversation: {
+                                        content: dedent`
+                                          **What did you try to do?**
+    
+    
+    
+                                          **What did you expect to happen?**
+    
+    
+    
+                                          **What really happened?**
+    
+    
+    
+                                          **What error messages (if any) did you run into?**
+    
+    
+    
+                                          **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+    
+                                          - Courselore Version: ${application.version}
+                                        `,
+                                        tagsReferences: ["9676584193"],
+                                      },
                                     },
-                                  },
-                                  { addQueryPrefix: true }
-                                )}`,
-                              },
-                              { addQueryPrefix: true }
-                            )}"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                            css="${css`
-                              align-items: center;
-                            `}"
-                          >
-                            $${application.server.locals.partials.logo({
-                              size: 14 /* var(--space--3-5) */,
-                            })}
-                            Meta Courselore
-                          </a>
-                          <a
-                            href="${application.server.locals.partials
-                              .reportIssueHref}"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-envelope"></i>
-                            ${application.configuration.administratorEmail}
-                          </a>
-                          <a
-                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                              {
-                                body: dedent`
-                                  **What did you try to do?**
-  
-  
-  
-                                  **What did you expect to happen?**
-  
-  
-  
-                                  **What really happened?**
-  
-  
-  
-                                  **What error messages (if any) did you run into?**
-  
-  
-  
-                                  **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-  
-                                  - Courselore Version: ${application.version}
-                                `,
-                              },
-                              { addQueryPrefix: true }
-                            )}"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-github"></i>
-                            GitHub Issues
-                          </a>
-                        </div>
-                      `},  
-                    },
-                  });
-                `}"
+                                    { addQueryPrefix: true }
+                                  )}`,
+                                },
+                                { addQueryPrefix: true }
+                              )}"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                              css="${css`
+                                align-items: center;
+                              `}"
+                            >
+                              $${application.server.locals.partials.logo({
+                                size: 14 /* var(--space--3-5) */,
+                              })}
+                              Meta Courselore
+                            </a>
+                            <a
+                              href="${application.server.locals.partials
+                                .reportIssueHref}"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-envelope"></i>
+                              ${application.configuration.administratorEmail}
+                            </a>
+                            <a
+                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                                {
+                                  body: dedent`
+                                    **What did you try to do?**
+    
+    
+    
+                                    **What did you expect to happen?**
+    
+    
+    
+                                    **What really happened?**
+    
+    
+    
+                                    **What error messages (if any) did you run into?**
+    
+    
+    
+                                    **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+    
+                                    - Courselore Version: ${application.version}
+                                  `,
+                                },
+                                { addQueryPrefix: true }
+                              )}"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-github"></i>
+                              GitHub Issues
+                            </a>
+                          </div>
+                        `},  
+                      },
+                    });
+                  `}"
                 >
                   <i class="bi bi-bug"></i>
                   Report an Issue
@@ -2092,7 +2093,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <button
                       class="button button--transparent strong text--green"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2106,31 +2107,31 @@ export default async (application: Application): Promise<void> => {
                                 <span>
                                   Courselore
                                   <span
-                                    javascript-TODO="${javascript_TODO`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Current Courselore version",
-                                          },
-                                        });
-                                      `}"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Current Courselore version",
+                                        },
+                                      });
+                                    `}"
                                   >
                                     ${application.version}
                                   </span>
                                   →
                                   <span
-                                    javascript-TODO="${javascript_TODO`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Latest Courselore version",
-                                          },
-                                        });
-                                      `}"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Latest Courselore version",
+                                        },
+                                      });
+                                    `}"
                                   >
                                     ${response.locals.administrationOptions!
                                       .latestVersion}
@@ -2166,7 +2167,7 @@ export default async (application: Application): Promise<void> => {
                                   Download
                                 </a>
                               </div>
-                            `},  
+                            `},
                           },
                         });
                       `}"

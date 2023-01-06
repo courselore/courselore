@@ -19,7 +19,7 @@
   "scripts": {
     "postinstall": "(cd ./server/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
     "prepare": "node ./prepare.mjs",
-    "start": "nodemon --watch \"./server/**/*.mts\" --watch \"./static/{{index,leafac--javascript}.mjs,**/*.{webp,png,ico}}\" --watch \"./prepare.mjs\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/index.mjs ./configuration/development.mjs\"",
+    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./server/{package.json,**/*.mts}\" --watch \"./static/{package.json,index.mjs,leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/server/index.mjs ./configuration/development.mjs\"",
     "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && node ./build/server/index.mjs ./configuration/profile.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./server/**/*.mts\" --check \"./server/package.json\" --check \"./static/index.mjs\" --check \"./static/package.json\" --check \"./configuration/**/*.mjs\" --end-of-line auto && cd ./server/ && npx tsc --noEmit",

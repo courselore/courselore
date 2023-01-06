@@ -869,7 +869,7 @@ const { app, BrowserWindow } = require("electron");
     - https://github.com/clean-css/clean-css (most popular)
     - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
     - https://github.com/css/csso
-- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript_TODO`...` `` because it works with Prettier (and syntax highlighting, to some extent)?
+- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent)?
 - `<script async>`?
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
