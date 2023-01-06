@@ -100,10 +100,9 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticCSSIdentifiers.has(identifier)) {
                         staticCSSIdentifiers.add(identifier);
-                        staticCSS =
-                          `${`[css~="${identifier}"]`.repeat(
-                            6
-                          )} {\n${css_}}\n\n` + staticCSS;
+                        staticCSS += `${`[css~="${identifier}"]`.repeat(
+                          6
+                        )} {\n${css_}}\n\n`;
                       }
                       path.replaceWith(babel.types.stringLiteral(identifier));
                       break;
