@@ -6,7 +6,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
@@ -617,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.isModified = false;
                 `}"
               />
@@ -629,7 +628,7 @@ export default async (application: Application): Promise<void> => {
                 name="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.isModified = false;
                 `}"
               />
@@ -863,7 +862,7 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.isModified = false;
                 `}"
               />
@@ -1161,7 +1160,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
@@ -1401,7 +1400,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
