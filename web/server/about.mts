@@ -1,7 +1,6 @@
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import dedent from "dedent";
 import { Application } from "./index.mjs";
 
@@ -107,7 +106,7 @@ export default async (application: Application): Promise<void> => {
                           href="https://${application.addresses
                             .canonicalHostname}/sign-up"
                           class="button button--blue"
-                          javascript-TODO="${javascript_TODO`
+                          javascript="${javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -125,7 +124,7 @@ export default async (application: Application): Promise<void> => {
                           href="https://${application.addresses
                             .canonicalHostname}/sign-in"
                           class="button button--transparent"
-                          javascript-TODO="${javascript_TODO`
+                          javascript="${javascript`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -158,7 +157,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       align-items: center;
                     `}"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -177,7 +176,7 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://github.com/courselore/courselore"
                     class="button button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -197,7 +196,7 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://${application.addresses.tryHostname}"
                     class="button button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -596,7 +595,7 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -617,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -638,7 +637,7 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `}"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -661,7 +660,7 @@ export default async (application: Application): Promise<void> => {
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
               `}"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 this.isModified = false;
               `}"
             >
@@ -872,7 +871,7 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.addresses
                       .canonicalHostname}/sign-up"
                     class="button button--blue"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -890,7 +889,7 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.addresses
                       .canonicalHostname}/sign-in"
                     class="button button--transparent"
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -920,7 +919,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 align-items: center;
               `}"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 leafac.setTippy({
                   event,
                   element: this,
@@ -939,7 +938,7 @@ export default async (application: Application): Promise<void> => {
             <a
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 leafac.setTippy({
                   event,
                   element: this,
@@ -956,7 +955,7 @@ export default async (application: Application): Promise<void> => {
             <a
               href="https://${application.addresses.tryHostname}"
               class="button button--transparent"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 leafac.setTippy({
                   event,
                   element: this,

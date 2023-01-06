@@ -122,12 +122,12 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticJavaScriptIdentifiers.has(identifier)) {
                         staticJavaScriptIdentifiers.add(identifier);
-                        staticJavaScript += javascript_TODO`export const ${identifier} = (${[
+                        staticJavaScript += javascript`export function ${identifier}(${[
                           "event",
                           ...path.node.quasi.expressions.map(
                             (value, index) => `$$${index}`
                           ),
-                        ].join(", ")}) => { ${javascript_} };`;
+                        ].join(", ")}) { ${javascript_} }\n\n`;
                       }
                       path.replaceWith(
                         babel.template.ast`
