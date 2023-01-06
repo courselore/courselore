@@ -1726,10 +1726,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--transparent button--full-width-on-small-screen"
-                  javascript-TODO="${javascript_TODO`
-                    // TODO: It isn’t necessary to juggle ‘applicationJavaScript’ anymore.
-                    const applicationJavaScript = window.applicationJavaScript;
-
+                  javascript="${javascript`
                     this.onclick = () => {
                       const newTag = leafac.stringToElement(${html`
                         <div
@@ -1764,11 +1761,11 @@ export default async (application: Application): Promise<void> => {
                               autocomplete="off"
                               disabled
                               class="input--text"
-                              javascript-TODO="${javascript_TODO`
-                                    this.isModified = true;
-                                    this.disabled = false;
-                                    this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
-                                  `}"
+                              javascript="${javascript`
+                                this.isModified = true;
+                                this.disabled = false;
+                                this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
+                              `}"
                             />
                             <div
                               css="${css`
@@ -1790,39 +1787,39 @@ export default async (application: Application): Promise<void> => {
                                     type="checkbox"
                                     disabled
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    javascript-TODO="${javascript_TODO`
-                                          this.isModified = true;
-                                          this.disabled = false;
-                                          this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
-                                        `}"
+                                    javascript="${javascript`
+                                      this.isModified = true;
+                                      this.disabled = false;
+                                      this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
+                                    `}"
                                   />
                                   <span
-                                    javascript-TODO="${javascript_TODO`
-                                          leafac.setTippy({
-                                            event,
-                                            element: this,
-                                            tippyProps: {
-                                              touch: false,
-                                              content: "Set as Visible by Staff Only",
-                                            },
-                                          });
-                                        `}"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Set as Visible by Staff Only",
+                                        },
+                                      });
+                                    `}"
                                   >
                                     <i class="bi bi-eye"></i>
                                     Visible by Everyone
                                   </span>
                                   <span
                                     class="${textColorsCourseRole.staff}"
-                                    javascript-TODO="${javascript_TODO`
-                                          leafac.setTippy({
-                                            event,
-                                            element: this,
-                                            tippyProps: {
-                                              touch: false,
-                                              content: "Set as Visible by Everyone",
-                                            },
-                                          });
-                                        `}"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Set as Visible by Everyone",
+                                        },
+                                      });
+                                    `}"
                                   >
                                     <i class="bi bi-mortarboard-fill"></i>
                                     Visible by Staff Only
@@ -1832,23 +1829,23 @@ export default async (application: Application): Promise<void> => {
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                javascript-TODO="${javascript_TODO`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          theme: "rose",
-                                          touch: false,
-                                          content: "Remove Tag",
-                                        },
-                                      });
-  
-                                      this.onclick = () => {
-                                        const tag = this.closest('[key^="tag"]');
-                                        tag.replaceChildren();
-                                        tag.hidden = true;
-                                      };
-                                    `}"
+                                javascript="${javascript`
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    },
+                                  });
+
+                                  this.onclick = () => {
+                                    const tag = this.closest('[key^="tag"]');
+                                    tag.replaceChildren();
+                                    tag.hidden = true;
+                                  };
+                                `}"
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
@@ -1860,7 +1857,6 @@ export default async (application: Application): Promise<void> => {
                       leafac.javascript({
                         event,
                         element: newTag,
-                        applicationJavaScript,
                       })
                     };
 
