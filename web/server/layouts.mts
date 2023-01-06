@@ -1470,117 +1470,106 @@ export default async (application: Application): Promise<void> => {
               flex-direction: column;
               overflow: hidden;
             `}"
-            javascript-TODO="${javascript_TODO`
-              this.onscroll = () => {
-                this.scroll(0, 0);
-              };
+            javascript="${(() => {
+              const flash = application.server.locals.helpers.Flash.get({
+                request,
+                response,
+              });
 
-              ${(() => {
-                const flash = application.server.locals.helpers.Flash.get({
-                  request,
-                  response,
-                });
-                return flash === undefined
-                  ? javascript_TODO``
-                  : javascript_TODO`
-                      const body = document.querySelector("body");
+              return javascript`
+                this.onscroll = () => {
+                  this.scroll(0, 0);
+                };
 
-                      leafac.setTippy({
-                        event,
-                        element: body,
-                        elementProperty: "flash",
-                        tippyProps: {
-                          appendTo: body,
-                          trigger: "manual",
-                          hideOnClick: false,
-                          theme: ${JSON.stringify(flash.theme)},
-                          arrow: false,
-                          interactive: true,
-                          content: ${JSON.stringify(html`
-                            <div
-                              css="${css`
-                                padding: var(--space--1) var(--space--2);
-                                display: flex;
-                                gap: var(--space--2);
-                                align-items: flex-start;
-                              `}"
-                            >
-                              <div>$${flash.content}</div>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
-                                javascript-TODO="${javascript_TODO`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    tippyProps: {
-                                      theme: "green",
-                                      touch: false,
-                                      content: ${JSON.stringify(html`
-                                        Close
-                                        <span class="keyboard-shortcut">
-                                          (<span
-                                            javascript-TODO="${javascript_TODO`
-                                                this.hidden = leafac.isAppleDevice;
-                                              `}"
-                                            >Esc</span
-                                          ><span
-                                            class="keyboard-shortcut--cluster"
-                                            javascript-TODO="${javascript_TODO`
-                                                this.hidden = !leafac.isAppleDevice;
-                                              `}"
-                                            ><i class="bi bi-escape"></i></span
-                                          >)
-                                        </span>
-                                      `)},
-                                    },
-                                  });
-    
-                                  this.onclick = () => {
-                                    this.closest("[data-tippy-root]")._tippy.hide();
-                                  };
-    
-                                  const keys = "escape";
-                                  (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
-                                `}"
-                              >
-                                <i class="bi bi-x-circle"></i>
-                              </button>
-                            </div>
-                          `)},  
-                        },
-                      });
-                      body.flash.show();
-                    `;
-              })()}
+                if (${flash !== undefined}) {
+                  const body = document.querySelector("body");
+                  leafac.setTippy({
+                    event,
+                    element: body,
+                    elementProperty: "flash",
+                    tippyProps: {
+                      appendTo: body,
+                      trigger: "manual",
+                      hideOnClick: false,
+                      theme: ${flash?.theme ?? ""},
+                      arrow: false,
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            padding: var(--space--1) var(--space--2);
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: flex-start;
+                          `}"
+                        >
+                          <div>$${flash?.content ?? html``}</div>
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  theme: "green",
+                                  touch: false,
+                                  content: ${html`
+                                    Close
+                                    <span class="keyboard-shortcut">
+                                      (<span
+                                        javascript="${javascript`
+                                          this.hidden = leafac.isAppleDevice;
+                                        `}"
+                                        >Esc</span
+                                      ><span
+                                        class="keyboard-shortcut--cluster"
+                                        javascript="${javascript`
+                                          this.hidden = !leafac.isAppleDevice;
+                                        `}"
+                                        ><i class="bi bi-escape"></i></span
+                                      >)
+                                    </span>
+                                  `},
+                                },
+                              });
 
-              document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-                response.locals.enrollment?.accentColor ?? ""
-              }--500"));
-              document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
-                response.locals.enrollment?.accentColor ?? ""
-              }--600"));
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                              };
 
-              ${
-                typeof response.locals.liveConnectionNonce === "string"
-                  ? javascript_TODO`
-                      if (event?.detail?.liveUpdate !== true)
-                        leafac.liveConnection({
-                          nonce: ${JSON.stringify(
-                            response.locals.liveConnectionNonce
-                          )},
-                          newServerVersionMessage: "Courselore has been updated. Please reload the page.",
-                          offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                          ${
-                            application.configuration.environment ===
-                            "development"
-                              ? javascript_TODO`reconnectTimeout: 200,`
-                              : javascript_TODO``
-                          }
-                        });
-                    `
-                  : javascript_TODO``
-              }
-            `}"
+                              const keys = "escape";
+                              (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-x-circle"></i>
+                          </button>
+                        </div>
+                      `},  
+                    },
+                  });
+                  body.flash.show();
+                }
+
+                document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+                  response.locals.enrollment?.accentColor ?? ""
+                }--500`}));
+                document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+                  response.locals.enrollment?.accentColor ?? ""
+                }--600`}));
+
+                if (${
+                  typeof response.locals.liveConnectionNonce === "string"
+                } && event?.detail?.liveUpdate !== true)
+                  leafac.liveConnection({
+                    nonce: ${response.locals.liveConnectionNonce},
+                    newServerVersionMessage: "Courselore has been updated. Please reload the page.",
+                    offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
+                    reconnectTimeout: ${
+                      application.configuration.environment === "development"
+                    } ? 200 : undefined,
+                  });
+              `;
+            })()}"
           >
             $${response.locals.enrollment === undefined
               ? html``
