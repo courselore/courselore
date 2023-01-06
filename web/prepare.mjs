@@ -10,6 +10,7 @@ import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypePresetMinify from "rehype-preset-minify";
 import rehypeStringify from "rehype-stringify";
+import prettier from "prettier";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import autoprefixer from "autoprefixer";
@@ -88,6 +89,7 @@ await node.time("[Server] Babel", async () => {
                     // }
 
                     case "css": {
+                      // TODO: Prettier CSS?
                       const css_ = new Function(
                         "css",
                         `return (${babelGenerator.default(path.node).code});`
@@ -117,6 +119,9 @@ await node.time("[Server] Babel", async () => {
                         javascript_ +=
                           (index === 0 ? `` : `$$${index - 1}`) +
                           quasi.value.cooked;
+                      javascript_ = prettier.format(javascript_, {
+                        parser: "babel",
+                      });
                       const identifier = baseIdentifier.encode(
                         xxhash.XXHash3.hash(Buffer.from(javascript_))
                       );
@@ -127,7 +132,7 @@ await node.time("[Server] Babel", async () => {
                           ...path.node.quasi.expressions.map(
                             (value, index) => `$$${index}`
                           ),
-                        ].join(", ")}) { ${javascript_} }\n\n`;
+                        ].join(", ")}) {\n${javascript_}}\n\n`;
                       }
                       path.replaceWith(
                         babel.template.ast`
